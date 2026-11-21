@@ -215,7 +215,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -337,13 +337,13 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qonebasedcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
- {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
+ {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -1212,7 +1212,7 @@ class Parser {
      else if(c==')' || c==']') {if(nesting==0)break;--nesting;}
      else if(nesting==0) {
       if(c=='|' && k>start) {closing=k;break;}
-      if(c=='<' || c=='>' || c==',' || c==';')break;
+      if(c=='<' || c=='>' || c=='=' || c==',' || c==';')break;
      }
     }
     std::string body=closing==std::string::npos ? "" : labelText(s.substr(start,closing-start));
@@ -1272,6 +1272,10 @@ class Parser {
    if(costContext && a.size()>1 && a.find_first_not_of("nmk")==std::string::npos) {
     p=b+1;a.resize(1);
    }
+   // A spaced parenthesis after an indexed uppercase factor can group the
+   // operand of a matrix product. Keep adjacent call syntax for named gates.
+   const bool groupedFactor=a!="U_1" && a!="U_2" && a!="U_3" && a.size()>2 && a[0]>='A' && a[0]<='Z' && a[1]=='_' &&
+    a.find_first_not_of("0123456789",2)==std::string::npos && p>b+a.size();
    bool indexedScalar=false;
    if(!numericToken && a.back()=='_' && take('{')) {
     std::string index=expression();need('}');
@@ -1310,7 +1314,7 @@ class Parser {
    }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
-   else if(!numericToken && !indexedScalar && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
+   else if(!numericToken && !indexedScalar && !groupedFactor && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";
@@ -1759,7 +1763,7 @@ class Parser {
      if(compact) {protect(0);protect(1);}
      else if(name=="qindexedlabel") {protect(0);protect(2);}
      else if(name=="qregistersum")protect(4);
-     else if(quantumHasIndexedNameArgument(name))protect(0);
+     else if(name=="qoutcome" || quantumHasIndexedNameArgument(name))protect(0);
     }
     // Preserve the established optional multiset argument for vector callers.
     if(args.size()==3 && (name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff")) {
@@ -1786,6 +1790,10 @@ class Parser {
     if(name!="O" && name.size()==1 && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
        (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos)) {
      args.insert(args.begin(),indexableLabel(name));name="qmul";
+    }
+    if(args.size()==1 && name.size()>2 && (name[0]=='f' || name[0]=='g' || name[0]=='h') &&
+       name[1]=='_' && name.find_first_not_of("0123456789",2)==std::string::npos) {
+     args.insert(args.begin(),indexableLabel(name));name="qfiniteapply";
     }
     if(publicName=="O")name="qbigorder";
     if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
@@ -2226,6 +2234,13 @@ class Parser {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
     const std::string relation=takeComparisonRelation();
+    // A closing parenthesis ends an ordered tuple. Function arguments
+    // use expression(false) and keep their own comma separators.
+    if(relation.empty() && p<s.size() && s[p]==')') {
+     std::string tuple="qtuple(vector("+probes.front();
+     for(size_t i=1;i<probes.size();++i)tuple+=","+probes[i];
+     tuple+="))";checkSize(tuple);return tuple;
+    }
     bool membership=relation=="∈" || relation=="∉";
     int kind=comparisonKind(relation);
     if(!membership && kind>=4)throw std::runtime_error("Expected a shared ordering or set membership relation after the comma-separated operands.");
@@ -2315,12 +2330,14 @@ class Parser {
   // Function argument lists use comparison(false) and keep their commas.
   if(allowSharedOperands && equalities && operands.size()==2 && take(',')) {
    do {
+    bool finalEquation=takeWord("and");
     std::string lhs=comparisonOperand(),relation=takeComparisonRelation();
     if(relation!="=" && relation!="==")throw std::runtime_error("Expected an equation after the comma.");
     std::string rhs=comparisonOperand();
     preserveZeroWord(lhs,rhs);preserveZeroWord(rhs,lhs);
     prepareEquality(lhs,rhs);
     result="("+result+"&&qcompare("+lhs+","+rhs+",4))";checkSize(result);
+    if(finalEquation)break;
    } while(take(','));
    return result;
   }

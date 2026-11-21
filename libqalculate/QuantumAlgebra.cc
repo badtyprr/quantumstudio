@@ -327,6 +327,12 @@ MathStructure multiply(MathStructure a, const MathStructure &b, const Evaluation
  if(scalarResult && a.isMatrix() && a.rows()==1 && a.columns()==1) { MathStructure scalar=element(a,0,0); return scalar; }
  return a;
 }
+bool indexedUppercaseFactor(const MathStructure &value) {
+ if(!value.isSymbolic())return false;
+ const std::string &label=value.symbol();
+ return label.size()>2 && label[0]>='A' && label[0]<='Z' && label[1]=='_' &&
+        label.find_first_not_of("0123456789",2)==std::string::npos;
+}
 bool unresolvedMatrixOperand(const MathStructure &value,unsigned depth=0) {
  // On a deep expression, defer instead of guessing a scalar domain.
  if(depth>128)return true;
@@ -1086,6 +1092,9 @@ class QuantumAlgebraFunction: public MathFunction {
      out=left[0].equals(b[0]) ? m_one : m_zero;return 1;
     }
    }
+   // An indexed operator can later receive a matrix value. Reordering it
+   // with an unknown factor here would change the result after substitution.
+   if((indexedUppercaseFactor(a) && !b.isNumber()) || (indexedUppercaseFactor(b) && !a.isNumber()))return 0;
    // Retain operand order until symbolic operators and states have dimensions.
    if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
@@ -1154,6 +1163,7 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   if((op=="qnorm" || op=="qnormalize") && !a.isVector() && a.containsUnknowns()) {
+   if(a.isUnknown() || a.isSymbolic())return 0;
    MathStructure rows,columns;
    if(matrixShape(a,rows,columns,eo)) {
     if(unequalKnownDimensions(columns,m_one))CALCULATOR->error(true,"norm and normalize require a column ket.",NULL);

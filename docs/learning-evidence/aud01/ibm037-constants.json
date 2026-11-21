@@ -1,0 +1,166 @@
+{
+  "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
+  "worker_sha256": "63fa30ff33d3479f2fffeb1baebe219fe8dc16f165b2d769b4390645ee11991c",
+  "rows": [
+    {
+      "id": "IBM037-bb350db4-M001",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M002",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M003",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M004",
+      "literal": "2",
+      "expected": "2"
+    },
+    {
+      "id": "IBM037-bb350db4-M005",
+      "literal": "3",
+      "expected": "3"
+    },
+    {
+      "id": "IBM037-bb350db4-M006",
+      "literal": "4",
+      "expected": "4"
+    },
+    {
+      "id": "IBM037-bb350db4-M007",
+      "literal": "5",
+      "expected": "5"
+    },
+    {
+      "id": "IBM037-bb350db4-M008",
+      "literal": "6",
+      "expected": "6"
+    },
+    {
+      "id": "IBM037-bb350db4-M009",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M010",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M030",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M031",
+      "literal": "3/4",
+      "expected": "3/4"
+    },
+    {
+      "id": "IBM037-bb350db4-M032",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M033",
+      "literal": "1/4",
+      "expected": "1/4"
+    },
+    {
+      "id": "IBM037-bb350db4-M036",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M037",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M039",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M043",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M045",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M081",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M082",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M088",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M096",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M100",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M122",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M123",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M124",
+      "literal": "0",
+      "expected": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M125",
+      "literal": "1/2",
+      "expected": "1/2"
+    },
+    {
+      "id": "IBM037-bb350db4-M126",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M127",
+      "literal": "1/2",
+      "expected": "1/2"
+    },
+    {
+      "id": "IBM037-bb350db4-M129",
+      "literal": "1",
+      "expected": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M130",
+      "literal": "1/2",
+      "expected": "1/2"
+    }
+  ]
+}

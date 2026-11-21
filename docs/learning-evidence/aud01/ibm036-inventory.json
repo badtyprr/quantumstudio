@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/introduction.ipynb",
+  "source_sha256": "ae48ca76386dbd5c315cd993a18f2480ab0480d05a1f1c9f5642b20399e6e3c6",
+  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
+  "revision": "9e033225",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

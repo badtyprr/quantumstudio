@@ -86,6 +86,23 @@ std::string withoutTeXCommentLines(const std::string &s) {
  }
  return result;
 }
+// Aligned rows can put separate equations on either side of an ampersand.
+// A relation inside a function argument or a quoted name does not split a row.
+bool completeAlignedEquation(const std::string &cell) {
+ int nesting=0;char quote=0;
+ for(size_t i=0;i<cell.size();++i) {
+  char c=cell[i];
+  if(quote) {if(c==quote)quote=0;continue;}
+  if(c=='"' || c=='\'')quote=c;
+  else if(c=='(' || c=='[')++nesting;
+  else if(c==')' || c==']')--nesting;
+  else if(!nesting && c=='=' && i && i+1<cell.size()) {
+   const size_t lhs=cell.find_last_not_of(" \t\r\n<>=!",i-1);
+   return lhs!=std::string::npos && cell.find_first_not_of(" \t\r\n=",i+1)!=std::string::npos;
+  }
+ }
+ return false;
+}
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
  // Display spacing may follow the sentence comma inside a math span.
@@ -305,7 +322,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 }
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
-std::string scalarProductSum(const std::string &input,size_t start,size_t &end) {
+std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
@@ -320,12 +337,30 @@ std::string scalarProductSum(const std::string &input,size_t start,size_t &end) 
     if(index.size()>32)return false;++at;
    }
    if(at==input.size())return false;++at;
-  } else if(input[at]>='0' && input[at]<='9')index+=input[at++];
+  } else if(std::isalnum((unsigned char)input[at]))index+=input[at++];
   else return false;
   return !index.empty();
  };
  std::string first,second,lastFirst,lastSecond,upperA,upperB,lowerA,lowerB;
- if(!factor(first,upperA) || !factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
+ if(!factor(first,upperA))return "";
+ // Read a descending family of maps in application order: the map
+ // with the lowest index acts first on the input column.
+ size_t afterFirst=at;
+ token("\\,");
+ if(token("\\cdots")) {
+  token("\\,");
+  if(!factor(lastFirst,lowerA) || first!=lastFirst || lowerA!="1" ||
+     first.size()!=1 || first[0]<'A' || first[0]>'Z')return "";
+  if(!(upperA.size()==1 && asciiLetter(upperA[0])) &&
+     (upperA[0]=='0' || upperA.find_first_not_of("0123456789")!=std::string::npos))return "";
+  space();
+  if(at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
+  if(at<input.size() && std::string(",)}=").find(input[at])==std::string::npos && !std::isspace((unsigned char)input[at]))return "";
+  end=at;
+  return "qcomposemaps(qindexedentries(\""+first+"_\",1,"+upperA+",vector()))";
+ }
+ at=afterFirst;
+ if(!factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
     !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
  if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
  space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
@@ -367,7 +402,7 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   size_t close=rows[row].find(']');
   if(close!=std::string::npos)rows[row]=trim(rows[row].substr(close+1));
  }
- auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries from index 0, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
+ auto invalid=[]() {throw std::runtime_error("An indexed column requires consecutive entries starting at 0 or 1, a vertical ellipsis, and an endpoint in the same family; group compound subscripts");};
  if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
  if(rows[rows.size()-2]==marker && std::count(rows.begin(),rows.end(),"0")==int(rows.size()-1))
   return "qtexzerocolumn("+std::to_string(rows.size()-2)+")";
@@ -416,9 +451,10 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  bool descending=rows[1]==marker && indices.back()=="0" && !(rows[rows.size()-2]==marker && indices.front()=="0");
  if(descending)std::reverse(indices.begin(),indices.end());
  else if(rows[rows.size()-2]!=marker)invalid();
- for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(i))invalid();
- const char *operation=descending ? "qdescendingcolumn" : "qindexedcolumn";
- return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(rows.size()-3)+")";
+ const unsigned first=indices.front()=="1" && !descending ? 1 : 0;
+ for(size_t i=0;i+1<indices.size();++i)if(indices[i]!=std::to_string(first+i))invalid();
+ const char *operation=descending ? "qdescendingcolumn" : first ? "qonebasedcolumn" : "qindexedcolumn";
+ return std::string(operation)+"(\""+quantumTeX(family)+"_\",("+indices.back()+"),"+std::to_string(first+rows.size()-3)+")";
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.
@@ -590,6 +626,32 @@ void nextDecimalIndex(std::string &index) {
 }
 // Open-ended families need a common label and consecutive integer subscripts.
 // Keep only the first index; a trailing comma after the ellipsis is typography.
+// A standalone list with two or more consecutive printed indices is ordered.
+std::string explicitIntegerList(const std::string &expression) {
+ if(expression.find("...")==std::string::npos)return "";
+ std::vector<std::string> entries;
+ size_t at=0;
+ while(at<expression.size()) {
+  size_t comma=expression.find(',',at);
+  entries.push_back(trim(expression.substr(at,comma==std::string::npos ? comma : comma-at)));
+  if(comma==std::string::npos)break;
+  at=comma+1;
+ }
+ if(entries.size()<4 || entries[entries.size()-2]!="...")return "";
+ for(size_t k=0;k<entries.size();++k) {
+  if(k==entries.size()-2)continue;
+  const auto &entry=entries[k];
+  if(entry.empty() || entry.find_first_not_of("0123456789")!=std::string::npos || (entry.size()>1 && entry[0]=='0'))return "";
+ }
+ std::string value=entries.front();
+ for(size_t k=1;k+2<entries.size();++k) {
+  nextDecimalIndex(value);
+  if(value!=entries[k])throw std::runtime_error("An integer list requires consecutive prefix values");
+ }
+ const auto &last=entries.back();
+ if(value.size()>last.size() || (value.size()==last.size() && value>last))throw std::runtime_error("Integer list endpoint precedes its prefix");
+ return "qindexsequence("+entries.front()+","+last+")";
+}
 std::string openIndexedFamily(const std::vector<std::string> &entries) {
  size_t end=entries.size();
  if(end && entries[end-1].empty())--end;
@@ -659,7 +721,55 @@ class TeXReader {
  bool stateLabel=false;
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
- unsigned setExpressions=0;
+ unsigned setDepth=0;
+ // The state is supplied by the surrounding lesson. Keep its distribution
+ // as a free name until the caller supplies the probabilities.
+ std::string eventProbability() {
+  size_t at=pos;
+  auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+  auto take=[&](const std::string &token) {
+   space();if(input.compare(at,token.size(),token)!=0)return false;
+   at+=token.size();return true;
+  };
+  if(!take("("))return "";
+  std::string distribution;
+  bool prose=take("\\text");
+  if(prose) {
+   if(!take("{") || !take("outcome") || at==input.size() || !std::isspace((unsigned char)input[at]) ||
+      !take("is") || at==input.size() || !std::isspace((unsigned char)input[at]))return "";
+   distribution="measurement probabilities";
+  } else {
+   if(!take("\\mathsf") || !take("{"))return "";
+   space();size_t begin=at;
+   while(at<input.size() && asciiLetter(input[at]))++at;
+   if(at==begin)return "";
+   distribution=input.substr(begin,at-begin);
+   if(!take("}") || !take("="))return "";
+  }
+  space();size_t digit=at;
+  while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
+  if(at==digit || (at>digit+1 && input[digit]=='0'))return "";
+  std::string outcome=input.substr(digit,at-digit);
+  if((prose && !take("}")) || !take(")"))return "";
+  pos=at;return "qeventprob(\""+distribution+"\","+outcome+")";
+ }
+ bool beforeMembership() const {
+  size_t next=input.find_first_not_of(" \t\r\n",pos);
+  if(next==std::string::npos)return false;
+  for(const std::string op:{"\\in","\\notin","∈","∉"}) {
+   if(input.compare(next,op.size(),op)!=0)continue;
+   size_t end=next+op.size();
+   if(op[0]!='\\' || end==input.size() || !asciiLetter(input[end]))return true;
+  }
+  return false;
+ }
+ bool wholeSetEntry(const std::string *preceding) const {
+  if(!setDepth || depth!=setDepth || !preceding)return false;
+  const size_t last=preceding->find_last_not_of(" \t\r\n");
+  if(last!=std::string::npos && (*preceding)[last]!=',')return false;
+  const size_t next=input.find_first_not_of(" \t\r\n",pos);
+  return next!=std::string::npos && (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0);
+ }
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  // Check the displayed initial powers and the final base before consuming
@@ -761,11 +871,11 @@ class TeXReader {
  }
  // Raw groups are used only for command names and environment names, which
  // cannot contain TeX structure. Unlike expression groups, no evaluation occurs.
- std::string nameGroup() {
+ std::string nameGroup(bool columnSpec=false) {
   space(); if(pos==input.size() || input[pos++]!='{') throw std::runtime_error(error("Expected {name}"));
   size_t start=pos;
   while(pos<input.size() && input[pos]!='}') {
-   if(!std::isalnum((unsigned char)input[pos]) && input[pos]!='*') throw std::runtime_error(error("Invalid TeX name"));
+   if(!std::isalnum((unsigned char)input[pos]) && input[pos]!='*' && !(columnSpec && input[pos]=='|')) throw std::runtime_error(error("Invalid TeX name"));
    ++pos;
   }
   if(pos==input.size()) throw std::runtime_error(error("Unclosed TeX name"));
@@ -788,7 +898,10 @@ class TeXReader {
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
  std::string setLiteral(bool escaped) {
-  ++setExpressions;std::string contents=read(escaped ? 0 : '}',false,"",escaped);--setExpressions;
+  const unsigned outerSet=setDepth;
+  setDepth=depth+1;
+  std::string contents=read(escaped ? 0 : '}',false,"",escaped);
+  setDepth=outerSet;
   size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
   std::vector<std::string> entries;
   for(size_t j=0;j<contents.size();++j) {
@@ -854,7 +967,8 @@ class TeXReader {
  }
  // A horizontal rule separates column labels from reported numeric data.
  std::string numericTable() {
-  const std::string alignment=nameGroup();
+  std::string alignment=nameGroup(true);
+  alignment.erase(std::remove(alignment.begin(),alignment.end(),'|'),alignment.end());
   if(alignment.empty() || alignment.find_first_not_of("lcr")!=std::string::npos)
    throw std::runtime_error(error("A numeric table requires l, c or r for each column"));
   const std::string endMarker="\\end{array}";
@@ -986,7 +1100,7 @@ class TeXReader {
    return (name=="lfloor" ? "floor(" : "ceil(")+body+")";
   }
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
-  if(name=="mid" && setExpressions)return ":";
+  if(name=="mid" && setDepth)return ":";
   if((name=="ldots" || name=="dots" || name=="cdots") && pos>name.size()+1) {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
    size_t after=input.find_first_not_of(" \t\r\n",pos);
@@ -1001,7 +1115,7 @@ class TeXReader {
        (end>=5 && input.compare(end-5,6,"\\rvert")==0)))return "...";
    }
   }
-  if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
+  if(setDepth && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="overline") {
@@ -1121,6 +1235,8 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="mathrm" && a.size()>1 && a.find_first_not_of("abcdefghijklmnopqrstuvwxyz")==std::string::npos &&
+      a!="pi" && a!="inf" && a!="infinity" && (wholeSetEntry(preceding) || beforeMembership()))return "qoutcome(\""+a+"\")";
    if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
    if(name=="mathbb" && a=="Z") {
     space();
@@ -1139,6 +1255,9 @@ class TeXReader {
    }
    if(name=="mathbb" && a=="T")return " qunitcircle() ";
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
+   if(name=="operatorname" && a=="Pr") {
+    std::string event=eventProbability();if(!event.empty())return event;
+   }
    if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
@@ -1146,6 +1265,16 @@ class TeXReader {
   }
   if(name=="text") {
    std::string text=trim(group());
+   if(!text.empty() && std::all_of(text.begin(),text.end(),asciiLetter)) {
+    const std::string prefix=preceding ? trim(*preceding) : "";
+    const size_t next=input.find_first_not_of(" \t\r\n",pos);
+    if(stateLabel)return text;
+    if(!prefix.empty() && next!=std::string::npos) {
+     if(prefix.back()=='|' && (input[next]=='>' || input.compare(next,7,"\\rangle")==0))return text;
+     if(prefix.back()=='<' && (input[next]=='|' || input.compare(next,5,"\\vert")==0))return text;
+    }
+    if(wholeSetEntry(preceding) || beforeMembership())return "qoutcome(\""+text+"\")";
+   }
    if(text=="and" || text=="or")return " "+text+" ";
    if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
    if(text=="otherwise")return text;
@@ -1156,7 +1285,20 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
-   if(env=="array")return numericTable();
+   if(env=="array") {
+    std::string tables=numericTable();
+    bool grouped=false;
+    while(true) {
+     size_t saved=pos;space();
+     if(input.compare(pos,6,"\\qquad")!=0) {pos=saved;break;}
+     pos+=6;space();
+     if(input.compare(pos,13,"\\begin{array}")!=0) {pos=saved;break;}
+     pos+=13;
+     tables+=","+numericTable();
+     grouped=true;
+    }
+    return grouped ? "vector("+tables+")" : tables;
+   }
    if(env=="cases") {
     // On the left of a cases definition, 0.a denotes a single fractional
     // bit. Validate its width when the bit is assigned a concrete value.
@@ -1255,12 +1397,14 @@ class TeXReader {
   auto finishAlignment=[&]() {
    if(++alignmentRows>128)throw std::runtime_error(error("Alignment is limited to 128 rows"));
    alignmentCells.push_back(trim(result));result.clear();
-   for(size_t cell=0;cell<alignmentCells.size();cell+=2) {
+   const bool separate=alignmentCells.size()>1 && std::all_of(alignmentCells.begin(),alignmentCells.end(),completeAlignedEquation);
+   const size_t stride=separate ? 1 : 2;
+   for(size_t cell=0;cell<alignmentCells.size();cell+=stride) {
     std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
-    if(cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
+    if(!separate && cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
     value=trim(withoutDisplayPunctuation(value));
     if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
-    size_t column=cell/2;
+    size_t column=cell/stride;
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
     bool relation=value[0]=='=' || value.compare(0,2,"<=")==0 || value.compare(0,2,">=")==0 || value.compare(0,2,"!=")==0;
     bool operation=value[0]=='+' || value[0]=='-' || value[0]=='*' || value[0]=='/' || value[0]=='@' || value[0]=='#';
@@ -1292,7 +1436,7 @@ class TeXReader {
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
-   if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
+   if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
     if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
@@ -1307,7 +1451,7 @@ class TeXReader {
         TeXReader(series.body).run(nullptr)+")";end=series.end;
       }
      }
-     if(product.empty())product=scalarProductSum(input,pos,end);
+     if(product.empty())product=indexedProduct(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }
@@ -1552,6 +1696,8 @@ class TeXReader {
  explicit TeXReader(const std::string &s):input(s) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
+  std::string integers=explicitIntegerList(result);
+  if(!integers.empty())return integers;
   std::string list=orderedKetList(result);
   if(!list.empty())return list;
   if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;

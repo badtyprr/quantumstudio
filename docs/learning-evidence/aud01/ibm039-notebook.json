@@ -1,0 +1,193 @@
+{
+  "source_sha256": "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a",
+  "worker_sha256": "bdad563ebcbe5c8040a81a2a85790ea2448633cdc6630f6a8a23f3ab7b6e7438",
+  "versions": {
+    "qiskit": "2.6.2",
+    "numpy": "2.5.5",
+    "matplotlib": "3.11.2",
+    "IPython": "9.18.1",
+    "pylatexenc": "2.11",
+    "sympy": "1.14.0"
+  },
+  "calculator_check": "quantum:(Y*S*H*T*H*basis(0,2))=([(1-exp(i*pi/4))/2;i*(1+exp(i*pi/4))/2])",
+  "verified_formula_ids": [
+    "IBM039-071bde2b-M001",
+    "IBM039-071bde2b-M002",
+    "IBM039-071bde2b-M003",
+    "IBM039-071bde2b-M004",
+    "IBM039-071bde2b-M005",
+    "IBM039-071bde2b-M006",
+    "IBM039-071bde2b-M007",
+    "IBM039-071bde2b-M008",
+    "IBM039-071bde2b-M009",
+    "IBM039-071bde2b-M010",
+    "IBM039-071bde2b-M011",
+    "IBM039-071bde2b-M012",
+    "IBM039-071bde2b-M013",
+    "IBM039-071bde2b-M014",
+    "IBM039-071bde2b-M015",
+    "IBM039-071bde2b-M016",
+    "IBM039-071bde2b-M017",
+    "IBM039-071bde2b-M018",
+    "IBM039-071bde2b-M019",
+    "IBM039-071bde2b-M020"
+  ],
+  "cells": [
+    {
+      "cell": 1,
+      "id": "5c708d4a-5401-4a7f-9e49-fef9ec28fe0d",
+      "displays": [],
+      "stdout": "2.6.2"
+    },
+    {
+      "cell": 3,
+      "id": "c91a3578",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 5,
+      "id": "d76964d8",
+      "displays": [],
+      "stdout": "[[0.5]\n [0.5]]"
+    },
+    {
+      "cell": 7,
+      "id": "11733a15",
+      "displays": [],
+      "stdout": "[[1.  0.5]\n [0.  0.5]]"
+    },
+    {
+      "cell": 9,
+      "id": "ade2c9dc",
+      "displays": [],
+      "stdout": "[[1]\n [0]]\n[[1 1]\n [0 0]]\n[[1.   0.75]\n [0.   0.25]]"
+    },
+    {
+      "cell": 11,
+      "id": "a15aee8e-3fc8-45a8-a2f1-7299fb92572a",
+      "displays": [
+        "Latex",
+        "Latex",
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 13,
+      "id": "36e7b320",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 15,
+      "id": "7578e036",
+      "displays": [
+        "TextMatrix",
+        "Latex"
+      ],
+      "stdout": "\\frac{\\sqrt{2}}{2} |0\\rangle+\\frac{\\sqrt{2}}{2} |1\\rangle"
+    },
+    {
+      "cell": 17,
+      "id": "68dc6a1b",
+      "displays": [
+        "bool",
+        "bool"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 19,
+      "id": "d811bcf2",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 21,
+      "id": "a6aec817-9c8b-49c6-8bd9-1c3e65e1dd0c",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": "Measured: 0\nPost-measurement state:"
+    },
+    {
+      "cell": 23,
+      "id": "fde6ccf9",
+      "displays": [
+        "figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 26,
+      "id": "ddceafd8-dbc4-4db3-886f-2955e36f98d6",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 28,
+      "id": "062d5c93-577c-4491-a1ed-8eb783ba830c",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 30,
+      "id": "68490946",
+      "displays": [
+        "figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 32,
+      "id": "add5f06f-3e1b-4ca0-adad-c83e0d05941c",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 34,
+      "id": "5a81f9bf",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 36,
+      "id": "26dec838",
+      "displays": [
+        "figure"
+      ],
+      "stdout": ""
+    }
+  ],
+  "samples": [
+    {
+      "cell": 23,
+      "seed": 3923,
+      "counts": {
+        "0": 548,
+        "1": 452
+      },
+      "expected_zero": 0.5555555555555556
+    },
+    {
+      "cell": 36,
+      "seed": 3936,
+      "counts": {
+        "0": 545,
+        "1": 3455
+      },
+      "expected_zero": 0.1464466094067263
+    }
+  ]
+}

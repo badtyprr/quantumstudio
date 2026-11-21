@@ -17,6 +17,20 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\operatorname{Pr}(\text{outcome is 1}))","qeventprob(\"measurement probabilities\",1)");
+  equal(R"(\operatorname{Pr}(\mathsf{X}=0))","qeventprob(\"X\",0)");
+  equal(R"($8,9,\ldots,11$)","qindexsequence(8,11)");
+  rejects(R"($8,10,\ldots,12$)");
+  rejects(R"($8,9,\ldots,7$)");
+  equal(R"(\{\mathrm{ready},\mathrm{off}\})","qset(vector(qoutcome(\"ready\"),qoutcome(\"off\")))");
+  equal(R"(M_n \,\cdots\, M_1)","qcomposemaps(qindexedentries(\"M_\",1,n,vector()))");
+  rejects(R"(M_n \,\cdots\, K_1)");
+  equal(R"(\vert\text{heads}\rangle)","|heads>");
+  equal(R"(\ket{\text{tails}})","|tails>");
+  equal(R"(\langle\text{heads}\vert)","<heads|");
+  equal(R"(\{\text{heads},\text{tails}\})","qset(vector(qoutcome(\"heads\"),qoutcome(\"tails\")))");
+  rejects(R"(\text{heads})");
+  rejects(R"(|\text{and then}\rangle)");
   equal(R"(\mathbb{Z}_N)","qresidues(N)");
   equal(R"(\mathbb{Z}_{21}^{\ast})","qunitsmod(21)");
   equal(R"($5.333 \cdots$)","(5+3/9)");
@@ -112,6 +126,7 @@ int main() {
   }
   equal(R"(\begin{aligned}1+1&=2\\&=4/2\end{aligned})","(1+1 =2 =4/2)");
   equal(R"(\begin{aligned}1&=1\\2&=3\end{aligned})","vector((1 =1),(2 =3))");
+  equal(R"(\begin{aligned}a=b & \qquad c=d\\e=f & \qquad g=h\end{aligned})","vector((a=b),(c=d),(e=f),(g=h))");
   equal(R"(\begin{aligned}a&=b&c&=d\\&=e&&=f\end{aligned})","vector((a =b =e),(c =d =f))");
   equal(R"(\begin{aligned}[t]1&=1\\[2mm]2&=2\end{aligned})","vector((1 =1),(2 =2))");
   equal(R"(\begin{gathered}1+2\\3+4\end{gathered})","vector((1+2),(3+4))");
@@ -300,7 +315,8 @@ int main() {
   equal("[α_0; ⋮; α_{n-1}]", "qindexedcolumn(\"α_\",(n-1),0)");
   equal(R"(\begin{pmatrix}\alpha_0\\\alpha_1\\\vdots\\\alpha_{n-1}\end{pmatrix})", "qindexedcolumn(\"α_\",(n-1),1)");
   equal(R"(\begin{bmatrix}a_0\\\vdots\\a_3\end{bmatrix})", "qindexedcolumn(\"a_\",(3),0)");
-  for(const auto &input:{"[a_1; ⋮; a_n]", "[a_0; a_2; ⋮; a_n]", "[a_0; ⋮; b_n]", "[a_0; ⋮; a_n-1]", "[a_0; ⋮; a_1; a_n]", "[a_0; ⋮; a_(n,2)]",
+  equal("[a_1; ⋮; a_n]", "qonebasedcolumn(\"a_\",(n),1)");
+  for(const auto &input:{"[a_2; ⋮; a_n]", "[a_0; a_2; ⋮; a_n]", "[a_0; ⋮; b_n]", "[a_0; ⋮; a_n-1]", "[a_0; ⋮; a_1; a_n]", "[a_0; ⋮; a_(n,2)]",
     R"(\begin{pmatrix}\alpha_0\\\vdots\\\alpha_n-1\end{pmatrix})"})rejects(input);
   equal("[[a_0; ⋮; a_n]]", "[qindexedcolumn(\"a_\",(n),0)]");
   equal("[\"⋮\"]", "[\"⋮\"]");
@@ -323,6 +339,9 @@ int main() {
   equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
   equal(R"(\begin{array}{lr}N & \text{Success probability}\\ \hline 2 & 0.50\\4 & 1.00\end{array})",
         "matrix(3,2,vector(\"N\",\"Success probability\",2,0.50,4,1.00))");
+  equal(R"(\begin{array}{c|r}a & f(a)\\\hline 0 & 1\end{array}\qquad \begin{array}{c}b\\\hline 0\end{array})",
+        "vector(matrix(2,2,vector(\"a\",\"f(a)\",0,1)),matrix(2,1,vector(\"b\",0)))");
+  rejects(R"(\begin{array}{|}a\\\hline 0\end{array})");
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2\end{array})");
   rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2 & 1.2.3\end{array})");
   rejects(R"(\begin{array}{c}N\\ 2\end{array})");

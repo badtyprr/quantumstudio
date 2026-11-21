@@ -1,0 +1,1515 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
+  "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
+  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "revision": "eda6164abb07c4f8c6f020937b8bb22bf54dc1c7",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 150
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM037-bb350db4-M001",
+      "cell": 1,
+      "start": 2615,
+      "end": 2618,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M002",
+      "cell": 1,
+      "start": 2623,
+      "end": 2626,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M003",
+      "cell": 1,
+      "start": 2704,
+      "end": 2707,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M004",
+      "cell": 1,
+      "start": 2709,
+      "end": 2712,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM037-bb350db4-M005",
+      "cell": 1,
+      "start": 2714,
+      "end": 2717,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM037-bb350db4-M006",
+      "cell": 1,
+      "start": 2719,
+      "end": 2722,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM037-bb350db4-M007",
+      "cell": 1,
+      "start": 2724,
+      "end": 2727,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM037-bb350db4-M008",
+      "cell": 1,
+      "start": 2733,
+      "end": 2736,
+      "literal": "$6$",
+      "status": "exact",
+      "display": "6",
+      "copy": "6"
+    },
+    {
+      "id": "IBM037-bb350db4-M009",
+      "cell": 1,
+      "start": 3175,
+      "end": 3178,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M010",
+      "cell": 1,
+      "start": 3183,
+      "end": 3186,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M011",
+      "cell": 1,
+      "start": 3307,
+      "end": 3319,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M012",
+      "cell": 1,
+      "start": 3378,
+      "end": 3386,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM037-bb350db4-M013",
+      "cell": 1,
+      "start": 3430,
+      "end": 3442,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M014",
+      "cell": 1,
+      "start": 3479,
+      "end": 3487,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM037-bb350db4-M015",
+      "cell": 1,
+      "start": 3553,
+      "end": 3561,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM037-bb350db4-M016",
+      "cell": 1,
+      "start": 4039,
+      "end": 4051,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M017",
+      "cell": 1,
+      "start": 4067,
+      "end": 4085,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM037-bb350db4-M018",
+      "cell": 1,
+      "start": 4150,
+      "end": 4162,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M019",
+      "cell": 1,
+      "start": 4188,
+      "end": 4214,
+      "literal": "$\\Sigma = \\{1,2,3,4,5,6\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{1, 2, 3, 4, 5, 6\\}",
+      "copy": "('Σ')==(qset(vector(1,2,3,4,5,6)))"
+    },
+    {
+      "id": "IBM037-bb350db4-M020",
+      "cell": 1,
+      "start": 4222,
+      "end": 4234,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M021",
+      "cell": 1,
+      "start": 4267,
+      "end": 4340,
+      "literal": "$\\Sigma = \\{\\mathrm{high}, \\mathrm{medium}, \\mathrm{low}, \\mathrm{off}\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{\\text{high}, \\text{medium}, \\text{low}, \\text{off}\\}",
+      "copy": "('Σ')==(qset(vector(qoutcome(\"high\"),qoutcome(\"medium\"),qoutcome(\"low\"),qoutcome(\"off\"))))"
+    },
+    {
+      "id": "IBM037-bb350db4-M022",
+      "cell": 1,
+      "start": 4363,
+      "end": 4375,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M023",
+      "cell": 1,
+      "start": 4439,
+      "end": 4451,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M024",
+      "cell": 1,
+      "start": 4583,
+      "end": 4595,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M025",
+      "cell": 1,
+      "start": 4670,
+      "end": 4682,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M026",
+      "cell": 1,
+      "start": 4957,
+      "end": 4969,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M027",
+      "cell": 1,
+      "start": 5127,
+      "end": 5139,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M028",
+      "cell": 1,
+      "start": 5209,
+      "end": 5221,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M029",
+      "cell": 1,
+      "start": 5265,
+      "end": 5277,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M030",
+      "cell": 1,
+      "start": 5304,
+      "end": 5307,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M031",
+      "cell": 1,
+      "start": 5325,
+      "end": 5330,
+      "literal": "$3/4$",
+      "status": "exact",
+      "display": "0.75",
+      "copy": "3 ∕ 4"
+    },
+    {
+      "id": "IBM037-bb350db4-M032",
+      "cell": 1,
+      "start": 5348,
+      "end": 5351,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M033",
+      "cell": 1,
+      "start": 5369,
+      "end": 5374,
+      "literal": "$1/4$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM037-bb350db4-M034",
+      "cell": 1,
+      "start": 5425,
+      "end": 5544,
+      "literal": "$$\n\\operatorname{Pr}(\\mathsf{X}=0) = \\frac{3}{4}\n\\quad\\text{and}\\quad\n\\operatorname{Pr}(\\mathsf{X}=1) = \\frac{1}{4}.\n$$",
+      "status": "exact",
+      "display": "qeventprob('X', 1) = 0.25 and qeventprob('X', 0) = 0.75",
+      "copy": "((qeventprob('X',0))==(3 ∕ 4) and (qeventprob('X',1))==(1 ∕ 4))"
+    },
+    {
+      "id": "IBM037-bb350db4-M035",
+      "cell": 1,
+      "start": 5628,
+      "end": 5698,
+      "literal": "$$\n\\begin{pmatrix}\n  \\frac{3}{4}\\\\[2mm]\n  \\frac{1}{4}\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "[0.75; 0.25]",
+      "copy": "matrix(2,1,[3 ∕ 4,1 ∕ 4])"
+    },
+    {
+      "id": "IBM037-bb350db4-M036",
+      "cell": 1,
+      "start": 5733,
+      "end": 5736,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M037",
+      "cell": 1,
+      "start": 5809,
+      "end": 5812,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M038",
+      "cell": 1,
+      "start": 5892,
+      "end": 5901,
+      "literal": "$\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{0, 1\\}",
+      "copy": "qset(vector(0,1))"
+    },
+    {
+      "id": "IBM037-bb350db4-M039",
+      "cell": 1,
+      "start": 6376,
+      "end": 6379,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M040",
+      "cell": 1,
+      "start": 7408,
+      "end": 7420,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M041",
+      "cell": 1,
+      "start": 7447,
+      "end": 7459,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M042",
+      "cell": 1,
+      "start": 7536,
+      "end": 7548,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M043",
+      "cell": 1,
+      "start": 7577,
+      "end": 7580,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M044",
+      "cell": 1,
+      "start": 7611,
+      "end": 7614,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M045",
+      "cell": 1,
+      "start": 7619,
+      "end": 7622,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M046",
+      "cell": 1,
+      "start": 7673,
+      "end": 7685,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M047",
+      "cell": 1,
+      "start": 7712,
+      "end": 7715,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M048",
+      "cell": 1,
+      "start": 7804,
+      "end": 7820,
+      "literal": "$\\vert a\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')",
+      "copy": "qketstate('a')"
+    },
+    {
+      "id": "IBM037-bb350db4-M049",
+      "cell": 1,
+      "start": 7844,
+      "end": 7847,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M050",
+      "cell": 1,
+      "start": 8063,
+      "end": 8208,
+      "literal": "$$\n  \\vert 0\\rangle = \\begin{pmatrix}1\\\\[1mm] 0\\end{pmatrix}\n  \\quad\\text{and}\\quad\n  \\vert 1\\rangle = \\begin{pmatrix}0\\\\[1mm] 1\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M051",
+      "cell": 1,
+      "start": 8333,
+      "end": 8464,
+      "literal": "$$\n\\begin{pmatrix}\n  \\frac{3}{4}\\\\[2mm]\n  \\frac{1}{4}\n\\end{pmatrix}\n= \\frac{3}{4}\\,\\vert 0\\rangle + \\frac{1}{4}\\,\\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M052",
+      "cell": 1,
+      "start": 8924,
+      "end": 9075,
+      "literal": "$$\n\\begin{pmatrix}\n  \\frac{1}{2}\\\\[2mm]\n  \\frac{1}{2}\n\\end{pmatrix}\n= \\frac{1}{2}\\,\\vert\\text{heads}\\rangle + \\frac{1}{2}\\,\\vert\\text{tails}\\rangle.\n$$",
+      "status": "exact",
+      "display": "[0.5; 0.5] − (0.5 |heads⟩ + 0.5 |tails⟩) = 0",
+      "copy": "((matrix(2,1,[1 ∕ 2,1 ∕ 2]))+ (−qadd(qadjacent(1 ∕ 2, qnamedket(\"heads\")), qadjacent(1 ∕ 2, qnamedket(\"tails\")))))==(0)"
+    },
+    {
+      "id": "IBM037-bb350db4-M053",
+      "cell": 1,
+      "start": 9122,
+      "end": 9153,
+      "literal": "$\\{\\text{heads},\\text{tails}\\}$",
+      "status": "exact",
+      "display": "\\{\\text{heads}, \\text{tails}\\}",
+      "copy": "qset(vector(qoutcome(\"heads\"),qoutcome(\"tails\")))"
+    },
+    {
+      "id": "IBM037-bb350db4-M054",
+      "cell": 1,
+      "start": 9221,
+      "end": 9379,
+      "literal": "$$\n\\vert\\text{heads}\\rangle = \\begin{pmatrix}1\\\\[1mm] 0\\end{pmatrix}\n\\quad\\text{and}\\quad\n\\vert\\text{tails}\\rangle = \\begin{pmatrix}0\\\\[1mm] 1\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|heads⟩ = [1; 0] and |tails⟩ = [0; 1]",
+      "copy": "(qcompare(qketstate(\"heads\"),matrix(2,1,[1,0]),4) and qcompare(qketstate(\"tails\"),matrix(2,1,[0,1]),4))"
+    },
+    {
+      "id": "IBM037-bb350db4-M055",
+      "cell": 1,
+      "start": 9628,
+      "end": 9650,
+      "literal": "$|\\text{tails}\\rangle$",
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
+    },
+    {
+      "id": "IBM037-bb350db4-M056",
+      "cell": 1,
+      "start": 9864,
+      "end": 9886,
+      "literal": "$|\\text{tails}\\rangle$",
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
+    },
+    {
+      "id": "IBM037-bb350db4-M057",
+      "cell": 1,
+      "start": 10688,
+      "end": 10710,
+      "literal": "$|\\text{tails}\\rangle$",
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
+    },
+    {
+      "id": "IBM037-bb350db4-M058",
+      "cell": 1,
+      "start": 11472,
+      "end": 11484,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M059",
+      "cell": 1,
+      "start": 11505,
+      "end": 11511,
+      "literal": "$f(a)$",
+      "status": "exact",
+      "display": "f(a)",
+      "copy": "qnamedapplication('f','a')"
+    },
+    {
+      "id": "IBM037-bb350db4-M060",
+      "cell": 1,
+      "start": 11530,
+      "end": 11533,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM037-bb350db4-M061",
+      "cell": 1,
+      "start": 11546,
+      "end": 11573,
+      "literal": "$f:\\Sigma\\rightarrow\\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', 'Σ', 'Σ')",
+      "copy": "qfunctiontype('f','Σ','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M062",
+      "cell": 1,
+      "start": 11592,
+      "end": 11610,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM037-bb350db4-M063",
+      "cell": 1,
+      "start": 11651,
+      "end": 11656,
+      "literal": "$f_1$",
+      "status": "exact",
+      "display": "\"f_1\"",
+      "copy": "\"f_1\""
+    },
+    {
+      "id": "IBM037-bb350db4-M064",
+      "cell": 1,
+      "start": 11658,
+      "end": 11663,
+      "literal": "$f_2$",
+      "status": "exact",
+      "display": "\"f_2\"",
+      "copy": "\"f_2\""
+    },
+    {
+      "id": "IBM037-bb350db4-M065",
+      "cell": 1,
+      "start": 11665,
+      "end": 11670,
+      "literal": "$f_3$",
+      "status": "exact",
+      "display": "\"f_3\"",
+      "copy": "\"f_3\""
+    },
+    {
+      "id": "IBM037-bb350db4-M066",
+      "cell": 1,
+      "start": 11676,
+      "end": 11681,
+      "literal": "$f_4$",
+      "status": "exact",
+      "display": "\"f_4\"",
+      "copy": "\"f_4\""
+    },
+    {
+      "id": "IBM037-bb350db4-M067",
+      "cell": 1,
+      "start": 11741,
+      "end": 12059,
+      "literal": "$$\n\\begin{array}{c|c}\n  a & f_1(a)\\\\\n  \\hline\n  0 & 0\\\\\n  1 & 0\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_2(a)\\\\\n  \\hline\n  0 & 0\\\\\n  1 & 1\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_3(a)\\\\\n  \\hline\n  0 & 1\\\\\n  1 & 0\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_4(a)\\\\\n  \\hline\n  0 & 1\\\\\n  1 & 1\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[['a'  \"f_1(a)\"], [0  0], [1  0]; ['a'  \"f_2(a)\"], [0  0], [1  1]; ['a'  \"f_3(a)\"], [0  1], [1  0]; ['a'  \"f_4(a)\"], [0  1], [1  1]]",
+      "copy": "vector(matrix(3,2,['a',\"f_1(a)\",0,0,1,0]),matrix(3,2,['a',\"f_2(a)\",0,0,1,1]),matrix(3,2,['a',\"f_3(a)\",0,1,1,0]),matrix(3,2,['a',\"f_4(a)\",0,1,1,1]))"
+    },
+    {
+      "id": "IBM037-bb350db4-M068",
+      "cell": 1,
+      "start": 12115,
+      "end": 12127,
+      "literal": "$f_1(a) = 0$",
+      "status": "exact",
+      "display": "qfiniteapply(\"f_1\", 'a') = 0",
+      "copy": "(qfiniteapply(\"f_1\",'a'))==(0)"
+    },
+    {
+      "id": "IBM037-bb350db4-M069",
+      "cell": 1,
+      "start": 12132,
+      "end": 12144,
+      "literal": "$f_4(a) = 1$",
+      "status": "exact",
+      "display": "qfiniteapply(\"f_4\", 'a') = 1",
+      "copy": "(qfiniteapply(\"f_4\",'a'))==(1)"
+    },
+    {
+      "id": "IBM037-bb350db4-M070",
+      "cell": 1,
+      "start": 12154,
+      "end": 12166,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M071",
+      "cell": 1,
+      "start": 12356,
+      "end": 12361,
+      "literal": "$f_2$",
+      "status": "exact",
+      "display": "\"f_2\"",
+      "copy": "\"f_2\""
+    },
+    {
+      "id": "IBM037-bb350db4-M072",
+      "cell": 1,
+      "start": 12491,
+      "end": 12503,
+      "literal": "$f_2(a) = a$",
+      "status": "exact",
+      "display": "qfiniteapply(\"f_2\", 'a') − a = 0",
+      "copy": "(qfiniteapply(\"f_2\", 'a') − 'a')==(0)"
+    },
+    {
+      "id": "IBM037-bb350db4-M073",
+      "cell": 1,
+      "start": 12513,
+      "end": 12525,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M074",
+      "cell": 1,
+      "start": 12531,
+      "end": 12536,
+      "literal": "$f_3$",
+      "status": "exact",
+      "display": "\"f_3\"",
+      "copy": "\"f_3\""
+    },
+    {
+      "id": "IBM037-bb350db4-M075",
+      "cell": 1,
+      "start": 12553,
+      "end": 12565,
+      "literal": "$f_3(0) = 1$",
+      "status": "exact",
+      "display": "qfiniteapply(\"f_3\", 0) = 1",
+      "copy": "(qfiniteapply(\"f_3\",0))==(1)"
+    },
+    {
+      "id": "IBM037-bb350db4-M076",
+      "cell": 1,
+      "start": 12570,
+      "end": 12582,
+      "literal": "$f_3(1) = 0$",
+      "status": "exact",
+      "display": "qfiniteapply(\"f_3\", 1) = 0",
+      "copy": "(qfiniteapply(\"f_3\",1))==(0)"
+    },
+    {
+      "id": "IBM037-bb350db4-M077",
+      "cell": 1,
+      "start": 12769,
+      "end": 12772,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM037-bb350db4-M078",
+      "cell": 1,
+      "start": 12806,
+      "end": 12833,
+      "literal": "$f:\\Sigma\\rightarrow\\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', 'Σ', 'Σ')",
+      "copy": "qfunctiontype('f','Σ','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M079",
+      "cell": 1,
+      "start": 12861,
+      "end": 12904,
+      "literal": "$$\nM \\vert a \\rangle = \\vert f(a)\\rangle\n$$",
+      "status": "exact",
+      "display": "(M) (qketstate('a')) = qstatecall('f', 'a')",
+      "copy": "qcompare(qadjacent('M',qketstate('a')),qstatecall('f','a'),4)"
+    },
+    {
+      "id": "IBM037-bb350db4-M080",
+      "cell": 1,
+      "start": 12916,
+      "end": 12928,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M081",
+      "cell": 1,
+      "start": 13079,
+      "end": 13082,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M082",
+      "cell": 1,
+      "start": 13103,
+      "end": 13106,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M083",
+      "cell": 1,
+      "start": 13158,
+      "end": 13174,
+      "literal": "$M_1,\\ldots,M_4$",
+      "status": "exact",
+      "display": "(\"M_1\", \"M_2\", \"M_3\", \"M_4\")",
+      "copy": "qtuple(vector(\"M_1\",\"M_2\",\"M_3\",\"M_4\"))"
+    },
+    {
+      "id": "IBM037-bb350db4-M084",
+      "cell": 1,
+      "start": 13206,
+      "end": 13222,
+      "literal": "$f_1,\\ldots,f_4$",
+      "status": "exact",
+      "display": "(\"f_1\", \"f_2\", \"f_3\", \"f_4\")",
+      "copy": "qtuple(vector(\"f_1\",\"f_2\",\"f_3\",\"f_4\"))"
+    },
+    {
+      "id": "IBM037-bb350db4-M085",
+      "cell": 1,
+      "start": 13246,
+      "end": 13556,
+      "literal": "$$\n  M_1 =\n  \\begin{pmatrix}\n    1 & 1\\\\\n    0 & 0\n  \\end{pmatrix},\n  \\hspace{4mm}\n  M_2 =\n  \\begin{pmatrix}\n    1 & 0\\\\\n    0 & 1\n  \\end{pmatrix},\n  \\hspace{4mm}\n  M_3 =\n  \\begin{pmatrix}\n    0 & 1\\\\\n    1 & 0\n  \\end{pmatrix},\n  \\hspace{4mm}\n  M_4 =\n  \\begin{pmatrix}\n    0 & 0\\\\\n    1 & 1\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "\"M_1\" = [1, 1; 0, 0] and \"M_2\" = [1, 0; 0, 1] and \"M_3\" = [0, 1; 1, 0] and \"M_4\" = [0, 0; 1, 1]",
+      "copy": "(qcompare(\"M_1\",matrix(2,2,[1,1,0,0]),4) and qcompare(\"M_2\",matrix(2,2,[1,0,0,1]),4) and qcompare(\"M_3\",matrix(2,2,[0,1,1,0]),4) and qcompare(\"M_4\",matrix(2,2,[0,0,1,1]),4))"
+    },
+    {
+      "id": "IBM037-bb350db4-M086",
+      "cell": 1,
+      "start": 13671,
+      "end": 14098,
+      "literal": "$$\n\\begin{aligned}\nM_1 \\vert 0\\rangle\n& =\n\\begin{pmatrix}\n  1 & 1\\\\\n  0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\vert 0\\rangle = \\vert f_1(0)\\rangle \\\\[4mm]\nM_1 \\vert 1\\rangle\n& =\n\\begin{pmatrix}\n  1 & 1\\\\\n  0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n  0\\\\\n  1\n\\end{pmatrix}\n= \\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\vert 0\\rangle = \\vert f_1(1)\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  (\"M_1\") ([1; 0]) = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 0)\n\n2.  (\"M_1\") ([0; 1]) = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 1)",
+      "copy": "\\begin{gathered}qequalchain(vector(qadjacent(\"M_1\",matrix(2,1,vector(1,0))),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",0)))\\\\qequalchain(vector(qadjacent(\"M_1\",matrix(2,1,vector(0,1))),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",1)))\\end{gathered}"
+    },
+    {
+      "id": "IBM037-bb350db4-M087",
+      "cell": 1,
+      "start": 14280,
+      "end": 14297,
+      "literal": "$\\langle a \\vert$",
+      "status": "exact",
+      "display": "qketstate('a')†",
+      "copy": "qdag(qketstate('a'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M088",
+      "cell": 1,
+      "start": 14324,
+      "end": 14327,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M089",
+      "cell": 1,
+      "start": 14358,
+      "end": 14361,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M090",
+      "cell": 1,
+      "start": 14403,
+      "end": 14415,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M091",
+      "cell": 1,
+      "start": 14445,
+      "end": 14448,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M092",
+      "cell": 1,
+      "start": 14468,
+      "end": 14486,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM037-bb350db4-M093",
+      "cell": 1,
+      "start": 14494,
+      "end": 14647,
+      "literal": "$$\n  \\langle 0 \\vert = \\begin{pmatrix}\n    1 & 0\n  \\end{pmatrix}\n  \\quad\\text{and}\\quad\n  \\langle 1 \\vert = \\begin{pmatrix}\n    0 & 1\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M094",
+      "cell": 1,
+      "start": 14677,
+      "end": 14685,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM037-bb350db4-M095",
+      "cell": 1,
+      "start": 14781,
+      "end": 14812,
+      "literal": "$\\vert b\\rangle \\langle a\\vert$",
+      "status": "exact",
+      "display": "qketstate('b') · qketstate('a')†",
+      "copy": "qadjacent(qketstate('b'),qdag(qketstate('a')))"
+    },
+    {
+      "id": "IBM037-bb350db4-M096",
+      "cell": 1,
+      "start": 14849,
+      "end": 14852,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M097",
+      "cell": 1,
+      "start": 14892,
+      "end": 14899,
+      "literal": "$(b,a)$",
+      "status": "exact",
+      "display": "(b, a)",
+      "copy": "qtuple(vector('b','a'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M098",
+      "cell": 1,
+      "start": 14970,
+      "end": 14973,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM037-bb350db4-M099",
+      "cell": 1,
+      "start": 15024,
+      "end": 15027,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM037-bb350db4-M100",
+      "cell": 1,
+      "start": 15034,
+      "end": 15037,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M101",
+      "cell": 1,
+      "start": 15075,
+      "end": 15262,
+      "literal": "$$\n  \\vert 0 \\rangle \\langle 1 \\vert =\n  \\begin{pmatrix}\n  1\\\\\n  0\n  \\end{pmatrix}\n  \\begin{pmatrix}\n  0 & 1\n  \\end{pmatrix} =\n  \\begin{pmatrix}\n    0 & 1 \\\\\n    0 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M102",
+      "cell": 1,
+      "start": 15311,
+      "end": 15314,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM037-bb350db4-M103",
+      "cell": 1,
+      "start": 15354,
+      "end": 15381,
+      "literal": "$f:\\Sigma\\rightarrow\\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', 'Σ', 'Σ')",
+      "copy": "qfunctiontype('f','Σ','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M104",
+      "cell": 1,
+      "start": 15386,
+      "end": 15451,
+      "literal": "$$\n  M = \\sum_{a\\in\\Sigma} \\vert f(a) \\rangle \\langle a \\vert.\n$$",
+      "status": "exact",
+      "display": "qcompare('M', qsumset(qadjacent(qstatecall('f', \"qboundindex_0\"), qdag(qketstate(\"qboundindex_0\"))), 'Σ', \"qboundindex_0\"), 4)",
+      "copy": "qcompare('M',qsumset(qadjacent(qstatecall('f',\"qboundindex_0\"),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM037-bb350db4-M105",
+      "cell": 1,
+      "start": 15488,
+      "end": 15493,
+      "literal": "$f_4$",
+      "status": "exact",
+      "display": "\"f_4\"",
+      "copy": "\"f_4\""
+    },
+    {
+      "id": "IBM037-bb350db4-M106",
+      "cell": 1,
+      "start": 15511,
+      "end": 15529,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM037-bb350db4-M107",
+      "cell": 1,
+      "start": 15553,
+      "end": 15843,
+      "literal": "$$\nM_4 = \\vert f_4(0) \\rangle \\langle 0 \\vert + \\vert f_4(1) \\rangle \\langle 1 \\vert\n= \\vert 1\\rangle \\langle 0\\vert + \\vert 1\\rangle \\langle 1\\vert\n= \\begin{pmatrix}\n0 & 0\\\\\n1 & 0\n\\end{pmatrix} +\n\\begin{pmatrix}\n0 & 0\\\\\n0 & 1\n\\end{pmatrix}\n= \\begin{pmatrix}\n0 & 0\\\\\n1 & 1\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "\"M_4\" = qstatecall(\"f_4\", 0) · [1; 0]† + qstatecall(\"f_4\", 1) · [0; 1]† = [0, 0; 1, 1] = [0, 0; 1, 1] = [0, 0; 1, 1]",
+      "copy": "qequalchain(vector(\"M_4\",qadd(qadjacent(qstatecall(\"f_4\",0),qdag(matrix(2,1,vector(1,0)))),qadjacent(qstatecall(\"f_4\",1),qdag(matrix(2,1,vector(0,1))))),matrix(2,2,[0,0,1,1]),matrix(2,2,[0,0,1,1]),matrix(2,2,[0,0,1,1])))"
+    },
+    {
+      "id": "IBM037-bb350db4-M108",
+      "cell": 1,
+      "start": 15973,
+      "end": 16006,
+      "literal": "$\\langle a \\vert \\vert b \\rangle$",
+      "status": "exact",
+      "display": "(qketstate('a')†) (qketstate('b'))",
+      "copy": "qadjacent(qdag(qketstate('a')),qketstate('b'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M109",
+      "cell": 1,
+      "start": 16020,
+      "end": 16031,
+      "literal": "$1\\times 1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M110",
+      "cell": 1,
+      "start": 16149,
+      "end": 16175,
+      "literal": "$\\langle a \\vert b\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† · qketstate('b')",
+      "copy": "qmul(qdag(qketstate('a')),qketstate('b'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M111",
+      "cell": 1,
+      "start": 16188,
+      "end": 16221,
+      "literal": "$\\langle a \\vert \\vert b \\rangle$",
+      "status": "exact",
+      "display": "(qketstate('a')†) (qketstate('b'))",
+      "copy": "qadjacent(qdag(qketstate('a')),qketstate('b'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M112",
+      "cell": 1,
+      "start": 16277,
+      "end": 16381,
+      "literal": "$$\n  \\langle a \\vert b \\rangle\n  = \\begin{cases}\n    1 & a = b\\\\[1mm]\n    0 & a \\neq b.\n  \\end{cases}\n$$",
+      "status": "exact",
+      "display": "qketstate('a')† · qketstate('b') = if(qcompare('a', 'b', 4), 1, if(qcompare('a', 'b', 5), 0, undefined))",
+      "copy": "qcompare(qmul(qdag(qketstate('a')),qketstate('b')),if(qcompare('a','b',4),1,if(qcompare('a','b',5),0,undefined,0),0),4)"
+    },
+    {
+      "id": "IBM037-bb350db4-M113",
+      "cell": 1,
+      "start": 16495,
+      "end": 16704,
+      "literal": "$$\n  M \\vert b \\rangle =\n  \\Biggl(\n  \\sum_{a\\in\\Sigma} \\vert f(a) \\rangle \\langle a \\vert\n  \\Biggr)\n  \\vert b\\rangle\n  = \\sum_{a\\in\\Sigma} \\vert f(a) \\rangle \\langle a \\vert b \\rangle\n  = \\vert f(b)\\rangle,\n$$",
+      "status": "exact",
+      "display": "qequalchain([qadjacent('M', qketstate('b'))  qadjacent(qsumset(qadjacent(qstatecall('f', \"qboundindex_0\"), qdag(qketstate(\"qboundindex_0\"))), 'Σ', \"qboundindex_0\"), qketstate('b'))  qsumset(qadjacent(qstatecall('f', \"qboundindex_1\"), qmul(qdag(qketstate(\"qboundindex_1\")), qketstate('b'))), 'Σ', \"qboundindex_1\")  qstatecall('f', 'b')])",
+      "copy": "qequalchain(vector(qadjacent('M',qketstate('b')),qadjacent(qsumset(qadjacent(qstatecall('f',\"qboundindex_0\"),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\"),qketstate('b')),qsumset(qadjacent(qstatecall('f',\"qboundindex_1\"),qmul(qdag(qketstate(\"qboundindex_1\")),qketstate('b'))),'Σ',\"qboundindex_1\"),qstatecall('f','b')))"
+    },
+    {
+      "id": "IBM037-bb350db4-M114",
+      "cell": 1,
+      "start": 16715,
+      "end": 16727,
+      "literal": "$b\\in\\Sigma$",
+      "status": "exact",
+      "display": "b ∈ 'Σ'",
+      "copy": "qmember('b','Σ')"
+    },
+    {
+      "id": "IBM037-bb350db4-M115",
+      "cell": 1,
+      "start": 16778,
+      "end": 16781,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM037-bb350db4-M116",
+      "cell": 1,
+      "start": 16846,
+      "end": 16873,
+      "literal": "$\\langle a \\vert b \\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† · qketstate('b')",
+      "copy": "qmul(qdag(qketstate('a')),qketstate('b'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M117",
+      "cell": 1,
+      "start": 16933,
+      "end": 16949,
+      "literal": "$\\vert a\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')",
+      "copy": "qketstate('a')"
+    },
+    {
+      "id": "IBM037-bb350db4-M118",
+      "cell": 1,
+      "start": 16954,
+      "end": 16970,
+      "literal": "$\\vert b\\rangle$",
+      "status": "exact",
+      "display": "qketstate('b')",
+      "copy": "qketstate('b')"
+    },
+    {
+      "id": "IBM037-bb350db4-M119",
+      "cell": 1,
+      "start": 17169,
+      "end": 17185,
+      "literal": "$\\langle a\\vert$",
+      "status": "exact",
+      "display": "qketstate('a')†",
+      "copy": "qdag(qketstate('a'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M120",
+      "cell": 1,
+      "start": 17208,
+      "end": 17224,
+      "literal": "$\\vert b\\rangle$",
+      "status": "exact",
+      "display": "qketstate('b')",
+      "copy": "qketstate('b')"
+    },
+    {
+      "id": "IBM037-bb350db4-M121",
+      "cell": 1,
+      "start": 17244,
+      "end": 17270,
+      "literal": "$\\langle a \\vert b\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† · qketstate('b')",
+      "copy": "qmul(qdag(qketstate('a')),qketstate('b'))"
+    },
+    {
+      "id": "IBM037-bb350db4-M122",
+      "cell": 1,
+      "start": 17749,
+      "end": 17752,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M123",
+      "cell": 1,
+      "start": 17813,
+      "end": 17816,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M124",
+      "cell": 1,
+      "start": 17852,
+      "end": 17855,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM037-bb350db4-M125",
+      "cell": 1,
+      "start": 17873,
+      "end": 17878,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM037-bb350db4-M126",
+      "cell": 1,
+      "start": 17883,
+      "end": 17886,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M127",
+      "cell": 1,
+      "start": 17904,
+      "end": 17909,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM037-bb350db4-M128",
+      "cell": 1,
+      "start": 17956,
+      "end": 18043,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & \\frac{1}{2}\\\\[1mm]\n    0 & \\frac{1}{2}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[1, 0.5; 0, 0.5]",
+      "copy": "matrix(2,2,[1,1 ∕ 2,0,1 ∕ 2])"
+    },
+    {
+      "id": "IBM037-bb350db4-M129",
+      "cell": 1,
+      "start": 18605,
+      "end": 18608,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M130",
+      "cell": 1,
+      "start": 19735,
+      "end": 19740,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM037-bb350db4-M131",
+      "cell": 1,
+      "start": 19780,
+      "end": 20021,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & \\frac{1}{2}\\\\[1mm]\n    0 & \\frac{1}{2}\n  \\end{pmatrix}\n  = \\frac{1}{2}\n  \\begin{pmatrix}\n    1 & 0\\\\[1mm]\n    0 & 1\n  \\end{pmatrix}\n  + \\frac{1}{2}\n  \\begin{pmatrix}\n    1 & 1\\\\[1mm]\n    0 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM037-bb350db4-M132",
+      "cell": 1,
+      "start": 20261,
+      "end": 20273,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M133",
+      "cell": 1,
+      "start": 20313,
+      "end": 20321,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM037-bb350db4-M134",
+      "cell": 1,
+      "start": 20327,
+      "end": 20343,
+      "literal": "$M_1,\\ldots,M_n$",
+      "status": "exact",
+      "display": "(M_1, …, M_n)",
+      "copy": "qindexedlist(\"M_\",1,n,vector())"
+    },
+    {
+      "id": "IBM037-bb350db4-M135",
+      "cell": 1,
+      "start": 20420,
+      "end": 20432,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM037-bb350db4-M136",
+      "cell": 1,
+      "start": 20458,
+      "end": 20463,
+      "literal": "$M_1$",
+      "status": "exact",
+      "display": "\"M_1\"",
+      "copy": "\"M_1\""
+    },
+    {
+      "id": "IBM037-bb350db4-M137",
+      "cell": 1,
+      "start": 20538,
+      "end": 20541,
+      "literal": "$u$",
+      "status": "exact",
+      "display": "u",
+      "copy": "'u'"
+    },
+    {
+      "id": "IBM037-bb350db4-M138",
+      "cell": 1,
+      "start": 20606,
+      "end": 20613,
+      "literal": "$M_1 u$",
+      "status": "exact",
+      "display": "\"M_1\" · u",
+      "copy": "qadjacent(\"M_1\",'u')"
+    },
+    {
+      "id": "IBM037-bb350db4-M139",
+      "cell": 1,
+      "start": 20667,
+      "end": 20672,
+      "literal": "$M_2$",
+      "status": "exact",
+      "display": "\"M_2\"",
+      "copy": "\"M_2\""
+    },
+    {
+      "id": "IBM037-bb350db4-M140",
+      "cell": 1,
+      "start": 20739,
+      "end": 20773,
+      "literal": "$$\n  M_2 (M_1 u) = (M_2 M_1) u.\n$$",
+      "status": "exact",
+      "display": "\"M_2\" · \"M_1\" · u − (\"M_2\" · \"M_1\" · u) = 0",
+      "copy": "(qadjacent(\"M_2\", qadjacent(\"M_1\", 'u')) − qadjacent(qadjacent(\"M_2\", \"M_1\"), 'u'))==(0)"
+    },
+    {
+      "id": "IBM037-bb350db4-M141",
+      "cell": 1,
+      "start": 21330,
+      "end": 21335,
+      "literal": "$M_1$",
+      "status": "exact",
+      "display": "\"M_1\"",
+      "copy": "\"M_1\""
+    },
+    {
+      "id": "IBM037-bb350db4-M142",
+      "cell": 1,
+      "start": 21351,
+      "end": 21356,
+      "literal": "$M_2$",
+      "status": "exact",
+      "display": "\"M_2\"",
+      "copy": "\"M_2\""
+    },
+    {
+      "id": "IBM037-bb350db4-M143",
+      "cell": 1,
+      "start": 21387,
+      "end": 21396,
+      "literal": "$M_2 M_1$",
+      "status": "exact",
+      "display": "\"M_2\" · \"M_1\"",
+      "copy": "qadjacent(\"M_2\",\"M_1\")"
+    },
+    {
+      "id": "IBM037-bb350db4-M144",
+      "cell": 1,
+      "start": 21515,
+      "end": 21531,
+      "literal": "$M_1,\\ldots,M_n$",
+      "status": "exact",
+      "display": "(M_1, …, M_n)",
+      "copy": "qindexedlist(\"M_\",1,n,vector())"
+    },
+    {
+      "id": "IBM037-bb350db4-M145",
+      "cell": 1,
+      "start": 21560,
+      "end": 21565,
+      "literal": "$M_1$",
+      "status": "exact",
+      "display": "\"M_1\"",
+      "copy": "\"M_1\""
+    },
+    {
+      "id": "IBM037-bb350db4-M146",
+      "cell": 1,
+      "start": 21584,
+      "end": 21589,
+      "literal": "$M_2$",
+      "status": "exact",
+      "display": "\"M_2\"",
+      "copy": "\"M_2\""
+    },
+    {
+      "id": "IBM037-bb350db4-M147",
+      "cell": 1,
+      "start": 21625,
+      "end": 21630,
+      "literal": "$M_n$",
+      "status": "exact",
+      "display": "\"M_n\"",
+      "copy": "\"M_n\""
+    },
+    {
+      "id": "IBM037-bb350db4-M148",
+      "cell": 1,
+      "start": 21683,
+      "end": 21710,
+      "literal": "$$\n  M_n \\,\\cdots\\, M_1.\n$$",
+      "status": "exact",
+      "display": "qcomposemaps(qindexedentries(\"M_\", 1, n, []))",
+      "copy": "qcomposemaps(qindexedentries(\"M_\",1,n,vector()))"
+    },
+    {
+      "id": "IBM037-bb350db4-M149",
+      "cell": 1,
+      "start": 21998,
+      "end": 22165,
+      "literal": "$$\n  M_1 =\n  \\begin{pmatrix}\n    1 & 1\\\\[1mm]\n    0 & 0\n  \\end{pmatrix}\n  \\quad\\text{and}\\quad\n  M_2 =\n  \\begin{pmatrix}\n    0 & 1\\\\[1mm]\n    1 & 0\n  \\end{pmatrix},\n$$",
+      "status": "exact",
+      "display": "\"M_1\" = [1, 1; 0, 0] and \"M_2\" = [0, 1; 1, 0]",
+      "copy": "(qcompare(\"M_1\",matrix(2,2,[1,1,0,0]),4) and qcompare(\"M_2\",matrix(2,2,[0,1,1,0]),4))"
+    },
+    {
+      "id": "IBM037-bb350db4-M150",
+      "cell": 1,
+      "start": 22173,
+      "end": 22349,
+      "literal": "$$\n  M_2 M_1 =\n  \\begin{pmatrix}\n    0 & 0 \\\\[1mm]\n    1 & 1\n  \\end{pmatrix}\n  \\quad\\text{and}\\quad\n  M_1 M_2 =\n  \\begin{pmatrix}\n    1 & 1\\\\[1mm]\n    0 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[0, 0; −1, −1] + \"M_2\" · \"M_1\" = 0 and [−1, −1; 0, 0] + \"M_1\" · \"M_2\" = 0",
+      "copy": "(((matrix(2,2,[0,0,−1,−1]))+ (qadjacent(\"M_2\",\"M_1\")))==(0) and ((matrix(2,2,[−1,−1,0,0]))+ (qadjacent(\"M_1\",\"M_2\")))==(0))"
+    }
+  ]
+}

@@ -253,9 +253,15 @@ class Printer {
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
-   if(!value[0].isVector())return Fragment("\\{"+render(value[0],depth+1).text+"\\}");
+   auto displayMember=[&](const MathStructure &member) {
+    if(member.isFunction() && member.function()->referenceName()=="qoutcome" && member.size()==1 &&
+       member[0].isSymbolic() && member[0].symbol().find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")==std::string::npos)
+     return "\\text{"+member[0].symbol()+"}";
+    return render(member,depth+1).text;
+   };
+   if(!value[0].isVector())return Fragment("\\{"+displayMember(value[0])+"\\}");
    std::string text="\\{";
-   for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
+   for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=displayMember(value[0][k]);}
    return Fragment(text+"\\}");
   }
   if(name=="qstateaction" && value.size()==2)
@@ -295,7 +301,7 @@ class Printer {
    };
    return Fragment(side(0)+operators[value[2].number().intValue()]+side(1),5);
   }
-  if(((name=="qindexedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
+  if(((name=="qindexedcolumn" || name=="qonebasedcolumn" || name=="qdescendingcolumn") && value.size()==3) || ((name=="qindexedmatrix" || name=="qsamplebitmatrix") && value.size()==5)) {
    const bool samples=name=="qsamplebitmatrix";
    const bool matrix=samples || name=="qindexedmatrix";
    std::string prefix=value[0].isSymbolic() ? value[0].symbol() : "";
@@ -328,7 +334,7 @@ class Printer {
      for(int row=minima[0];row>=0;--row)text+="; "+prefix+std::to_string(row);
      return Fragment(text+"]");
     }
-    for(int row=0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
+    for(int row=name=="qonebasedcolumn" ? 1 : 0;row<=minima[0];++row)text+=prefix+std::to_string(row)+"; ";
     return Fragment(text+"⋮; "+prefix+"("+endpoints[0]+")]");
    }
    if(safe && !samples) {

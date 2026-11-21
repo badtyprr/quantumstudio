@@ -1,0 +1,1625 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/quantum-information.ipynb",
+  "source_sha256": "9193becddf7f8f9943aa24057a5666195b2f70d946ccd104033164ed6125e79b",
+  "worker_sha256": "107bf4d9ae786e81eae60b9901d902f7725f0482471f7eba64beebdf18b33884",
+  "revision": "1b3334a10da77e86994c2c69c12a2af5b87fa97e",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 160,
+    "diagnostic": 1
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM038-9193becd-M001",
+      "cell": 1,
+      "start": 850,
+      "end": 853,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M002",
+      "cell": 1,
+      "start": 1101,
+      "end": 1104,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M003",
+      "cell": 1,
+      "start": 1407,
+      "end": 1491,
+      "literal": "$$\n  v = \\begin{pmatrix}\n    \\alpha_1\\\\\n    \\vdots\\\\\n    \\alpha_n\n  \\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "v = [α_1; ⋮; α_(n)]",
+      "copy": "('v')==(qonebasedcolumn(\"α_\",n,1))"
+    },
+    {
+      "id": "IBM038-9193becd-M004",
+      "cell": 1,
+      "start": 1529,
+      "end": 1580,
+      "literal": "$$\n  \\| v \\| = \\sqrt{\\sum_{k=1}^n |\\alpha_k|^2}.\n$$",
+      "status": "exact",
+      "display": "∑_{k=1}^{n} (|α_k|^2) = qnorm('v')²",
+      "copy": "(qsum(qpower(qbars(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),2),1,n,\"qboundindex_0\"))==(qnorm('v')²)"
+    },
+    {
+      "id": "IBM038-9193becd-M005",
+      "cell": 1,
+      "start": 1673,
+      "end": 1676,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M006",
+      "cell": 1,
+      "start": 1747,
+      "end": 1750,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M007",
+      "cell": 1,
+      "start": 1942,
+      "end": 1951,
+      "literal": "$\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{0, 1\\}",
+      "copy": "qset(vector(0,1))"
+    },
+    {
+      "id": "IBM038-9193becd-M008",
+      "cell": 1,
+      "start": 2132,
+      "end": 2305,
+      "literal": "$$\n  \\begin{pmatrix}\n    1\\\\[2mm]\n    0\n  \\end{pmatrix}\n  = \\vert 0\\rangle\n  \\quad\\text{and}\\quad\n  \\begin{pmatrix}\n    0\\\\[2mm]\n    1\n  \\end{pmatrix}\n  = \\vert 1\\rangle,\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M009",
+      "cell": 1,
+      "start": 2307,
+      "end": 2486,
+      "literal": "$$\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\frac{1}{\\sqrt{2}}\\,\\vert 0\\rangle + \\frac{1}{\\sqrt{2}}\\,\\vert 1\\rangle,\n  \\tag{1}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M010",
+      "cell": 1,
+      "start": 2491,
+      "end": 2639,
+      "literal": "$$\n  \\begin{pmatrix}\n    \\frac{1+2i}{3}\\\\[2mm]\n    -\\frac{2}{3}\n  \\end{pmatrix}\n  = \\frac{1+2i}{3}\\,\\vert 0\\rangle - \\frac{2}{3}\\,\\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M011",
+      "cell": 1,
+      "start": 2665,
+      "end": 2681,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M012",
+      "cell": 1,
+      "start": 2686,
+      "end": 2702,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM038-9193becd-M013",
+      "cell": 1,
+      "start": 2871,
+      "end": 2874,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M014",
+      "cell": 1,
+      "start": 2952,
+      "end": 3057,
+      "literal": "$$\n  \\vert 1\\vert^2 + \\vert 0\\vert^2 = 1\n  \\quad\\text{and}\\quad\n  \\vert 0\\vert^2 + \\vert 1\\vert^2 = 1,\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M015",
+      "cell": 1,
+      "start": 3145,
+      "end": 3161,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M016",
+      "cell": 1,
+      "start": 3166,
+      "end": 3182,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM038-9193becd-M017",
+      "cell": 1,
+      "start": 3225,
+      "end": 3228,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M018",
+      "cell": 1,
+      "start": 3233,
+      "end": 3236,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M019",
+      "cell": 1,
+      "start": 3394,
+      "end": 3523,
+      "literal": "$$\n  \\biggl\\vert\\frac{1}{\\sqrt{2}}\\biggr\\vert^2 +\n  \\biggl\\vert\\frac{1}{\\sqrt{2}}\\biggr\\vert^2 = \\frac{1}{2} + \\frac{1}{2} = 1\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M020",
+      "cell": 1,
+      "start": 3530,
+      "end": 3654,
+      "literal": "$$\n  \\biggl\\vert \\frac{1+2i}{3} \\biggr\\vert^2 +\n  \\biggl\\vert -\\frac{2}{3} \\biggr\\vert^2 = \\frac{5}{9} + \\frac{4}{9} = 1.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M021",
+      "cell": 1,
+      "start": 3773,
+      "end": 3790,
+      "literal": "$\\vert 0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M022",
+      "cell": 1,
+      "start": 3795,
+      "end": 3812,
+      "literal": "$\\vert 1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM038-9193becd-M023",
+      "cell": 1,
+      "start": 3891,
+      "end": 3894,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M024",
+      "cell": 1,
+      "start": 3899,
+      "end": 3902,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M025",
+      "cell": 1,
+      "start": 4024,
+      "end": 4029,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M026",
+      "cell": 1,
+      "start": 4149,
+      "end": 4247,
+      "literal": "$$\n  \\vert {+} \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0\\rangle + \\frac{1}{\\sqrt{2}} \\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M027",
+      "cell": 1,
+      "start": 4275,
+      "end": 4372,
+      "literal": "$$\n  \\vert {-} \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0\\rangle - \\frac{1}{\\sqrt{2}} \\vert 1\\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M028",
+      "cell": 1,
+      "start": 4747,
+      "end": 4765,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M029",
+      "cell": 1,
+      "start": 4799,
+      "end": 4805,
+      "literal": "$\\psi$",
+      "status": "exact",
+      "display": "'ψ'",
+      "copy": "'ψ'"
+    },
+    {
+      "id": "IBM038-9193becd-M030",
+      "cell": 1,
+      "start": 4926,
+      "end": 4946,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M031",
+      "cell": 1,
+      "start": 5000,
+      "end": 5008,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM038-9193becd-M032",
+      "cell": 1,
+      "start": 5017,
+      "end": 5029,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM038-9193becd-M033",
+      "cell": 1,
+      "start": 5097,
+      "end": 5131,
+      "literal": "$\\langle a\\vert \\vert \\psi\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† |ψ⟩",
+      "copy": "qadjacent(qdag(qketstate('a')),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM038-9193becd-M034",
+      "cell": 1,
+      "start": 5168,
+      "end": 5188,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M035",
+      "cell": 1,
+      "start": 5216,
+      "end": 5219,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM038-9193becd-M036",
+      "cell": 1,
+      "start": 5236,
+      "end": 5256,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M037",
+      "cell": 1,
+      "start": 5295,
+      "end": 5325,
+      "literal": "$\\langle a \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† |ψ⟩",
+      "copy": "qmul(qdag(qketstate('a')),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM038-9193becd-M038",
+      "cell": 1,
+      "start": 5338,
+      "end": 5372,
+      "literal": "$\\langle a\\vert \\vert \\psi\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')† |ψ⟩",
+      "copy": "qadjacent(qdag(qketstate('a')),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM038-9193becd-M039",
+      "cell": 1,
+      "start": 5419,
+      "end": 5437,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM038-9193becd-M040",
+      "cell": 1,
+      "start": 5443,
+      "end": 5616,
+      "literal": "$$\n\\vert \\psi \\rangle =\n\\frac{1+2i}{3} \\vert 0\\rangle - \\frac{2}{3} \\vert 1\\rangle\n= \\begin{pmatrix}\n    \\frac{1+2i}{3}\\\\[2mm]\n    -\\frac{2}{3}\n  \\end{pmatrix},\n  \\tag{2}\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ 3 + (2 ∕ 3) ⋅ i); (−2 ∕ 3)] = [(1 ∕ 3 + (2 ∕ 3) ⋅ i); (−2 ∕ 3)]",
+      "copy": "qequalchain(vector(qketstate('ψ'),matrix(2,1,[1 ∕ 3 + (2 ∕ 3) ⋅ i,−2 ∕ 3]),matrix(2,1,[1 ∕ 3 + (2 ∕ 3) ⋅ i,−2 ∕ 3])))"
+    },
+    {
+      "id": "IBM038-9193becd-M041",
+      "cell": 1,
+      "start": 5624,
+      "end": 5747,
+      "literal": "$$\n  \\langle 0 \\vert \\psi \\rangle = \\frac{1+2i}{3}\n  \\quad\\text{and}\\quad\n  \\langle 1 \\vert \\psi \\rangle = -\\frac{2}{3}.\n$$",
+      "status": "exact",
+      "display": "0.666666666666666666666666666667 + [0; 1]† |ψ⟩ = 0 and [1; 0]† |ψ⟩ + −0.333333333333333333333333333333 − 0.666666666666666666666666666667i = 0",
+      "copy": "(((qmul(qdag(matrix(2,1,vector(0,1))),qnamedket('ψ')))+ (2 ∕ 3))==(0) and ((qmul(qdag(matrix(2,1,vector(1,0))),qnamedket('ψ')))+ (−1 ∕ 3 − (2 ∕ 3) ⋅ i))==(0))"
+    },
+    {
+      "id": "IBM038-9193becd-M042",
+      "cell": 1,
+      "start": 5827,
+      "end": 5847,
+      "literal": "$\\langle \\psi \\vert$",
+      "status": "exact",
+      "display": "⟨ψ|",
+      "copy": "qdag(qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM038-9193becd-M043",
+      "cell": 1,
+      "start": 5939,
+      "end": 5957,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M044",
+      "cell": 1,
+      "start": 6096,
+      "end": 6114,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M045",
+      "cell": 1,
+      "start": 6140,
+      "end": 6145,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM038-9193becd-M046",
+      "cell": 1,
+      "start": 6153,
+      "end": 6309,
+      "literal": "$$\n\\langle\\psi\\vert = \\frac{1-2i}{3} \\langle 0\\vert - \\frac{2}{3} \\langle 1\\vert\n= \\begin{pmatrix}\n    \\frac{1-2i}{3} &\n    -\\frac{2}{3}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "⟨ψ| = [(1 ∕ 3 − (2 ∕ 3) ⋅ i)  (−2 ∕ 3)] = [(1 ∕ 3 − (2 ∕ 3) ⋅ i)  (−2 ∕ 3)]",
+      "copy": "qequalchain(vector(qdag(qnamedket('ψ')),vector(1 ∕ 3 − (2 ∕ 3) ⋅ i,−2 ∕ 3),vector(1 ∕ 3 − (2 ∕ 3) ⋅ i,−2 ∕ 3)))"
+    },
+    {
+      "id": "IBM038-9193becd-M047",
+      "cell": 1,
+      "start": 6642,
+      "end": 6897,
+      "literal": "$$\n  \\begin{pmatrix}\n    \\frac{1}{2}\\\\[1mm]\n    0 \\\\[1mm]\n    -\\frac{i}{2}\\\\[1mm]\n    \\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\frac{1}{2} \\vert\\mathrm{high}\\rangle\n  - \\frac{i}{2} \\vert\\mathrm{low}\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert\\mathrm{off}\\rangle.\n$$",
+      "status": "exact",
+      "display": "[0.5; 0; −0.5i; (1 ∕ √(2))] − (0.5 |high⟩ − (0.5i) (|low⟩) + (1 / √(2)) (|off⟩)) = 0",
+      "copy": "((matrix(4,1,[1 ∕ 2,0,−i ∕ 2,1 ∕ √(2)]))+ (−qadd(qsub(qadjacent(1 ∕ 2, qnamedket(\"high\")), qadjacent(i ∕ 2, qnamedket(\"low\"))), qadjacent(1 ∕ qsqrt(2), qnamedket(\"off\")))))==(0)"
+    },
+    {
+      "id": "IBM038-9193becd-M048",
+      "cell": 1,
+      "start": 7236,
+      "end": 7253,
+      "literal": "$0, 1, \\ldots, 9$",
+      "status": "exact",
+      "display": "[0  1  2  3  4  5  6  7  8  9]",
+      "copy": "vector(0,1,2,3,4,5,6,7,8,9)"
+    },
+    {
+      "id": "IBM038-9193becd-M049",
+      "cell": 1,
+      "start": 7256,
+      "end": 7461,
+      "literal": "$$\n  \\frac{1}{\\sqrt{385}}\n  \\begin{pmatrix}\n    1\\\\\n    2\\\\\n    3\\\\\n    4\\\\\n    5\\\\\n    6\\\\\n    7\\\\\n    8\\\\\n    9\\\\\n    10\n  \\end{pmatrix}\n  =\n  \\frac{1}{\\sqrt{385}}\\sum_{k = 0}^9 (k+1) \\vert k \\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M050",
+      "cell": 1,
+      "start": 8061,
+      "end": 8069,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM038-9193becd-M051",
+      "cell": 1,
+      "start": 8113,
+      "end": 8181,
+      "literal": "$$\n  \\frac{1}{\\sqrt{|\\Sigma|}} \\sum_{a\\in\\Sigma} \\vert a \\rangle,\n$$",
+      "status": "exact",
+      "display": "1 / √(|'Σ'|) · (∑_{k ∈ 'Σ'} (|k⟩))",
+      "copy": "qadjacent(1 ∕ qsqrt(qbars('Σ')),qsumset(qketstate(\"qboundindex_0\"),'Σ',\"qboundindex_0\"))"
+    },
+    {
+      "id": "IBM038-9193becd-M052",
+      "cell": 1,
+      "start": 8202,
+      "end": 8219,
+      "literal": "$\\sqrt{|\\Sigma|}$",
+      "status": "exact",
+      "display": "√(qbars('Σ'))",
+      "copy": "√(qbars('Σ'))"
+    },
+    {
+      "id": "IBM038-9193becd-M053",
+      "cell": 1,
+      "start": 8252,
+      "end": 8260,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM038-9193becd-M054",
+      "cell": 1,
+      "start": 8266,
+      "end": 8284,
+      "literal": "$\\vert\\Sigma\\vert$",
+      "status": "exact",
+      "display": "|'Σ'|",
+      "copy": "qbars('Σ')"
+    },
+    {
+      "id": "IBM038-9193becd-M055",
+      "cell": 1,
+      "start": 8334,
+      "end": 8342,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM038-9193becd-M056",
+      "cell": 1,
+      "start": 8417,
+      "end": 8425,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM038-9193becd-M057",
+      "cell": 1,
+      "start": 9164,
+      "end": 9214,
+      "literal": "$\\{\\clubsuit,\\diamondsuit,\\heartsuit,\\spadesuit\\}$",
+      "status": "exact",
+      "display": "\\{'♣', '♢', '♡', '♠'\\}",
+      "copy": "qset(vector('♣','♢','♡','♠'))"
+    },
+    {
+      "id": "IBM038-9193becd-M058",
+      "cell": 1,
+      "start": 9225,
+      "end": 9388,
+      "literal": "$$\n    \\frac{1}{2} \\vert\\clubsuit\\rangle\n  + \\frac{i}{2} \\vert\\diamondsuit\\rangle\n  - \\frac{1}{2} \\vert\\heartsuit\\rangle\n  - \\frac{i}{2} \\vert\\spadesuit\\rangle,\n$$",
+      "status": "exact",
+      "display": "0.5 |♣⟩ + (0.5i) (|♢⟩) − 0.5 |♡⟩ − (0.5i) (|♠⟩)",
+      "copy": "qsub(qsub(qadd(qadjacent(1 ∕ 2,qnamedket('♣')),qadjacent(i ∕ 2,qnamedket('♢'))),qadjacent(1 ∕ 2,qnamedket('♡'))),qadjacent(i ∕ 2,qnamedket('♠')))"
+    },
+    {
+      "id": "IBM038-9193becd-M059",
+      "cell": 1,
+      "start": 9698,
+      "end": 9709,
+      "literal": "$\\clubsuit$",
+      "status": "exact",
+      "display": "'♣'",
+      "copy": "'♣'"
+    },
+    {
+      "id": "IBM038-9193becd-M060",
+      "cell": 1,
+      "start": 9711,
+      "end": 9725,
+      "literal": "$\\diamondsuit$",
+      "status": "exact",
+      "display": "'♢'",
+      "copy": "'♢'"
+    },
+    {
+      "id": "IBM038-9193becd-M061",
+      "cell": 1,
+      "start": 9727,
+      "end": 9739,
+      "literal": "$\\heartsuit$",
+      "status": "exact",
+      "display": "'♡'",
+      "copy": "'♡'"
+    },
+    {
+      "id": "IBM038-9193becd-M062",
+      "cell": 1,
+      "start": 9741,
+      "end": 9753,
+      "literal": "$\\spadesuit$",
+      "status": "exact",
+      "display": "'♠'",
+      "copy": "'♠'"
+    },
+    {
+      "id": "IBM038-9193becd-M063",
+      "cell": 1,
+      "start": 9868,
+      "end": 9979,
+      "literal": "$$\n\\begin{pmatrix}\n \\frac{1}{2}\\\\[2mm]\n \\frac{i}{2}\\\\[2mm]\n -\\frac{1}{2}\\\\[2mm]\n -\\frac{i}{2}\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[0.5; 0.5i; −0.5; −0.5i]",
+      "copy": "matrix(4,1,[1 ∕ 2,i ∕ 2,−1 ∕ 2,−i ∕ 2])"
+    },
+    {
+      "id": "IBM038-9193becd-M064",
+      "cell": 1,
+      "start": 11156,
+      "end": 11159,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M065",
+      "cell": 1,
+      "start": 11255,
+      "end": 11258,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M066",
+      "cell": 1,
+      "start": 11300,
+      "end": 11403,
+      "literal": "$$\n  \\vert {+} \\rangle =\n  \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M067",
+      "cell": 1,
+      "start": 11443,
+      "end": 11446,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M068",
+      "cell": 1,
+      "start": 11451,
+      "end": 11454,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M069",
+      "cell": 1,
+      "start": 11488,
+      "end": 11655,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 0})\n  = \\bigl\\vert \\langle 0 \\vert {+} \\rangle \\bigr\\vert^2\n  = \\biggl\\vert \\frac{1}{\\sqrt{2}} \\biggr\\vert^2\n  = \\frac{1}{2}\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 0) = 1 ∕ 2 = 1 ∕ 2 = 1 ∕ 2",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",0),1 ∕ 2,1 ∕ 2,1 ∕ 2))"
+    },
+    {
+      "id": "IBM038-9193becd-M070",
+      "cell": 1,
+      "start": 11657,
+      "end": 11824,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 1})\n  = \\bigl\\vert \\langle 1 \\vert {+} \\rangle \\bigr\\vert^2\n  = \\biggl\\vert \\frac{1}{\\sqrt{2}} \\biggr\\vert^2\n  = \\frac{1}{2}\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 1) = 1 ∕ 2 = 1 ∕ 2 = 1 ∕ 2",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",1),1 ∕ 2,1 ∕ 2,1 ∕ 2))"
+    },
+    {
+      "id": "IBM038-9193becd-M071",
+      "cell": 1,
+      "start": 11868,
+      "end": 11971,
+      "literal": "$$\n  \\vert {-} \\rangle =\n  \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n  - \\frac{1}{\\sqrt{2}} \\vert 1 \\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M072",
+      "cell": 1,
+      "start": 12038,
+      "end": 12205,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 0})\n  = \\bigl\\vert \\langle 0 \\vert {-} \\rangle \\bigr\\vert^2\n  = \\biggl\\vert \\frac{1}{\\sqrt{2}} \\biggr\\vert^2\n  = \\frac{1}{2}\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 0) = 1 ∕ 2 = 1 ∕ 2 = 1 ∕ 2",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",0),1 ∕ 2,1 ∕ 2,1 ∕ 2))"
+    },
+    {
+      "id": "IBM038-9193becd-M073",
+      "cell": 1,
+      "start": 12207,
+      "end": 12375,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 1})\n  = \\bigl\\vert \\langle 1 \\vert {-} \\rangle \\bigr\\vert^2\n  = \\biggl\\vert -\\frac{1}{\\sqrt{2}} \\biggr\\vert^2\n  = \\frac{1}{2}\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 1) = 1 ∕ 2 = 1 ∕ 2 = 1 ∕ 2",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",1),1 ∕ 2,1 ∕ 2,1 ∕ 2))"
+    },
+    {
+      "id": "IBM038-9193becd-M074",
+      "cell": 1,
+      "start": 12738,
+      "end": 12754,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M075",
+      "cell": 1,
+      "start": 12786,
+      "end": 12789,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M076",
+      "cell": 1,
+      "start": 12847,
+      "end": 12863,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM038-9193becd-M077",
+      "cell": 1,
+      "start": 12895,
+      "end": 12898,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M078",
+      "cell": 1,
+      "start": 13115,
+      "end": 13202,
+      "literal": "$$\n  \\vert \\psi \\rangle = \\frac{1+2i}{3} \\vert 0\\rangle - \\frac{2}{3} \\vert 1\\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(0.333333333333333333333333333333 + 0.666666666666666666666666666667i); −0.666666666666666666666666666667]",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,[1 ∕ 3 + (2 ∕ 3) ⋅ i,−2 ∕ 3]),4)"
+    },
+    {
+      "id": "IBM038-9193becd-M079",
+      "cell": 1,
+      "start": 13279,
+      "end": 13444,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 0})\n  = \\bigl\\vert \\langle 0 \\vert \\psi \\rangle \\bigr\\vert^2\n  = \\biggl\\vert \\frac{1+2i}{3} \\biggr\\vert^2\n  = \\frac{5}{9},\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 0) = |qmul(qdag(matrix(2, 1, [1  0])), qnamedket('ψ'))|² = 5 ∕ 9 = 5 ∕ 9",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",0),(abs(qmul(qdag(matrix(2,1,vector(1,0))),qnamedket('ψ'))))^(2),5 ∕ 9,5 ∕ 9))"
+    },
+    {
+      "id": "IBM038-9193becd-M080",
+      "cell": 1,
+      "start": 13451,
+      "end": 13614,
+      "literal": "$$\n  \\operatorname{Pr}(\\text{outcome is 1})\n  = \\bigl\\vert \\langle 1 \\vert \\psi \\rangle \\bigr\\vert^2\n  = \\biggl\\vert -\\frac{2}{3} \\biggr\\vert^2\n  = \\frac{4}{9}.\n$$",
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 1) = |qmul(qdag(matrix(2, 1, [0  1])), qnamedket('ψ'))|² = 4 ∕ 9 = 4 ∕ 9",
+      "copy": "qequalchain(vector(qeventprob(\"measurement probabilities\",1),(abs(qmul(qdag(matrix(2,1,vector(0,1))),qnamedket('ψ'))))^(2),4 ∕ 9,4 ∕ 9))"
+    },
+    {
+      "id": "IBM038-9193becd-M081",
+      "cell": 1,
+      "start": 14417,
+      "end": 14420,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M082",
+      "cell": 1,
+      "start": 14495,
+      "end": 14612,
+      "literal": "$$\n  \\begin{aligned}\n    U U^{\\dagger} &= \\mathbb{I} \\\\\n    U^{\\dagger} U &= \\mathbb{I}.\n  \\end{aligned}\n  \\tag{3}\n$$",
+      "status": "exact",
+      "display": "1.  U · U† − qidentitylike(qadjacent('U', qdag('U'))) = 0\n\n2.  U† · U − qidentitylike(qadjacent(qdag('U'), 'U')) = 0",
+      "copy": "\\begin{gathered}(qadjacent('U', qdag('U')) − qidentitylike(qadjacent('U', qdag('U'))))==(0)\\\\(qadjacent(qdag('U'), 'U') − qidentitylike(qadjacent(qdag('U'), 'U')))==(0)\\end{gathered}"
+    },
+    {
+      "id": "IBM038-9193becd-M083",
+      "cell": 1,
+      "start": 14620,
+      "end": 14632,
+      "literal": "$\\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM038-9193becd-M084",
+      "cell": 1,
+      "start": 14661,
+      "end": 14674,
+      "literal": "$U^{\\dagger}$",
+      "status": "exact",
+      "display": "U†",
+      "copy": "qdag('U')"
+    },
+    {
+      "id": "IBM038-9193becd-M085",
+      "cell": 1,
+      "start": 14707,
+      "end": 14710,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M086",
+      "cell": 1,
+      "start": 14755,
+      "end": 14758,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M087",
+      "cell": 1,
+      "start": 14808,
+      "end": 14844,
+      "literal": "$$\n  U^{\\dagger} = \\overline{U^T}\n$$",
+      "status": "exact",
+      "display": "U† − U = 0",
+      "copy": "(qdag('U') − 'U')==(0)"
+    },
+    {
+      "id": "IBM038-9193becd-M088",
+      "cell": 1,
+      "start": 14887,
+      "end": 14892,
+      "literal": "$(3)$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM038-9193becd-M089",
+      "cell": 1,
+      "start": 14976,
+      "end": 14989,
+      "literal": "$U^{\\dagger}$",
+      "status": "exact",
+      "display": "U†",
+      "copy": "qdag('U')"
+    },
+    {
+      "id": "IBM038-9193becd-M090",
+      "cell": 1,
+      "start": 15011,
+      "end": 15014,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M091",
+      "cell": 1,
+      "start": 15017,
+      "end": 15046,
+      "literal": "$$\n  U^{-1} = U^{\\dagger}.\n$$",
+      "status": "exact",
+      "display": "U† · U = 1 and U ≠ 0",
+      "copy": "(('U')!=(0) and (qdag('U') ⋅ 'U')==(1))"
+    },
+    {
+      "id": "IBM038-9193becd-M092",
+      "cell": 1,
+      "start": 15061,
+      "end": 15064,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM038-9193becd-M093",
+      "cell": 1,
+      "start": 15111,
+      "end": 15139,
+      "literal": "$M^{\\dagger} M = \\mathbb{I}$",
+      "status": "exact",
+      "display": "M† · M − qidentitylike(qadjacent(qdag('M'), 'M')) = 0",
+      "copy": "(qadjacent(qdag('M'), 'M') − qidentitylike(qadjacent(qdag('M'), 'M')))==(0)"
+    },
+    {
+      "id": "IBM038-9193becd-M094",
+      "cell": 1,
+      "start": 15144,
+      "end": 15175,
+      "literal": "$M M^{\\dagger} \\neq \\mathbb{I}$",
+      "status": "exact",
+      "display": "[−1, 0; 0, −1] + M · M† ≠ 0",
+      "copy": "((matrix(2,2,[−1,0,0,−1]))+ (qadjacent('M',qdag('M'))))!=(0)"
+    },
+    {
+      "id": "IBM038-9193becd-M095",
+      "cell": 1,
+      "start": 15312,
+      "end": 15315,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M096",
+      "cell": 1,
+      "start": 15381,
+      "end": 15384,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M097",
+      "cell": 1,
+      "start": 15447,
+      "end": 15458,
+      "literal": "$n\\times n$",
+      "status": "exact",
+      "display": "n²",
+      "copy": "n²"
+    },
+    {
+      "id": "IBM038-9193becd-M098",
+      "cell": 1,
+      "start": 15466,
+      "end": 15469,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM038-9193becd-M099",
+      "cell": 1,
+      "start": 15496,
+      "end": 15550,
+      "literal": "$\\| U \\vert \\psi \\rangle \\| = \\|\\vert \\psi \\rangle \\|$",
+      "status": "exact",
+      "display": "qnorm(qadjacent('U', qnamedket('ψ'))) = qnorm(qnamedket('ψ'))",
+      "copy": "(qnorm(qadjacent('U',qnamedket('ψ'))))==(qnorm(qnamedket('ψ')))"
+    },
+    {
+      "id": "IBM038-9193becd-M100",
+      "cell": 1,
+      "start": 15561,
+      "end": 15564,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM038-9193becd-M101",
+      "cell": 1,
+      "start": 15591,
+      "end": 15611,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM038-9193becd-M102",
+      "cell": 1,
+      "start": 15757,
+      "end": 15760,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M103",
+      "cell": 1,
+      "start": 16406,
+      "end": 16791,
+      "literal": "$$\n     \\mathbb{I} =\n     \\begin{pmatrix}\n       1 & 0\\\\\n       0 & 1\n     \\end{pmatrix},\n     \\quad\n     \\sigma_x =\n     \\begin{pmatrix}\n       0 & 1\\\\\n       1 & 0\n     \\end{pmatrix},\n     \\quad\n     \\sigma_y =\n     \\begin{pmatrix}\n       0 & -i\\\\\n       i & 0\n     \\end{pmatrix},\n     \\quad\n     \\sigma_z =\n     \\begin{pmatrix}\n       1 & 0\\\\\n       0 & -1\n     \\end{pmatrix}.\n   $$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M104",
+      "cell": 1,
+      "start": 16829,
+      "end": 16843,
+      "literal": "$X = \\sigma_x$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M105",
+      "cell": 1,
+      "start": 16845,
+      "end": 16859,
+      "literal": "$Y = \\sigma_y$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M106",
+      "cell": 1,
+      "start": 16865,
+      "end": 16879,
+      "literal": "$Z = \\sigma_z$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M107",
+      "cell": 1,
+      "start": 16911,
+      "end": 16914,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M108",
+      "cell": 1,
+      "start": 16916,
+      "end": 16919,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M109",
+      "cell": 1,
+      "start": 16925,
+      "end": 16928,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM038-9193becd-M110",
+      "cell": 1,
+      "start": 16977,
+      "end": 16980,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM038-9193becd-M111",
+      "cell": 1,
+      "start": 17084,
+      "end": 17199,
+      "literal": "$$\n     X \\vert 0\\rangle = \\vert 1\\rangle\n     \\quad \\text{and} \\quad\n     X \\vert 1\\rangle = \\vert 0\\rangle.\n   $$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M112",
+      "cell": 1,
+      "start": 17208,
+      "end": 17211,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM038-9193becd-M113",
+      "cell": 1,
+      "start": 17281,
+      "end": 17398,
+      "literal": "$$\n     Z \\vert 0\\rangle = \\vert 0\\rangle\n     \\quad \\text{and} \\quad\n     Z \\vert 1\\rangle = - \\vert 1\\rangle.\n   $$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M114",
+      "cell": 1,
+      "start": 17481,
+      "end": 17637,
+      "literal": "$$\n     H = \\begin{pmatrix}\n       \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n       \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n     \\end{pmatrix}.\n   $$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M115",
+      "cell": 1,
+      "start": 17716,
+      "end": 17820,
+      "literal": "$$\n     P_{\\theta} =\n     \\begin{pmatrix}\n       1 & 0\\\\\n       0 & e^{i\\theta}\n     \\end{pmatrix}\n   $$",
+      "status": "exact",
+      "display": "\"P_θ\" = [1, 0; 0, e^(i'θ')]",
+      "copy": "qcompare(\"P_θ\",matrix(2,2,[1,0,0,e^(i'θ')]),4)"
+    },
+    {
+      "id": "IBM038-9193becd-M116",
+      "cell": 1,
+      "start": 17857,
+      "end": 17865,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM038-9193becd-M117",
+      "cell": 1,
+      "start": 17889,
+      "end": 18124,
+      "literal": "$$\n     S = P_{\\pi/2} =\n     \\begin{pmatrix}\n       1 & 0\\\\\n       0 & i\n     \\end{pmatrix}\n     \\quad \\text{and} \\quad\n     T = P_{\\pi/4} =\n     \\begin{pmatrix}\n       1 & 0\\\\\n       0 & \\frac{1 + i}{\\sqrt{2}}\n     \\end{pmatrix}\n   $$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)] = P_(0.25π) = [1, 0; 0, (0.5 + 0.5i) ⋅ √(2)] and [1, 0; 0, i] = P_(0.5π) = [1, 0; 0, i]",
+      "copy": "(qequalchain(vector(matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2]),qindexedlabel(\"P_\",π ∕ 4,\"\"),matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2]))) and qequalchain(vector(matrix(2,2,[1,0,0,i]),qindexedlabel(\"P_\",π ∕ 2,\"\"),matrix(2,2,[1,0,0,i]))))"
+    },
+    {
+      "id": "IBM038-9193becd-M118",
+      "cell": 1,
+      "start": 18189,
+      "end": 18207,
+      "literal": "$\\mathbb{I} = P_0$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1] = \"P_0\"",
+      "copy": "qcompare(matrix(2,2,[1,0,0,1]),\"P_0\",4)"
+    },
+    {
+      "id": "IBM038-9193becd-M119",
+      "cell": 1,
+      "start": 18212,
+      "end": 18225,
+      "literal": "$Z = P_{\\pi}$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1] = \"P_pi\"",
+      "copy": "qcompare(matrix(2,2,[1,0,0,−1]),\"P_pi\",4)"
+    },
+    {
+      "id": "IBM038-9193becd-M120",
+      "cell": 1,
+      "start": 18390,
+      "end": 18393,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M121",
+      "cell": 1,
+      "start": 18407,
+      "end": 19118,
+      "literal": "$$\n\\begin{pmatrix}\n  \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n  \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix}^{\\dagger}\n\\begin{pmatrix}\n  \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n  \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix}\n= \\begin{pmatrix}\n  \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n  \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix}\n\\begin{pmatrix}\n  \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n  \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n\\end{pmatrix}\n= \\begin{pmatrix}\n  \\frac{1}{2} + \\frac{1}{2} & \\frac{1}{2} - \\frac{1}{2}\\\\[2mm]\n  \\frac{1}{2} - \\frac{1}{2} & \\frac{1}{2} + \\frac{1}{2}\n\\end{pmatrix}\n= \\begin{pmatrix}\n  1 & 0\\\\\n  0 & 1\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M122",
+      "cell": 1,
+      "start": 19220,
+      "end": 20552,
+      "literal": "$$\n\\begin{aligned}\n  H \\vert 0 \\rangle & =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    1\\\\[2mm]\n    0\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\vert + \\rangle\\\\[6mm]\n  H \\vert 1 \\rangle\n  & =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    0\\\\[2mm]\n    1\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\vert - \\rangle\\\\[6mm]\n  H \\vert + \\rangle\n  & =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    1\\\\[2mm]\n    0\n  \\end{pmatrix}\n  = \\vert 0 \\rangle\\\\[6mm]\n  H \\vert - \\rangle\n  & =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    0\\\\[2mm]\n    1\n  \\end{pmatrix}\n  = \\vert 1 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM038-9193becd-M123",
+      "cell": 1,
+      "start": 20604,
+      "end": 20829,
+      "literal": "$$\n  \\begin{aligned}\n    H \\vert 0 \\rangle = \\vert {+} \\rangle & \\qquad H \\vert {+} \\rangle = \\vert 0 \\rangle \\\\[1mm]\n    H \\vert 1 \\rangle = \\vert {-} \\rangle & \\qquad H \\vert {-} \\rangle = \\vert 1 \\rangle\n  \\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM038-9193becd-M124",
+      "cell": 1,
+      "start": 20876,
+      "end": 20913,
+      "literal": "$H\\vert {+} \\rangle = \\vert 0\\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M125",
+      "cell": 1,
+      "start": 20918,
+      "end": 20955,
+      "literal": "$H\\vert {-} \\rangle = \\vert 1\\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M126",
+      "cell": 1,
+      "start": 21062,
+      "end": 21081,
+      "literal": "$\\vert {+} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M127",
+      "cell": 1,
+      "start": 21086,
+      "end": 21105,
+      "literal": "$\\vert {-} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M128",
+      "cell": 1,
+      "start": 21190,
+      "end": 21209,
+      "literal": "$\\vert {+} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M129",
+      "cell": 1,
+      "start": 21214,
+      "end": 21233,
+      "literal": "$\\vert {-} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M130",
+      "cell": 1,
+      "start": 21383,
+      "end": 21386,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M131",
+      "cell": 1,
+      "start": 21391,
+      "end": 21394,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M132",
+      "cell": 1,
+      "start": 21430,
+      "end": 21435,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM038-9193becd-M133",
+      "cell": 1,
+      "start": 21611,
+      "end": 21614,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M134",
+      "cell": 1,
+      "start": 21656,
+      "end": 21675,
+      "literal": "$\\vert {+} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M135",
+      "cell": 1,
+      "start": 21703,
+      "end": 21706,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M136",
+      "cell": 1,
+      "start": 21756,
+      "end": 21775,
+      "literal": "$\\vert {-} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M137",
+      "cell": 1,
+      "start": 21796,
+      "end": 21815,
+      "literal": "$\\vert {+} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M138",
+      "cell": 1,
+      "start": 21820,
+      "end": 21839,
+      "literal": "$\\vert {-} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM038-9193becd-M139",
+      "cell": 1,
+      "start": 22215,
+      "end": 22684,
+      "literal": "$$\n  H \\biggl(\\frac{1+2i}{3} \\vert 0\\rangle - \\frac{2}{3} \\vert 1\\rangle\\biggr)\n  = \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    \\frac{1+2i}{3}\\\\[2mm]\n    -\\frac{2}{3}\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{-1+2i}{3\\sqrt{2}}\\\\[2mm]\n    \\frac{3+2i}{3\\sqrt{2}}\n  \\end{pmatrix}\n  = \\frac{-1+2i}{3\\sqrt{2}} | 0 \\rangle\n  + \\frac{3+2i}{3\\sqrt{2}} | 1 \\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M140",
+      "cell": 1,
+      "start": 22723,
+      "end": 22726,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM038-9193becd-M141",
+      "cell": 1,
+      "start": 22755,
+      "end": 23017,
+      "literal": "$$\n  T \\vert {+} \\rangle\n  = T \\biggl(\\frac{1}{\\sqrt{2}} \\vert 0\\rangle + \\frac{1}{\\sqrt{2}} \\vert 1\\rangle\\biggr)\n  = \\frac{1}{\\sqrt{2}} T\\vert 0\\rangle + \\frac{1}{\\sqrt{2}} T\\vert 1\\rangle\n  = \\frac{1}{\\sqrt{2}} \\vert 0\\rangle + \\frac{1+i}{2} \\vert 1\\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M142",
+      "cell": 1,
+      "start": 23188,
+      "end": 23306,
+      "literal": "$$\nT \\vert 0\\rangle = \\vert 0\\rangle\n\\quad\\text{and}\\quad\nT \\vert 1\\rangle = \\frac{1 + i}{\\sqrt{2}} \\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M143",
+      "cell": 1,
+      "start": 23432,
+      "end": 24002,
+      "literal": "$$\n\\begin{aligned}\nH\\, \\biggl(\\frac{1}{\\sqrt{2}} \\vert 0\\rangle + \\frac{1+i}{2} \\vert 1\\rangle\\biggr)\n& = \\frac{1}{\\sqrt{2}} H \\vert 0\\rangle + \\frac{1+i}{2} H \\vert 1\\rangle\\\\\n& = \\frac{1}{\\sqrt{2}} \\vert +\\rangle + \\frac{1+i}{2} \\vert -\\rangle \\\\\n& = \\biggl(\\frac{1}{2} \\vert 0\\rangle + \\frac{1}{2} \\vert 1\\rangle\\biggr)\n+ \\biggl(\\frac{1+i}{2\\sqrt{2}} \\vert 0\\rangle - \\frac{1+i}{2\\sqrt{2}} \\vert 1\\rangle\\biggr)\\\\\n& = \\biggl(\\frac{1}{2} + \\frac{1+i}{2\\sqrt{2}}\\biggr) \\vert 0\\rangle\n+ \\biggl(\\frac{1}{2} - \\frac{1+i}{2\\sqrt{2}}\\biggr) \\vert 1\\rangle.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M144",
+      "cell": 1,
+      "start": 24513,
+      "end": 24516,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM038-9193becd-M145",
+      "cell": 1,
+      "start": 24613,
+      "end": 24616,
+      "literal": "$R$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM038-9193becd-M146",
+      "cell": 1,
+      "start": 24663,
+      "end": 25113,
+      "literal": "$$\n  R = H S H =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    1 & 0\\\\\n    0 & i\n  \\end{pmatrix}\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} \\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{1+i}{2} & \\frac{1-i}{2} \\\\[2mm]\n    \\frac{1-i}{2} & \\frac{1+i}{2}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M147",
+      "cell": 1,
+      "start": 25138,
+      "end": 25141,
+      "literal": "$R$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM038-9193becd-M148",
+      "cell": 1,
+      "start": 25290,
+      "end": 25480,
+      "literal": "$$\n  R^2 =\n  \\begin{pmatrix}\n    \\frac{1+i}{2} & \\frac{1-i}{2} \\\\[2mm]\n    \\frac{1-i}{2} & \\frac{1+i}{2}\n  \\end{pmatrix}^2\n  = \\begin{pmatrix}\n    0 & 1 \\\\[2mm]\n    1 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "R^2 = [0, 1; 1, 0] = [0, 1; 1, 0]",
+      "copy": "qequalchain(vector('R'²,matrix(2,2,[0,1,1,0]),matrix(2,2,[0,1,1,0])))"
+    },
+    {
+      "id": "IBM038-9193becd-M149",
+      "cell": 1,
+      "start": 25491,
+      "end": 25494,
+      "literal": "$R$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM038-9193becd-M150",
+      "cell": 1,
+      "start": 25951,
+      "end": 26062,
+      "literal": "$$\n  A =\n  \\begin{pmatrix}\n    {0} & {0} & {1} \\\\\n    {1} & {0} & {0} \\\\\n    {0} & {1} & {0}\n  \\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A = [0, 0, 1; 1, 0, 0; 0, 1, 0]",
+      "copy": "qcompare('A',matrix(3,3,[0,0,1,1,0,0,0,1,0]),4)"
+    },
+    {
+      "id": "IBM038-9193becd-M151",
+      "cell": 1,
+      "start": 26117,
+      "end": 26120,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM038-9193becd-M152",
+      "cell": 1,
+      "start": 26122,
+      "end": 26125,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M153",
+      "cell": 1,
+      "start": 26131,
+      "end": 26134,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM038-9193becd-M154",
+      "cell": 1,
+      "start": 26186,
+      "end": 26189,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM038-9193becd-M155",
+      "cell": 1,
+      "start": 26192,
+      "end": 26338,
+      "literal": "$$\n  A \\vert 0\\rangle = \\vert 1\\rangle,\n  \\quad\n  A \\vert 1\\rangle = \\vert 2\\rangle,\n  \\quad\\text{and}\\quad\n  A \\vert 2\\rangle = \\vert 0\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM038-9193becd-M156",
+      "cell": 1,
+      "start": 26351,
+      "end": 26354,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM038-9193becd-M157",
+      "cell": 1,
+      "start": 26460,
+      "end": 26463,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM038-9193becd-M158",
+      "cell": 1,
+      "start": 26994,
+      "end": 27005,
+      "literal": "$4\\times 4$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM038-9193becd-M159",
+      "cell": 1,
+      "start": 27028,
+      "end": 27190,
+      "literal": "$$\n  U =\n  \\frac{1}{2}\n  \\begin{pmatrix}\n    1 & 1 & 1 & 1 \\\\[1mm]\n    1 & i & -1 & -i \\\\[1mm]\n    1 & -1 & 1 & -1 \\\\[1mm]\n    1 & -i & -1 & i\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "U = [0.5, 0.5, 0.5, 0.5; 0.5, 0.5i, −0.5, −0.5i; 0.5, −0.5, 0.5, −0.5; 0.5, −0.5i, −0.5, 0.5i]",
+      "copy": "qcompare('U',matrix(4,4,[1 ∕ 2,1 ∕ 2,1 ∕ 2,1 ∕ 2,1 ∕ 2,i ∕ 2,−1 ∕ 2,−i ∕ 2,1 ∕ 2,−1 ∕ 2,1 ∕ 2,−1 ∕ 2,1 ∕ 2,−i ∕ 2,−1 ∕ 2,i ∕ 2]),4)"
+    },
+    {
+      "id": "IBM038-9193becd-M160",
+      "cell": 1,
+      "start": 27289,
+      "end": 27300,
+      "literal": "$4\\times 4$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM038-9193becd-M161",
+      "cell": 1,
+      "start": 27403,
+      "end": 27406,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    }
+  ]
+}
