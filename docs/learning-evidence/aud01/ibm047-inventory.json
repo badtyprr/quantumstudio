@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "6c63fcfd11fd4dd965800a99732dbd04df6acae06c97033528239f0fba320fe9",
-  "revision": "415eddddd9c1aef00c628c92be15f138b3becffc",
+  "worker_sha256": "afa1fa94de30a278bd6f0ce9a57bde9ac1304a73ec8969ef11143817218c2853",
+  "revision": "18a6edd60c5da3cbdd38f55c94dea4ab227a41c2",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 125,
-    "diagnostic": 21
+    "exact": 132,
+    "diagnostic": 14
   },
   "figures": [
     {
@@ -442,8 +442,9 @@
       "start": 5272,
       "end": 5382,
       "literal": "$$\nU \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 19"
+      "status": "exact",
+      "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
+      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M043",
@@ -640,8 +641,9 @@
       "start": 6323,
       "end": 6431,
       "literal": "$ U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle $",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 19"
+      "status": "exact",
+      "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
+      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M063",
@@ -669,8 +671,9 @@
       "start": 6524,
       "end": 6745,
       "literal": "$$\nU \\bigl( \\vert a \\rangle \\otimes \\vert\\phi\\rangle\\bigr)\n= \\vert a \\rangle \\otimes \\vert a\\rangle\n\\quad\\text{and}\\quad\nU \\bigl( \\vert b \\rangle \\otimes \\vert\\phi\\rangle\\bigr)\n= \\vert b \\rangle \\otimes \\vert b\\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "U · (qketstate('a') ⊗ |φ⟩) = qketstate('a') ⊗ qketstate('a') and U · (qketstate('b') ⊗ |φ⟩) = qketstate('b') ⊗ qketstate('b')",
+      "copy": "(qcompare(qmul('U',qtensor(qketstate('a'),qnamedket('φ'))),qtensor(qketstate('a'),qketstate('a')),4) and qcompare(qmul('U',qtensor(qketstate('b'),qnamedket('φ'))),qtensor(qketstate('b'),qketstate('b')),4))"
     },
     {
       "id": "IBM047-f4526623-M066",
@@ -678,8 +681,9 @@
       "start": 6947,
       "end": 7200,
       "literal": "$$\nU \\biggl(\\biggl( \\frac{1}{\\sqrt{2}}\\vert a \\rangle + \\frac{1}{\\sqrt{2}} \\vert b\\rangle \\biggr) \\otimes \\vert\\phi\\rangle\\biggr)\n= \\frac{1}{\\sqrt{2}} \\vert a \\rangle \\otimes \\vert a\\rangle\n+ \\frac{1}{\\sqrt{2}} \\vert b \\rangle \\otimes \\vert b\\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 59"
+      "status": "exact",
+      "display": "U · (((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) ⊗ |φ⟩) = (1 / √(2)) (qketstate('a')) ⊗ qketstate('a') + (1 / √(2)) (qketstate('b')) ⊗ qketstate('b')",
+      "copy": "qcompare(qmul('U',qtensor(qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b'))),qnamedket('φ'))),qadd(qtensor(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qketstate('a')),qtensor(qadjacent(1 ∕ qsqrt(2),qketstate('b')),qketstate('b'))),4)"
     },
     {
       "id": "IBM047-f4526623-M067",
@@ -687,8 +691,9 @@
       "start": 7232,
       "end": 7338,
       "literal": "$U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
+      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M068",
@@ -706,8 +711,9 @@
       "start": 7396,
       "end": 8130,
       "literal": "$$\n\\begin{aligned}\n  & U \\biggl(\\biggl( \\frac{1}{\\sqrt{2}}\\vert a \\rangle + \\frac{1}{\\sqrt{2}} \\vert b\\rangle \\biggr)\n  \\otimes \\vert\\phi\\rangle\\biggr)\\\\\n  & \\qquad = \\biggl(\\frac{1}{\\sqrt{2}} \\vert a \\rangle + \\frac{1}{\\sqrt{2}} \\vert b \\rangle\\biggr)\n  \\otimes \\biggl(\\frac{1}{\\sqrt{2}} \\vert a \\rangle + \\frac{1}{\\sqrt{2}} \\vert b \\rangle\\biggr)\\\\\n  & \\qquad = \\frac{1}{2} \\vert a \\rangle \\otimes \\vert a\\rangle\n  + \\frac{1}{2} \\vert a \\rangle \\otimes \\vert b\\rangle\n  + \\frac{1}{2} \\vert b \\rangle \\otimes \\vert a\\rangle\n  + \\frac{1}{2} \\vert b \\rangle \\otimes \\vert b\\rangle\\\\\n  & \\qquad \\neq \\frac{1}{\\sqrt{2}} \\vert a \\rangle \\otimes \\vert a\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert b \\rangle \\otimes \\vert b\\rangle\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 62"
+      "status": "exact",
+      "display": "(0.5) (qketstate('a')) ⊗ qketstate('a') + (0.5) (qketstate('a')) ⊗ qketstate('b') + (0.5) (qketstate('b')) ⊗ qketstate('a') + (0.5) (qketstate('b')) ⊗ qketstate('b') ≠ (1 / √(2)) (qketstate('a')) ⊗ qketstate('a') + (1 / √(2)) (qketstate('b')) ⊗ qketstate('b') and U · (((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) ⊗ |φ⟩) = ((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) ⊗ ((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) and ((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) ⊗ ((1 / √(2)) (qketstate('a')) + (1 / √(2)) (qketstate('b'))) = (0.5) (qketstate('a')) ⊗ qketstate('a') + (0.5) (qketstate('a')) ⊗ qketstate('b') + (0.5) (qketstate('b')) ⊗ qketstate('a') + (0.5) (qketstate('b')) ⊗ qketstate('b')",
+      "copy": "(qcompare(qadd(qadd(qadd(qtensor(qadjacent(1 ∕ 2,qketstate('a')),qketstate('a')),qtensor(qadjacent(1 ∕ 2,qketstate('a')),qketstate('b'))),qtensor(qadjacent(1 ∕ 2,qketstate('b')),qketstate('a'))),qtensor(qadjacent(1 ∕ 2,qketstate('b')),qketstate('b'))),qadd(qtensor(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qketstate('a')),qtensor(qadjacent(1 ∕ qsqrt(2),qketstate('b')),qketstate('b'))),5) and qcompare(qmul('U',qtensor(qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b'))),qnamedket('φ'))),qtensor(qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b'))),qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b')))),4) and qcompare(qtensor(qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b'))),qadd(qadjacent(1 ∕ qsqrt(2),qketstate('a')),qadjacent(1 ∕ qsqrt(2),qketstate('b')))),qadd(qadd(qadd(qtensor(qadjacent(1 ∕ 2,qketstate('a')),qketstate('a')),qtensor(qadjacent(1 ∕ 2,qketstate('a')),qketstate('b'))),qtensor(qadjacent(1 ∕ 2,qketstate('b')),qketstate('a'))),qtensor(qadjacent(1 ∕ 2,qketstate('b')),qketstate('b'))),4))"
     },
     {
       "id": "IBM047-f4526623-M070",
@@ -735,8 +741,9 @@
       "start": 8227,
       "end": 8335,
       "literal": "$ U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle $",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 19"
+      "status": "exact",
+      "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
+      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M073",
@@ -1199,7 +1206,7 @@
       "literal": "$$\n\\bigl(U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr)\\bigr)^{\\dagger}\n= \\bigl( \\langle\\gamma_0\\vert\\langle 0\\vert \\bigr)U,\n$$",
       "status": "exact",
       "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† − ((|γ_0⟩ ⊗ [1; 0])† · U) = 0",
-      "copy": "((qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))))+ ((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'))))==(0)"
+      "copy": "(((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U')))+ (qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))))==(0)"
     },
     {
       "id": "IBM047-f4526623-M120",
