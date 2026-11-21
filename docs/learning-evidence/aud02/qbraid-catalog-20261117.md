@@ -24,4 +24,8 @@ The original source-specific audit contract still applies: setup, every relevant
 
 ## Remaining discovery
 
-This reconciliation covers `.ipynb` files in one complete repository tree. AUD-02 still requires IBM catalogs and overview/exam/video/download content, linked examples, SDK/PyQASM/QIR/Algorithms/runtime references, and authorized qBook chapter discovery. Non-notebook assets and links are not made complete by the notebook path inventory. DISC-03 remains unticked pending review and the project verification gates; all 187 whole-source rows remain open.
+This reconciliation covers `.ipynb` files in one complete repository tree. AUD-02 still requires IBM catalogs and overview/exam/video/download content, linked examples, SDK/PyQASM/QIR/Algorithms/runtime references, and authorized qBook chapter discovery. Non-notebook assets and links are not made complete by the notebook path inventory.
+
+## Independent Git verification
+
+A fresh Git fetch resolved the public repository HEAD to the same revision. The pinned and current root tree IDs are respectively `8894b2d89ff98d3dd2a34584b943b86acd17ed61` and `bc15f35492cf56e1fc9aff83ffa7ac1ab24be6dc`. Recursive Git tree listings yielded 35 and 38 notebook paths. For each of the 73 entries, hashing the retained file bytes with the Git blob header reproduced the tree's object ID, and SHA-256 matched the inventory. All current code-cell indices and text hashes matched the notebooks, and all 38 IDs were unique. Comparing the two path-to-blob maps independently reproduced every change classification. This closes the dated DISC-03 source comparison. Execution and application release evidence are tracked on the individual source rows.
