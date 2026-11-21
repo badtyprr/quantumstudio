@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "bf438abcd506b61c284fdffaf4f1e0310edd157f75a1d4ed62a5a38371d888c0",
-  "revision": "a7cc7a058876aa5914278f0e3f730335dc8c2ba7",
+  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "revision": "eda6164abb07c4f8c6f020937b8bb22bf54dc1c7",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -868,8 +868,8 @@
       "end": 14098,
       "literal": "$$\n\\begin{aligned}\nM_1 \\vert 0\\rangle\n& =\n\\begin{pmatrix}\n  1 & 1\\\\\n  0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\vert 0\\rangle = \\vert f_1(0)\\rangle \\\\[4mm]\nM_1 \\vert 1\\rangle\n& =\n\\begin{pmatrix}\n  1 & 1\\\\\n  0 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n  0\\\\\n  1\n\\end{pmatrix}\n= \\begin{pmatrix}\n  1\\\\\n  0\n\\end{pmatrix}\n= \\vert 0\\rangle = \\vert f_1(1)\\rangle\n\\end{aligned}\n$$",
       "status": "exact",
-      "display": "1.  [\"M_1\"; 0] = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 0)\n\n2.  [0; \"M_1\"] = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 1)",
-      "copy": "\\begin{gathered}qequalchain(vector(matrix(2,1,[\"M_1\",0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",0)))\\\\qequalchain(vector(matrix(2,1,[0,\"M_1\"]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",1)))\\end{gathered}"
+      "display": "1.  (\"M_1\") ([1; 0]) = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 0)\n\n2.  (\"M_1\") ([0; 1]) = [1; 0] = [1; 0] = [1; 0] = qstatecall(\"f_1\", 1)",
+      "copy": "\\begin{gathered}qequalchain(vector(qadjacent(\"M_1\",matrix(2,1,vector(1,0))),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",0)))\\\\qequalchain(vector(qadjacent(\"M_1\",matrix(2,1,vector(0,1))),matrix(2,1,[1,0]),matrix(2,1,[1,0]),matrix(2,1,[1,0]),qstatecall(\"f_1\",1)))\\end{gathered}"
     },
     {
       "id": "IBM037-bb350db4-M087",
@@ -1389,7 +1389,7 @@
       "literal": "$M_1 u$",
       "status": "exact",
       "display": "\"M_1\" · u",
-      "copy": "\"M_1\" ⋅ 'u'"
+      "copy": "qadjacent(\"M_1\",'u')"
     },
     {
       "id": "IBM037-bb350db4-M139",
@@ -1408,8 +1408,8 @@
       "end": 20773,
       "literal": "$$\n  M_2 (M_1 u) = (M_2 M_1) u.\n$$",
       "status": "exact",
-      "display": "\"M_1\" = 0 or u = 0 or M = \"M_2\" ∕ (2'_') and \"M_1\" ≠ 0 and '_' ≠ 0 and u ≠ 0 or \"M_2\" = 0 and '_' = 0 and \"M_1\" ≠ 0 and u ≠ 0",
-      "copy": "((\"M_1\")==(0) or ('u')==(0) or ((\"M_1\")!=(0) and (\"M_2\")==(0) and ('_')==(0) and ('u')!=(0)) or ((\"M_1\")!=(0) and ('M')==(\"M_2\" ∕ (2 ⋅ '_')) and ('_')!=(0) and ('u')!=(0)))"
+      "display": "\"M_2\" · \"M_1\" · u − (\"M_2\" · \"M_1\" · u) = 0",
+      "copy": "(qadjacent(\"M_2\", qadjacent(\"M_1\", 'u')) − qadjacent(qadjacent(\"M_2\", \"M_1\"), 'u'))==(0)"
     },
     {
       "id": "IBM037-bb350db4-M141",
@@ -1438,8 +1438,8 @@
       "end": 21396,
       "literal": "$M_2 M_1$",
       "status": "exact",
-      "display": "\"M_1\" ⋅ \"M_2\"",
-      "copy": "\"M_1\" ⋅ \"M_2\""
+      "display": "\"M_2\" · \"M_1\"",
+      "copy": "qadjacent(\"M_2\",\"M_1\")"
     },
     {
       "id": "IBM037-bb350db4-M144",
@@ -1508,8 +1508,8 @@
       "end": 22349,
       "literal": "$$\n  M_2 M_1 =\n  \\begin{pmatrix}\n    0 & 0 \\\\[1mm]\n    1 & 1\n  \\end{pmatrix}\n  \\quad\\text{and}\\quad\n  M_1 M_2 =\n  \\begin{pmatrix}\n    1 & 1\\\\[1mm]\n    0 & 0\n  \\end{pmatrix}.\n$$",
       "status": "exact",
-      "display": "[\"M_1\" ⋅ \"M_2\", \"M_1\" ⋅ \"M_2\"; \"M_1\" ⋅ \"M_2\" − 1, \"M_1\" ⋅ \"M_2\" − 1] = [0, 0; 0, 0] and [\"M_1\" ⋅ \"M_2\" − 1, \"M_1\" ⋅ \"M_2\" − 1; \"M_1\" ⋅ \"M_2\", \"M_1\" ⋅ \"M_2\"] = [0, 0; 0, 0]",
-      "copy": "((matrix(2,2,[\"M_1\" ⋅ \"M_2\" − 1,\"M_1\" ⋅ \"M_2\" − 1,\"M_1\" ⋅ \"M_2\",\"M_1\" ⋅ \"M_2\"]))==(matrix(2,2,[0,0,0,0])) and (matrix(2,2,[\"M_1\" ⋅ \"M_2\",\"M_1\" ⋅ \"M_2\",\"M_1\" ⋅ \"M_2\" − 1,\"M_1\" ⋅ \"M_2\" − 1]))==(matrix(2,2,[0,0,0,0])))"
+      "display": "[0, 0; −1, −1] + \"M_2\" · \"M_1\" = 0 and [−1, −1; 0, 0] + \"M_1\" · \"M_2\" = 0",
+      "copy": "(((matrix(2,2,[0,0,−1,−1]))+ (qadjacent(\"M_2\",\"M_1\")))==(0) and ((matrix(2,2,[−1,−1,0,0]))+ (qadjacent(\"M_1\",\"M_2\")))==(0))"
     }
   ]
 }
