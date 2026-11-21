@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/mapping.ipynb",
   "source_sha256": "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4",
-  "worker_sha256": "22fb4bfd354fd71d35519f22d42ab8fa2ee4fe06054711b4689eb351d18e512c",
-  "revision": "4270b8e3",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "revision": "88544e4f",
   "mode": "Quantum notation",
   "markdown_cells": 4,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 10,
-    "exact": 66
+    "diagnostic": 9,
+    "exact": 67
   },
   "figures": [
     {
@@ -162,8 +162,9 @@
       "start": 6392,
       "end": 6483,
       "literal": "$$\n\\begin{aligned}\n\\Delta n_a(i,j) &= \\sum\\limits_{k=i}^{j}{(-1)^k f_a(k)}\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Finite sum bounds must be integers or unresolved symbolic expressions."
+      "status": "exact",
+      "display": "qwalkdelta(\"steps\", 'a', 'i', 'j') − qsum(qmul(qpower(−1, \"qboundindex_0\"), qwalkindicator(\"steps\", 'a', \"qboundindex_0\")), 'i', 'j', \"qboundindex_0\") = 0",
+      "copy": "(qadd(qmul(−1,qsum(qmul(qpower(−1,\"qboundindex_0\"),qwalkindicator(\"steps\",'a',\"qboundindex_0\")),'i','j',\"qboundindex_0\")),qwalkdelta(\"steps\",'a','i','j')))==(0)"
     },
     {
       "id": "IBM078-c73c951f-M015",
@@ -232,8 +233,8 @@
       "end": 7259,
       "literal": "$$\n\\begin{aligned}\nd(i,j) &= \\sum\\limits_{a}{||\\Delta n_a(i,j)||^2} \\\\\n &= (\\Delta n_0(i,j))^2 + (\\Delta n_1(i,j))^2 + (\\Delta n_2(i,j))^2 + (\\Delta n_3(i,j))^2\n\\end{aligned}\n$$",
       "status": "exact",
-      "display": "[i'd'  'd''j'] = (∑_{k ∈ \"indexset_a\"} (qnorm(qadjacent('Δ', [i'_''a'n  '_''a''j'n]))^2)) = ('Δ' · [(((67550000 ∕ 2514161829) ⋅ i) ∕ nm³)  (((67550000 ∕ 2514161829)'j') ∕ nm³)])^2 + ('Δ' · [i'_'n  '_''j'n])^2 + ('Δ' · [2i'_'n  2'_''j'n])^2 + ('Δ' · [3i'_'n  3'_''j'n])^2",
-      "copy": "qequalchain(vector(vector(i'd','d''j'),qsumset(qpower(qnorm(qadjacent('Δ',vector(i'_''a'n,'_''a''j'n))),2),\"indexset_a\",\"qboundindex_0\"),qadd(qadd(qadd(qpower(qadjacent('Δ',vector(((6755E31 ∕ 2514161829) ⋅ i)*((qphysicalunit(\"m\",\"\"))^(−3)),('j')*((qphysicalunit(\"m\",\"\"))^(−3))*(6755E31 ∕ 2514161829))),2),qpower(qadjacent('Δ',vector(i'_'n,'_''j'n)),2)),qpower(qadjacent('Δ',vector(2i'_'n,2'_''j'n)),2)),qpower(qadjacent('Δ',vector(3i'_'n,3'_''j'n)),2))))"
+      "display": "qwalkdistance(\"steps\", 'i', 'j') = qwalkdelta(\"steps\", 3, 'i', 'j')² + qwalkdelta(\"steps\", 2, 'i', 'j')² + qwalkdelta(\"steps\", 1, 'i', 'j')² + qwalkdelta(\"steps\", 0, 'i', 'j')² = qwalkdelta(\"steps\", 0, 'i', 'j')^2 + qwalkdelta(\"steps\", 1, 'i', 'j')^2 + qwalkdelta(\"steps\", 2, 'i', 'j')^2 + qwalkdelta(\"steps\", 3, 'i', 'j')^2",
+      "copy": "qequalchain(vector(qwalkdistance(\"steps\",'i','j'),qadd(qadd(qadd(qpower(qwalkdelta(\"steps\",0,'i','j'),2),qpower(qwalkdelta(\"steps\",1,'i','j'),2)),qpower(qwalkdelta(\"steps\",2,'i','j'),2)),qpower(qwalkdelta(\"steps\",3,'i','j'),2)),qadd(qadd(qadd(qpower(qwalkdelta(\"steps\",0,'i','j'),2),qpower(qwalkdelta(\"steps\",1,'i','j'),2)),qpower(qwalkdelta(\"steps\",2,'i','j'),2)),qpower(qwalkdelta(\"steps\",3,'i','j'),2))))"
     },
     {
       "id": "IBM078-c73c951f-M022",

@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/applications-of-qc.ipynb",
   "source_sha256": "eb362a21d29dbdd06382b9a572bdd9a0100aaa3707541b43a8df6a9856742d9f",
-  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
-  "revision": "73df7845",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "revision": "88544e4f",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,

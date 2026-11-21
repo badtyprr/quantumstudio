@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
   "source_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
-  "worker_sha256": "f03758a0cb38efa81ef5c09173829f1ec16a92228adf7e334fec86cdac7ca375",
-  "revision": "97492a27",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "revision": "88544e4f",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
@@ -242,7 +242,7 @@
       "literal": "$$\n\\sum_{ij}Q_{ij}(\\frac{1-z_i}{2})(\\frac{1-z_j}{2}) = \\sum_{ij}\\frac{Q_{ij}}{4}(1 - z_i - z_j + z_iz_j)\n$$",
       "status": "exact",
       "display": "qpairtotal('Q', 'z', qmul(qmul(\"weight\", 0.5 ⋅ qsub(1, \"leftword\")), 0.5 ⋅ qsub(1, \"rightword\")), \"weight\", \"leftword\", \"rightword\") − qpairtotal('Q', 'z', qmul(0.25 \"weight\", qadd(qsub(qsub(1, \"leftword\"), \"rightword\"), qmul(\"leftword\", \"rightword\"))), \"weight\", \"leftword\", \"rightword\") = 0",
-      "copy": "(qpairtotal('Q', 'z', qmul(qmul(\"weight\", qsub(1, \"leftword\") ∕ 2), qsub(1, \"rightword\") ∕ 2), \"weight\", \"leftword\", \"rightword\") − qpairtotal('Q', 'z', qmul(\"weight\" ∕ 4, qadd(qsub(qsub(1, \"leftword\"), \"rightword\"), qmul(\"leftword\", \"rightword\"))), \"weight\", \"leftword\", \"rightword\"))==(0)"
+      "copy": "(qadd(qmul(−1,qpairtotal('Q','z',qmul(qmul(1 ∕ 4,\"weight\"),qadd(qsub(qsub(1,\"leftword\"),\"rightword\"),qmul(\"leftword\",\"rightword\"))),\"weight\",\"leftword\",\"rightword\")),qpairtotal('Q','z',qmul(qmul(\"weight\",qmul(1 ∕ 2,qsub(1,\"leftword\"))),qmul(1 ∕ 2,qsub(1,\"rightword\"))),\"weight\",\"leftword\",\"rightword\")))==(0)"
     },
     {
       "id": "IBM076-b057ac80-M020",

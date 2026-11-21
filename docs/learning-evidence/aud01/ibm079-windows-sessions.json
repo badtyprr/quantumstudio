@@ -1,0 +1,61 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
+  "notebook_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "3319aa4efc3b3c04f1f1b4a45b0094e92babd4785fc0c8169f2e270f2084a9a0",
+  "suite": {
+    "passed": true,
+    "checks": 486,
+    "calls": 61,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_diagnostic": 9,
+    "source_exact": 52,
+    "restored_identically": 52,
+    "stable_after_text_reentry": 52
+  },
+  "diagnostics": [
+    {
+      "id": "IBM079-7325643f-M001",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 12"
+    },
+    {
+      "id": "IBM079-7325643f-M005",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 14"
+    },
+    {
+      "id": "IBM079-7325643f-M006",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM079-7325643f-M026",
+      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+    },
+    {
+      "id": "IBM079-7325643f-M027",
+      "message": "Unexpected notation at byte 55"
+    },
+    {
+      "id": "IBM079-7325643f-M032",
+      "message": "Unsupported TeX control symbol at byte 83"
+    },
+    {
+      "id": "IBM079-7325643f-M046",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM079-7325643f-M048",
+      "message": "Unsupported text in a mathematical expression at byte 37"
+    },
+    {
+      "id": "IBM079-7325643f-M061",
+      "message": "Expected a quantum expression at byte 9"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

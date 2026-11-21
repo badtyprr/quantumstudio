@@ -1,0 +1,61 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/mapping.ipynb",
+  "notebook_sha256": "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "ad594b4531c764dbc3ab1765da39a40395778cf6516f383332e45cebe779f619",
+  "suite": {
+    "passed": true,
+    "checks": 621,
+    "calls": 76,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_diagnostic": 9,
+    "source_exact": 67,
+    "restored_identically": 67,
+    "stable_after_text_reentry": 67
+  },
+  "diagnostics": [
+    {
+      "id": "IBM078-c73c951f-M001",
+      "message": "Unsupported TeX command: \\cdots at byte 47"
+    },
+    {
+      "id": "IBM078-c73c951f-M022",
+      "message": "Expected ')' at byte 22"
+    },
+    {
+      "id": "IBM078-c73c951f-M044",
+      "message": "Unsupported text in a mathematical expression at byte 45"
+    },
+    {
+      "id": "IBM078-c73c951f-M047",
+      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+    },
+    {
+      "id": "IBM078-c73c951f-M058",
+      "message": "Expected a quantum expression at byte 7"
+    },
+    {
+      "id": "IBM078-c73c951f-M060",
+      "message": "Expected a quantum expression at byte 7"
+    },
+    {
+      "id": "IBM078-c73c951f-M064",
+      "message": "A finite sum/product requires lower and upper bounds at byte 59"
+    },
+    {
+      "id": "IBM078-c73c951f-M066",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM078-c73c951f-M072",
+      "message": "Unsupported TeX command: \\cal at byte 22"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

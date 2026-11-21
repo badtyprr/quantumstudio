@@ -1,0 +1,41 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
+  "notebook_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "47496b4aaf07cb91a3bda8652a4ec25cbb00c759e5a09d53d2e521fa4d22dcec",
+  "suite": {
+    "passed": true,
+    "checks": 305,
+    "calls": 37,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 33,
+    "restored_identically": 33,
+    "stable_after_text_reentry": 33,
+    "source_diagnostic": 4
+  },
+  "diagnostics": [
+    {
+      "id": "IBM076-b057ac80-M014",
+      "message": "Unsupported TeX command: \\min at byte 5"
+    },
+    {
+      "id": "IBM076-b057ac80-M024",
+      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+    },
+    {
+      "id": "IBM076-b057ac80-M030",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM076-b057ac80-M031",
+      "message": "A finite sum/product requires lower and upper bounds at byte 15"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

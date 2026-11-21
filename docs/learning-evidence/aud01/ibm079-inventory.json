@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
   "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
-  "worker_sha256": "9af4e972c52cb79fc6d3ae387104549de500858556f0814c8fad57a0d6b1bb82",
-  "revision": "aba793d6",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "revision": "88544e4f",
   "mode": "Quantum notation",
   "markdown_cells": 12,
   "code_cells": 0,
@@ -498,8 +498,8 @@
       "end": 930,
       "literal": "$[H_A, H_B] \\neq 0$",
       "status": "exact",
-      "display": "qoperatorref(\"H_A\") · qoperatorref(\"H_B\") − (qoperatorref(\"H_B\") · qoperatorref(\"H_A\")) ≠ 0",
-      "copy": "(qmul(qoperatorref(\"H_A\"), qoperatorref(\"H_B\")) − qmul(qoperatorref(\"H_B\"), qoperatorref(\"H_A\")))!=(0)"
+      "display": "qoperatorunequal(qmul(qoperatorref(\"H_A\"), qoperatorref(\"H_B\")), qmul(qoperatorref(\"H_B\"), qoperatorref(\"H_A\")))",
+      "copy": "qoperatorunequal(qmul(qoperatorref(\"H_A\"),qoperatorref(\"H_B\")),qmul(qoperatorref(\"H_B\"),qoperatorref(\"H_A\")))"
     },
     {
       "id": "IBM079-7325643f-M042",
@@ -518,8 +518,8 @@
       "end": 1117,
       "literal": "$$\ne^{-i(H_A + H_B)t} \\neq e^{-iH_A t}e^{-iH_B t}\n$$",
       "status": "exact",
-      "display": "qpropagator(qadd(\"H_A\", \"H_B\"), 't') − (qpropagator(\"H_A\", 't') · qpropagator(\"H_B\", 't')) ≠ 0",
-      "copy": "(qadd(qpropagator(qadd(\"H_A\",\"H_B\"),'t'),qmul(−1,qadjacent(qpropagator(\"H_A\",'t'),qpropagator(\"H_B\",'t')))))!=(0)"
+      "display": "qoperatorunequal(qpropagator(qadd(\"H_A\", \"H_B\"), 't'), qadjacent(qpropagator(\"H_A\", 't'), qpropagator(\"H_B\", 't')))",
+      "copy": "qoperatorunequal(qpropagator(qadd(\"H_A\",\"H_B\"),'t'),qadjacent(qpropagator(\"H_A\",'t'),qpropagator(\"H_B\",'t')))"
     },
     {
       "id": "IBM079-7325643f-M044",
