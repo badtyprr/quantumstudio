@@ -1,4 +1,4 @@
-"""Compatibility parsing for the specification's concatenated call arguments.
+"""Compatibility parsing for concatenated call arguments and gate timing.
 
 The reference grammar only admits ++ in aliases, although its subroutine
 example uses parity(c ++ c2). Keep tokens and source locations intact and give
@@ -11,6 +11,7 @@ from openqasm3 import ast
 from openqasm3.parser import QASMNodeVisitor, QASM3ParsingError, add_span, get_span
 from openqasm3._antlr.qasm3Lexer import qasm3Lexer
 from openqasm3._antlr.qasm3Parser import qasm3Parser
+from qasm_source_diagnostics import error_at
 
 
 class _Errors(ErrorListener):
@@ -19,6 +20,14 @@ class _Errors(ErrorListener):
 
 
 class _Visitor(QASMNodeVisitor):
+    def visitGateCallStatement(self, ctx):
+        node = super().visitGateCallStatement(ctx)
+        # The pinned reference AST omits duration on QuantumPhase. Reject it
+        # while the grammar still exposes the original duration designator.
+        if ctx.GPHASE() and ctx.designator() is not None:
+            raise error_at(node, 'Timed gates are not supported.')
+        return node
+
     def visitLogicalOrExpression(self, ctx):
         # Flatten only unparenthesized OR chains. Parenthesis contexts stay
         # opaque, so the caller's explicit grouping always takes precedence.
@@ -46,14 +55,14 @@ class _Visitor(QASMNodeVisitor):
 
 
 def concatenation_program(source):
-    """Return a reference AST when ++ tokens occur, otherwise use normal loading."""
-    if '++' not in source:
+    """Use compatibility parsing for concatenation or global-phase tokens."""
+    if '++' not in source and 'gphase' not in source:
         return None
     lexer = qasm3Lexer(InputStream(source)); lexer.removeErrorListeners()
     lexer.addErrorListener(_Errors())
     stream = CommonTokenStream(lexer); stream.fill()
     operators = [token for token in stream.tokens if token.type == qasm3Lexer.DOUBLE_PLUS]
-    if not operators:
+    if not operators and not any(token.type == qasm3Lexer.GPHASE for token in stream.tokens):
         return None
     for token in operators:
         token.type = qasm3Lexer.DOUBLE_PIPE

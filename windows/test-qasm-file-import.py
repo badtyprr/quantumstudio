@@ -56,6 +56,200 @@ class FileImportTests(unittest.TestCase):
             self.assertIn("nested κ/helper.inc:2:18:", message)
             self.assertIn("Unexpected token", message)
 
+    def test_dependency_lowering_diagnostics(self):
+        cases = [
+            ('qubit[26] q;', 'Classical circuits support', 'qubit'),
+            ('qubit[25] q; qubit extra;', 'Classical circuits support', 'qubit extra'),
+            ('bit[64] b; bit extra;', 'Classical circuits support', 'bit extra'),
+            ('int n=1; switch(n) { case 1 { } case 1 { } }',
+             'Duplicate switch case value: 1', '1 { } }'),
+            ('int n=1; int n=2;', 'Duplicate declaration in one scope: n', 'int n=2'),
+            ('bit[2] b; if(b) { }', 'Whole-register truth conditions', 'if(b)'),
+            ('bit[2] b; if(b == 4) { }', 'Condition constant is outside its register range.', 'if(b'),
+            ('bit[2] b; switch(b) { case 1 { } }',
+             'Switch targets require an integer expression;', 'switch(b)'),
+            ('bit b; if(b) { bit c; }',
+             'Register declarations inside runtime branches are not supported.', 'bit c'),
+            ('int n; int k; switch(n) { case k { } }',
+             'Switch case labels must be integer constants.', 'k {'),
+            ('int n; switch(n) { case 1 { qubit q; } }',
+             'Global declarations are not allowed in switch cases.', 'qubit q'),
+            ('bit b; if(b) { bit b; }',
+             'Non-integer shadowing is not yet supported by the importer.', 'bit b; }'),
+            ('float t; if(t) { }', 'A bit expression requires an explicit cast or comparison.', 'if(t)'),
+            ('float t; while(t) { }', 'A bit expression requires an explicit cast or comparison.', 'while(t)'),
+            ('int n; if(bit[2](n)) { }', 'Integer-to-bit casts require equal explicit widths.', 'if(bit'),
+            ('int n; while(bit[2](n)) { }', 'Integer-to-bit casts require equal explicit widths.', 'while(bit'),
+            ('int n; for int i in [:n] { }', 'For-loop ranges require both endpoints.', 'for int'),
+            ('bit[2] a; bit[3] b; if(a==b) { }', 'Classical operands have incompatible widths.', 'if(a'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "nested κ/helper.inc";')
+        for source, detail, token in cases:
+            for command in COMMANDS:
+                for module in (False, True):
+                    with self.subTest(source=source, command=command, module=module):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/helper.inc', prefix + '  ' + source + '\r\n')
+                        args = ['--classical', '--source-file', str(main)]
+                        if module:
+                            args.append('--module-headers')
+                        message = self.run_import(command, args, success=False)
+                        self.assertIn('nested κ/helper.inc:2:' + str(source.index(token) + 3) + ':', message)
+                        self.assertIn(detail, message)
+                        plain = self.run_import(command, ['--classical'],
+                                                'OPENQASM 3; ' + source, success=False)
+                        self.assertIn(detail, plain)
+                        self.assertNotIn('helper.inc', plain)
+
+    def test_emission_dependency_diagnostics(self):
+        cases = [
+            ('qubit[25] q; qubit extra;', 'qubit extra', False, 'The circuit editor currently supports'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', False, 'The compiled circuit exceeds'),
+            ('qubit q; for int i in [0:512] { x q; }', 'x q', True, 'Classical circuits support at most 512'),
+            ('qubit[3] q; ctrl(3) @ gphase(pi) q[0],q[1],q[2];', 'ctrl(3)', False, 'Controlled global phase'),
+            ('qubit q; delay[1ns] q;', 'delay', False, 'The editor cannot represent DelayInstruction.'),
+            ('qubit q; delay[1ns] q;', 'delay', True, 'Classical circuit import cannot yet represent DelayInstruction.'),
+            ('int n; for bool i in [0:n] { }', 'for bool', True, 'Runtime for loops currently require'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/body.inc";')
+        for body, token, classical, detail in cases:
+            for command in COMMANDS:
+                for module in (False, True):
+                    with self.subTest(body=body, classical=classical, command=command, module=module):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/body.inc', prefix + '  ' + body)
+                        args = ['--source-file', str(main)]
+                        if classical:
+                            args.append('--classical')
+                        if module:
+                            args.append('--module-headers')
+                        message = self.run_import(command, args, success=False)
+                        self.assertIn(f'nested κ/body.inc:2:{body.index(token) + 3}: {detail}', message)
+
+    def test_declaration_range_scope_locations(self):
+        cases = [
+            ('int ' + 'i' * 65 + ';', True, 0, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('int n; for int ' + 'i' * 65 + ' in [0:n] { }', True, 7, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('qubit[3] q; x q[0:0:2];', False, 12, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('qubit[3] q; x q[0:0:2];', True, 12, 'Register ranges require integer bounds and a nonzero integer step.'),
+            ('{' * 33 + 'int i;' + '}' * 33, True, 32, 'Classical scopes exceed 32 levels.'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/limits.inc";')
+        for body, classical, offset, detail in cases:
+            for command in COMMANDS:
+                for module in (False, True):
+                    with self.subTest(body=body, command=command, module=module, classical=classical):
+                        prefix = 'OPENQASM 3;\r\n' if module else '// dependency\r\n'
+                        self.put('nested κ/limits.inc', prefix + '  ' + body)
+                        args = ['--source-file', str(main)]
+                        if classical:
+                            args.append('--classical')
+                        if module:
+                            args.append('--module-headers')
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), f'nested κ/limits.inc:2:{offset + 3}: {detail}')
+
+    def test_gate_arithmetic_locations(self):
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/angles.inc";')
+        for body in ('qubit q; rx(1/0) q;', 'gate g a { rx(1/0) a; } qubit q; g q;'):
+            self.put('nested κ/angles.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                for classical in (False, True):
+                    with self.subTest(body=body, command=command, classical=classical):
+                        args = ['--source-file', str(main), '--module-headers']
+                        if classical:
+                            args.append('--classical')
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), f'nested κ/angles.inc:2:{body.index("rx(") + 3}: division by zero')
+
+    def test_numerical_loop_transfer_file_import(self):
+        cases = [
+            ('while(true) { x q; break; h q; }', ['X']),
+            ('int i=0; while(i<3) { i+=1; x q; continue; h q; }', ['X'] * 3),
+            ('for int i in [0:2] { x q; break; h q; }', ['X']),
+            ('for int i in [0:2] { x q; continue; h q; }', ['X'] * 3),
+            ('for int i in [0:1] { for int j in [0:2] { x q; break; } h q; }', ['X', 'H'] * 2),
+            ('int n=2; while(n>0) { n-=1; int n=0; x q; continue; }', ['X'] * 2),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/loops.inc";')
+        for body, gates in cases:
+            self.put('nested κ/loops.inc', 'OPENQASM 3;\r\nqubit q; ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    result = self.run_import(command, ['--source-file', str(main), '--module-headers'])
+                    self.assertEqual(result['Circuit'], {'Version': 1, 'Qubits': 1, 'Steps': [
+                        {'Gate': gate, 'Angle': '', 'Wires': [0]} for gate in gates]})
+
+    def test_numerical_transfer_scope_rejections(self):
+        cases = [
+            ('for int i in [0:0] { int n=0; if(false) { break; } int n=1; x q; }', 'int n=1', 'n'),
+            ('int k=0; while(k<1) { k+=1; int n=0; if(false) { continue; } int n=1; x q; }', 'int n=1', 'n'),
+            ('for int i in [0:0] { if(false) { break; } int i=1; x q; }', 'int i=1', 'i'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; qubit q; include "scope.inc";')
+        for body, token, name in cases:
+            self.put('scope.inc', '// original scope\n  ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    message = self.run_import(command, ['--source-file', str(main)], success=False)
+                    self.assertEqual(message.strip(),
+                                     f"scope.inc:2:{body.index(token) + 3}: Re-declaration of variable '{name}'")
+
+    def test_validation_origin_file_locations(self):
+        cases = [('qubit q; int n; for int i in [true:n] { x q; }',
+          True,
+          'for int',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def stop() -> int { return 2; } for int i in [true:stop()] { }',
+          True,
+          'true',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def start() -> bool { return true; } int n; for int i in [start():n] { }',
+          True,
+          'start():n',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('def stop() -> int { return 2; } for int i in [0:true:stop()] { }',
+          True,
+          'true',
+          'For-loop range bounds and step require integers; cast Boolean values explicitly.'),
+         ('qubit q; int n; while(n) { int[65] k; }', True, 'int[65]', 'Integer width must be 1–64, or omitted.'),
+         ('qubit q; int n; int[n] k;', True, 'int[n]', 'Integer widths must be compile-time constants.'),
+         ('qubit q; int n; switch(n) { default { x q; } }',
+          True,
+          'switch',
+          'Switch statements require at least one case.'),
+         ('qubit q; rx(sqrt(-1)) q;', False, 'rx(', 'Gate parameters must be finite.'),
+         ('qubit q; rx(sqrt(-1)) q;', True, 'rx(', 'Gate parameters must be finite.')]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/validation.inc";')
+        for body, classical, token, detail in cases:
+            self.put('nested κ/validation.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command, classical=classical):
+                    args = ['--source-file', str(main), '--module-headers']
+                    if classical:
+                        args.append('--classical')
+                    message = self.run_import(command, args, success=False)
+                    self.assertIn(f'nested κ/validation.inc:2:{body.index(token) + 3}: {detail}', message)
+
+    def test_timed_gate_rejection(self):
+        cases = [
+            ('qubit q; x[1ns] q;', 'x['),
+            ('gate g a { x[1ns] a; } qubit q; g q;', 'x['),
+            ('def f(qubit a) { x[1ns] a; } qubit q; f(q);', 'x['),
+            ('qubit q; gphase(pi)[1ns];', 'gphase'),
+            ('qubit q; ctrl @ gphase(pi)[1ns] q;', 'ctrl'),
+        ]
+        main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/timed.inc";')
+        for body, token in cases:
+            self.put('nested κ/timed.inc', 'OPENQASM 3;\r\n  ' + body)
+            for command in COMMANDS:
+                for classical in (False, True):
+                    with self.subTest(body=body, command=command, classical=classical):
+                        mode = ['--classical'] if classical else []
+                        message = self.run_import(command, ['--source-file', str(main), '--module-headers', *mode], success=False)
+                        self.assertEqual(message.strip(),
+                                         f'nested κ/timed.inc:2:{body.index(token) + 3}: Timed gates are not supported.')
+
     def test_entry_suffix_parser_diagnostic(self):
         text = 'OPENQASM 3; include "helper.inc"; qubit q x q;'
         main = self.put("main.qasm", text)
@@ -106,6 +300,34 @@ class FileImportTests(unittest.TestCase):
         for command in COMMANDS:
             message = self.run_import(command, ["--source-file", str(main), "--classical"], success=False)
             self.assertEqual(message.strip(), "parameters.inc:3:1: Use float32/64 or angle widths 1–64.")
+
+    def test_lowering_and_assignment_emission_locations(self):
+        cases = [
+            ("qubit q;\nfor int i in [0:0:2] { x q; }", 4,
+             "For-loop range step must not be zero.", (False, True)),
+            ("bool b;\nb += true;", 4,
+             "Boolean compound assignments are not yet supported.", (True,)),
+            ("int n = 1;\nbit[2] b;\nb = bit[2](n);", 5,
+             "Integer-to-bit casts require equal explicit widths.", (True,)),
+            ("int n = 1;\nbit[2] b = bit[2](n);", 4,
+             "Integer-to-bit casts require equal explicit widths.", (True,)),
+        ]
+        for module in (False, True):
+            prologue = 'OPENQASM 3;\ninclude "stdgates.inc";\n' if module else '// original\n// dependency\n'
+            main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "sub dir/wrapper.inc";')
+            self.put("sub dir/wrapper.inc", '// nested\ninclude "bad \u03ba.inc";')
+            for body, line, expected, modes in cases:
+                self.put("sub dir/bad \u03ba.inc", prologue + body.rsplit("\n", 1)[0] + "\n  " + body.rsplit("\n", 1)[1])
+                for command in COMMANDS:
+                    for classical in modes:
+                        with self.subTest(module=module, body=body, command=command, classical=classical):
+                            mode = ["--classical"] if classical else []
+                            args = ["--source-file", str(main), *mode] + (["--module-headers"] if module else [])
+                            message = self.run_import(command, args, success=False)
+                            self.assertEqual(message.strip(), f"sub dir/bad \u03ba.inc:{line}:3: {expected}")
+                            # The diagnostic text remains identical for paste-only input.
+                            message = self.run_import(command, mode, source='OPENQASM 3;\n' + body, success=False)
+                            self.assertEqual(message.strip(), expected)
 
     def test_generated_qb004_modules(self):
         for name, count in [("oracle", 3), ("bernvaz", 10)]:

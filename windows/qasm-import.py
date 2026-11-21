@@ -17,7 +17,7 @@ from pyqasm.expressions import Qasm3ExprEvaluator
 from pyqasm.transformer import Qasm3Transformer
 from pyqasm.validator import Qasm3Validator
 from pyqasm.elements import Context
-from qasm_source_diagnostics import error_at
+from qasm_source_diagnostics import error_at, copy_span, diagnostic_context
 from qasm_subroutine_scope import prepare_subroutine_scope
 from qasm_concat_parser import concatenation_program
 from qasm_runtime_subroutines import lower_runtime_subroutines
@@ -67,11 +67,11 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         visitor._quantum_call_depth=depth+1;visitor._quantum_call_count=calls
         try:return original_function(visitor,statement)
         finally:visitor._quantum_call_depth=depth
-    def require_range_integer(value):
+    def require_range_integer(value,origin):
         if (isinstance(value,ast.BooleanLiteral) or isinstance(value,ast.Cast) and isinstance(value.type,ast.BoolType) or
             isinstance(value,ast.UnaryExpression) and value.op.name=='!' or
             isinstance(value,ast.BinaryExpression) and value.op.name in ('==','!=','<','<=','>','>=','&&','||')):
-            raise ValueError('For-loop range bounds and step require integers; cast Boolean values explicitly.')
+            raise error_at(origin,'For-loop range bounds and step require integers; cast Boolean values explicitly.')
     def for_loop(visitor, statement):
         bounds=statement.set_declaration
         if getattr(statement,'_quantum_runtime_for',False):
@@ -80,7 +80,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             captured=ast.RangeDefinition(start=normalize(visitor,bounds.start,typed=True),
                                         end=normalize(visitor,bounds.end,typed=True),
                                         step=normalize(visitor,bounds.step or ast.IntegerLiteral(1),typed=True))
-            for value in (captured.start,captured.end,captured.step):require_range_integer(value)
+            for value in (captured.start,captured.end,captured.step):require_range_integer(value,statement)
             proxy=ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=statement.block,else_block=[])
             compiled=branch(visitor,proxy,force=True)
             return [ast.ForInLoop(type=statement.type,identifier=statement.identifier,set_declaration=captured,block=item.if_block) for item in compiled]
@@ -90,12 +90,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         stop=Qasm3ExprEvaluator.evaluate_expression(bounds.end)[0]
         step=1 if bounds.step is None else Qasm3ExprEvaluator.evaluate_expression(bounds.step)[0]
         if any(type(value) is not int for value in (start,stop,step)):
-            raise ValueError('For-loop range bounds and step must be integers.')
-        if step==0:raise ValueError('For-loop range step must not be zero.')
+            raise error_at(statement,'For-loop range bounds and step must be integers.')
+        if step==0:raise error_at(statement,'For-loop range step must not be zero.')
         distance=(stop-start) if step>0 else (start-stop)
         count=0 if distance<0 else distance//abs(step)+1
         if count>visitor._loop_limit:
-            raise ValueError('For-loop range exceeds the compiler iteration limit.')
+            raise error_at(statement,'For-loop range exceeds the compiler iteration limit.')
         # The pinned compiler uses range(start, end + step, step). Align end to
         # the last included value so a non-divisible range cannot overshoot.
         # A copied node also keeps caller ASTs intact when compilation fails.
@@ -132,11 +132,20 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if operand['Kind']=='Integer' and not operand.get('_quantum_float'):return integer()
             return {'Kind':'Binary','Operator':'Multiply','Left':{'Kind':'Constant','ValueBits':'13830554455654793216'},'Right':operand}
         return integer()
+    def source_gate(visitor,operation,ctrls=None):
+        try:
+            result=original_gate(visitor,operation,ctrls)
+        except ArithmeticError as error:
+            raise error_at(operation,str(error)) from error
+        for item in result:
+            if getattr(item,'span',None) is None:
+                copy_span(item,operation)
+        return result
     def gate(visitor,operation,ctrls=None):
         phase_gate=isinstance(operation,ast.QuantumPhase)
         arguments=[operation.argument] if phase_gate else operation.arguments
         if not runtime(visitor,arguments) and not runtime(visitor,operation.modifiers):
-            return original_gate(visitor,operation,ctrls)
+            return source_gate(visitor,operation,ctrls)
         name='gphase' if phase_gate else operation.name.name
         kinds={'rx':'X','ry':'Y','rz':'Z','p':'Phase','phase':'Phase','u1':'Phase','gphase':'GlobalPhase',
                'u':'U3','U':'U3','u3':'U3','cp':'Phase','crx':'X','cry':'Y','crz':'Z'}
@@ -314,6 +323,14 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if getattr(visitor,'_quantum_runtime_branch_depth',0) or runtime(visitor,value) or any(isinstance(item,ast.QuantumMeasurement) for item in nodes(value)):
             raise error_at(statement,'Compile-time arrays cannot depend on runtime values or be modified in runtime control flow.')
     def assignment(visitor, statement):
+        with diagnostic_context(statement):
+            result = assignment_body(visitor, statement)
+        for item in result:
+            if getattr(item, 'span', None) is None:
+                copy_span(item, statement)
+        return result
+
+    def assignment_body(visitor, statement):
         if hasattr(statement.lvalue,'_quantum_array'):
             target=normalize_array(visitor,statement.lvalue,0);info=target._quantum_array
             value=normalize_numeric(visitor,statement.rvalue) if info['kind'] in ('Float','Angle') else normalize(visitor,statement.rvalue,typed=True)
@@ -396,16 +413,16 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             original_declaration(visitor,bare)
             visitor._quantum_numeric_names=dict(getattr(visitor,'_quantum_numeric_names',{}),**{statement.identifier.name:(kind,width)})
             result=[] if visitor._check_only else [bare]
-            if statement.init_expression is not None:result+=assignment(visitor,ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression))
+            if statement.init_expression is not None:result+=assignment(visitor,copy_span(ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression), statement))
             return result
         if isinstance(statement.type,RUNTIME_SCALAR_TYPES) and statement.identifier.name in runtime_integer_names:
             if getattr(statement,'_quantum_range_capture',False):
-                require_range_integer(normalize(visitor,statement.init_expression,typed=True))
+                require_range_integer(normalize(visitor,statement.init_expression,typed=True),statement)
             boolean=isinstance(statement.type,ast.BoolType)
             size = ast.IntegerLiteral(1) if boolean else statement.type.size
-            if size is not None and runtime(visitor,size):raise ValueError('Integer widths must be compile-time constants.')
+            if size is not None and runtime(visitor,size):raise error_at(statement,'Integer widths must be compile-time constants.')
             width = 0 if size is None else Qasm3ExprEvaluator.evaluate_expression(size, const_expr=True)[0]
-            if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise ValueError('Integer width must be 1–64, or omitted.')
+            if type(width) is not int or not 0<=width<=64 or (width==0 and size is not None):raise error_at(statement,'Integer width must be 1–64, or omitted.')
             bare=copy.deepcopy(statement);bare.init_expression=None
             # Let the compiler validate the declaration and register its name,
             # but keep the value undefined for the runtime interpreter.
@@ -417,13 +434,13 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             bare.type.size=ast.IntegerLiteral(width)
             result=[] if visitor._check_only else [bare]
             if statement.init_expression is not None:
-                result+=assignment(visitor,ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression))
+                result+=assignment(visitor,copy_span(ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression), statement))
             return result
         if not isinstance(statement.type,ast.BitType) or statement.init_expression is None or isinstance(statement.init_expression,ast.QuantumMeasurement):
             return original_declaration(visitor,statement)
         bare = copy.deepcopy(statement);bare.init_expression=None
         result = original_declaration(visitor,bare)
-        initial = ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression)
+        initial = copy_span(ast.ClassicalAssignment(lvalue=copy.deepcopy(statement.identifier),op=ast.AssignmentOperator['='],rvalue=statement.init_expression), statement)
         return result+assignment(visitor,initial)
     def branch(visitor, statement, force=False):
         if in_function(visitor):return original_branch(visitor,statement)
@@ -445,7 +462,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         try:
             yes = visitor.visit_basic_block(statement.if_block)
             no = visitor.visit_basic_block(statement.else_block)
-            return [] if visitor._check_only else [ast.BranchingStatement(condition=condition, if_block=yes, else_block=no)]
+            result=ast.BranchingStatement(condition=condition, if_block=yes, else_block=no)
+            result.span=statement.span
+            return [] if visitor._check_only else [result]
         finally:
             visitor._quantum_runtime_branch_depth-=1
             visitor._scope_manager.decrement_scope_level()
@@ -486,9 +505,9 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         # Branch compilation supplies the same scoped block and gate bookkeeping.
         if any(isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) for item in nodes(statement)):
             raise ValueError('Global declarations are not allowed in runtime loops.')
-        proxy=ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[])
+        proxy=copy_span(ast.BranchingStatement(condition=statement.while_condition,if_block=statement.block,else_block=[]),statement)
         compiled=branch(visitor,proxy,force=True)
-        return [ast.WhileLoop(while_condition=item.condition,block=item.if_block) for item in compiled]
+        return [copy_span(ast.WhileLoop(while_condition=item.condition,block=item.if_block),statement) for item in compiled]
     def switch(visitor, statement):
         if in_function(visitor):return original_switch(visitor,statement)
         target=normalize(visitor,statement.target)
@@ -513,7 +532,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
             if isinstance(value,ast.FunctionCall):
                 return value.name.name=='popcount' or value.name.name in ('rotl','rotr') and integer_target(value.arguments[0])
             return False
-        if not integer_target(target):raise ValueError('Switch targets require an integer expression; use an explicit integer cast.')
+        if not integer_target(target):raise error_at(statement,'Switch targets require an integer expression; use an explicit integer cast.')
         def promote_operands(value):
             # The integer evaluator represents predicates through a Boolean
             # cast so it can preserve short-circuiting and undefined reads.
@@ -523,15 +542,15 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
                 value.lhs=promote_operands(value.lhs);value.rhs=promote_operands(value.rhs)
             return value
         target=promote_operands(copy.deepcopy(statement.target))
-        if not statement.cases:raise ValueError('Switch statements require at least one case.')
+        if not statement.cases:raise error_at(statement,'Switch statements require at least one case.')
         seen=set();cases=[]
         for labels,body in statement.cases:
             values=[]
             for label in labels:
-                if runtime(visitor,label):raise ValueError('Switch case labels must be integer constants.')
+                if runtime(visitor,label):raise error_at(label,'Switch case labels must be integer constants.')
                 value=Qasm3ExprEvaluator.evaluate_expression(label,const_expr=True,reqd_type=ast.IntType)[0]
-                if type(value) is not int:raise ValueError('Switch case labels must be integer constants.')
-                if value in seen:raise ValueError('Duplicate switch case value: '+str(value))
+                if type(value) is not int:raise error_at(label,'Switch case labels must be integer constants.')
+                if value in seen:raise error_at(label,'Duplicate switch case value: '+str(value))
                 seen.add(value);values.append(value)
             if not values:raise ValueError('Switch cases require at least one label.')
             cases.append((values,body.statements))
@@ -539,7 +558,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         for body in bodies:
             for item in body:
                 if isinstance(item,(ast.QubitDeclaration,ast.QuantumGateDefinition,ast.SubroutineDefinition)) or isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,ast.ArrayType):
-                    raise ValueError('Global declarations are not allowed in switch cases.')
+                    raise error_at(item,'Global declarations are not allowed in switch cases.')
         # A branch chooses exactly one body. Repeated target reads happen only
         # while matching labels, before any selected body can change storage.
         tail=[] if statement.default is None else statement.default.statements
@@ -556,7 +575,7 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         end = qreg_size-1 if range_def.end is None else Qasm3ExprEvaluator.evaluate_expression(range_def.end)[0]
         step = 1 if range_def.step is None else Qasm3ExprEvaluator.evaluate_expression(range_def.step)[0]
         if any(type(value) is not int for value in (start, end, step)) or step == 0:
-            raise ValueError('Register ranges require integer bounds and a nonzero integer step.')
+            raise error_at(op_node,'Register ranges require integer bounds and a nonzero integer step.')
         for index in (start, end):
             Qasm3Validator.validate_register_index(index, qreg_size, qubit=is_qubit_reg, op_node=op_node)
         return list(range(start, end+(1 if step > 0 else -1), step))
@@ -567,11 +586,12 @@ def unroll_preserving_phase(module, primitives, preserve_branches=False):
         if inverse:
             value = -value
         if len(ctrls) not in (1,2):
-            raise ValueError("Controlled global phase currently supports one or two controls.")
+            raise error_at(operation,"Controlled global phase currently supports one or two controls.")
         return [ast.QuantumGate(modifiers=[], name=ast.Identifier("p" if len(ctrls)==1 else "cp"),
                                 arguments=[ast.FloatLiteral(value)], qubits=list(ctrls))]
     QasmVisitor._visit_forin_loop = for_loop
     QasmVisitor._visit_phase_operation = phase
+    QasmVisitor._visit_generic_gate_operation = source_gate
     Qasm3Transformer.get_qubits_from_range_definition = staticmethod(register_range)
     if preserve_branches:
         QasmVisitor._visit_generic_gate_operation = indexed_gate
@@ -615,6 +635,11 @@ GATES.update(u1='P')
 GATES.update(iswap='iSWAP')
 
 def gate_steps(statement, wire, published_u=False):
+    with diagnostic_context(statement):
+        return _gate_steps(statement, wire, published_u)
+
+
+def _gate_steps(statement, wire, published_u=False):
     name = statement.name.name
     if name not in GATES and name not in ('id', 'i', 'u2'):
         raise ValueError('The editor cannot represent compiled gate: ' + name)
@@ -755,19 +780,19 @@ def resolve_integer_scopes(program):
         result=ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=ast.IntegerLiteral(0))
         result._quantum_clear=True
         return result
-    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None):
-        if depth>32:raise ValueError('Classical scopes exceed 32 levels.')
+    def block(body,parent,depth=0,declared=None,cleanup=(),loop_kind=None,origin=None):
+        if depth>32:raise error_at(origin,'Classical scopes exceed 32 levels.')
         env=dict(parent);declared=set() if declared is None else set(declared);local=[];result=[]
         for statement in body:
             if isinstance(statement,(ast.ClassicalDeclaration,ast.ConstantDeclaration)):
                 name=statement.identifier.name
-                if name in declared:raise ValueError('Duplicate declaration in one scope: '+name)
+                if name in declared:raise error_at(statement,'Duplicate declaration in one scope: '+name)
                 declared.add(name);integer=isinstance(statement,ast.ClassicalDeclaration) and isinstance(statement.type,RUNTIME_SCALAR_TYPES)
-                if depth and name in env and not integer:raise ValueError('Non-integer shadowing is not yet supported by the importer.')
+                if depth and name in env and not integer:raise error_at(statement,'Non-integer shadowing is not yet supported by the importer.')
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
                 if integer:
-                    if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                    if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
                     statement._quantum_scoped=depth>0
                     env[name]=renamed
                     if depth:scoped.add(renamed);local.append(renamed)
@@ -776,32 +801,32 @@ def resolve_integer_scopes(program):
                 result.append(statement)
             elif isinstance(statement,ast.BranchingStatement):
                 expression(statement.condition,env)
-                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                block(statement.if_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);block(statement.else_block,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement)
                 result.append(statement)
             elif isinstance(statement,ast.SwitchStatement):
                 expression(statement.target,env)
                 for labels,case in statement.cases:
-                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
-                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind)
+                    expression(labels,env);block(case.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=case)
+                if statement.default is not None:block(statement.default.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement.default)
                 result.append(statement)
             elif isinstance(statement,ast.WhileLoop):
                 expression(statement.while_condition,env)
-                block(statement.block,env,depth+1,loop_kind="while");result.append(statement)
+                block(statement.block,env,depth+1,loop_kind="while",origin=statement);result.append(statement)
             elif isinstance(statement,ast.ForInLoop):
                 expression(statement.type,env);expression(statement.set_declaration,env)
                 if getattr(statement,'_quantum_runtime_for',False):
                     # A real local declaration gives the binding its own slot.
                     # The engine owns the independent cursor and clears the slot
                     # on loop exit; ordinary scope cleanup handles body locals.
-                    binding=ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier))
+                    binding=copy_span(ast.ClassicalDeclaration(type=copy.deepcopy(statement.type),identifier=copy.deepcopy(statement.identifier)),statement)
                     binding._quantum_for_binding=True
                     statement.block.insert(0,binding)
-                    block(statement.block,env,depth+1,loop_kind="while")
+                    block(statement.block,env,depth+1,loop_kind="while",origin=statement)
                     statement.identifier=copy.deepcopy(binding.identifier)
                     result.append(statement);continue
                 name=statement.identifier.name;renamed=fresh(name) if name in env else name
                 statement.identifier.name=renamed;inner=dict(env);inner[name]=renamed
-                block(statement.block,inner,depth+1,{name},loop_kind="for");result.append(statement)
+                block(statement.block,inner,depth+1,{name},loop_kind="for",origin=statement);result.append(statement)
             elif isinstance(statement,(ast.BreakStatement,ast.ContinueStatement)):
                 if loop_kind!="while":
                     raise ValueError("Break and continue currently require an enclosing while loop; for-loop transfer lowering is not yet supported.")
@@ -810,7 +835,7 @@ def resolve_integer_scopes(program):
                     result.extend(clear(name) for name in reversed(scope))
                 statement._quantum_loop_transfer=True;result.append(statement)
             elif isinstance(statement,ast.CompoundStatement):
-                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind);result.extend(statement.statements)
+                block(statement.statements,env,depth+1,cleanup=cleanup+(local,),loop_kind=loop_kind,origin=statement);result.extend(statement.statements)
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
                 result.append(statement)
             else:
@@ -899,9 +924,9 @@ def mark_runtime_ranges(program):
                     block(statement.block,inner)
                 if dynamic:
                     if not isinstance(statement.set_declaration,ast.RangeDefinition) or not isinstance(statement.type,(ast.IntType,ast.UintType)):
-                        raise ValueError('Runtime for loops currently require an integer binding and a range.')
+                        raise error_at(statement,'Runtime for loops currently require an integer binding and a range.')
                     if statement.set_declaration.start is None or statement.set_declaration.end is None:
-                        raise ValueError('For-loop ranges require both endpoints.')
+                        raise error_at(statement,'For-loop ranges require both endpoints.')
                     statement._quantum_runtime_for=True
             elif isinstance(statement,ast.WhileLoop):block(statement.block,env)
             elif isinstance(statement,ast.BranchingStatement):block(statement.if_block,env);block(statement.else_block,env)
@@ -959,6 +984,81 @@ def lower_for_transfers(program):
                 result.append(statement)
         body[:]=result
     block(program.statements)
+
+
+def lower_numerical_transfers(program):
+    """Lower compile-time loop transfers without throwing away emitted gates."""
+    used={node.name for node in nodes(program) if isinstance(node,ast.Identifier)}
+    serial=0
+    def fresh():
+        nonlocal serial
+        while True:
+            serial+=1;name='_numerical_loop_'+str(serial)
+            if name not in used:
+                used.add(name);return name
+    def declaration(name,value,origin):
+        return copy_span(ast.ClassicalDeclaration(type=ast.BoolType(),identifier=ast.Identifier(name),init_expression=value),origin)
+    def assign(name,value,origin):
+        return copy_span(ast.ClassicalAssignment(lvalue=ast.Identifier(name),op=ast.AssignmentOperator['='],rvalue=value),origin)
+    def guard(name,body,origin):
+        return copy_span(ast.BranchingStatement(condition=ast.Identifier(name),if_block=body,else_block=[]),origin)
+    def children(node):
+        if isinstance(node,ast.BranchingStatement):return [node.if_block,node.else_block]
+        if isinstance(node,ast.CompoundStatement):return [node.statements]
+        if isinstance(node,ast.SwitchStatement):return [case.statements for _,case in node.cases]+([] if node.default is None else [node.default.statements])
+        return []
+    def transfers(body):
+        return any(isinstance(node,(ast.BreakStatement,ast.ContinueStatement)) or any(transfers(child) for child in children(node)) for node in body)
+    def block(body,target=None,bound=()):
+        if target is not None:
+            # Generated guards must not turn an invalid redeclaration in an
+            # original block into legal shadowing in a synthetic inner scope.
+            declared=set(bound)
+            for item in body:
+                identifier=(item.identifier if isinstance(item,(ast.ClassicalDeclaration,ast.ConstantDeclaration)) else
+                            item.qubit if isinstance(item,ast.QubitDeclaration) else
+                            item.target if isinstance(item,ast.AliasStatement) else None)
+                if identifier is not None:
+                    name=identifier.name
+                    if name in declared:raise error_at(item,"Re-declaration of variable '"+name+"'")
+                    declared.add(name)
+        result=[]
+        for index,node in enumerate(body):
+            if isinstance(node,(ast.ForInLoop,ast.WhileLoop)):
+                if transfers(node.block):
+                    active,more=fresh(),fresh()
+                    lowered=block(node.block,(active,more),[node.identifier.name] if isinstance(node,ast.ForInLoop) else [])
+                    if isinstance(node,ast.WhileLoop):
+                        # Evaluate the condition outside body-local bindings,
+                        # and never evaluate it again after a taken break.
+                        condition=copy.deepcopy(node.while_condition)
+                        initial=ast.Cast(type=ast.BoolType(),argument=copy.deepcopy(condition))
+                        result.append(declaration(active,initial,node))
+                        node.while_condition=ast.Identifier(active)
+                        node.block=[declaration(more,ast.BooleanLiteral(True),node),copy_span(ast.BranchingStatement(condition=ast.BooleanLiteral(True),if_block=lowered,else_block=[]),node)]
+                        node.block.append(guard(active,[assign(active,ast.Cast(type=ast.BoolType(),argument=condition),node)],node))
+                    else:
+                        result.append(declaration(active,ast.BooleanLiteral(True),node))
+                        node.block=[guard(active,[declaration(more,ast.BooleanLiteral(True),node)]+lowered,node)]
+                else:node.block=block(node.block)
+                result.append(node)
+            elif isinstance(node,(ast.BreakStatement,ast.ContinueStatement)) and target is not None:
+                active,more=target
+                if isinstance(node,ast.BreakStatement):result.append(assign(active,ast.BooleanLiteral(False),node))
+                result.append(assign(more,ast.BooleanLiteral(False),node))
+                return result
+            else:
+                may_transfer=target is not None and any(transfers(child) for child in children(node))
+                for child in children(node):child[:]=block(child,target)
+                if isinstance(node,ast.SubroutineDefinition):node.body=block(node.body)
+                result.append(node)
+                # One guarded suffix keeps declarations visible to later
+                # statements without executing them after a taken transfer.
+                if may_transfer and index+1<len(body):
+                    result.append(guard(target[1],block(body[index+1:],target),node))
+                    return result
+        return result
+    program.statements[:]=block(program.statements)
 
 
 def lower_output_declarations(program, classical):
@@ -1023,6 +1123,9 @@ def convert(source, published_u=False, classical=False):
     if len(source.encode('utf-8')) > 262144:
         raise ValueError('OpenQASM input must be at most 256 KB.')
     module = pyqasm.loads(concatenation_program(source) or source)
+    for node in nodes(module.original_program):
+        if isinstance(node,ast.QuantumGate) and node.duration is not None:
+            raise error_at(node,'Timed gates are not supported.')
     if '$' in source:
         declare_physical_wires(module.original_program)
     output_registers = lower_output_declarations(module.original_program, classical)
@@ -1083,18 +1186,22 @@ def convert(source, published_u=False, classical=False):
     # only up to global phase. The calculator exposes exact state amplitudes.
     defined = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGateDefinition)}
     primitives = {n.name.name for n in nodes(module.original_program) if isinstance(n, ast.QuantumGate)} - defined
+    if not classical:lower_numerical_transfers(module.original_program)
     unroll_preserving_phase(module, primitives, preserve_branches=classical)
     statements = module.unrolled_ast.statements
     if classical:
         return classical_circuit(statements, published_u, hidden_registers, output_registers, allocations)
     registers, count = {}, 0
+    budget_origin = None
     for statement in statements:
         if isinstance(statement, ast.QubitDeclaration):
             size = 1 if statement.size is None else statement.size.value
             registers[statement.qubit.name] = (count, size)
             count += size
+            if budget_origin is None and count > 25:
+                budget_origin = statement
     if not 1 <= count <= 25:
-        raise ValueError('The circuit editor currently supports 1–25 qubits.')
+        raise error_at(budget_origin,'The circuit editor currently supports 1–25 qubits.')
 
     def wire(value):
         if isinstance(value, ast.Identifier):
@@ -1124,7 +1231,7 @@ def convert(source, published_u=False, classical=False):
                 raise ValueError('Timed gates are not supported.')
             steps.extend(gate_steps(statement, wire, published_u))
             if len(steps) > 512:
-                raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+                raise error_at(statement,'The compiled circuit exceeds the editor limit of 512 steps.')
             continue
         elif isinstance(statement, ast.QuantumPhase):
             if statement.modifiers:
@@ -1142,11 +1249,11 @@ def convert(source, published_u=False, classical=False):
         elif isinstance(statement, ast.QuantumMeasurementStatement):
             gate, wires = 'Measure', [wire(statement.measure.qubit)]
         else:
-            raise ValueError('The editor cannot represent ' + type(statement).__name__ +
+            raise error_at(statement,'The editor cannot represent ' + type(statement).__name__ +
                              '. Runtime classical feedback, timing and pulse programs require a richer execution model.')
         steps.append({'Gate': gate, 'Angle': angle, 'Wires': wires})
         if len(steps) > 512:
-            raise ValueError('The compiled circuit exceeds the editor limit of 512 steps.')
+            raise error_at(statement,'The compiled circuit exceeds the editor limit of 512 steps.')
     return {'Version': 1, 'Qubits': count, 'Steps': steps}
 
 
@@ -1400,6 +1507,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     inferred_ranges=set()
     numeric_variables,numeric_declarations={},[]
     nq = nc = 0
+    storage_overflow = None
     declarations_in_order=list(nodes(statements))
     # Allocate generated bits last so original register indices do not move.
     declarations_in_order.sort(key=lambda n:isinstance(n,ast.ClassicalDeclaration) and n.identifier.name in hidden_registers)
@@ -1408,6 +1516,8 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             size = 1 if statement.size is None else statement.size.value
             quantum[statement.qubit.name] = (nq, size)
             nq += size
+            if storage_overflow is None and not 0 <= nq <= 25:
+                storage_overflow = statement
         elif isinstance(statement, ast.ClassicalDeclaration):
             if isinstance(statement.type,NUMERIC_TYPES):
                 name=statement.identifier.name;size=statement.type.size.value;kind='Float' if isinstance(statement.type,ast.FloatType) else 'Angle'
@@ -1421,7 +1531,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
                 sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
-                if len(name.encode('utf-16-le'))//2>64:raise ValueError('Integer variable names must fit 64 UTF-16 code units.')
+                if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
                 if name in variables:
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue
@@ -1439,12 +1549,17 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             classical[name] = (nc, size)
             named.append({'Name': name, 'Size': size})
             nc += size
+            if storage_overflow is None and not 0 <= nc <= 64:
+                storage_overflow = statement
     if not 0 <= nq <= 25 or not 0 <= nc <= 64:
-        raise ValueError('Classical circuits support 0–25 qubits and up to 64 classical bits.')
+        raise error_at(storage_overflow,'Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
     if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
     def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
         return classical_expression(value,registers,expected_width,variables,integer_only,numeric_variables)
+    def condition_value(statement,condition):
+        with diagnostic_context(statement):
+            return classical_value(condition,classical,1,variables)
     def numeric(value,target_float_width=64):
         return lower_numeric(value,numeric_variables,
             lambda node:classical_expression(node,classical,variables=variables,integer_only=True,numeric_variables=numeric_variables),
@@ -1503,7 +1618,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if 'IntegerValue' in step:version=max(version,expression_version(step['IntegerValue']))
             count += 1
             if count > 512:
-                raise ValueError('Classical circuits support at most 512 total operations.')
+                raise error_at(statement,'Classical circuits support at most 512 total operations.')
             result.append(step)
         for statement in body:
             if isinstance(statement,WireReferenceCheck):
@@ -1527,34 +1642,35 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 continue
             if isinstance(statement, (ast.QubitDeclaration, ast.ClassicalDeclaration)):
                 if depth:
-                    raise ValueError('Register declarations inside runtime branches are not supported.')
+                    raise error_at(statement,'Register declarations inside runtime branches are not supported.')
                 continue
             if isinstance(statement, ast.ClassicalAssignment):
-                if hasattr(statement.lvalue,'_quantum_array'):
-                    info=statement.lvalue._quantum_array;target=array_selection(statement.lvalue,lambda index:classical_value(index,classical,integer_only=True))
-                    if info['kind'] in ('Float','Angle'):append(dict(Kind='StoreNumeric',ArrayTarget=target,NumericValue=numeric(statement.rvalue,info['width'] if info['kind']=='Float' else 64)))
-                    else:append(dict(Kind='StoreInteger',ArrayTarget=target,IntegerValue=classical_value(statement.rvalue,classical,integer_only=True)))
-                    continue
+                with diagnostic_context(statement):
+                    if hasattr(statement.lvalue,'_quantum_array'):
+                        info=statement.lvalue._quantum_array;target=array_selection(statement.lvalue,lambda index:classical_value(index,classical,integer_only=True))
+                        if info['kind'] in ('Float','Angle'):append(dict(Kind='StoreNumeric',ArrayTarget=target,NumericValue=numeric(statement.rvalue,info['width'] if info['kind']=='Float' else 64)))
+                        else:append(dict(Kind='StoreInteger',ArrayTarget=target,IntegerValue=classical_value(statement.rvalue,classical,integer_only=True)))
+                        continue
 
-                if getattr(statement,'_quantum_clear',False):
-                    append({'Kind':'ClearNumeric' if statement.lvalue.name in numeric_variables else 'ClearInteger','VariableSlot':(numeric_variables if statement.lvalue.name in numeric_variables else variables)[statement.lvalue.name][0]})
-                    continue
-                if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in numeric_variables:
-                    append({'Kind':'StoreNumeric','VariableSlot':numeric_variables[statement.lvalue.name][0],'NumericValue':numeric(statement.rvalue,numeric_variables[statement.lvalue.name][2] if numeric_variables[statement.lvalue.name][1]=='Float' else 64)})
-                    continue
-                if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
-                    name=statement.lvalue.name
-                    value=classical_value(statement.rvalue,classical,variables=variables,integer_only=True)
-                    if name in inferred_ranges:
-                        slot=variables[name][0];sign,width=integer_expression_type(value)
-                        variables[name]=(slot,sign,width)
-                        declarations[slot].update(Signedness=sign,Width=width)
-                        inferred_ranges.remove(name)
-                    append({'Kind':'StoreInteger','VariableSlot':variables[name][0],'IntegerValue':value})
-                    continue
-                targets=classical_indices(statement.lvalue,classical)
-                if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
-                append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_value(statement.rvalue,classical,len(targets),variables)})
+                    if getattr(statement,'_quantum_clear',False):
+                        append({'Kind':'ClearNumeric' if statement.lvalue.name in numeric_variables else 'ClearInteger','VariableSlot':(numeric_variables if statement.lvalue.name in numeric_variables else variables)[statement.lvalue.name][0]})
+                        continue
+                    if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in numeric_variables:
+                        append({'Kind':'StoreNumeric','VariableSlot':numeric_variables[statement.lvalue.name][0],'NumericValue':numeric(statement.rvalue,numeric_variables[statement.lvalue.name][2] if numeric_variables[statement.lvalue.name][1]=='Float' else 64)})
+                        continue
+                    if isinstance(statement.lvalue,ast.Identifier) and statement.lvalue.name in variables:
+                        name=statement.lvalue.name
+                        value=classical_value(statement.rvalue,classical,variables=variables,integer_only=True)
+                        if name in inferred_ranges:
+                            slot=variables[name][0];sign,width=integer_expression_type(value)
+                            variables[name]=(slot,sign,width)
+                            declarations[slot].update(Signedness=sign,Width=width)
+                            inferred_ranges.remove(name)
+                        append({'Kind':'StoreInteger','VariableSlot':variables[name][0],'IntegerValue':value})
+                        continue
+                    targets=classical_indices(statement.lvalue,classical)
+                    if len(set(targets))!=len(targets):raise ValueError('Assignment targets must be distinct.')
+                    append({'Kind':'Assign','Wires':targets,'ClassicalValue':classical_value(statement.rvalue,classical,len(targets),variables)})
             elif isinstance(statement,ast.EndStatement):
                 version=max(version,9)
                 append({'Kind':'End'})
@@ -1564,7 +1680,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.WhileLoop):
                 if depth >= 32:raise ValueError('Classical circuits support at most 32 nested blocks.')
                 version=max(version,7)
-                append({'Kind':'While','ClassicalValue':classical_value(statement.while_condition,classical,1,variables),
+                append({'Kind':'While','ClassicalValue':condition_value(statement,statement.while_condition),
                         'WhenTrue':lower(statement.block,depth+1)})
             elif isinstance(statement,ast.ForInLoop):
                 if depth>=32:raise ValueError('Classical circuits support at most 32 nested blocks.')
@@ -1582,7 +1698,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                           isinstance(condition,ast.BinaryExpression) and condition.op.name in ('==','!=') and isinstance(condition.rhs,ast.IntegerLiteral))
                 simple=simple and not any(isinstance(item,ast.Identifier) and item.name in variables for item in nodes(condition)) and not contains_numeric(condition,numeric_variables)
                 if not simple:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':condition_value(statement,condition),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 negate = False
@@ -1596,13 +1712,13 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 try:
                     start, size = reference(target, classical, whole=True)
                 except ValueError:
-                    append({'Kind':'ExpressionBranch','ClassicalValue':classical_value(condition,classical,1,variables),
+                    append({'Kind':'ExpressionBranch','ClassicalValue':condition_value(statement,condition),
                             'WhenTrue':lower(statement.if_block,depth+1),'WhenFalse':lower(statement.else_block,depth+1)})
                     continue
                 if not isinstance(condition, ast.BinaryExpression) and size != 1:
-                    raise ValueError('Whole-register truth conditions require an explicit comparison.')
+                    raise error_at(statement,'Whole-register truth conditions require an explicit comparison.')
                 if type(expected) is not int or not 0 <= expected < (1 << size):
-                    raise ValueError('Condition constant is outside its register range.')
+                    raise error_at(statement,'Condition constant is outside its register range.')
                 yes, no = lower(statement.if_block, depth+1), lower(statement.else_block, depth+1)
                 if negate:
                     yes, no = no, yes
@@ -1653,7 +1769,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             elif isinstance(statement, ast.QuantumPhase) and not statement.modifiers:
                 append({'Kind': 'Gate', 'Expression': '(exp(i*('+number(statement.argument)+'))*I)', 'Wires': [0]})
             else:
-                raise ValueError('Classical circuit import cannot yet represent '+type(statement).__name__+'.')
+                raise error_at(statement,'Classical circuit import cannot yet represent '+type(statement).__name__+'.')
         return result
     steps=lower(statements)
     visible_bits=[bit for name,(start,size) in classical.items()

@@ -728,9 +728,11 @@ def lower_runtime_subroutines(program):
         for field in ('start','step','end'):
             bound=getattr(captured,field)
             if bound is None:continue
+            origin_span=getattr(bound,'span',None)
             prefix,bound=expression_calls(bound,True,depth);effects.extend(prefix)
             slot=ast.Identifier(fresh());runtime.add(slot.name)
             capture=ast.ClassicalDeclaration(type=ast.IntType(),identifier=slot,init_expression=bound)
+            capture.span=origin_span
             capture._quantum_range_capture=True;effects.append(capture)
             setattr(captured,field,slot)
         return effects,captured
