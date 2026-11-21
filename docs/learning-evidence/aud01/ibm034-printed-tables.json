@@ -1,0 +1,42 @@
+{
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "8836ab0b5fe534209ff0a87ee64c9f5f800f123f2d00e821baa3b32c1447198a",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "suite": {
+    "passed": true,
+    "checks": 33,
+    "calls": 3,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "records_sha256": "b18bb068291b53ad5f77fc5577f8c3f45978850d1b5e5239c5119d82129830d9",
+  "tables": [
+    {
+      "id": "IBM034-94ee62dd-M054",
+      "columns": [
+        "N",
+        "p(N,1)"
+      ],
+      "numeric_rows": 16,
+      "forms_checked": 4
+    },
+    {
+      "id": "IBM034-94ee62dd-M087",
+      "columns": [
+        "N",
+        "Success probability"
+      ],
+      "numeric_rows": 15,
+      "forms_checked": 4
+    },
+    {
+      "id": "IBM034-94ee62dd-M096",
+      "columns": [
+        "N",
+        "p(N,4)"
+      ],
+      "numeric_rows": 15,
+      "forms_checked": 4
+    }
+  ]
+}

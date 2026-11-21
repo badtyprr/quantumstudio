@@ -361,6 +361,10 @@ This is an explicit step +1 convention, not arbitrary sequence inference. Descen
 
 A single gate letter used as an integer range endpoint denotes a variable. For example, `replace(indexrange(1,T),"T",3)` returns the set containing 1, 2 and 3.
 
+## Numeric tables in TeX
+
+Paste a TeX `array` with column labels, a `\hline` below those labels and integer or decimal data. The column declaration accepts `l`, `c` and `r`. The result is a matrix with the labels in its first row. A header such as `p(N,1)` is a label. Numeric cells contain the printed values and can be used in calculations.
+
 ## Textual logical operators
 
 TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`. A negated operand can appear in a comparison, as in `g(x) = \neg f(x)`. The copied prefix `!` is accepted on re-entry.
