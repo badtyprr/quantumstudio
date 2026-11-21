@@ -1,0 +1,224 @@
+{
+  "figures": [
+    {
+      "lesson": "IBM101",
+      "cell": 1,
+      "start": 31,
+      "end": 264,
+      "alt": "Flow of a variational algorithm showing steps: initialize problem, prepare ansatz, evaluate cost function, optimize parameters.",
+      "path": "/learning/images/courses/variational-algorithm-design/variational-algorithms/variational-workflow.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/variational-algorithms/variational-workflow.svg",
+      "bytes": 225328,
+      "sha256": "40b41f46a2ce698d5f6c7dd16c15a15cf790cf13edbec23386d54196d520deb2"
+    },
+    {
+      "lesson": "IBM102",
+      "cell": 0,
+      "start": 680,
+      "end": 872,
+      "alt": "Diagram of options for references states including default, application-specific, and quantum.",
+      "path": "/learning/images/courses/variational-algorithm-design/reference-states/reference-workflow.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/reference-states/reference-workflow.svg",
+      "bytes": 41877,
+      "sha256": "a250eecccabaf05d25ffa9608b8bbe0ac2ea48779f0225f3100474c7fc24e94f"
+    },
+    {
+      "lesson": "IBM102",
+      "cell": 11,
+      "start": 258,
+      "end": 423,
+      "alt": "A circuit diagram of a unitary operator preparing a reference state.",
+      "path": "/learning/images/courses/variational-algorithm-design/reference-states/reference-circuit.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/reference-states/reference-circuit.svg",
+      "bytes": 14733,
+      "sha256": "6fbc979b3ae1b10874ce96055877618f14336ce911fbb941e34bc1434c388746"
+    },
+    {
+      "lesson": "IBM103",
+      "cell": 0,
+      "start": 1327,
+      "end": 1554,
+      "alt": "A diagram showing key components of the ansatz discussion, including heuristic ansaetze and problem-specific ansaetze.",
+      "path": "/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-workflow.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-workflow.svg",
+      "bytes": 40354,
+      "sha256": "e5f54e67bfe1340959ab78057faf9e0390a4901e8e51a2c770a79c857f82abe0"
+    },
+    {
+      "lesson": "IBM103",
+      "cell": 22,
+      "start": 369,
+      "end": 585,
+      "alt": "A circuit diagram showing two unitaries: one preparing the reference state and another preparing the ansatz.",
+      "path": "/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-circuit.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-circuit.svg",
+      "bytes": 32407,
+      "sha256": "2a8d8d380d62a61f7591d2d910282eb63559ad93d3109642ac2eded938ae4d8a"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 0,
+      "start": 688,
+      "end": 894,
+      "alt": "A diagram showing key components of a cost function including using primitives like estimator and sampler.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-workflow.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-workflow.svg",
+      "bytes": 57245,
+      "sha256": "b35632c34bfb47a399d28e254b3a119314c8e2d74d67ffcdcefc880bbb115d8e"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 35,
+      "start": 464,
+      "end": 905,
+      "alt": "A graph showing how simulation cost varies with circuit complexity. Using a classical computer it grows exponentially. With quantum error mitigation, there should be a crossover at which that becomes advantageous. Quantum error correction allows for linear growth of the simulation cost and will certainly lead to advantage.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-path-to-quantum-advantage.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-path-to-quantum-advantage.svg",
+      "bytes": 43913,
+      "sha256": "7f981162dee7dc0de16e25b1cf7df96669bfa517e9d37e463645352fcdd03153"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 47,
+      "start": 1591,
+      "end": 1792,
+      "alt": "A diagram showing broader or narrowing distributions as in the bias/variance tradeoff.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-bias-variance-trade-off.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-bias-variance-trade-off.svg",
+      "bytes": 49646,
+      "sha256": "81316d7472a79ddef8aedfbc6ebc03e51dd36bd0f6c5d037bd127f94f5259230"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 47,
+      "start": 2575,
+      "end": 2752,
+      "alt": "A diagram showing measurement and calibration circuits for T-REX.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-trex-data-collection.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-trex-data-collection.svg",
+      "bytes": 47670,
+      "sha256": "a00b4be8d943884b7f1394278d67b2dff72057717cef81bc034c329538b63659"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 47,
+      "start": 3283,
+      "end": 3541,
+      "alt": "A diagram showing steps in ZNE. Noise is artificially amplified by different factors. Then the values are extrapolated to what they should be at zero noise.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-zne-stages.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-zne-stages.svg",
+      "bytes": 99754,
+      "sha256": "a091455f160b046e9ed37bd073239b6e7503e39da2b8ac78602bf82ca253a7de"
+    },
+    {
+      "lesson": "IBM104",
+      "cell": 52,
+      "start": 289,
+      "end": 565,
+      "alt": "A diagram showing the quantum circuit with unitaries preparing the reference state and variational state, followed by measurements. These are used to evaluate the cost function.",
+      "path": "/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-circuit.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/cost-functions/cost-function-circuit.svg",
+      "bytes": 43346,
+      "sha256": "9e68921e8044f83a12a8e7e8d571e4e07e85cbe4dc30bdab7edb76a6ff85a074"
+    },
+    {
+      "lesson": "IBM105",
+      "cell": 0,
+      "start": 802,
+      "end": 1041,
+      "alt": "A diagram of some important factors in optimization, including barren plateaus, gradient vs gradient-free optimizers, and bootstrapping.",
+      "path": "/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-workflow.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-workflow.svg",
+      "bytes": 51388,
+      "sha256": "1b266ae0dfbaae0e4d8c44321a3647f2506fc2ebb5f7c59c5c0dcf9e36e3302b"
+    },
+    {
+      "lesson": "IBM105",
+      "cell": 12,
+      "start": 163,
+      "end": 406,
+      "alt": "graph of f(theta) against theta, multiple dots show different states of a gradient descent algorithm finding the minimum of a curve.",
+      "path": "/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-gradient-descent.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-gradient-descent.svg",
+      "bytes": 48808,
+      "sha256": "dbfd384e5d7ef9bd53ed8155ee26bfb4cb1e0d40867e4434fff6f888bab92e44"
+    },
+    {
+      "lesson": "IBM105",
+      "cell": 14,
+      "start": 374,
+      "end": 541,
+      "alt": "A complicated curved manifold with many peaks and troughs.",
+      "path": "/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-loss-landscape.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-loss-landscape.svg",
+      "bytes": 3547865,
+      "sha256": "83b6eab24e90c8e980cd09c0526dafed0488d3e591fd3de19e6a031ab38f7e0e"
+    },
+    {
+      "lesson": "IBM105",
+      "cell": 14,
+      "start": 1338,
+      "end": 1601,
+      "alt": "A diagram of a geographic plateau compared to a slope of a mountain, to explain why a gradient helps us find a minimum and a plateau hinders our efforts.",
+      "path": "/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-barren-plateaus.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-barren-plateaus.svg",
+      "bytes": 5774404,
+      "sha256": "4efc64a5571415abeb88f88e51b20c07eec8b2d990a375e3f69b95368e6c5d0e"
+    },
+    {
+      "lesson": "IBM105",
+      "cell": 15,
+      "start": 277,
+      "end": 521,
+      "alt": "A quantum circuit now with both a unitary to prepare the reference state, and a second unitary to vary the state using variational parameters.",
+      "path": "/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-circuit.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/optimization-loops/optimization-circuit.svg",
+      "bytes": 76907,
+      "sha256": "0e98607db436bf25c51166af607aece1111c70eb49a99bfadf88c074fc33ebd3"
+    },
+    {
+      "lesson": "IBM106",
+      "cell": 1,
+      "start": 203,
+      "end": 441,
+      "alt": "A diagram showing how VQE uses the reference state and ansatz to estimate a cost function, and then iterate using variational parameters.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqe.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqe.svg",
+      "bytes": 143749,
+      "sha256": "373c85269e36634e71f9f6317f55a42e17cc10cf99471ddc183def03ad080cdd"
+    },
+    {
+      "lesson": "IBM106",
+      "cell": 16,
+      "start": 448,
+      "end": 638,
+      "alt": "A diagram showing how subspace-search VQE uses the components of variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-ssvqe.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-ssvqe.svg",
+      "bytes": 174258,
+      "sha256": "5efe16642cd81713fad8abc45cc951e0c8bee0f3a76e5e1a2d8c434ee052456a"
+    },
+    {
+      "lesson": "IBM106",
+      "cell": 18,
+      "start": 499,
+      "end": 673,
+      "alt": "A diagram showing how VQD uses the components of a variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqd.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqd.svg",
+      "bytes": 175792,
+      "sha256": "21d158bfd55b878e7b9f53e9a666d2a0a86d085bc85bb58dc5a60e2e2de8415a"
+    },
+    {
+      "lesson": "IBM106",
+      "cell": 38,
+      "start": 990,
+      "end": 1164,
+      "alt": "A diagram showing how QSR uses the components of a variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-qsr.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-qsr.svg",
+      "bytes": 145485,
+      "sha256": "8e74ec924fe0498085e576f1aee0499648c600d9b1115a37b693b22699177639"
+    }
+  ]
+}

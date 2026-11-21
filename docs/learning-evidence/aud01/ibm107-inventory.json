@@ -1,0 +1,772 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/examples-and-applications.ipynb",
+  "source_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "mode": "Quantum notation",
+  "markdown_cells": 55,
+  "code_cells": 61,
+  "summary": {
+    "diagnostic": 24,
+    "exact": 54
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM107-0e377720-M001",
+      "cell": 1,
+      "start": 129,
+      "end": 173,
+      "literal": "$$\n\\hat{O}_1 = 2 II - 2 XX + 3 YY - 3 ZZ,\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM107-0e377720-M002",
+      "cell": 1,
+      "start": 223,
+      "end": 340,
+      "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -6 \\\\\n\\lambda_1 = 4 \\\\\n\\lambda_2 = 4 \\\\\n\\lambda_3 = 6\n\\end{array}\n\\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 44"
+    },
+    {
+      "id": "IBM107-0e377720-M003",
+      "cell": 1,
+      "start": 360,
+      "end": 661,
+      "literal": "$$\n\\left\\{\n\\begin{array}{c}\n|\\phi_0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)\\\\\n|\\phi_1\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle - |11\\rangle)\\\\\n|\\phi_2\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle - |10\\rangle)\\\\\n|\\phi_3\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle + |10\\rangle)\n\\end{array}\n\\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 89"
+    },
+    {
+      "id": "IBM107-0e377720-M004",
+      "cell": 3,
+      "start": 110,
+      "end": 121,
+      "literal": "$\\hat{O}_1$",
+      "status": "exact",
+      "display": "\"O_1\"",
+      "copy": "\"O_1\""
+    },
+    {
+      "id": "IBM107-0e377720-M005",
+      "cell": 17,
+      "start": 89,
+      "end": 94,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "\"U_R\"",
+      "copy": "\"U_R\""
+    },
+    {
+      "id": "IBM107-0e377720-M006",
+      "cell": 17,
+      "start": 144,
+      "end": 189,
+      "literal": "$\\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM107-0e377720-M007",
+      "cell": 23,
+      "start": 89,
+      "end": 92,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM107-0e377720-M008",
+      "cell": 30,
+      "start": 133,
+      "end": 149,
+      "literal": "$\\vec{\\theta_0}$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
+    },
+    {
+      "id": "IBM107-0e377720-M009",
+      "cell": 30,
+      "start": 177,
+      "end": 211,
+      "literal": "$\\vec{\\theta_0}=(0,0,0,0,6,0,0,0)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\")) = (0, 0, 0, 0, 6, 0, 0, 0)",
+      "copy": "(qvectorref(qindexedlabel(\"θ_\",0,\"\")))==(qtuple(vector(0,0,0,0,6,0,0,0)))"
+    },
+    {
+      "id": "IBM107-0e377720-M010",
+      "cell": 30,
+      "start": 216,
+      "end": 252,
+      "literal": "$\\vec{\\theta_0}=(6,6,6,6,6,6,6,6,6)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\")) = (6, 6, 6, 6, 6, 6, 6, 6, 6)",
+      "copy": "(qvectorref(qindexedlabel(\"θ_\",0,\"\")))==(qtuple(vector(6,6,6,6,6,6,6,6,6)))"
+    },
+    {
+      "id": "IBM107-0e377720-M011",
+      "cell": 30,
+      "start": 386,
+      "end": 389,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM107-0e377720-M012",
+      "cell": 33,
+      "start": 27,
+      "end": 63,
+      "literal": "$\\vec{\\theta_0}=(6,6,6,6,6,6,6,6,6)$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\")) = (6, 6, 6, 6, 6, 6, 6, 6, 6)",
+      "copy": "(qvectorref(qindexedlabel(\"θ_\",0,\"\")))==(qtuple(vector(6,6,6,6,6,6,6,6,6)))"
+    },
+    {
+      "id": "IBM107-0e377720-M013",
+      "cell": 42,
+      "start": 150,
+      "end": 153,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM107-0e377720-M014",
+      "cell": 42,
+      "start": 162,
+      "end": 167,
+      "literal": "$k=4$",
+      "status": "exact",
+      "display": "k = 4",
+      "copy": "('k')==(4)"
+    },
+    {
+      "id": "IBM107-0e377720-M015",
+      "cell": 42,
+      "start": 217,
+      "end": 446,
+      "literal": "$$\nC_{l}(\\vec{\\theta}) :=\n\\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle +\n\\sum_{j=0}^{l-1}\\beta_j |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^j})\\rangle  |^2\n\\quad \\forall l\\in\\{1,\\cdots,k\\}=\\{1,\\cdots,4\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 170"
+    },
+    {
+      "id": "IBM107-0e377720-M016",
+      "cell": 42,
+      "start": 496,
+      "end": 538,
+      "literal": "$\\vec{\\beta}=(\\beta_0,\\cdots,\\beta_{k-1})$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM107-0e377720-M017",
+      "cell": 42,
+      "start": 553,
+      "end": 591,
+      "literal": "$(\\beta_0, \\beta_1, \\beta_2, \\beta_3)$",
+      "status": "exact",
+      "display": "(\"β_0\", \"β_1\", \"β_2\", \"β_3\")",
+      "copy": "qtuple(vector(\"β_0\",\"β_1\",\"β_2\",\"β_3\"))"
+    },
+    {
+      "id": "IBM107-0e377720-M018",
+      "cell": 42,
+      "start": 798,
+      "end": 861,
+      "literal": "$|\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^j})\\rangle  |^2$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 43"
+    },
+    {
+      "id": "IBM107-0e377720-M019",
+      "cell": 42,
+      "start": 1000,
+      "end": 1011,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM107-0e377720-M020",
+      "cell": 42,
+      "start": 1028,
+      "end": 1074,
+      "literal": "$U_A^\\dagger(\\vec{\\theta})U_A(\\vec{\\theta^j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 38"
+    },
+    {
+      "id": "IBM107-0e377720-M021",
+      "cell": 42,
+      "start": 1126,
+      "end": 1423,
+      "literal": "$$\n\\begin{aligned}\n\np_0\n\n& = |\\langle 0|U_A^\\dagger(\\vec{\\theta})U_A(\\vec{\\theta^j})|0\\rangle|^2 \\\\[1mm]\n\n& = |\\big(\\langle 0|U_A^\\dagger(\\vec{\\theta})\\big)\\big(U_A(\\vec{\\theta^j})|0\\rangle\\big)|^2 \\\\[1mm]\n\n& = |\\langle \\psi(\\vec{\\theta}) |\\psi(\\vec{\\theta^j}) \\rangle|^2 \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 76"
+    },
+    {
+      "id": "IBM107-0e377720-M022",
+      "cell": 44,
+      "start": 52,
+      "end": 96,
+      "literal": "$$\n\\hat{O}_2 := 2 II - 3 XX + 2 YY - 4 ZZ\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM107-0e377720-M023",
+      "cell": 44,
+      "start": 146,
+      "end": 262,
+      "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -7 \\\\\n\\lambda_1 = 3\\\\\n\\lambda_2 = 5 \\\\\n\\lambda_3 = 7\n\\end{array}\n\\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 44"
+    },
+    {
+      "id": "IBM107-0e377720-M024",
+      "cell": 44,
+      "start": 282,
+      "end": 583,
+      "literal": "$$\n\\left\\{\n\\begin{array}{c}\n|\\phi_0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)\\\\\n|\\phi_1\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle - |11\\rangle)\\\\\n|\\phi_2\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle + |10\\rangle)\\\\\n|\\phi_3\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle - |10\\rangle)\n\\end{array}\n\\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 89"
+    },
+    {
+      "id": "IBM107-0e377720-M025",
+      "cell": 60,
+      "start": 51,
+      "end": 64,
+      "literal": "$\\vec{\\beta}$",
+      "status": "exact",
+      "display": "qvectorref('β')",
+      "copy": "qvectorref('β')"
+    },
+    {
+      "id": "IBM107-0e377720-M026",
+      "cell": 60,
+      "start": 192,
+      "end": 203,
+      "literal": "$\\hat{O}_2$",
+      "status": "exact",
+      "display": "\"O_2\"",
+      "copy": "\"O_2\""
+    },
+    {
+      "id": "IBM107-0e377720-M027",
+      "cell": 60,
+      "start": 205,
+      "end": 248,
+      "literal": "$$\n\\hat{O}_2 = 2 II - 3 XX + 2 YY - 4 ZZ\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM107-0e377720-M028",
+      "cell": 60,
+      "start": 268,
+      "end": 384,
+      "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -7 \\\\\n\\lambda_1 = 3\\\\\n\\lambda_2 = 5 \\\\\n\\lambda_3 = 7\n\\end{array}\n\\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 44"
+    },
+    {
+      "id": "IBM107-0e377720-M029",
+      "cell": 64,
+      "start": 48,
+      "end": 110,
+      "literal": "$|\\phi_0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)$",
+      "status": "exact",
+      "display": "|φ_0⟩ = [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate(\"φ_0\"),matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),4)"
+    },
+    {
+      "id": "IBM107-0e377720-M030",
+      "cell": 64,
+      "start": 490,
+      "end": 503,
+      "literal": "$\\vec{\\beta}$",
+      "status": "exact",
+      "display": "qvectorref('β')",
+      "copy": "qvectorref('β')"
+    },
+    {
+      "id": "IBM107-0e377720-M031",
+      "cell": 72,
+      "start": 164,
+      "end": 183,
+      "literal": "$\\hat{\\mathcal{H}}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM107-0e377720-M032",
+      "cell": 72,
+      "start": 187,
+      "end": 276,
+      "literal": "$$\n\\min_{\\vec\\theta} \\langle\\psi(\\vec\\theta)|\\hat{\\mathcal{H}}|\\psi(\\vec\\theta)\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM107-0e377720-M033",
+      "cell": 81,
+      "start": 58,
+      "end": 63,
+      "literal": "$k=2$",
+      "status": "exact",
+      "display": "k = 2",
+      "copy": "('k')==(2)"
+    },
+    {
+      "id": "IBM107-0e377720-M034",
+      "cell": 94,
+      "start": 276,
+      "end": 285,
+      "literal": "$G=(V,E)$",
+      "status": "exact",
+      "display": "(V, E) = G",
+      "copy": "(qtuple(vector('V','E')))==(G)"
+    },
+    {
+      "id": "IBM107-0e377720-M035",
+      "cell": 94,
+      "start": 293,
+      "end": 296,
+      "literal": "$V$",
+      "status": "exact",
+      "display": "V",
+      "copy": "'V'"
+    },
+    {
+      "id": "IBM107-0e377720-M036",
+      "cell": 94,
+      "start": 324,
+      "end": 327,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM107-0e377720-M037",
+      "cell": 94,
+      "start": 427,
+      "end": 430,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM107-0e377720-M038",
+      "cell": 94,
+      "start": 435,
+      "end": 438,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM107-0e377720-M039",
+      "cell": 94,
+      "start": 491,
+      "end": 494,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM107-0e377720-M040",
+      "cell": 94,
+      "start": 512,
+      "end": 515,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM107-0e377720-M041",
+      "cell": 96,
+      "start": 78,
+      "end": 92,
+      "literal": "$0 \\leq i < n$",
+      "status": "exact",
+      "display": "n > i and i ≥ 0",
+      "copy": "((0)<=(i) and (n)>(i))"
+    },
+    {
+      "id": "IBM107-0e377720-M042",
+      "cell": 96,
+      "start": 100,
+      "end": 103,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM107-0e377720-M043",
+      "cell": 96,
+      "start": 154,
+      "end": 159,
+      "literal": "$n=4$",
+      "status": "exact",
+      "display": "n = 4",
+      "copy": "(n)==(4)"
+    },
+    {
+      "id": "IBM107-0e377720-M044",
+      "cell": 96,
+      "start": 199,
+      "end": 204,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM107-0e377720-M045",
+      "cell": 96,
+      "start": 240,
+      "end": 243,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM107-0e377720-M046",
+      "cell": 96,
+      "start": 252,
+      "end": 255,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM107-0e377720-M047",
+      "cell": 96,
+      "start": 294,
+      "end": 297,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM107-0e377720-M048",
+      "cell": 96,
+      "start": 302,
+      "end": 305,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM107-0e377720-M049",
+      "cell": 96,
+      "start": 354,
+      "end": 357,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM107-0e377720-M050",
+      "cell": 96,
+      "start": 382,
+      "end": 390,
+      "literal": "$w_{ij}$",
+      "status": "exact",
+      "display": "\"w_ij\"",
+      "copy": "\"w_ij\""
+    },
+    {
+      "id": "IBM107-0e377720-M051",
+      "cell": 96,
+      "start": 400,
+      "end": 407,
+      "literal": "$(i,j)$",
+      "status": "exact",
+      "display": "(i, j)",
+      "copy": "qtuple(vector(i,'j'))"
+    },
+    {
+      "id": "IBM107-0e377720-M052",
+      "cell": 96,
+      "start": 432,
+      "end": 435,
+      "literal": "$w$",
+      "status": "exact",
+      "display": "w",
+      "copy": "'w'"
+    },
+    {
+      "id": "IBM107-0e377720-M053",
+      "cell": 96,
+      "start": 480,
+      "end": 483,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM107-0e377720-M054",
+      "cell": 96,
+      "start": 492,
+      "end": 495,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM107-0e377720-M055",
+      "cell": 96,
+      "start": 530,
+      "end": 545,
+      "literal": "$w_{ij}=w_{ji}$",
+      "status": "exact",
+      "display": "\"w_ij\" = \"w_ji\"",
+      "copy": "(\"w_ij\")==(\"w_ji\")"
+    },
+    {
+      "id": "IBM107-0e377720-M056",
+      "cell": 96,
+      "start": 625,
+      "end": 857,
+      "literal": "$$\n\\begin{aligned}\nC(\\vec{x})\n& =\\sum_{i,j=0}^n w_{ij} x_i(1-x_j)\\\\[1mm]\n\n& = \\sum_{i,j=0}^n w_{ij} x_i - \\sum_{i,j=0}^n w_{ij} x_ix_j\\\\[1mm]\n\n& = \\sum_{i,j=0}^n w_{ij} x_i - \\sum_{i=0}^n \\sum_{j=0}^i 2w_{ij} x_ix_j\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 54"
+    },
+    {
+      "id": "IBM107-0e377720-M057",
+      "cell": 96,
+      "start": 1092,
+      "end": 1095,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM107-0e377720-M058",
+      "cell": 96,
+      "start": 1100,
+      "end": 1104,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM107-0e377720-M059",
+      "cell": 96,
+      "start": 1116,
+      "end": 1119,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM107-0e377720-M060",
+      "cell": 96,
+      "start": 1124,
+      "end": 1127,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM107-0e377720-M061",
+      "cell": 96,
+      "start": 1202,
+      "end": 1237,
+      "literal": "$\\vec{x}=(x_0,x_1,\\cdots ,x_{n-1})$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 26"
+    },
+    {
+      "id": "IBM107-0e377720-M062",
+      "cell": 96,
+      "start": 1271,
+      "end": 1274,
+      "literal": "$w$",
+      "status": "exact",
+      "display": "w",
+      "copy": "'w'"
+    },
+    {
+      "id": "IBM107-0e377720-M063",
+      "cell": 96,
+      "start": 1374,
+      "end": 1426,
+      "literal": "$$\nz_i = 1-2x_i \\rightarrow x_i = \\frac{1-z_i}{2}\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 16"
+    },
+    {
+      "id": "IBM107-0e377720-M064",
+      "cell": 96,
+      "start": 1448,
+      "end": 1544,
+      "literal": "$$\n\\begin{array}{lcl} x_i=0 & \\rightarrow & z_i=1 \\\\ x_i=1 & \\rightarrow & z_i=-1.\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 51"
+    },
+    {
+      "id": "IBM107-0e377720-M065",
+      "cell": 96,
+      "start": 1596,
+      "end": 1918,
+      "literal": "$$\n\\begin{aligned}\nC(\\vec{z})\n& = \\sum_{i,j=0}^n w_{ij} \\bigg(\\frac{1-z_i}{2}\\bigg)\\bigg(1-\\frac{1-z_j}{2}\\bigg)\\\\[1mm]\n\n& = \\sum_{i,j=0}^n \\frac{w_{ij}}{4} - \\sum_{i,j=0}^n \\frac{w_{ij}}{4} z_iz_j\\\\[1mm]\n\n& = \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} -  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} z_iz_j\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 55"
+    },
+    {
+      "id": "IBM107-0e377720-M066",
+      "cell": 96,
+      "start": 2062,
+      "end": 2074,
+      "literal": "$C(\\vec{z})$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM107-0e377720-M067",
+      "cell": 96,
+      "start": 2102,
+      "end": 2218,
+      "literal": "$$\n-C(\\vec{z}) =  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} z_iz_j -  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2}\n$$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM107-0e377720-M068",
+      "cell": 96,
+      "start": 2301,
+      "end": 2305,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM107-0e377720-M069",
+      "cell": 96,
+      "start": 2310,
+      "end": 2313,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM107-0e377720-M070",
+      "cell": 96,
+      "start": 2364,
+      "end": 2367,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM107-0e377720-M071",
+      "cell": 96,
+      "start": 2370,
+      "end": 2487,
+      "literal": "$$\nz_i \\equiv Z_i = \\overbrace{I}^{n-1}\\otimes ... \\otimes \\overbrace{Z}^{i} \\otimes ... \\otimes \\overbrace{I}^{0}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\overbrace at byte 29"
+    },
+    {
+      "id": "IBM107-0e377720-M072",
+      "cell": 96,
+      "start": 2518,
+      "end": 2523,
+      "literal": "$z_i$",
+      "status": "exact",
+      "display": "\"z_i\"",
+      "copy": "\"z_i\""
+    },
+    {
+      "id": "IBM107-0e377720-M073",
+      "cell": 96,
+      "start": 2548,
+      "end": 2551,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM107-0e377720-M074",
+      "cell": 96,
+      "start": 2573,
+      "end": 2576,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM107-0e377720-M075",
+      "cell": 96,
+      "start": 2589,
+      "end": 2728,
+      "literal": "$$\nZ_i|x_{n-1}\\cdots x_0\\rangle = z_i|x_{n-1}\\cdots x_0\\rangle \\rightarrow \\langle x_{n-1}\\cdots x_0 |Z_i|x_{n-1}\\cdots x_0\\rangle = z_i\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 49"
+    },
+    {
+      "id": "IBM107-0e377720-M076",
+      "cell": 96,
+      "start": 2780,
+      "end": 2845,
+      "literal": "$$\n\\hat{H} = \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} Z_iZ_j\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=0}^{n} (∑_{j=0}^{k} (0.5 \"w_ij\" · Z_iZ_j))) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qsum(qadjacent(qmul(1 ∕ 2,\"w_ij\"),qindexedlabel(\"Z_iZ_\",\"qboundindex_0\",\"\")),0,\"qboundindex_1\",\"qboundindex_0\"),0,n,\"qboundindex_1\")))==(0)"
+    },
+    {
+      "id": "IBM107-0e377720-M077",
+      "cell": 96,
+      "start": 2910,
+      "end": 2978,
+      "literal": "$$\n\\texttt{offset} = - \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\texttt at byte 9"
+    },
+    {
+      "id": "IBM107-0e377720-M078",
+      "cell": 97,
+      "start": 140,
+      "end": 174,
+      "literal": "$IIZZ + IZIZ + IZZI + ZIIZ + ZZII$",
+      "status": "exact",
+      "display": "5 · I^2 · Z^2",
+      "copy": "5 ⋅ 'I'² ⋅ 'Z'²"
+    }
+  ]
+}
