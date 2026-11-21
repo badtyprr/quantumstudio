@@ -1,0 +1,99 @@
+{
+  "sources": {
+    "90": {
+      "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+      "sha256": "0460de3a26c5a3f217a159e3b479e0a2c717050ccb58aa633483aa9ce8715d8f",
+      "path": "cells[0].metadata.gloss.computational-basis-state.text",
+      "kets": [
+        "|00〉",
+        "|00110100〉"
+      ]
+    },
+    "96": {
+      "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/introduction.ipynb",
+      "sha256": "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381",
+      "path": "cells[0].metadata.gloss.computational-basis-state.text",
+      "kets": [
+        "|00〉",
+        "|00110100〉"
+      ]
+    }
+  },
+  "runs": {
+    "released": {
+      "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "tests": [
+        {
+          "input": "|00〉",
+          "diagnostic": "Unclosed ket; use |0> or |0⟩."
+        },
+        {
+          "input": "|00⟩",
+          "rows": 4,
+          "basis_index": 0,
+          "nonzero": 1
+        },
+        {
+          "input": "|00110100〉",
+          "diagnostic": "Unclosed ket; use |0> or |0⟩."
+        },
+        {
+          "input": "|00110100⟩",
+          "rows": 256,
+          "basis_index": 52,
+          "nonzero": 1
+        }
+      ],
+      "windows_suite": {
+        "passed": true,
+        "checks": 22,
+        "calls": 4,
+        "sessionsOnly": true,
+        "clipboardRetries": 0,
+        "clipboardRestored": false
+      },
+      "records_sha256": "d60c1525f739d961353859ae8c5607a6d93842d7ff41704df91680d159ff15d3"
+    },
+    "candidate": {
+      "worker_sha256": "c76289b07d8e0305e14a69ba743f7bc18014a39bd881a5658dcf2a5d25942b86",
+      "tests": [
+        {
+          "input": "|00〉",
+          "rows": 4,
+          "basis_index": 0,
+          "nonzero": 1
+        },
+        {
+          "input": "|00⟩",
+          "rows": 4,
+          "basis_index": 0,
+          "nonzero": 1
+        },
+        {
+          "input": "|00110100〉",
+          "rows": 256,
+          "basis_index": 52,
+          "nonzero": 1
+        },
+        {
+          "input": "|00110100⟩",
+          "rows": 256,
+          "basis_index": 52,
+          "nonzero": 1
+        }
+      ],
+      "windows_suite": {
+        "passed": true,
+        "checks": 36,
+        "calls": 4,
+        "sessionsOnly": true,
+        "clipboardRetries": 0,
+        "clipboardRestored": false
+      },
+      "records_sha256": "f1a5634aea7e54933f5f4b7aa282f8883830cbb3ba6fe97af7939fb6846d49af"
+    }
+  },
+  "candidate_revision": "e87bb8cc",
+  "release_revision": "c5a456cd",
+  "verified_release_files": 361
+}
