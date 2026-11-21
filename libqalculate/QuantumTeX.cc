@@ -2256,6 +2256,44 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s.replace(m.position(),m.length(),"qmeanat(\""+m[1].str()+"\","+parameter+")");
   }
  }
+ if(s.find("\\sum_{ij}")!=std::string::npos && s.find("Q_{ij}")!=std::string::npos) {
+  // Each index ranges over the supplied square matrix. Evaluate the body
+  // with the actual coefficient and the two selected vector entries.
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  const std::string prefix="\\sum_{ij}",binders=",\"weight\",\"leftword\",\"rightword\")";
+  auto side=[&](std::string term)->std::string {
+   char word=term.find("x_i")!=std::string::npos || term=="x^TQx" ? 'x' : 'z';
+   const std::string vector(1,word);
+   if(term==vector+"^TQ"+vector)
+    return "qpairtotal(\"Q\",\""+vector+"\",\"weight\"*\"leftword\"*\"rightword\""+binders;
+   if(term.compare(0,prefix.size(),prefix)!=0)return "";
+   term.erase(0,prefix.size());
+   auto sub=[&](const std::string &from,const std::string &to) {
+    size_t at=0;while((at=term.find(from,at))!=std::string::npos) {term.replace(at,from.size(),to);at+=to.size();}
+   };
+   // Only the coefficient, its two vector entries and scalar arithmetic
+   // belong to this index scope. Leave other sums for the ordinary reader.
+   sub("\\frac{Q_{ij}}{4}","(W/4)");sub("Q_{ij}","W");
+   sub("\\frac{1-"+vector+"_i}{2}","((1-L)/2)");sub("\\frac{1-"+vector+"_j}{2}","((1-R)/2)");
+   sub(vector+"_i","L");sub(vector+"_j","R");
+   if(term.empty() || term.find_first_not_of("WLR0123456789+-*/()")!=std::string::npos)return "";
+   std::string body;
+   for(size_t k=0;k<term.size();++k) {
+    char ch=term[k];
+    if(k && (ch=='W' || ch=='L' || ch=='R' || ch=='(') &&
+       (term[k-1]==')' || term[k-1]=='W' || term[k-1]=='L' || term[k-1]=='R' || std::isdigit((unsigned char)term[k-1])))body+='*';
+    if(ch=='W')body+="\"weight\"";else if(ch=='L')body+="\"leftword\"";else if(ch=='R')body+="\"rightword\"";else body+=ch;
+   }
+   return "qpairtotal(\"Q\",\""+vector+"\","+body+binders;
+  };
+  size_t eq=compact.find('=');
+  std::string left=side(compact.substr(0,eq));
+  if(!left.empty()) {
+   if(eq==std::string::npos)return left;
+   std::string right=side(compact.substr(eq+1));
+   if(!right.empty())return "qcompare("+left+","+right+",4)";
+  }
+ }
  // Both occupation conventions occur in the lessons. The sign on iY,
  // not the operator's printed name, selects its actual ladder matrix.
  if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {

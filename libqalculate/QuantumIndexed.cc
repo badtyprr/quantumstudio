@@ -1309,6 +1309,37 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qpairtotal") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure weights=raw[0],values=raw[1];weights.eval(exact);values.eval(exact);
+   if(!weights.isMatrix() || weights.rows()!=weights.columns() || !values.isVector())return 0;
+   const size_t n=weights.rows();
+   if(!n || n>128)return 0;
+   if(values.isMatrix()) {
+    if(values.rows()!=n || values.columns()!=1)return 0;
+    MathStructure column;column.clearVector();
+    for(size_t k=0;k<n;++k)column.addChild(element(values,k,0));
+    values=column;
+   }
+   if(values.size()!=n)return 0;
+   for(size_t k=3;k<6;++k) {
+    if(!raw[k].isSymbolic() && !raw[k].isVariable())return 0;
+    for(size_t j=k+1;j<6;++j)if(raw[k].equals(raw[j]))return 0;
+   }
+   for(size_t k=0;k<n;++k)if(!values[k].isNumber())return 0;
+   MathStructure total(0);
+   for(size_t i=0;i<n;++i)for(size_t j=0;j<n;++j) {
+    if(CALCULATOR->aborted())return 0;
+    if(!element(weights,i,j).isNumber())return 0;
+    MathStructure term=raw[2];
+    term.replace(raw[3],element(weights,i,j),false,false,raw[3].containsUnknowns());
+    term.replace(raw[4],values[i],false,false,raw[4].containsUnknowns());
+    term.replace(raw[5],values[j],false,false,raw[5].containsUnknowns());
+    term.eval(exact);if(!term.isNumber())return 0;
+    total+=term;
+   }
+   out=total;out.eval(exact);return 1;
+  }
   if(op=="qmeanat") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure points=raw[0],parameter=raw[1];points.eval(exact);parameter.eval(exact);
@@ -2774,6 +2805,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qpairtotal",6));
  calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
  calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
  calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));

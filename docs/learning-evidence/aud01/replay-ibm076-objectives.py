@@ -35,3 +35,16 @@ print("Verified MaxCut, its negation, asymmetric quadratic matrices, and empty i
 figures=json.loads(Path(__file__).with_name("ibm074-figures.json").read_bytes())["graph"]
 graph=matrix(figures["edges"])
 assert run(f"qmaxcut({graph},5)")==str(figures["maximum_cut"])=="5"
+
+# Check both algebraic forms using individual assignments. The affine
+# change of variables x=(1-z)/2 preserves the cost including its constant.
+identity=run(source[18]["literal"])
+objective=run(source[19]["literal"])
+for q in [((-1,2),(0,-3)),((2,-1,0),(3,-2,1),(0,2,-1))]:
+    for bits in itertools.product(range(2),repeat=len(q)):
+        spins="vector("+",".join(str(1-2*x) for x in bits)+")"
+        cost=sum(q[i][j]*bits[i]*bits[j] for i in range(len(q)) for j in range(len(q)))
+        lhs=identity.replace("'Q'",matrix(q)).replace("'z'",spins)
+        rhs=objective.replace("'Q'",matrix(q)).replace("'z'",spins)
+        assert run(lhs)=="1" and run(f"({rhs})==({cost})")=="1",(q,bits)
+print("Verified the unshifted binary-to-spin objective on twelve assignments.")
