@@ -1,0 +1,38 @@
+[
+  {
+    "lesson": "IBM-036",
+    "player": "https://video.ibm.com/embed/recorded/134056207",
+    "track": "Generated English (US)",
+    "segments": 195,
+    "cue_occurrences": 1774,
+    "distinct_cues": 1774,
+    "zero_duration_cues": 183,
+    "first_cue_ms": 580,
+    "last_cue_end_ms": 4190740,
+    "ordered_segment_sha256": "3a0a7334c12313078e3530ca0edd2251146a36b5ffd897c5c6d93cccae49d47d"
+  },
+  {
+    "lesson": "IBM-040",
+    "player": "https://video.ibm.com/embed/recorded/134627974",
+    "track": "Generated English (US)",
+    "segments": 182,
+    "cue_occurrences": 1629,
+    "distinct_cues": 1629,
+    "zero_duration_cues": 161,
+    "first_cue_ms": 480,
+    "last_cue_end_ms": 3891040,
+    "ordered_segment_sha256": "6f532ff32ab9266fd592a981a39b347045072dc8fa7dd9bc729d846e80fb0b68"
+  },
+  {
+    "lesson": "IBM-065",
+    "player": "https://video.ibm.com/embed/recorded/134352398",
+    "track": "English (US)",
+    "segments": 101,
+    "cue_occurrences": 701,
+    "distinct_cues": 701,
+    "zero_duration_cues": 38,
+    "first_cue_ms": 834,
+    "last_cue_end_ms": 2201097,
+    "ordered_segment_sha256": "8baea852af390bebd7d5d52b80b180119103758a746ab349e66081abeb7fdf52"
+  }
+]
