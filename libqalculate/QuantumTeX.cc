@@ -2223,6 +2223,216 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
+ if(s.find("\\sum_")!=std::string::npos) {
+  // A sum of N local contributions with no printed starting index.
+  static const std::regex localTerms(R"(^\s*([A-Z])\s*=\s*\\sum_([a-z])\^([A-Z])\s*\{\s*\1_\2\s*\}\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,localTerms)) {
+   const std::string name=m[1].str();
+   return "qcompare(qoperatorref(\""+name+"\"),qindexedsum(\""+name+"_\",1,"+m[3].str()+",vector()),4)";
+  }
+ }
+ if(s.find("...")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  // The digit labels a repeated state and the subscript labels its wire.
+  static const std::regex uniformKet(R"(\|([01])_1\s*\.\.\.\s*\1_[a-z]\s*\.\.\.\s*\1_([A-Z])\s*\\rangle)");
+  s=std::regex_replace(s,uniformKet,"qtensorpow(|$1>,\"$2\")");
+ }
+ if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
+  static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");
+  s=std::regex_replace(s,combined,"qpropagator((\"H_$1\"+\"H_$2\"),$3)");
+  std::smatch m;
+  while(std::regex_search(s,m,evolution)) {
+   std::string name=m[1].matched ? "H_"+m[1].str() : "H";
+   std::string time=m[2].str()+(m[3].matched ? "/"+m[3].str() : "");
+   s.replace(m.position(),m.length(),"qpropagator(\""+name+"\","+time+")");
+  }
+  if(s.find("qpropagator(")!=std::string::npos) {
+   static const std::regex definition(R"(^\s*U\(([a-z])\)\s*=)");
+   s=std::regex_replace(s,definition,"qoperatorref(qindexedlabel(\"U(\",$1,\")\"))=");
+   auto distinct=indexedParts(s,"\\neq");
+   if(distinct.size()==2)return "qoperatorunequal("+quantumTeX(distinct[0])+","+quantumTeX(distinct[1])+")";
+   static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
+   s=std::regex_replace(s,initialState,"\\phi(0)");
+  }
+ }
+ if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
+ if(s.find("\\neq")!=std::string::npos) {
+  static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
+  std::smatch m;if(std::regex_match(s,m,commutator)) {
+   const std::string a="qoperatorref(\"H_"+m[1].str()+"\")",b="qoperatorref(\"H_"+m[2].str()+"\")";
+   return "qoperatorunequal(qmul("+a+","+b+"),qmul("+b+","+a+"))";
+  }
+ }
+ if(s.find("\\langle")!=std::string::npos && s.find("\\rangle")!=std::string::npos && s.find("\\lambda")!=std::string::npos) {
+  static const std::regex mean(R"(\\langle\s*([A-Z])\((0|\\lambda(?:_[0-9]+)?)\)\s*\\rangle)");
+  std::smatch m;
+  while(std::regex_search(s,m,mean)) {
+   std::string parameter=m[2]=="0" ? "0" : "\"λ"+m[2].str().substr(7)+"\"";
+   s.replace(m.position(),m.length(),"qmeanat(\""+m[1].str()+"\","+parameter+")");
+  }
+ }
+ if(s.find("\\min")!=std::string::npos) {
+  static const std::regex minimum(R"(^\s*\\min\s+(f|𝑓)\(\s*(?:[a-z]|𝑥)\s*\)\s*$)");
+  if(std::regex_match(s,minimum))return "qsetminimum(qfunctionrange(\"f\"))";
+ }
+ if(s.find("\\sum_{j}")!=std::string::npos) {
+  static const std::regex field(R"(^\s*b_i\s*=\s*-\\sum_\{j\}\s*Q_\{ij\}\s*\+\s*Q_\{ji\}\s*$)");
+  if(std::regex_match(s,field))return "qcompare(\"b_i\",qisingfield(\"Q\",\"i\"),4)";
+ }
+ if(s.find("Q")!=std::string::npos && (s.find("^T")!=std::string::npos || s.find("H_C")!=std::string::npos)) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  if(compact=="z^TQz+b^Tz")return "qisingenergy(\"Q\",\"b\",\"z\")";
+  if(compact=="H_C=\\sum_{ij}Q_{ij}Z_iZ_j+\\sum_ib_iZ_i")
+   return "qcompare(qoperatorref(\"H_C\"),qisinghamiltonian(\"Q\",\"b\"),4)";
+  static const std::regex equivalent(R"(^\\min_\{x\\in\\\{0,1\\\}\^([a-z])\}x\^TQx\\Longleftrightarrow\\min_\{z\\in\\\{-1,1\\\}\^\1\}z\^TQz\+b\^Tz$)");
+  std::smatch m;if(std::regex_match(compact,m,equivalent))return "qisingequivalent(\"Q\",\"b\","+m[1].str()+")";
+ }
+ if(s.find("\\sum_{ij}")!=std::string::npos && s.find("Q_{ij}")!=std::string::npos) {
+  // Each index ranges over the supplied square matrix. Evaluate the body
+  // with the actual coefficient and the two selected vector entries.
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  const std::string prefix="\\sum_{ij}",binders=",\"weight\",\"leftword\",\"rightword\")";
+  auto side=[&](std::string term)->std::string {
+   char word=term.find("x_i")!=std::string::npos || term=="x^TQx" ? 'x' : 'z';
+   const std::string vector(1,word);
+   if(term==vector+"^TQ"+vector)
+    return "qpairtotal(\"Q\",\""+vector+"\",\"weight\"*\"leftword\"*\"rightword\""+binders;
+   const std::string grouped=vector+"^TQ"+vector+"+(-"+prefix;
+   bool subtractLinear=term.compare(0,grouped.size(),grouped)==0 && term.back()==')';
+   if(subtractLinear)term=prefix+term.substr(grouped.size(),term.size()-grouped.size()-1);
+   if(term.compare(0,prefix.size(),prefix)!=0)return "";
+   term.erase(0,prefix.size());
+   auto sub=[&](const std::string &from,const std::string &to) {
+    size_t at=0;while((at=term.find(from,at))!=std::string::npos) {term.replace(at,from.size(),to);at+=to.size();}
+   };
+   // Only the coefficient, its two vector entries and scalar arithmetic
+   // belong to this index scope. Leave other sums for the ordinary reader.
+   sub("\\frac{Q_{ij}}{4}","(W/4)");sub("Q_{ij}","W");
+   sub("\\frac{1-"+vector+"_i}{2}","((1-L)/2)");sub("\\frac{1-"+vector+"_j}{2}","((1-R)/2)");
+   sub(vector+"_i","L");sub(vector+"_j","R");
+   if(term.empty() || term.find_first_not_of("WLR0123456789+-*/()")!=std::string::npos)return "";
+   std::string body;
+   for(size_t k=0;k<term.size();++k) {
+    char ch=term[k];
+    if(k && (ch=='W' || ch=='L' || ch=='R' || ch=='(') &&
+       (term[k-1]==')' || term[k-1]=='W' || term[k-1]=='L' || term[k-1]=='R' || std::isdigit((unsigned char)term[k-1])))body+='*';
+    if(ch=='W')body+="\"weight\"";else if(ch=='L')body+="\"leftword\"";else if(ch=='R')body+="\"rightword\"";else body+=ch;
+   }
+   std::string sum="qpairtotal(\"Q\",\""+vector+"\","+body+binders;
+   if(subtractLinear)return "(qpairtotal(\"Q\",\""+vector+"\",\"weight\"*\"leftword\"*\"rightword\""+binders+"-"+sum+")";
+   return sum;
+  };
+  size_t eq=compact.find('=');
+  std::string left=side(compact.substr(0,eq));
+  if(!left.empty()) {
+   if(eq==std::string::npos)return left;
+   std::string right=side(compact.substr(eq+1));
+   if(!right.empty())return "qcompare("+left+","+right+",4)";
+  }
+ }
+ if(s.find("\\Delta n_")!=std::string::npos) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex delta(R"re(^\\begin\{aligned\}\\Deltan_([a-z])\(([a-z]),([a-z])\)&=\\sum\\limits_\{([a-z])=\2\}\^\{\3\}\{\(-1\)\^\4f_\1\(\4\)\}\\end\{aligned\}$)re");
+  std::smatch m;
+  if(std::regex_match(compact,m,delta)) {
+   const std::string a="\""+m[1].str()+"\"",from="\""+m[2].str()+"\"",to="\""+m[3].str()+"\"";
+   return "qcompare(qwalkdelta(\"steps\","+a+","+from+","+to+"),qsum((-1)^k*qwalkindicator(\"steps\","+a+",k),"+from+","+to+",k),4)";
+  }
+  const std::string start="\\begin{aligned}d(i,j)&=\\sum\\limits_{a}{||\\Deltan_a(i,j)||^2}\\\\&=";
+  if(compact.compare(0,start.size(),start)==0) {
+   std::string tail,terms;
+   for(int k=0;k<4;++k) {
+    if(k) {tail+="+";terms+="+";}
+    tail+="(\\Deltan_"+std::to_string(k)+"(i,j))^2";
+    terms+="qwalkdelta(\"steps\","+std::to_string(k)+",\"i\",\"j\")^2";
+   }
+   if(compact.substr(start.size())==tail+"\\end{aligned}")
+    return "qequalchain(vector(qwalkdistance(\"steps\",\"i\",\"j\"),qsum(qwalkdelta(\"steps\",a,\"i\",\"j\")^2,0,3,a),"+terms+"))";
+  }
+ }
+ // In the mode-zero occupation identity every factor is local to that
+ // mode; spectator identity factors cancel throughout the derivation.
+ if(s.find("f_0^\\dagger")!=std::string::npos || s.find("[X_0,")!=std::string::npos) {
+  static const std::regex prefix(R"(\\prod_\{k\s*<\s*0\}\s*\(-Z_k\)\^2)");
+  std::string local=std::regex_replace(s,prefix,"I");
+  static const std::regex otherSite(R"([A-Za-z]_(?!0\b))");
+  if(!std::regex_search(local,otherSite)) {
+   s.swap(local);
+   static const std::regex commutator(R"(\[X_0,\s*Y_0\])");
+   s=std::regex_replace(s,commutator,"qcomm(X,Y)");
+   static const std::regex creator(R"(f_0\^\\dagger\s*f_0\b)");
+   s=std::regex_replace(s,creator,"qmul(qfcreate(1,0),qfdestroy(1,0))");
+   static const std::regex pauli(R"(\b([XYZ])_0\b)");
+   s=std::regex_replace(s,pauli,"($1)");
+  }
+ }
+ // Both occupation conventions occur in the lessons. The sign on iY,
+ // not the operator's printed name, selects its actual ladder matrix.
+ if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {
+  static const std::regex product(R"(\\Bigl\(\s*\\prod\\limits_\{([a-z])\s*\\lt\s+([a-z])\}\{\(-Z_\1\)\}\s*\\Bigr\)\\Bigl\(\s*\\frac\{X_\2\s*([+-])\s*i\s*Y_\2\}\{2\}\s*\\Bigr\))");
+  std::smatch m;
+  while(std::regex_search(s,m,product)) {
+   const std::string value="qjwimage(N,"+m[2].str()+","+(m[3]=="-" ? "1" : "0")+")";
+   s.replace(m.position(),m.length(),value);
+  }
+  if(s.find("qjwimage(")!=std::string::npos) {
+   static const std::regex fermion(R"((?:\\hat\{f\}|\bf)_([a-z])(\^\\dagger)?)");
+   while(std::regex_search(s,m,fermion)) {
+    std::string op="qoperatorref(qindexedlabel(\"f_\","+m[1].str()+",\"\"))";
+    if(m[2].matched)op="qdag("+op+")";
+    s.replace(m.position(),m.length(),op);
+   }
+  }
+ }
+ if(s.find("\\sigma_")!=std::string::npos) {
+  static const std::regex ladder(R"(\\sigma_([a-z]|[0-9]+)\^(?:\{([+-])\}|([+-])))");
+  std::smatch m;
+  while(std::regex_search(s,m,ladder)) {
+   std::string selector=m[2]=="-" || m[3]=="-" ? "1" : "0";
+   s.replace(m.position(),m.length(),"qspinladder(N,"+m[1].str()+","+selector+")");
+  }
+ }
+ if(s.find("\\text{")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  static const std::regex occupation(R"(\|([01])\\rangle\s*&\s*=\s*\\text\{\s*(empty|occupied)\s*\})");
+  s=std::regex_replace(s,occupation,"|$1\\rangle &= qnamedket(\"$2\")");
+ }
+ if(s.find("\\sigma^")!=std::string::npos) {
+  const std::string raising="((X+i*Y)/2)",lowering="((X-i*Y)/2)";
+  static const std::regex pair(R"(^\s*\\sigma\^\{?\\pm\}?\s*$)");
+  if(std::regex_match(s,pair))return "vector("+raising+","+lowering+")";
+  // Preserve independent displayed action equations when their only
+  // separator is a line break. A vanishing ket is the zero vector.
+  static const std::regex action(R"(^\s*\\sigma\^\{?([+-])\}?\s*\|([01])\\rangle\s*=\s*(0|\|[01]\\rangle)\s*$)");
+  std::string block;size_t start=0,count=0;
+  while(start<s.size()) {
+   size_t end=s.find('\n',start);std::string line=trim(s.substr(start,end-start));
+   if(!line.empty()) {
+    std::smatch m;if(!std::regex_match(line,m,action)) {block.clear();break;}
+    std::string gate=m[1].str()=="+" ? raising : lowering;
+    std::string target=m[3].str()=="0" ? "0*|0>" : "|"+m[3].str().substr(1,1)+">";
+    if(count++)block+=",";
+    block+="qcompare(qmul("+gate+",|"+m[2].str()+">),"+target+",4)";
+   }
+   if(end==std::string::npos)break;
+   start=end+1;
+  }
+  if(!block.empty())return count==1 ? block : "vector("+block+")";
+  static const std::regex plus(R"(\\sigma\^(?:\{\+\}|\+))"),minus(R"(\\sigma\^(?:\{-\}|-))");
+  s=std::regex_replace(std::regex_replace(s,plus,raising),minus,lowering);
+ }
+ if(s.find("\\limits")!=std::string::npos && (s.find("\\min")!=std::string::npos || s.find("\\max")!=std::string::npos)) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex optimization(R"(^\\(max|min)\\limits_\{([a-z])\\in\\\{0,1\\\}\^([a-z0-9])\}(.+)$)");
+  std::smatch m;
+  if(std::regex_match(compact,m,optimization)) {
+   const std::string x=m[2],width=m[3],objective=m[4];
+   if(m[1]=="min" && objective==x+"^TQ"+x)return "qbinaryminimum(\"Q\","+width+")";
+   const std::string edges="\\sum\\limits_{(i,j)}{",a=x+"_i",b=x+"_j";
+   if(m[1]=="max" && objective==edges+a+"+"+b+"-2"+a+b+"}")return "qmaxcut(\"E\","+width+")";
+   if(m[1]=="min" && objective==edges+"2"+a+b+"-"+a+"-"+b+"}")return "-qmaxcut(\"E\","+width+")";
+  }
+ }
  // An error syndrome names a basis state of the measurement register.
  // Preserve the operator and its wire in both ket and bra labels.
  if(s.find("syndrome")!=std::string::npos) {

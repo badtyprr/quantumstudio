@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/introduction.ipynb",
+  "source_sha256": "c6594e782df4c62b653d6e571b96f6fed6a9c2783991d6f998cc9db65baff427",
+  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
+  "revision": "73df7845",
+  "mode": "Quantum notation",
+  "markdown_cells": 10,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

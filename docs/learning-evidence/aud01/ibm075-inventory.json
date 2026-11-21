@@ -1,0 +1,27 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/running-quantum-circuits.ipynb",
+  "source_sha256": "7f001ec597b80e45be630d4d77f00c26607588bccb334712507f786f1a5392c1",
+  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
+  "revision": "73df7845",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 8293,
+      "end": 8426,
+      "alt": "Example simple quantum circuit",
+      "path": "/learning/images/courses/quantum-computing-in-practice/running-quantum-circuits/simplecircuit.avif"
+    },
+    {
+      "cell": 0,
+      "start": 9383,
+      "end": 9511,
+      "alt": "Example nine-layer circuit",
+      "path": "/learning/images/courses/quantum-computing-in-practice/running-quantum-circuits/circuitdepth.avif"
+    }
+  ],
+  "rows": []
+}

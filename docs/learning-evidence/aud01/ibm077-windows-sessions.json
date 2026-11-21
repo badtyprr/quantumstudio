@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/applications-of-qc.ipynb",
+  "notebook_sha256": "eb362a21d29dbdd06382b9a572bdd9a0100aaa3707541b43a8df6a9856742d9f",
+  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "4d23ea340b94f2ffd75c8a2e1ad2875e25009a1ac22c58c805248abbec19bf20",
+  "suite": {
+    "passed": true,
+    "checks": 18,
+    "calls": 2,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 2,
+    "restored_identically": 2,
+    "stable_after_text_reentry": 2
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

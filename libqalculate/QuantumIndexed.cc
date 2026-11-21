@@ -1309,6 +1309,209 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qsetminimum") {
+   MathStructure values;
+   if(finiteDomain(raw[0],values,eo)!=DomainState::Finite || !values.size())return 0;
+   Number minimum;
+   for(size_t k=0;k<values.size();++k) {
+    const auto &v=values[k];if(!v.isNumber() || v.isApproximate() || !v.number().isRational())return 0;
+    if(!k || v.number()<minimum)minimum=v.number();
+   }
+   out=minimum;return 1;
+  }
+  if(op=="qisingfield") {
+   MathStructure weights=raw[0],index=raw[1];weights.eval(eo);index.eval(eo);
+   if(!weights.isMatrix() || weights.rows()!=weights.columns() || !index.isInteger() ||
+      index.isApproximate() || index.number()<0 || index.number()>=int(weights.rows()))return 0;
+   size_t i=index.number().intValue();MathStructure field(0);
+   for(size_t j=0;j<weights.rows();++j) {
+    if(CALCULATOR->aborted())return 0;
+    field-=element(weights,i,j);field-=element(weights,j,i);
+   }
+   out=field;out.eval(eo);return 1;
+  }
+  if(op=="qisingenergy" || op=="qisinghamiltonian" || op=="qisingequivalent") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure weights=raw[0],fields=raw[1];weights.eval(exact);fields.eval(exact);
+   if(!weights.isMatrix() || weights.rows()!=weights.columns() || !fields.isVector())return 0;
+   const size_t n=weights.rows();
+   if(!n || n>128 || (op=="qisinghamiltonian" && n>9) || (op=="qisingequivalent" && n>12))return 0;
+   auto vectorEntries=[&](MathStructure &v) {
+    if(v.isMatrix()) {
+     if(v.rows()!=n || v.columns()!=1)return false;
+     MathStructure column;column.clearVector();
+     for(size_t k=0;k<n;++k)column.addChild(element(v,k,0));
+     v=column;
+    }
+    if(!v.isVector() || v.size()!=n)return false;
+    for(size_t k=0;k<n;++k)if(!v[k].isNumber() || v[k].isApproximate() || !v[k].number().isRational())return false;
+    return true;
+   };
+   if(!vectorEntries(fields))return 0;
+   for(size_t r=0;r<n;++r)for(size_t c=0;c<n;++c) {
+    const auto &v=element(weights,r,c);if(!v.isNumber() || v.isApproximate() || !v.number().isRational())return 0;
+   }
+   auto quadratic=[&](const std::vector<int> &v,bool linear) {
+    Number cost(0);
+    for(size_t r=0;r<n;++r) {
+     if(linear)cost+=fields[r].number()*v[r];
+     for(size_t c=0;c<n;++c)cost+=element(weights,r,c).number()*(v[r]*v[c]);
+    }
+    return cost;
+   };
+   std::vector<int> spins(n),bits(n);
+   if(op=="qisingenergy") {
+    MathStructure values=raw[2];values.eval(exact);
+    if(!vectorEntries(values))return 0;
+    for(size_t k=0;k<n;++k) {
+     if(!values[k].isOne() && !values[k].isMinusOne())return 0;
+     spins[k]=values[k].number().intValue();
+    }
+    out=quadratic(spins,true);return 1;
+   }
+   if(op=="qisingequivalent") {
+    MathStructure width=raw[2];width.eval(exact);
+    if(!width.isInteger() || width.number()!=int(n))return 0;
+   }
+   const size_t size=size_t(1)<<n;
+   if(op=="qisinghamiltonian") {out.clearMatrix();out.resizeMatrix(size,size,m_zero);}
+   std::set<size_t> binaryOptima,spinOptima;Number bestBinary,bestSpin;
+   for(size_t word=0;word<size;++word) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t k=0;k<n;++k) {bits[k]=(word>>(n-1-k))&1;spins[k]=1-2*bits[k];}
+    Number spin=quadratic(spins,true);
+    if(op=="qisinghamiltonian") {element(out,word,word)=MathStructure(spin);continue;}
+    Number binary=quadratic(bits,false);
+    if(!word || binary<bestBinary) {binaryOptima.clear();bestBinary=binary;}
+    if(!word || spin<bestSpin) {spinOptima.clear();bestSpin=spin;}
+    if(binary==bestBinary)binaryOptima.insert(word);
+    if(spin==bestSpin)spinOptima.insert(word);
+   }
+   if(op=="qisingequivalent")out=binaryOptima==spinOptima ? 1 : 0;
+   return 1;
+  }
+  if(op=="qwalkdelta" || op=="qwalkdistance" || op=="qwalkindicator") {
+   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
+   const bool distance=op=="qwalkdistance",indicator=op=="qwalkindicator";
+   if(!args[0].isVector() || args[0].isMatrix())return 0;
+   for(size_t k=1;k<args.size();++k)if(!args[k].isInteger() || args[k].isApproximate())return 0;
+   const size_t first=distance ? 1 : 2,last=indicator ? first : first+1;
+   if(args[first].number()<1 || args[last].number()<args[first].number() || args[last].number()>int(args[0].size()))return 0;
+   if(!distance && (args[1].number()<0 || args[1].number()>3))return 0;
+   int counts[4]={};
+   for(int k=args[first].number().intValue();k<=args[last].number().intValue();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const auto &direction=args[0][k-1];
+    if(!direction.isInteger() || direction.isApproximate() || direction.number()<0 || direction.number()>3)return 0;
+    const int axis=direction.number().intValue();
+    if(indicator) {out=(axis==args[1].number().intValue()) ? 1 : 0;return 1;}
+    counts[axis]+=k%2 ? -1 : 1;
+   }
+   if(!distance) {out=counts[args[1].number().intValue()];return 1;}
+   out=0;
+   for(int count:counts) {MathStructure term(count);term*=count;out+=term;}
+   out.eval(eo);return 1;
+  }
+  if(op=="qpairtotal") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure weights=raw[0],values=raw[1];weights.eval(exact);values.eval(exact);
+   if(!weights.isMatrix() || weights.rows()!=weights.columns() || !values.isVector())return 0;
+   const size_t n=weights.rows();
+   if(!n || n>128)return 0;
+   if(values.isMatrix()) {
+    if(values.rows()!=n || values.columns()!=1)return 0;
+    MathStructure column;column.clearVector();
+    for(size_t k=0;k<n;++k)column.addChild(element(values,k,0));
+    values=column;
+   }
+   if(values.size()!=n)return 0;
+   for(size_t k=3;k<6;++k) {
+    if(!raw[k].isSymbolic() && !raw[k].isVariable())return 0;
+    for(size_t j=k+1;j<6;++j)if(raw[k].equals(raw[j]))return 0;
+   }
+   for(size_t k=0;k<n;++k)if(!values[k].isNumber())return 0;
+   MathStructure total(0);
+   for(size_t i=0;i<n;++i)for(size_t j=0;j<n;++j) {
+    if(CALCULATOR->aborted())return 0;
+    if(!element(weights,i,j).isNumber())return 0;
+    MathStructure term=raw[2];
+    term.replace(raw[3],element(weights,i,j),false,false,raw[3].containsUnknowns());
+    term.replace(raw[4],values[i],false,false,raw[4].containsUnknowns());
+    term.replace(raw[5],values[j],false,false,raw[5].containsUnknowns());
+    term.eval(exact);if(!term.isNumber())return 0;
+    total+=term;
+   }
+   out=total;out.eval(exact);return 1;
+  }
+  if(op=="qmeanat") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure points=raw[0],parameter=raw[1];points.eval(exact);parameter.eval(exact);
+   if(!parameter.isNumber() || !points.isVector())return 0;
+   if(!points.isMatrix() && points.size()==2) {
+    if(!points[0].equals(parameter))return 0;
+    out=points[1];return 1;
+   }
+   if(!points.isMatrix() || points.columns()!=2)return 0;
+   bool found=false;
+   for(size_t row=0;row<points.rows();++row) {
+    if(CALCULATOR->aborted())return 0;
+    if(!element(points,row,0).equals(parameter))continue;
+    const auto &mean=element(points,row,1);
+    if(found && !out.equals(mean)) {
+     CALCULATOR->error(true,"A sampled expectation has conflicting values at this parameter.",NULL);return 0;
+    }
+    out=mean;found=true;
+   }
+   return found ? 1 : 0;
+  }
+  if(op=="qbinaryminimum" || op=="qmaxcut") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure width=raw[1],data=raw[0];width.eval(exact);data.eval(exact);
+   if(!width.isInteger() || width.isApproximate() || width.number()<0)return 0;
+   if(data.isVector() && !data.size() && (op=="qmaxcut" || width.isZero())) {out=0;return 1;}
+   if(width.isZero() || width.number()>12)return 0;
+   if(!data.isMatrix()) {
+    // A single edge or coefficient row can re-enter as a flat vector.
+    if(!data.isVector()) {
+     if(op!="qbinaryminimum" || !width.isOne() || !data.isNumber())return 0;
+     MathStructure scalar=data;data.clearVector();data.addChild(scalar);
+    }
+    MathStructure row=data;data.clearMatrix();data.resizeMatrix(1,row.size(),m_zero);
+    for(size_t j=0;j<row.size();++j)element(data,0,j)=row[j];
+   }
+   const unsigned n=width.number().intValue();
+   if(op=="qmaxcut") {
+    if(data.columns()!=2)return 0;
+    std::vector<std::pair<unsigned,unsigned>> edges;
+    for(size_t j=0;j<data.rows();++j) {
+     const auto &a=element(data,j,0),&b=element(data,j,1);
+     if(!a.isInteger() || !b.isInteger() || a.isApproximate() || b.isApproximate() ||
+        a.number()<0 || b.number()<0 || a.number()>=int(n) || b.number()>=int(n))return 0;
+     edges.emplace_back(a.number().intValue(),b.number().intValue());
+    }
+    unsigned best=0;
+    for(unsigned word=0;word<(1u<<n);++word) {
+     if(CALCULATOR->aborted())return 0;
+     unsigned cut=0;for(const auto &edge:edges)cut+=((word>>edge.first)^(word>>edge.second))&1u;
+     if(cut>best)best=cut;
+    }
+    out=(int)best;return 1;
+   }
+   if(data.rows()!=n || data.columns()!=n)return 0;
+   for(unsigned r=0;r<n;++r)for(unsigned c=0;c<n;++c) {
+    const auto &entry=element(data,r,c);
+    if(!entry.isNumber() || entry.isApproximate() || !entry.number().isRational())return 0;
+   }
+   Number best(0);
+   for(unsigned word=1;word<(1u<<n);++word) {
+    if(CALCULATOR->aborted())return 0;
+    Number value(0);
+    for(unsigned r=0;r<n;++r)if(word&(1u<<r))
+     for(unsigned c=0;c<n;++c)if(word&(1u<<c))value+=element(data,r,c).number();
+    if(value<best)best=value;
+   }
+   out=best;return 1;
+  }
   if(op=="qcosetket") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure representative=raw[0],words;representative.eval(exact);
@@ -2705,6 +2908,18 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qsetminimum",1));
+ calculator.addFunction(new QuantumIndexedFunction("qisingfield",2));
+ calculator.addFunction(new QuantumIndexedFunction("qisingenergy",3));
+ calculator.addFunction(new QuantumIndexedFunction("qisinghamiltonian",2));
+ calculator.addFunction(new QuantumIndexedFunction("qisingequivalent",3));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkdelta",4));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkdistance",3));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkindicator",3));
+ calculator.addFunction(new QuantumIndexedFunction("qpairtotal",6));
+ calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
+ calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));
  calculator.addFunction(new QuantumIndexedFunction("qcosetket",2));
  calculator.addFunction(new QuantumIndexedFunction("qwordspan",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordkernel",2));
