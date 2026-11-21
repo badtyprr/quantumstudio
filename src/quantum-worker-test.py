@@ -405,7 +405,10 @@ assert data('quantum:vector(replace(($m=O(n)$),"m",2*n+1),replace(($m=O(n)$),"m"
 assert data('quantum:replace(replace(($m=O(n)$),"m",n^2),"z",3)')["copy_text"]=="0"
 assert data('quantum:replace(($$'+residue_action+'$$),"N",5)')["copy_text"]=="qresiduemultiplier('a',5)"
 caption=r"$a^r \equiv 1$ $(\textrm{mod } N)$"
-assert data('quantum:replace(('+caption+'),"N",5)')["copy_text"]==data('quantum:replace(('+data("quantum:"+caption)["copy_text"]+'),"N",5)')["copy_text"]
+for source in (caption,data("quantum:"+caption)["copy_text"]):
+    bound=data('quantum:replace(('+source+'),"N",5)')["copy_text"]
+    for power,expected in ((2,"0"),(4,"1")):
+        assert data(f'quantum:replace(replace(({bound}),"a",2),"r",{power})')["copy_text"]==expected
 assert data("quantum:nn^2=O(n^3)")["copy_text"] == "1"
 assert data("quantum:cost(replace(replace(nm^2,n,3),m,2))")["copy_text"] == "12"
 for source, binding, expected in [
