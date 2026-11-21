@@ -723,16 +723,18 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  std::string from=first.substr(split+1),to=last.substr(split+1);
  auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
  // Grouped offsets belong to the index. Ungrouped arithmetic does not.
- if(to.size()>2 && to.front()=='{' && to.back()=='}') {
-  std::string bound=trim(to.substr(1,to.size()-2));
-  if(bound.empty() || !asciiLetter(bound.front()))return "";
+ auto endpoint=[&](std::string &value) {
+  if(value.size()<3 || value.front()!='{' || value.back()!='}')
+   return integer(value) || (value.size()==1 && asciiLetter(value.front()));
+  std::string bound=trim(value.substr(1,value.size()-2));
+  if(bound.empty() || !asciiLetter(bound.front()))return false;
   std::string offset=trim(bound.substr(1));
-  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return "";
+  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return false;
   std::string magnitude=trim(offset.substr(1));
-  if(!integer(magnitude))return "";
-  to=bound.substr(0,1)+offset.front()+magnitude;
- } else if(!integer(to) && !(to.size()==1 && asciiLetter(to[0])))return "";
- if(!integer(from))return "";
+  if(!integer(magnitude))return false;
+  value=bound.substr(0,1)+offset.front()+magnitude;return true;
+ };
+ if(!endpoint(from) || !endpoint(to))return "";
  return std::string(ordered ? "qindexedketlist(" : "qindexedketset(")+"\""+prefix+"\","+from+","+to+",vector())";
 }
 std::string orderedKetList(const std::string &text) {
