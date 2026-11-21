@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
   "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
-  "worker_sha256": "22fb4bfd354fd71d35519f22d42ab8fa2ee4fe06054711b4689eb351d18e512c",
-  "revision": "4270b8e3",
+  "worker_sha256": "1651d6a4ad33e0dbb781fffa2cd5fc69486affd3f155e832fd27a8a9421e5342",
+  "revision": "a41fa8a6",
   "mode": "Quantum notation",
   "markdown_cells": 12,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 14,
-    "exact": 47
+    "diagnostic": 12,
+    "exact": 49
   },
   "figures": [
     {
@@ -447,8 +447,9 @@
       "start": 341,
       "end": 362,
       "literal": "$$\nU(t) = e^{-iHt}\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 5"
+      "status": "exact",
+      "display": "qoperatorref(qindexedlabel(\"U(\", 't', ')')) = qpropagator('H', 't')",
+      "copy": "qcompare(qoperatorref(qindexedlabel(\"U(\",'t',')')),qpropagator('H','t'),4)"
     },
     {
       "id": "IBM079-7325643f-M037",
@@ -456,8 +457,9 @@
       "start": 381,
       "end": 390,
       "literal": "$\\hbar=1$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\hbar at byte 6"
+      "status": "exact",
+      "display": "'ℏ' = 1",
+      "copy": "('ℏ')==(1)"
     },
     {
       "id": "IBM079-7325643f-M038",
@@ -466,8 +468,8 @@
       "end": 521,
       "literal": "$|\\phi(t)\\rangle = e^{-iHt}|\\phi(t=0)\\rangle$",
       "status": "exact",
-      "display": "qstatecall('φ', 't') = e^(−(i · H · t)) · qstatecall('φ', qcompare('t', 0, 4))",
-      "copy": "qcompare(qstatecall('φ','t'),qadjacent(qpower(e,qmul(qmul('H','t'),−i)),qstatecall('φ',qcompare('t',0,4))),4)"
+      "display": "qstatecall('φ', 't') = qpropagator('H', 't') · qstatecall('φ', 0)",
+      "copy": "qcompare(qstatecall('φ','t'),qadjacent(qpropagator('H','t'),qstatecall('φ',0)),4)"
     },
     {
       "id": "IBM079-7325643f-M039",
@@ -476,8 +478,8 @@
       "end": 612,
       "literal": "$e^{-iHt}$",
       "status": "exact",
-      "display": "1 / e^(i · H · t)",
-      "copy": "1 ∕ e^(i'H''t')"
+      "display": "qpropagator('H', 't')",
+      "copy": "qpropagator('H','t')"
     },
     {
       "id": "IBM079-7325643f-M040",
@@ -496,8 +498,8 @@
       "end": 930,
       "literal": "$[H_A, H_B] \\neq 0$",
       "status": "exact",
-      "display": "[\"H_A\"  \"H_B\"] ≠ 0",
-      "copy": "(vector(\"H_A\",\"H_B\"))!=(0)"
+      "display": "qoperatorref(\"H_A\") · qoperatorref(\"H_B\") − (qoperatorref(\"H_B\") · qoperatorref(\"H_A\")) ≠ 0",
+      "copy": "(qmul(qoperatorref(\"H_A\"), qoperatorref(\"H_B\")) − qmul(qoperatorref(\"H_B\"), qoperatorref(\"H_A\")))!=(0)"
     },
     {
       "id": "IBM079-7325643f-M042",
@@ -516,8 +518,8 @@
       "end": 1117,
       "literal": "$$\ne^{-i(H_A + H_B)t} \\neq e^{-iH_A t}e^{-iH_B t}\n$$",
       "status": "exact",
-      "display": "e^(−(i · \"H_A\" · t) − (i · \"H_B\" · t)) ≠ e^(−(\"iH_A\" · t) − (\"iH_B\" · t))",
-      "copy": "qcompare(e^(−i ⋅ \"H_A\" ⋅ 't' − i ⋅ \"H_B\" ⋅ 't'),e^(−\"iH_A\" ⋅ 't' − \"iH_B\" ⋅ 't'),5)"
+      "display": "qpropagator(qadd(\"H_A\", \"H_B\"), 't') − (qpropagator(\"H_A\", 't') · qpropagator(\"H_B\", 't')) ≠ 0",
+      "copy": "(qadd(qpropagator(qadd(\"H_A\",\"H_B\"),'t'),qmul(−1,qadjacent(qpropagator(\"H_A\",'t'),qpropagator(\"H_B\",'t')))))!=(0)"
     },
     {
       "id": "IBM079-7325643f-M044",
