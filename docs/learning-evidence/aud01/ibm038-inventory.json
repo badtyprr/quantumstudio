@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/quantum-information.ipynb",
   "source_sha256": "9193becddf7f8f9943aa24057a5666195b2f70d946ccd104033164ed6125e79b",
-  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
-  "revision": "9e033225",
+  "worker_sha256": "14718779ffeaa45205add3aba41ecaca0cb7c8fe294a3301e448c2a8596ae880",
+  "revision": "b5cf05104fed6d49646090ca4fd6cf67ed79f6e7",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 150,
-    "diagnostic": 11
+    "exact": 152,
+    "diagnostic": 9
   },
   "figures": [],
   "rows": [
@@ -486,8 +486,9 @@
       "start": 7236,
       "end": 7253,
       "literal": "$0, 1, \\ldots, 9$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 7"
+      "status": "exact",
+      "display": "[0  1  2  3  4  5  6  7  8  9]",
+      "copy": "vector(0,1,2,3,4,5,6,7,8,9)"
     },
     {
       "id": "IBM038-9193becd-M049",
@@ -1229,8 +1230,9 @@
       "start": 20604,
       "end": 20829,
       "literal": "$$\n  \\begin{aligned}\n    H \\vert 0 \\rangle = \\vert {+} \\rangle & \\qquad H \\vert {+} \\rangle = \\vert 0 \\rangle \\\\[1mm]\n    H \\vert 1 \\rangle = \\vert {-} \\rangle & \\qquad H \\vert {-} \\rangle = \\vert 1 \\rangle\n  \\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Quantum operation has incompatible declared matrix dimensions."
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
     },
     {
       "id": "IBM038-9193becd-M124",
