@@ -2100,6 +2100,10 @@ class QuantumIndexedFunction: public MathFunction {
    // collection. Retain the bars so substitution can determine the result.
    if(value.containsUnknowns() && (value.containsFunction(CALCULATOR->getFunction("qsumset")) ||
       value.containsFunction(CALCULATOR->getFunction("qsum"))))return 0;
+   // A free amplitude can later take a complex value. Preserve its magnitude
+   // when other factors have already reduced to concrete overlaps.
+   if(value.containsUnknowns() && (value.isMultiplication() || (value.isFunction() &&
+      (value.function()->referenceName()=="qmul" || value.function()->referenceName()=="qadjacent"))))return 0;
    if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;

@@ -1129,6 +1129,20 @@ class TeXReader {
    pos=afterName;
   }
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {
+   // Explicitly paired sized bars can enclose a bra-ket with its own
+   // separator. A sized ket alone instead ends in a right angle bracket.
+   if(name=="bigl" || name=="Bigl" || name=="biggl" || name=="Biggl" || name=="left") {
+    space();
+    std::string right=name=="left" ? "right" : name.substr(0,name.size()-1)+"r";
+    size_t end=input.find("\\"+right,pos);
+    if(input.compare(pos,5,"\\vert")==0 && end!=std::string::npos &&
+       input.compare(end+1+right.size(),5,"\\vert")==0 &&
+       input.find("\\"+name,pos+5)>end && input.find("\\langle",pos+5)<end &&
+       input.find("\\rangle",pos+5)<end) {
+     pos+=5;
+     return "qbars("+read(0,false,"",false,right+"\\vert")+")";
+    }
+   }
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
   }
   if(name=="in")return "∈";
