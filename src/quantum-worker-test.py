@@ -53,6 +53,18 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         result = run(f'quantum:replace(({empty}),"N",{invalid})', success=False)
         assert b"positive exact integer" in result.stderr
 
+# A written residue ring supplies the modulus in modular powers mode.
+modular = data(r"quantum:modpowers:$b = a^k \in \mathbb{Z}_N^{\ast}$")["copy_text"]
+assert data("quantum:"+modular)["copy_text"] == modular
+for candidate, expected in [(4,1), (25,0)]:
+    expr = f'replace(replace(replace(replace(({modular}),"k",2),"a",5),"N",21),"b",{candidate})'
+    assert data("quantum:"+expr)["copy_text"] == str(expected)
+assert data(r"quantum:modpowers:$17 = 5^{-1}\in\mathbb{Z}_{21}$")["copy_text"] == "1"
+assert data(r"quantum:$5^2\in\mathbb{Z}_{21}$")["copy_text"] == "0"
+assert data("quantum:qmodpower(2,1000000000,21)")["copy_text"] == str(pow(2,1000000000,21))
+for invalid in ("qmodpower(2,-1,4)", "qmodpower(1,2,0)", "qmodpower(1/2,2,7)"):
+    run("quantum:"+invalid, success=False)
+
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
     copied = data("quantum:"+expression)["copy_text"]

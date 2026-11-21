@@ -2210,9 +2210,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool spinNumber=input.compare(first,5,"spin:")==0;
  const bool sets=input.compare(first,5,"sets:")==0;
  const bool scalars=input.compare(first,8,"scalars:")==0;
+ const bool modularPowers=input.compare(first,10,"modpowers:")==0;
  if(scalarNotation)*scalarNotation=scalars;
- if(dimensions || fractionBits || bitWord || spinNumber || scalars) {
-  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : 8));
+ if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
   if(first==std::string::npos)return "";
  } else if(sets) {
   if(setNotation)*setNotation=true;
@@ -2244,6 +2245,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(modularPowers && s.find("\\mathbb{Z}")!=std::string::npos) {
+  static const std::regex powerMembership(R"(^\s*(?:([A-Za-z]|-?[0-9]+)\s*=\s*)?([A-Za-z]|[0-9]+|\(\s*[-+]?[0-9]+\s*\))\s*\^\s*(\{\s*(?:[A-Za-z]|-?[0-9]+)\s*\}|[A-Za-z0-9])\s*\\in\s*\\mathbb\{Z\}\s*_\s*(\{\s*(?:[A-Za-z]|[0-9]+)\s*\}|[A-Za-z0-9])\s*(\^\s*(?:\{\\ast\}|\{\*\}|\\ast|\*))?\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,powerMembership)) {
+   auto operand=[](std::string value) {
+    if(value.front()=='{' || value.front()=='(')value=trim(value.substr(1,value.size()-2));
+    return asciiLetter(value.front()) ? "\""+value+"\"" : value;
+   };
+   const std::string modulus=operand(m[4]),power="qmodpower("+operand(m[2])+","+operand(m[3])+","+modulus+")";
+   std::string membership="qmember("+power+","+(m[5].matched ? "qunitsmod(" : "qresidues(")+modulus+"))";
+   return m[1].matched ? "(qcompare("+operand(m[1])+","+power+",4) and "+membership+")" : membership;
+  }
+ }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
   // Only the bare symbol S changes meaning in a declared scalar spin formula.
