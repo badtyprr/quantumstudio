@@ -149,7 +149,7 @@ std::string withoutDisplayPunctuation(std::string value) {
  size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
  unsigned char end=value[before];
- if(end<128 && !std::isalnum(end) && end!=')' && end!=']' && end!='}' && end!='>' && end!='\'' && end!='"')return value;
+ if(end<128 && !std::isalnum(end) && end!=')' && end!=']' && end!='}' && end!='>' && end!='|' && end!='\'' && end!='"')return value;
  char quote=0;
  for(size_t k=0;k<mark;++k)if(value[k]=='\'' || value[k]=='"') {
   if(quote==value[k])quote=0;else if(!quote)quote=value[k];
@@ -1135,12 +1135,18 @@ class TeXReader {
     space();
     std::string right=name=="left" ? "right" : name.substr(0,name.size()-1)+"r";
     size_t end=input.find("\\"+right,pos);
+    std::string close;
+    if(end!=std::string::npos) {
+     size_t bar=end+1+right.size();
+     if(input.compare(bar,5,"\\vert")==0)close=right+"\\vert";
+     else if(bar<input.size() && input[bar]=='|')close=right+"|";
+    }
     if(input.compare(pos,5,"\\vert")==0 && end!=std::string::npos &&
-       input.compare(end+1+right.size(),5,"\\vert")==0 &&
+       !close.empty() &&
        input.find("\\"+name,pos+5)>end && input.find("\\langle",pos+5)<end &&
        input.find("\\rangle",pos+5)<end) {
      pos+=5;
-     return "qbars("+read(0,false,"",false,right+"\\vert")+")";
+     return "qbars("+read(0,false,"",false,close)+")";
     }
    }
    space(); if(pos<input.size() && input[pos]=='.') ++pos; return "";
