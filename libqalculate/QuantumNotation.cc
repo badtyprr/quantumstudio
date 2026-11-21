@@ -2322,12 +2322,14 @@ class Parser {
   // Function argument lists use comparison(false) and keep their commas.
   if(allowSharedOperands && equalities && operands.size()==2 && take(',')) {
    do {
+    bool finalEquation=takeWord("and");
     std::string lhs=comparisonOperand(),relation=takeComparisonRelation();
     if(relation!="=" && relation!="==")throw std::runtime_error("Expected an equation after the comma.");
     std::string rhs=comparisonOperand();
     preserveZeroWord(lhs,rhs);preserveZeroWord(rhs,lhs);
     prepareEquality(lhs,rhs);
     result="("+result+"&&qcompare("+lhs+","+rhs+",4))";checkSize(result);
+    if(finalEquation)break;
    } while(take(','));
    return result;
   }

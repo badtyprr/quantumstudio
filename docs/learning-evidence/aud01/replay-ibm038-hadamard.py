@@ -40,3 +40,21 @@ copied = evaluate(digits["literal"])
 assert copied == "vector(" + ",".join(map(str, range(10))) + ")"
 assert evaluate(copied) == copied
 print("Verified the ten decimal digits in source order through Copy")
+
+rows = json.loads(Path(__file__).with_name("ibm038-inventory.json").read_bytes())["rows"]
+matrix_source = rows[149]["literal"].split("=",1)[1].strip("$ \n")
+action_source = rows[154]["literal"]
+assert rows[149]["id"].endswith("M150") and rows[154]["id"].endswith("M155")
+# The previous display supplies the map. Supply the lesson's dimension
+# explicitly because a single nonbinary ket does not determine its dimension.
+action = action_source.replace(r"\rangle", r"\rangle_{3}").replace("A ", matrix_source + " ")
+assert evaluate(action) == "1"
+for ket, changed in [(1,0), (2,1), (0,2)]:
+    target = rf"= \vert {ket}\rangle"
+    assert action.count(target) == 1
+    assert evaluate(action.replace(target, rf"= \vert {changed}\rangle")) == "0"
+fourier = rows[158]["literal"]
+assert rows[158]["id"].endswith("M159")
+assert evaluate(fourier.replace("U =", r"\mathrm{QFT}_{4} =")) == "1"
+assert evaluate(fourier.replace("U =", r"\mathrm{QFT}_{4} =").replace("& i &", "& -i &", 1)) == "0"
+print("Verified the three cyclic transitions with the lesson matrix, and its separate four-dimensional Fourier example")
