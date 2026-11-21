@@ -1146,6 +1146,17 @@ class TeXReader {
   }
   if(name=="text") {
    std::string text=trim(group());
+   if(!text.empty() && std::all_of(text.begin(),text.end(),asciiLetter)) {
+    const std::string prefix=preceding ? trim(*preceding) : "";
+    const size_t next=input.find_first_not_of(" \t\r\n",pos);
+    if(stateLabel)return text;
+    if(!prefix.empty() && next!=std::string::npos) {
+     if(prefix.back()=='|' && (input[next]=='>' || input.compare(next,7,"\\rangle")==0))return text;
+     if(prefix.back()=='<' && (input[next]=='|' || input.compare(next,5,"\\vert")==0))return text;
+    }
+    if(setExpressions && (prefix.empty() || prefix.back()==',') && next!=std::string::npos &&
+       (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0))return "\""+text+"\"";
+   }
    if(text=="and" || text=="or")return " "+text+" ";
    if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
    if(text=="otherwise")return text;

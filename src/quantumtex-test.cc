@@ -17,6 +17,12 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\vert\text{heads}\rangle)","|heads>");
+  equal(R"(\ket{\text{tails}})","|tails>");
+  equal(R"(\langle\text{heads}\vert)","<heads|");
+  equal(R"(\{\text{heads},\text{tails}\})","qset(vector(\"heads\",\"tails\"))");
+  rejects(R"(\text{heads})");
+  rejects(R"(|\text{and then}\rangle)");
   equal(R"(\mathbb{Z}_N)","qresidues(N)");
   equal(R"(\mathbb{Z}_{21}^{\ast})","qunitsmod(21)");
   equal(R"($5.333 \cdots$)","(5+3/9)");
