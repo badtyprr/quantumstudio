@@ -1,0 +1,75 @@
+{
+  "notebook_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
+  "source_cells": [
+    2,
+    4,
+    5,
+    7,
+    9,
+    11,
+    12,
+    14,
+    18,
+    20,
+    22,
+    24,
+    26,
+    27,
+    31,
+    32,
+    34,
+    35,
+    38,
+    39,
+    95,
+    98,
+    99,
+    100,
+    101,
+    103,
+    106,
+    107,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114
+  ],
+  "vqe": {
+    "14": {
+      "energy": -5.999999993367103,
+      "exact": -6.0,
+      "evaluations": 106
+    },
+    "27": {
+      "energy": -5.999999996759605,
+      "exact": -6.0,
+      "evaluations": 127
+    },
+    "32": {
+      "energy": -5.9999999941836055,
+      "exact": -6.0,
+      "evaluations": 93
+    },
+    "35": {
+      "energy": -5.999999994841367,
+      "exact": -6.0,
+      "evaluations": 107
+    },
+    "39": {
+      "energy": -5.999999999998307,
+      "exact": -6.0,
+      "evaluations": 117
+    }
+  },
+  "max_cut": {
+    "vertices": 4,
+    "optimal_cut": 4.0,
+    "most_sampled_cut": 4.0,
+    "total_shots": 1024,
+    "optimal_shots": 912,
+    "sampled_mean_cut": 3.8876953125,
+    "source_hamiltonian_plus_offset": -5.211672701335348
+  }
+}

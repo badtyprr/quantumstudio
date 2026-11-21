@@ -1,0 +1,1475 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/instances-and-extensions.ipynb",
+  "source_sha256": "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "mode": "Quantum notation",
+  "markdown_cells": 26,
+  "code_cells": 15,
+  "summary": {
+    "exact": 89,
+    "diagnostic": 60
+  },
+  "figures": [
+    {
+      "cell": 1,
+      "start": 203,
+      "end": 441,
+      "alt": "A diagram showing how VQE uses the reference state and ansatz to estimate a cost function, and then iterate using variational parameters.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqe.svg"
+    },
+    {
+      "cell": 16,
+      "start": 448,
+      "end": 638,
+      "alt": "A diagram showing how subspace-search VQE uses the components of variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-ssvqe.svg"
+    },
+    {
+      "cell": 18,
+      "start": 499,
+      "end": 673,
+      "alt": "A diagram showing how VQD uses the components of a variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-vqd.svg"
+    },
+    {
+      "cell": 38,
+      "start": 990,
+      "end": 1164,
+      "alt": "A diagram showing how QSR uses the components of a variational algorithm.",
+      "path": "/learning/images/courses/variational-algorithm-design/instances-and-extensions/instances-qsr.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM106-ab0d6f7e-M001",
+      "cell": 2,
+      "start": 133,
+      "end": 138,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "\"U_R\"",
+      "copy": "\"U_R\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M002",
+      "cell": 2,
+      "start": 167,
+      "end": 178,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M003",
+      "cell": 2,
+      "start": 209,
+      "end": 223,
+      "literal": "$|\\rho\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M004",
+      "cell": 2,
+      "start": 253,
+      "end": 276,
+      "literal": "$U_V(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M005",
+      "cell": 2,
+      "start": 297,
+      "end": 320,
+      "literal": "$U_A(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M006",
+      "cell": 2,
+      "start": 346,
+      "end": 360,
+      "literal": "$|\\rho\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M007",
+      "cell": 2,
+      "start": 364,
+      "end": 432,
+      "literal": "$U_V(\\vec\\theta_{i,j})|\\rho\\rangle = |\\psi(\\vec\\theta_{i,j})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M008",
+      "cell": 2,
+      "start": 448,
+      "end": 453,
+      "literal": "$i=0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M009",
+      "cell": 2,
+      "start": 640,
+      "end": 713,
+      "literal": "$\\Theta_0 := \\\\{ {\\vec\\theta_{0,j} | j \\in \\mathcal{J}_\\text{opt}^0} \\\\}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 15"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M010",
+      "cell": 2,
+      "start": 750,
+      "end": 764,
+      "literal": "$\\vec\\theta_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M011",
+      "cell": 2,
+      "start": 796,
+      "end": 885,
+      "literal": "$C(\\vec\\theta_{i,j}) := \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 7"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M012",
+      "cell": 2,
+      "start": 998,
+      "end": 1012,
+      "literal": "$\\Theta_{i+1}$",
+      "status": "exact",
+      "display": "Θ_(i + 1)",
+      "copy": "qindexedlabel(\"Θ_\",qadd(i,1),\"\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M013",
+      "cell": 2,
+      "start": 1326,
+      "end": 1370,
+      "literal": "$$\n\\hat{O}_1 = 2 II - 2 XX + 3 YY - 3 ZZ,\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M014",
+      "cell": 16,
+      "start": 126,
+      "end": 129,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M015",
+      "cell": 16,
+      "start": 159,
+      "end": 168,
+      "literal": "$\\hat{H}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M016",
+      "cell": 16,
+      "start": 186,
+      "end": 230,
+      "literal": "$\\{\\lambda_0, \\lambda_1,...,\\lambda_{N-1}\\}$",
+      "status": "diagnostic",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M017",
+      "cell": 16,
+      "start": 238,
+      "end": 247,
+      "literal": "$N\\geq k$",
+      "status": "exact",
+      "display": "N ≥ k",
+      "copy": "('N')>=('k')"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M018",
+      "cell": 16,
+      "start": 292,
+      "end": 331,
+      "literal": "$\\lambda_0<\\lambda_1<...<\\lambda_{N-1}$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M019",
+      "cell": 16,
+      "start": 677,
+      "end": 680,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M020",
+      "cell": 16,
+      "start": 718,
+      "end": 752,
+      "literal": "$\\{ |\\rho_j\\rangle \\}_{j=0}^{k-1}$",
+      "status": "exact",
+      "display": "\\{|ρ_j⟩\\} · _(j = 0)^(k − 1)",
+      "copy": "qadjacent(qset(vector(qnamedket(\"ρ_j\"))),qpower(qindexedlabel('_',qcompare('j',0,4),\"\"),qsub('k',1)))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M021",
+      "cell": 16,
+      "start": 762,
+      "end": 809,
+      "literal": "$\\langle \\rho_j | \\rho_l \\rangle = \\delta_{jl}$",
+      "status": "exact",
+      "display": "⟨ρ_j|ρ_l⟩ = \"δ_jl\"",
+      "copy": "qcompare(qmul(qdag(qnamedket(\"ρ_j\")),qnamedket(\"ρ_l\")),\"δ_jl\",4)"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M022",
+      "cell": 16,
+      "start": 814,
+      "end": 821,
+      "literal": "$j,l<k$",
+      "status": "exact",
+      "display": "k > l and j < k",
+      "copy": "(('j')<('k') and ('k')>('l'))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M023",
+      "cell": 16,
+      "start": 924,
+      "end": 1209,
+      "literal": "$$\n\\begin{aligned}\nC(\\vec{\\theta})\n\n& := \\sum_{j=0}^{k-1} w_j \\langle \\rho_j | U_{V}^{\\dagger}(\\vec{\\theta})\\hat{H} U_{V}(\\vec{\\theta})|\\rho_j \\rangle \\\\[1mm]\n\n& := \\sum_{j=0}^{k-1} w_j \\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 31"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M024",
+      "cell": 16,
+      "start": 1217,
+      "end": 1222,
+      "literal": "$w_j$",
+      "status": "exact",
+      "display": "\"w_j\"",
+      "copy": "\"w_j\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M025",
+      "cell": 16,
+      "start": 1268,
+      "end": 1275,
+      "literal": "$j<l<k$",
+      "status": "exact",
+      "display": "k > l and j < l",
+      "copy": "(('j')<('l') and ('k')>('l'))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M026",
+      "cell": 16,
+      "start": 1281,
+      "end": 1290,
+      "literal": "$w_j>w_l$",
+      "status": "exact",
+      "display": "\"w_j\" > \"w_l\"",
+      "copy": "(\"w_j\")>(\"w_l\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M027",
+      "cell": 16,
+      "start": 1296,
+      "end": 1315,
+      "literal": "$U_V(\\vec{\\theta})$",
+      "status": "exact",
+      "display": "qvectorref('θ') · U · V · '_'",
+      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M028",
+      "cell": 16,
+      "start": 1510,
+      "end": 1543,
+      "literal": "$U_V(\\vec{\\theta})|\\rho_j\\rangle$",
+      "status": "exact",
+      "display": "(qvectorref('θ') · U · V · '_') (|ρ_j⟩)",
+      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_j\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M029",
+      "cell": 16,
+      "start": 1548,
+      "end": 1581,
+      "literal": "$U_V(\\vec{\\theta})|\\rho_l\\rangle$",
+      "status": "exact",
+      "display": "(qvectorref('θ') · U · V · '_') (|ρ_l⟩)",
+      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_l\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M030",
+      "cell": 16,
+      "start": 1604,
+      "end": 1831,
+      "literal": "$$\n\\begin{aligned}\n\\langle \\rho_j | U_{V}^{\\dagger}(\\vec{\\theta})U_{V}(\\vec{\\theta})|\\rho_l \\rangle\n\n& = \\langle \\rho_j | I |\\rho_l \\rangle \\\\[1mm]\n\n& = \\langle \\rho_j | \\rho_l \\rangle \\\\[1mm]\n\n& = \\delta_{jl}\n\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "⟨ρ_j| (\"U_V\"† · qvectorref('θ') · qvectorref('θ') · U · V · '_') |ρ_l⟩ = ⟨ρ_j| [1, 0; 0, 1] |ρ_l⟩ = ⟨ρ_j|ρ_l⟩ = \"δ_jl\"",
+      "copy": "qequalchain(vector(qmul(qmul(qdag(qnamedket(\"ρ_j\")),qadjacent(qadjacent(qdag(\"U_V\"),qvectorref('θ')),qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')))),qnamedket(\"ρ_l\")),qmul(qmul(qdag(qnamedket(\"ρ_j\")),matrix(2,2,vector(1,0,0,1))),qnamedket(\"ρ_l\")),qmul(qdag(qnamedket(\"ρ_j\")),qnamedket(\"ρ_l\")),\"δ_jl\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M031",
+      "cell": 16,
+      "start": 1866,
+      "end": 1887,
+      "literal": "$U_{V}(\\vec{\\theta})$",
+      "status": "exact",
+      "display": "qvectorref('θ') · U · V · '_'",
+      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M032",
+      "cell": 16,
+      "start": 2013,
+      "end": 2029,
+      "literal": "$|\\rho_j\\rangle$",
+      "status": "exact",
+      "display": "|ρ_j⟩",
+      "copy": "qketstate(\"ρ_j\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M033",
+      "cell": 16,
+      "start": 2336,
+      "end": 2341,
+      "literal": "$w_j$",
+      "status": "exact",
+      "display": "\"w_j\"",
+      "copy": "\"w_j\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M034",
+      "cell": 16,
+      "start": 2477,
+      "end": 2482,
+      "literal": "$w_0$",
+      "status": "exact",
+      "display": "\"w_0\"",
+      "copy": "\"w_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M035",
+      "cell": 16,
+      "start": 2577,
+      "end": 2613,
+      "literal": "$U_{V}(\\vec{\\theta})|\\rho_0 \\rangle$",
+      "status": "exact",
+      "display": "(qvectorref('θ') · U · V · '_') (|ρ_0⟩)",
+      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_0\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M036",
+      "cell": 16,
+      "start": 2658,
+      "end": 2669,
+      "literal": "$\\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_0\"",
+      "copy": "\"λ_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M037",
+      "cell": 16,
+      "start": 2679,
+      "end": 2732,
+      "literal": "$\\{ U_{V}(\\vec{\\theta})|\\rho_j\\rangle \\}_{j=0}^{k-1}$",
+      "status": "diagnostic",
+      "message": "Invalid set entry."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M038",
+      "cell": 16,
+      "start": 2879,
+      "end": 2912,
+      "literal": "$\\{\\lambda_1,...,\\lambda_{N-1}\\}$",
+      "status": "exact",
+      "display": "qindexedset(\"λ_\", 1, qsub('N', 1), [])",
+      "copy": "qindexedset(\"λ_\",1,qsub('N',1),vector())"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M039",
+      "cell": 16,
+      "start": 3021,
+      "end": 3026,
+      "literal": "$w_1$",
+      "status": "exact",
+      "display": "\"w_1\"",
+      "copy": "\"w_1\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M040",
+      "cell": 16,
+      "start": 3031,
+      "end": 3067,
+      "literal": "$U_{V}(\\vec{\\theta})|\\rho_1 \\rangle$",
+      "status": "exact",
+      "display": "(qvectorref('θ') · U · V · '_') (|ρ_1⟩)",
+      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_1\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M041",
+      "cell": 16,
+      "start": 3109,
+      "end": 3120,
+      "literal": "$\\lambda_1$",
+      "status": "exact",
+      "display": "\"λ_1\"",
+      "copy": "\"λ_1\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M042",
+      "cell": 16,
+      "start": 3182,
+      "end": 3215,
+      "literal": "$\\{\\lambda_2,...,\\lambda_{N-1}\\}$",
+      "status": "exact",
+      "display": "qindexedset(\"λ_\", 2, qsub('N', 1), [])",
+      "copy": "qindexedset(\"λ_\",2,qsub('N',1),vector())"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M043",
+      "cell": 16,
+      "start": 3259,
+      "end": 3295,
+      "literal": "$U_{V}(\\vec{\\theta})|\\rho_j \\rangle$",
+      "status": "exact",
+      "display": "(qvectorref('θ') · U · V · '_') (|ρ_j⟩)",
+      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_j\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M044",
+      "cell": 16,
+      "start": 3333,
+      "end": 3344,
+      "literal": "$\\lambda_j$",
+      "status": "exact",
+      "display": "\"λ_j\"",
+      "copy": "\"λ_j\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M045",
+      "cell": 16,
+      "start": 3349,
+      "end": 3362,
+      "literal": "$0\\leq j < k$",
+      "status": "exact",
+      "display": "j ≥ 0 and j < k",
+      "copy": "(('j')<('k') and ('j')>=(0))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M046",
+      "cell": 16,
+      "start": 3573,
+      "end": 3576,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M047",
+      "cell": 16,
+      "start": 3614,
+      "end": 3648,
+      "literal": "$\\{ |\\rho_j\\rangle \\}_{j=0}^{k-1}$",
+      "status": "exact",
+      "display": "\\{|ρ_j⟩\\} · _(j = 0)^(k − 1)",
+      "copy": "qadjacent(qset(vector(qnamedket(\"ρ_j\"))),qpower(qindexedlabel('_',qcompare('j',0,4),\"\"),qsub('k',1)))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M048",
+      "cell": 16,
+      "start": 3660,
+      "end": 3707,
+      "literal": "$\\langle \\rho_j | \\rho_l \\rangle = \\delta_{jl}$",
+      "status": "exact",
+      "display": "⟨ρ_j|ρ_l⟩ = \"δ_jl\"",
+      "copy": "qcompare(qmul(qdag(qnamedket(\"ρ_j\")),qnamedket(\"ρ_l\")),\"δ_jl\",4)"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M049",
+      "cell": 16,
+      "start": 3712,
+      "end": 3719,
+      "literal": "$j,l<k$",
+      "status": "exact",
+      "display": "k > l and j < k",
+      "copy": "(('j')<('k') and ('k')>('l'))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M050",
+      "cell": 16,
+      "start": 3750,
+      "end": 3773,
+      "literal": "$U_V(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M051",
+      "cell": 16,
+      "start": 3833,
+      "end": 3856,
+      "literal": "$U_A(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M052",
+      "cell": 16,
+      "start": 3873,
+      "end": 3878,
+      "literal": "$i=0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M053",
+      "cell": 16,
+      "start": 3996,
+      "end": 4115,
+      "literal": "$C(\\vec\\theta_{i,j}) := \\sum_{j=0}^{k-1} w_j \\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 7"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M054",
+      "cell": 16,
+      "start": 4246,
+      "end": 4321,
+      "literal": "$\\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle$",
+      "status": "exact",
+      "display": "qstatecall(\"ψ_j\", qvectorref('θ'))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall(\"ψ_j\", qvectorref('θ'))",
+      "copy": "qmul(qmul(qdag(qstatecall(\"ψ_j\",qvectorref('θ'))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall(\"ψ_j\",qvectorref('θ')))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M055",
+      "cell": 16,
+      "start": 4353,
+      "end": 4358,
+      "literal": "$w_j$",
+      "status": "exact",
+      "display": "\"w_j\"",
+      "copy": "\"w_j\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M056",
+      "cell": 16,
+      "start": 4513,
+      "end": 4527,
+      "literal": "$\\Theta_{i+1}$",
+      "status": "exact",
+      "display": "Θ_(i + 1)",
+      "copy": "qindexedlabel(\"Θ_\",qadd(i,1),\"\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M057",
+      "cell": 18,
+      "start": 140,
+      "end": 143,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M058",
+      "cell": 18,
+      "start": 173,
+      "end": 182,
+      "literal": "$\\hat{H}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M059",
+      "cell": 18,
+      "start": 200,
+      "end": 244,
+      "literal": "$\\{\\lambda_0, \\lambda_1,...,\\lambda_{N-1}\\}$",
+      "status": "diagnostic",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M060",
+      "cell": 18,
+      "start": 252,
+      "end": 261,
+      "literal": "$N\\geq k$",
+      "status": "exact",
+      "display": "N ≥ k",
+      "copy": "('N')>=('k')"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M061",
+      "cell": 18,
+      "start": 369,
+      "end": 417,
+      "literal": "$\\lambda_0\\leq\\lambda_1\\leq...\\leq\\lambda_{N-1}$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 13"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M062",
+      "cell": 19,
+      "start": 42,
+      "end": 49,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M063",
+      "cell": 19,
+      "start": 518,
+      "end": 529,
+      "literal": "$\\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_0\"",
+      "copy": "\"λ_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M064",
+      "cell": 19,
+      "start": 627,
+      "end": 672,
+      "literal": "$\\{\\lambda_1, \\lambda_2,..., \\lambda_{N-1}\\}$",
+      "status": "diagnostic",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 44"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M065",
+      "cell": 19,
+      "start": 680,
+      "end": 691,
+      "literal": "$\\lambda_1$",
+      "status": "exact",
+      "display": "\"λ_1\"",
+      "copy": "\"λ_1\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M066",
+      "cell": 19,
+      "start": 937,
+      "end": 1003,
+      "literal": "$\\lambda_0 := C_0(\\vec\\theta^0) \\equiv C_\\text{VQE}(\\vec\\theta^0)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 22"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M067",
+      "cell": 19,
+      "start": 1058,
+      "end": 1088,
+      "literal": "$|\\psi(\\vec{\\theta^0})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M068",
+      "cell": 19,
+      "start": 1123,
+      "end": 1139,
+      "literal": "$\\vec{\\theta^0}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M069",
+      "cell": 19,
+      "start": 1177,
+      "end": 1200,
+      "literal": "$\\lambda_1 > \\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_0\" < \"λ_1\"",
+      "copy": "(\"λ_0\")<(\"λ_1\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M070",
+      "cell": 19,
+      "start": 1242,
+      "end": 1329,
+      "literal": "$C_0(\\vec{\\theta}) := \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 24"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M071",
+      "cell": 19,
+      "start": 1345,
+      "end": 1460,
+      "literal": "$$\nC_1(\\vec{\\theta}) :=\nC_0(\\vec{\\theta})+ \\beta_0 |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^0})\\rangle  |^2\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 100"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M072",
+      "cell": 19,
+      "start": 1481,
+      "end": 1490,
+      "literal": "$\\beta_0$",
+      "status": "exact",
+      "display": "\"β_0\"",
+      "copy": "\"β_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M073",
+      "cell": 19,
+      "start": 1522,
+      "end": 1543,
+      "literal": "$\\lambda_1-\\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_1\" − \"λ_0\"",
+      "copy": "\"λ_1\" − \"λ_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M074",
+      "cell": 19,
+      "start": 1645,
+      "end": 1740,
+      "literal": "$C_\\text{VQE}(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
+      "status": "exact",
+      "display": "qvectorref('θ') · C · E · Q · V · '_' = qstatecall('ψ', qvectorref('θ'))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qcompare(qvectorref('θ') ⋅ 'C''E''Q''V''_',qmul(qmul(qdag(qstatecall('ψ',qvectorref('θ'))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref('θ'))),4)"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M075",
+      "cell": 19,
+      "start": 1828,
+      "end": 1858,
+      "literal": "$|\\psi(\\vec{\\theta^0})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M076",
+      "cell": 19,
+      "start": 1865,
+      "end": 1874,
+      "literal": "$\\beta_0$",
+      "status": "exact",
+      "display": "\"β_0\"",
+      "copy": "\"β_0\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M077",
+      "cell": 19,
+      "start": 2027,
+      "end": 2234,
+      "literal": "$$\n\\hat{H_1} := \\hat{H} + \\beta_0 |\\psi(\\vec{\\theta^0})\\rangle \\langle \\psi(\\vec{\\theta^0})|\n\\quad \\Rightarrow \\quad\nC_1(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H_1} | \\psi(\\vec{\\theta})\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M078",
+      "cell": 19,
+      "start": 2285,
+      "end": 2315,
+      "literal": "$|\\psi(\\vec{\\theta^1})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M079",
+      "cell": 19,
+      "start": 2339,
+      "end": 2348,
+      "literal": "$\\hat{H}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M080",
+      "cell": 19,
+      "start": 2354,
+      "end": 2365,
+      "literal": "$\\hat{H_1}$",
+      "status": "exact",
+      "display": "\"H_1\"",
+      "copy": "\"H_1\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M081",
+      "cell": 19,
+      "start": 2377,
+      "end": 2460,
+      "literal": "$ \\langle \\psi(\\vec{\\theta^1}) | \\hat{H} | \\psi(\\vec{\\theta^1})\\rangle = \\lambda_1$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 19"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M082",
+      "cell": 20,
+      "start": 31,
+      "end": 42,
+      "literal": "$\\lambda_2$",
+      "status": "exact",
+      "display": "\"λ_2\"",
+      "copy": "\"λ_2\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M083",
+      "cell": 20,
+      "start": 79,
+      "end": 195,
+      "literal": "$$\nC_2(\\vec{\\theta}) :=\nC_1(\\vec{\\theta}) + \\beta_1 |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^1})\\rangle  |^2\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 101"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M084",
+      "cell": 20,
+      "start": 203,
+      "end": 212,
+      "literal": "$\\beta_1$",
+      "status": "exact",
+      "display": "\"β_1\"",
+      "copy": "\"β_1\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M085",
+      "cell": 20,
+      "start": 304,
+      "end": 334,
+      "literal": "$|\\psi(\\vec{\\theta^0})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M086",
+      "cell": 20,
+      "start": 339,
+      "end": 369,
+      "literal": "$|\\psi(\\vec{\\theta^1})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M087",
+      "cell": 20,
+      "start": 578,
+      "end": 589,
+      "literal": "$\\lambda_2$",
+      "status": "exact",
+      "display": "\"λ_2\"",
+      "copy": "\"λ_2\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M088",
+      "cell": 20,
+      "start": 686,
+      "end": 895,
+      "literal": "$$\n\\hat{H_2} := \\hat{H_1} + \\beta_1 |\\psi(\\vec{\\theta^1})\\rangle \\langle \\psi(\\vec{\\theta^1})|\n\\quad \\Rightarrow \\quad\nC_2(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H_2} | \\psi(\\vec{\\theta})\\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 45"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M089",
+      "cell": 20,
+      "start": 936,
+      "end": 966,
+      "literal": "$|\\psi(\\vec{\\theta^2})\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M090",
+      "cell": 20,
+      "start": 990,
+      "end": 999,
+      "literal": "$\\hat{H}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M091",
+      "cell": 20,
+      "start": 1005,
+      "end": 1016,
+      "literal": "$\\hat{H_2}$",
+      "status": "exact",
+      "display": "\"H_2\"",
+      "copy": "\"H_2\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M092",
+      "cell": 20,
+      "start": 1028,
+      "end": 1111,
+      "literal": "$ \\langle \\psi(\\vec{\\theta^2}) | \\hat{H} | \\psi(\\vec{\\theta^2})\\rangle = \\lambda_2$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 19"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M093",
+      "cell": 21,
+      "start": 27,
+      "end": 30,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M094",
+      "cell": 21,
+      "start": 45,
+      "end": 60,
+      "literal": "$\\lambda_{k-1}$",
+      "status": "exact",
+      "display": "λ_(k − 1)",
+      "copy": "qindexedlabel(\"λ_\",qsub('k',1),\"\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M095",
+      "cell": 21,
+      "start": 101,
+      "end": 234,
+      "literal": "$$\nC_{k-1}(\\vec{\\theta}) :=\nC_{k-2}(\\vec{\\theta}) + \\beta_{k-2} |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^{k-2}})\\rangle  |^2,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 113"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M096",
+      "cell": 21,
+      "start": 261,
+      "end": 277,
+      "literal": "$\\vec{\\theta^j}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M097",
+      "cell": 21,
+      "start": 288,
+      "end": 383,
+      "literal": "$\\langle \\psi(\\vec{\\theta^j}) | \\hat{H} | \\psi(\\vec{\\theta^j})\\rangle = \\lambda_j, \\forall j<k$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 18"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M098",
+      "cell": 21,
+      "start": 426,
+      "end": 510,
+      "literal": "$C(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M099",
+      "cell": 21,
+      "start": 572,
+      "end": 635,
+      "literal": "$|\\psi(\\vec{\\theta^j})\\rangle ; \\forall j \\in {0, \\cdots, k-1}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M100",
+      "cell": 21,
+      "start": 723,
+      "end": 763,
+      "literal": "$\\{\\lambda_{k-1},\\cdots,\\lambda_{N-1}\\}$",
+      "status": "exact",
+      "display": "qindexedset(\"λ_\", qsub('k', 1), qsub('N', 1), [])",
+      "copy": "qindexedset(\"λ_\",qsub('k',1),qsub('N',1),vector())"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M101",
+      "cell": 21,
+      "start": 824,
+      "end": 1061,
+      "literal": "$$\n\\hat{H}_{k-1} :=\n\\hat{H}_{k-2} + \\beta_{k-2} |\\psi(\\vec{\\theta^{k-2}})\\rangle \\langle \\psi(\\vec{\\theta^{k-2}})|\n\\quad \\Rightarrow \\quad\nC_{k-1}(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H}_{k-1} | \\psi(\\vec{\\theta})\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 57"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M102",
+      "cell": 21,
+      "start": 1110,
+      "end": 1113,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M103",
+      "cell": 21,
+      "start": 1184,
+      "end": 1189,
+      "literal": "$k-1$",
+      "status": "exact",
+      "display": "k − 1",
+      "copy": "'k' − 1"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M104",
+      "cell": 21,
+      "start": 1243,
+      "end": 1246,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M105",
+      "cell": 21,
+      "start": 1301,
+      "end": 1478,
+      "literal": "$$\nC_k(\\vec{\\theta}) =\n\\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle +\n\\sum_{j=0}^{k-1}\\beta_j |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^j})\\rangle |^2\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 167"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M106",
+      "cell": 22,
+      "start": 99,
+      "end": 104,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "\"U_R\"",
+      "copy": "\"U_R\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M107",
+      "cell": 22,
+      "start": 130,
+      "end": 153,
+      "literal": "$U_V(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M108",
+      "cell": 22,
+      "start": 209,
+      "end": 232,
+      "literal": "$U_A(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M109",
+      "cell": 22,
+      "start": 248,
+      "end": 253,
+      "literal": "$i=0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M110",
+      "cell": 22,
+      "start": 368,
+      "end": 387,
+      "literal": "$C_k(\\vec{\\theta})$",
+      "status": "exact",
+      "display": "qvectorref('θ') · C · '_' · k",
+      "copy": "qvectorref('θ') ⋅ 'C''_''k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M111",
+      "cell": 22,
+      "start": 414,
+      "end": 417,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M112",
+      "cell": 22,
+      "start": 449,
+      "end": 456,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M113",
+      "cell": 22,
+      "start": 565,
+      "end": 640,
+      "literal": "$\\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle$",
+      "status": "exact",
+      "display": "qstatecall(\"ψ_j\", qvectorref('θ'))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall(\"ψ_j\", qvectorref('θ'))",
+      "copy": "qmul(qmul(qdag(qstatecall(\"ψ_j\",qvectorref('θ'))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall(\"ψ_j\",qvectorref('θ')))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M114",
+      "cell": 22,
+      "start": 650,
+      "end": 653,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M115",
+      "cell": 22,
+      "start": 680,
+      "end": 766,
+      "literal": "$\\sum_{j=0}^{k-1}\\beta_j |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^j})\\rangle |^2$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 67"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M116",
+      "cell": 22,
+      "start": 901,
+      "end": 915,
+      "literal": "$\\Theta_{i+1}$",
+      "status": "exact",
+      "display": "Θ_(i + 1)",
+      "copy": "qindexedlabel(\"Θ_\",qadd(i,1),\"\")"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M117",
+      "cell": 38,
+      "start": 185,
+      "end": 188,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M118",
+      "cell": 38,
+      "start": 190,
+      "end": 195,
+      "literal": "$k-1$",
+      "status": "exact",
+      "display": "k − 1",
+      "copy": "'k' − 1"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M119",
+      "cell": 38,
+      "start": 1212,
+      "end": 1279,
+      "literal": "$C(\\theta) := \\langle \\psi(\\theta) | \\hat{H} | \\psi(\\theta)\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M120",
+      "cell": 38,
+      "start": 1343,
+      "end": 1531,
+      "literal": "$$\n\\begin{aligned}\nC(\\vec{\\theta})\n\n& := \\langle \\psi(\\theta) | \\hat{H} | \\psi(\\theta)\\rangle \\\\[1mm]\n\n& := a_0 + \\sum_{k=1}^S[a_k\\cos(k\\theta)+ b_k\\sin(k\\theta)] \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 31"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M121",
+      "cell": 38,
+      "start": 1610,
+      "end": 1613,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M122",
+      "cell": 38,
+      "start": 1754,
+      "end": 1765,
+      "literal": "$C(\\theta)$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M123",
+      "cell": 38,
+      "start": 1825,
+      "end": 1852,
+      "literal": "$\\{a_0, a_k, b_k\\}_{k=1}^S$",
+      "status": "exact",
+      "display": "\\{\"a_0\", \"a_k\", \"b_k\"\\} · _(k = 1)^[1, 0; 0, i]",
+      "copy": "qadjacent(qset(vector(\"a_0\",\"a_k\",\"b_k\")),qpower(qindexedlabel('_',qcompare('k',1,4),\"\"),matrix(2,2,[1,0,0,i])))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M124",
+      "cell": 38,
+      "start": 1882,
+      "end": 1888,
+      "literal": "$2S+1$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M125",
+      "cell": 38,
+      "start": 1940,
+      "end": 1946,
+      "literal": "$2S+1$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M126",
+      "cell": 38,
+      "start": 1995,
+      "end": 2001,
+      "literal": "$2S+1$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M127",
+      "cell": 38,
+      "start": 2019,
+      "end": 2051,
+      "literal": "$\\{\\theta_1,...,\\theta_{2S+1}\\}$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nFinite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M128",
+      "cell": 38,
+      "start": 2090,
+      "end": 2606,
+      "literal": "$$\n\\begin{pmatrix} 1 & \\cos(\\theta_1) & \\sin(\\theta_1) & \\cos(2\\theta_1) & ... & \\sin(S\\theta_1) \\\\\n1 & \\cos(\\theta_2) & \\sin(\\theta_2) & \\cos(2\\theta_2) & \\cdots & \\sin(S\\theta_2)\\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\ddots & \\vdots\\\\\n1 & \\cos(\\theta_{2S+1}) & \\sin(\\theta_{2S+1}) & \\cos(2\\theta_{2S+1}) & \\cdots & \\sin(S\\theta_{2S+1})\n\\end{pmatrix} \\begin{pmatrix} a_0 \\\\ a_1 \\\\ b_1 \\\\ a_2 \\\\ \\vdots \\\\ b_S \\end{pmatrix} = \\begin{pmatrix} C(\\theta_1) \\\\ C(\\theta_2) \\\\ \\vdots \\\\ C(\\theta_{2S+1}) \\end{pmatrix},\n$$",
+      "status": "diagnostic",
+      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M129",
+      "cell": 38,
+      "start": 2631,
+      "end": 2642,
+      "literal": "$$\nFa=c.\n$$",
+      "status": "exact",
+      "display": "F = 149896229 / (500000 · a) · km ∕ ms and a ≠ 0",
+      "copy": "(('F')==(((qphysicalunit(\"s\",\"\"))^(−1))*(1 ∕ 'a')*(299792458)*(qphysicalunit(\"m\",\"\"))) and ('a')!=(0))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M130",
+      "cell": 38,
+      "start": 2730,
+      "end": 2733,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M131",
+      "cell": 38,
+      "start": 2827,
+      "end": 2838,
+      "literal": "$F^\\dagger$",
+      "status": "exact",
+      "display": "F†",
+      "copy": "qdag('F')"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M132",
+      "cell": 38,
+      "start": 2871,
+      "end": 2904,
+      "literal": "$$\nF^\\dagger Fa = F^\\dagger c.\n$$",
+      "status": "exact",
+      "display": "F† · F · a − (F† · 299.792458 km ∕ ms) = 0",
+      "copy": "(qadd(qadjacent(qdag('F'),qmul('F','a')),qmul(−1,qadjacent(qdag('F'),qmul(qmul(299792458,qphysicalunit(\"m\",\"\")),qpower(qphysicalunit(\"s\",\"\"),−1))))))==(0)"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M133",
+      "cell": 38,
+      "start": 3025,
+      "end": 3028,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M134",
+      "cell": 38,
+      "start": 3080,
+      "end": 3090,
+      "literal": "$\\theta^i$",
+      "status": "exact",
+      "display": "'θ'^i",
+      "copy": "'θ'^i"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M135",
+      "cell": 38,
+      "start": 3103,
+      "end": 3108,
+      "literal": "$S_i$",
+      "status": "exact",
+      "display": "\"S_i\"",
+      "copy": "\"S_i\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M136",
+      "cell": 38,
+      "start": 3113,
+      "end": 3130,
+      "literal": "$i \\in {1,...,k}$",
+      "status": "exact",
+      "display": "i ∈ indexrange(1, floor('k'))",
+      "copy": "qmember(i,qindexrange(1,floor('k')))"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M137",
+      "cell": 38,
+      "start": 3179,
+      "end": 3256,
+      "literal": "$$\nT=\\prod_{i=1}^k(2S_i+1)\\leq \\prod_{i=1}^k(2S_{max}+1) = (2S_{max}+1)^n,\n$$",
+      "status": "diagnostic",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M138",
+      "cell": 38,
+      "start": 3264,
+      "end": 3288,
+      "literal": "$S_{\\max} = \\max_i(S_i)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\max at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M139",
+      "cell": 38,
+      "start": 3313,
+      "end": 3323,
+      "literal": "$S_{\\max}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\max at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M140",
+      "cell": 39,
+      "start": 98,
+      "end": 103,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "\"U_R\"",
+      "copy": "\"U_R\""
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M141",
+      "cell": 39,
+      "start": 133,
+      "end": 144,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M142",
+      "cell": 39,
+      "start": 168,
+      "end": 182,
+      "literal": "$|\\rho\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M143",
+      "cell": 39,
+      "start": 213,
+      "end": 236,
+      "literal": "$U_V(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M144",
+      "cell": 39,
+      "start": 257,
+      "end": 280,
+      "literal": "$U_A(\\vec\\theta_{i,j})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 9"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M145",
+      "cell": 39,
+      "start": 401,
+      "end": 406,
+      "literal": "$i=0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M146",
+      "cell": 39,
+      "start": 518,
+      "end": 591,
+      "literal": "$C(\\vec\\theta) := a_0 + \\sum_{k=1}^S[a_k\\cos(k\\theta)+ b_k\\sin(k\\theta)]$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\vec at byte 7"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M147",
+      "cell": 39,
+      "start": 601,
+      "end": 604,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M148",
+      "cell": 39,
+      "start": 616,
+      "end": 688,
+      "literal": "$T=\\prod_{i=1}^k(2S_i+1)\\leq \\prod_{i=1}^k(2S_{max}+1) = (2S_{max}+1)^n$",
+      "status": "diagnostic",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M149",
+      "cell": 39,
+      "start": 778,
+      "end": 781,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    }
+  ]
+}

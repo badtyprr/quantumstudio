@@ -1,0 +1,60 @@
+{
+  "lesson": 103,
+  "notebook_sha256": "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238",
+  "qiskit": "2.6.2",
+  "code_cells": [
+    2,
+    3,
+    7,
+    9,
+    12,
+    15,
+    17,
+    19,
+    21
+  ],
+  "ansatz_circuits": [
+    {
+      "cell": 3,
+      "qubits": 3,
+      "parameters": 0,
+      "depth": 2
+    },
+    {
+      "cell": 3,
+      "qubits": 3,
+      "parameters": 0,
+      "depth": 2
+    },
+    {
+      "cell": 7,
+      "qubits": 5,
+      "parameters": 21,
+      "depth": 14
+    },
+    {
+      "cell": 9,
+      "qubits": 5,
+      "parameters": 30,
+      "depth": 14
+    },
+    {
+      "cell": 12,
+      "qubits": 4,
+      "parameters": 8,
+      "depth": 7
+    },
+    {
+      "cell": 17,
+      "qubits": 4,
+      "parameters": 4,
+      "depth": 5
+    },
+    {
+      "cell": 21,
+      "qubits": 2,
+      "parameters": 12,
+      "depth": 18
+    }
+  ]
+}
