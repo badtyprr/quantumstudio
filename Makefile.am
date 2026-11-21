@@ -654,3 +654,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/mod013-updated-manila-results.json
 EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-syntax.json
 EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-symbols.json
 EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-discovery.md
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm033-iterate.py

@@ -2274,6 +2274,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "matrix("+std::to_string(logical.size())+",2,vector("+entries+"))";
    }
   }
+  if(s.find("Z_f")!=std::string::npos && s.find("\\mathbb{I}")!=std::string::npos) {
+   // In the Grover iterate derivations G and Z_f are operators on the
+   // same register. Its size can be inferred once G is assigned a matrix.
+   static const std::regex iterate(R"(^\s*\\begin\{aligned\}\s*(G)\s*\\vert\s*A_[01]\s*\\rangle\s*&\s*=)");
+   std::smatch action;
+   if(std::regex_search(s,action,iterate)) {
+    s.replace(action.position(1),1,"qoperatorref(\"G\")");
+    static const std::regex phase(R"(\bZ_f\b)");
+    static const std::regex reflectionIdentity(R"(-\s*\\mathbb\{I\}\s*\\bigr\))");
+    s=std::regex_replace(s,phase,"qoperatorref(\"Z_f\")");
+    s=std::regex_replace(s,reflectionIdentity,"- qidentitylike(qoperatorref(\"G\"))\\bigr)");
+   }
+  }
   if(s.find("Z_{\\mathrm{")!=std::string::npos) {
    // A register-wide conjugation fixes the identity dimension in its
    // reflection terms. Keep the intervening oracle as a bindable operator.
