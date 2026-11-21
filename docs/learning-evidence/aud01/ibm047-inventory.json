@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "628aa8b6a06e04f125adf5ceece6dd85c4cf3697215fc8e7e64af70c10d5f408",
-  "revision": "e658a1beed782047e0020a1e08d6f84aa3860d64",
+  "worker_sha256": "5dd87e17616b522c217b3b1178cd495b4b266bc2bbaf91988316c1e72f2bbfdf",
+  "revision": "9178f00c21799cfc4d1185e2f76c2c784df92566",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -263,8 +263,8 @@
       "end": 2664,
       "literal": "$$\nU \\vert \\phi \\rangle = \\alpha U \\vert \\psi \\rangle.\n$$",
       "status": "exact",
-      "display": "U |φ⟩ − (('α' · U) (|ψ⟩)) = 0",
-      "copy": "(qadjacent('U', qnamedket('φ')) − qadjacent(qadjacent('α', 'U'), qnamedket('ψ')))==(0)"
+      "display": "U |φ⟩ = ('α' · U) (|ψ⟩)",
+      "copy": "qcompare(qadjacent('U',qnamedket('φ')),qadjacent(qadjacent('α','U'),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM047-f4526623-M025",
@@ -444,7 +444,7 @@
       "literal": "$$\nU \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle\n$$",
       "status": "exact",
       "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
-      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
+      "copy": "qcompare(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))),qtensor(qnamedket('ψ'),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM047-f4526623-M043",
@@ -644,7 +644,7 @@
       "literal": "$ U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle $",
       "status": "exact",
       "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
-      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
+      "copy": "qcompare(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))),qtensor(qnamedket('ψ'),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM047-f4526623-M063",
@@ -694,7 +694,7 @@
       "literal": "$U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle$",
       "status": "exact",
       "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
-      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
+      "copy": "qcompare(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))),qtensor(qnamedket('ψ'),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM047-f4526623-M068",
@@ -744,7 +744,7 @@
       "literal": "$ U \\bigl( \\vert \\psi \\rangle \\otimes \\vert\\phi\\rangle\\bigr) = \\vert \\psi \\rangle \\otimes \\vert\\psi\\rangle $",
       "status": "exact",
       "display": "U · (|ψ⟩ ⊗ |φ⟩) = |ψ⟩ ⊗ |ψ⟩",
-      "copy": "(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))))==(qtensor(qnamedket('ψ'),qnamedket('ψ')))"
+      "copy": "qcompare(qmul('U',qtensor(qnamedket('ψ'),qnamedket('φ'))),qtensor(qnamedket('ψ'),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM047-f4526623-M073",
@@ -874,7 +874,7 @@
       "literal": "$\\langle \\phi\\vert\\psi\\rangle \\neq 0$",
       "status": "exact",
       "display": "⟨φ|ψ⟩ ≠ 0",
-      "copy": "(qmul(qdag(qnamedket('φ')),qnamedket('ψ')))!=(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket('φ')),qnamedket('ψ')),0,5)"
     },
     {
       "id": "IBM047-f4526623-M086",
@@ -1024,7 +1024,7 @@
       "literal": "$$\nU \\bigl(  \\vert 0\\cdots 0 \\rangle \\vert \\psi \\rangle\\bigr)\n= \\vert \\gamma_0\\rangle\\vert 0 \\rangle + \\vert \\gamma_1 \\rangle\\vert 1 \\rangle\n$$",
       "status": "exact",
       "display": "U · (|0^register width⟩ ⊗ |ψ⟩) = |γ_0⟩ ⊗ [1; 0] + |γ_1⟩ ⊗ [0; 1]",
-      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))))==(qadd(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))),qtensor(qnamedket(\"γ_1\"),matrix(2,1,vector(0,1)))))"
+      "copy": "qcompare(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))),qadd(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))),qtensor(qnamedket(\"γ_1\"),matrix(2,1,vector(0,1)))),4)"
     },
     {
       "id": "IBM047-f4526623-M101",
@@ -1074,7 +1074,7 @@
       "literal": "$$\n\\operatorname{Pr}(\\text{outcome is $0$}) = \\bigl\\| \\vert\\gamma_0\\rangle \\bigr\\|^2\n\\qquad\\text{and}\\qquad\n\\operatorname{Pr}(\\text{outcome is $1$}) = \\bigl\\| \\vert\\gamma_1\\rangle \\bigr\\|^2.\n$$",
       "status": "exact",
       "display": "qeventprob(\"measurement probabilities\", 1) = qnorm(qnamedket(\"γ_1\"))² and qeventprob(\"measurement probabilities\", 0) = qnorm(qnamedket(\"γ_0\"))²",
-      "copy": "((qeventprob(\"measurement probabilities\",0))==(qnorm(qnamedket(\"γ_0\"))²) and (qeventprob(\"measurement probabilities\",1))==(qnorm(qnamedket(\"γ_1\"))²))"
+      "copy": "(qcompare(qeventprob(\"measurement probabilities\",0),qnorm(qnamedket(\"γ_0\"))²,4) and qcompare(qeventprob(\"measurement probabilities\",1),qnorm(qnamedket(\"γ_1\"))²,4))"
     },
     {
       "id": "IBM047-f4526623-M106",
@@ -1114,7 +1114,7 @@
       "literal": "$$\nU \\bigl( \\vert 0\\cdots 0\\rangle\\vert \\psi \\rangle  \\bigr)\n= \\vert\\gamma_0\\rangle\\vert 0 \\rangle.\n$$",
       "status": "exact",
       "display": "U · (|0^register width⟩ ⊗ |ψ⟩) = |γ_0⟩ ⊗ [1; 0]",
-      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))))==(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))"
+      "copy": "qcompare(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))),4)"
     },
     {
       "id": "IBM047-f4526623-M110",
@@ -1133,8 +1133,8 @@
       "end": 14196,
       "literal": "$$\n\\vert 0\\cdots 0\\rangle\\vert \\psi \\rangle\n= U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr).\n\\tag{1}\n$$",
       "status": "exact",
-      "display": "U† · (|γ_0⟩ ⊗ [1; 0]) = |0^register width⟩ ⊗ |ψ⟩",
-      "copy": "(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))==(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ')))"
+      "display": "|0^register width⟩ ⊗ |ψ⟩ = U† · (|γ_0⟩ ⊗ [1; 0])",
+      "copy": "qcompare(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ')),qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),4)"
     },
     {
       "id": "IBM047-f4526623-M112",
@@ -1164,7 +1164,7 @@
       "literal": "$$\nU \\bigl( \\vert 0\\cdots 0\\rangle\\vert \\phi \\rangle  \\bigr)\n=  \\vert \\delta_1\\rangle\\vert 1 \\rangle\n$$",
       "status": "exact",
       "display": "U · (|0^register width⟩ ⊗ |φ⟩) = |δ_1⟩ ⊗ [0; 1]",
-      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ'))))==(qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1))))"
+      "copy": "qcompare(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ'))),qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1))),4)"
     },
     {
       "id": "IBM047-f4526623-M115",
@@ -1183,8 +1183,8 @@
       "end": 14571,
       "literal": "$$\n\\vert 0\\cdots 0\\rangle\\vert \\phi \\rangle\n= U^{\\dagger} \\bigl(  \\vert \\delta_1\\rangle\\vert 1 \\rangle\\bigr).\n\\tag{2}\n$$",
       "status": "exact",
-      "display": "U† · (|δ_1⟩ ⊗ [0; 1]) = |0^register width⟩ ⊗ |φ⟩",
-      "copy": "(qadjacent(qdag('U'),qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1)))))==(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ')))"
+      "display": "|0^register width⟩ ⊗ |φ⟩ = U† · (|δ_1⟩ ⊗ [0; 1])",
+      "copy": "qcompare(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ')),qadjacent(qdag('U'),qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1)))),4)"
     },
     {
       "id": "IBM047-f4526623-M117",
@@ -1213,8 +1213,8 @@
       "end": 14895,
       "literal": "$$\n\\bigl(U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr)\\bigr)^{\\dagger}\n= \\bigl( \\langle\\gamma_0\\vert\\langle 0\\vert \\bigr)U,\n$$",
       "status": "exact",
-      "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† − ((|γ_0⟩ ⊗ [1; 0])† · U) = 0",
-      "copy": "((qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))))+ ((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'))))==(0)"
+      "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† = (|γ_0⟩ ⊗ [1; 0])† · U",
+      "copy": "qcompare(qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))),qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'),4)"
     },
     {
       "id": "IBM047-f4526623-M120",
@@ -1253,8 +1253,8 @@
       "end": 15319,
       "literal": "$U U^{\\dagger} = \\mathbb{I}$",
       "status": "exact",
-      "display": "U · U† − qidentitylike(qadjacent('U', qdag('U'))) = 0",
-      "copy": "(qadjacent('U', qdag('U')) − qidentitylike(qadjacent('U', qdag('U'))))==(0)"
+      "display": "U · U† = qidentitylike(qadjacent('U', qdag('U')))",
+      "copy": "qcompare(qadjacent('U',qdag('U')),qidentitylike(qadjacent('U',qdag('U'))),4)"
     },
     {
       "id": "IBM047-f4526623-M124",
@@ -1404,7 +1404,7 @@
       "literal": "$\\langle \\psi \\vert \\phi \\rangle = 0$",
       "status": "exact",
       "display": "⟨ψ|φ⟩ = 0",
-      "copy": "(qmul(qdag(qnamedket('ψ')),qnamedket('φ')))==(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),0,4)"
     },
     {
       "id": "IBM047-f4526623-M139",
@@ -1434,7 +1434,7 @@
       "literal": "$\\langle \\phi\\vert\\psi\\rangle = 0$",
       "status": "exact",
       "display": "⟨φ|ψ⟩ = 0",
-      "copy": "(qmul(qdag(qnamedket('φ')),qnamedket('ψ')))==(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket('φ')),qnamedket('ψ')),0,4)"
     },
     {
       "id": "IBM047-f4526623-M142",

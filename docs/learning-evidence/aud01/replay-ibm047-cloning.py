@@ -95,3 +95,16 @@ for state, control, orthogonal in [("|0>", "|+>", "|1>"), ("[0;0;1]", "[1;0;0]",
     for psi, truth in [(orthogonal, "vector(1,1)"), (state, "vector(0,0)")]:
         check(146, [('qnamedket("φ")', state), ('qnamedket("ψ")', psi)], truth)
 print("Verified the projector set and both measurement derivations in two and three dimensions")
+
+for phase, truth in [("i", "1"), ("-i", "0")]:
+    bindings = [('"U"', "H"), ('qnamedket("ψ")', "|+>"),
+                ('qnamedket("φ")', "i*|+>"), ('"α"', phase)]
+    check(24, bindings, truth)
+    check(24, list(reversed(bindings)), truth)
+for gate, truth in [("H", "1"), ("identity(3)", "1"), ("[1,0;0,2]", "0")]:
+    check(123, [('"U"', gate)], truth)
+check(119, [('"U"', "S@S"), ('qnamedket("γ_0")', "|+>")], "1")
+for index in (24, 119, 123):
+    copied = rows[index - 1]["copy"]
+    assert evaluate(copied) == copied
+print("Verified re-entry of phase, adjoint, and unitarity equations under substitution")

@@ -9,7 +9,7 @@
       "sha256": "7918c79e74161b3fdd8b6fc21a40fea5c8e3145863c0a375d65a4f22e57c2d83"
     }
   },
-  "worker_sha256": "628aa8b6a06e04f125adf5ceece6dd85c4cf3697215fc8e7e64af70c10d5f408",
+  "worker_sha256": "5dd87e17616b522c217b3b1178cd495b4b266bc2bbaf91988316c1e72f2bbfdf",
   "checks": [
     {
       "figure": "cNOT-copy.svg",

@@ -52,7 +52,8 @@ class PhaseEstimationGuiReplay {
   return saved;
  }
  [STAThread] static int Main(string[] args) {
-  bool sessionsOnly=args.Length==3 && args[2]=="--sessions-only";
+  bool reenterText=args.Length==3 && args[2]=="--reenter-text";
+  bool sessionsOnly=reenterText || (args.Length==3 && args[2]=="--sessions-only");
   if(args.Length!=2 && !sessionsOnly)return 2;
   string output=Path.GetFullPath(args[1]);if(!Directory.Exists(output))return 2;
   var serializer=new JavaScriptSerializer();var records=new System.Collections.Generic.List<object>();
@@ -96,6 +97,12 @@ class PhaseEstimationGuiReplay {
       if(sessionsOnly) {
        row["restored_same"]=((TextBlock)Field("resultLabel")).Text==label && ((TextBox)Field("output")).Text==(string)row["display"];
        Require((bool)row["restored_same"],"Restored display mismatch for "+entry[0]);
+       if(reenterText) {
+        string text=(string)Field("copyText") ?? ((TextBox)Field("output")).Text;
+        row["copy_text"]=text;await Calculate(text);
+        row["reentry_label"]=((TextBlock)Field("resultLabel")).Text;
+        row["reentry_text"]=(string)Field("copyText") ?? ((TextBox)Field("output")).Text;
+       }
       } else {
       string restoredCopy=await Copy();
       row["restored_same"]=((TextBlock)Field("resultLabel")).Text==label && restoredCopy==copied;
