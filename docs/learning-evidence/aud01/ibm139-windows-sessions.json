@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/modern-workflows.mdx",
+  "notebook_sha256": "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25",
+  "worker_sha256": "517843093469c88fc634a87807b69c555a76382c79d5997d3be7e3df34343531",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "c2adbdf6b2dd73c7b9d6c27882dde6c4d2ece7ae75dcc31795ce5b6b5e6b2113",
+  "suite": {
+    "passed": true,
+    "checks": 119,
+    "calls": 14,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 13,
+    "restored_identically": 13,
+    "stable_after_text_reentry": 13,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM139-f6f8b127-M010",
+      "message": "Unexpected notation at byte 6"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

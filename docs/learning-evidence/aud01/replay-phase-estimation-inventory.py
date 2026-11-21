@@ -42,6 +42,8 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25": ("IBM139", "modern-workflows", 14, 14),
+    "4db046cc51517d9089ca660d5fb9916ebd6a054cbba3dee376918a4ff2d7f4bc": ("IBM138", "introduction", 0, 0),
     "b00cb51d7b1d9df90208e6d1a43ad43448ec910e0a8962fb307de253ae699d13": ("IBM128", "start-your-quantum-journey", 0, 1),
     "702a47b687349a172c8060747ec8ccd7791959b5b619f90684449864bdb7dbef": ("IBM129", "introduction-to-quantum-computing", 0, 7),
     "f5333824102166257d5235aeff8e951f820ecb00ec69641df5e9c7faf8564235": ("IBM130", "quantum-computing-fundamentals", 10, 1),
@@ -193,7 +195,7 @@ lessons = {
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
     parser.error(f"Expected {args.lesson}, got {lesson}")
-extension = "mdx" if (lesson in ('IBM080', 'IBM121') or 'IBM128' <= lesson <= 'IBM137') else "ipynb"
+extension = "mdx" if (lesson in ('IBM080', 'IBM121', 'IBM139') or 'IBM128' <= lesson <= 'IBM137') else "ipynb"
 cells = ([{"cell_type": "markdown", "source": data.decode()}] if extension == "mdx"
          else json.loads(data)["cells"])
 types = Counter(c["cell_type"] for c in cells)
@@ -201,6 +203,8 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM139": (1,0),
+    "IBM138": (11,0),
     "IBM128": (1,0),
     "IBM129": (1,0),
     "IBM130": (1,0),
@@ -341,6 +345,10 @@ elif "IBM128" <= lesson <= "IBM133":
     course,chapter = "quantum-business-foundations",""
 elif "IBM134" <= lesson <= "IBM137":
     course,chapter = "designing-and-leading-quantum-projects",""
+elif lesson == "IBM138":
+    course,chapter = "practical-near-term-qc",""
+elif lesson == "IBM139":
+    course,chapter = "tools-for-quantum-advantage",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

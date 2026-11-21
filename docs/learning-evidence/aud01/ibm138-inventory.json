@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/practical-near-term-qc/introduction.ipynb",
+  "source_sha256": "4db046cc51517d9089ca660d5fb9916ebd6a054cbba3dee376918a4ff2d7f4bc",
+  "worker_sha256": "517843093469c88fc634a87807b69c555a76382c79d5997d3be7e3df34343531",
+  "revision": "baec9d4b",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

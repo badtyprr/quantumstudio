@@ -1,0 +1,254 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/modern-workflows.mdx",
+  "source_sha256": "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25",
+  "worker_sha256": "517843093469c88fc634a87807b69c555a76382c79d5997d3be7e3df34343531",
+  "revision": "baec9d4b",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 13,
+    "diagnostic": 1
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1557,
+      "end": 1731,
+      "alt": "A diagram showing that different phases of execution models have increased user control.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/phases.avif"
+    },
+    {
+      "cell": 0,
+      "start": 2032,
+      "end": 2340,
+      "alt": "A diagram showing that workflows typically progress from mapping problems to quantum circuits, to transpilation and optimization, to execution and post-processing. Each of these steps has modern tools associated with it.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/workflow.avif"
+    },
+    {
+      "cell": 0,
+      "start": 4380,
+      "end": 4523,
+      "alt": "An image of a molecule and graph being mapped to qubits.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/mappers.avif"
+    },
+    {
+      "cell": 0,
+      "start": 5775,
+      "end": 5924,
+      "alt": "An image showing Trotter circuits with different numbers of steps.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/mpf.avif"
+    },
+    {
+      "cell": 0,
+      "start": 6265,
+      "end": 6434,
+      "alt": "An image showing the first few layers of a quantum circuit being compressed using AQC.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/aqc.avif"
+    },
+    {
+      "cell": 0,
+      "start": 7262,
+      "end": 7510,
+      "alt": "An image showing how the qubits in an abstract quantum circuit need to be assigned to real physical qubits on a quantum computer as part of transpilation.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/transp-mapping.avif"
+    },
+    {
+      "cell": 0,
+      "start": 8194,
+      "end": 8455,
+      "alt": "A two-part image. The right shows a quantum circuit with six qubits and five CNOT gates. The left shows the heavy-hex topology of a region of a real quantum computer.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/check-in-transp.avif"
+    },
+    {
+      "cell": 0,
+      "start": 10971,
+      "end": 11243,
+      "alt": "An image showing a quantum circuit with several entangling and rotation layers, followed by a ladder of CNOTs from qubit 0 down to qubit 5. Finally, a Z measurement is made on qubit 5.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/backprop.avif"
+    },
+    {
+      "cell": 0,
+      "start": 13593,
+      "end": 13806,
+      "alt": "An image showing the gate errors on many layers of a quantum circuit being propagated forward to the final observable measurement.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/pna.avif"
+    },
+    {
+      "cell": 0,
+      "start": 14669,
+      "end": 14872,
+      "alt": "An image showing two circuits being cut, so that they can be run separately and recombined later in post-processing.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/cutting.avif"
+    },
+    {
+      "cell": 0,
+      "start": 18124,
+      "end": 18537,
+      "alt": "An image of spacetime. Time runs from bottom to top, and space runs from side to side. Because no causation can move through space faster than the speed of light, the region of spacetime that an event can causally influence is limited to a conical region. This is an analogy for the spreading of errors in a quantum circuit.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/lightcone.avif"
+    },
+    {
+      "cell": 0,
+      "start": 19242,
+      "end": 19519,
+      "alt": "A quantum circuit with an error on qubit 0 just before measurement. A measurement is performed only on qubit 6, and there is no entangling gate between qubits 0 and 6 in the final layer.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/lightcone-a.avif"
+    },
+    {
+      "cell": 0,
+      "start": 22041,
+      "end": 22280,
+      "alt": "Three images showing the same quantum circuit, but with (a) no error, (b) an error just before measurement, and (c) an error earlier in the circuit.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/sensitivity.avif"
+    },
+    {
+      "cell": 0,
+      "start": 22548,
+      "end": 22731,
+      "alt": "Three images showing heat maps of error sensitivity to three different error types: X, Y, and Z.",
+      "path": "/learning/images/courses/tools-for-quantum-advantage/modern-workflows/slc-xyz.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM139-f6f8b127-M001",
+      "cell": 0,
+      "start": 8831,
+      "end": 8845,
+      "literal": "$\\text{aq[0]}$",
+      "status": "exact",
+      "display": "\"aq[0]\"",
+      "copy": "\"aq[0]\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M002",
+      "cell": 0,
+      "start": 8883,
+      "end": 8897,
+      "literal": "$\\text{tq[0]}$",
+      "status": "exact",
+      "display": "\"tq[0]\"",
+      "copy": "\"tq[0]\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M003",
+      "cell": 0,
+      "start": 8946,
+      "end": 9242,
+      "literal": "$$\n\\begin{aligned}\n\\text{aq[0]} & \\rightarrow \\text{tq[15],}\\\\\n\\text{aq[1]} & \\rightarrow \\text{tq[16],}\\\\\n\\text{aq[2]} & \\rightarrow \\text{tq[19],}\\\\\n\\text{aq[3]} & \\rightarrow \\text{tq[14],}\\\\\n\\text{aq[4]} & \\rightarrow \\text{tq[17],}\\\\\n\\text{aq[5]} & \\rightarrow \\text{tq[25]}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "[0, 15; 1, 16; 2, 19; 3, 14; 4, 17; 5, 25]",
+      "copy": "matrix(6,2,[0,15,1,16,2,19,3,14,4,17,5,25])"
+    },
+    {
+      "id": "IBM139-f6f8b127-M004",
+      "cell": 0,
+      "start": 9344,
+      "end": 9635,
+      "literal": "$$\n\\begin{aligned}\n\\text{aq[0]} & \\rightarrow \\text{tq[3],}\\\\\n\\text{aq[1]} & \\rightarrow \\text{tq[4],}\\\\\n\\text{aq[2]} & \\rightarrow \\text{tq[8],}\\\\\n\\text{aq[3]} & \\rightarrow \\text{tq[2],}\\\\\n\\text{aq[4]} & \\rightarrow \\text{tq[5],}\\\\\n\\text{aq[5]} & \\rightarrow \\text{tq[13]}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "[0, 3; 1, 4; 2, 8; 3, 2; 4, 5; 5, 13]",
+      "copy": "matrix(6,2,[0,3,1,4,2,8,3,2,4,5,5,13])"
+    },
+    {
+      "id": "IBM139-f6f8b127-M005",
+      "cell": 0,
+      "start": 11703,
+      "end": 11708,
+      "literal": "$q_t$",
+      "status": "exact",
+      "display": "\"q_t\"",
+      "copy": "\"q_t\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M006",
+      "cell": 0,
+      "start": 11721,
+      "end": 11726,
+      "literal": "$q_c$",
+      "status": "exact",
+      "display": "\"q_c\"",
+      "copy": "\"q_c\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M007",
+      "cell": 0,
+      "start": 11730,
+      "end": 11735,
+      "literal": "$Z_t$",
+      "status": "exact",
+      "display": "\"Z_t\"",
+      "copy": "\"Z_t\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M008",
+      "cell": 0,
+      "start": 11750,
+      "end": 11755,
+      "literal": "$q_t$",
+      "status": "exact",
+      "display": "\"q_t\"",
+      "copy": "\"q_t\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M009",
+      "cell": 0,
+      "start": 11764,
+      "end": 11773,
+      "literal": "$Z_c Z_t$",
+      "status": "exact",
+      "display": "\"Z_c\" ⋅ \"Z_t\"",
+      "copy": "\"Z_c\" ⋅ \"Z_t\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M010",
+      "cell": 0,
+      "start": 11819,
+      "end": 11844,
+      "literal": "$Z_t \\rightarrow Z_c Z_t$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM139-f6f8b127-M011",
+      "cell": 0,
+      "start": 11903,
+      "end": 11908,
+      "literal": "$Z_5$",
+      "status": "exact",
+      "display": "\"Z_5\"",
+      "copy": "\"Z_5\""
+    },
+    {
+      "id": "IBM139-f6f8b127-M012",
+      "cell": 0,
+      "start": 11978,
+      "end": 12003,
+      "literal": "$Z_5 Z_4 Z_3 Z_2 Z_1 Z_0$",
+      "status": "exact",
+      "display": "\"Z_5\" · \"Z_4\" · \"Z_3\" · \"Z_2\" · \"Z_1\" · \"Z_0\"",
+      "copy": "qadjacent(qadjacent(qadjacent(qadjacent(qadjacent(\"Z_5\",\"Z_4\"),\"Z_3\"),\"Z_2\"),\"Z_1\"),\"Z_0\")"
+    },
+    {
+      "id": "IBM139-f6f8b127-M013",
+      "cell": 0,
+      "start": 12044,
+      "end": 12052,
+      "literal": "$ZZZZZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM139-f6f8b127-M014",
+      "cell": 0,
+      "start": 12100,
+      "end": 12105,
+      "literal": "$Z_5$",
+      "status": "exact",
+      "display": "\"Z_5\"",
+      "copy": "\"Z_5\""
+    }
+  ]
+}
