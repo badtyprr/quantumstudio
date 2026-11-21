@@ -211,6 +211,9 @@ int main() {
   equal(R"(\tilde{\rho}_0)"," ρ_tilde_0");
   rejects(R"(\tilde{})");
   rejects(R"(\tilde{x+y})");
+  equal(R"(a=1\text{and}b=2)","a=1 and b=2");
+  equal(R"(a=1\text{ or }b=2)","a=1 or b=2");
+  rejects(R"(a=1\text{and then}b=2)");
   equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
   equal(R"(\begin{cases}1 & y=z\\0 & y\neq z,\end{cases})",
         quantumTeX(R"(\begin{cases}1 & y=z\\0 & y\neq z\end{cases})"));

@@ -1096,8 +1096,10 @@ class TeXReader {
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
   }
-  if(name=="text" && cases) {
+  if(name=="text") {
    std::string text=trim(group());
+   if(text=="and" || text=="or")return " "+text+" ";
+   if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
    if(text=="otherwise")return text;
    if(text!="if" && (text.size()<3 || text.compare(0,2,"if")!=0 || !std::isspace((unsigned char)text[2])))throw std::runtime_error(error("Cases text must introduce if or otherwise"));
    text=trim(text.substr(2));
