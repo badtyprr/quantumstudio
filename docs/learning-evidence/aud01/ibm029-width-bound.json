@@ -1,0 +1,19 @@
+{
+  "span": "IBM029-9ea5aee3-M349",
+  "moduli_checked": 532,
+  "growth_checks": 7,
+  "clipboard_sessions": 7,
+  "corpus_comparison": {
+    "builds": {
+      "ringcontext.exe": "853e7a702c2ea49f0b8d542eb8f5b99187fba4bd2c54d03498d8d49c58837ac9",
+      "widthbound.exe": "172f70e751f615048e19283370bc9f75cac6490446af15f39cb42b6e0c9c4a5f"
+    },
+    "rows": 438,
+    "counts": [
+      436,
+      436
+    ],
+    "changes": [],
+    "timeouts": 0
+  }
+}
