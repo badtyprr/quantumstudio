@@ -860,6 +860,7 @@ std::string orderedKetList(const std::string &text) {
 class TeXReader {
  const std::string &input;
  bool modularTables=false;
+ bool binaryLogs=false;
  size_t pos=0;
  unsigned depth=0;
  std::string rootAlignment;
@@ -958,7 +959,7 @@ class TeXReader {
   std::string exponent=argument();
   space();
   if(pos<input.size() && std::string("=,;)}]").find(input[pos])==std::string::npos) {pos=start;return "";}
-  return "qgeometricsum("+TeXReader(base).run(nullptr)+",("+exponent+")+1)";
+  return "qgeometricsum("+TeXReader(base,false,binaryLogs).run(nullptr)+",("+exponent+")+1)";
  }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  // Spacing takes a literal dimension. Its contents never become expression tokens.
@@ -1555,9 +1556,11 @@ class TeXReader {
   }
   if(name=="log") {
    size_t afterName=pos;space();
-   if(pos<input.size() && input[pos]=='_') {
-    ++pos;std::string base=trim(argument());space();
+   if(binaryLogs || (pos<input.size() && input[pos]=='_')) {
+    std::string base="2";
+    if(pos<input.size() && input[pos]=='_') {++pos;base=trim(argument());space();}
     if(input.compare(pos,5,"\\left")==0) {pos+=5;space();}
+    bool ungrouped=pos<input.size() && input[pos]!='(' && input[pos]!='{';
     std::string operand;
     if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
     else if(pos<input.size() && (std::isdigit((unsigned char)input[pos]) ||
@@ -1568,8 +1571,15 @@ class TeXReader {
      }
      operand=input.substr(start,pos-start);
     } else operand=argument();
+    if(ungrouped) {
+     size_t afterOperand=pos;space();
+     if(pos<input.size() && input[pos]=='^') {
+      ++pos;operand="("+operand+")^("+argument()+")";
+     } else pos=afterOperand;
+    }
     if(base.empty() || trim(operand).empty())throw std::runtime_error(error("A logarithm needs a base and an operand"));
-    return base=="2" ? "log2("+operand+")" : "log("+operand+","+base+")";
+    if(base=="2")return (binaryLogs ? "qbinarylog(" : "log2(")+operand+")";
+    return "log("+operand+","+base+")";
    }
    pos=afterName;
   }
@@ -2054,7 +2064,7 @@ class TeXReader {
       TensorSeriesPattern series;
       if(tensorSeriesPattern(input,pos,series)) {
        product="qtexgrouptensorseries("+series.first+","+series.last+","+series.index+","+series.direction+","+
-        TeXReader(series.body).run(nullptr)+")";end=series.end;
+        TeXReader(series.body,false,binaryLogs).run(nullptr)+")";end=series.end;
       }
      }
      if(product.empty())product=indexedProduct(input,pos,end);
@@ -2318,7 +2328,7 @@ class TeXReader {
   --depth; return result;
  }
  public:
- explicit TeXReader(const std::string &s,bool modular=false):input(s),modularTables(modular) {}
+ explicit TeXReader(const std::string &s,bool modular=false,bool logs=false):input(s),modularTables(modular),binaryLogs(logs) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
   std::string integers=explicitIntegerList(result);
@@ -2361,9 +2371,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool sets=input.compare(first,5,"sets:")==0;
  const bool scalars=input.compare(first,8,"scalars:")==0;
  const bool modularPowers=input.compare(first,10,"modpowers:")==0;
+ const bool binaryLogs=input.compare(first,11,"binarylogs:")==0;
  if(scalarNotation)*scalarNotation=scalars;
- if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers) {
-  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
+ if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers || binaryLogs) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions || binaryLogs ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
   if(first==std::string::npos)return "";
  } else if(sets) {
   if(setNotation)*setNotation=true;
@@ -2386,6 +2397,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
   return result;
  }
+ auto nestedTeX=[binaryLogs](const std::string &part) {
+  return quantumTeX(binaryLogs ? "binarylogs:"+part : part);
+ };
  std::string s=input.substr(first,last-first+1);
  // Inline Markdown can leave the radix point immediately outside the
  // math span, as in .$01$. The selected mode supplies it for $01$ alone.
@@ -2409,7 +2423,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(sides.size()!=2 || sides[0].empty() || sides[1].empty())throw std::runtime_error("A residue-ring annotation requires one equation.");
    std::string modulus=note[1];
    if(modulus.front()=='{')modulus=modulus.substr(1,modulus.size()-2);
-   return "qcompare(qringexpr("+modulus+","+quantumTeX(sides[0])+"),qringexpr("+modulus+","+quantumTeX(sides[1])+"),4)";
+   return "qcompare(qringexpr("+modulus+","+nestedTeX(sides[0])+"),qringexpr("+modulus+","+nestedTeX(sides[1])+"),4)";
   }
  }
  if(s.find("{mod")!=std::string::npos && s.find("\\equiv")==std::string::npos) {
@@ -2420,7 +2434,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!text.empty() && text.back()=='.')text.pop_back();
   auto listed=indexedParts(text,"\\text{and}");
   if(listed.size()==2 && std::regex_search(listed[0],marker) && std::regex_search(listed[1],marker))
-   return "vector("+quantumTeX(listed[0])+","+quantumTeX(listed[1])+")";
+   return "vector("+nestedTeX(listed[0])+","+nestedTeX(listed[1])+")";
  }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
@@ -2541,7 +2555,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,bellTextSign,"$1^$2");
   static const std::regex bell(R"(^\s*(\\(?:Phi|Psi|phi|psi))\^\{?([+-])\}?\s*$)");
   std::smatch m;
-  if(std::regex_match(s,m,bell))return quantumTeX("\\vert"+m[1].str()+"^"+m[2].str()+"\\rangle");
+  if(std::regex_match(s,m,bell))return nestedTeX("\\vert"+m[1].str()+"^"+m[2].str()+"\\rangle");
   // An explicitly typeset gate label introduces the displayed definition.
   // Keep the matrix in the author's stated wire order.
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
@@ -2554,14 +2568,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   std::smatch pair;
   if(std::regex_search(s,pair,distributionPair)) {
    std::string domain="qtuple(vector(\""+pair[1].str()+"\",\""+pair[2].str()+"\"))";
-   return "qcompare(qfiniteapply(\"F\","+domain+"),"+quantumTeX(s.substr(pair.length()))+",4)";
+   return "qcompare(qfiniteapply(\"F\","+domain+"),"+nestedTeX(s.substr(pair.length()))+",4)";
   }
  }
  if(s.find("\\sum_")!=std::string::npos) {
   static const std::regex weightedPaulis(R"(^\s*H\s*=\s*(\\sum_\{([a-z])=\d+\}\^[A-Za-z0-9]+\s*\\alpha_\2\s*P_\2)\s*$)");
   std::smatch paulis;
   if(std::regex_match(s,paulis,weightedPaulis))
-   return "qcompare(qoperatorref(\"H\"),"+quantumTeX(paulis[1].str())+",4)";
+   return "qcompare(qoperatorref(\"H\"),"+nestedTeX(paulis[1].str())+",4)";
   // A sum of N local contributions with no printed starting index.
   static const std::regex localTerms(R"(^\s*([A-Z])\s*=\s*\\sum_([a-z])\^([A-Z])\s*\{\s*\1_\2\s*\}\s*$)");
   std::smatch m;
@@ -2589,7 +2603,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex dimension(R"(^\s*([A-Z])\s*=\s*(\\begin\{pmatrix\}[\s\S]*?\\end\{pmatrix\})\s*\\quad\s*\(([A-Z])\s*=\s*(\d+)\^([a-z])\)\s*$)");
   std::smatch m;
   if(std::regex_match(s,m,dimension) && m[2].str().find(m[1].str()+"_{")!=std::string::npos) {
-   std::string entries=quantumTeX(m[2].str());
+   std::string entries=nestedTeX(m[2].str());
    return "(qcompare(qoperatorref(\""+m[1].str()+"\"),"+entries+",4) and qcompare(\""+m[3].str()+"\","+m[4].str()+"^"+m[5].str()+",4))";
   }
  }
@@ -2599,7 +2613,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex phase(R"(e\^\{(-?)i([XYZ]?)\\omega_([A-Za-z])\s+([a-z](?:_[0-9])?|\([a-z]-[a-z]_[0-9]\))/(\d+)\})");
   std::smatch m;
   while(std::regex_search(s,m,phase)) {
-   std::string angle="(\"ω_"+m[3].str()+"\"*("+quantumTeX(m[4].str())+")/"+m[5].str()+")";
+   std::string angle="(\"ω_"+m[3].str()+"\"*("+nestedTeX(m[4].str())+")/"+m[5].str()+")";
    std::string value=m[2].str().empty() ? "qexp("+m[1].str()+"i*"+angle+")" :
       "qpropagator("+m[2].str()+","+(m[1].str().empty() ? "-" : "")+angle+")";
    s.replace(m.position(),m.length(),value);
@@ -2637,7 +2651,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    static const std::regex definition(R"(^\s*U\(([a-z])\)\s*=)");
    s=std::regex_replace(s,definition,"qoperatorref(qindexedlabel(\"U(\",$1,\")\"))=");
    auto distinct=indexedParts(s,"\\neq");
-   if(distinct.size()==2)return "qoperatorunequal("+quantumTeX(distinct[0])+","+quantumTeX(distinct[1])+")";
+   if(distinct.size()==2)return "qoperatorunequal("+nestedTeX(distinct[0])+","+nestedTeX(distinct[1])+")";
    static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
@@ -2651,7 +2665,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(std::regex_match(s,dimensions,realSpace)) {
     std::string dimension=dimensions[2].str();
     if(!isdigit((unsigned char)dimension[0]))dimension="\""+dimension+(dimensions[3].str().empty() ? "" : "_prime")+"\"";
-    return "qrealvectormember("+quantumTeX("$"+dimensions[1].str()+"$")+","+dimension+")";
+    return "qrealvectormember("+nestedTeX("$"+dimensions[1].str()+"$")+","+dimension+")";
    }
   }
   if(s.find("\\begin{array}{c}")!=std::string::npos && s.find('=')!=std::string::npos) {
@@ -2775,7 +2789,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   static const std::regex overlapProbability(R"(^\s*([pP]_(?:[A-Za-z0-9]|\\[a-zA-Z]+))\s*=\s*\|\s*(\\langle[^|]+\|[^|]+\\rangle)\s*\|\^\{?2\}?\s*$)");
   if(std::regex_match(s,prob,overlapProbability))
-   return "qcompare("+quantumTeX(prob[1].str())+",qpower(qbars("+quantumTeX(prob[2].str())+"),2),4)";
+   return "qcompare("+nestedTeX(prob[1].str())+",qpower(qbars("+nestedTeX(prob[2].str())+"),2),4)";
   if(s.find("C_\\text{")!=std::string::npos && s.find("\\vec")!=std::string::npos) {
    static const std::regex costLabel(R"(C_\\text\{([A-Za-z]+)\}\s*\()");
    static const std::regex hamiltonian(R"(\\hat\{H\})");
@@ -2901,7 +2915,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    std::smatch parts;
    if(std::regex_match(arg,parts,subscript) && s.find("\\sum_{"+parts[2].str()+"=")!=std::string::npos)
     return "qvectorref("+parts[1].str()+"_"+parts[2].str()+")";
-   return quantumTeX("$"+arg+"$");
+   return nestedTeX("$"+arg+"$");
   };
   auto feature=[&](const std::string &arg) {
    return "qfeatureat(\"Φ\","+vectorArgument(arg)+")";
@@ -2972,7 +2986,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   while(std::regex_search(s,m,vectorLabel)) {
    if(m[2].matched && (m[3].matched || m[4].matched || m[5].matched))
     throw std::runtime_error("A vector label has two subscripts.");
-   std::string base=quantumTeX(m[1].str()),label;
+   std::string base=nestedTeX(m[1].str()),label;
    if(m[3].matched)label="\""+base+"_"+m[3].str()+"\"";
    else {
     std::string sub=m[2].str()+m[4].str()+m[5].str();
@@ -3206,7 +3220,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex parameters("^\\s*\\[\\[\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*\\]\\]\\s*$");
   std::smatch m;
   if(std::regex_match(s,m,parameters))
-   return "vector("+quantumTeX(m[1].str())+","+quantumTeX(m[2].str())+","+quantumTeX(m[3].str())+")";
+   return "vector("+nestedTeX(m[1].str())+","+nestedTeX(m[2].str())+","+nestedTeX(m[3].str())+")";
  }
  if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
@@ -3244,7 +3258,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   const std::string input=trim(s.substr(0,cnotAt)),result=trim(s.substr(cnotAt+cnotArrow.size()));
   static const std::regex injection(R"(^T\s*\\vert\s*\{\+\}\s*\\rangle\s*\\otimes\s*\\vert\s*\\psi\s*\\rangle$)");
   if(std::regex_match(input,injection))
-   return "qcompare(qmul(SWAP*CNOT*SWAP,"+quantumTeX(input)+"),"+quantumTeX(result)+",4)";
+   return "qcompare(qmul(SWAP*CNOT*SWAP,"+nestedTeX(input)+"),"+nestedTeX(result)+",4)";
  }
  // Apply the stated domain of the representative to the whole coset identity.
  if(s.find("\\oplus")!=std::string::npos && s.find("\\text{(for")!=std::string::npos) {
@@ -3275,23 +3289,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(mathWrapper) {
   std::smatch m;
   static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\)|[A-Za-z]|[0-9]+)\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
-  if(std::regex_match(s,m,ordinal))return quantumTeX(m[1].str());
+  if(std::regex_match(s,m,ordinal))return nestedTeX(m[1].str());
   static const std::regex sampledSet(R"(^\s*\\\{([a-z])_([a-z])\\\}_\{\2=(\d+)\}\^([A-Za-z0-9]+)\s*$)");
   if(std::regex_match(s,m,sampledSet))return "qindexedset(\""+m[1].str()+"_\","+m[3].str()+","+m[4].str()+",vector())";
   static const std::regex unitary(R"(^\s*U\((\\theta)\)\s*$)");
-  if(std::regex_match(s,m,unitary))return "qoperatorref(qindexedlabel(\"U(\","+quantumTeX(m[1].str())+",\")\"))";
+  if(std::regex_match(s,m,unitary))return "qoperatorref(qindexedlabel(\"U(\","+nestedTeX(m[1].str())+",\")\"))";
  }
  if(s.find("\\subset")!=std::string::npos) {
   bool strict=s.find("\\subseteq")==std::string::npos;
   auto sides=indexedParts(s,strict ? "\\subset" : "\\subseteq");
   if(sides.size()==2) {
-   auto domain=[](const std::string &side) {
+   auto domain=[&nestedTeX](const std::string &side) {
     static const std::regex words(R"(\s*\\Sigma\^([a-z]|[0-9]+)\s*)");
     std::smatch m;
     if(std::regex_match(side,m,words))return "qwordpower(\"Σ\","+m[1].str()+")";
     std::string label=trim(side);
     if(label.size()==1 && label[0]>='A' && label[0]<='Z')return "\""+label+"\"";
-    return quantumTeX(side);
+    return nestedTeX(side);
    };
    std::string left=domain(sides[0]),right=domain(sides[1]);
    std::string subset="qsubset("+left+","+right+")";
@@ -3419,7 +3433,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex monotone(R"(^\s*(\\?[A-Za-z]+)_1\s*([<>])\s*\1_2\s*\2\s*\\cdots\s*\2\s*\1_([a-z])\s*$)");
   std::smatch match;
   if(std::regex_match(s,match,monotone))
-   return "qstrictorder(qindexedentries(\""+trim(quantumTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
+   return "qstrictorder(qindexedentries(\""+trim(nestedTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
  }
  if(s.find("\\sum_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
   const std::string bounds=R"(\\sum_\{\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\\{0,1\\\}\s*\}\s*)";
@@ -3446,7 +3460,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     power="qindexedentries(\""+first.substr(0,2)+"\",1,"+upper+",vector())";
    }
    expanded.append(s,start,m.position()-start);
-   expanded+="qorderedpowers(qindexedentries(\""+trim(quantumTeX(m[1].str()))+"_\",1,"+upper+",vector()),"+power+")";
+   expanded+="qorderedpowers(qindexedentries(\""+trim(nestedTeX(m[1].str()))+"_\",1,"+upper+",vector()),"+power+")";
    start=m.position()+m.length();
   }
   if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
@@ -3455,7 +3469,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z]|[0-9]+)\s*\\in\s*(\\\{[^{}]+\\\})\s*$)");
   std::smatch match;
   if(std::regex_match(s,match,membership))
-   return "qallmembers(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()),"+quantumTeX(match[3].str())+")";
+   return "qallmembers(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()),"+nestedTeX(match[3].str())+")";
  }
  if(s.find("\\cdots")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
   static const std::regex fixed(R"(([A-Z])_1\s*(\\vert\s*\\[A-Za-z]+\s*\\rangle)\s*=\s*\\cdots\s*=\s*\1_([a-z])\s*\2\s*=\s*\2)");
@@ -3463,7 +3477,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(std::regex_search(s,match,fixed)) {
    std::string operators="qindexedentries(\""+match[1].str()+"_\",1,"+match[3].str()+",vector())";
    std::string before=trim(match.prefix().str()),after=trim(match.suffix().str());
-   if(before.empty() && after.empty())return "qfixedby("+operators+","+quantumTeX(match[2].str())+")";
+   if(before.empty() && after.empty())return "qfixedby("+operators+","+nestedTeX(match[2].str())+")";
    const size_t brace=before.find("\\bigl\\{");
    if(brace!=std::string::npos && after=="\\bigr\\}") {
     std::string binder=trim(before.substr(brace+7));
@@ -3486,7 +3500,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    size_t firstLetter=base.front()=='\\' ? 1 : 0;
    if(firstLetter==base.size() || !std::all_of(base.begin()+firstLetter,base.end(),
        [](unsigned char c){return c>=128 || asciiLetter(c);}))continue;
-   std::string name=trim(TeXReader(base).run(nullptr));
+   std::string name=trim(TeXReader(base,false,binaryLogs).run(nullptr));
    std::string family=indexedLabelRange(name+terms.front().substr(sub),name+terms.back().substr(sub),"qindexedsum(");
    if(!family.empty()) {side=family;changed=true;}
   }
@@ -3544,7 +3558,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!matched)normalized+=s[k++];
  }
  if(splitDimensions)normalized+="))";
- std::string result=TeXReader(normalized,modularPowers).run(lines);
+ std::string result=TeXReader(normalized,modularPowers,binaryLogs).run(lines);
  if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
   std::string value=trim(result),order;
   static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");

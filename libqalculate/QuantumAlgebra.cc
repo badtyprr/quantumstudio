@@ -634,9 +634,11 @@ class QuantumAlgebraFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
+  if(op=="qbinarylog")return args.size()==1 && args[0].representsScalar();
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
+  if(op=="qbinarylog")return args.size()==1 && args[0].representsScalar();
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
@@ -1035,6 +1037,13 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    MathStructure applied(CALCULATOR->getFunction("qmul"),&gate,&action[0],NULL),equality(4,1);
    out.set(CALCULATOR->getFunction("qcompare"),&applied,&action[1],&equality,NULL);return 1;
+  }
+  if(op=="qbinarylog") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(value.isVector()) {CALCULATOR->error(true,"A binary logarithm requires a scalar operand.",NULL);return 0;}
+   if(value.containsUnknowns())return 0;
+   MathStructure two(2);
+   out.set(CALCULATOR->getFunctionById(FUNCTION_ID_LOGN),&value,&two,NULL);return 1;
   }
   if(op=="qfloorlog2") {
    MathStructure value=raw[0];value.eval(eo);
@@ -1695,6 +1704,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qimplicitidentity",0));
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qbinarylog",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
  calculator.addFunction(new QuantumAlgebraFunction("qrecoverphase",2));
  calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));

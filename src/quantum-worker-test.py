@@ -53,6 +53,14 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         result = run(f'quantum:replace(({empty}),"N",{invalid})', success=False)
         assert b"positive exact integer" in result.stderr
 
+for formula, expected in [(r"\log(8)", "3"), (r"\log_{3}(27)", "3"), (r"\ln(1)", "0"),
+                          (r"\lfloor\log(7/8)\rfloor", "−1"), (r"\log 2^3", "3"),
+                          (r"\log_3 3^4", "4"), (r"(\log 8)^2", "9")]:
+    assert data("quantum:binarylogs:"+formula)["copy_text"] == expected
+assert data(r"quantum:\lfloor\log(8)\rfloor")["copy_text"] == "2"
+run("quantum:qstepvalue(y ← 3,qbinarylog(vector(x,2)))", success=False)
+assert data("quantum:qstepvalue(y ← 3,qbinarylog(x))")["copy_text"] == "3"
+
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]
 encoding_pairs = [f"qtuple(vector({j},qbitlabel({j},3)))" for j in range(6)]

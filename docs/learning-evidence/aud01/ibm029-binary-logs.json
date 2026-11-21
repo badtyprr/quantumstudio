@@ -1,0 +1,21 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M136",
+    "IBM029-9ea5aee3-M379"
+  ],
+  "moduli": 29,
+  "width_checks": 87,
+  "log_checks": 8,
+  "clipboard_sessions": 6,
+  "session_storage_checks": 74,
+  "invalid_session_preservation_checks": 18,
+  "compatibility": {
+    "originals": 438,
+    "accepted_in_recorded_modes": 427,
+    "changed": [
+      "IBM029-9ea5aee3-M136",
+      "IBM029-9ea5aee3-M379"
+    ],
+    "timeouts": 0
+  }
+}

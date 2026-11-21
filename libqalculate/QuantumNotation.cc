@@ -216,7 +216,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qscalarupdate",2},{"qstepvalue",2},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qbinarylog",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qscalarupdate",2},{"qstepvalue",2},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -1865,8 +1865,9 @@ class Parser {
      }
      args[0]="vector("+body+")";
     }
-    if(name=="floor" && args.size()==1 && args[0].compare(0,5,"log2(")==0) {
-     args[0]=args[0].substr(5,args[0].size()-6);name="qfloorlog2";
+    if(name=="floor" && args.size()==1 && (args[0].compare(0,5,"log2(")==0 || args[0].compare(0,11,"qbinarylog(")==0)) {
+     size_t start=args[0].find('(')+1;
+     args[0]=args[0].substr(start,args[0].size()-start-1);name="qfloorlog2";
     }
     if(name!="O" && name.size()==1 && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
        (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos)) {
