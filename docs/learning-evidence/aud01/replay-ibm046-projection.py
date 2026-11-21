@@ -42,3 +42,11 @@ branch_probabilities = evaluate(limitations[104]["literal"])
 verify_distribution(branch_probabilities, [('qnamedket("γ_0")', "|0>"),
                                             ('qnamedket("γ_1")', "[0;0]")])
 print("Verified both lesson probabilities with matching and reversed distributions")
+
+inequality = rows[47]["literal"]
+for source, orthogonal in [(inequality, "1"), (inequality.replace(r"\leq", r"\geq"), "0")]:
+    equation = evaluate(source)
+    for phi, expected in [("|0>", "1"), ("|1>", orthogonal)]:
+        bound = f'replace(replace(({equation}),qnamedket("ψ"),|0>),qnamedket("φ"),{phi})'
+        assert evaluate(bound) == expected
+print("Verified the Cauchy-Schwarz bound and its reversal for parallel and orthogonal states")

@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "16286f7b806be591252ad4a9860a3926664680443190c38a485ed1fa79a9e653",
-  "revision": "a50f69d18e5876ab19478d923af4e1e8d399a49b",
+  "worker_sha256": "53cc62a85a7dda21b8c8001ef2f958bf9c755dd8ce8fe4d2928219abef6ef48a",
+  "revision": "0cbb941721464dd74da77d30b9a17c9f5795894e",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 221,
-    "diagnostic": 18
+    "exact": 223,
+    "diagnostic": 16
   },
   "figures": [],
   "rows": [
@@ -58,8 +58,9 @@
       "start": 1200,
       "end": 1289,
       "literal": "$$\n\\langle \\psi \\vert = \\sum_{a\\in\\Sigma} \\overline{\\alpha_a} \\langle a \\vert.\n\\tag{2}\n$$",
-      "status": "diagnostic",
-      "message": "Unexpected notation at byte 46"
+      "status": "exact",
+      "display": "qcompare(qdag(qnamedket('ψ')), qsumset(qadjacent(conj(qindexedlabel(\"α_\", \"qboundindex_0\", \"\")), qdag(qketstate(\"qboundindex_0\"))), 'Σ', \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qdag(qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM046-3c1262a5-M006",
@@ -247,8 +248,8 @@
       "end": 3894,
       "literal": "$$\n   \\bigl\\| \\vert \\psi \\rangle \\bigr\\| = \\sqrt{ \\langle \\psi \\vert \\psi \\rangle }.\n   $$",
       "status": "exact",
-      "display": "qnorm(qnamedket('ψ')) − √(qmul(qdag(qnamedket('ψ')), qnamedket('ψ'))) = 0",
-      "copy": "(qnorm(qnamedket('ψ')) − √(qmul(qdag(qnamedket('ψ')), qnamedket('ψ'))))==(0)"
+      "display": "qnorm(qnamedket('ψ')) = √(qmul(qdag(qnamedket('ψ')), qnamedket('ψ')))",
+      "copy": "qcompare(qnorm(qnamedket('ψ')),√(qmul(qdag(qnamedket('ψ')), qnamedket('ψ'))),4)"
     },
     {
       "id": "IBM046-3c1262a5-M025",
@@ -278,7 +279,7 @@
       "literal": "$\\langle \\psi \\vert \\psi \\rangle = 0$",
       "status": "exact",
       "display": "⟨ψ|ψ⟩ = 0",
-      "copy": "(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')))==(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')),0,4)"
     },
     {
       "id": "IBM046-3c1262a5-M028",
@@ -307,8 +308,8 @@
       "end": 4929,
       "literal": "$$\n   \\langle \\psi \\vert \\phi \\rangle = \\sum_{a\\in\\Sigma} \\overline{\\alpha_a} \\beta_a\n   \\quad\\text{and}\\quad\n   \\langle \\phi \\vert \\psi \\rangle = \\sum_{a\\in\\Sigma} \\overline{\\beta_a} \\alpha_a,\n   $$",
       "status": "exact",
-      "display": "qsumset(qadjacent(conj(qindexedlabel(\"α_\", \"qboundindex_0\", \"\")), qindexedlabel(\"β_\", \"qboundindex_0\", \"\")), 'Σ', \"qboundindex_0\") = qmul(qdag(qnamedket('ψ')), qnamedket('φ')) && qsumset(qadjacent(conj(qindexedlabel(\"β_\", \"qboundindex_1\", \"\")), qindexedlabel(\"α_\", \"qboundindex_1\", \"\")), 'Σ', \"qboundindex_1\") = qmul(qdag(qnamedket('φ')), qnamedket('ψ'))",
-      "copy": "((qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qindexedlabel(\"β_\",\"qboundindex_0\",\"\")),'Σ',\"qboundindex_0\"))==(qmul(qdag(qnamedket('ψ')),qnamedket('φ'))) and (qsumset(qadjacent(conj(qindexedlabel(\"β_\",\"qboundindex_1\",\"\")),qindexedlabel(\"α_\",\"qboundindex_1\",\"\")),'Σ',\"qboundindex_1\"))==(qmul(qdag(qnamedket('φ')),qnamedket('ψ'))))"
+      "display": "qcompare(qmul(qdag(qnamedket('φ')), qnamedket('ψ')), qsumset(qadjacent(conj(qindexedlabel(\"β_\", \"qboundindex_1\", \"\")), qindexedlabel(\"α_\", \"qboundindex_1\", \"\")), 'Σ', \"qboundindex_1\"), 4) && qcompare(qmul(qdag(qnamedket('ψ')), qnamedket('φ')), qsumset(qadjacent(conj(qindexedlabel(\"α_\", \"qboundindex_0\", \"\")), qindexedlabel(\"β_\", \"qboundindex_0\", \"\")), 'Σ', \"qboundindex_0\"), 4)",
+      "copy": "(qcompare(qmul(qdag(qnamedket('φ')),qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"β_\",\"qboundindex_1\",\"\")),qindexedlabel(\"α_\",\"qboundindex_1\",\"\")),'Σ',\"qboundindex_1\"),4) and qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qindexedlabel(\"β_\",\"qboundindex_0\",\"\")),'Σ',\"qboundindex_0\"),4))"
     },
     {
       "id": "IBM046-3c1262a5-M031",
@@ -317,8 +318,8 @@
       "end": 5041,
       "literal": "$$\n   \\overline{\\langle \\psi \\vert \\phi \\rangle} = \\langle \\phi \\vert \\psi \\rangle.\n   $$",
       "status": "exact",
-      "display": "ℜ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − i ⋅ ℑ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − ⟨φ|ψ⟩ = 0",
-      "copy": "(ℜ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − i ⋅ ℑ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − qmul(qdag(qnamedket('φ')), qnamedket('ψ')))==(0)"
+      "display": "ℜ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − i ⋅ ℑ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) = ⟨φ|ψ⟩",
+      "copy": "qcompare(ℜ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − i ⋅ ℑ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))),qmul(qdag(qnamedket('φ')),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM046-3c1262a5-M032",
@@ -486,8 +487,9 @@
       "start": 6749,
       "end": 6887,
       "literal": "$$\n   \\bigl\\vert \\langle \\psi \\vert \\phi \\rangle\\bigr| \\leq \\bigl\\| \\vert\\psi \\rangle \\bigr\\| \\bigl\\| \\vert \\phi \\rangle\n   \\bigr\\|.\n   $$",
-      "status": "diagnostic",
-      "message": "Unexpected notation at byte 53"
+      "status": "exact",
+      "display": "|⟨ψ|φ⟩| − (qnorm(qnamedket('ψ')) · qnorm(qnamedket('φ'))) ≤ 0",
+      "copy": "(qbars(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − qadjacent(qnorm(qnamedket('ψ')), qnorm(qnamedket('φ'))))<=(0)"
     },
     {
       "id": "IBM046-3c1262a5-M049",
@@ -517,7 +519,7 @@
       "literal": "$$\n\\langle \\psi \\vert \\phi \\rangle = 0.\n$$",
       "status": "exact",
       "display": "⟨ψ|φ⟩ = 0",
-      "copy": "(qmul(qdag(qnamedket('ψ')),qnamedket('φ')))==(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),0,4)"
     },
     {
       "id": "IBM046-3c1262a5-M052",
@@ -537,7 +539,7 @@
       "literal": "$$\n\\langle \\psi_j \\vert \\psi_k\\rangle = 0\n$$",
       "status": "exact",
       "display": "⟨ψ_j|ψ_k⟩ = 0",
-      "copy": "(qmul(qdag(qnamedket(\"ψ_j\")),qnamedket(\"ψ_k\")))==(0)"
+      "copy": "qcompare(qmul(qdag(qnamedket(\"ψ_j\")),qnamedket(\"ψ_k\")),0,4)"
     },
     {
       "id": "IBM046-3c1262a5-M054",
@@ -1053,7 +1055,7 @@
       "literal": "$$\n\\Pi = \\vert \\psi \\rangle \\langle \\psi \\vert\n\\tag{4}\n$$",
       "status": "exact",
       "display": "'Π' = |ψ⟩ · ⟨ψ|",
-      "copy": "('Π')==(qadjacent(qnamedket('ψ'),qdag(qnamedket('ψ'))))"
+      "copy": "qcompare('Π',qadjacent(qnamedket('ψ'),qdag(qnamedket('ψ'))),4)"
     },
     {
       "id": "IBM046-3c1262a5-M106",
@@ -1152,8 +1154,8 @@
       "end": 16817,
       "literal": "$\\langle \\psi \\vert \\psi\\rangle = 1$",
       "status": "exact",
-      "display": "⟨ψ|ψ⟩ − 1 = 0",
-      "copy": "(qmul(qdag(qnamedket('ψ')), qnamedket('ψ')) − 1)==(0)"
+      "display": "⟨ψ|ψ⟩ = 1",
+      "copy": "qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')),1,4)"
     },
     {
       "id": "IBM046-3c1262a5-M116",
@@ -1331,7 +1333,7 @@
       "literal": "$$\n   \\operatorname{Pr}\\bigl(\\text{outcome is $k$}\\bigr) = \\bigl\\| \\Pi_k \\vert \\psi \\rangle \\bigr\\|^2.\n   $$",
       "status": "exact",
       "display": "qeventprob(\"measurement probabilities\", 'k') = qnorm(qadjacent(\"Π_k\", qnamedket('ψ')))²",
-      "copy": "(qeventprob(\"measurement probabilities\",'k'))==(qnorm(qadjacent(\"Π_k\", qnamedket('ψ')))²)"
+      "copy": "qcompare(qeventprob(\"measurement probabilities\",'k'),qnorm(qadjacent(\"Π_k\", qnamedket('ψ')))²,4)"
     },
     {
       "id": "IBM046-3c1262a5-M134",
@@ -1441,7 +1443,7 @@
       "literal": "$$\n   \\operatorname{Pr}\\bigl(\\text{outcome is $a$}\\bigr) = \\bigl\\| \\Pi_a \\vert \\psi \\rangle \\bigr\\|^2.\n   $$",
       "status": "exact",
       "display": "qeventprob(\"measurement probabilities\", 'a') = qnorm(qadjacent(\"Π_a\", qnamedket('ψ')))²",
-      "copy": "(qeventprob(\"measurement probabilities\",'a'))==(qnorm(qadjacent(\"Π_a\", qnamedket('ψ')))²)"
+      "copy": "qcompare(qeventprob(\"measurement probabilities\",'a'),qnorm(qadjacent(\"Π_a\", qnamedket('ψ')))²,4)"
     },
     {
       "id": "IBM046-3c1262a5-M145",
