@@ -1,0 +1,13 @@
+{
+  "source_sha256": "d3185448e3387a0d92d8e09abc2d7490c27a69cb8f6993ff8ffddc07ce5b0fd5",
+  "cell": 30,
+  "initial_state": "001100",
+  "times": 101,
+  "observables": [
+    "energy",
+    "magnetization",
+    "correlation"
+  ],
+  "comparisons": 303,
+  "absolute_tolerance": 1e-10
+}
