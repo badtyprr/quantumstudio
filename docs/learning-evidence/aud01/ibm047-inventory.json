@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "16286f7b806be591252ad4a9860a3926664680443190c38a485ed1fa79a9e653",
-  "revision": "a50f69d18e5876ab19478d923af4e1e8d399a49b",
+  "worker_sha256": "a4b149f32940ab4964b8a1dff06a5dd335836bef6c2476cbb9fb37eccc9ca361",
+  "revision": "27d20a182219790122e6294e586d27020ec81ca7",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 134,
-    "diagnostic": 12
+    "exact": 140,
+    "diagnostic": 6
   },
   "figures": [
     {
@@ -1002,8 +1002,9 @@
       "start": 12739,
       "end": 12763,
       "literal": "$\\vert 0\\cdots 0\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 14"
+      "status": "exact",
+      "display": "|0^register width⟩",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),\"register width\")"
     },
     {
       "id": "IBM047-f4526623-M099",
@@ -1021,8 +1022,9 @@
       "start": 13168,
       "end": 13311,
       "literal": "$$\nU \\bigl(  \\vert 0\\cdots 0 \\rangle \\vert \\psi \\rangle\\bigr)\n= \\vert \\gamma_0\\rangle\\vert 0 \\rangle + \\vert \\gamma_1 \\rangle\\vert 1 \\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 25"
+      "status": "exact",
+      "display": "U · (|0^register width⟩ ⊗ |ψ⟩) = |γ_0⟩ ⊗ [1; 0] + |γ_1⟩ ⊗ [0; 1]",
+      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))))==(qadd(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))),qtensor(qnamedket(\"γ_1\"),matrix(2,1,vector(0,1)))))"
     },
     {
       "id": "IBM047-f4526623-M101",
@@ -1110,8 +1112,9 @@
       "start": 13892,
       "end": 13994,
       "literal": "$$\nU \\bigl( \\vert 0\\cdots 0\\rangle\\vert \\psi \\rangle  \\bigr)\n= \\vert\\gamma_0\\rangle\\vert 0 \\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 24"
+      "status": "exact",
+      "display": "U · (|0^register width⟩ ⊗ |ψ⟩) = |γ_0⟩ ⊗ [1; 0]",
+      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))))==(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))"
     },
     {
       "id": "IBM047-f4526623-M110",
@@ -1129,8 +1132,9 @@
       "start": 14076,
       "end": 14196,
       "literal": "$$\n\\vert 0\\cdots 0\\rangle\\vert \\psi \\rangle\n= U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr).\n\\tag{1}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 15"
+      "status": "exact",
+      "display": "U† · (|γ_0⟩ ⊗ [1; 0]) = |0^register width⟩ ⊗ |ψ⟩",
+      "copy": "(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))==(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M112",
@@ -1158,8 +1162,9 @@
       "start": 14291,
       "end": 14394,
       "literal": "$$\nU \\bigl( \\vert 0\\cdots 0\\rangle\\vert \\phi \\rangle  \\bigr)\n=  \\vert \\delta_1\\rangle\\vert 1 \\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 24"
+      "status": "exact",
+      "display": "U · (|0^register width⟩ ⊗ |φ⟩) = |δ_1⟩ ⊗ [0; 1]",
+      "copy": "(qmul('U',qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ'))))==(qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1))))"
     },
     {
       "id": "IBM047-f4526623-M115",
@@ -1177,8 +1182,9 @@
       "start": 14451,
       "end": 14571,
       "literal": "$$\n\\vert 0\\cdots 0\\rangle\\vert \\phi \\rangle\n= U^{\\dagger} \\bigl(  \\vert \\delta_1\\rangle\\vert 1 \\rangle\\bigr).\n\\tag{2}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 15"
+      "status": "exact",
+      "display": "U† · (|δ_1⟩ ⊗ [0; 1]) = |0^register width⟩ ⊗ |φ⟩",
+      "copy": "(qadjacent(qdag('U'),qtensor(qnamedket(\"δ_1\"),matrix(2,1,vector(0,1)))))==(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ')))"
     },
     {
       "id": "IBM047-f4526623-M117",
@@ -1208,7 +1214,7 @@
       "literal": "$$\n\\bigl(U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr)\\bigr)^{\\dagger}\n= \\bigl( \\langle\\gamma_0\\vert\\langle 0\\vert \\bigr)U,\n$$",
       "status": "exact",
       "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† − ((|γ_0⟩ ⊗ [1; 0])† · U) = 0",
-      "copy": "((qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))))+ ((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'))))==(0)"
+      "copy": "(((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U')))+ (qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))))==(0)"
     },
     {
       "id": "IBM047-f4526623-M120",
@@ -1366,7 +1372,7 @@
       "end": 16396,
       "literal": "$$\n0 = \\bigl(  \\vert 0\\cdots 0\\rangle \\vert \\psi\\rangle\\bigr)^{\\dagger}\n\\bigl(\\vert 0\\cdots 0\\rangle\\vert \\phi\\rangle\\bigr)\n=  \\langle 0\\cdots 0 \\vert 0\\cdots 0 \\rangle \\langle \\psi \\vert \\phi \\rangle = \\langle \\psi \\vert \\phi \\rangle.\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 27"
+      "message": "Invalid decimal number at byte 58"
     },
     {
       "id": "IBM047-f4526623-M136",

@@ -44,3 +44,19 @@ for state, truth in [("|0>", "1"), ("|1>", "1"), ("|+>", "0")]:
     bound = f'replace(replace(({mapping}),qnamedket("ψ"),{state}),qnamedket("φ"),|0>)'
     assert evaluate(f"checkaction(CNOT,{bound})") == truth
 print("Verified eight source formulas with 20 no-cloning checks")
+
+# The distinguishability proof leaves the workspace width unspecified.
+workspace = evaluate(rows[97]["literal"])
+for width in (1, 2, 3):
+    zeros = "|" + "0" * width + ">"
+    ones = "|" + "1" * width + ">"
+    assert evaluate(f'replace(({workspace}),"register width",{width})') == evaluate(zeros)
+    assert evaluate(f'replace(|1...1>,"register width",{width})') == evaluate(ones)
+    for index in (100, 109, 111, 114, 116):
+        for output_bit, truth in [(0, "1"), (1, "0")]:
+            bindings = [('"register width"', str(width)), ('"U"', f"identity({2**(width+1)})"),
+                        ('qnamedket("ψ")', f"|{output_bit}>"), ('qnamedket("φ")', f"|{1-output_bit}>"),
+                        ('qnamedket("γ_0")', zeros), ('qnamedket("δ_1")', zeros),
+                        ('qnamedket("γ_1")', f"0*{zeros}")]
+            check(index, bindings, truth)
+print("Verified the repeated-bit register and five distinguishability equations at three widths")
