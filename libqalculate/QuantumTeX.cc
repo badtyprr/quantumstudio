@@ -1429,6 +1429,25 @@ class TeXReader {
    std::string raw=input.substr(bodyStart,bodyEnd-bodyStart);
    std::string m=indexedMatrix(raw,true);
    if(m.empty())m=indexedColumn(raw,true);
+   // Inner products have scalar entries even while the named states are unbound.
+   // Preserve the shape instead of asking horizontal concatenation to infer it.
+   if(m.empty() && raw.find("\\langle")!=std::string::npos) {
+    auto rows=indexedParts(body,";");
+    size_t width=0;std::string entries;bool scalar=true;
+    for(const auto &row:rows) {
+     auto cells=indexedParts(row,",");
+     if(!width)width=cells.size();
+     if(cells.size()!=width){scalar=false;break;}
+     for(const auto &cell:cells) {
+      if(cell.empty() || cell.front()!='<' || cell.back()!='>' ||
+         cell.find_first_of("<>",1)!=cell.size()-1 || std::count(cell.begin(),cell.end(),'|')!=1){scalar=false;break;}
+      if(!entries.empty())entries+=",";
+      entries+=cell;
+     }
+     if(!scalar)break;
+    }
+    if(scalar)m="matrix("+std::to_string(rows.size())+","+std::to_string(width)+",vector("+entries+"))";
+   }
    if(m.empty())m="["+body+"]";
    if(env=="vmatrix") return "det("+m+")";
    if(env=="Vmatrix") return "norm("+m+closeNorm(true);

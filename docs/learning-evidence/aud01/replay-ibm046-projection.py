@@ -138,3 +138,11 @@ for dimension in (2, 3):
                 bound = f'replace(({bound}),"Π_{k}",{ket}*dagger({ket}))'
             assert evaluate(f"replace(({bound}),m,{dimension})") == ("1" if matches else "0")
 print("Verified two unitary completions per dimension and rejected unitary matrices with a different first block column")
+
+gram_equation = evaluate(rows[89]["literal"])
+for matrix, expected in [("[1,i,0;0,1,1;0,0,1]", "1"), ("[1,0,0;0,1,0;0,0,1]", "0")]:
+    equation = f"replace(({gram_equation}),'U',{matrix})"
+    for index, column in enumerate(("[1;0;0]", "[i;1;0]", "[0;1;1]"), 1):
+        equation = f'replace(({equation}),qnamedket("ψ_{index}"),{column})'
+    assert evaluate(equation) == expected
+print("Verified the Gram matrix of three complex, nonorthogonal columns and rejected an unrelated identity matrix")
