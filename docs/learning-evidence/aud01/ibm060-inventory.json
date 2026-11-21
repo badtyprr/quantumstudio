@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes.ipynb",
   "source_sha256": "3d9008806bedf42d297a5206c86df441a937583cbe8336d8c1e41728928b6d07",
-  "worker_sha256": "35ca0c375375fe785fe97fe93bc437626d24c318e177ef1f3615d9b03890d103",
-  "revision": "229b422fe4d92eeabb28eb28226b4edc69151532",
+  "worker_sha256": "0f302a924e3c5bb65d032925202c3c5c719c297828c762167be34c8b5fac9ea2",
+  "revision": "51444457584e267cd9bd447d8a6b3f805d2aeb87",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
