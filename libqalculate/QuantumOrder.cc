@@ -121,11 +121,11 @@ class QuantumScalarUpdate: public MathFunction {
      rule.size()!=2 || !rule[0].isSymbolic()) {
    CALCULATOR->error(true,"Expected a scalar update rule.",NULL);return 0;
   }
-  if(current.isVector()) {CALCULATOR->error(true,"A scalar update requires a scalar input.",NULL);return 0;}
+  if(!quantumScalarExpression(current) || current.isUndefined()) {CALCULATOR->error(true,"A scalar update requires a scalar input.",NULL);return 0;}
   if(rule[1].contains(rule[0]))out.set(CALCULATOR->getFunction("qreplace"),&rule[1],&rule[0],&current,NULL);
   else out=rule[1];
   out.eval(eo);
-  if(out.isVector()) {CALCULATOR->error(true,"A scalar update must produce a scalar.",NULL);return 0;}
+  if(!quantumScalarExpression(out) || out.isUndefined()) {CALCULATOR->error(true,"A scalar update must produce a scalar.",NULL);return 0;}
   return 1;
  }
 };
