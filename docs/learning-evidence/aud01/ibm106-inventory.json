@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/instances-and-extensions.ipynb",
   "source_sha256": "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "revision": "e13f4ecc5c4f74f0793e75adf23d8107c70e6bd1",
   "mode": "Quantum notation",
   "markdown_cells": 26,
   "code_cells": 15,
   "summary": {
-    "exact": 89,
-    "diagnostic": 60
+    "exact": 95,
+    "diagnostic": 54
   },
   "figures": [
     {
@@ -48,8 +48,8 @@
       "end": 138,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M002",
@@ -67,8 +67,9 @@
       "start": 209,
       "end": 223,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M004",
@@ -77,7 +78,7 @@
       "end": 276,
       "literal": "$U_V(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 41"
     },
     {
       "id": "IBM106-ab0d6f7e-M005",
@@ -86,7 +87,7 @@
       "end": 320,
       "literal": "$U_A(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 27"
     },
     {
       "id": "IBM106-ab0d6f7e-M006",
@@ -94,8 +95,9 @@
       "start": 346,
       "end": 360,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M007",
@@ -104,7 +106,7 @@
       "end": 432,
       "literal": "$U_V(\\vec\\theta_{i,j})|\\rho\\rangle = |\\psi(\\vec\\theta_{i,j})\\rangle$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 41"
     },
     {
       "id": "IBM106-ab0d6f7e-M008",
@@ -131,8 +133,9 @@
       "start": 750,
       "end": 764,
       "literal": "$\\vec\\theta_0$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M011",
@@ -141,7 +144,7 @@
       "end": 885,
       "literal": "$C(\\vec\\theta_{i,j}) := \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "message": "A paired coefficient subscript requires a name at byte 37"
     },
     {
       "id": "IBM106-ab0d6f7e-M012",
@@ -159,8 +162,9 @@
       "start": 1326,
       "end": 1370,
       "literal": "$$\n\\hat{O}_1 = 2 II - 2 XX + 3 YY - 3 ZZ,\n$$",
-      "status": "diagnostic",
-      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+      "status": "exact",
+      "display": "qoperatorref(\"O_1\") = [−1, 0, 0, −5; 0, 5, 1, 0; 0, 1, 5, 0; −5, 0, 0, −1]",
+      "copy": "qcompare(qoperatorref(\"O_1\"),matrix(4,4,[−1,0,0,−5,0,5,1,0,0,1,5,0,−5,0,0,−1]),4)"
     },
     {
       "id": "IBM106-ab0d6f7e-M014",
@@ -257,7 +261,7 @@
       "end": 1209,
       "literal": "$$\n\\begin{aligned}\nC(\\vec{\\theta})\n\n& := \\sum_{j=0}^{k-1} w_j \\langle \\rho_j | U_{V}^{\\dagger}(\\vec{\\theta})\\hat{H} U_{V}(\\vec{\\theta})|\\rho_j \\rangle \\\\[1mm]\n\n& := \\sum_{j=0}^{k-1} w_j \\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle \\\\[1mm]\n\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 31"
+      "message": "Expected a quantum expression at byte 43"
     },
     {
       "id": "IBM106-ab0d6f7e-M024",
@@ -296,8 +300,8 @@
       "end": 1315,
       "literal": "$U_V(\\vec{\\theta})$",
       "status": "exact",
-      "display": "qvectorref('θ') · U · V · '_'",
-      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
     },
     {
       "id": "IBM106-ab0d6f7e-M028",
@@ -306,8 +310,8 @@
       "end": 1543,
       "literal": "$U_V(\\vec{\\theta})|\\rho_j\\rangle$",
       "status": "exact",
-      "display": "(qvectorref('θ') · U · V · '_') (|ρ_j⟩)",
-      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_j\"))"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ')) |ρ_j⟩",
+      "copy": "qadjacent(qoperatorat(\"U_V\",qvectorref('θ')),qnamedket(\"ρ_j\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M029",
@@ -316,8 +320,8 @@
       "end": 1581,
       "literal": "$U_V(\\vec{\\theta})|\\rho_l\\rangle$",
       "status": "exact",
-      "display": "(qvectorref('θ') · U · V · '_') (|ρ_l⟩)",
-      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_l\"))"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ')) |ρ_l⟩",
+      "copy": "qadjacent(qoperatorat(\"U_V\",qvectorref('θ')),qnamedket(\"ρ_l\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M030",
@@ -326,8 +330,8 @@
       "end": 1831,
       "literal": "$$\n\\begin{aligned}\n\\langle \\rho_j | U_{V}^{\\dagger}(\\vec{\\theta})U_{V}(\\vec{\\theta})|\\rho_l \\rangle\n\n& = \\langle \\rho_j | I |\\rho_l \\rangle \\\\[1mm]\n\n& = \\langle \\rho_j | \\rho_l \\rangle \\\\[1mm]\n\n& = \\delta_{jl}\n\n\\end{aligned}\n$$",
       "status": "exact",
-      "display": "⟨ρ_j| (\"U_V\"† · qvectorref('θ') · qvectorref('θ') · U · V · '_') |ρ_l⟩ = ⟨ρ_j| [1, 0; 0, 1] |ρ_l⟩ = ⟨ρ_j|ρ_l⟩ = \"δ_jl\"",
-      "copy": "qequalchain(vector(qmul(qmul(qdag(qnamedket(\"ρ_j\")),qadjacent(qadjacent(qdag(\"U_V\"),qvectorref('θ')),qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')))),qnamedket(\"ρ_l\")),qmul(qmul(qdag(qnamedket(\"ρ_j\")),matrix(2,2,vector(1,0,0,1))),qnamedket(\"ρ_l\")),qmul(qdag(qnamedket(\"ρ_j\")),qnamedket(\"ρ_l\")),\"δ_jl\"))"
+      "display": "⟨ρ_j| (\"U_V\"† · qvectorref('θ') · qoperatorat(\"U_V\", qvectorref('θ'))) |ρ_l⟩ = ⟨ρ_j| [1, 0; 0, 1] |ρ_l⟩ = ⟨ρ_j|ρ_l⟩ = \"δ_jl\"",
+      "copy": "qequalchain(vector(qmul(qmul(qdag(qnamedket(\"ρ_j\")),qadjacent(qadjacent(qdag(\"U_V\"),qvectorref('θ')),qoperatorat(\"U_V\",qvectorref('θ')))),qnamedket(\"ρ_l\")),qmul(qmul(qdag(qnamedket(\"ρ_j\")),matrix(2,2,vector(1,0,0,1))),qnamedket(\"ρ_l\")),qmul(qdag(qnamedket(\"ρ_j\")),qnamedket(\"ρ_l\")),\"δ_jl\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M031",
@@ -336,8 +340,8 @@
       "end": 1887,
       "literal": "$U_{V}(\\vec{\\theta})$",
       "status": "exact",
-      "display": "qvectorref('θ') · U · V · '_'",
-      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
     },
     {
       "id": "IBM106-ab0d6f7e-M032",
@@ -376,8 +380,8 @@
       "end": 2613,
       "literal": "$U_{V}(\\vec{\\theta})|\\rho_0 \\rangle$",
       "status": "exact",
-      "display": "(qvectorref('θ') · U · V · '_') (|ρ_0⟩)",
-      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_0\"))"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ')) |ρ_0⟩",
+      "copy": "qadjacent(qoperatorat(\"U_V\",qvectorref('θ')),qnamedket(\"ρ_0\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M036",
@@ -425,8 +429,8 @@
       "end": 3067,
       "literal": "$U_{V}(\\vec{\\theta})|\\rho_1 \\rangle$",
       "status": "exact",
-      "display": "(qvectorref('θ') · U · V · '_') (|ρ_1⟩)",
-      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_1\"))"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ')) |ρ_1⟩",
+      "copy": "qadjacent(qoperatorat(\"U_V\",qvectorref('θ')),qnamedket(\"ρ_1\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M041",
@@ -455,8 +459,8 @@
       "end": 3295,
       "literal": "$U_{V}(\\vec{\\theta})|\\rho_j \\rangle$",
       "status": "exact",
-      "display": "(qvectorref('θ') · U · V · '_') (|ρ_j⟩)",
-      "copy": "qadjacent(qmul(qmul(qmul('U','V'),'_'),qvectorref('θ')),qnamedket(\"ρ_j\"))"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ')) |ρ_j⟩",
+      "copy": "qadjacent(qoperatorat(\"U_V\",qvectorref('θ')),qnamedket(\"ρ_j\"))"
     },
     {
       "id": "IBM106-ab0d6f7e-M044",
@@ -525,7 +529,7 @@
       "end": 3773,
       "literal": "$U_V(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 41"
     },
     {
       "id": "IBM106-ab0d6f7e-M051",
@@ -534,7 +538,7 @@
       "end": 3856,
       "literal": "$U_A(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 27"
     },
     {
       "id": "IBM106-ab0d6f7e-M052",
@@ -553,7 +557,7 @@
       "end": 4115,
       "literal": "$C(\\vec\\theta_{i,j}) := \\sum_{j=0}^{k-1} w_j \\langle \\psi_{j}(\\vec{\\theta}) | \\hat{H} | \\psi_{j}(\\vec{\\theta}) \\rangle$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "message": "A paired coefficient subscript requires a name at byte 37"
     },
     {
       "id": "IBM106-ab0d6f7e-M054",
@@ -679,7 +683,7 @@
       "end": 1003,
       "literal": "$\\lambda_0 := C_0(\\vec\\theta^0) \\equiv C_\\text{VQE}(\\vec\\theta^0)$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 22"
+      "message": "Expected a quantum expression at byte 7"
     },
     {
       "id": "IBM106-ab0d6f7e-M067",
@@ -716,7 +720,7 @@
       "end": 1329,
       "literal": "$C_0(\\vec{\\theta}) := \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
       "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 24"
+      "message": "Expected a quantum expression at byte 57"
     },
     {
       "id": "IBM106-ab0d6f7e-M071",
@@ -725,7 +729,7 @@
       "end": 1460,
       "literal": "$$\nC_1(\\vec{\\theta}) :=\nC_0(\\vec{\\theta})+ \\beta_0 |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^0})\\rangle  |^2\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 100"
+      "message": "Unsupported TeX command: \\vec at byte 166"
     },
     {
       "id": "IBM106-ab0d6f7e-M072",
@@ -754,8 +758,8 @@
       "end": 1740,
       "literal": "$C_\\text{VQE}(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
       "status": "exact",
-      "display": "qvectorref('θ') · C · E · Q · V · '_' = qstatecall('ψ', qvectorref('θ'))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref('θ'))",
-      "copy": "qcompare(qvectorref('θ') ⋅ 'C''E''Q''V''_',qmul(qmul(qdag(qstatecall('ψ',qvectorref('θ'))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref('θ'))),4)"
+      "display": "qscalarat(\"C_VQE\", qvectorref('θ')) = qstatecall('ψ', qvectorref('θ'))† · qoperatorref('H') · qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qcompare(qscalarat(\"C_VQE\",qvectorref('θ')),qmul(qmul(qdag(qstatecall('ψ',qvectorref('θ'))),qoperatorref('H')),qstatecall('ψ',qvectorref('θ'))),4)"
     },
     {
       "id": "IBM106-ab0d6f7e-M075",
@@ -840,7 +844,7 @@
       "end": 195,
       "literal": "$$\nC_2(\\vec{\\theta}) :=\nC_1(\\vec{\\theta}) + \\beta_1 |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^1})\\rangle  |^2\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 101"
+      "message": "Unsupported TeX command: \\vec at byte 167"
     },
     {
       "id": "IBM106-ab0d6f7e-M084",
@@ -980,8 +984,9 @@
       "start": 426,
       "end": 510,
       "literal": "$C(\\vec{\\theta}) = \\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle$",
-      "status": "diagnostic",
-      "message": "Quantum operation requires a matrix (kets are column matrices)."
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ')) = qstatecall('ψ', qvectorref('θ'))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qcompare(qscalarat('C',qvectorref('θ')),qmul(qmul(qdag(qstatecall('ψ',qvectorref('θ'))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref('θ'))),4)"
     },
     {
       "id": "IBM106-ab0d6f7e-M099",
@@ -1048,7 +1053,7 @@
       "end": 1478,
       "literal": "$$\nC_k(\\vec{\\theta}) =\n\\langle \\psi(\\vec{\\theta}) | \\hat{H} | \\psi(\\vec{\\theta})\\rangle +\n\\sum_{j=0}^{k-1}\\beta_j |\\langle \\psi(\\vec{\\theta})| \\psi(\\vec{\\theta^j})\\rangle |^2\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 167"
+      "message": "Unsupported TeX command: \\vec at byte 200"
     },
     {
       "id": "IBM106-ab0d6f7e-M106",
@@ -1057,8 +1062,8 @@
       "end": 104,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M107",
@@ -1067,7 +1072,7 @@
       "end": 153,
       "literal": "$U_V(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 41"
     },
     {
       "id": "IBM106-ab0d6f7e-M108",
@@ -1076,7 +1081,7 @@
       "end": 232,
       "literal": "$U_A(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 27"
     },
     {
       "id": "IBM106-ab0d6f7e-M109",
@@ -1095,8 +1100,8 @@
       "end": 387,
       "literal": "$C_k(\\vec{\\theta})$",
       "status": "exact",
-      "display": "qvectorref('θ') · C · '_' · k",
-      "copy": "qvectorref('θ') ⋅ 'C''_''k'"
+      "display": "qscalarat(qindexedlabel(\"C_\", 'k', \"\"), qvectorref('θ'))",
+      "copy": "qscalarat(qindexedlabel(\"C_\",'k',\"\"),qvectorref('θ'))"
     },
     {
       "id": "IBM106-ab0d6f7e-M111",
@@ -1193,7 +1198,7 @@
       "end": 1531,
       "literal": "$$\n\\begin{aligned}\nC(\\vec{\\theta})\n\n& := \\langle \\psi(\\theta) | \\hat{H} | \\psi(\\theta)\\rangle \\\\[1mm]\n\n& := a_0 + \\sum_{k=1}^S[a_k\\cos(k\\theta)+ b_k\\sin(k\\theta)] \\\\[1mm]\n\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 31"
+      "message": "Expected a quantum expression at byte 43"
     },
     {
       "id": "IBM106-ab0d6f7e-M121",
@@ -1221,8 +1226,8 @@
       "end": 1852,
       "literal": "$\\{a_0, a_k, b_k\\}_{k=1}^S$",
       "status": "exact",
-      "display": "\\{\"a_0\", \"a_k\", \"b_k\"\\} · _(k = 1)^[1, 0; 0, i]",
-      "copy": "qadjacent(qset(vector(\"a_0\",\"a_k\",\"b_k\")),qpower(qindexedlabel('_',qcompare('k',1,4),\"\"),matrix(2,2,[1,0,0,i])))"
+      "display": "qsetunion(qindexedset(\"a_\", 0, 'S', []), qindexedset(\"b_\", 1, 'S', []))",
+      "copy": "qsetunion(qindexedset(\"a_\",0,'S',vector()),qindexedset(\"b_\",1,'S',vector()))"
     },
     {
       "id": "IBM106-ab0d6f7e-M124",
@@ -1306,8 +1311,8 @@
       "end": 2904,
       "literal": "$$\nF^\\dagger Fa = F^\\dagger c.\n$$",
       "status": "exact",
-      "display": "F† · F · a − (F† · 299.792458 km ∕ ms) = 0",
-      "copy": "(qadd(qadjacent(qdag('F'),qmul('F','a')),qmul(−1,qadjacent(qdag('F'),qmul(qmul(299792458,qphysicalunit(\"m\",\"\")),qpower(qphysicalunit(\"s\",\"\"),−1))))))==(0)"
+      "display": "qoperatorref('F')† · qoperatorref('F') · qvectorref('a') = qoperatorref('F')† · qvectorref('c')",
+      "copy": "qcompare(qmul(qdag(qoperatorref('F')),qmul(qoperatorref('F'),qvectorref('a'))),qmul(qdag(qoperatorref('F')),qvectorref('c')),4)"
     },
     {
       "id": "IBM106-ab0d6f7e-M133",
@@ -1383,8 +1388,8 @@
       "end": 103,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M141",
@@ -1402,8 +1407,9 @@
       "start": 168,
       "end": 182,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM106-ab0d6f7e-M143",
@@ -1412,7 +1418,7 @@
       "end": 236,
       "literal": "$U_V(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 41"
     },
     {
       "id": "IBM106-ab0d6f7e-M144",
@@ -1421,7 +1427,7 @@
       "end": 280,
       "literal": "$U_A(\\vec\\theta_{i,j})$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "A paired coefficient subscript requires a name at byte 27"
     },
     {
       "id": "IBM106-ab0d6f7e-M145",
@@ -1440,7 +1446,7 @@
       "end": 591,
       "literal": "$C(\\vec\\theta) := a_0 + \\sum_{k=1}^S[a_k\\cos(k\\theta)+ b_k\\sin(k\\theta)]$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "message": "Expected a quantum expression at byte 34"
     },
     {
       "id": "IBM106-ab0d6f7e-M147",

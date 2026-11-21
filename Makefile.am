@@ -554,3 +554,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm102-105-local.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm104-106-local.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm107-local.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm101-variational.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm101-windows-sessions.json docs/learning-evidence/aud01/ibm102-windows-sessions.json docs/learning-evidence/aud01/ibm103-windows-sessions.json docs/learning-evidence/aud01/ibm104-windows-sessions.json docs/learning-evidence/aud01/ibm105-windows-sessions.json docs/learning-evidence/aud01/ibm106-windows-sessions.json docs/learning-evidence/aud01/ibm107-windows-sessions.json

@@ -1,0 +1,161 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/cost-functions.ipynb",
+  "notebook_sha256": "62108930aca4330587cb805357519f56cc57db2e1c651a5d2ad8e529f0a39e58",
+  "worker_sha256": "5fada8555e3e6d09e7f01770ddc9771e26544e419ef41163b33af4d3fab9b4b4",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "ec920f190eb3a6125cb6f74b9f28c753d7b8b2ba94641146c2bdcd5da49210d3",
+  "suite": {
+    "passed": true,
+    "checks": 1166,
+    "calls": 156,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 122,
+    "restored_identically": 122,
+    "stable_after_text_reentry": 122,
+    "source_diagnostic": 34
+  },
+  "diagnostics": [
+    {
+      "id": "IBM104-62108930-M013",
+      "message": "Unsupported TeX command: \\forall at byte 50"
+    },
+    {
+      "id": "IBM104-62108930-M021",
+      "message": "Unsupported text in a mathematical expression at byte 34"
+    },
+    {
+      "id": "IBM104-62108930-M029",
+      "message": "A finite sum/product requires lower and upper bounds at byte 45"
+    },
+    {
+      "id": "IBM104-62108930-M031",
+      "message": "Unsupported TeX command: \\cdots at byte 45"
+    },
+    {
+      "id": "IBM104-62108930-M034",
+      "message": "Unsupported TeX command: \\cdots at byte 24"
+    },
+    {
+      "id": "IBM104-62108930-M035",
+      "message": "Group a congruence separately from other comparisons."
+    },
+    {
+      "id": "IBM104-62108930-M037",
+      "message": "Expected a quantum expression at byte 27"
+    },
+    {
+      "id": "IBM104-62108930-M050",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM104-62108930-M054",
+      "message": "Unsupported text in a mathematical expression at byte 28"
+    },
+    {
+      "id": "IBM104-62108930-M055",
+      "message": "Unsupported text in a mathematical expression at byte 52"
+    },
+    {
+      "id": "IBM104-62108930-M056",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM104-62108930-M058",
+      "message": "Expected a subscript at byte 23"
+    },
+    {
+      "id": "IBM104-62108930-M059",
+      "message": "Expected a subscript at byte 23"
+    },
+    {
+      "id": "IBM104-62108930-M062",
+      "message": "Expected a subscript at byte 19"
+    },
+    {
+      "id": "IBM104-62108930-M063",
+      "message": "Expected a subscript at byte 19"
+    },
+    {
+      "id": "IBM104-62108930-M068",
+      "message": "A finite sum/product requires lower and upper bounds at byte 29"
+    },
+    {
+      "id": "IBM104-62108930-M069",
+      "message": "A finite sum/product requires lower and upper bounds at byte 96"
+    },
+    {
+      "id": "IBM104-62108930-M094",
+      "message": "Unsupported column label in numeric table at byte 68"
+    },
+    {
+      "id": "IBM104-62108930-M096",
+      "message": "Invalid decimal number at byte 29"
+    },
+    {
+      "id": "IBM104-62108930-M097",
+      "message": "Group a congruence separately from other comparisons."
+    },
+    {
+      "id": "IBM104-62108930-M098",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM104-62108930-M100",
+      "message": "Expected a quantum expression at byte 7"
+    },
+    {
+      "id": "IBM104-62108930-M102",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM104-62108930-M103",
+      "message": "Expected a quantum expression at byte 7"
+    },
+    {
+      "id": "IBM104-62108930-M106",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM104-62108930-M132",
+      "message": "Invalid summation index at byte 66"
+    },
+    {
+      "id": "IBM104-62108930-M137",
+      "message": "Invalid decimal number at byte 26"
+    },
+    {
+      "id": "IBM104-62108930-M139",
+      "message": "Unexpected notation at byte 16"
+    },
+    {
+      "id": "IBM104-62108930-M140",
+      "message": "Unsupported column label in numeric table at byte 51"
+    },
+    {
+      "id": "IBM104-62108930-M141",
+      "message": "Invalid summation index at byte 67"
+    },
+    {
+      "id": "IBM104-62108930-M147",
+      "message": "Unsupported TeX command: \\overbrace at byte 29"
+    },
+    {
+      "id": "IBM104-62108930-M151",
+      "message": "Unexpected notation at byte 49"
+    },
+    {
+      "id": "IBM104-62108930-M153",
+      "message": "Unsupported TeX command: \\texttt at byte 9"
+    },
+    {
+      "id": "IBM104-62108930-M156",
+      "message": "Unsupported column label in numeric table at byte 84"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

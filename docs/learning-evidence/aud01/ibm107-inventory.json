@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/examples-and-applications.ipynb",
   "source_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "5fada8555e3e6d09e7f01770ddc9771e26544e419ef41163b33af4d3fab9b4b4",
+  "revision": "6057489a87b1e383b2ad5f947a25e926747a3b8e",
   "mode": "Quantum notation",
   "markdown_cells": 55,
   "code_cells": 61,
   "summary": {
-    "diagnostic": 24,
-    "exact": 54
+    "exact": 64,
+    "diagnostic": 14
   },
   "figures": [],
   "rows": [
@@ -18,8 +18,9 @@
       "start": 129,
       "end": 173,
       "literal": "$$\n\\hat{O}_1 = 2 II - 2 XX + 3 YY - 3 ZZ,\n$$",
-      "status": "diagnostic",
-      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+      "status": "exact",
+      "display": "qoperatorref(\"O_1\") = [−1, 0, 0, −5; 0, 5, 1, 0; 0, 1, 5, 0; −5, 0, 0, −1]",
+      "copy": "qcompare(qoperatorref(\"O_1\"),matrix(4,4,[−1,0,0,−5,0,5,1,0,0,1,5,0,−5,0,0,−1]),4)"
     },
     {
       "id": "IBM107-0e377720-M002",
@@ -27,8 +28,9 @@
       "start": 223,
       "end": 340,
       "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -6 \\\\\n\\lambda_1 = 4 \\\\\n\\lambda_2 = 4 \\\\\n\\lambda_3 = 6\n\\end{array}\n\\right\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 44"
+      "status": "exact",
+      "display": "1.  \"λ_0\" = −6\n\n2.  \"λ_1\" = 4\n\n3.  \"λ_2\" = 4\n\n4.  \"λ_3\" = 6",
+      "copy": "\\begin{gathered}(\"λ_0\")==(−6)\\\\(\"λ_1\")==(4)\\\\(\"λ_2\")==(4)\\\\(\"λ_3\")==(6)\\end{gathered}"
     },
     {
       "id": "IBM107-0e377720-M003",
@@ -36,8 +38,9 @@
       "start": 360,
       "end": 661,
       "literal": "$$\n\\left\\{\n\\begin{array}{c}\n|\\phi_0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)\\\\\n|\\phi_1\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle - |11\\rangle)\\\\\n|\\phi_2\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle - |10\\rangle)\\\\\n|\\phi_3\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle + |10\\rangle)\n\\end{array}\n\\right\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 89"
+      "status": "exact",
+      "display": "1.  |φ_0⟩ = [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]\n\n2.  |φ_1⟩ = [(1 ∕ √(2)); 0; 0; (−1 ∕ √(2))]\n\n3.  |φ_2⟩ = [0; (1 ∕ √(2)); (−1 ∕ √(2)); 0]\n\n4.  |φ_3⟩ = [0; (1 ∕ √(2)); (1 ∕ √(2)); 0]",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"φ_0\"),matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),4)\\\\qcompare(qketstate(\"φ_1\"),matrix(4,1,[1 ∕ √(2),0,0,−1 ∕ √(2)]),4)\\\\qcompare(qketstate(\"φ_2\"),matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0]),4)\\\\qcompare(qketstate(\"φ_3\"),matrix(4,1,[0,1 ∕ √(2),1 ∕ √(2),0]),4)\\end{gathered}"
     },
     {
       "id": "IBM107-0e377720-M004",
@@ -56,8 +59,8 @@
       "end": 94,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM107-0e377720-M006",
@@ -220,8 +223,9 @@
       "start": 52,
       "end": 96,
       "literal": "$$\n\\hat{O}_2 := 2 II - 3 XX + 2 YY - 4 ZZ\n$$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 8"
+      "status": "exact",
+      "display": "qoperatorref(\"O_2\") = [−2, 0, 0, −5; 0, 6, −1, 0; 0, −1, 6, 0; −5, 0, 0, −2]",
+      "copy": "qcompare(qoperatorref(\"O_2\"),matrix(4,4,[−2,0,0,−5,0,6,−1,0,0,−1,6,0,−5,0,0,−2]),4)"
     },
     {
       "id": "IBM107-0e377720-M023",
@@ -229,8 +233,9 @@
       "start": 146,
       "end": 262,
       "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -7 \\\\\n\\lambda_1 = 3\\\\\n\\lambda_2 = 5 \\\\\n\\lambda_3 = 7\n\\end{array}\n\\right\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 44"
+      "status": "exact",
+      "display": "1.  \"λ_0\" = −7\n\n2.  \"λ_1\" = 3\n\n3.  \"λ_2\" = 5\n\n4.  \"λ_3\" = 7",
+      "copy": "\\begin{gathered}(\"λ_0\")==(−7)\\\\(\"λ_1\")==(3)\\\\(\"λ_2\")==(5)\\\\(\"λ_3\")==(7)\\end{gathered}"
     },
     {
       "id": "IBM107-0e377720-M024",
@@ -238,8 +243,9 @@
       "start": 282,
       "end": 583,
       "literal": "$$\n\\left\\{\n\\begin{array}{c}\n|\\phi_0\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle + |11\\rangle)\\\\\n|\\phi_1\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle - |11\\rangle)\\\\\n|\\phi_2\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle + |10\\rangle)\\\\\n|\\phi_3\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle - |10\\rangle)\n\\end{array}\n\\right\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 89"
+      "status": "exact",
+      "display": "1.  |φ_0⟩ = [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]\n\n2.  |φ_1⟩ = [(1 ∕ √(2)); 0; 0; (−1 ∕ √(2))]\n\n3.  |φ_2⟩ = [0; (1 ∕ √(2)); (1 ∕ √(2)); 0]\n\n4.  |φ_3⟩ = [0; (1 ∕ √(2)); (−1 ∕ √(2)); 0]",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"φ_0\"),matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),4)\\\\qcompare(qketstate(\"φ_1\"),matrix(4,1,[1 ∕ √(2),0,0,−1 ∕ √(2)]),4)\\\\qcompare(qketstate(\"φ_2\"),matrix(4,1,[0,1 ∕ √(2),1 ∕ √(2),0]),4)\\\\qcompare(qketstate(\"φ_3\"),matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0]),4)\\end{gathered}"
     },
     {
       "id": "IBM107-0e377720-M025",
@@ -267,8 +273,9 @@
       "start": 205,
       "end": 248,
       "literal": "$$\n\\hat{O}_2 = 2 II - 3 XX + 2 YY - 4 ZZ\n$$",
-      "status": "diagnostic",
-      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+      "status": "exact",
+      "display": "qoperatorref(\"O_2\") = [−2, 0, 0, −5; 0, 6, −1, 0; 0, −1, 6, 0; −5, 0, 0, −2]",
+      "copy": "qcompare(qoperatorref(\"O_2\"),matrix(4,4,[−2,0,0,−5,0,6,−1,0,0,−1,6,0,−5,0,0,−2]),4)"
     },
     {
       "id": "IBM107-0e377720-M028",
@@ -276,8 +283,9 @@
       "start": 268,
       "end": 384,
       "literal": "$$\n\\left\\{\n\\begin{array}{c}\n\\lambda_0 = -7 \\\\\n\\lambda_1 = 3\\\\\n\\lambda_2 = 5 \\\\\n\\lambda_3 = 7\n\\end{array}\n\\right\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 44"
+      "status": "exact",
+      "display": "1.  \"λ_0\" = −7\n\n2.  \"λ_1\" = 3\n\n3.  \"λ_2\" = 5\n\n4.  \"λ_3\" = 7",
+      "copy": "\\begin{gathered}(\"λ_0\")==(−7)\\\\(\"λ_1\")==(3)\\\\(\"λ_2\")==(5)\\\\(\"λ_3\")==(7)\\end{gathered}"
     },
     {
       "id": "IBM107-0e377720-M029",
@@ -555,7 +563,7 @@
       "end": 857,
       "literal": "$$\n\\begin{aligned}\nC(\\vec{x})\n& =\\sum_{i,j=0}^n w_{ij} x_i(1-x_j)\\\\[1mm]\n\n& = \\sum_{i,j=0}^n w_{ij} x_i - \\sum_{i,j=0}^n w_{ij} x_ix_j\\\\[1mm]\n\n& = \\sum_{i,j=0}^n w_{ij} x_i - \\sum_{i=0}^n \\sum_{j=0}^i 2w_{ij} x_ix_j\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Invalid summation index at byte 54"
+      "message": "Invalid summation index at byte 66"
     },
     {
       "id": "IBM107-0e377720-M057",
@@ -641,7 +649,7 @@
       "end": 1918,
       "literal": "$$\n\\begin{aligned}\nC(\\vec{z})\n& = \\sum_{i,j=0}^n w_{ij} \\bigg(\\frac{1-z_i}{2}\\bigg)\\bigg(1-\\frac{1-z_j}{2}\\bigg)\\\\[1mm]\n\n& = \\sum_{i,j=0}^n \\frac{w_{ij}}{4} - \\sum_{i,j=0}^n \\frac{w_{ij}}{4} z_iz_j\\\\[1mm]\n\n& = \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} -  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} z_iz_j\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Invalid summation index at byte 55"
+      "message": "Invalid summation index at byte 67"
     },
     {
       "id": "IBM107-0e377720-M066",
@@ -649,8 +657,9 @@
       "start": 2062,
       "end": 2074,
       "literal": "$C(\\vec{z})$",
-      "status": "diagnostic",
-      "message": "Quantum operation requires a matrix (kets are column matrices)."
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('z'))",
+      "copy": "qscalarat('C',qvectorref('z'))"
     },
     {
       "id": "IBM107-0e377720-M067",
@@ -658,8 +667,9 @@
       "start": 2102,
       "end": 2218,
       "literal": "$$\n-C(\\vec{z}) =  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2} z_iz_j -  \\sum_{i=0}^n \\sum_{j=0}^i \\frac{w_{ij}}{2}\n$$",
-      "status": "diagnostic",
-      "message": "Quantum operation requires a matrix (kets are column matrices)."
+      "status": "exact",
+      "display": "(∑_{k=0}^{n} (∑_{j=0}^{k} (0.5 \"w_ij\" · z_iz_j))) − (∑_{l=0}^{n} (∑_{t=0}^{l} (0.5 \"w_ij\"))) = −qscalarat('C', qvectorref('z'))",
+      "copy": "(qsub(qsum(qsum(qadjacent(qmul(1 ∕ 2,\"w_ij\"),qindexedlabel(\"z_iz_\",\"qboundindex_0\",\"\")),0,\"qboundindex_1\",\"qboundindex_0\"),0,n,\"qboundindex_1\"),qsum(qsum(\"w_ij\" ∕ 2,0,\"qboundindex_3\",\"qboundindex_2\"),0,n,\"qboundindex_3\")))==(−qscalarat('C', qvectorref('z')))"
     },
     {
       "id": "IBM107-0e377720-M068",
@@ -765,8 +775,8 @@
       "end": 174,
       "literal": "$IIZZ + IZIZ + IZZI + ZIIZ + ZZII$",
       "status": "exact",
-      "display": "5 · I^2 · Z^2",
-      "copy": "5 ⋅ 'I'² ⋅ 'Z'²"
+      "display": "[5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, −1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, −1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, −1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, −3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, −1, 0, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, −1, 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, −3, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, −1, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, −1, 0, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, −1, 0; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5]",
+      "copy": "matrix(16,16,[5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5])"
     }
   ]
 }

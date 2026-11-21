@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
   "source_sha256": "ee2bde2c607539ab5c8486d074ab30c6f554246452d78a5de08ff1c88a76aa4a",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
   "mode": "Quantum notation",
   "markdown_cells": 7,
   "code_cells": 0,
   "summary": {
-    "exact": 27,
-    "diagnostic": 25
+    "exact": 44,
+    "diagnostic": 8
   },
   "figures": [
     {
@@ -36,8 +36,9 @@
       "start": 1375,
       "end": 1389,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM101-ee2bde2c-M003",
@@ -46,8 +47,8 @@
       "end": 1524,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM101-ee2bde2c-M004",
@@ -55,8 +56,9 @@
       "start": 1557,
       "end": 1586,
       "literal": "$U_R|0\\rangle = |\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "qzeroimage(qoperatorref(\"U_R\")) = |ρ_ref⟩",
+      "copy": "qcompare(qzeroimage(qoperatorref(\"U_R\")),qketstate(\"ρ_ref\"),4)"
     },
     {
       "id": "IBM101-ee2bde2c-M005",
@@ -74,8 +76,9 @@
       "start": 1699,
       "end": 1725,
       "literal": "$|\\psi(\\vec\\theta)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M007",
@@ -83,8 +86,9 @@
       "start": 1763,
       "end": 1780,
       "literal": "$U_V(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "status": "exact",
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M008",
@@ -93,7 +97,7 @@
       "end": 2020,
       "literal": "$U_A(\\vec\\theta) := U_V(\\vec\\theta) U_R$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "Expected a quantum expression at byte 24"
     },
     {
       "id": "IBM101-ee2bde2c-M009",
@@ -111,8 +115,9 @@
       "start": 2161,
       "end": 2187,
       "literal": "$|\\psi(\\vec\\theta)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M011",
@@ -129,8 +134,9 @@
       "start": 2617,
       "end": 2632,
       "literal": "$C(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ'))",
+      "copy": "qscalarat('C',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M013",
@@ -138,8 +144,9 @@
       "start": 3226,
       "end": 3240,
       "literal": "$\\vec\\theta_0$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
     },
     {
       "id": "IBM101-ee2bde2c-M014",
@@ -147,8 +154,9 @@
       "start": 3301,
       "end": 3329,
       "literal": "$|\\psi(\\vec\\theta_0)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
     },
     {
       "id": "IBM101-ee2bde2c-M015",
@@ -156,8 +164,9 @@
       "start": 3578,
       "end": 3592,
       "literal": "$\\vec\\theta^*$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(\"θ_star\")",
+      "copy": "qvectorref(\"θ_star\")"
     },
     {
       "id": "IBM101-ee2bde2c-M016",
@@ -165,8 +174,9 @@
       "start": 3663,
       "end": 3720,
       "literal": "$|\\psi(\\vec\\theta^*)\\rangle = U_A(\\vec\\theta^*)|0\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(\"θ_star\")) = (qvectorref(\"θ_star\") · A · U · '_') ([1; 0])",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(\"θ_star\")),qadjacent(qmul(qmul(qmul('A','U'),'_'),qvectorref(\"θ_star\")),matrix(2,1,vector(1,0))),4)"
     },
     {
       "id": "IBM101-ee2bde2c-M017",
@@ -314,8 +324,8 @@
       "end": 1955,
       "literal": "$p_k = |\\langle \\psi |\\phi_{k} \\rangle |^2$",
       "status": "exact",
-      "display": "\"p_k\" = |qmul(qdag(qnamedket('ψ')), qnamedket(\"φ_k\"))|²",
-      "copy": "qcompare(\"p_k\",|qmul(qdag(qnamedket('ψ')), qnamedket(\"φ_k\"))|²,4)"
+      "display": "\"p_k\" = |⟨ψ|φ_k⟩|^2",
+      "copy": "qcompare(\"p_k\",qbars(qmul(qdag(qnamedket('ψ')), qnamedket(\"φ_k\")))²,4)"
     },
     {
       "id": "IBM101-ee2bde2c-M032",
@@ -352,8 +362,9 @@
       "start": 2397,
       "end": 2423,
       "literal": "$|\\psi(\\vec\\theta)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M036",
@@ -361,8 +372,9 @@
       "start": 2458,
       "end": 2470,
       "literal": "$\\vec\\theta$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     },
     {
       "id": "IBM101-ee2bde2c-M037",
@@ -371,7 +383,7 @@
       "end": 2651,
       "literal": "$C(\\vec\\theta) := \\langle \\psi(\\vec\\theta)|\\hat{\\mathcal{H}}|\\psi(\\vec\\theta)\\rangle$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "message": "Expected a quantum expression at byte 34"
     },
     {
       "id": "IBM101-ee2bde2c-M038",
@@ -388,8 +400,9 @@
       "start": 2874,
       "end": 2889,
       "literal": "$C(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ'))",
+      "copy": "qscalarat('C',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M040",
@@ -407,8 +420,9 @@
       "start": 2972,
       "end": 2998,
       "literal": "$|\\psi(\\vec\\theta)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM101-ee2bde2c-M042",
@@ -416,8 +430,9 @@
       "start": 3069,
       "end": 3083,
       "literal": "$\\vec\\theta^*$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(\"θ_star\")",
+      "copy": "qvectorref(\"θ_star\")"
     },
     {
       "id": "IBM101-ee2bde2c-M043",
@@ -425,8 +440,9 @@
       "start": 3094,
       "end": 3139,
       "literal": "$|\\psi(\\vec\\theta^*)\\rangle = |\\phi_0\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(\"θ_star\")) = |φ_0⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(\"θ_star\")),qketstate(\"φ_0\"),4)"
     },
     {
       "id": "IBM101-ee2bde2c-M044",
@@ -444,8 +460,9 @@
       "start": 137,
       "end": 149,
       "literal": "$\\vec\\theta$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     },
     {
       "id": "IBM101-ee2bde2c-M046",
@@ -484,7 +501,7 @@
       "end": 696,
       "literal": "$$\n\\langle \\hat{\\mathcal{H}} \\rangle(\\vec\\theta) :=\n\\langle \\psi(\\vec\\theta) |\\hat{\\mathcal{H}}| \\psi(\\vec\\theta) \\rangle \\geq\n\\lambda_0\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 40"
+      "message": "Expected a quantum expression at byte 25"
     },
     {
       "id": "IBM101-ee2bde2c-M050",

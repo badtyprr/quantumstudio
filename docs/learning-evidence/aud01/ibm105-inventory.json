@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/optimization-loops.ipynb",
   "source_sha256": "5441242c22ad4d9d40950aab8abf1d2e6b00fcf3063b76ac3e5f08188b12bb3f",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
   "mode": "Quantum notation",
   "markdown_cells": 10,
   "code_cells": 6,
   "summary": {
-    "diagnostic": 12,
-    "exact": 2
+    "exact": 13,
+    "diagnostic": 1
   },
   "figures": [
     {
@@ -54,8 +54,9 @@
       "start": 773,
       "end": 787,
       "literal": "$\\vec\\theta^*$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(\"θ_star\")",
+      "copy": "qvectorref(\"θ_star\")"
     },
     {
       "id": "IBM105-5441242c-M002",
@@ -63,8 +64,9 @@
       "start": 123,
       "end": 142,
       "literal": "$C(\\vec{\\theta_0})$",
-      "status": "diagnostic",
-      "message": "Quantum operation requires a matrix (kets are column matrices)."
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qscalarat('C',qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
     },
     {
       "id": "IBM105-5441242c-M003",
@@ -91,8 +93,9 @@
       "start": 93,
       "end": 105,
       "literal": "$\\vec\\theta$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     },
     {
       "id": "IBM105-5441242c-M006",
@@ -100,8 +103,9 @@
       "start": 229,
       "end": 243,
       "literal": "$\\vec\\theta_0$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
     },
     {
       "id": "IBM105-5441242c-M007",
@@ -109,8 +113,9 @@
       "start": 249,
       "end": 309,
       "literal": "$|\\psi(\\vec\\theta_0)\\rangle = U_V(\\vec\\theta_0)|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\"))) = qoperatorat(\"U_V\", qvectorref(qindexedlabel(\"θ_\", 0, \"\"))) |ρ_ref⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\"))),qadjacent(qoperatorat(\"U_V\",qvectorref(qindexedlabel(\"θ_\",0,\"\"))),qketstate(\"ρ_ref\")),4)"
     },
     {
       "id": "IBM105-5441242c-M008",
@@ -118,8 +123,9 @@
       "start": 384,
       "end": 398,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM105-5441242c-M009",
@@ -127,8 +133,9 @@
       "start": 562,
       "end": 590,
       "literal": "$U_V(\\vec\\theta_0) \\equiv I$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "status": "exact",
+      "display": "[−1, 0; 0, −1] + qoperatorat(\"U_V\", qvectorref(qindexedlabel(\"θ_\", 0, \"\"))) = 0",
+      "copy": "(qadd(matrix(2,2,vector(−1,0,0,−1)),qoperatorat(\"U_V\",qvectorref(qindexedlabel(\"θ_\",0,\"\")))))==(0)"
     },
     {
       "id": "IBM105-5441242c-M010",
@@ -136,8 +143,9 @@
       "start": 90,
       "end": 105,
       "literal": "$C(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 7"
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ'))",
+      "copy": "qscalarat('C',qvectorref('θ'))"
     },
     {
       "id": "IBM105-5441242c-M011",
@@ -145,8 +153,9 @@
       "start": 157,
       "end": 185,
       "literal": "$\\vec{\\nabla} C(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\nabla at byte 7"
+      "status": "exact",
+      "display": "qfeatureat(\"∇C\", qvectorref('θ'))",
+      "copy": "qfeatureat(\"∇C\",qvectorref('θ'))"
     },
     {
       "id": "IBM105-5441242c-M012",
@@ -154,8 +163,9 @@
       "start": 384,
       "end": 451,
       "literal": "$\\vec\\theta_{n+1} = \\vec\\theta_n - \\eta \\vec{\\nabla} C(\\vec\\theta)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\nabla at byte 7"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", qadd('n', 1), \"\")) − (qvectorref(qindexedlabel(\"θ_\", 'n', \"\")) − 'η' · qfeatureat(\"∇C\", qvectorref('θ'))) = 0",
+      "copy": "(qadd(qvectorref(qindexedlabel(\"θ_\",qadd('n',1),\"\")),qmul(−1,qsub(qvectorref(qindexedlabel(\"θ_\",'n',\"\")),qadjacent('η',qfeatureat(\"∇C\",qvectorref('θ')))))))==(0)"
     },
     {
       "id": "IBM105-5441242c-M013",
@@ -173,8 +183,9 @@
       "start": 1108,
       "end": 1127,
       "literal": "$C({\\vec\\theta^*})$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 8"
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref(\"θ_star\"))",
+      "copy": "qscalarat('C',qvectorref(\"θ_star\"))"
     }
   ]
 }

@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
   "source_sha256": "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
   "mode": "Quantum notation",
   "markdown_cells": 8,
   "code_cells": 4,
   "summary": {
-    "exact": 18,
-    "diagnostic": 6
+    "exact": 23,
+    "diagnostic": 1
   },
   "figures": [
     {
@@ -34,8 +34,8 @@
       "end": 183,
       "literal": "$U_R$",
       "status": "exact",
-      "display": "\"U_R\"",
-      "copy": "\"U_R\""
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
     },
     {
       "id": "IBM102-98616976-M002",
@@ -43,8 +43,9 @@
       "start": 231,
       "end": 261,
       "literal": "$|\\rho\\rangle = U_R |0\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩ = qzeroimage(qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),qzeroimage(qoperatorref(\"U_R\")),4)"
     },
     {
       "id": "IBM102-98616976-M003",
@@ -72,8 +73,9 @@
       "start": 627,
       "end": 641,
       "literal": "$U_R \\equiv I$",
-      "status": "diagnostic",
-      "message": "A congruence requires an explicit modulus."
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\") = qidentitylike(qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qoperatorref(\"U_R\"),qidentitylike(qoperatorref(\"U_R\")),4)"
     },
     {
       "id": "IBM102-98616976-M006",
@@ -112,8 +114,8 @@
       "end": 408,
       "literal": "$|001\\rangle = X_0 |000\\rangle$",
       "status": "exact",
-      "display": "[0; −1; 0; 0; 0; 0; 0; 0] + (\"X_0\") ([1; 0; 0; 0; 0; 0; 0; 0]) = 0",
-      "copy": "(qadd(matrix(8,1,vector(0,−1,0,0,0,0,0,0)),qadjacent(\"X_0\",matrix(8,1,vector(1,0,0,0,0,0,0,0)))))==(0)"
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM102-98616976-M010",
@@ -121,8 +123,9 @@
       "start": 449,
       "end": 465,
       "literal": "$U_R \\equiv X_0$",
-      "status": "diagnostic",
-      "message": "A congruence requires an explicit modulus."
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\") = qwireoperatorlike([0  1; 1  0], 0, qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qoperatorref(\"U_R\"),qwireoperatorlike(matrix(2,2,[0,1,1,0]),0,qoperatorref(\"U_R\")),4)"
     },
     {
       "id": "IBM102-98616976-M011",
@@ -130,8 +133,9 @@
       "start": 502,
       "end": 535,
       "literal": "$|\\rho\\rangle \\equiv |001\\rangle$",
-      "status": "diagnostic",
-      "message": "A congruence requires an explicit modulus."
+      "status": "exact",
+      "display": "|ρ_ref⟩ = [0; 1; 0; 0; 0; 0; 0; 0]",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),matrix(8,1,[0,1,0,0,0,0,0,0]),4)"
     },
     {
       "id": "IBM102-98616976-M012",
@@ -240,7 +244,7 @@
       "end": 625,
       "literal": "$U_{R} \\equiv X_2CNOT_{01}H_0|000\\rangle$",
       "status": "diagnostic",
-      "message": "A congruence requires an explicit modulus."
+      "message": "A reference operator cannot equal a prepared ket. Apply the operator to the all-zero input to compare the two states."
     },
     {
       "id": "IBM102-98616976-M023",
@@ -248,8 +252,9 @@
       "start": 654,
       "end": 719,
       "literal": "$|\\rho\\rangle \\equiv \\frac{1}{\\sqrt{2}}(|100\\rangle+|111\\rangle)$",
-      "status": "diagnostic",
-      "message": "A congruence requires an explicit modulus."
+      "status": "exact",
+      "display": "|ρ_ref⟩ = [0; 0; 0; 0; (1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),matrix(8,1,[0,0,0,0,1 ∕ √(2),0,0,1 ∕ √(2)]),4)"
     },
     {
       "id": "IBM102-98616976-M024",

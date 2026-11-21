@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
   "source_sha256": "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238",
-  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
-  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
   "mode": "Quantum notation",
   "markdown_cells": 14,
   "code_cells": 9,
   "summary": {
-    "exact": 22,
-    "diagnostic": 7
+    "exact": 26,
+    "diagnostic": 3
   },
   "figures": [
     {
@@ -62,8 +62,9 @@
       "start": 79,
       "end": 93,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM103-19874a79-M005",
@@ -71,8 +72,9 @@
       "start": 112,
       "end": 138,
       "literal": "$|\\psi(\\vec\\theta)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM103-19874a79-M006",
@@ -81,8 +83,8 @@
       "end": 196,
       "literal": "$U_V(\\vec{\\theta})$",
       "status": "exact",
-      "display": "qvectorref('θ') · U · V · '_'",
-      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
     },
     {
       "id": "IBM103-19874a79-M007",
@@ -99,8 +101,9 @@
       "start": 651,
       "end": 665,
       "literal": "$|\\rho\\rangle$",
-      "status": "diagnostic",
-      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
     },
     {
       "id": "IBM103-19874a79-M009",
@@ -109,8 +112,8 @@
       "end": 752,
       "literal": "$U_V(\\vec{\\theta})$",
       "status": "exact",
-      "display": "qvectorref('θ') · U · V · '_'",
-      "copy": "qvectorref('θ') ⋅ 'U''V''_'"
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
     },
     {
       "id": "IBM103-19874a79-M010",
@@ -119,7 +122,7 @@
       "end": 891,
       "literal": "$U_A(\\vec\\theta) := U_V(\\vec\\theta)U_R$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 9"
+      "message": "Expected a quantum expression at byte 24"
     },
     {
       "id": "IBM103-19874a79-M011",
@@ -307,8 +310,9 @@
       "start": 618,
       "end": 630,
       "literal": "$\\vec\\theta$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     }
   ]
 }

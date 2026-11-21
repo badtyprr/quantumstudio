@@ -1,0 +1,57 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+  "notebook_sha256": "ee2bde2c607539ab5c8486d074ab30c6f554246452d78a5de08ff1c88a76aa4a",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "03d03eea674ad9f57147aa9a57944a36cc3131631229496428f62a13f4e7965f",
+  "suite": {
+    "passed": true,
+    "checks": 412,
+    "calls": 52,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 44,
+    "restored_identically": 44,
+    "stable_after_text_reentry": 44,
+    "source_diagnostic": 8
+  },
+  "diagnostics": [
+    {
+      "id": "IBM101-ee2bde2c-M008",
+      "message": "Expected a quantum expression at byte 24"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M011",
+      "message": "Unsupported TeX command: \\xrightarrow at byte 46"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M027",
+      "message": "Unsupported TeX command: \\forall at byte 33"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M033",
+      "message": "Unexpected notation at byte 27"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M037",
+      "message": "Expected a quantum expression at byte 34"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M038",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M049",
+      "message": "Expected a quantum expression at byte 25"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M051",
+      "message": "Unexpected notation at byte 3"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
