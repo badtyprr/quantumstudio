@@ -897,6 +897,13 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   size_t evaluatedArguments=0;
+  if(op=="qsub" || op=="qadd")for(size_t k=0;k<2;++k) {
+   if(!args[k].isFunction() || args[k].function()->referenceName()!="qimplicitidentity")continue;
+   MathStructure other=args[1-k],rows,columns;
+   other.eval(eo);
+   if(matrixShape(other,rows,columns,eo))args[k].set(CALCULATOR->getFunction("qidentity"),&rows,NULL);
+   else if(unresolvedMatrixOperand(other))return 0;
+  }
   if((op=="qmul" || op=="qadjacent") && args.size()==2) {
    args[0].eval(eo);MathStructure rows,columns;
    evaluatedArguments=1;
@@ -1184,6 +1191,7 @@ class QuantumAlgebraFunction: public MathFunction {
        name=="qadd" || name=="qsub" || name=="qketstate" || name=="qstatecall")return 0;
    }
   }
+  if(op=="qnorm" && a.isZero()) {out.clear();return 1;}
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
    int count=args[1].number().intValue(); out.setToIdentityMatrix(1);

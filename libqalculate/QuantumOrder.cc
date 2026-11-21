@@ -549,6 +549,10 @@ class QuantumEqualityChain: public MathFunction {
   for(size_t k=0;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    operands[k].eval(eo);MathStructure rows,columns;
+   // A projector complement supplies the dimension of its identity only
+   // after the ket is bound. Keep the original chain during that interval.
+   if(operands[k].containsFunction(CALCULATOR->getFunction("qimplicitidentity")) &&
+      operands[k].containsFunction(CALCULATOR->getFunction("qnorm")))return 0;
    if(quantumMatrixShape(operands[k],rows,columns,eo) && columns.isOne()) {
     if(!known) {dimension=rows;known=true;}
     else if(!dimension.equals(rows))consistent=false;

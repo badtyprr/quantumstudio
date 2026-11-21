@@ -122,25 +122,37 @@ bool namedOutcome(const MathStructure &value) {
 bool stateColumn(const MathStructure &value) {
  return value.isMatrix() && value.columns()==1 && value.rows()>0;
 }
+bool namedProjector(const MathStructure &value) {
+ if(!value.isFunction() || value.size()!=2)return false;
+ const MathStructure *product=&value;
+ if(value.function()->referenceName()=="qsub" && value[0].isFunction() &&
+    value[0].function()->referenceName()=="qimplicitidentity")product=&value[1];
+ if(!product->isFunction() || product->size()!=2)return false;
+ const auto &name=product->function()->referenceName();
+ const auto &ket=(*product)[0], &bra=(*product)[1];
+ return (name=="qadjacent" || name=="qmul") && ket.isFunction() &&
+        (namedKet(ket) || ket.function()->referenceName()=="qnamedket") &&
+        bra.isFunction() && bra.function()->referenceName()=="qdag" && bra.size()==1 && ket.equals(bra[0]);
+}
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
  if(namedOutcome(left) || namedOutcome(right)) {
   const MathStructure &other=namedOutcome(left) ? right : left;
   if(namedOutcome(other) || other.isNumber())return SetEquality::Different;
  }
- if(namedKet(left) || namedKet(right))return SetEquality::Unknown;
- if(stateColumn(left) && stateColumn(right)) {
-  if(left.rows()!=right.rows())return SetEquality::Different;
+ if(namedKet(left) || namedKet(right) || namedProjector(left) || namedProjector(right))return SetEquality::Unknown;
+ if(left.isMatrix() && right.isMatrix()) {
+  if(left.rows()!=right.rows() || left.columns()!=right.columns())return SetEquality::Different;
   bool unknown=false;
-  for(size_t k=0;k<left.size();++k) {
-   SetEquality entry=setEquality(left[k][0],right[k][0]);
+  for(size_t k=0;k<left.size();++k)for(size_t j=0;j<left[k].size();++j) {
+   SetEquality entry=setEquality(left[k][j],right[k][j]);
    if(entry==SetEquality::Different)return entry;
    unknown=unknown || entry==SetEquality::Unknown;
   }
   return unknown ? SetEquality::Unknown : SetEquality::Equal;
  }
- if(stateColumn(left) || stateColumn(right)) {
-  const MathStructure &other=stateColumn(left) ? right : left;
+ if(left.isMatrix() || right.isMatrix()) {
+  const MathStructure &other=left.isMatrix() ? right : left;
   return other.containsUnknowns() ? SetEquality::Unknown : SetEquality::Different;
  }
  bool leftTuple=left.isFunction() && left.function()->referenceName()=="qtuple";
@@ -216,8 +228,10 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
  }
  value.eval(eo);
  if(!depth && namedKet(value))return true;
- if(!depth && stateColumn(value)) {
-  for(size_t k=0;k<value.size();++k)if(!value[k][0].representsScalar() || value[k][0].isUndefined())return false;
+ if(!depth && namedProjector(value)) {pending=true;return true;}
+ if(!depth && value.isMatrix() && value.rows() && value.columns()) {
+  for(size_t k=0;k<value.size();++k)for(size_t j=0;j<value[k].size();++j)
+   if(!value[k][j].representsScalar() || value[k][j].isUndefined())return false;
   return true;
  }
  return value.representsScalar() && !value.isUndefined();
@@ -1343,6 +1357,7 @@ class QuantumIndexedFunction: public MathFunction {
    if(!entries.isVector() || entries.size()>1024) {CALCULATOR->error(true,"A set requires a vector of at most 1024 valid entries.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;bool pending=false;
    if(!normalizeSetEntries(entries,exact,pending)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
+   if(pending && entries.containsFunction(CALCULATOR->getFunction("qimplicitidentity")))return 0;
    if(!entries.equals(raw[0])) {out.set(this,&entries,NULL);return 1;}
    return 0;
   }
