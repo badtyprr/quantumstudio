@@ -142,8 +142,13 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    std::string text=(name=="qmatrix" ? "matrix" : quantumMode && name=="exp" ? "qexp" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
-    const bool entries=explicitEntries || (quantumMode && (((name=="qmul" || name=="qexpect") && result[k].isMatrix()) ||
-        (name=="qadjacent" && (result[k].isMatrix() || result[k].isMultiplication())))) || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
+    // A matrix nested in an unevaluated operator must keep its explicit
+    // entry vector when the enclosing expression is parsed again.
+    const bool matrixOperand=result[k].isMatrix() &&
+        (name=="qmul" || name=="qexpect" || name=="qadjacent" || name=="qsub" || name=="qtensorpow");
+    const bool entries=explicitEntries || (quantumMode && (matrixOperand ||
+        (name=="qadjacent" && result[k].isMultiplication()))) || name=="qtensor" || name=="qmember" ||
+        ((name=="qmatrix" || name=="matrix") && k==2);
     text+=copyText(result[k],po,quantumMode,entries);
    }
    return text+")";
