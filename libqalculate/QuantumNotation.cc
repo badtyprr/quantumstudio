@@ -773,6 +773,9 @@ class Parser {
   if(dots!=std::string::npos) {
    if(!dimension.empty() || expanded.find("...",dots+3)!=std::string::npos)
     throw std::runtime_error("Use one ellipsis in an indexed qubit register without an overall dimension.");
+   std::string firstBit=labelText(expanded.substr(0,dots));
+   if((firstBit=="0" || firstBit=="1") && labelText(expanded.substr(dots+3))==firstBit)
+    return "qtensorpow("+ket(firstBit)+",\"register width\")";
    // Parse endpoints as indexed names, retaining compound bounds as expressions.
    // Explicit trailing indices are redundant notation and must be consecutive.
    auto trim=[](const std::string &value) {size_t a=value.find_first_not_of(" \t\r\n"),b=value.find_last_not_of(" \t\r\n");return a==std::string::npos ? std::string() : value.substr(a,b-a+1);};

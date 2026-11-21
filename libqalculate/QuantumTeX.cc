@@ -1144,6 +1144,11 @@ class TeXReader {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
    size_t after=input.find_first_not_of(" \t\r\n",pos);
    if(before!=std::string::npos && after!=std::string::npos && input[before]==',' && input[after]==',')return "...";
+   if(preceding && before!=std::string::npos && after!=std::string::npos &&
+      (input[before]=='0' || input[before]=='1') && input[after]==input[before]) {
+    size_t open=preceding->find_last_of("|<");
+    if(open!=std::string::npos && trim(preceding->substr(open+1))==std::string(1,input[before]))return "...";
+   }
   }
   if(name=="cdots") {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2),after=input.find_first_not_of(" \t\r\n",pos);
