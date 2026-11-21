@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
   "source_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
-  "worker_sha256": "274e4af08780bfeb5fe271c17deab1e05cc1d893f0eb339592b685845b3bc3f8",
-  "revision": "472d50c3",
+  "worker_sha256": "f03758a0cb38efa81ef5c09173829f1ec16a92228adf7e334fec86cdac7ca375",
+  "revision": "97492a27",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 30,
-    "diagnostic": 7
+    "exact": 33,
+    "diagnostic": 4
   },
   "figures": [
     {
@@ -230,8 +230,9 @@
       "start": 7704,
       "end": 7739,
       "literal": "$$\nx^TQx = \\sum_{ij}Q_{ij}x_ix_j\n$$",
-      "status": "diagnostic",
-      "message": "A finite sum/product requires lower and upper bounds at byte 19"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM076-b057ac80-M019",
@@ -239,8 +240,9 @@
       "start": 7782,
       "end": 7889,
       "literal": "$$\n\\sum_{ij}Q_{ij}(\\frac{1-z_i}{2})(\\frac{1-z_j}{2}) = \\sum_{ij}\\frac{Q_{ij}}{4}(1 - z_i - z_j + z_iz_j)\n$$",
-      "status": "diagnostic",
-      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+      "status": "exact",
+      "display": "qpairtotal('Q', 'z', qmul(qmul(\"weight\", 0.5 ⋅ qsub(1, \"leftword\")), 0.5 ⋅ qsub(1, \"rightword\")), \"weight\", \"leftword\", \"rightword\") − qpairtotal('Q', 'z', qmul(0.25 \"weight\", qadd(qsub(qsub(1, \"leftword\"), \"rightword\"), qmul(\"leftword\", \"rightword\"))), \"weight\", \"leftword\", \"rightword\") = 0",
+      "copy": "(qpairtotal('Q', 'z', qmul(qmul(\"weight\", qsub(1, \"leftword\") ∕ 2), qsub(1, \"rightword\") ∕ 2), \"weight\", \"leftword\", \"rightword\") − qpairtotal('Q', 'z', qmul(\"weight\" ∕ 4, qadd(qsub(qsub(1, \"leftword\"), \"rightword\"), qmul(\"leftword\", \"rightword\"))), \"weight\", \"leftword\", \"rightword\"))==(0)"
     },
     {
       "id": "IBM076-b057ac80-M020",
@@ -248,8 +250,9 @@
       "start": 7928,
       "end": 8028,
       "literal": "$$\n\\sum_{ij}\\frac{Q_{ij}}{4}z_iz_j - \\frac{Q_{ij}}{4}z_i - \\frac{Q_{ij}}{4}z_j + \\frac{Q_{ij}}{4}\n$$",
-      "status": "diagnostic",
-      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+      "status": "exact",
+      "display": "qpairtotal('Q', 'z', qadd(qsub(qsub(qmul(qmul(0.25 \"weight\", \"leftword\"), \"rightword\"), qmul(0.25 \"weight\", \"leftword\")), qmul(0.25 \"weight\", \"rightword\")), 0.25 \"weight\"), \"weight\", \"leftword\", \"rightword\")",
+      "copy": "qpairtotal('Q','z',qadd(qsub(qsub(qmul(qmul(\"weight\" ∕ 4,\"leftword\"),\"rightword\"),qmul(\"weight\" ∕ 4,\"leftword\")),qmul(\"weight\" ∕ 4,\"rightword\")),\"weight\" ∕ 4),\"weight\",\"leftword\",\"rightword\")"
     },
     {
       "id": "IBM076-b057ac80-M021",
