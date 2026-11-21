@@ -1,0 +1,399 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/skqd.ipynb",
+  "source_sha256": "3ed488d16f7bab398f07d32f95853e1767c1de384095e3712598af6309d09f94",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "mode": "Quantum notation",
+  "markdown_cells": 21,
+  "code_cells": 15,
+  "summary": {
+    "exact": 32,
+    "diagnostic": 7
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM095-3ed488d1-M001",
+      "cell": 1,
+      "start": 1125,
+      "end": 1140,
+      "literal": "$\\mathcal{K}^r$",
+      "status": "exact",
+      "display": "K^r",
+      "copy": "'K'^'r'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M002",
+      "cell": 1,
+      "start": 1150,
+      "end": 1153,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M003",
+      "cell": 1,
+      "start": 1236,
+      "end": 1239,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M004",
+      "cell": 1,
+      "start": 1247,
+      "end": 1252,
+      "literal": "$r-1$",
+      "status": "exact",
+      "display": "r − 1",
+      "copy": "'r' − 1"
+    },
+    {
+      "id": "IBM095-3ed488d1-M005",
+      "cell": 1,
+      "start": 1278,
+      "end": 1295,
+      "literal": "$\\vert v \\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM095-3ed488d1-M006",
+      "cell": 1,
+      "start": 1298,
+      "end": 1422,
+      "literal": "$$\n\\mathcal{K}^r = \\left\\{ \\vert v \\rangle, A \\vert v \\rangle, A^2 \\vert v \\rangle, ..., A^{r-1} \\vert v \\rangle \\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 120"
+    },
+    {
+      "id": "IBM095-3ed488d1-M007",
+      "cell": 1,
+      "start": 1438,
+      "end": 1441,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M008",
+      "cell": 1,
+      "start": 1461,
+      "end": 1464,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM095-3ed488d1-M009",
+      "cell": 1,
+      "start": 1525,
+      "end": 1540,
+      "literal": "$\\mathcal{K}_P$",
+      "status": "exact",
+      "display": "\"K_P\"",
+      "copy": "\"K_P\""
+    },
+    {
+      "id": "IBM095-3ed488d1-M010",
+      "cell": 1,
+      "start": 1560,
+      "end": 1563,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M011",
+      "cell": 1,
+      "start": 1624,
+      "end": 1639,
+      "literal": "$U=e^{-iH(dt)}$",
+      "status": "exact",
+      "display": "U = e^[−(0.5i · √(2) · d · t), −(0.5i · √(2) · d · t); −(0.5i · √(2) · d · t), 0.5i · √(2) · d · t]",
+      "copy": "('U')==((e)^(matrix(2,2,[−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2])))"
+    },
+    {
+      "id": "IBM095-3ed488d1-M012",
+      "cell": 1,
+      "start": 1694,
+      "end": 1709,
+      "literal": "$\\mathcal{K}_U$",
+      "status": "exact",
+      "display": "\"K_U\"",
+      "copy": "\"K_U\""
+    },
+    {
+      "id": "IBM095-3ed488d1-M013",
+      "cell": 1,
+      "start": 1791,
+      "end": 1794,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM095-3ed488d1-M014",
+      "cell": 1,
+      "start": 1870,
+      "end": 1887,
+      "literal": "$U = e^{-iH(dt)}$",
+      "status": "exact",
+      "display": "U = e^[−(0.5i · √(2) · d · t), −(0.5i · √(2) · d · t); −(0.5i · √(2) · d · t), 0.5i · √(2) · d · t]",
+      "copy": "('U')==((e)^(matrix(2,2,[−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2,(i ⋅ √(2) ⋅ 'd' ⋅ 't') ∕ 2])))"
+    },
+    {
+      "id": "IBM095-3ed488d1-M015",
+      "cell": 1,
+      "start": 2019,
+      "end": 2022,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M016",
+      "cell": 1,
+      "start": 2056,
+      "end": 2077,
+      "literal": "$U^k = e^{-iH(k dt)}$",
+      "status": "exact",
+      "display": "U^k = e^[−(0.5i · √(2) · d · k · t), −(0.5i · √(2) · d · k · t); −(0.5i · √(2) · d · k · t), 0.5i · √(2) · d · k · t]",
+      "copy": "('U'^'k')==((e)^(matrix(2,2,[−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2])))"
+    },
+    {
+      "id": "IBM095-3ed488d1-M017",
+      "cell": 1,
+      "start": 2084,
+      "end": 2109,
+      "literal": "$k = 0, 1, 2, ..., (r-1)$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM095-3ed488d1-M018",
+      "cell": 1,
+      "start": 2112,
+      "end": 2250,
+      "literal": "$$\n\\mathcal{K}_U^r = \\left\\{ \\vert \\psi \\rangle, U \\vert \\psi \\rangle, U^2 \\vert \\psi \\rangle, ..., U^{r-1} \\vert \\psi \\rangle \\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 134"
+    },
+    {
+      "id": "IBM095-3ed488d1-M019",
+      "cell": 3,
+      "start": 95,
+      "end": 103,
+      "literal": "$L = 22$",
+      "status": "exact",
+      "display": "L = 22",
+      "copy": "('L')==(22)"
+    },
+    {
+      "id": "IBM095-3ed488d1-M020",
+      "cell": 3,
+      "start": 148,
+      "end": 226,
+      "literal": "$$\n    H = \\sum_{i, j}^{N} J_{xy} (X_{i} X_{j} + Y_{i} Y_{j}) + Z_{i} Z_{j}\n$$",
+      "status": "diagnostic",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 25"
+    },
+    {
+      "id": "IBM095-3ed488d1-M021",
+      "cell": 5,
+      "start": 97,
+      "end": 100,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M022",
+      "cell": 5,
+      "start": 117,
+      "end": 121,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M023",
+      "cell": 5,
+      "start": 164,
+      "end": 181,
+      "literal": "$\\vert v \\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM095-3ed488d1-M024",
+      "cell": 5,
+      "start": 397,
+      "end": 420,
+      "literal": "$U^{k}=e^{-iH(k * dt)}$",
+      "status": "exact",
+      "display": "U^k = e^[−(0.5i · √(2) · d · k · t), −(0.5i · √(2) · d · k · t); −(0.5i · √(2) · d · k · t), 0.5i · √(2) · d · k · t]",
+      "copy": "('U'^'k')==((e)^(matrix(2,2,[−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,−(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2,(i ⋅ √(2) ⋅ 'd' ⋅ 'k' ⋅ 't') ∕ 2])))"
+    },
+    {
+      "id": "IBM095-3ed488d1-M025",
+      "cell": 5,
+      "start": 422,
+      "end": 445,
+      "literal": "$k = 0, 1, 2, ..., r-1$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM095-3ed488d1-M026",
+      "cell": 5,
+      "start": 471,
+      "end": 474,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M027",
+      "cell": 5,
+      "start": 481,
+      "end": 485,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M028",
+      "cell": 5,
+      "start": 503,
+      "end": 506,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M029",
+      "cell": 5,
+      "start": 694,
+      "end": 697,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M030",
+      "cell": 5,
+      "start": 806,
+      "end": 809,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM095-3ed488d1-M031",
+      "cell": 5,
+      "start": 942,
+      "end": 975,
+      "literal": "$\\pi / \\vert \\vert H \\vert \\vert$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM095-3ed488d1-M032",
+      "cell": 5,
+      "start": 1085,
+      "end": 1089,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M033",
+      "cell": 5,
+      "start": 1262,
+      "end": 1266,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M034",
+      "cell": 5,
+      "start": 1366,
+      "end": 1370,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM095-3ed488d1-M035",
+      "cell": 5,
+      "start": 1435,
+      "end": 1446,
+      "literal": "$dt = 0.15$",
+      "status": "exact",
+      "display": "d = 3 / (20 · t) and t ≠ 0",
+      "copy": "(('d')==(3 ∕ (20 ⋅ 't')) and ('t')!=(0))"
+    },
+    {
+      "id": "IBM095-3ed488d1-M036",
+      "cell": 5,
+      "start": 1715,
+      "end": 1718,
+      "literal": "$6$",
+      "status": "exact",
+      "display": "6",
+      "copy": "6"
+    },
+    {
+      "id": "IBM095-3ed488d1-M037",
+      "cell": 7,
+      "start": 40,
+      "end": 60,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM095-3ed488d1-M038",
+      "cell": 7,
+      "start": 179,
+      "end": 213,
+      "literal": "$\\vert ...101...010...101 \\rangle$",
+      "status": "diagnostic",
+      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+    },
+    {
+      "id": "IBM095-3ed488d1-M039",
+      "cell": 31,
+      "start": 302,
+      "end": 305,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    }
+  ]
+}

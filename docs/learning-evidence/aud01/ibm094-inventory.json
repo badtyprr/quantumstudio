@@ -1,0 +1,1567 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
+  "source_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "mode": "Quantum notation",
+  "markdown_cells": 47,
+  "code_cells": 11,
+  "summary": {
+    "exact": 114,
+    "diagnostic": 37
+  },
+  "figures": [
+    {
+      "cell": 9,
+      "start": 0,
+      "end": 229,
+      "alt": "A circuit diagram showing 8 qubits, 4 called alpha orbitals and 4 called beta orbitals. The top two alpha and the top two beta have a \"not\" gate.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig1.avif"
+    },
+    {
+      "cell": 11,
+      "start": 0,
+      "end": 210,
+      "alt": "A circuit diagram showing that the UCJ circuit can be broken down into rotation layers and a diagonal Coulomb evolution layer.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig2.avif"
+    },
+    {
+      "cell": 13,
+      "start": 0,
+      "end": 244,
+      "alt": "A circuit diagram showing 4 alpha orbital qubits and 4 beta orbital qubits. The circuits start with R-Z gates, and then have a series of Given's rotation gates.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig3.avif"
+    },
+    {
+      "cell": 15,
+      "start": 0,
+      "end": 172,
+      "alt": "A circuit diagram showing linearly-coupled qubits and corresponding alpha/beta circuits.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig4.avif"
+    },
+    {
+      "cell": 17,
+      "start": 0,
+      "end": 156,
+      "alt": "A circuit diagram showing 4 alpha qubits connected to the 4 beta qubits.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig5.avif"
+    },
+    {
+      "cell": 19,
+      "start": 0,
+      "end": 192,
+      "alt": "A circuit diagram showing 4 alpha qubits and 4 beta qubits each with R-Z gates, followed by two-qubit gates.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig6.avif"
+    },
+    {
+      "cell": 21,
+      "start": 0,
+      "end": 312,
+      "alt": "Connectivity diagrams for different qubit layouts. They show qubits arranged on a square grid, a hexagonal lattice, a heavy-hex lattice (hexagonal lattice with one extra qubit along each side of the hexagon), and a linear chain.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig7.avif"
+    },
+    {
+      "cell": 27,
+      "start": 810,
+      "end": 949,
+      "alt": "A zig-zag pattern traced out along a heavy-hex lattice.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig8.avif"
+    },
+    {
+      "cell": 30,
+      "start": 0,
+      "end": 128,
+      "alt": "A diagram showing layers of the LUCJ ansatz.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig9.avif"
+    },
+    {
+      "cell": 41,
+      "start": 93,
+      "end": 282,
+      "alt": "A flow chart showing how sampled states are used to determine ground state eigenvalues and eigenvectors.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig10.avif"
+    },
+    {
+      "cell": 45,
+      "start": 0,
+      "end": 121,
+      "alt": "A diagram of configuration recovery.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/sqd2/sqd2-fig11.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM094-37477fb6-M001",
+      "cell": 1,
+      "start": 148,
+      "end": 151,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM094-37477fb6-M002",
+      "cell": 1,
+      "start": 282,
+      "end": 287,
+      "literal": "$N_2$",
+      "status": "exact",
+      "display": "\"N_2\"",
+      "copy": "\"N_2\""
+    },
+    {
+      "id": "IBM094-37477fb6-M003",
+      "cell": 4,
+      "start": 49,
+      "end": 293,
+      "literal": "$$\n\\hat{H} = \\sum_{ \\substack{pr\\\\\\sigma} } h_{pr} \\, \\hat{a}^\\dagger_{p\\sigma} \\hat{a}_{r\\sigma}\n+\n\\sum_{ \\substack{prqs\\\\\\sigma\\tau} }\n\\frac{(pr|qs)}{2} \\,\n\\hat{a}^\\dagger_{p\\sigma}\n\\hat{a}^\\dagger_{q\\tau}\n\\hat{a}_{s\\tau}\n\\hat{a}_{r\\sigma}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\substack at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M004",
+      "cell": 4,
+      "start": 295,
+      "end": 322,
+      "literal": "$\\hat{a}^\\dagger_{p\\sigma}$",
+      "status": "exact",
+      "display": "\"_pσ\" · a",
+      "copy": "\"_pσ\" ⋅ 'a'"
+    },
+    {
+      "id": "IBM094-37477fb6-M005",
+      "cell": 4,
+      "start": 323,
+      "end": 342,
+      "literal": "$\\hat{a}_{p\\sigma}$",
+      "status": "exact",
+      "display": "\"a_pσ\"",
+      "copy": "\"a_pσ\""
+    },
+    {
+      "id": "IBM094-37477fb6-M006",
+      "cell": 4,
+      "start": 411,
+      "end": 414,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM094-37477fb6-M007",
+      "cell": 4,
+      "start": 449,
+      "end": 457,
+      "literal": "$\\sigma$",
+      "status": "exact",
+      "display": "'σ'",
+      "copy": "'σ'"
+    },
+    {
+      "id": "IBM094-37477fb6-M008",
+      "cell": 4,
+      "start": 459,
+      "end": 467,
+      "literal": "$h_{pr}$",
+      "status": "exact",
+      "display": "\"h_pr\"",
+      "copy": "\"h_pr\""
+    },
+    {
+      "id": "IBM094-37477fb6-M009",
+      "cell": 4,
+      "start": 472,
+      "end": 481,
+      "literal": "$(pr|qs)$",
+      "status": "diagnostic",
+      "message": "Unclosed ket; use |0> or |0⟩."
+    },
+    {
+      "id": "IBM094-37477fb6-M010",
+      "cell": 6,
+      "start": 376,
+      "end": 384,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M011",
+      "cell": 6,
+      "start": 423,
+      "end": 430,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M012",
+      "cell": 6,
+      "start": 737,
+      "end": 745,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M013",
+      "cell": 6,
+      "start": 800,
+      "end": 807,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M014",
+      "cell": 6,
+      "start": 831,
+      "end": 836,
+      "literal": "$N_2$",
+      "status": "exact",
+      "display": "\"N_2\"",
+      "copy": "\"N_2\""
+    },
+    {
+      "id": "IBM094-37477fb6-M015",
+      "cell": 6,
+      "start": 872,
+      "end": 876,
+      "literal": "$16$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM094-37477fb6-M016",
+      "cell": 6,
+      "start": 904,
+      "end": 908,
+      "literal": "$16$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM094-37477fb6-M017",
+      "cell": 6,
+      "start": 909,
+      "end": 917,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M018",
+      "cell": 6,
+      "start": 920,
+      "end": 924,
+      "literal": "$16$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM094-37477fb6-M019",
+      "cell": 6,
+      "start": 925,
+      "end": 932,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M020",
+      "cell": 6,
+      "start": 935,
+      "end": 939,
+      "literal": "$32$",
+      "status": "exact",
+      "display": "32",
+      "copy": "32"
+    },
+    {
+      "id": "IBM094-37477fb6-M021",
+      "cell": 6,
+      "start": 977,
+      "end": 981,
+      "literal": "$32$",
+      "status": "exact",
+      "display": "32",
+      "copy": "32"
+    },
+    {
+      "id": "IBM094-37477fb6-M022",
+      "cell": 6,
+      "start": 1368,
+      "end": 1371,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM094-37477fb6-M023",
+      "cell": 6,
+      "start": 1448,
+      "end": 1451,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM094-37477fb6-M024",
+      "cell": 6,
+      "start": 1602,
+      "end": 1607,
+      "literal": "$N_2$",
+      "status": "exact",
+      "display": "\"N_2\"",
+      "copy": "\"N_2\""
+    },
+    {
+      "id": "IBM094-37477fb6-M025",
+      "cell": 6,
+      "start": 1621,
+      "end": 1624,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM094-37477fb6-M026",
+      "cell": 6,
+      "start": 1634,
+      "end": 1642,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M027",
+      "cell": 6,
+      "start": 1648,
+      "end": 1651,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM094-37477fb6-M028",
+      "cell": 6,
+      "start": 1663,
+      "end": 1670,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M029",
+      "cell": 6,
+      "start": 1720,
+      "end": 1728,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M030",
+      "cell": 6,
+      "start": 1733,
+      "end": 1740,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M031",
+      "cell": 6,
+      "start": 1765,
+      "end": 1776,
+      "literal": "$1\\text{s}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 10"
+    },
+    {
+      "id": "IBM094-37477fb6-M032",
+      "cell": 6,
+      "start": 1786,
+      "end": 1791,
+      "literal": "$N_2$",
+      "status": "exact",
+      "display": "\"N_2\"",
+      "copy": "\"N_2\""
+    },
+    {
+      "id": "IBM094-37477fb6-M033",
+      "cell": 8,
+      "start": 475,
+      "end": 478,
+      "literal": "$L$",
+      "status": "exact",
+      "display": "L",
+      "copy": "'L'"
+    },
+    {
+      "id": "IBM094-37477fb6-M034",
+      "cell": 8,
+      "start": 524,
+      "end": 638,
+      "literal": "$$\n|\\psi\\rangle = \\prod_{\\mu=1}^{L}{(e^{K^{\\mu}} \\times {e^{iJ^{\\mu}}} \\times {e^{-K^{\\mu}}})} |\\Phi_{0}\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 27"
+    },
+    {
+      "id": "IBM094-37477fb6-M035",
+      "cell": 8,
+      "start": 647,
+      "end": 671,
+      "literal": "$\\vert \\Phi_{0} \\rangle$",
+      "status": "exact",
+      "display": "|Φ_0⟩",
+      "copy": "qketstate(\"Φ_0\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M036",
+      "cell": 10,
+      "start": 40,
+      "end": 107,
+      "literal": "${(e^{K^{(\\mu)}} \\times {e^{iJ^{(\\mu)}}} \\times {e^{-K^{(\\mu)}}})}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 13"
+    },
+    {
+      "id": "IBM094-37477fb6-M037",
+      "cell": 10,
+      "start": 150,
+      "end": 166,
+      "literal": "$e^{iJ^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M038",
+      "cell": 10,
+      "start": 201,
+      "end": 216,
+      "literal": "$e^{K^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 11"
+    },
+    {
+      "id": "IBM094-37477fb6-M039",
+      "cell": 10,
+      "start": 221,
+      "end": 237,
+      "literal": "$e^{-K^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M040",
+      "cell": 12,
+      "start": 55,
+      "end": 63,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M041",
+      "cell": 12,
+      "start": 74,
+      "end": 81,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M042",
+      "cell": 12,
+      "start": 176,
+      "end": 183,
+      "literal": "$R_{z}$",
+      "status": "exact",
+      "display": "\"R_z\"",
+      "copy": "\"R_z\""
+    },
+    {
+      "id": "IBM094-37477fb6-M043",
+      "cell": 12,
+      "start": 248,
+      "end": 257,
+      "literal": "$XX + YY$",
+      "status": "exact",
+      "display": "[2, 0; 0, 2]",
+      "copy": "matrix(2,2,[2,0,0,2])"
+    },
+    {
+      "id": "IBM094-37477fb6-M044",
+      "cell": 14,
+      "start": 4,
+      "end": 20,
+      "literal": "$e^{iJ^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M045",
+      "cell": 14,
+      "start": 132,
+      "end": 164,
+      "literal": "$e^{iJ_{\\alpha \\alpha}^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M046",
+      "cell": 14,
+      "start": 169,
+      "end": 199,
+      "literal": "$e^{iJ_{\\beta \\beta}^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 26"
+    },
+    {
+      "id": "IBM094-37477fb6-M047",
+      "cell": 14,
+      "start": 242,
+      "end": 273,
+      "literal": "$e^{iJ_{\\alpha \\beta}^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 27"
+    },
+    {
+      "id": "IBM094-37477fb6-M048",
+      "cell": 14,
+      "start": 295,
+      "end": 311,
+      "literal": "$e^{iJ^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M049",
+      "cell": 14,
+      "start": 344,
+      "end": 358,
+      "literal": "$U_{nn}(\\phi)$",
+      "status": "exact",
+      "display": "'_' · n² · U · 'φ'",
+      "copy": "'_' ⋅ n² ⋅ 'U' ⋅ 'φ'"
+    },
+    {
+      "id": "IBM094-37477fb6-M050",
+      "cell": 14,
+      "start": 383,
+      "end": 397,
+      "literal": "$U_{nn}(\\phi)$",
+      "status": "exact",
+      "display": "'_' · n² · U · 'φ'",
+      "copy": "'_' ⋅ n² ⋅ 'U' ⋅ 'φ'"
+    },
+    {
+      "id": "IBM094-37477fb6-M051",
+      "cell": 14,
+      "start": 437,
+      "end": 461,
+      "literal": "$R_{ZZ}(\\frac{\\phi}{2})$",
+      "status": "exact",
+      "display": "[1 ∕ e^(0.25i'φ'), 0, 0, 0; 0, e^(0.25i'φ'), 0, 0; 0, 0, e^(0.25i'φ'), 0; 0, 0, 0, 1 ∕ e^(0.25i'φ')]",
+      "copy": "matrix(4,4,[1 ∕ e^((i'φ') ∕ 4),0,0,0,0,e^((i'φ') ∕ 4),0,0,0,0,e^((i'φ') ∕ 4),0,0,0,0,1 ∕ e^((i'φ') ∕ 4)])"
+    },
+    {
+      "id": "IBM094-37477fb6-M052",
+      "cell": 14,
+      "start": 496,
+      "end": 517,
+      "literal": "$Rz(-\\frac{\\phi}{2})$",
+      "status": "exact",
+      "display": "[e^(0.25i'φ'), 0; 0, 1 ∕ e^(0.25i'φ')]",
+      "copy": "matrix(2,2,[e^((i'φ') ∕ 4),0,0,1 ∕ e^((i'φ') ∕ 4)])"
+    },
+    {
+      "id": "IBM094-37477fb6-M053",
+      "cell": 14,
+      "start": 578,
+      "end": 597,
+      "literal": "$J_{\\alpha \\alpha}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'α'",
+      "copy": "\"J_α\" ⋅ 'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M054",
+      "cell": 14,
+      "start": 602,
+      "end": 619,
+      "literal": "$J_{\\beta \\beta}$",
+      "status": "exact",
+      "display": "\"J_β\" ⋅ 'β'",
+      "copy": "\"J_β\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M055",
+      "cell": 14,
+      "start": 626,
+      "end": 634,
+      "literal": "$U_{nn}$",
+      "status": "exact",
+      "display": "\"U_nn\"",
+      "copy": "\"U_nn\""
+    },
+    {
+      "id": "IBM094-37477fb6-M056",
+      "cell": 14,
+      "start": 849,
+      "end": 881,
+      "literal": "$e^{iJ_{\\alpha \\alpha}^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M057",
+      "cell": 14,
+      "start": 886,
+      "end": 916,
+      "literal": "$e^{iJ_{\\beta \\beta}^{(\\mu)}}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mu at byte 26"
+    },
+    {
+      "id": "IBM094-37477fb6-M058",
+      "cell": 14,
+      "start": 928,
+      "end": 935,
+      "literal": "$N = 4$",
+      "status": "exact",
+      "display": "N = 4",
+      "copy": "('N')==(4)"
+    },
+    {
+      "id": "IBM094-37477fb6-M059",
+      "cell": 14,
+      "start": 1225,
+      "end": 1228,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM094-37477fb6-M060",
+      "cell": 16,
+      "start": 10,
+      "end": 28,
+      "literal": "$J_{\\alpha \\beta}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'β'",
+      "copy": "\"J_α\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M061",
+      "cell": 16,
+      "start": 126,
+      "end": 135,
+      "literal": "$0\\alpha$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM094-37477fb6-M062",
+      "cell": 16,
+      "start": 140,
+      "end": 148,
+      "literal": "$0\\beta$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM094-37477fb6-M063",
+      "cell": 18,
+      "start": 226,
+      "end": 234,
+      "literal": "$U_{nn}$",
+      "status": "exact",
+      "display": "\"U_nn\"",
+      "copy": "\"U_nn\""
+    },
+    {
+      "id": "IBM094-37477fb6-M064",
+      "cell": 18,
+      "start": 309,
+      "end": 328,
+      "literal": "$J_{\\alpha \\alpha}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'α'",
+      "copy": "\"J_α\" ⋅ 'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M065",
+      "cell": 18,
+      "start": 333,
+      "end": 350,
+      "literal": "$J_{\\beta \\beta}$",
+      "status": "exact",
+      "display": "\"J_β\" ⋅ 'β'",
+      "copy": "\"J_β\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M066",
+      "cell": 18,
+      "start": 370,
+      "end": 378,
+      "literal": "$U_{nn}$",
+      "status": "exact",
+      "display": "\"U_nn\"",
+      "copy": "\"U_nn\""
+    },
+    {
+      "id": "IBM094-37477fb6-M067",
+      "cell": 20,
+      "start": 30,
+      "end": 48,
+      "literal": "$J_{\\alpha \\beta}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'β'",
+      "copy": "\"J_α\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M068",
+      "cell": 20,
+      "start": 259,
+      "end": 277,
+      "literal": "$J_{\\alpha \\beta}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'β'",
+      "copy": "\"J_α\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M069",
+      "cell": 20,
+      "start": 390,
+      "end": 398,
+      "literal": "$U_{nn}$",
+      "status": "exact",
+      "display": "\"U_nn\"",
+      "copy": "\"U_nn\""
+    },
+    {
+      "id": "IBM094-37477fb6-M070",
+      "cell": 20,
+      "start": 417,
+      "end": 425,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M071",
+      "cell": 20,
+      "start": 430,
+      "end": 437,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M072",
+      "cell": 20,
+      "start": 507,
+      "end": 515,
+      "literal": "$U_{nn}$",
+      "status": "exact",
+      "display": "\"U_nn\"",
+      "copy": "\"U_nn\""
+    },
+    {
+      "id": "IBM094-37477fb6-M073",
+      "cell": 20,
+      "start": 544,
+      "end": 552,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M074",
+      "cell": 20,
+      "start": 553,
+      "end": 560,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M075",
+      "cell": 20,
+      "start": 597,
+      "end": 600,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM094-37477fb6-M076",
+      "cell": 20,
+      "start": 757,
+      "end": 765,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M077",
+      "cell": 20,
+      "start": 770,
+      "end": 777,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M078",
+      "cell": 20,
+      "start": 951,
+      "end": 959,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M079",
+      "cell": 20,
+      "start": 964,
+      "end": 971,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M080",
+      "cell": 20,
+      "start": 1039,
+      "end": 1047,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM094-37477fb6-M081",
+      "cell": 20,
+      "start": 1056,
+      "end": 1063,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M082",
+      "cell": 20,
+      "start": 1103,
+      "end": 1121,
+      "literal": "$J_{\\alpha \\beta}$",
+      "status": "exact",
+      "display": "\"J_α\" ⋅ 'β'",
+      "copy": "\"J_α\" ⋅ 'β'"
+    },
+    {
+      "id": "IBM094-37477fb6-M083",
+      "cell": 22,
+      "start": 165,
+      "end": 168,
+      "literal": "$L$",
+      "status": "exact",
+      "display": "L",
+      "copy": "'L'"
+    },
+    {
+      "id": "IBM094-37477fb6-M084",
+      "cell": 42,
+      "start": 93,
+      "end": 117,
+      "literal": "$\\tilde{\\mathcal{\\chi}}$",
+      "status": "diagnostic",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M085",
+      "cell": 42,
+      "start": 372,
+      "end": 400,
+      "literal": "$\\tilde{\\mathcal{\\chi}}_{R}$",
+      "status": "diagnostic",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M086",
+      "cell": 42,
+      "start": 568,
+      "end": 587,
+      "literal": "$\\mathcal{S^{(k)}}$",
+      "status": "diagnostic",
+      "message": "Invalid TeX name at byte 11"
+    },
+    {
+      "id": "IBM094-37477fb6-M087",
+      "cell": 42,
+      "start": 623,
+      "end": 626,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM094-37477fb6-M088",
+      "cell": 42,
+      "start": 657,
+      "end": 832,
+      "literal": "$$\nH_{\\mathcal{S}^{(k)}} = P_{\\mathcal{S}^{(k)}} H _{\\mathcal{S}^{(k)}} \\text{ with } P_{\\mathcal{S}^{(k)}} = \\sum_{x \\in \\mathcal{S}^{(k)}} \\vert x \\rangle \\langle x \\vert\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 84"
+    },
+    {
+      "id": "IBM094-37477fb6-M089",
+      "cell": 42,
+      "start": 861,
+      "end": 884,
+      "literal": "$H_{\\mathcal{S}^{(k)}}$",
+      "status": "exact",
+      "display": "H_([1, 0; 0, i]^k)",
+      "copy": "qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M090",
+      "cell": 42,
+      "start": 1175,
+      "end": 1262,
+      "literal": "$$\nH_{\\mathcal{S}^{(k)}} \\vert \\psi^{(k)} \\rangle = E^{(k)} \\vert \\psi^{(k)} \\rangle\n$$",
+      "status": "exact",
+      "display": "H_([1, 0; 0, i]^k) · |'ψ'^k⟩ (dimension unresolved) = E^k · |'ψ'^k⟩ (dimension unresolved)",
+      "copy": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))"
+    },
+    {
+      "id": "IBM094-37477fb6-M091",
+      "cell": 42,
+      "start": 1373,
+      "end": 1383,
+      "literal": "$\\text{n}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM094-37477fb6-M092",
+      "cell": 42,
+      "start": 1699,
+      "end": 1704,
+      "literal": "$N_2$",
+      "status": "exact",
+      "display": "\"N_2\"",
+      "copy": "\"N_2\""
+    },
+    {
+      "id": "IBM094-37477fb6-M093",
+      "cell": 44,
+      "start": 397,
+      "end": 400,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM094-37477fb6-M094",
+      "cell": 44,
+      "start": 406,
+      "end": 411,
+      "literal": "$N_x$",
+      "status": "exact",
+      "display": "\"N_x\"",
+      "copy": "\"N_x\""
+    },
+    {
+      "id": "IBM094-37477fb6-M095",
+      "cell": 44,
+      "start": 442,
+      "end": 447,
+      "literal": "$N_x$",
+      "status": "exact",
+      "display": "\"N_x\"",
+      "copy": "\"N_x\""
+    },
+    {
+      "id": "IBM094-37477fb6-M096",
+      "cell": 44,
+      "start": 459,
+      "end": 462,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM094-37477fb6-M097",
+      "cell": 44,
+      "start": 524,
+      "end": 527,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM094-37477fb6-M098",
+      "cell": 44,
+      "start": 532,
+      "end": 544,
+      "literal": "$N_x \\neq N$",
+      "status": "exact",
+      "display": "N ≠ \"N_x\"",
+      "copy": "('N')!=(\"N_x\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M099",
+      "cell": 44,
+      "start": 707,
+      "end": 718,
+      "literal": "$|N_x - N|$",
+      "status": "exact",
+      "display": "|'N' − \"N_x\"|",
+      "copy": "abs('N' − \"N_x\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M100",
+      "cell": 44,
+      "start": 808,
+      "end": 811,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M101",
+      "cell": 44,
+      "start": 875,
+      "end": 884,
+      "literal": "$N_x < N$",
+      "status": "exact",
+      "display": "N > \"N_x\"",
+      "copy": "('N')>(\"N_x\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M102",
+      "cell": 44,
+      "start": 932,
+      "end": 935,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM094-37477fb6-M103",
+      "cell": 44,
+      "start": 940,
+      "end": 943,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM094-37477fb6-M104",
+      "cell": 44,
+      "start": 997,
+      "end": 1025,
+      "literal": "$|x[i] - avg\\_occupancy[i]|$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 14"
+    },
+    {
+      "id": "IBM094-37477fb6-M105",
+      "cell": 44,
+      "start": 1159,
+      "end": 1353,
+      "literal": "$$\n\\begin{align}\n    w(y) = \\begin{cases}\n\n    \\delta \\frac{y}{h} & \\text{if }  y \\leq h\\\\ \\nonumber\n\n    \\delta + (1 - \\delta) \\frac{y - h}{1 - h} & \\text{if } y > h\n\n\\end{cases}\n\\end{align}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\nonumber at byte 99"
+    },
+    {
+      "id": "IBM094-37477fb6-M106",
+      "cell": 44,
+      "start": 1360,
+      "end": 1363,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM094-37477fb6-M107",
+      "cell": 44,
+      "start": 1437,
+      "end": 1445,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM094-37477fb6-M108",
+      "cell": 44,
+      "start": 1504,
+      "end": 1516,
+      "literal": "$\\delta = 0$",
+      "status": "exact",
+      "display": "'δ' = 0",
+      "copy": "('δ')==(0)"
+    },
+    {
+      "id": "IBM094-37477fb6-M109",
+      "cell": 44,
+      "start": 1518,
+      "end": 1521,
+      "literal": "$w$",
+      "status": "exact",
+      "display": "w",
+      "copy": "'w'"
+    },
+    {
+      "id": "IBM094-37477fb6-M110",
+      "cell": 44,
+      "start": 1558,
+      "end": 1569,
+      "literal": "$\\delta >0$",
+      "status": "exact",
+      "display": "'δ' > 0",
+      "copy": "('δ')>(0)"
+    },
+    {
+      "id": "IBM094-37477fb6-M111",
+      "cell": 44,
+      "start": 1630,
+      "end": 1645,
+      "literal": "$\\delta = 0.01$",
+      "status": "exact",
+      "display": "'δ' = 0.01",
+      "copy": "('δ')==(1 ∕ 100)"
+    },
+    {
+      "id": "IBM094-37477fb6-M112",
+      "cell": 44,
+      "start": 1650,
+      "end": 1655,
+      "literal": "$h =$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 4"
+    },
+    {
+      "id": "IBM094-37477fb6-M113",
+      "cell": 44,
+      "start": 1732,
+      "end": 1739,
+      "literal": "$= N/M$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M114",
+      "cell": 44,
+      "start": 1790,
+      "end": 1793,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M115",
+      "cell": 44,
+      "start": 2081,
+      "end": 2084,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M116",
+      "cell": 44,
+      "start": 2100,
+      "end": 2103,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M117",
+      "cell": 44,
+      "start": 2232,
+      "end": 2235,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M118",
+      "cell": 44,
+      "start": 2332,
+      "end": 2339,
+      "literal": "$N = 2$",
+      "status": "exact",
+      "display": "N = 2",
+      "copy": "('N')==(2)"
+    },
+    {
+      "id": "IBM094-37477fb6-M119",
+      "cell": 44,
+      "start": 2344,
+      "end": 2362,
+      "literal": "$x = |1000\\rangle$",
+      "status": "exact",
+      "display": "[x; x; x; x; x; x; x; x; (x − 1); x; x; x; x; x; x; x] = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "(matrix(16,1,[x,x,x,x,x,x,x,x,x − 1,x,x,x,x,x,x,x]))==(matrix(16,1,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]))"
+    },
+    {
+      "id": "IBM094-37477fb6-M120",
+      "cell": 44,
+      "start": 2364,
+      "end": 2373,
+      "literal": "$N_x = 1$",
+      "status": "exact",
+      "display": "\"N_x\" = 1",
+      "copy": "(\"N_x\")==(1)"
+    },
+    {
+      "id": "IBM094-37477fb6-M121",
+      "cell": 44,
+      "start": 2751,
+      "end": 3055,
+      "literal": "$$\n\\begin{align}\\nonumber\n    \\text{Batch0: } \\vert \\psi \\rangle &= 0.8 \\times \\vert 1001 \\rangle + 0.6 \\times \\vert 0110 \\rangle \\\\ \\nonumber\n    \\text{Batch1: } \\vert \\psi \\rangle &= \\frac{1}{\\sqrt{3}} \\left( \\vert 1001 \\rangle + \\vert 0101 \\rangle + \\vert 0110 \\rangle \\right) \\nonumber\n\\end{align}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\nonumber at byte 24"
+    },
+    {
+      "id": "IBM094-37477fb6-M122",
+      "cell": 44,
+      "start": 3253,
+      "end": 3257,
+      "literal": "$^2$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M123",
+      "cell": 44,
+      "start": 4684,
+      "end": 4708,
+      "literal": "$x = \\vert 1000 \\rangle$",
+      "status": "exact",
+      "display": "[x; x; x; x; x; x; x; x; (x − 1); x; x; x; x; x; x; x] = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "(matrix(16,1,[x,x,x,x,x,x,x,x,x − 1,x,x,x,x,x,x,x]))==(matrix(16,1,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]))"
+    },
+    {
+      "id": "IBM094-37477fb6-M124",
+      "cell": 44,
+      "start": 4813,
+      "end": 4816,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM094-37477fb6-M125",
+      "cell": 44,
+      "start": 4895,
+      "end": 4927,
+      "literal": "$\\vert x[i] - \\text{n}[i] \\vert$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M126",
+      "cell": 44,
+      "start": 5090,
+      "end": 5114,
+      "literal": "$x = \\vert 1000 \\rangle$",
+      "status": "exact",
+      "display": "[x; x; x; x; x; x; x; x; (x − 1); x; x; x; x; x; x; x] = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "(matrix(16,1,[x,x,x,x,x,x,x,x,x − 1,x,x,x,x,x,x,x]))==(matrix(16,1,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]))"
+    },
+    {
+      "id": "IBM094-37477fb6-M127",
+      "cell": 44,
+      "start": 5116,
+      "end": 5131,
+      "literal": "$\\delta = 0.01$",
+      "status": "exact",
+      "display": "'δ' = 0.01",
+      "copy": "('δ')==(1 ∕ 100)"
+    },
+    {
+      "id": "IBM094-37477fb6-M128",
+      "cell": 44,
+      "start": 5133,
+      "end": 5155,
+      "literal": "$h = N/M = 2/4 = 0.50$",
+      "status": "exact",
+      "display": "h = N / M = 1 ∕ 2 = 1 ∕ 2",
+      "copy": "qequalchain(vector('h','N' ∕ 'M',1 ∕ 2,1 ∕ 2))"
+    },
+    {
+      "id": "IBM094-37477fb6-M129",
+      "cell": 44,
+      "start": 5284,
+      "end": 5316,
+      "literal": "$\\vert x[i] - \\text{n}[i] \\vert$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M130",
+      "cell": 44,
+      "start": 5596,
+      "end": 5623,
+      "literal": "$\\vert \\text{1001} \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM094-37477fb6-M131",
+      "cell": 46,
+      "start": 220,
+      "end": 238,
+      "literal": "$\\widetilde{\\chi}$",
+      "status": "exact",
+      "display": "\"χ_tilde\"",
+      "copy": "\"χ_tilde\""
+    },
+    {
+      "id": "IBM094-37477fb6-M132",
+      "cell": 46,
+      "start": 289,
+      "end": 317,
+      "literal": "$\\widetilde{\\chi}_{correct}$",
+      "status": "exact",
+      "display": "\"χ_tilde_correct\"",
+      "copy": "\"χ_tilde_correct\""
+    },
+    {
+      "id": "IBM094-37477fb6-M133",
+      "cell": 46,
+      "start": 334,
+      "end": 364,
+      "literal": "$\\widetilde{\\chi}_{incorrect}$",
+      "status": "exact",
+      "display": "\"χ_tilde_incorrect\"",
+      "copy": "\"χ_tilde_incorrect\""
+    },
+    {
+      "id": "IBM094-37477fb6-M134",
+      "cell": 46,
+      "start": 431,
+      "end": 459,
+      "literal": "$\\widetilde{\\chi}_{correct}$",
+      "status": "exact",
+      "display": "\"χ_tilde_correct\"",
+      "copy": "\"χ_tilde_correct\""
+    },
+    {
+      "id": "IBM094-37477fb6-M135",
+      "cell": 46,
+      "start": 500,
+      "end": 548,
+      "literal": "$(\\mathcal{S}^{(1)}, \\cdots, \\mathcal{S}^{(K)})$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M136",
+      "cell": 46,
+      "start": 1067,
+      "end": 1115,
+      "literal": "$|\\psi^{(1)}\\rangle, \\cdots, |\\psi^{(K)}\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M137",
+      "cell": 46,
+      "start": 1183,
+      "end": 1186,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M138",
+      "cell": 46,
+      "start": 1225,
+      "end": 1228,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M139",
+      "cell": 46,
+      "start": 1286,
+      "end": 1316,
+      "literal": "$\\widetilde{\\chi}_{incorrect}$",
+      "status": "exact",
+      "display": "\"χ_tilde_incorrect\"",
+      "copy": "\"χ_tilde_incorrect\""
+    },
+    {
+      "id": "IBM094-37477fb6-M140",
+      "cell": 46,
+      "start": 1339,
+      "end": 1372,
+      "literal": "$\\widetilde{\\chi}_{correct\\_new}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M141",
+      "cell": 46,
+      "start": 1380,
+      "end": 1499,
+      "literal": "$\\widetilde{\\chi}_{recovered} (\\widetilde{\\chi}_{R}) = \\widetilde{\\chi}_{correct} \\cup \\widetilde{\\chi}_{correct\\_new}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 114"
+    },
+    {
+      "id": "IBM094-37477fb6-M142",
+      "cell": 46,
+      "start": 1570,
+      "end": 1592,
+      "literal": "$\\widetilde{\\chi}_{R}$",
+      "status": "exact",
+      "display": "\"χ_tilde_R\"",
+      "copy": "\"χ_tilde_R\""
+    },
+    {
+      "id": "IBM094-37477fb6-M143",
+      "cell": 46,
+      "start": 1622,
+      "end": 1668,
+      "literal": "$\\mathcal{S}^{(1)}, \\cdots, \\mathcal{S}^{(K)}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M144",
+      "cell": 46,
+      "start": 1758,
+      "end": 1806,
+      "literal": "$|\\psi^{(1)}\\rangle, \\cdots, |\\psi^{(K)}\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M145",
+      "cell": 46,
+      "start": 1872,
+      "end": 1875,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM094-37477fb6-M146",
+      "cell": 53,
+      "start": 157,
+      "end": 166,
+      "literal": "$\\approx$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM094-37477fb6-M147",
+      "cell": 53,
+      "start": 500,
+      "end": 517,
+      "literal": "$\\pm \\approx 1.6$",
+      "status": "diagnostic",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM094-37477fb6-M148",
+      "cell": 53,
+      "start": 699,
+      "end": 704,
+      "literal": "$500$",
+      "status": "exact",
+      "display": "500",
+      "copy": "500"
+    },
+    {
+      "id": "IBM094-37477fb6-M149",
+      "cell": 56,
+      "start": 105,
+      "end": 111,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    },
+    {
+      "id": "IBM094-37477fb6-M150",
+      "cell": 56,
+      "start": 115,
+      "end": 122,
+      "literal": "$10000$",
+      "status": "exact",
+      "display": "10000",
+      "copy": "10000"
+    },
+    {
+      "id": "IBM094-37477fb6-M151",
+      "cell": 56,
+      "start": 136,
+      "end": 142,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    }
+  ]
+}
