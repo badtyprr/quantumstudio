@@ -553,6 +553,7 @@ std::string sampleWordDefinitions(const std::vector<std::string> &lines) {
  }
  return sampleArray(cells,"⋯","⋮","⋱",true);
 }
+std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation);
 std::string indexedMatrix(const std::string &raw,bool tex) {
  const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
  auto rows=indexedParts(raw,tex ? "\\\\" : ";");
@@ -568,6 +569,27 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ // Square block array with one indexed column and zero blocks elsewhere.
+ if(height==width && cells.front()[1]=="0") {
+  size_t sub=cells.front()[0].find('_');
+  if(sub!=std::string::npos) {
+   std::string prefix=cells.front()[0].substr(0,sub+1);
+   for(size_t r=0;r<height;++r) {
+    if(cells[r].size()!=width)invalid();
+    for(size_t c=0;c<width;++c) {
+     if(r==height-1 && c==0)continue;
+     std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
+                          c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : "0";
+     if(cells[r][c]!=expected)invalid();
+    }
+   }
+   if(cells.back()[0].compare(0,prefix.size(),prefix)!=0)invalid();
+   std::string name=quantumTeX(prefix.substr(0,sub))+"_";
+   std::string family=indexedLabelRange(name+"0",name+cells.back()[0].substr(prefix.size()),"qindexedentries(");
+   if(family.empty())invalid();
+   return "qblockcolumn("+family+","+std::to_string(height-2)+")";
+  }
+ }
  // A superscript names the one-based sample row. Subscripts label the
  // bits of that sample in descending order, with zero at the right.
  if(cells[0][0].find('^')!=std::string::npos) {

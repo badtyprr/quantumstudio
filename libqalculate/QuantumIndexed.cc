@@ -1921,6 +1921,31 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qblockcolumn") {
+   MathStructure blocks;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(blocks,raw[0],eo))return 0;
+   if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(blocks.size())) {
+    CALCULATOR->error(true,"A block column must contain its displayed blocks.",NULL);return 0;
+   }
+   size_t width=0;bool pending=false;
+   for(size_t k=0;k<blocks.size();++k) {
+    blocks[k].eval(eo);
+    if(!blocks[k].isMatrix() && blocks[k].containsUnknowns()) {pending=true;continue;}
+    if(!blocks[k].isMatrix() || !blocks[k].rows() || blocks[k].rows()!=blocks[k].columns() ||
+       (width && width!=blocks[k].rows())) {
+     CALCULATOR->error(true,"A block column requires square blocks of equal dimension.",NULL);return 0;
+    }
+    width=blocks[k].rows();
+   }
+   if(pending)return 0;
+   if(blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
+   size_t size=width*blocks.size();out.clearMatrix();out.resizeMatrix(size,size,m_zero);
+   for(size_t k=0;k<blocks.size();++k)for(size_t r=0;r<width;++r) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t c=0;c<width;++c)element(out,k*width+r,c)=element(blocks[k],r,c);
+   }
+   return 1;
+  }
   if(op=="qindexedsum" || op=="qindexedset" || op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
@@ -2520,6 +2545,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
