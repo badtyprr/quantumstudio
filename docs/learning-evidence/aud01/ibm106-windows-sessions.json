@@ -1,0 +1,241 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/instances-and-extensions.ipynb",
+  "notebook_sha256": "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "56d14f32aa01910e75df1e0863ed8b02268d272e50c57e0c0b7a284f2a3ed0d0",
+  "suite": {
+    "passed": true,
+    "checks": 963,
+    "calls": 149,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 95,
+    "restored_identically": 95,
+    "stable_after_text_reentry": 95,
+    "source_diagnostic": 54
+  },
+  "diagnostics": [
+    {
+      "id": "IBM106-ab0d6f7e-M004",
+      "message": "A paired coefficient subscript requires a name at byte 41"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M005",
+      "message": "A paired coefficient subscript requires a name at byte 27"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M007",
+      "message": "A paired coefficient subscript requires a name at byte 41"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M009",
+      "message": "Unsupported TeX control symbol at byte 15"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M011",
+      "message": "A paired coefficient subscript requires a name at byte 37"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M016",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M018",
+      "message": "Invalid decimal number at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M023",
+      "message": "Expected a quantum expression at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M037",
+      "message": "Invalid set entry."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M050",
+      "message": "A paired coefficient subscript requires a name at byte 41"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M051",
+      "message": "A paired coefficient subscript requires a name at byte 27"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M053",
+      "message": "A paired coefficient subscript requires a name at byte 37"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M059",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M061",
+      "message": "Invalid decimal number at byte 13"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M064",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 44"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M066",
+      "message": "Expected a quantum expression at byte 7"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M067",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M068",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M070",
+      "message": "Expected a quantum expression at byte 57"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M071",
+      "message": "Unsupported TeX command: \\vec at byte 166"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M075",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M077",
+      "message": "Unsupported TeX command: \\vec at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M078",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M081",
+      "message": "Unsupported TeX command: \\vec at byte 19"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M083",
+      "message": "Unsupported TeX command: \\vec at byte 167"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M085",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M086",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M088",
+      "message": "Unsupported TeX command: \\vec at byte 45"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M089",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M092",
+      "message": "Unsupported TeX command: \\vec at byte 19"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M095",
+      "message": "Unsupported TeX command: \\vec at byte 113"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M096",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M097",
+      "message": "Unsupported TeX command: \\vec at byte 18"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M099",
+      "message": "Unsupported TeX command: \\vec at byte 11"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M101",
+      "message": "Unsupported TeX command: \\vec at byte 57"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M105",
+      "message": "Unsupported TeX command: \\vec at byte 200"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M107",
+      "message": "A paired coefficient subscript requires a name at byte 41"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M108",
+      "message": "A paired coefficient subscript requires a name at byte 27"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M115",
+      "message": "Unsupported TeX command: \\vec at byte 67"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M119",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M120",
+      "message": "Expected a quantum expression at byte 43"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M122",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M124",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M125",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M126",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M127",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nFinite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M128",
+      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M137",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M138",
+      "message": "Unsupported TeX command: \\max at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M139",
+      "message": "Unsupported TeX command: \\max at byte 8"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M143",
+      "message": "A paired coefficient subscript requires a name at byte 41"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M144",
+      "message": "A paired coefficient subscript requires a name at byte 27"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M146",
+      "message": "Expected a quantum expression at byte 34"
+    },
+    {
+      "id": "IBM106-ab0d6f7e-M148",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

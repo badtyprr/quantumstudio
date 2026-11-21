@@ -42,6 +42,13 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "ee2bde2c607539ab5c8486d074ab30c6f554246452d78a5de08ff1c88a76aa4a": ("IBM101", "variational-algorithms", 52, 1),
+    "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9": ("IBM102", "reference-states", 24, 2),
+    "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238": ("IBM103", "ansaetze-and-variational-forms", 29, 2),
+    "62108930aca4330587cb805357519f56cc57db2e1c651a5d2ad8e529f0a39e58": ("IBM104", "cost-functions", 156, 6),
+    "5441242c22ad4d9d40950aab8abf1d2e6b00fcf3063b76ac3e5f08188b12bb3f": ("IBM105", "optimization-loops", 14, 5),
+    "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec": ("IBM106", "instances-and-extensions", 149, 4),
+    "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0": ("IBM107", "examples-and-applications", 78, 0),
     "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381": ("IBM096", "introduction", 19, 2),
     "4b10863c06d14367e736ad245ac715b4d61f3258e7b887ad6c1c46a43d200707": ("IBM097", "classical-ml-review", 65, 10),
     "09806407d3d3d6c7cc24de5f6ea0fd6a0a101f04b37fb8fcfc7eeaafeb2bc2a9": ("IBM098", "data-encoding", 293, 6),
@@ -164,6 +171,13 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM101": (7,0),
+    "IBM102": (8,4),
+    "IBM103": (14,9),
+    "IBM104": (31,23),
+    "IBM105": (10,6),
+    "IBM106": (26,15),
+    "IBM107": (55,61),
     "IBM096": (7,1),
     "IBM097": (6,0),
     "IBM098": (45,19),
@@ -257,6 +271,8 @@ elif "IBM090" <= lesson <= "IBM095":
     course,chapter = "quantum-diagonalization-algorithms",""
 elif "IBM096" <= lesson <= "IBM100":
     course,chapter = "quantum-machine-learning",""
+elif "IBM101" <= lesson <= "IBM107":
+    course,chapter = "variational-algorithm-design",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")
@@ -268,4 +284,3 @@ if panels:
     report["panels"] = panels
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode())
 print(dict(counts))
-

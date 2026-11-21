@@ -1,0 +1,81 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/examples-and-applications.ipynb",
+  "notebook_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
+  "worker_sha256": "5fada8555e3e6d09e7f01770ddc9771e26544e419ef41163b33af4d3fab9b4b4",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "b39aa933f7eb285f165a79a3e2f18c954d3797af75708f198cf73c9d1154fc4e",
+  "suite": {
+    "passed": true,
+    "checks": 604,
+    "calls": 78,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 64,
+    "restored_identically": 64,
+    "stable_after_text_reentry": 64,
+    "source_diagnostic": 14
+  },
+  "diagnostics": [
+    {
+      "id": "IBM107-0e377720-M015",
+      "message": "Unsupported TeX command: \\vec at byte 170"
+    },
+    {
+      "id": "IBM107-0e377720-M016",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM107-0e377720-M018",
+      "message": "Unsupported TeX command: \\vec at byte 43"
+    },
+    {
+      "id": "IBM107-0e377720-M020",
+      "message": "Unsupported TeX command: \\vec at byte 38"
+    },
+    {
+      "id": "IBM107-0e377720-M021",
+      "message": "Unsupported TeX command: \\vec at byte 76"
+    },
+    {
+      "id": "IBM107-0e377720-M032",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM107-0e377720-M056",
+      "message": "Invalid summation index at byte 66"
+    },
+    {
+      "id": "IBM107-0e377720-M061",
+      "message": "Invalid decimal number at byte 26"
+    },
+    {
+      "id": "IBM107-0e377720-M063",
+      "message": "Unexpected notation at byte 16"
+    },
+    {
+      "id": "IBM107-0e377720-M064",
+      "message": "Unsupported column label in numeric table at byte 51"
+    },
+    {
+      "id": "IBM107-0e377720-M065",
+      "message": "Invalid summation index at byte 67"
+    },
+    {
+      "id": "IBM107-0e377720-M071",
+      "message": "Unsupported TeX command: \\overbrace at byte 29"
+    },
+    {
+      "id": "IBM107-0e377720-M075",
+      "message": "Unexpected notation at byte 49"
+    },
+    {
+      "id": "IBM107-0e377720-M077",
+      "message": "Unsupported TeX command: \\texttt at byte 9"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

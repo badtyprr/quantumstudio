@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/optimization-loops.ipynb",
+  "notebook_sha256": "5441242c22ad4d9d40950aab8abf1d2e6b00fcf3063b76ac3e5f08188b12bb3f",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "0f4eb137723d5da3e39e33133f48ac7b6e5d3231abb866ed079929988646b1f1",
+  "suite": {
+    "passed": true,
+    "checks": 119,
+    "calls": 14,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 13,
+    "restored_identically": 13,
+    "stable_after_text_reentry": 13,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM105-5441242c-M004",
+      "message": "Unsupported TeX control symbol at byte 15"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

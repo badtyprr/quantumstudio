@@ -1,0 +1,33 @@
+{
+  "lesson": 105,
+  "notebook_sha256": "5441242c22ad4d9d40950aab8abf1d2e6b00fcf3063b76ac3e5f08188b12bb3f",
+  "qiskit": "2.6.2",
+  "code_cells": [
+    2,
+    3,
+    4,
+    6,
+    11,
+    13
+  ],
+  "optimizers": {
+    "SLSQP": {
+      "start": 1.68245510396949,
+      "final": -3.9999999964553954,
+      "ground_energy": -4.0,
+      "evaluations": 112
+    },
+    "BFGS": {
+      "start": 1.68245510396949,
+      "final": -3.999999999999782,
+      "ground_energy": -4.0,
+      "evaluations": 144
+    },
+    "COBYLA": {
+      "start": 1.68245510396949,
+      "final": -3.9999999973963356,
+      "ground_energy": -4.0,
+      "evaluations": 114
+    }
+  }
+}

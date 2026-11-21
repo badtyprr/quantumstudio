@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
+  "notebook_sha256": "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "ee321eec986f335595ff40cb1a742a639f17ec7dcd0ec217c962e936d4fd5e07",
+  "suite": {
+    "passed": true,
+    "checks": 209,
+    "calls": 24,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 23,
+    "restored_identically": 23,
+    "stable_after_text_reentry": 23,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM102-98616976-M022",
+      "message": "A reference operator cannot equal a prepared ket. Apply the operator to the all-zero input to compare the two states."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

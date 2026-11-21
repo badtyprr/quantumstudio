@@ -1,0 +1,37 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
+  "notebook_sha256": "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "91b3e8b3b7ebd8c43859f040a5e384815eecb12022badc8dbb6d31ec506dc82b",
+  "suite": {
+    "passed": true,
+    "checks": 240,
+    "calls": 29,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 26,
+    "restored_identically": 26,
+    "stable_after_text_reentry": 26,
+    "source_diagnostic": 3
+  },
+  "diagnostics": [
+    {
+      "id": "IBM103-19874a79-M003",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM103-19874a79-M007",
+      "message": "Unsupported TeX command: \\xrightarrow at byte 40"
+    },
+    {
+      "id": "IBM103-19874a79-M010",
+      "message": "Expected a quantum expression at byte 24"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

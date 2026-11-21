@@ -1,0 +1,536 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+  "source_sha256": "ee2bde2c607539ab5c8486d074ab30c6f554246452d78a5de08ff1c88a76aa4a",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
+  "mode": "Quantum notation",
+  "markdown_cells": 7,
+  "code_cells": 0,
+  "summary": {
+    "exact": 44,
+    "diagnostic": 8
+  },
+  "figures": [
+    {
+      "cell": 1,
+      "start": 31,
+      "end": 264,
+      "alt": "Flow of a variational algorithm showing steps: initialize problem, prepare ansatz, evaluate cost function, optimize parameters.",
+      "path": "/learning/images/courses/variational-algorithm-design/variational-algorithms/variational-workflow.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM101-ee2bde2c-M001",
+      "cell": 2,
+      "start": 1300,
+      "end": 1311,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M002",
+      "cell": 2,
+      "start": 1375,
+      "end": 1389,
+      "literal": "$|\\rho\\rangle$",
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M003",
+      "cell": 2,
+      "start": 1519,
+      "end": 1524,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M004",
+      "cell": 2,
+      "start": 1557,
+      "end": 1586,
+      "literal": "$U_R|0\\rangle = |\\rho\\rangle$",
+      "status": "exact",
+      "display": "qzeroimage(qoperatorref(\"U_R\")) = |ρ_ref⟩",
+      "copy": "qcompare(qzeroimage(qoperatorref(\"U_R\")),qketstate(\"ρ_ref\"),4)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M005",
+      "cell": 2,
+      "start": 1667,
+      "end": 1678,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M006",
+      "cell": 2,
+      "start": 1699,
+      "end": 1725,
+      "literal": "$|\\psi(\\vec\\theta)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M007",
+      "cell": 2,
+      "start": 1763,
+      "end": 1780,
+      "literal": "$U_V(\\vec\\theta)$",
+      "status": "exact",
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M008",
+      "cell": 2,
+      "start": 1980,
+      "end": 2020,
+      "literal": "$U_A(\\vec\\theta) := U_V(\\vec\\theta) U_R$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 24"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M009",
+      "cell": 2,
+      "start": 2129,
+      "end": 2140,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M010",
+      "cell": 2,
+      "start": 2161,
+      "end": 2187,
+      "literal": "$|\\psi(\\vec\\theta)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M011",
+      "cell": 2,
+      "start": 2223,
+      "end": 2535,
+      "literal": "$$\n   \\begin{aligned}\n   |0\\rangle \\xrightarrow{U_R} U_R|0\\rangle\n\n   & = |\\rho\\rangle \\xrightarrow{U_V(\\vec{\\theta})} U_A(\\vec{\\theta})|0\\rangle \\\\[1mm]\n\n   & = U_V(\\vec{\\theta})U_R|0\\rangle \\\\[1mm]\n\n   & = U_V(\\vec{\\theta})|\\rho\\rangle \\\\[1mm]\n\n   & = |\\psi(\\vec{\\theta})\\rangle \\\\[1mm]\n\n   \\end{aligned}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\xrightarrow at byte 46"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M012",
+      "cell": 2,
+      "start": 2617,
+      "end": 2632,
+      "literal": "$C(\\vec\\theta)$",
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ'))",
+      "copy": "qscalarat('C',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M013",
+      "cell": 2,
+      "start": 3226,
+      "end": 3240,
+      "literal": "$\\vec\\theta_0$",
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M014",
+      "cell": 2,
+      "start": 3301,
+      "end": 3329,
+      "literal": "$|\\psi(\\vec\\theta_0)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M015",
+      "cell": 2,
+      "start": 3578,
+      "end": 3592,
+      "literal": "$\\vec\\theta^*$",
+      "status": "exact",
+      "display": "qvectorref(\"θ_star\")",
+      "copy": "qvectorref(\"θ_star\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M016",
+      "cell": 2,
+      "start": 3663,
+      "end": 3720,
+      "literal": "$|\\psi(\\vec\\theta^*)\\rangle = U_A(\\vec\\theta^*)|0\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(\"θ_star\")) = (qvectorref(\"θ_star\") · A · U · '_') ([1; 0])",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(\"θ_star\")),qadjacent(qmul(qmul(qmul('A','U'),'_'),qvectorref(\"θ_star\")),matrix(2,1,vector(1,0))),4)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M017",
+      "cell": 4,
+      "start": 192,
+      "end": 211,
+      "literal": "$\\hat{\\mathcal{H}}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M018",
+      "cell": 4,
+      "start": 459,
+      "end": 542,
+      "literal": "$$\n\\hat{\\mathcal{H}} = \\sum_{k=0}^{N-1} \\lambda_k |\\phi_k\\rangle \\langle \\phi_k|\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=0}^{N − 1} (λ_k |φ_k⟩ · ⟨φ_k|)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\"))),qdag(qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\")))),0,qsub('N',1),\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M019",
+      "cell": 4,
+      "start": 550,
+      "end": 553,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M020",
+      "cell": 4,
+      "start": 600,
+      "end": 613,
+      "literal": "$\\lambda_{k}$",
+      "status": "exact",
+      "display": "\"λ_k\"",
+      "copy": "\"λ_k\""
+    },
+    {
+      "id": "IBM101-ee2bde2c-M021",
+      "cell": 4,
+      "start": 621,
+      "end": 624,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M022",
+      "cell": 4,
+      "start": 659,
+      "end": 662,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M023",
+      "cell": 4,
+      "start": 684,
+      "end": 700,
+      "literal": "$|\\phi_k\\rangle$",
+      "status": "exact",
+      "display": "|φ_k⟩",
+      "copy": "qketstate(\"φ_k\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M024",
+      "cell": 4,
+      "start": 877,
+      "end": 937,
+      "literal": "$\\hat{\\mathcal{H}}|\\phi_k\\rangle = \\lambda_k |\\phi_k\\rangle$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] |φ_k⟩ = \"λ_k\" |φ_k⟩",
+      "copy": "qcompare(qadjacent(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),qnamedket(\"φ_k\")),qadjacent(\"λ_k\",qnamedket(\"φ_k\")),4)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M025",
+      "cell": 4,
+      "start": 997,
+      "end": 1011,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M026",
+      "cell": 4,
+      "start": 1022,
+      "end": 1387,
+      "literal": "$$\n\\begin{aligned}\n\\langle \\psi | \\hat{\\mathcal{H}} | \\psi \\rangle\n\n& = \\langle \\psi |\\bigg(\\sum_{k=0}^{N-1} \\lambda_k |\\phi_k\\rangle \\langle \\phi_k|\\bigg) | \\psi \\rangle \\\\[1mm]\n\n& = \\sum_{k=0}^{N-1} \\lambda_k \\langle \\psi |\\phi_k\\rangle \\langle \\phi_k| \\psi \\rangle \\\\[1mm]\n\n& = \\sum_{k=0}^{N-1} \\lambda_k |\\langle \\psi |\\phi_k\\rangle|^2 \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "qequalchain([qmul(qmul(qdag(qnamedket('ψ')), [(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]), qnamedket('ψ'))  qmul(qmul(qdag(qnamedket('ψ')), qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\", \"qboundindex_0\", \"\"), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_0\", \"\"))), qdag(qindexedket(qindexedlabel(\"φ_\", \"qboundindex_0\", \"\")))), 0, qsub('N', 1), \"qboundindex_0\")), qnamedket('ψ'))  qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\", \"qboundindex_1\", \"\"), qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_1\", \"\")))), qmul(qdag(qindexedket(qindexedlabel(\"φ_\", \"qboundindex_1\", \"\"))), qnamedket('ψ'))), 0, qsub('N', 1), \"qboundindex_1\")  qsum(qadjacent(qindexedlabel(\"λ_\", \"qboundindex_2\", \"\"), qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_2\", \"\")))|, 2)), 0, qsub('N', 1), \"qboundindex_2\")])",
+      "copy": "qequalchain(vector(qmul(qmul(qdag(qnamedket('ψ')),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\"))),qdag(qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\")))),0,qsub('N',1),\"qboundindex_0\")),qnamedket('ψ')),qsum(qadjacent(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_1\",\"\"),qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_1\",\"\")))),qmul(qdag(qindexedket(qindexedlabel(\"φ_\",\"qboundindex_1\",\"\"))),qnamedket('ψ'))),0,qsub('N',1),\"qboundindex_1\"),qsum(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_2\",\"\"),qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_2\",\"\")))),2)),0,qsub('N',1),\"qboundindex_2\")))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M027",
+      "cell": 4,
+      "start": 1418,
+      "end": 1454,
+      "literal": "$\\lambda_0\\leq \\lambda_k, \\forall k$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\forall at byte 33"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M028",
+      "cell": 4,
+      "start": 1466,
+      "end": 1793,
+      "literal": "$$\n\\begin{aligned}\n\\langle \\psi | \\hat{\\mathcal{H}} | \\psi \\rangle\n\n& = \\sum_{k=0}^{N-1} \\lambda_k |\\langle \\psi |\\phi_k\\rangle|^2 \\\\[1mm]\n\n& \\geq  \\sum_{k=0}^{N-1} \\lambda_0 |\\langle \\psi |\\phi_k\\rangle|^2 \\\\[1mm]\n\n& = \\lambda_0 \\sum_{k=0}^{N-1} |\\langle \\psi |\\phi_k\\rangle|^2 \\\\[1mm]\n\n& = \\lambda_0 \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "qcompare(qadjacent(\"λ_0\", qsum(qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_2\", \"\")))|, 2), 0, qsub('N', 1), \"qboundindex_2\")), \"λ_0\", 4) && qcompare(qmul(qmul(qdag(qnamedket('ψ')), [(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))]), qnamedket('ψ')), qsum(qadjacent(qindexedlabel(\"λ_\", \"qboundindex_0\", \"\"), qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_0\", \"\")))|, 2)), 0, qsub('N', 1), \"qboundindex_0\"), 4) && qcompare(qsum(qadjacent(\"λ_0\", qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_1\", \"\")))|, 2)), 0, qsub('N', 1), \"qboundindex_1\"), qadjacent(\"λ_0\", qsum(qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_2\", \"\")))|, 2), 0, qsub('N', 1), \"qboundindex_2\")), 4) && qcompare(qsum(qadjacent(qindexedlabel(\"λ_\", \"qboundindex_0\", \"\"), qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_0\", \"\")))|, 2)), 0, qsub('N', 1), \"qboundindex_0\"), qsum(qadjacent(\"λ_0\", qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_1\", \"\")))|, 2)), 0, qsub('N', 1), \"qboundindex_1\"), 3)",
+      "copy": "(qcompare(qadjacent(\"λ_0\",qsum(qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_2\",\"\")))),2),0,qsub('N',1),\"qboundindex_2\")),\"λ_0\",4) and qcompare(qmul(qmul(qdag(qnamedket('ψ')),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket('ψ')),qsum(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\")))),2)),0,qsub('N',1),\"qboundindex_0\"),4) and qcompare(qsum(qadjacent(\"λ_0\",qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_1\",\"\")))),2)),0,qsub('N',1),\"qboundindex_1\"),qadjacent(\"λ_0\",qsum(qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_2\",\"\")))),2),0,qsub('N',1),\"qboundindex_2\")),4) and qcompare(qsum(qadjacent(qindexedlabel(\"λ_\",\"qboundindex_0\",\"\"),qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\")))),2)),0,qsub('N',1),\"qboundindex_0\"),qsum(qadjacent(\"λ_0\",qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_1\",\"\")))),2)),0,qsub('N',1),\"qboundindex_1\"),3))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M029",
+      "cell": 4,
+      "start": 1801,
+      "end": 1834,
+      "literal": "$\\{|\\phi_k\\rangle \\}_{k=0}^{N-1}$",
+      "status": "exact",
+      "display": "\\{|φ_k⟩\\} · _(k = 0)^(N − 1)",
+      "copy": "qadjacent(qset(vector(qnamedket(\"φ_k\"))),qpower(qindexedlabel('_',qcompare('k',0,4),\"\"),qsub('N',1)))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M030",
+      "cell": 4,
+      "start": 1889,
+      "end": 1908,
+      "literal": "$|\\phi_{k} \\rangle$",
+      "status": "exact",
+      "display": "|φ_k⟩",
+      "copy": "qketstate(\"φ_k\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M031",
+      "cell": 4,
+      "start": 1912,
+      "end": 1955,
+      "literal": "$p_k = |\\langle \\psi |\\phi_{k} \\rangle |^2$",
+      "status": "exact",
+      "display": "\"p_k\" = |⟨ψ|φ_k⟩|^2",
+      "copy": "qcompare(\"p_k\",qbars(qmul(qdag(qnamedket('ψ')), qnamedket(\"φ_k\")))²,4)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M032",
+      "cell": 4,
+      "start": 2003,
+      "end": 2079,
+      "literal": "$\\sum_{k=0}^{N-1} |\\langle \\psi |\\phi_k\\rangle|^2 = \\sum_{k=0}^{N-1}p_k = 1$",
+      "status": "exact",
+      "display": "qequalchain([qsum(qpower(|qmul(qdag(qnamedket('ψ')), qindexedket(qindexedlabel(\"φ_\", \"qboundindex_0\", \"\")))|, 2), 0, qsub('N', 1), \"qboundindex_0\")  qsum(qindexedlabel(\"p_\", \"qboundindex_1\", \"\"), 0, qsub('N', 1), \"qboundindex_1\")  1])",
+      "copy": "qequalchain(vector(qsum(qpower(abs(qmul(qdag(qnamedket('ψ')),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\")))),2),0,qsub('N',1),\"qboundindex_0\"),qsum(qindexedlabel(\"p_\",\"qboundindex_1\",\"\"),0,qsub('N',1),\"qboundindex_1\"),1))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M033",
+      "cell": 4,
+      "start": 2183,
+      "end": 2252,
+      "literal": "$$\n\\langle \\psi | \\hat{\\mathcal{H}} | \\psi \\rangle \\geq \\lambda_0.\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 27"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M034",
+      "cell": 4,
+      "start": 2321,
+      "end": 2335,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M035",
+      "cell": 4,
+      "start": 2397,
+      "end": 2423,
+      "literal": "$|\\psi(\\vec\\theta)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M036",
+      "cell": 4,
+      "start": 2458,
+      "end": 2470,
+      "literal": "$\\vec\\theta$",
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M037",
+      "cell": 4,
+      "start": 2566,
+      "end": 2651,
+      "literal": "$C(\\vec\\theta) := \\langle \\psi(\\vec\\theta)|\\hat{\\mathcal{H}}|\\psi(\\vec\\theta)\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 34"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M038",
+      "cell": 4,
+      "start": 2711,
+      "end": 2851,
+      "literal": "$$\n\\min_{\\vec\\theta} C(\\vec\\theta) =\n\\min_{\\vec\\theta} \\langle \\psi(\\vec\\theta)|\\hat{\\mathcal{H}}|\\psi(\\vec\\theta)\\rangle \\geq \\lambda_0.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M039",
+      "cell": 4,
+      "start": 2874,
+      "end": 2889,
+      "literal": "$C(\\vec\\theta)$",
+      "status": "exact",
+      "display": "qscalarat('C', qvectorref('θ'))",
+      "copy": "qscalarat('C',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M040",
+      "cell": 4,
+      "start": 2930,
+      "end": 2941,
+      "literal": "$\\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_0\"",
+      "copy": "\"λ_0\""
+    },
+    {
+      "id": "IBM101-ee2bde2c-M041",
+      "cell": 4,
+      "start": 2972,
+      "end": 2998,
+      "literal": "$|\\psi(\\vec\\theta)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M042",
+      "cell": 4,
+      "start": 3069,
+      "end": 3083,
+      "literal": "$\\vec\\theta^*$",
+      "status": "exact",
+      "display": "qvectorref(\"θ_star\")",
+      "copy": "qvectorref(\"θ_star\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M043",
+      "cell": 4,
+      "start": 3094,
+      "end": 3139,
+      "literal": "$|\\psi(\\vec\\theta^*)\\rangle = |\\phi_0\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(\"θ_star\")) = |φ_0⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(\"θ_star\")),qketstate(\"φ_0\"),4)"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M044",
+      "cell": 5,
+      "start": 72,
+      "end": 86,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M045",
+      "cell": 5,
+      "start": 137,
+      "end": 149,
+      "literal": "$\\vec\\theta$",
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M046",
+      "cell": 5,
+      "start": 227,
+      "end": 243,
+      "literal": "$|\\phi_0\\rangle$",
+      "status": "exact",
+      "display": "|φ_0⟩",
+      "copy": "qketstate(\"φ_0\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M047",
+      "cell": 5,
+      "start": 272,
+      "end": 283,
+      "literal": "$\\lambda_0$",
+      "status": "exact",
+      "display": "\"λ_0\"",
+      "copy": "\"λ_0\""
+    },
+    {
+      "id": "IBM101-ee2bde2c-M048",
+      "cell": 5,
+      "start": 535,
+      "end": 554,
+      "literal": "$\\hat{\\mathcal{H}}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M049",
+      "cell": 5,
+      "start": 557,
+      "end": 696,
+      "literal": "$$\n\\langle \\hat{\\mathcal{H}} \\rangle(\\vec\\theta) :=\n\\langle \\psi(\\vec\\theta) |\\hat{\\mathcal{H}}| \\psi(\\vec\\theta) \\rangle \\geq\n\\lambda_0\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 25"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M050",
+      "cell": 5,
+      "start": 891,
+      "end": 919,
+      "literal": "$E \\geq \\lambda_0 > -\\infty$",
+      "status": "exact",
+      "display": "E ≥ \"λ_0\"",
+      "copy": "('E')>=(\"λ_0\")"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M051",
+      "cell": 5,
+      "start": 945,
+      "end": 965,
+      "literal": "$N\\rightarrow\\infty$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 3"
+    },
+    {
+      "id": "IBM101-ee2bde2c-M052",
+      "cell": 5,
+      "start": 1088,
+      "end": 1107,
+      "literal": "$\\hat{\\mathcal{H}}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    }
+  ]
+}

@@ -1,0 +1,318 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
+  "source_sha256": "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
+  "mode": "Quantum notation",
+  "markdown_cells": 14,
+  "code_cells": 9,
+  "summary": {
+    "exact": 26,
+    "diagnostic": 3
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1327,
+      "end": 1554,
+      "alt": "A diagram showing key components of the ansatz discussion, including heuristic ansaetze and problem-specific ansaetze.",
+      "path": "/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-workflow.svg"
+    },
+    {
+      "cell": 22,
+      "start": 369,
+      "end": 585,
+      "alt": "A circuit diagram showing two unitaries: one preparing the reference state and another preparing the ansatz.",
+      "path": "/learning/images/courses/variational-algorithm-design/ansaetze-and-variational-forms/ansatz-circuit.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM103-19874a79-M001",
+      "cell": 1,
+      "start": 119,
+      "end": 147,
+      "literal": "$|\\psi(\\vec{\\theta})\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM103-19874a79-M002",
+      "cell": 1,
+      "start": 181,
+      "end": 184,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM103-19874a79-M003",
+      "cell": 1,
+      "start": 196,
+      "end": 245,
+      "literal": "$\\vec{\\theta} = (\\theta^0, \\ldots, \\theta^{k-1})$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM103-19874a79-M004",
+      "cell": 4,
+      "start": 79,
+      "end": 93,
+      "literal": "$|\\rho\\rangle$",
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
+    },
+    {
+      "id": "IBM103-19874a79-M005",
+      "cell": 4,
+      "start": 112,
+      "end": 138,
+      "literal": "$|\\psi(\\vec\\theta)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
+    },
+    {
+      "id": "IBM103-19874a79-M006",
+      "cell": 4,
+      "start": 177,
+      "end": 196,
+      "literal": "$U_V(\\vec{\\theta})$",
+      "status": "exact",
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
+    },
+    {
+      "id": "IBM103-19874a79-M007",
+      "cell": 4,
+      "start": 292,
+      "end": 580,
+      "literal": "$$\n\\begin{aligned}\n|0\\rangle \\xrightarrow{U_R} U_R|0\\rangle\n\n& = |\\rho\\rangle \\xrightarrow{U_V(\\vec{\\theta})} U_A(\\vec{\\theta})|0\\rangle \\\\[1mm]\n\n& = U_V(\\vec{\\theta})U_R|0\\rangle \\\\[1mm]\n\n& = U_V(\\vec{\\theta})|\\rho\\rangle \\\\[1mm]\n\n& = |\\psi(\\vec{\\theta})\\rangle \\\\[1mm]\n\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\xrightarrow at byte 40"
+    },
+    {
+      "id": "IBM103-19874a79-M008",
+      "cell": 4,
+      "start": 651,
+      "end": 665,
+      "literal": "$|\\rho\\rangle$",
+      "status": "exact",
+      "display": "|ρ_ref⟩",
+      "copy": "qketstate(\"ρ_ref\")"
+    },
+    {
+      "id": "IBM103-19874a79-M009",
+      "cell": 4,
+      "start": 733,
+      "end": 752,
+      "literal": "$U_V(\\vec{\\theta})$",
+      "status": "exact",
+      "display": "qoperatorat(\"U_V\", qvectorref('θ'))",
+      "copy": "qoperatorat(\"U_V\",qvectorref('θ'))"
+    },
+    {
+      "id": "IBM103-19874a79-M010",
+      "cell": 4,
+      "start": 852,
+      "end": 891,
+      "literal": "$U_A(\\vec\\theta) := U_V(\\vec\\theta)U_R$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 24"
+    },
+    {
+      "id": "IBM103-19874a79-M011",
+      "cell": 4,
+      "start": 1062,
+      "end": 1065,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM103-19874a79-M012",
+      "cell": 4,
+      "start": 1286,
+      "end": 1298,
+      "literal": "$D = 2^{2n}$",
+      "status": "exact",
+      "display": "D = 4^n",
+      "copy": "('D')==(4^n)"
+    },
+    {
+      "id": "IBM103-19874a79-M013",
+      "cell": 5,
+      "start": 220,
+      "end": 228,
+      "literal": "$2^{2n}$",
+      "status": "exact",
+      "display": "4^n",
+      "copy": "4^n"
+    },
+    {
+      "id": "IBM103-19874a79-M014",
+      "cell": 6,
+      "start": 939,
+      "end": 942,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM103-19874a79-M015",
+      "cell": 6,
+      "start": 950,
+      "end": 953,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM103-19874a79-M016",
+      "cell": 6,
+      "start": 2071,
+      "end": 2080,
+      "literal": "$[0,1,2]$",
+      "status": "exact",
+      "display": "[0  1  2]",
+      "copy": "vector(0,1,2)"
+    },
+    {
+      "id": "IBM103-19874a79-M017",
+      "cell": 6,
+      "start": 2082,
+      "end": 2091,
+      "literal": "$[0,2,3]$",
+      "status": "exact",
+      "display": "[0  2  3]",
+      "copy": "vector(0,2,3)"
+    },
+    {
+      "id": "IBM103-19874a79-M018",
+      "cell": 6,
+      "start": 2093,
+      "end": 2102,
+      "literal": "$[4,2,1]$",
+      "status": "exact",
+      "display": "[4  2  1]",
+      "copy": "vector(4,2,1)"
+    },
+    {
+      "id": "IBM103-19874a79-M019",
+      "cell": 6,
+      "start": 2107,
+      "end": 2116,
+      "literal": "$[3,1,0]$",
+      "status": "exact",
+      "display": "[3  1  0]",
+      "copy": "vector(3,1,0)"
+    },
+    {
+      "id": "IBM103-19874a79-M020",
+      "cell": 6,
+      "start": 2121,
+      "end": 2124,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM103-19874a79-M021",
+      "cell": 8,
+      "start": 107,
+      "end": 110,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM103-19874a79-M022",
+      "cell": 8,
+      "start": 149,
+      "end": 152,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM103-19874a79-M023",
+      "cell": 8,
+      "start": 173,
+      "end": 176,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM103-19874a79-M024",
+      "cell": 8,
+      "start": 280,
+      "end": 283,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM103-19874a79-M025",
+      "cell": 8,
+      "start": 326,
+      "end": 329,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM103-19874a79-M026",
+      "cell": 16,
+      "start": 422,
+      "end": 456,
+      "literal": "$ZZII + IZZI + ZIIZ + IZIZ + IIZZ$",
+      "status": "exact",
+      "display": "5 · I^2 · Z^2",
+      "copy": "5 ⋅ 'I'² ⋅ 'Z'²"
+    },
+    {
+      "id": "IBM103-19874a79-M027",
+      "cell": 20,
+      "start": 632,
+      "end": 635,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM103-19874a79-M028",
+      "cell": 20,
+      "start": 703,
+      "end": 711,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM103-19874a79-M029",
+      "cell": 22,
+      "start": 618,
+      "end": 630,
+      "literal": "$\\vec\\theta$",
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
+    }
+  ]
+}

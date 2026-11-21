@@ -1,0 +1,270 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
+  "source_sha256": "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9",
+  "worker_sha256": "068fac56c7621f673bb96aa5bdf365df12c072764302305ce3194baf707bd957",
+  "revision": "ebfa10f50359365e51e7e9364dd81b84518446a1",
+  "mode": "Quantum notation",
+  "markdown_cells": 8,
+  "code_cells": 4,
+  "summary": {
+    "exact": 23,
+    "diagnostic": 1
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 680,
+      "end": 872,
+      "alt": "Diagram of options for references states including default, application-specific, and quantum.",
+      "path": "/learning/images/courses/variational-algorithm-design/reference-states/reference-workflow.svg"
+    },
+    {
+      "cell": 11,
+      "start": 258,
+      "end": 423,
+      "alt": "A circuit diagram of a unitary operator preparing a reference state.",
+      "path": "/learning/images/courses/variational-algorithm-design/reference-states/reference-circuit.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM102-98616976-M001",
+      "cell": 1,
+      "start": 178,
+      "end": 183,
+      "literal": "$U_R$",
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\")",
+      "copy": "qoperatorref(\"U_R\")"
+    },
+    {
+      "id": "IBM102-98616976-M002",
+      "cell": 1,
+      "start": 231,
+      "end": 261,
+      "literal": "$|\\rho\\rangle = U_R |0\\rangle$",
+      "status": "exact",
+      "display": "|ρ_ref⟩ = qzeroimage(qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),qzeroimage(qoperatorref(\"U_R\")),4)"
+    },
+    {
+      "id": "IBM102-98616976-M003",
+      "cell": 1,
+      "start": 531,
+      "end": 534,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM102-98616976-M004",
+      "cell": 1,
+      "start": 558,
+      "end": 581,
+      "literal": "$|0\\rangle^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1; 0]^{⊗ n}",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),n)"
+    },
+    {
+      "id": "IBM102-98616976-M005",
+      "cell": 1,
+      "start": 627,
+      "end": 641,
+      "literal": "$U_R \\equiv I$",
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\") = qidentitylike(qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qoperatorref(\"U_R\"),qidentitylike(qoperatorref(\"U_R\")),4)"
+    },
+    {
+      "id": "IBM102-98616976-M006",
+      "cell": 2,
+      "start": 103,
+      "end": 116,
+      "literal": "$|001\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[0,1,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM102-98616976-M007",
+      "cell": 2,
+      "start": 146,
+      "end": 159,
+      "literal": "$|000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM102-98616976-M008",
+      "cell": 2,
+      "start": 333,
+      "end": 336,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM102-98616976-M009",
+      "cell": 2,
+      "start": 377,
+      "end": 408,
+      "literal": "$|001\\rangle = X_0 |000\\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM102-98616976-M010",
+      "cell": 2,
+      "start": 449,
+      "end": 465,
+      "literal": "$U_R \\equiv X_0$",
+      "status": "exact",
+      "display": "qoperatorref(\"U_R\") = qwireoperatorlike([0  1; 1  0], 0, qoperatorref(\"U_R\"))",
+      "copy": "qcompare(qoperatorref(\"U_R\"),qwireoperatorlike(matrix(2,2,[0,1,1,0]),0,qoperatorref(\"U_R\")),4)"
+    },
+    {
+      "id": "IBM102-98616976-M011",
+      "cell": 2,
+      "start": 502,
+      "end": 535,
+      "literal": "$|\\rho\\rangle \\equiv |001\\rangle$",
+      "status": "exact",
+      "display": "|ρ_ref⟩ = [0; 1; 0; 0; 0; 0; 0; 0]",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),matrix(8,1,[0,1,0,0,0,0,0,0]),4)"
+    },
+    {
+      "id": "IBM102-98616976-M012",
+      "cell": 4,
+      "start": 136,
+      "end": 181,
+      "literal": "$\\frac{1}{\\sqrt{2}}(|100\\rangle+|111\\rangle)$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; (1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(8,1,[0,0,0,0,1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM102-98616976-M013",
+      "cell": 4,
+      "start": 210,
+      "end": 223,
+      "literal": "$|000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM102-98616976-M014",
+      "cell": 4,
+      "start": 322,
+      "end": 325,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM102-98616976-M015",
+      "cell": 4,
+      "start": 327,
+      "end": 332,
+      "literal": "$H_0$",
+      "status": "exact",
+      "display": "\"H_0\"",
+      "copy": "\"H_0\""
+    },
+    {
+      "id": "IBM102-98616976-M016",
+      "cell": 4,
+      "start": 413,
+      "end": 416,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM102-98616976-M017",
+      "cell": 4,
+      "start": 448,
+      "end": 451,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM102-98616976-M018",
+      "cell": 4,
+      "start": 473,
+      "end": 484,
+      "literal": "$CNOT_{01}$",
+      "status": "exact",
+      "display": "\"CNOT_01\"",
+      "copy": "\"CNOT_01\""
+    },
+    {
+      "id": "IBM102-98616976-M019",
+      "cell": 4,
+      "start": 502,
+      "end": 505,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM102-98616976-M020",
+      "cell": 4,
+      "start": 528,
+      "end": 531,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM102-98616976-M021",
+      "cell": 4,
+      "start": 533,
+      "end": 538,
+      "literal": "$X_2$",
+      "status": "exact",
+      "display": "\"X_2\"",
+      "copy": "\"X_2\""
+    },
+    {
+      "id": "IBM102-98616976-M022",
+      "cell": 4,
+      "start": 584,
+      "end": 625,
+      "literal": "$U_{R} \\equiv X_2CNOT_{01}H_0|000\\rangle$",
+      "status": "diagnostic",
+      "message": "A reference operator cannot equal a prepared ket. Apply the operator to the all-zero input to compare the two states."
+    },
+    {
+      "id": "IBM102-98616976-M023",
+      "cell": 4,
+      "start": 654,
+      "end": 719,
+      "literal": "$|\\rho\\rangle \\equiv \\frac{1}{\\sqrt{2}}(|100\\rangle+|111\\rangle)$",
+      "status": "exact",
+      "display": "|ρ_ref⟩ = [0; 0; 0; 0; (1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate(\"ρ_ref\"),matrix(8,1,[0,0,0,0,1 ∕ √(2),0,0,1 ∕ √(2)]),4)"
+    },
+    {
+      "id": "IBM102-98616976-M024",
+      "cell": 9,
+      "start": 373,
+      "end": 376,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    }
+  ]
+}
