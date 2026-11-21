@@ -1153,6 +1153,39 @@ class TeXReader {
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
  // Columns of the linear operator are the printed images of its basis kets.
+ // A gathered list beginning at zero can describe decimal inputs and their
+ // fixed-width binary encodings. Check every printed example before filling
+ // the gap indicated by the vertical ellipsis.
+ std::string binaryEncodingGraph(const std::string &body) {
+  if(body.find("\\mapsto")==std::string::npos || body.find("\\vdots")==std::string::npos)return "";
+  auto rows=indexedParts(body,"\\\\");
+  if(rows.size()<4)return "";
+  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
+  static const std::regex entry(R"(^(0|[1-9][0-9]*)\s*\\mapsto\s*([01]+)$)");
+  size_t width=0;
+  unsigned endpoint=0;
+  for(size_t i=0;i<rows.size();++i) {
+   std::string row=i ? std::regex_replace(rows[i],spacing,"") : rows[i];
+   if(i==rows.size()-2) {
+    if(row!="\\vdots")return "";
+    continue;
+   }
+   std::smatch match;
+   if(!std::regex_match(row,match,entry))return "";
+   std::string bits=match[2].str();
+   if(!i)width=bits.size();
+   if(bits.size()!=width || width>1024)throw std::runtime_error(error("Expected binary labels of one supported width"));
+   unsigned value=0;
+   for(char bit:bits) {
+    value=value*2+(bit-'0');
+    if(value>=1024)throw std::runtime_error(error("A binary encoding graph supports at most 1024 entries"));
+   }
+   if(match[1].str()!=std::to_string(value) || (i+1==rows.size() ? value<i : value!=i))
+    throw std::runtime_error(error("The listed rows must encode consecutive decimal inputs from zero with matching binary labels"));
+   endpoint=value;
+  }
+  return "qsetimage(qtuple(vector(j,qbitlabel(j,"+std::to_string(width)+"))),qindexrange(0,"+std::to_string(endpoint)+"),j)";
+ }
  std::string basisActionTable(const std::string &body,size_t columns) {
   static const std::regex action(R"(^\s*M(?:_\{([0-9]+)\}|_([0-9]))\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
   static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
@@ -1819,6 +1852,14 @@ class TeXReader {
     if(pos<input.size() && input[pos]=='[') {
      if(pos+2>=input.size() || input[pos+2]!=']' || (input[pos+1]!='t' && input[pos+1]!='c' && input[pos+1]!='b'))throw std::runtime_error(error("Alignment position must be t, c, or b"));
      pos+=3;
+    }
+    if(env=="gathered" || env=="gather" || env=="gather*") {
+     std::string close="\\end{"+env+"}";
+     size_t end=input.find(close,pos);
+     if(end!=std::string::npos) {
+      std::string graph=binaryEncodingGraph(input.substr(pos,end-pos));
+      if(!graph.empty()) {pos=end+close.size();return graph;}
+     }
     }
     return read(0,true,env);
    }
