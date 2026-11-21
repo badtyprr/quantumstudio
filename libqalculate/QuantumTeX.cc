@@ -4,6 +4,7 @@
 #include <cctype>
 #include <map>
 #include <regex>
+#include <set>
 #include <stdexcept>
 #include <vector>
 
@@ -2246,6 +2247,33 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  if(s.find("\\text{aq[")!=std::string::npos || s.find("\\text{tq[")!=std::string::npos) {
+   static const std::regex label(R"(^\s*\\text\{((?:aq|tq)\[(?:0|[1-9][0-9]*)\])\}\s*$)");
+   std::smatch match;
+   if(std::regex_match(s,match,label))return "\""+match[1].str()+"\"";
+   const std::string body=trim(s),begin="\\begin{aligned}",end="\\end{aligned}";
+   if(body.size()>=begin.size()+end.size() && body.compare(0,begin.size(),begin)==0 &&
+      body.compare(body.size()-end.size(),end.size(),end)==0) {
+    // A placement is an injective relation. Preserve both index columns and
+    // the published row order, including layouts over non-contiguous sites.
+    static const std::regex row(R"(^\s*\\text\{aq\[(0|[1-9][0-9]*)\]\}\s*&?\s*\\rightarrow\s*\\text\{tq\[(0|[1-9][0-9]*)\],?\}\s*$)");
+    std::string table=body.substr(begin.size(),body.size()-begin.size()-end.size()),entries;
+    std::set<std::string> logical,physical;
+    for(size_t at=0;;) {
+     size_t next=table.find("\\\\",at);
+     std::string part=table.substr(at,next==std::string::npos ? next : next-at);
+     if(!std::regex_match(part,match,row))throw std::runtime_error("Expected an abstract-to-physical qubit placement in every row.");
+     std::string from=match[1].str(),to=match[2].str();
+     if(!logical.insert(from).second || !physical.insert(to).second)
+      throw std::runtime_error("A qubit layout must use each abstract and physical qubit at most once.");
+     if(!entries.empty())entries+=",";
+     entries+=from+","+to;
+     if(next==std::string::npos)break;
+     at=next+2;
+    }
+    return "matrix("+std::to_string(logical.size())+",2,vector("+entries+"))";
+   }
+  }
   static const std::regex hydrogen(R"(^\s*\\text\{H\}_\{?2\}?\s*$)");
   if(std::regex_match(s,hydrogen))return "\"H₂\"";
   static const std::regex percentage(R"(^\s*([+-]?[0-9]+(?:\.[0-9]+)?)\s*\\?%\s*$)");
