@@ -54,6 +54,12 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         assert b"positive exact integer" in result.stderr
 
 # A written residue ring supplies the modulus in modular powers mode.
+for equation, modulus, expected in [(r"5^2=1", "6", 1), (r"5^2=1", "7", 0),
+                                    (r"3+5=1", "7", 1), (r"2^8=4^4", "{21}", 1)]:
+    annotated = equation + r"\quad\text{(working within $\mathbb{Z}_" + modulus + "$)}"
+    assert data("quantum:" + annotated)["copy_text"] == str(expected)
+run(r"quantum:5^2=1=7\quad\text{(working within $\mathbb{Z}_6$)}", success=False)
+
 modular = data(r"quantum:modpowers:$b = a^k \in \mathbb{Z}_N^{\ast}$")["copy_text"]
 assert data("quantum:"+modular)["copy_text"] == modular
 for candidate, expected in [(4,1), (25,0)]:

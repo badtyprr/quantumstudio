@@ -2245,6 +2245,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(s.find("working within")!=std::string::npos) {
+  // A trailing annotation qualifies the entire equation on its left.
+  static const std::regex ringNote(R"(\\text\{\s*\(\s*working within\s+\$\\mathbb\{Z\}_([1-9]|\{[1-9][0-9]*\})\$\s*\)\s*\}\s*$)");
+  std::smatch note;
+  if(std::regex_search(s,note,ringNote)) {
+   auto sides=indexedParts(s.substr(0,note.position()),"=");
+   if(sides.size()!=2 || sides[0].empty() || sides[1].empty())throw std::runtime_error("A residue-ring annotation requires one equation.");
+   std::string modulus=note[1];
+   if(modulus.front()!='{')modulus="{"+modulus+"}";
+   s=sides[0]+" \\equiv "+sides[1]+" \\pmod"+modulus;
+  }
+ }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
   // Only the bare symbol S changes meaning in a declared scalar spin formula.
