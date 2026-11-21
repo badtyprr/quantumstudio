@@ -514,3 +514,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm074-inventory.json docs/learning-e
 EXTRA_DIST += docs/learning-evidence/aud01/ibm080-inventory.json docs/learning-evidence/aud01/ibm081-inventory.json docs/learning-evidence/aud01/ibm082-inventory.json docs/learning-evidence/aud01/ibm083-inventory.json docs/learning-evidence/aud01/ibm084-inventory.json docs/learning-evidence/aud01/ibm080-figures.json docs/learning-evidence/aud01/replay-ibm082-twirls.py docs/learning-evidence/aud01/ibm083-windows-sessions.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm081-windows-sessions.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm082-windows-sessions.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm081-coherent-noise.py docs/learning-evidence/aud01/ibm081-local-noise.json docs/learning-evidence/aud01/replay-ibm084-circuits.py docs/learning-evidence/aud01/ibm084-local-circuits.json

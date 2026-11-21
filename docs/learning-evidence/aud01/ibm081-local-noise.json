@@ -1,0 +1,13 @@
+{
+  "source_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
+  "cells": [
+    30,
+    31
+  ],
+  "backend": "local Aer density matrix",
+  "model": "coherent X over-rotation only",
+  "angle_radians": 0.025,
+  "depths": 61,
+  "max_absolute_error": 1.532107773982716e-14,
+  "last_expectation": -0.9899924966004607
+}
