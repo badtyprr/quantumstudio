@@ -1,0 +1,19 @@
+{
+  "revision": "cded7e19",
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "d8d396511847212ec2edc037b4b13e51839e84fbad33e7ea2e030bf2b8705eb6",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "windows_records_sha256": "63c74f00c6d85cd7fc4e667b38c13274a63c1891b59f397cc29085ece98cbdd5",
+  "windows": {
+    "source_exact": 155,
+    "restored_identically": 155,
+    "stable_after_text_reentry": 155
+  },
+  "controls": 114,
+  "source_estimates": {
+    "source-026": "qestimate(vector(qadjacent(qadd(qadjacent(2,'t'),1),'\u03b8')),\u03c0 \u2215 2)",
+    "source-028": "qestimate(vector('t'),qsub(qmul(\u03c0,qpower(qadjacent(4,'\u03b8'),\u22121)),1 \u2215 2))",
+    "source-040": "qestimate(vector('\u03b8',qasin(qsqrt(1 \u2215 'N'))),qsqrt(1 \u2215 'N'))"
+  }
+}
