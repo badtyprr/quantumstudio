@@ -2509,9 +2509,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
      std::string lhs=operand(product);
      if(!lhs.empty())return "qmodpowerequal("+lhs+",1,\"modulus\","+rhs+")";
     }
-    static const std::regex implicit(R"(^(\(\s*[A-Za-z]\s*\)|[A-Za-z])\s*(\(\s*[A-Za-z]\s*\)|[A-Za-z])$)");
+    static const std::regex implicit(R"(^(\(\s*(?:[A-Za-z]|[0-9]+)\s*\)|[A-Za-z]|[0-9]+)\s*(\(\s*(?:[A-Za-z]|[0-9]+)\s*\)|[A-Za-z]|[0-9]+)$)");
     std::smatch match;
-    if(sides[0]!="pi" && std::regex_match(sides[0],match,implicit))
+    if(sides[0]!="pi" && sides[0].find_first_not_of("0123456789")!=std::string::npos && std::regex_match(sides[0],match,implicit))
      return "qmodpowerequal(qmul("+operand(match[1])+","+operand(match[2])+"),1,\"modulus\","+rhs+")";
    }
   } else if(sides.size()==1) {
