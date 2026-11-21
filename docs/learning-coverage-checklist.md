@@ -25,7 +25,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-11](#dev-11) | P2 | L | Partial | DEV-04 | Error-correction lesson operations |
 | [DEV-12](#dev-12) | P2 | L | Partial | DEV-04 | Variational and numerical operator coverage |
 | [DEV-13](#dev-13) | P2 | L | Partial | AUD-02 | Python/SDK notebook execution route |
-| [DEV-14](#dev-14) | P3 | L | Not implemented | DEV-13 | QIR and CUDA-Q compatibility |
+| [DEV-14](#dev-14) | P3 | L | Partial | DEV-13 | QIR and CUDA-Q compatibility |
 | [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
 | [DEV-17](#dev-17) | P2 | M | Partial | Candidate Clipboard passed; release open | Named subsystem partial traces |
@@ -223,7 +223,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 ### DEV-14
 
-- [ ] **QIR and CUDA-Q compatibility** — P3; Not implemented; size L; dependencies: DEV-13.
+- [ ] **QIR and CUDA-Q compatibility** — P3; Partial; size L; dependencies: DEV-13.
 - Local implementation: [finite static QIR import](learning-evidence/dev14-static-qir-import.md); broader compatibility, review, CI and release acceptance remain pending.
 - Source focus: qBraid QIR and CUDA-Q notebooks. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Audit entry points and program semantics; implement explicit supported imports/execution and verify small circuits. Unsupported compiler/runtime features must be recorded per notebook, not silently dropped.

@@ -28,8 +28,9 @@ Every output must refer to a previously measured result. Each output call
 snapshots its value at that point, including repeated records and overwritten
 result slots. Chronological output order is left-to-right in native bitstrings;
 the generated output array therefore uses reversed indices. At most 64 records
-are accepted, and declared result slots plus records must fit 64 classical bits
-when records exist. Without records, measurements are retained as discarded
+are accepted. The snapshot route allocates a bit for every declared result and
+every record, up to 64 bits in total. The terminal measurement route allocates
+only the recorded output bits. Without records, measurements are retained as discarded
 measurements and no classical outputs are invented.
 
 When all gates precede all measurements, all output records follow them, and
@@ -39,7 +40,9 @@ measurement order and output permutation without redundant classical copies.
 Interleaved output, repeated result writes, duplicate records, partial outputs,
 or gates after measurements keep the general snapshot lowering. The report's
 `output_lowering` distinguishes these cases. Invalid result references still
-reject before either lowering is selected.
+reject before either lowering is selected. The [storage boundary checks](dev14-qir-terminal-storage.json)
+cover sparse result slots, reversed output order and all 64 output bits in both
+native engines for textual IR and bitcode.
 
 The report includes the source SHA-256, source format, entry name, resource
 counts, generated OpenQASM, output convention, and `execution_performed=false`.

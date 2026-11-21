@@ -138,9 +138,9 @@ def import_qir(raw, *, bitcode=False):
             statements.append(gate + " " + ", ".join(f"q[{q}]" for q in targets) + ";")
         else:
             raise ValueError("QIR_UNSUPPORTED_CALL:" + name)
-    if outputs and results + outputs > 64:
-        raise ValueError("QIR_CLASSICAL_STORAGE_LIMIT")
     targets = terminal_output_targets(statements)
+    if targets is None and outputs and results + outputs > 64:
+        raise ValueError("QIR_CLASSICAL_STORAGE_LIMIT")
     lines = ['OPENQASM 3.0;', 'include "stdgates.inc";', f'qubit[{qubits}] q;']
     if outputs:
         if targets is None:

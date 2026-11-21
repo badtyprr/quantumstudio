@@ -1,0 +1,113 @@
+{
+  "scope": "Authored static QIR storage controls",
+  "previous_error": "QIR_CLASSICAL_STORAGE_LIMIT",
+  "declared_results": 64,
+  "unit_tests": 21,
+  "native_checks": [
+    {
+      "case": "sparse-bell",
+      "format": "ir",
+      "engine": "exact",
+      "result": {
+        "00": "0.5",
+        "11": "0.5"
+      }
+    },
+    {
+      "case": "sparse-bell",
+      "format": "ir",
+      "engine": "sampled",
+      "result": {
+        "00": 5063,
+        "11": 4937
+      }
+    },
+    {
+      "case": "sparse-bell",
+      "format": "bitcode",
+      "engine": "exact",
+      "result": {
+        "00": "0.5",
+        "11": "0.5"
+      }
+    },
+    {
+      "case": "sparse-bell",
+      "format": "bitcode",
+      "engine": "sampled",
+      "result": {
+        "00": 5063,
+        "11": 4937
+      }
+    },
+    {
+      "case": "reordered",
+      "format": "ir",
+      "engine": "exact",
+      "result": {
+        "01": "1"
+      }
+    },
+    {
+      "case": "reordered",
+      "format": "ir",
+      "engine": "sampled",
+      "result": {
+        "01": 10000
+      }
+    },
+    {
+      "case": "reordered",
+      "format": "bitcode",
+      "engine": "exact",
+      "result": {
+        "01": "1"
+      }
+    },
+    {
+      "case": "reordered",
+      "format": "bitcode",
+      "engine": "sampled",
+      "result": {
+        "01": 10000
+      }
+    },
+    {
+      "case": "all-outputs",
+      "format": "ir",
+      "engine": "exact",
+      "result": {
+        "1111111111111111111111111111111111111111111111111111111111111111": "1"
+      }
+    },
+    {
+      "case": "all-outputs",
+      "format": "ir",
+      "engine": "sampled",
+      "result": {
+        "1111111111111111111111111111111111111111111111111111111111111111": 10000
+      }
+    },
+    {
+      "case": "all-outputs",
+      "format": "bitcode",
+      "engine": "exact",
+      "result": {
+        "1111111111111111111111111111111111111111111111111111111111111111": "1"
+      }
+    },
+    {
+      "case": "all-outputs",
+      "format": "bitcode",
+      "engine": "sampled",
+      "result": {
+        "1111111111111111111111111111111111111111111111111111111111111111": 10000
+      }
+    }
+  ],
+  "inputs": {
+    "sparse-bell": "H on qubit 0 followed by CNOT from 0 to 1. Measure the two qubits to result slots 0 and 63. Record 63 then 0.",
+    "reordered": "X on qubit 0. Same measurements and reversed records.",
+    "all-outputs": "X on qubit 0. Measure it into all 64 distinct result slots and record each slot in order."
+  }
+}

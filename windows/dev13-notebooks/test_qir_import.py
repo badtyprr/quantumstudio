@@ -154,10 +154,25 @@ class ImportTests(unittest.TestCase):
             import_qir(raw)
 
     def test_combined_native_storage_limit(self):
-        raw = fixture(M0, O0).replace(b'required_num_results"="2', b'required_num_results"="63')
-        self.assertEqual(import_qir(raw)['output_slots'], 1)
+        # A gate after measurement requires separate result and output registers.
+        raw = fixture(M0, H, O0).replace(b'required_num_results"="2', b'required_num_results"="63')
+        self.assertEqual(import_qir(raw)['output_lowering'], 'record-snapshots')
         with self.assertRaisesRegex(ValueError, 'QIR_CLASSICAL_STORAGE_LIMIT'):
             import_qir(raw.replace(b'required_num_results"="63', b'required_num_results"="64'))
+
+    def test_terminal_records_fit_declared_result_limit(self):
+        # Slots 0 and 63 are valid even though only two native output bits are allocated.
+        high_measure = M1.replace('i64 1 to ptr))', 'i64 63 to ptr))')
+        high_record = O1.replace('i64 1 to ptr', 'i64 63 to ptr')
+        raw = fixture(H, CX, M0, high_measure, high_record, O0)
+        raw = raw.replace(b'required_num_results"="2', b'required_num_results"="64')
+        binary = pyqir.Module.from_ir(pyqir.Context(), raw.decode()).bitcode
+        for source, bitcode in [(raw, False), (binary, True)]:
+            report = import_qir(source, bitcode=bitcode)
+            self.assertEqual((report['result_slots'], report['output_slots']), (64, 2))
+            self.assertEqual(report['output_lowering'], 'terminal-measurement-aliases')
+            self.assertIn('out[0] = measure q[0];\nout[1] = measure q[1];', report['openqasm'])
+            self.assertNotIn('] result;', report['openqasm'])
 
     def test_instruction_limit(self):
         self.assertEqual(import_qir(fixture(*([H] * 4095)))['output_slots'], 0)
