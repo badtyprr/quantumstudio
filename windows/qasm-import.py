@@ -1508,6 +1508,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     numeric_variables,numeric_declarations={},[]
     nq = nc = 0
     storage_overflow = None
+    variable_overflow = None
     declarations_in_order=list(nodes(statements))
     # Allocate generated bits last so original register indices do not move.
     declarations_in_order.sort(key=lambda n:isinstance(n,ast.ClassicalDeclaration) and n.identifier.name in hidden_registers)
@@ -1525,6 +1526,8 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                     if numeric_variables[name][1:]!=(kind,size):raise ValueError('Inconsistent repeated numeric declaration.')
                     continue
                 if len(name.encode('utf-16-le'))//2>64:raise ValueError('Numeric names must fit 64 UTF-16 code units.')
+                if len(variables) + len(numeric_variables) == 4096:
+                    variable_overflow = statement
                 numeric_variables[name]=(len(numeric_variables),kind,size)
                 numeric_declarations.append({'Name':name,'NumericKind':kind,'Width':size})
                 continue
@@ -1535,8 +1538,10 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 if name in variables:
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue
-                if len(variables)>=4096:raise ValueError('Excessive integer declarations.')
+                if len(variables)>=4096:raise error_at(statement,'Excessive integer declarations.')
                 if getattr(statement,'_quantum_range_capture',False):inferred_ranges.add(name)
+                if len(variables) + len(numeric_variables) == 4096:
+                    variable_overflow = statement
                 variables[name]=(len(variables),sign,size)
                 declarations.append({'Name':name,'Signedness':sign,'Width':size})
                 continue
@@ -1554,7 +1559,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
     if not 0 <= nq <= 25 or not 0 <= nc <= 64:
         raise error_at(storage_overflow,'Classical circuits support 0–25 qubits and up to 64 classical bits.')
 
-    if len(variables)+len(numeric_variables)>4096:raise ValueError('Use at most 4096 variable slots.')
+    if variable_overflow is not None:raise error_at(variable_overflow,'Use at most 4096 variable slots.')
     def classical_value(value,registers,expected_width=None,variables=variables,integer_only=False):
         return classical_expression(value,registers,expected_width,variables,integer_only,numeric_variables)
     def condition_value(statement,condition):

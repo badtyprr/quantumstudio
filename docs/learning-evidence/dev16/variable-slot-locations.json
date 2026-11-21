@@ -1,0 +1,29 @@
+{
+  "before": "main.qasm: Use at most 4096 variable slots.",
+  "entry": "main.qasm",
+  "previous_slots": 4096,
+  "source_sha256": "c1ae7bf3c4d17c1a7794d8b3fbcd20b451290720338278e91f60e4f368b0cf17",
+  "frozen_sha256": "6ed3b2fbe481cfcbe8d0d46056fe2fd5accbde2b32fd523ef7862175d66ef283",
+  "cases": [
+    {
+      "route": "source",
+      "declaration": "int",
+      "diagnostic": "end.inc:2:5: Excessive integer declarations."
+    },
+    {
+      "route": "frozen",
+      "declaration": "int",
+      "diagnostic": "end.inc:2:5: Excessive integer declarations."
+    },
+    {
+      "route": "source",
+      "declaration": "float[64]",
+      "diagnostic": "end.inc:2:5: Use at most 4096 variable slots."
+    },
+    {
+      "route": "frozen",
+      "declaration": "float[64]",
+      "diagnostic": "end.inc:2:5: Use at most 4096 variable slots."
+    }
+  ]
+}

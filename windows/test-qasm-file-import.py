@@ -149,6 +149,19 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertEqual(message.strip(), f'nested κ/limits.inc:2:{offset + 3}: {detail}')
 
+    def test_mixed_variable_limit_in_included_module(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "slots.inc"; include "nested κ/end.inc";')
+        self.put("slots.inc", "\n".join(f"int n{i};" for i in range(4095)))
+        for command in COMMANDS:
+            args = ["--classical", "--module-headers", "--source-file", str(main)]
+            self.put("nested κ/end.inc", "OPENQASM 3;\nfloat[64] last;")
+            self.run_import(command, args)
+            for declaration in ("int extra;", "angle[32] extra;"):
+                self.put("nested κ/end.inc", "OPENQASM 3;\nfloat[64] last;\n  " + declaration)
+                with self.subTest(command=command, declaration=declaration):
+                    message = self.run_import(command, args, success=False)
+                    self.assertEqual(message.strip(), "nested κ/end.inc:3:3: Use at most 4096 variable slots.")
+
     def test_gate_arithmetic_locations(self):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/angles.inc";')
         for body in ('qubit q; rx(1/0) q;', 'gate g a { rx(1/0) a; } qubit q; g q;'):
