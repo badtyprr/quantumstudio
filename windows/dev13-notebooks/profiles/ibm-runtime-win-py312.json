@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "ibm-runtime-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "ibm-runtime-requirements.lock",
+  "lock_sha256": "90bdadaad7a4a3fc537def67107f572f51538ec6a70e24f020f6a0f11a4582da",
+  "offline_only": true,
+  "wheel_requirement": "65 Windows wheels for the original qBraid plotting and Qiskit Aer simulator branches.",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

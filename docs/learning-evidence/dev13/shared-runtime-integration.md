@@ -21,6 +21,7 @@ Unknown or changed sources are rejected. Only these finite contracts are exposed
 | qb027 | Selected Braket local simulation cells; provider work remains outstanding |
 | qb030 | Selected Pulser local pulse/solver cells; hardware work remains outstanding |
 | qb019 | Eight unchanged Bernstein-Vazirani cells use a separately recorded local Qiskit sampling step to supply the displayed histogram. AWS verification remains open. [Run evidence](qb019-public-run.json) |
+| qb020 | Eleven unchanged IBM Runtime notebook cells run on Aer. A recorded configuration step selects the simulator. The runner checks the Bell state, estimator, shot counts and both source plots. [Run evidence](qb020-public-run.json) |
 | qb026 | Six original cells read the published benchmark cache from the run directory, calculate the summary and render the two population curves. [Both verified revisions](qb026-cache-runs.json) |
 | qb036, qb038 | Original Qiskit GHZ construction and drawing cell. CPU Aer checks the three-qubit statevector and samples three widths through 100 qubits in two bases. Provider execution remains open. [Recorded runs](qb036-qb038-ghz-routes.json) |
 | ibm-timing | Finite timing observations with authored reference and retained artifacts |
