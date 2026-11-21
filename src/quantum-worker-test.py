@@ -61,6 +61,10 @@ assert data(r"quantum:\lfloor\log(8)\rfloor")["copy_text"] == "2"
 assert data(r"quantum:$2^4\equiv1$ $(\textrm{mod } 5)$")["copy_text"] == "1"
 assert data(r"quantum:$2^4\equiv1$ $\pmod{7}$")["copy_text"] == "0"
 run(r"quantum:$2^4\equiv1$ and $\pmod{5}$",success=False)
+for separator in ("\n\n","\r\n  \r\n"):
+    run(r"quantum:$2^4\equiv1$"+separator+r"$\pmod{5}$",success=False)
+split_copy = data(r"quantum:$a^r\equiv1$"+ "\r\n" +r"$\pmod{N}$")["copy_text"]
+assert data("quantum:"+split_copy)["copy_text"] == split_copy
 run("quantum:qstepvalue(y ← 3,qbinarylog(vector(x,2)))", success=False)
 assert data("quantum:qstepvalue(y ← 3,qbinarylog(x))")["copy_text"] == "3"
 

@@ -2458,7 +2458,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   size_t close=s.find('$');
   if(close!=std::string::npos && s.find("\\equiv")<close) {
    size_t open=s.find_first_not_of(" \t\r\n",close+1);
-   if(open!=std::string::npos && s[open]=='$' && s.find('$',open+1)==std::string::npos) {
+   size_t newline=s.find_first_of("\r\n",close+1);
+   size_t nextLine=newline==std::string::npos ? newline : newline+1;
+   if(nextLine<s.size() && s[newline]=='\r' && s[nextLine]=='\n')++nextLine;
+   bool sameParagraph=newline>=open || s.find_first_of("\r\n",nextLine)>=open;
+   if(open!=std::string::npos && sameParagraph && s[open]=='$' && s.find('$',open+1)==std::string::npos) {
     static const std::regex modulus(R"(^\s*(?:\\pmod\s*\{\s*(?:[A-Za-z]|[0-9]+)\s*\}|\(\s*\\(?:textrm|mathrm)\{\s*mod\s*\}(?:\s|\\[,;!])*(?:[A-Za-z]|[0-9]+)\s*\))\s*$)");
     if(std::regex_match(s.substr(open+1),modulus))s.replace(close,open-close+1," ");
    }
