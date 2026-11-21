@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes.ipynb",
   "source_sha256": "41cd48f6fa424f1ebd9b8821826ae61b80da341d3b32e9cd1889f456c28d7646",
-  "worker_sha256": "4d8be4d5a46eeb1376a7cc908196f6bb60f267894a31fe6aa3ba0ac23356f03f",
-  "revision": "2eba96fb",
+  "worker_sha256": "05d9c8ee58e780876821265a1d7b5a432644ceeadba8e98cd1484b7f9f0e2916",
+  "revision": "e0f35821",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 267,
-    "diagnostic": 7
+    "exact": 272,
+    "diagnostic": 2
   },
   "figures": [],
   "rows": [
@@ -488,8 +488,9 @@
       "start": 5056,
       "end": 5182,
       "literal": "$$\n   \\mathcal{C} = \\bigl\\{\\alpha_1 u_1 \\oplus \\cdots \\oplus \\alpha_m u_m\\,:\\,\\alpha_1,\\ldots,\\alpha_m\\in\\{0,1\\}\\bigr\\},\n   $$",
-      "status": "diagnostic",
-      "message": "An indexed image requires a symbol index at byte 118"
+      "status": "exact",
+      "display": "C = qwordspan(qindexedentries(\"u_\", 1, 'm', []))",
+      "copy": "('C')==(qwordspan(qindexedentries(\"u_\",1,'m',vector())))"
     },
     {
       "id": "IBM062-41cd48f6-M049",
@@ -587,8 +588,9 @@
       "start": 6233,
       "end": 6332,
       "literal": "$$\n   \\mathcal{C} = \\bigl\\{ u\\in \\Sigma^n\\,:\\, u\\cdot v_1 = \\cdots = u \\cdot v_r = 0 \\bigr\\},\n   $$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 35"
+      "status": "exact",
+      "display": "C = qwordkernel(qindexedentries(\"v_\", 1, 'r', []), n)",
+      "copy": "('C')==(qwordkernel(qindexedentries(\"v_\",1,'r',vector()),n))"
     },
     {
       "id": "IBM062-41cd48f6-M059",
@@ -1796,8 +1798,9 @@
       "start": 20476,
       "end": 20573,
       "literal": "$$\n\\mathcal{C}_Z = \\bigl\\{ u \\in \\Sigma^n \\,:\\, u \\cdot z_1 = \\cdots = u \\cdot z_s = 0 \\bigr\\}\n$$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 34"
+      "status": "exact",
+      "display": "\"C_Z\" = qwordkernel(qindexedentries(\"z_\", 1, 's', []), n)",
+      "copy": "(\"C_Z\")==(qwordkernel(qindexedentries(\"z_\",1,'s',vector()),n))"
     },
     {
       "id": "IBM062-41cd48f6-M180",
@@ -1865,8 +1868,9 @@
       "start": 21003,
       "end": 21100,
       "literal": "$$\n\\mathcal{C}_X = \\bigl\\{ u \\in \\Sigma^n \\,:\\, u \\cdot x_1 = \\cdots = u \\cdot x_t = 0 \\bigr\\}\n$$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 34"
+      "status": "exact",
+      "display": "\"C_X\" = qwordkernel(qindexedentries(\"x_\", 1, 't', []), n)",
+      "copy": "(\"C_X\")==(qwordkernel(qindexedentries(\"x_\",1,'t',vector()),n))"
     },
     {
       "id": "IBM062-41cd48f6-M187",
@@ -1914,8 +1918,9 @@
       "start": 21549,
       "end": 21839,
       "literal": "$$\n\\begin{aligned}\n\\mathcal{D}_Z & =\n\\bigl\\{ \\alpha_1 z_1 \\oplus \\cdots \\oplus\n\\alpha_s z_s \\,:\\, \\alpha_1,\\ldots,\\alpha_s \\in \\{0,1\\}\n\\bigr\\}\\\\[1mm]\n\\mathcal{D}_X & =\n\\bigl\\{ \\alpha_1 x_1 \\oplus \\cdots \\oplus\n\\alpha_t x_t \\,:\\, \\alpha_1,\\ldots,\\alpha_t \\in \\{0,1\\}\n\\bigr\\}\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "An indexed image requires a symbol index at byte 141"
+      "status": "exact",
+      "display": "1.  \"D_Z\" = qwordspan(qindexedentries(\"z_\", 1, 's', []))\n\n2.  \"D_X\" = qwordspan(qindexedentries(\"x_\", 1, 't', []))",
+      "copy": "\\begin{gathered}(\"D_Z\")==(qwordspan(qindexedentries(\"z_\",1,'s',vector())))\\\\(\"D_X\")==(qwordspan(qindexedentries(\"x_\",1,'t',vector())))\\end{gathered}"
     },
     {
       "id": "IBM062-41cd48f6-M192",
