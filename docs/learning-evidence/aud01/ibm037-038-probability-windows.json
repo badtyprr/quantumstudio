@@ -1,0 +1,22 @@
+{
+  "worker_sha256": "3ad3634e45ac1c1fa999a5def628df6ebecc119037a91fc8fba31b8d24a9f70a",
+  "classical_spans": [
+    11,
+    21,
+    34
+  ],
+  "quantum_spans": [
+    69,
+    70,
+    72,
+    73,
+    79,
+    80
+  ],
+  "outcome_membership_checks": 5,
+  "probability_equations": 7,
+  "changed_distributions": 7,
+  "invalid_inputs": 4,
+  "clipboard_sessions": 28,
+  "windows_checks": 308
+}
