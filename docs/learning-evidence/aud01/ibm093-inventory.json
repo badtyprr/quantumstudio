@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-overview.ipynb",
   "source_sha256": "ff65b087e79b955a572000c04e09095e1ebcb9f335b4d96212e40664ba3ee1bf",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
-  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
+  "revision": "abd6edf3d824befb92236e9bf93a8bd4718f2aaf",
   "mode": "Quantum notation",
   "markdown_cells": 34,
   "code_cells": 11,
@@ -1158,8 +1158,8 @@
       "end": 779,
       "literal": "$\\sqrt{shots}$",
       "status": "exact",
-      "display": "√('h''o''t') ⋅ |'s'|",
-      "copy": "√('h' ⋅ 'o' ⋅ 't') ⋅ |'s'|"
+      "display": "√(\"shots\")",
+      "copy": "√(\"shots\")"
     },
     {
       "id": "IBM093-ff65b087-M115",

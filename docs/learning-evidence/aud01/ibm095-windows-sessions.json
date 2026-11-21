@@ -1,7 +1,7 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/skqd.ipynb",
   "notebook_sha256": "3ed488d16f7bab398f07d32f95853e1767c1de384095e3712598af6309d09f94",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
   "records_sha256": "43b91968b586f3a23081417fc2ac8c81acd8631de5f83f892df832a11a3110a7",
   "suite": {

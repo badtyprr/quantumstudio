@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
   "notebook_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "d95aafc2d0a2f352eb31f3b0f1ab3c2c17ac625487efc005cb217d7b2523276e",
+  "records_sha256": "577f4fe9b16d013686a1c9206b384dfdd498fe6b095b3ceaea780d21485415cf",
   "suite": {
     "passed": true,
-    "checks": 1100,
+    "checks": 1177,
     "calls": 151,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 114,
-    "restored_identically": 114,
-    "stable_after_text_reentry": 112,
-    "source_diagnostic": 37
+    "source_exact": 125,
+    "restored_identically": 125,
+    "stable_after_text_reentry": 125,
+    "source_diagnostic": 26
   },
   "diagnostics": [
     {
@@ -33,51 +33,7 @@
     },
     {
       "id": "IBM094-37477fb6-M034",
-      "message": "Unsupported TeX command: \\mu at byte 27"
-    },
-    {
-      "id": "IBM094-37477fb6-M036",
-      "message": "Unsupported TeX command: \\mu at byte 13"
-    },
-    {
-      "id": "IBM094-37477fb6-M037",
-      "message": "Unsupported TeX command: \\mu at byte 12"
-    },
-    {
-      "id": "IBM094-37477fb6-M038",
-      "message": "Unsupported TeX command: \\mu at byte 11"
-    },
-    {
-      "id": "IBM094-37477fb6-M039",
-      "message": "Unsupported TeX command: \\mu at byte 12"
-    },
-    {
-      "id": "IBM094-37477fb6-M044",
-      "message": "Unsupported TeX command: \\mu at byte 12"
-    },
-    {
-      "id": "IBM094-37477fb6-M045",
-      "message": "Unsupported TeX command: \\mu at byte 28"
-    },
-    {
-      "id": "IBM094-37477fb6-M046",
-      "message": "Unsupported TeX command: \\mu at byte 26"
-    },
-    {
-      "id": "IBM094-37477fb6-M047",
-      "message": "Unsupported TeX command: \\mu at byte 27"
-    },
-    {
-      "id": "IBM094-37477fb6-M048",
-      "message": "Unsupported TeX command: \\mu at byte 12"
-    },
-    {
-      "id": "IBM094-37477fb6-M056",
-      "message": "Unsupported TeX command: \\mu at byte 28"
-    },
-    {
-      "id": "IBM094-37477fb6-M057",
-      "message": "Unsupported TeX command: \\mu at byte 26"
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
     },
     {
       "id": "IBM094-37477fb6-M084",
@@ -93,7 +49,7 @@
     },
     {
       "id": "IBM094-37477fb6-M088",
-      "message": "Unsupported text in a mathematical expression at byte 84"
+      "message": "Unsupported text in a mathematical expression at byte 106"
     },
     {
       "id": "IBM094-37477fb6-M091",
@@ -168,17 +124,6 @@
       "message": "A plus-minus sign requires an equality with two alternatives."
     }
   ],
-  "changed_copy": [
-    {
-      "id": "IBM094-37477fb6-M089",
-      "first": "qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\")",
-      "second": "qindexedlabel(\"H_\",qpower(matrix(2,2,vector(1,0,0,i)),'k'),\"\")"
-    },
-    {
-      "id": "IBM094-37477fb6-M090",
-      "first": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))",
-      "second": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,vector(1,0,0,i)),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

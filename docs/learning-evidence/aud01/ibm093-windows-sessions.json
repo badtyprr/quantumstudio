@@ -1,9 +1,9 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-overview.ipynb",
   "notebook_sha256": "ff65b087e79b955a572000c04e09095e1ebcb9f335b4d96212e40664ba3ee1bf",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "c01b9b804ace035506b2232aae5492a05fe7fea3329e4084d6869c4568f66b72",
+  "records_sha256": "dc4aa742802647e43fe390f57b9e5f05470879c5a00c343b65965476745cf3b9",
   "suite": {
     "passed": true,
     "checks": 962,
@@ -15,7 +15,7 @@
   "counts": {
     "source_exact": 104,
     "restored_identically": 104,
-    "stable_after_text_reentry": 103,
+    "stable_after_text_reentry": 104,
     "source_diagnostic": 13
   },
   "diagnostics": [
@@ -72,12 +72,6 @@
       "message": "Expected an equation after the comma."
     }
   ],
-  "changed_copy": [
-    {
-      "id": "IBM093-ff65b087-M114",
-      "first": "√('h' ⋅ 'o' ⋅ 't') ⋅ |'s'|",
-      "second": "√('h' ⋅ 'o' ⋅ 't') ⋅ qbars('s')"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

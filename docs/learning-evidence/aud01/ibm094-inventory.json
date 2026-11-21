@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
   "source_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
-  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
+  "revision": "abd6edf3d824befb92236e9bf93a8bd4718f2aaf",
   "mode": "Quantum notation",
   "markdown_cells": 47,
   "code_cells": 11,
   "summary": {
-    "exact": 114,
-    "diagnostic": 37
+    "exact": 125,
+    "diagnostic": 26
   },
   "figures": [
     {
@@ -424,7 +424,7 @@
       "end": 638,
       "literal": "$$\n|\\psi\\rangle = \\prod_{\\mu=1}^{L}{(e^{K^{\\mu}} \\times {e^{iJ^{\\mu}}} \\times {e^{-K^{\\mu}}})} |\\Phi_{0}\\rangle\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 27"
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
     },
     {
       "id": "IBM094-37477fb6-M035",
@@ -442,8 +442,9 @@
       "start": 40,
       "end": 107,
       "literal": "${(e^{K^{(\\mu)}} \\times {e^{iJ^{(\\mu)}}} \\times {e^{-K^{(\\mu)}}})}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 13"
+      "status": "exact",
+      "display": "e^((i · J)^'μ')",
+      "copy": "e^((i'J')^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M037",
@@ -451,8 +452,9 @@
       "start": 150,
       "end": 166,
       "literal": "$e^{iJ^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 12"
+      "status": "exact",
+      "display": "e^((i · J)^'μ')",
+      "copy": "e^((i'J')^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M038",
@@ -460,8 +462,9 @@
       "start": 201,
       "end": 216,
       "literal": "$e^{K^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 11"
+      "status": "exact",
+      "display": "e^(K^'μ')",
+      "copy": "e^('K'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M039",
@@ -469,8 +472,9 @@
       "start": 221,
       "end": 237,
       "literal": "$e^{-K^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 12"
+      "status": "exact",
+      "display": "1 / e^(K^'μ')",
+      "copy": "1 ∕ e^('K'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M040",
@@ -518,8 +522,9 @@
       "start": 4,
       "end": 20,
       "literal": "$e^{iJ^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 12"
+      "status": "exact",
+      "display": "e^((i · J)^'μ')",
+      "copy": "e^((i'J')^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M045",
@@ -527,8 +532,9 @@
       "start": 132,
       "end": 164,
       "literal": "$e^{iJ_{\\alpha \\alpha}^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 28"
+      "status": "exact",
+      "display": "e^(\"iJ_α\" ⋅ 'α'^'μ')",
+      "copy": "e^(\"iJ_α\" ⋅ 'α'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M046",
@@ -536,8 +542,9 @@
       "start": 169,
       "end": 199,
       "literal": "$e^{iJ_{\\beta \\beta}^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 26"
+      "status": "exact",
+      "display": "e^(\"iJ_β\" ⋅ 'β'^'μ')",
+      "copy": "e^(\"iJ_β\" ⋅ 'β'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M047",
@@ -545,8 +552,9 @@
       "start": 242,
       "end": 273,
       "literal": "$e^{iJ_{\\alpha \\beta}^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 27"
+      "status": "exact",
+      "display": "e^(\"iJ_α\" ⋅ 'β'^'μ')",
+      "copy": "e^(\"iJ_α\" ⋅ 'β'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M048",
@@ -554,8 +562,9 @@
       "start": 295,
       "end": 311,
       "literal": "$e^{iJ^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 12"
+      "status": "exact",
+      "display": "e^((i · J)^'μ')",
+      "copy": "e^((i'J')^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M049",
@@ -564,8 +573,8 @@
       "end": 358,
       "literal": "$U_{nn}(\\phi)$",
       "status": "exact",
-      "display": "'_' · n² · U · 'φ'",
-      "copy": "'_' ⋅ n² ⋅ 'U' ⋅ 'φ'"
+      "display": "qoperatorat(\"U_nn\", 'φ')",
+      "copy": "qoperatorat(\"U_nn\",'φ')"
     },
     {
       "id": "IBM094-37477fb6-M050",
@@ -574,8 +583,8 @@
       "end": 397,
       "literal": "$U_{nn}(\\phi)$",
       "status": "exact",
-      "display": "'_' · n² · U · 'φ'",
-      "copy": "'_' ⋅ n² ⋅ 'U' ⋅ 'φ'"
+      "display": "qoperatorat(\"U_nn\", 'φ')",
+      "copy": "qoperatorat(\"U_nn\",'φ')"
     },
     {
       "id": "IBM094-37477fb6-M051",
@@ -633,8 +642,9 @@
       "start": 849,
       "end": 881,
       "literal": "$e^{iJ_{\\alpha \\alpha}^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 28"
+      "status": "exact",
+      "display": "e^(\"iJ_α\" ⋅ 'α'^'μ')",
+      "copy": "e^(\"iJ_α\" ⋅ 'α'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M057",
@@ -642,8 +652,9 @@
       "start": 886,
       "end": 916,
       "literal": "$e^{iJ_{\\beta \\beta}^{(\\mu)}}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 26"
+      "status": "exact",
+      "display": "e^(\"iJ_β\" ⋅ 'β'^'μ')",
+      "copy": "e^(\"iJ_β\" ⋅ 'β'^'μ')"
     },
     {
       "id": "IBM094-37477fb6-M058",
@@ -949,7 +960,7 @@
       "end": 832,
       "literal": "$$\nH_{\\mathcal{S}^{(k)}} = P_{\\mathcal{S}^{(k)}} H _{\\mathcal{S}^{(k)}} \\text{ with } P_{\\mathcal{S}^{(k)}} = \\sum_{x \\in \\mathcal{S}^{(k)}} \\vert x \\rangle \\langle x \\vert\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 84"
+      "message": "Unsupported text in a mathematical expression at byte 106"
     },
     {
       "id": "IBM094-37477fb6-M089",
@@ -958,8 +969,8 @@
       "end": 884,
       "literal": "$H_{\\mathcal{S}^{(k)}}$",
       "status": "exact",
-      "display": "H_([1, 0; 0, i]^k)",
-      "copy": "qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\")"
+      "display": "qoperatorref(qindexedlabel(\"H_S(\", 'k', ')'))",
+      "copy": "qoperatorref(qindexedlabel(\"H_S(\",'k',')'))"
     },
     {
       "id": "IBM094-37477fb6-M090",
@@ -968,8 +979,8 @@
       "end": 1262,
       "literal": "$$\nH_{\\mathcal{S}^{(k)}} \\vert \\psi^{(k)} \\rangle = E^{(k)} \\vert \\psi^{(k)} \\rangle\n$$",
       "status": "exact",
-      "display": "H_([1, 0; 0, i]^k) · |'ψ'^k⟩ (dimension unresolved) = E^k · |'ψ'^k⟩ (dimension unresolved)",
-      "copy": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))"
+      "display": "qoperatorref(qindexedlabel(\"H_S(\", 'k', ')')) · qstatecall('ψ', 'k') = E(k) · qstatecall('ψ', 'k')",
+      "copy": "qcompare(qadjacent(qoperatorref(qindexedlabel(\"H_S(\",'k',')')),qstatecall('ψ','k')),qadjacent(qindexedlabel(\"E(\",'k',')'),qstatecall('ψ','k')),4)"
     },
     {
       "id": "IBM094-37477fb6-M091",

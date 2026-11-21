@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
   "source_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
-  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "worker_sha256": "581513b06e467c5270be6e703ef72249e134dde983650238143ab8f96d455096",
+  "revision": "b0d61e92398ea73aee2f67292559e454d1b33bd0",
   "mode": "Quantum notation",
   "markdown_cells": 65,
   "code_cells": 45,
   "summary": {
-    "exact": 307,
-    "diagnostic": 83
+    "exact": 321,
+    "diagnostic": 69
   },
   "figures": [
     {
@@ -867,8 +867,8 @@
       "end": 887,
       "literal": "$|b\\rangle=c|x\\rangle$",
       "status": "exact",
-      "display": "qketstate('b') = (299.792458 km ∕ ms) (|x⟩)",
-      "copy": "qcompare(qketstate('b'),qadjacent(qmul(qmul(299792458,qphysicalunit(\"m\",\"\")),qpower(qphysicalunit(\"s\",\"\"),−1)),qketstate(x)),4)"
+      "display": "qketstate('b') = 'c' |x⟩",
+      "copy": "qcompare(qketstate('b'),qmul('c',qketstate(x)),4)"
     },
     {
       "id": "IBM092-bdde16a2-M082",
@@ -1115,8 +1115,8 @@
       "end": 3245,
       "literal": "$$\nf(|p_0\\rangle)=\\langle p_0|A|p_0\\rangle−2\\langle R_0|p_0\\rangle+d.\n$$",
       "status": "exact",
-      "display": "|p_0⟩ · f = ⟨p_0| A |p_0⟩ − 2 · ⟨R_0|p_0⟩ + d",
-      "copy": "qcompare(qketstate(\"p_0\") ⋅ 'f',qadd(qsub(qmul(qmul(qdag(qnamedket(\"p_0\")),'A'),qnamedket(\"p_0\")),qadjacent(2,qmul(qdag(qnamedket(\"R_0\")),qnamedket(\"p_0\")))),'d'),4)"
+      "display": "qscalarat('f', qnamedket(\"p_0\")) = ⟨p_0| A |p_0⟩ − 2 · ⟨R_0|p_0⟩ + d",
+      "copy": "qcompare(qscalarat('f',qnamedket(\"p_0\")),qadd(qsub(qmul(qmul(qdag(qnamedket(\"p_0\")),'A'),qnamedket(\"p_0\")),qadjacent(2,qmul(qdag(qnamedket(\"R_0\")),qnamedket(\"p_0\")))),'d'),4)"
     },
     {
       "id": "IBM092-bdde16a2-M107",
@@ -1175,8 +1175,8 @@
       "end": 3419,
       "literal": "$f(|p_0\\rangle)$",
       "status": "exact",
-      "display": "|p_0⟩ · f",
-      "copy": "qketstate(\"p_0\") ⋅ 'f'"
+      "display": "qscalarat('f', qnamedket(\"p_0\"))",
+      "copy": "qscalarat('f',qnamedket(\"p_0\"))"
     },
     {
       "id": "IBM092-bdde16a2-M113",
@@ -1312,8 +1312,9 @@
       "start": 4356,
       "end": 4369,
       "literal": "$k^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
     },
     {
       "id": "IBM092-bdde16a2-M127",
@@ -1351,8 +1352,9 @@
       "start": 4650,
       "end": 4663,
       "literal": "$k^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
     },
     {
       "id": "IBM092-bdde16a2-M131",
@@ -1762,8 +1764,9 @@
       "start": 2801,
       "end": 2814,
       "literal": "$k^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
     },
     {
       "id": "IBM092-bdde16a2-M173",
@@ -1890,8 +1893,9 @@
       "start": 823,
       "end": 837,
       "literal": "$N_\\text{GCP}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 13"
+      "status": "exact",
+      "display": "\"N_GCP\"",
+      "copy": "\"N_GCP\""
     },
     {
       "id": "IBM092-bdde16a2-M186",
@@ -1899,8 +1903,9 @@
       "start": 858,
       "end": 914,
       "literal": "$$\nH=\\sum_{\\alpha=1}^{N_\\text{GCP}} c_\\alpha P_\\alpha\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 33"
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{\"N_GCP\"} (c_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,\"N_GCP\",\"qboundindex_0\")))==(0)"
     },
     {
       "id": "IBM092-bdde16a2-M187",
@@ -2076,8 +2081,9 @@
       "start": 2499,
       "end": 2550,
       "literal": "$$\n\\tilde{H} \\ \\vec{c} = E \\ \\tilde{S} \\ \\vec{c}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 18"
+      "status": "exact",
+      "display": "E · \"S_tilde\" · qvectorref('c') = \"H_tilde\" · qvectorref('c')",
+      "copy": "(qadjacent(qadjacent('E',\"S_tilde\"),qvectorref('c')))==(qadjacent(\"H_tilde\",qvectorref('c')))"
     },
     {
       "id": "IBM092-bdde16a2-M205",
@@ -2105,8 +2111,9 @@
       "start": 2851,
       "end": 2860,
       "literal": "$\\vec{c}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('c')",
+      "copy": "qvectorref('c')"
     },
     {
       "id": "IBM092-bdde16a2-M208",
@@ -2114,8 +2121,9 @@
       "start": 2882,
       "end": 2891,
       "literal": "$\\vec{c}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('c')",
+      "copy": "qvectorref('c')"
     },
     {
       "id": "IBM092-bdde16a2-M209",
@@ -2268,8 +2276,9 @@
       "start": 600,
       "end": 613,
       "literal": "$i^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
     },
     {
       "id": "IBM092-bdde16a2-M225",
@@ -2725,8 +2734,9 @@
       "start": 4008,
       "end": 4064,
       "literal": "$$H=\\sum_{\\alpha = 1}^{N_\\text{GCP}}c_\\alpha P_\\alpha $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 34"
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{\"N_GCP\"} (c_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,\"N_GCP\",\"qboundindex_0\")))==(0)"
     },
     {
       "id": "IBM092-bdde16a2-M273",
@@ -2964,8 +2974,9 @@
       "start": 75,
       "end": 110,
       "literal": "$$\\tilde{H} \\vec{c} = c S \\vec{c}$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 15"
+      "status": "exact",
+      "display": "qoperatorref(\"H_tilde\") · qvectorref(\"vector_c\") = 'c' · qoperatorref('S') · qvectorref(\"vector_c\")",
+      "copy": "qcompare(qmul(qoperatorref(\"H_tilde\"),qvectorref(\"vector_c\")),qmul('c',qmul(qoperatorref('S'),qvectorref(\"vector_c\"))),4)"
     },
     {
       "id": "IBM092-bdde16a2-M297",
@@ -3013,8 +3024,9 @@
       "start": 1983,
       "end": 2029,
       "literal": "$N_\\text{shots}\\times N_\\text{GCP} \\times r^2$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "\"N_GCP\" · \"N_shots\" · r^2",
+      "copy": "\"N_GCP\" ⋅ \"N_shots\" ⋅ 'r'²"
     },
     {
       "id": "IBM092-bdde16a2-M302",
@@ -3032,8 +3044,9 @@
       "start": 2088,
       "end": 2117,
       "literal": "$O(N_\\text{shots}\\times r^2)$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 17"
+      "status": "exact",
+      "display": "O(\"N_shots\" · r^2)",
+      "copy": "qbigorder(qmul(\"N_shots\",qpower('r',2)))"
     },
     {
       "id": "IBM092-bdde16a2-M304",
@@ -3130,8 +3143,8 @@
       "end": 948,
       "literal": "$$\n\\tilde{H}_{j,k} = \\langle\\psi|e^{i\\,j\\,H\\,dt}He^{-i\\,k\\,H\\,dt}|\\psi\\rangle=\\langle\\psi|He^{i(j-k)H\\,dt}|\\psi\\rangle\n$$",
       "status": "exact",
-      "display": "H_tilde_(j,k) = ⟨ψ| (e^(i · j · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · d · t) · (e · H)^(−i · k · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · d · t)) |ψ⟩ = ⟨ψ| (e · H)^(i · (j − k) · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · d · t) |ψ⟩",
-      "copy": "qequalchain(vector(qindexedcoefficient(\"H_tilde_\",'j','k'),qmul(qmul(qdag(qnamedket('ψ')),qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(i,'j'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))),qpower(e'H',qadjacent(qadjacent(qadjacent(−i,'k'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qpower(e'H',qadjacent(qadjacent(qmul(i,qsub('j','k')),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t')))),qnamedket('ψ'))))"
+      "display": "H_tilde_(j,k) = ⟨ψ| (qpropagator('H', qmul(−'j', \"dt\")) · qoperatorref('H') · qpropagator('H', qmul('k', \"dt\"))) |ψ⟩ = ⟨ψ| (qoperatorref('H') · qpropagator('H', qmul(−qsub('j', 'k'), \"dt\"))) |ψ⟩",
+      "copy": "qequalchain(vector(qindexedcoefficient(\"H_tilde_\",'j','k'),qmul(qmul(qdag(qnamedket('ψ')),qmul(qadjacent(qpropagator('H',qmul(−'j',\"dt\")),qoperatorref('H')),qpropagator('H',qmul('k',\"dt\")))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qmul(qoperatorref('H'),qpropagator('H',qmul(−qsub('j', 'k'),\"dt\")))),qnamedket('ψ'))))"
     },
     {
       "id": "IBM092-bdde16a2-M314",
@@ -3180,8 +3193,8 @@
       "end": 1505,
       "literal": "$f(E_0)=1$",
       "status": "exact",
-      "display": "\"E_0\" = 1 / f and f ≠ 0",
-      "copy": "((\"E_0\")==(1 ∕ 'f') and ('f')!=(0))"
+      "display": "qscalarat('f', \"E_0\") = 1",
+      "copy": "(qscalarat('f',\"E_0\"))==(1)"
     },
     {
       "id": "IBM092-bdde16a2-M319",
@@ -3327,8 +3340,8 @@
       "end": 2396,
       "literal": "$$\nf(H)|\\psi\\rangle = \\sum_{k=0}^{N}\\gamma_kf(E_k)|E_k\\rangle,\n$$",
       "status": "exact",
-      "display": "[f / √(2), f / √(2); f / √(2), −(f / √(2))] |ψ⟩ = ∑_{j=0}^{N} ((γ · E_j · '_' · f · k) (|E_j⟩))",
-      "copy": "qcompare(qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ')),qsum(qadjacent(qmul(qmul(qmul(qmul(γ,'_'),'f'),'k'),qindexedlabel(\"E_\",\"qboundindex_0\",\"\")),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)"
+      "display": "qcompare(qadjacent(qpolynomialat('f', qoperatorref('H')), qnamedket('ψ')), qsum(qadjacent(qmul(qindexedlabel(\"γ_\", \"qboundindex_0\", \"\"), qpolynomialat('f', qindexedlabel(\"E_\", \"qboundindex_0\", \"\"))), qindexedket(qindexedlabel(\"E_\", \"qboundindex_0\", \"\"))), 0, 'N', \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qadjacent(qpolynomialat('f',qoperatorref('H')),qnamedket('ψ')),qsum(qadjacent(qmul(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"),qpolynomialat('f',qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM092-bdde16a2-M334",
@@ -3463,8 +3476,8 @@
       "end": 3684,
       "literal": "$f(E_0)^2=1$",
       "status": "exact",
-      "display": "\"E_0\" = −1 ∕ |'f'| and f ≠ 0 or \"E_0\" = 1 ∕ |'f'| and f ≠ 0",
-      "copy": "(((\"E_0\")==(1 ∕ |'f'|) and ('f')!=(0)) or ((\"E_0\")==(−1 ∕ |'f'|) and ('f')!=(0)))"
+      "display": "qscalarat('f', \"E_0\") = 1 or qscalarat('f', \"E_0\") = −1",
+      "copy": "((qscalarat('f',\"E_0\"))==(1) or (qscalarat('f',\"E_0\"))==(−1))"
     },
     {
       "id": "IBM092-bdde16a2-M348",
@@ -3502,8 +3515,8 @@
       "end": 3987,
       "literal": "$f(E_k)^2 \\le 4\\left(1 + \\delta\\right)^{-2d}$",
       "status": "exact",
-      "display": "\"E_k\"² ≤ 4 / (('δ' + 1)^(2 · d) · f^2) or f = 0 and 'δ' ≠ −1 and 1 / ('δ' + 1)^(2 · d) ≥ 0 or f = 0 and 1 / ('δ' + 1)^(2 · d) ≥ 0 and d ≤ 0",
-      "copy": "((\"E_k\"²)<=(4 ∕ (('δ' + 1)^(2 ⋅ 'd') ⋅ 'f'^2)) or (('d')<=(0) and ('f')==(0) and (1 ∕ ('δ' + 1)^(2'd'))>=(0)) or (('f')==(0) and ('δ')!=(−1) and (1 ∕ ('δ' + 1)^(2'd'))>=(0)))"
+      "display": "qscalarat('f', \"E_k\")² ≤ 4 / ('δ' + 1)^(2 · d)",
+      "copy": "(qscalarat('f', \"E_k\")²)<=(4 ∕ ('δ' + 1)^(2 ⋅ 'd'))"
     },
     {
       "id": "IBM092-bdde16a2-M352",
@@ -3686,8 +3699,9 @@
       "start": 6232,
       "end": 6269,
       "literal": "$-\\pi < E_0dt < E_\\text{max}dt < \\pi$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 28"
+      "status": "exact",
+      "display": "\"E_0dt\" > −π and \"E_0dt\" < \"E_maxdt\" and \"E_maxdt\" < π",
+      "copy": "((\"E_0dt\")<(\"E_maxdt\") and (\"E_0dt\")>(−π) and (\"E_maxdt\")<(π))"
     },
     {
       "id": "IBM092-bdde16a2-M371",
@@ -3845,8 +3859,8 @@
       "end": 7036,
       "literal": "$f(E_0)=p(0)=1$",
       "status": "exact",
-      "display": "\"E_0\" · f = 0 = 1",
-      "copy": "qequalchain(vector(\"E_0\" ⋅ 'f',0,1))"
+      "display": "qscalarat('f', \"E_0\") = qscalarat('p', 0) = 1",
+      "copy": "qequalchain(vector(qscalarat('f',\"E_0\"),qscalarat('p',0),1))"
     },
     {
       "id": "IBM092-bdde16a2-M387",

@@ -1,75 +1,31 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/vqe.ipynb",
   "notebook_sha256": "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "c0a715fb9b0a14b9133f7629d62f61faa2aff4e0bbd27f5f5786875f51deae8b",
+  "records_sha256": "51377f31ee017c454d613b82e7ea6e19649782510c09996ac8330dcd22bbdd15",
   "suite": {
     "passed": true,
-    "checks": 497,
+    "checks": 707,
     "calls": 91,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 45,
-    "restored_identically": 45,
-    "stable_after_text_reentry": 45,
-    "source_diagnostic": 46
+    "source_exact": 75,
+    "restored_identically": 75,
+    "stable_after_text_reentry": 75,
+    "source_diagnostic": 16
   },
   "diagnostics": [
     {
-      "id": "IBM091-868393ba-M004",
-      "message": "Unsupported TeX command: \\vec at byte 5"
-    },
-    {
-      "id": "IBM091-868393ba-M005",
-      "message": "Unsupported TeX command: \\vec at byte 5"
-    },
-    {
-      "id": "IBM091-868393ba-M006",
-      "message": "Unsupported text in a mathematical expression at byte 14"
-    },
-    {
-      "id": "IBM091-868393ba-M008",
-      "message": "Unsupported TeX command: \\vec at byte 12"
-    },
-    {
-      "id": "IBM091-868393ba-M011",
-      "message": "Unsupported TeX command: \\vec at byte 19"
-    },
-    {
-      "id": "IBM091-868393ba-M014",
-      "message": "Unsupported TeX command: \\vec at byte 11"
-    },
-    {
       "id": "IBM091-868393ba-M015",
-      "message": "Unsupported TeX command: \\vec at byte 31"
-    },
-    {
-      "id": "IBM091-868393ba-M016",
-      "message": "Unsupported TeX command: \\vec at byte 11"
-    },
-    {
-      "id": "IBM091-868393ba-M017",
-      "message": "Unsupported TeX command: \\vec at byte 5"
-    },
-    {
-      "id": "IBM091-868393ba-M020",
-      "message": "Unsupported text in a mathematical expression at byte 17"
-    },
-    {
-      "id": "IBM091-868393ba-M021",
-      "message": "Unsupported text in a mathematical expression at byte 35"
-    },
-    {
-      "id": "IBM091-868393ba-M022",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "message": "Unclosed magnitude of a Dirac expression; use |<a|U|b>|."
     },
     {
       "id": "IBM091-868393ba-M025",
-      "message": "Unsupported TeX command: \\vec at byte 19"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM091-868393ba-M026",
@@ -81,75 +37,27 @@
     },
     {
       "id": "IBM091-868393ba-M032",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
     },
     {
       "id": "IBM091-868393ba-M033",
       "message": "Invalid decimal number at byte 37"
     },
     {
-      "id": "IBM091-868393ba-M035",
-      "message": "Unsupported text in a mathematical expression at byte 17"
-    },
-    {
-      "id": "IBM091-868393ba-M037",
-      "message": "Unsupported text in a mathematical expression at byte 18"
-    },
-    {
       "id": "IBM091-868393ba-M039",
       "message": "A finite sum/product requires lower and upper bounds at byte 12"
     },
     {
-      "id": "IBM091-868393ba-M040",
-      "message": "Unsupported text in a mathematical expression at byte 13"
-    },
-    {
-      "id": "IBM091-868393ba-M041",
-      "message": "Unsupported text in a mathematical expression at byte 17"
-    },
-    {
-      "id": "IBM091-868393ba-M042",
-      "message": "Unsupported text in a mathematical expression at byte 18"
-    },
-    {
       "id": "IBM091-868393ba-M043",
-      "message": "Unsupported text in a mathematical expression at byte 30"
-    },
-    {
-      "id": "IBM091-868393ba-M045",
-      "message": "Unsupported text in a mathematical expression at byte 30"
-    },
-    {
-      "id": "IBM091-868393ba-M046",
-      "message": "Unsupported TeX command: \\vec at byte 5"
-    },
-    {
-      "id": "IBM091-868393ba-M047",
-      "message": "Unsupported TeX command: \\vec at byte 11"
-    },
-    {
-      "id": "IBM091-868393ba-M048",
-      "message": "Unsupported TeX command: \\vec at byte 17"
+      "message": "Invalid summation index at byte 292"
     },
     {
       "id": "IBM091-868393ba-M049",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "message": "Unexpected notation at byte 43"
     },
     {
       "id": "IBM091-868393ba-M050",
       "message": "Unsupported TeX command: \\min at byte 6"
-    },
-    {
-      "id": "IBM091-868393ba-M051",
-      "message": "Unsupported TeX command: \\vec at byte 11"
-    },
-    {
-      "id": "IBM091-868393ba-M052",
-      "message": "Unsupported TeX command: \\vec at byte 17"
-    },
-    {
-      "id": "IBM091-868393ba-M056",
-      "message": "Unsupported TeX command: \\vec at byte 11"
     },
     {
       "id": "IBM091-868393ba-M065",
@@ -161,43 +69,15 @@
     },
     {
       "id": "IBM091-868393ba-M068",
-      "message": "Unsupported TeX command: \\vec at byte 19"
-    },
-    {
-      "id": "IBM091-868393ba-M073",
-      "message": "Unsupported TeX command: \\mu at byte 4"
-    },
-    {
-      "id": "IBM091-868393ba-M075",
-      "message": "Unsupported TeX command: \\mu at byte 4"
+      "message": "A finite sum/product requires lower and upper bounds at byte 132"
     },
     {
       "id": "IBM091-868393ba-M077",
-      "message": "Unsupported TeX command: \\vec at byte 35"
+      "message": "Unsupported TeX command: \\simeq at byte 147"
     },
     {
       "id": "IBM091-868393ba-M079",
       "message": "Finite sum bounds must be integers or unresolved symbolic expressions."
-    },
-    {
-      "id": "IBM091-868393ba-M081",
-      "message": "Unsupported text in a mathematical expression at byte 12"
-    },
-    {
-      "id": "IBM091-868393ba-M082",
-      "message": "Unsupported text in a mathematical expression at byte 12"
-    },
-    {
-      "id": "IBM091-868393ba-M084",
-      "message": "Unsupported text in a mathematical expression at byte 13"
-    },
-    {
-      "id": "IBM091-868393ba-M085",
-      "message": "Unsupported text in a mathematical expression at byte 13"
-    },
-    {
-      "id": "IBM091-868393ba-M087",
-      "message": "Unsupported TeX command: \\vec at byte 5"
     },
     {
       "id": "IBM091-868393ba-M088",

@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/vqe.ipynb",
   "source_sha256": "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c",
-  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
-  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
+  "revision": "abd6edf3d824befb92236e9bf93a8bd4718f2aaf",
   "mode": "Quantum notation",
   "markdown_cells": 24,
   "code_cells": 15,
   "summary": {
-    "exact": 45,
-    "diagnostic": 46
+    "exact": 75,
+    "diagnostic": 16
   },
   "figures": [
     {
@@ -91,8 +91,9 @@
       "start": 990,
       "end": 1004,
       "literal": "$\\vec{\\theta}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     },
     {
       "id": "IBM091-868393ba-M005",
@@ -100,8 +101,9 @@
       "start": 1191,
       "end": 1207,
       "literal": "$\\vec{\\theta_0}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 0, \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",0,\"\"))"
     },
     {
       "id": "IBM091-868393ba-M006",
@@ -109,8 +111,9 @@
       "start": 1313,
       "end": 1345,
       "literal": "$U_{\\text{var}}(\\vec{\\theta_0})$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "status": "exact",
+      "display": "qoperatorat(\"U_var\", qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qoperatorat(\"U_var\",qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
     },
     {
       "id": "IBM091-868393ba-M007",
@@ -128,8 +131,9 @@
       "start": 1500,
       "end": 1586,
       "literal": "$$\n|\\psi(\\vec{\\theta_0})\\rangle=U_{\\text{var}}(\\vec{\\theta_0})|0\\rangle^{\\otimes N}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 12"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\"))) = qoperatorat(\"U_var\", qvectorref(qindexedlabel(\"θ_\", 0, \"\"))) · |0^N⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\"))),qadjacent(qoperatorat(\"U_var\",qvectorref(qindexedlabel(\"θ_\",0,\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
     },
     {
       "id": "IBM091-868393ba-M009",
@@ -157,8 +161,9 @@
       "start": 2206,
       "end": 2273,
       "literal": "$$\n\\langle \\psi(\\vec{\\theta_0}) |H|\\psi (\\vec{\\theta_0}) \\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 19"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qmul(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\")))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\"))))"
     },
     {
       "id": "IBM091-868393ba-M012",
@@ -186,8 +191,9 @@
       "start": 2404,
       "end": 2434,
       "literal": "$|\\psi(\\vec{\\theta_0})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
     },
     {
       "id": "IBM091-868393ba-M015",
@@ -196,7 +202,7 @@
       "end": 2566,
       "literal": "$$\nP_j=|\\langle \\phi_j|\\psi(\\vec{\\theta_0})\\rangle|^2 = |\\langle \\phi_j|U_{\\text{var}}(\\vec{\\theta_0})|0\\rangle^{\\otimes N}|^2\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 31"
+      "message": "Unclosed magnitude of a Dirac expression; use |<a|U|b>|."
     },
     {
       "id": "IBM091-868393ba-M016",
@@ -204,8 +210,9 @@
       "start": 2736,
       "end": 2766,
       "literal": "$|\\psi(\\vec{\\theta_0})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 0, \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",0,\"\")))"
     },
     {
       "id": "IBM091-868393ba-M017",
@@ -213,8 +220,9 @@
       "start": 2808,
       "end": 2822,
       "literal": "$\\vec{\\theta}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref('θ')",
+      "copy": "qvectorref('θ')"
     },
     {
       "id": "IBM091-868393ba-M018",
@@ -242,8 +250,9 @@
       "start": 3623,
       "end": 3700,
       "literal": "$U_{\\text{ansatz}}(\\vec{\\theta}) =U_{\\text{var}}(\\vec{\\theta})U_{\\text{ref}}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 17"
+      "status": "exact",
+      "display": "qoperatorat(\"U_ansatz\", qvectorref('θ')) = qoperatorat(\"U_var\", qvectorref('θ')) · qoperatorref(\"U_ref\")",
+      "copy": "qcompare(qoperatorat(\"U_ansatz\",qvectorref('θ')),qadjacent(qoperatorat(\"U_var\",qvectorref('θ')),qoperatorref(\"U_ref\")),4)"
     },
     {
       "id": "IBM091-868393ba-M021",
@@ -251,8 +260,9 @@
       "start": 3716,
       "end": 3974,
       "literal": "$$\n\\begin{aligned}\n|\\psi_{\\text{ref}}\\rangle&=U_{\\text{ref}}|0\\rangle^{\\otimes N}\\\\\n|\\psi_{\\text{ansatz}}(\\vec{\\theta})\\rangle&=U_{var}(\\vec{\\theta})|\\psi_{\\text{ref}}\\rangle = U_{\\text{var}}(\\vec{\\theta})U_{\\text{ref}}|0\\rangle^{\\otimes N}.\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 35"
+      "status": "exact",
+      "display": "1.  |ψ_ref⟩ = qoperatorref(\"U_ref\") · |0^N⟩\n\n2.  qstatecall(\"ψ_ansatz\", qvectorref('θ')) = qoperatorat(\"U_var\", qvectorref('θ')) |ψ_ref⟩ = qoperatorat(\"U_var\", qvectorref('θ')) · qoperatorref(\"U_ref\") · |0^N⟩",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"ψ_ref\"),qadjacent(qoperatorref(\"U_ref\"),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)\\\\qequalchain(vector(qstatecall(\"ψ_ansatz\",qvectorref('θ')),qadjacent(qoperatorat(\"U_var\",qvectorref('θ')),qnamedket(\"ψ_ref\")),qadjacent(qadjacent(qoperatorat(\"U_var\",qvectorref('θ')),qoperatorref(\"U_ref\")),qtensorpow(matrix(2,1,vector(1,0)),'N'))))\\end{gathered}"
     },
     {
       "id": "IBM091-868393ba-M022",
@@ -260,8 +270,9 @@
       "start": 120,
       "end": 148,
       "literal": "$|\\psi(\\vec{\\theta})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref('θ'))",
+      "copy": "qstatecall('ψ',qvectorref('θ'))"
     },
     {
       "id": "IBM091-868393ba-M023",
@@ -290,7 +301,7 @@
       "end": 403,
       "literal": "$$\n\\langle \\psi(\\vec{\\theta})|H|\\psi(\\vec{\\theta})\\rangle _N \\approx \\frac{1}{N}\\sum_{j=1}^N {E_j}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 19"
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
     },
     {
       "id": "IBM091-868393ba-M026",
@@ -357,7 +368,7 @@
       "end": 393,
       "literal": "$$\nE_\\text{var}=\\langle \\psi_\\text{var}|H|\\psi_\\text{var}\\rangle \\geq E_\\text{min}=\\langle \\psi_\\text{0}|H|\\psi_\\text{0}\\rangle\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
     },
     {
       "id": "IBM091-868393ba-M033",
@@ -384,8 +395,9 @@
       "start": 629,
       "end": 654,
       "literal": "$|\\psi_\\text{var}\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 17"
+      "status": "exact",
+      "display": "|ψ_var⟩",
+      "copy": "qketstate(\"ψ_var\")"
     },
     {
       "id": "IBM091-868393ba-M036",
@@ -403,8 +415,9 @@
       "start": 730,
       "end": 791,
       "literal": "$$\n|\\psi_\\text{var}\\rangle=\\sum_{i=0}^n c_i |\\psi_i\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 18"
+      "status": "exact",
+      "display": "|ψ_var⟩ = ∑_{k=0}^{n} (c_k |ψ_k⟩)",
+      "copy": "qcompare(qketstate(\"ψ_var\"),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\"))),0,n,\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM091-868393ba-M038",
@@ -431,8 +444,9 @@
       "start": 1116,
       "end": 1138,
       "literal": "$E_\\text{var}\\geq E_0$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 13"
+      "status": "exact",
+      "display": "\"E_0\" ≤ \"E_var\"",
+      "copy": "(\"E_0\")<=(\"E_var\")"
     },
     {
       "id": "IBM091-868393ba-M041",
@@ -440,8 +454,9 @@
       "start": 1165,
       "end": 1190,
       "literal": "$|\\psi_\\text{var}\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 17"
+      "status": "exact",
+      "display": "|ψ_var⟩",
+      "copy": "qketstate(\"ψ_var\")"
     },
     {
       "id": "IBM091-868393ba-M042",
@@ -449,8 +464,9 @@
       "start": 1324,
       "end": 1386,
       "literal": "$$\n|\\psi_\\text{var}\\rangle=\\sum_{i=0}^n c_i |\\psi_i\\rangle,\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 18"
+      "status": "exact",
+      "display": "|ψ_var⟩ = ∑_{k=0}^{n} (c_k |ψ_k⟩)",
+      "copy": "qcompare(qketstate(\"ψ_var\"),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\"))),0,n,\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM091-868393ba-M043",
@@ -459,7 +475,7 @@
       "end": 1873,
       "literal": "$$\n\\begin{aligned}\nE_\\text{var}&=\\langle \\psi_\\text{var}|H|\\psi_\\text{var}\\rangle =\\left(\\sum_{i=0}^n c^*_i \\langle \\psi_i|\\right)H\\left(\\sum_{j=0}^n c_j |\\psi_j\\rangle\\right)\\\\\n&=\\left(\\sum_{i=0}^n c^*_i \\langle \\psi_i|\\right)\\left(\\sum_{j=0}^n c_j E_j|\\psi_j\\rangle\\right)\\\\\n&=\\sum_{i,j=0}^n c^*_i c_j E_j \\langle \\psi_i|\\psi_j\\rangle\\\\\n&=\\sum_{i,j=0}^n c^*_i c_j E_j \\delta_{i,j}\\\\\n&=\\sum_{i=0}^n |c_i|^2 E_i.\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 30"
+      "message": "Invalid summation index at byte 292"
     },
     {
       "id": "IBM091-868393ba-M044",
@@ -477,8 +493,9 @@
       "start": 1933,
       "end": 2097,
       "literal": "$$\n\\begin{aligned}\nE_\\text{var}&=\\sum_{i=0}^n |c_i|^2 E_i\\geq \\sum_{i=0}^n |c_i|^2 E_0 = E_0 \\sum_{i=0}^n |c_i|^2 = E_0(1) \\\\\nE_\\text{var}&\\geq E_0\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 30"
+      "status": "exact",
+      "display": "1.  \"E_var\" = ∑_{k=0}^{n} (|c_k|^2 · E_k) and \"E_0\" · (∑_{j=0}^{n} (|c_j|^2)) = \"E_0\" · 1 and (∑_{l=0}^{n} (|c_l|^2 · \"E_0\")) − (\"E_0\" · (∑_{t=0}^{n} (|c_t|^2))) = 0 and (∑_{k1=0}^{n} (|c_k1|^2 · E_k1)) − (∑_{k2=0}^{n} (|c_k2|^2 · \"E_0\")) ≥ 0\n\n2.  \"E_0\" ≤ \"E_var\"",
+      "copy": "\\begin{gathered}((qadd(qmul(−1,qadjacent(\"E_0\",qsum(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_2\",\"\")),2),0,n,\"qboundindex_2\"))),qsum(qadjacent(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_1\",\"\")),2),\"E_0\"),0,n,\"qboundindex_1\")))==(0) and (qadd(qsum(qadjacent(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_0\",\"\")),2),qindexedlabel(\"E_\",\"qboundindex_0\",\"\")),0,n,\"qboundindex_0\"),qmul(−1,qsum(qadjacent(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_1\",\"\")),2),\"E_0\"),0,n,\"qboundindex_1\"))))>=(0) and qcompare(\"E_var\",qsum(qadjacent(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_0\",\"\")),2),qindexedlabel(\"E_\",\"qboundindex_0\",\"\")),0,n,\"qboundindex_0\"),4) and qcompare(qadjacent(\"E_0\",qsum(qpower(qbars(qindexedlabel(\"c_\",\"qboundindex_2\",\"\")),2),0,n,\"qboundindex_2\")),qmul(\"E_0\",1),4))\\\\(\"E_0\")<=(\"E_var\")\\end{gathered}"
     },
     {
       "id": "IBM091-868393ba-M046",
@@ -486,8 +503,9 @@
       "start": 676,
       "end": 692,
       "literal": "$\\vec{\\theta}_i$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 'i', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",'i',\"\"))"
     },
     {
       "id": "IBM091-868393ba-M047",
@@ -495,8 +513,9 @@
       "start": 713,
       "end": 743,
       "literal": "$|\\psi(\\vec{\\theta}_i)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\")))"
     },
     {
       "id": "IBM091-868393ba-M048",
@@ -504,8 +523,9 @@
       "start": 983,
       "end": 1042,
       "literal": "$\\langle\\psi(\\vec{\\theta}_i)|H|\\psi(\\vec{\\theta}_i)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 17"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))",
+      "copy": "qmul(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\")))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\"))))"
     },
     {
       "id": "IBM091-868393ba-M049",
@@ -514,7 +534,7 @@
       "end": 1136,
       "literal": "$\\vec{\\theta}_i\\rightarrow \\vec{\\theta}_{i+1}$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "message": "Unexpected notation at byte 43"
     },
     {
       "id": "IBM091-868393ba-M050",
@@ -531,8 +551,9 @@
       "start": 2356,
       "end": 2386,
       "literal": "$|\\psi(\\vec{\\theta_i})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\")))"
     },
     {
       "id": "IBM091-868393ba-M052",
@@ -540,8 +561,9 @@
       "start": 2388,
       "end": 2447,
       "literal": "$\\langle\\psi(\\vec{\\theta_i})|H|\\psi(\\vec{\\theta_i})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 17"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))",
+      "copy": "qmul(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\")))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\"))))"
     },
     {
       "id": "IBM091-868393ba-M053",
@@ -579,8 +601,9 @@
       "start": 2918,
       "end": 2948,
       "literal": "$|\\psi(\\vec{\\theta_i})\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 11"
+      "status": "exact",
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"θ_\", 'i', \"\")))",
+      "copy": "qstatecall('ψ',qvectorref(qindexedlabel(\"θ_\",'i',\"\")))"
     },
     {
       "id": "IBM091-868393ba-M057",
@@ -697,7 +720,7 @@
       "end": 4246,
       "literal": "$$\n\\langle \\psi(\\vec{\\theta}_i) |H|\\psi(\\vec{\\theta}_i) \\rangle =\\sum_{\\alpha} c_\\alpha \\langle \\psi(\\vec{\\theta}_i) | h_\\alpha|\\psi(\\vec{\\theta}_i) \\rangle\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 19"
+      "message": "A finite sum/product requires lower and upper bounds at byte 132"
     },
     {
       "id": "IBM091-868393ba-M069",
@@ -745,8 +768,9 @@
       "start": 4392,
       "end": 4404,
       "literal": "$\\mu_\\alpha$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 4"
+      "status": "exact",
+      "display": "\"μ_α\"",
+      "copy": "\"μ_α\""
     },
     {
       "id": "IBM091-868393ba-M074",
@@ -764,8 +788,9 @@
       "start": 4546,
       "end": 4551,
       "literal": "$\\mu$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 4"
+      "status": "exact",
+      "display": "'μ'",
+      "copy": "'μ'"
     },
     {
       "id": "IBM091-868393ba-M076",
@@ -784,7 +809,7 @@
       "end": 5074,
       "literal": "$$\n\\begin{aligned}\n\\langle \\psi(\\vec{\\theta}_i) |h_\\alpha|\\psi(\\vec{\\theta}_i) \\rangle &\\simeq \\mu _\\alpha \\pm \\frac{\\sigma_\\alpha}{\\sqrt{M}} &\\qquad \\mu_\\alpha &=\\frac{1}{M}\\sum_j s_{\\alpha,j} &\\qquad \\sigma^2_\\alpha &=\\frac{1}{M-1}\\sum_j (s_{\\alpha,j}-\\mu_\\alpha)^2\\\\\n\n\\langle \\psi(\\vec{\\theta}_i) |H|\\psi(\\vec{\\theta}_i) \\rangle &\\simeq \\mu  \\pm \\sigma &\\qquad \\mu &= \\sum_\\alpha c_\\alpha \\mu_\\alpha &\\qquad \\sigma^2&=\\sum_\\alpha c^2_\\alpha \\frac{\\sigma^2_\\alpha }{M}\n\n\\end{aligned}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 35"
+      "message": "Unsupported TeX command: \\simeq at byte 147"
     },
     {
       "id": "IBM091-868393ba-M078",
@@ -821,8 +846,9 @@
       "start": 1043,
       "end": 1056,
       "literal": "$n^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
     },
     {
       "id": "IBM091-868393ba-M082",
@@ -830,8 +856,9 @@
       "start": 1099,
       "end": 1112,
       "literal": "$n^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
     },
     {
       "id": "IBM091-868393ba-M083",
@@ -849,8 +876,9 @@
       "start": 2671,
       "end": 2685,
       "literal": "$N_\\text{GCP}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 13"
+      "status": "exact",
+      "display": "\"N_GCP\"",
+      "copy": "\"N_GCP\""
     },
     {
       "id": "IBM091-868393ba-M085",
@@ -858,8 +886,9 @@
       "start": 2690,
       "end": 2704,
       "literal": "$N_\\text{GCP}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 13"
+      "status": "exact",
+      "display": "\"N_GCP\"",
+      "copy": "\"N_GCP\""
     },
     {
       "id": "IBM091-868393ba-M086",
@@ -877,8 +906,9 @@
       "start": 3573,
       "end": 3589,
       "literal": "$\\vec{\\theta_i}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\vec at byte 5"
+      "status": "exact",
+      "display": "qvectorref(qindexedlabel(\"θ_\", 'i', \"\"))",
+      "copy": "qvectorref(qindexedlabel(\"θ_\",'i',\"\"))"
     },
     {
       "id": "IBM091-868393ba-M088",
