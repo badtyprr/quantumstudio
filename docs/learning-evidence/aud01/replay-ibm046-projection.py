@@ -50,3 +50,14 @@ for source, orthogonal in [(inequality, "1"), (inequality.replace(r"\leq", r"\ge
         bound = f'replace(replace(({equation}),qnamedket("ψ"),|0>),qnamedket("φ"),{phi})'
         assert evaluate(bound) == expected
 print("Verified the Cauchy-Schwarz bound and its reversal for parallel and orthogonal states")
+
+# Extending an m-vector orthonormal list to dimension n introduces indices m+1 through n.
+for index in (76, 100):
+    family = evaluate(rows[index - 1]["literal"])
+    assert family == rows[index - 1]["copy"]
+    for start, end in [(0, 2), (1, 4), (2, 2)]:
+        names = ",".join(f'qketstate("ψ_{j}")' for j in range(start + 1, end + 1))
+        expected = evaluate(f"vector({names})")
+        assert evaluate(f"replace(replace(({family}),m,{start}),n,{end})") == expected
+        assert evaluate(f"replace(replace(({family}),n,{end}),m,{start})") == expected
+print("Verified both basis-completion ranges, including an already complete basis")

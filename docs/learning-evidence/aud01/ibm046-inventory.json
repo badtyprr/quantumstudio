@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "53cc62a85a7dda21b8c8001ef2f958bf9c755dd8ce8fe4d2928219abef6ef48a",
-  "revision": "0cbb941721464dd74da77d30b9a17c9f5795894e",
+  "worker_sha256": "dfdecd34d5e850d74f16c58370827f05bc78758bb60b4849e7c66bccb7d967ca",
+  "revision": "d5f267695b44a2966c87d6b944fac1363b70fb73",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 223,
-    "diagnostic": 16
+    "exact": 225,
+    "diagnostic": 14
   },
   "figures": [],
   "rows": [
@@ -767,8 +767,9 @@
       "start": 9561,
       "end": 9612,
       "literal": "$\\vert \\psi_{m+1}\\rangle,\\ldots,\\vert\\psi_n\\rangle$",
-      "status": "diagnostic",
-      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+      "status": "exact",
+      "display": "qindexedketlist(\"ψ_\", qadd('m', 1), n, [])",
+      "copy": "qindexedketlist(\"ψ_\",qadd('m',1),n,vector())"
     },
     {
       "id": "IBM046-3c1262a5-M077",
@@ -1004,8 +1005,9 @@
       "start": 14971,
       "end": 15021,
       "literal": "$\\vert\\psi_{m+1}\\rangle,\\ldots,\\vert\\psi_n\\rangle$",
-      "status": "diagnostic",
-      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+      "status": "exact",
+      "display": "qindexedketlist(\"ψ_\", qadd('m', 1), n, [])",
+      "copy": "qindexedketlist(\"ψ_\",qadd('m',1),n,vector())"
     },
     {
       "id": "IBM046-3c1262a5-M101",
