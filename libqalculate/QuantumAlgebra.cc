@@ -877,6 +877,23 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qrealvectormember") {
+   MathStructure value=raw[0],dimension=raw[1];value.eval(eo);dimension.eval(eo);
+   if(!dimension.isNumber())return 0;
+   if(!dimension.number().isInteger() || dimension.number().isNegative()) {
+    CALCULATOR->error(true,"A real vector space needs a nonnegative integer dimension.",NULL);return 0;
+   }
+   if(value.isFunction() || value.isSymbolic() || value.isUnknown())return 0;
+   if(!value.isVector() || (value.isMatrix() && value.rows()!=1 && value.columns()!=1)) {out=0;return 1;}
+   size_t count=value.isMatrix() ? value.rows()*value.columns() : value.size();
+   if(dimension.number()!=Number((long int)count)) {out=0;return 1;}
+   for(size_t k=0;k<count;++k) {
+    const auto &part=value.isMatrix() ? *value.getElement(value.rows()==1 ? 1 : k+1,value.rows()==1 ? k+1 : 1) : value[k];
+    if(!part.isNumber())return 0;
+    if(!part.number().isReal() || part.number().includesInfinity()) {out=0;return 1;}
+   }
+   out=1;return 1;
+  }
   if(op=="qvectordot") {
    MathStructure vectors[2]={raw[0],raw[1]};
    for(auto &v:vectors) {
@@ -1605,6 +1622,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
  calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
  calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qrealvectormember",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));

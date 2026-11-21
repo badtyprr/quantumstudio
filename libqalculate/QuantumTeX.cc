@@ -2233,7 +2233,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper) {
+  static const std::regex percentage(R"(^\s*([+-]?[0-9]+(?:\.[0-9]+)?)\s*\\?%\s*$)");
+  std::smatch percent;
+  if(std::regex_match(s,percent,percentage))return "("+percent[1].str()+"/100)";
   s=withoutTeXCommentLines(s);
+  if(s.find("\\text{X}")!=std::string::npos) {
+   static const std::regex dataset(R"(\\text\{X\}(?:_\{\\text\{([a-z]+)\}\}|_\\text\{([a-z]+)\}))");
+   std::smatch label;
+   while(std::regex_search(s,label,dataset)) {
+    std::string suffix=label[1].matched ? label[1].str() : label[2].str();
+    s.replace(label.position(),label.length(),"\"X_"+suffix+"\"");
+   }
+  }
   // Some displayed equations end in a nonbreaking space before their
   // sentence punctuation or a check mark that annotates the completed proof.
   static const std::regex annotation(R"(\s*~\s*(?:\\checkmark|[.,])\s*$)");
@@ -2344,6 +2355,17 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  static const std::regex dimensionOrder(R"(^\s*([a-z])'\s*([<>])\s*([a-z])\s*$)");
+  std::smatch dimensions;
+  if(std::regex_match(s,dimensions,dimensionOrder))return "\""+dimensions[1].str()+"_prime\""+dimensions[2].str()+"\""+dimensions[3].str()+"\"";
+  if(s.find("\\vec{")!=std::string::npos && s.find("\\mathbb{R}")!=std::string::npos) {
+   static const std::regex realSpace(R"(^\s*(.+?)\s*\\in\s*\\mathbb\{R\}\^\{?([a-zA-Z0-9])('?)\}?\s*$)");
+   if(std::regex_match(s,dimensions,realSpace)) {
+    std::string dimension=dimensions[2].str();
+    if(!isdigit((unsigned char)dimension[0]))dimension="\""+dimension+(dimensions[3].str().empty() ? "" : "_prime")+"\"";
+    return "qrealvectormember("+quantumTeX("$"+dimensions[1].str()+"$")+","+dimension+")";
+   }
+  }
   static const std::regex probability(R"(^\s*P_([a-z0-9])\s*=\s*\|\\langle\s*\\phi_\1\s*\|\s*\\psi\s*\\rangle\|\^2\s*$)");
   std::smatch prob;
   if(std::regex_match(s,prob,probability)) {
@@ -2465,6 +2487,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return "qfeatureat(\"Φ\","+vectorArgument(arg)+")";
   };
   static const std::regex featureKet("\\|\\\\Phi\\(("+vec+")\\)\\\\rangle");
+  static const std::regex featureOperator(R"(\\mathscr\{U\}_\{\\text\{([A-Za-z]+)\}\}\s*(?:\\left)?\()");
+  s=std::regex_replace(s,featureOperator,"qoperatorat(\"U_$1\",");
+  static const std::regex bareEncoder("(^|[^A-Za-z])U\\(("+vec+")\\)");
+  while(std::regex_search(s,call,bareEncoder)) {
+   std::string value=call[1].str()+"qoperatorat(\"U\","+vectorArgument(call[2].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
   static const std::regex indexedPhase("\\\\phi_([A-Za-z])\\(("+vec+")\\)");
   while(std::regex_search(s,call,featureKet)) {
    std::string value="qstatecall(\"Φ\","+vectorArgument(call[1].str())+")";
@@ -2796,7 +2825,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // may be ordinary exponentiation or part of an existing register binder.
  if(mathWrapper) {
   std::smatch m;
-  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\)|[a-z]|[0-9]+)\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
+  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\)|[A-Za-z]|[0-9]+)\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
   if(std::regex_match(s,m,ordinal))return quantumTeX(m[1].str());
   static const std::regex sampledSet(R"(^\s*\\\{([a-z])_([a-z])\\\}_\{\2=(\d+)\}\^([A-Za-z0-9]+)\s*$)");
   if(std::regex_match(s,m,sampledSet))return "qindexedset(\""+m[1].str()+"_\","+m[3].str()+","+m[4].str()+",vector())";

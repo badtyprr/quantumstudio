@@ -79,3 +79,25 @@ assert run(phase.replace('"φ_S"',"vector(vector(vector(2,4),8))"))=="8"
 evolution=other_source(98,272).replace("'H'","Z").replace("'t'","(pi/2)")
 assert run(f"qcompare({evolution},(i*Z),4)")=="1"
 print("Verified squared overlaps, labeled circuit states and signed encoding phases.")
+
+real_space=other_source(99,2).replace("'d'","2")
+for vector,expected in [("vector(2,3)","1"),("vector(i,3)","0"),("vector(2,3,4)","0")]:
+    assert run(real_space.replace("'x'",vector))==expected
+feature_space=other_source(99,3).replace("'x'","vector(1,2)").replace("'Φ'",features)
+assert run(feature_space.replace('"d_prime"',"3"))=="1"
+assert run(feature_space.replace('"d_prime"',"2"))=="0"
+ordering=other_source(99,4).replace("'d'","2")
+assert run(ordering.replace('"d_prime"',"3"))=="1"
+assert run(ordering.replace('"d_prime"',"2"))=="0"
+for row,fraction in [(3,"7/10"),(4,"3/10"),(20,"3/5")]:
+    assert run(f"qcompare({other_source(100,row)},{fraction},4)")=="1"
+encoder=other_source(98,215).replace('"U_ZFM"',"vector(vector(vector(2,3),Z))").replace("'x'","vector(2,3)")
+assert run(f"qcompare({encoder},Z,4)")=="1"
+dataset=other_source(98,35)
+# A finite data set contains ordered triples and is insensitive to their listing order.
+points=["4,8,5","9,8,6","2,9,2","5,7,0","3,7,5"]
+def tuples(items):
+    return "qset(vector("+",".join("qtuple(vector("+v+"))" for v in items)+"))"
+assert run(dataset.replace('"X_ex"',tuples(points[::-1])))=="1"
+assert run(dataset.replace('"X_ex"',tuples(points[:-1])))=="0"
+print("Verified real feature-space dimensions, finite datasets, percentages and encoder binding.")
