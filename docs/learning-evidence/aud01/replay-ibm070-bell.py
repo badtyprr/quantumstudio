@@ -23,3 +23,11 @@ gate="qmul(SWAP,qmul(CNOT,SWAP))"
 assert run(definition.replace('qoperatorref("CNOT")',gate))=="1"
 assert run(definition.replace('qoperatorref("CNOT")',"CNOT"))=="0"
 print("Verified Bell amplitudes, both Hadamard columns and CNOT wire order.")
+
+for family,words in (("Phi",("00","11")),("Psi",("01","10"))):
+    for sign in ("+","-"):
+        label=rf"|\{family}_\text{{{sign}}}\rangle"
+        for phase in ("+","-"):
+            expression=rf"${label} = (|{words[0]}\rangle{phase}|{words[1]}\rangle)/\sqrt{{2}}$"
+            assert run(expression)==str(int(phase==sign))
+print("Verified four text-subscript Bell labels against both relative phases.")

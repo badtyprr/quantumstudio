@@ -128,9 +128,17 @@ bool quantumMatrixExp(MathStructure &out,const MathStructure &a,const Evaluation
   if(quadratic) {
    MathStructure root=lambda; root.raise(Number(1,2)); root.eval(eo);
    MathStructure co=scalarFunction("cosh",root,eo), si=scalarFunction("qsinhc",root,eo), factor=scalarFunction("exp",center,eo);
-   out=b; out*=si; out.eval(eo);
-   for(size_t r=0;r<n;++r) entry(out,r,r)+=co;
-   out*=factor; out.eval(eo); return true;
+   // An unevaluated scalar function can leave B*sinhc(root) as a
+   // product node. Apply the scalar to each matrix entry explicitly.
+   out=b;
+   for(size_t r=0;r<n;++r)for(size_t c=0;c<n;++c) {
+    MathStructure &cell=entry(out,r,c);
+    cell*=si;
+    if(r==c)cell+=co;
+    cell*=factor;
+    cell.eval(eo);
+   }
+   return true;
   }
  }
  return numericalExp(out,a,eo);

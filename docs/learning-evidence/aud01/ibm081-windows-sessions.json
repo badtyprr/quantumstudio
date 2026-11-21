@@ -1,0 +1,133 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/noise-and-errors.ipynb",
+  "notebook_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "66fa4670b9534be55604fb056047f1672b7b90d1db424069846cfd70f7b6be65",
+  "suite": {
+    "passed": true,
+    "checks": 2592,
+    "calls": 309,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 282,
+    "restored_identically": 282,
+    "stable_after_text_reentry": 282,
+    "source_diagnostic": 27
+  },
+  "diagnostics": [
+    {
+      "id": "IBM081-7b09f95f-M005",
+      "message": "Unsupported text in a mathematical expression at byte 62"
+    },
+    {
+      "id": "IBM081-7b09f95f-M021",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM081-7b09f95f-M054",
+      "message": "Unsupported text in a mathematical expression at byte 35"
+    },
+    {
+      "id": "IBM081-7b09f95f-M066",
+      "message": "Expected a quantum expression at byte 126"
+    },
+    {
+      "id": "IBM081-7b09f95f-M084",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM081-7b09f95f-M085",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM081-7b09f95f-M087",
+      "message": "Unsupported TeX command: \\vec at byte 6"
+    },
+    {
+      "id": "IBM081-7b09f95f-M102",
+      "message": "Unexpected notation at byte 8"
+    },
+    {
+      "id": "IBM081-7b09f95f-M120",
+      "message": "A finite sum/product requires lower and upper bounds at byte 20"
+    },
+    {
+      "id": "IBM081-7b09f95f-M126",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM081-7b09f95f-M174",
+      "message": "Unsupported TeX command: \\longrightarrow at byte 28"
+    },
+    {
+      "id": "IBM081-7b09f95f-M190",
+      "message": "Unsupported TeX command: \\dots at byte 56"
+    },
+    {
+      "id": "IBM081-7b09f95f-M191",
+      "message": "Unsupported TeX command: \\dots at byte 63"
+    },
+    {
+      "id": "IBM081-7b09f95f-M200",
+      "message": "Quantum operation has incompatible declared matrix dimensions."
+    },
+    {
+      "id": "IBM081-7b09f95f-M219",
+      "message": "Unsupported TeX command: \\lim at byte 35"
+    },
+    {
+      "id": "IBM081-7b09f95f-M226",
+      "message": "Unsupported TeX command: \\lim at byte 6"
+    },
+    {
+      "id": "IBM081-7b09f95f-M243",
+      "message": "Expected a quantum expression at byte 160"
+    },
+    {
+      "id": "IBM081-7b09f95f-M248",
+      "message": "Expected a quantum expression at byte 116"
+    },
+    {
+      "id": "IBM081-7b09f95f-M249",
+      "message": "Expected a quantum expression at byte 244"
+    },
+    {
+      "id": "IBM081-7b09f95f-M251",
+      "message": "Unexpected notation at byte 3"
+    },
+    {
+      "id": "IBM081-7b09f95f-M272",
+      "message": "Unsupported text in a mathematical expression at byte 52"
+    },
+    {
+      "id": "IBM081-7b09f95f-M273",
+      "message": "Unsupported TeX command: \\underbrace at byte 29"
+    },
+    {
+      "id": "IBM081-7b09f95f-M281",
+      "message": "Unclosed quoted label at byte 3"
+    },
+    {
+      "id": "IBM081-7b09f95f-M283",
+      "message": "Unsupported TeX command: \\boxed at byte 8"
+    },
+    {
+      "id": "IBM081-7b09f95f-M284",
+      "message": "Unsupported TeX command: \\boxed at byte 8"
+    },
+    {
+      "id": "IBM081-7b09f95f-M289",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM081-7b09f95f-M290",
+      "message": "Expected ')' at byte 14"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

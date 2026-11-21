@@ -1,0 +1,33 @@
+{
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "records_sha256": "81f6007dc4755ad607c4f3c4bad29c5a7dbff52904f6a83efac9337940237b85",
+  "declarations": {
+    "S": "four-dimensional Hermitian operator",
+    "E": "four-dimensional general matrix"
+  },
+  "verified": {
+    "IBM084-d76bfe7c-M004": "operatorparam('S',4,\"hermitian\")",
+    "IBM084-d76bfe7c-M005": "qcompare(qadjacent(operatorparam('S',4,\"hermitian\"),qnamedket('ψ')),qketstate('ψ'),4)",
+    "IBM084-d76bfe7c-M005-00-I": "1",
+    "IBM084-d76bfe7c-M005-01-I": "0",
+    "IBM084-d76bfe7c-M005-11-I": "1",
+    "IBM084-d76bfe7c-M006": "operatorparam('S',4,\"hermitian\")",
+    "IBM084-d76bfe7c-M149": "qcompare(qadjacent(operatorparam('S',4,\"hermitian\"),qnamedket('ψ')),qketstate('ψ'),4)",
+    "IBM084-d76bfe7c-M149-00-I": "1",
+    "IBM084-d76bfe7c-M149-01-I": "0",
+    "IBM084-d76bfe7c-M149-11-I": "1",
+    "IBM084-d76bfe7c-M151": "operatorparam('S',4,\"hermitian\")",
+    "IBM084-d76bfe7c-M153": "qequalchain(vector(qadjacent(operatorparam('S',4,\"hermitian\"),qadjacent(matrixparam('E',4,4),qnamedket('ψ'))),qadjacent(qadjacent(qmul(−1,matrixparam('E',4,4)),operatorparam('S',4,\"hermitian\")),qnamedket('ψ')),qadjacent(qmul(−1,matrixparam('E',4,4)),qnamedket('ψ'))))",
+    "IBM084-d76bfe7c-M153-00-X": "1",
+    "IBM084-d76bfe7c-M153-00-Z": "0",
+    "IBM084-d76bfe7c-M153-01-X": "0",
+    "IBM084-d76bfe7c-M153-01-Z": "0",
+    "IBM084-d76bfe7c-M153-11-X": "1",
+    "IBM084-d76bfe7c-M153-11-Z": "0",
+    "IBM084-d76bfe7c-M156": "operatorparam('S',4,\"hermitian\")",
+    "IBM084-d76bfe7c-M360": "matrix(2,2,[1,0,0,−i])",
+    "phase-360": "1",
+    "IBM084-d76bfe7c-M362": "matrix(2,2,[1,0,0,i])",
+    "phase-362": "1"
+  }
+}

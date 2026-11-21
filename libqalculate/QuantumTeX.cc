@@ -1796,7 +1796,7 @@ class TeXReader {
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
    {"mapsto"," ↦ "},{"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
-   {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
+   {"infty","infinity"},{"pi","pi"},{"hbar","ℏ"},{"ell","ℓ"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
    {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
    {"zeta","ζ"},{"eta","η"},{"iota","ι"},{"kappa","κ"},{"nu","ν"},{"xi","ξ"},
@@ -2215,6 +2215,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // sentence punctuation or a check mark that annotates the completed proof.
   static const std::regex annotation(R"(\s*~\s*(?:\\checkmark|[.,])\s*$)");
   s=withoutDisplayPunctuation(std::regex_replace(s,annotation,""));
+  static const std::regex bellTextSign(R"((\\(?:Phi|Psi|phi|psi))_\\text\{([+-])\})");
+  s=std::regex_replace(s,bellTextSign,"$1^$2");
   static const std::regex bell(R"(^\s*(\\(?:Phi|Psi|phi|psi))\^\{?([+-])\}?\s*$)");
   std::smatch m;
   if(std::regex_match(s,m,bell))return quantumTeX("\\vert"+m[1].str()+"^"+m[2].str()+"\\rangle");
@@ -2222,6 +2224,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // Keep the matrix in the author's stated wire order.
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
+ }
+ if(s.find("\\sum_")!=std::string::npos) {
+  // The classical fidelity definition names a function on an ordered
+  // pair of distributions. Keep its sum over the common outcome set.
+  static const std::regex distributionPair(R"(^\s*F\(\s*([a-z])\s*,\s*([a-z])\s*\)\s*=\s*)");
+  std::smatch pair;
+  if(std::regex_search(s,pair,distributionPair)) {
+   std::string domain="qtuple(vector(\""+pair[1].str()+"\",\""+pair[2].str()+"\"))";
+   return "qcompare(qfiniteapply(\"F\","+domain+"),"+quantumTeX(s.substr(pair.length()))+",4)";
+  }
  }
  if(s.find("\\sum_")!=std::string::npos) {
   // A sum of N local contributions with no printed starting index.
@@ -2237,7 +2249,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex uniformKet(R"(\|([01])_1\s*\.\.\.\s*\1_[a-z]\s*\.\.\.\s*\1_([A-Z])\s*\\rangle)");
   s=std::regex_replace(s,uniformKet,"qtensorpow(|$1>,\"$2\")");
  }
+ // A subscript belongs to the angular frequency. Preserve the imaginary
+ // unit and optional Pauli generator as separate factors in a phase.
+ if(s.find("\\omega_")!=std::string::npos && s.find("e^{")!=std::string::npos) {
+  static const std::regex phase(R"(e\^\{(-?)i([XYZ]?)\\omega_([A-Za-z])\s+([a-z](?:_[0-9])?|\([a-z]-[a-z]_[0-9]\))/(\d+)\})");
+  std::smatch m;
+  while(std::regex_search(s,m,phase)) {
+   std::string angle="(\"ω_"+m[3].str()+"\"*("+quantumTeX(m[4].str())+")/"+m[5].str()+")";
+   std::string value=m[2].str().empty() ? "qexp("+m[1].str()+"i*"+angle+")" :
+      "qpropagator("+m[2].str()+","+(m[1].str().empty() ? "-" : "")+angle+")";
+   s.replace(m.position(),m.length(),value);
+  }
+ }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  static const std::regex dimensioned(R"(e\^\{\s*(?:-|−)\s*i\s*H\s*([a-z])\s*/\s*\\hbar\s*\})");
+  s=std::regex_replace(s,dimensioned,"qpropagator(\"H\",($1/ℏ))");
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
   static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");
   s=std::regex_replace(s,combined,"qpropagator((\"H_$1\"+\"H_$2\"),$3)");
@@ -2256,6 +2282,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
  }
+ if(s.find("\\langle")!=std::string::npos) {
+  // An observable in angle brackets needs a state. Carry the label so
+  // ideal and measured expectations can later receive different states.
+  static const std::regex average(R"(\\langle\s*([A-Z])\s*\\rangle(?:_\\text\{([A-Za-z]+)\})?(?![_A-Za-z]))");
+  std::smatch m;
+  while(std::regex_search(s,m,average)) {
+   std::string observable=m[1].str();
+   if(observable.find_first_not_of("IXYZ")!=std::string::npos)observable="qoperatorref(\""+observable+"\")";
+   std::string state=m[2].matched ? m[2].str()+" state" : "measurement state";
+   s.replace(m.position(),m.length(),"qexpect("+observable+",qoperatorref(\""+state+"\"))");
+  }
+ }
+ if(mathWrapper && (trim(s)=="\\mu s" || trim(s)=="\\mu\\mathrm{s}"))
+  return "qphysicalunit(\"s\",\"micro\")";
  if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
  if(s.find("\\neq")!=std::string::npos) {
   static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
@@ -2446,7 +2486,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
  }
  if(mathWrapper && s.find("[[")!=std::string::npos) {
-  static const std::regex parameters(R"(^\s*\[\[\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*\]\]\s*$)");
+  static const std::string term=R"([a-zA-Z0-9]+(?:\^[0-9]+)?)";
+  static const std::string parameter="("+term+"(?:\\s*[+-]\\s*"+term+")*)";
+  static const std::regex parameters("^\\s*\\[\\[\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*\\]\\]\\s*$");
   std::smatch m;
   if(std::regex_match(s,m,parameters))
    return "vector("+quantumTeX(m[1].str())+","+quantumTeX(m[2].str())+","+quantumTeX(m[3].str())+")";

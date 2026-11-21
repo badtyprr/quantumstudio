@@ -24,6 +24,49 @@ def data(expression, *flags):
     return value
 
 
+# Copying a deferred ordered product preserves its factors and matrix entries.
+for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
+    copied = data("quantum:"+expression)["copy_text"]
+    assert data("quantum:"+copied)["copy_text"] == copied
+
+# Bind the frequency after copying. A half turn gives distinct eigenphases.
+for generator, expected in (("", "-i"), ("Z", "(-i)*Z"), ("X", "(-i)*X"), ("Y", "(-i)*Y")):
+    phase = data(r"quantum:$e^{-i"+generator+r"\omega_B t/2}$")["copy_text"]
+    phase = phase.replace('"ω_B"', "2").replace("'t'", "(pi/2)")
+    assert data(f"quantum:qcompare(({phase}),({expected}),4)")["copy_text"] == "1"
+
+mapping = data(r"quantum:$|a\rangle|0\rangle \mapsto |a\rangle|a\rangle$")["copy_text"]
+assert data("quantum:"+mapping)["copy_text"] == mapping
+parameters = data("quantum:$[[n,n-2,2]]$")["copy_text"]
+assert parameters.startswith("vector(") and data("quantum:"+parameters)["copy_text"] == parameters
+
+fidelity = data(r"quantum:$$F(p,q)=(\sum_i \sqrt{p_i\,q_i})^2$$")["copy_text"]
+assert data("quantum:"+fidelity)["copy_text"] == fidelity
+# For p=(1,0) and q=(1/4,3/4) the squared classical fidelity is 1/4.
+for value, truth in (("1/4", "1"), ("1/2", "0")):
+    graph = f"qset(vector(qtuple(vector(qtuple(vector(7,8)),{value}))))"
+    relation = fidelity.replace("'F'",graph).replace("'p'","7").replace("'q'","8")
+    relation = relation.replace('"indexset_i"', "qset(vector(0,1))")
+    concrete = data("quantum:"+relation)["copy_text"]
+    for label, weight in (("p_0","1"), ("p_1","0"), ("q_0","1/4"), ("q_1","3/4")):
+        concrete = concrete.replace('"'+label+'"',"("+weight+")")
+    assert data("quantum:"+concrete)["copy_text"] == truth
+
+for observable,state,expected in (("Z","|0>","1"),("X","|0>","0"),("Y","|1>","0"),
+                                  ("Z","matrix(2,2,[1/4,0,0,3/4])","-1/2")):
+    average = data(r"quantum:$\langle "+observable+r"\rangle_\text{ideal}$")["copy_text"]
+    assert data("quantum:"+average)["copy_text"] == average
+    bound = average.replace('qoperatorref("ideal state")', state)
+    assert data(f"quantum:qcompare({bound},{expected},4)")["copy_text"] == "1"
+
+# The physical constant retains its units through Copy and cancels in Ht/hbar.
+propagator = data(r"quantum:$e^{-iHt/\hbar}$")["copy_text"]
+assert data("quantum:"+propagator)["copy_text"] == propagator
+for gate in ("X","Z"):
+    bound = propagator.replace("'H'",gate).replace("'t'","(hbar*pi/2)")
+    assert data(f"quantum:qcompare({bound},(-i)*{gate},4)")["copy_text"] == "1"
+assert data(r"quantum:$\mu s$")["copy_text"] == data('quantum:qphysicalunit("s","")/1000000')["copy_text"]
+
 # Logical complements used as equation operands survive Copy and re-entry.
 for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
     predicate = data("quantum:"+spelling)["copy_text"]
