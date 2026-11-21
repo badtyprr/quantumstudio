@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
   "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
-  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
-  "revision": "88544e4f",
+  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
+  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
   "mode": "Quantum notation",
   "markdown_cells": 12,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 9,
-    "exact": 52
+    "exact": 54,
+    "diagnostic": 7
   },
   "figures": [
     {
@@ -103,8 +103,9 @@
       "start": 1568,
       "end": 1590,
       "literal": "$$\nH=\\sum_i^N {H_i}\n$$",
-      "status": "diagnostic",
-      "message": "Use an index assignment such as k=0 in the lower bound at byte 12"
+      "status": "exact",
+      "display": "qoperatorref('H') = qindexedsum(\"H_\", 1, 'N', [])",
+      "copy": "qcompare(qoperatorref('H'),qindexedsum(\"H_\",1,'N',vector()),4)"
     },
     {
       "id": "IBM079-7325643f-M002",
@@ -350,8 +351,9 @@
       "start": 6928,
       "end": 6996,
       "literal": "$|vac\\rangle = |0_1 ... 0_k ... 0_N\\rangle = |0\\rangle ^{\\otimes N}$",
-      "status": "diagnostic",
-      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+      "status": "exact",
+      "display": "|vac⟩ = |0^N⟩ = |0^N⟩",
+      "copy": "qequalchain(vector(qketstate(\"vac\"),qtensorpow(matrix(2,1,[1,0]),'N'),qtensorpow(matrix(2,1,[1,0]),'N')))"
     },
     {
       "id": "IBM079-7325643f-M027",
