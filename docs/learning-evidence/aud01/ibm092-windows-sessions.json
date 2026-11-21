@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
   "notebook_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
-  "worker_sha256": "581513b06e467c5270be6e703ef72249e134dde983650238143ab8f96d455096",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "61e6b688ed5d18d259e0c8419eed6f10d2c219816dfe5684f0c7a4fef6c5918d",
+  "records_sha256": "94f470027b6c6f46d59582e6650f2ebee1f3751f51c996ecc53fd2e360e9b875",
   "suite": {
     "passed": true,
-    "checks": 3027,
+    "checks": 3034,
     "calls": 390,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 321,
-    "restored_identically": 321,
-    "stable_after_text_reentry": 319,
-    "source_diagnostic": 69
+    "source_exact": 322,
+    "restored_identically": 322,
+    "stable_after_text_reentry": 322,
+    "source_diagnostic": 68
   },
   "diagnostics": [
     {
@@ -280,10 +280,6 @@
       "message": "Unsupported TeX command: \\min at byte 23"
     },
     {
-      "id": "IBM092-bdde16a2-M365",
-      "message": "Expected a quantum expression at byte 71"
-    },
-    {
       "id": "IBM092-bdde16a2-M384",
       "message": "Expected an equation after the comma."
     },
@@ -296,17 +292,6 @@
       "message": "Unclosed bra."
     }
   ],
-  "changed_copy": [
-    {
-      "id": "IBM092-bdde16a2-M378",
-      "first": "qequalchain(vector(qnamedapplication('f','E'),qadjacent(qconj('p'),qnamedapplication('g','E')),(((cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ (−3))^(−1))*((−1)+ (cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ ((cos((('E')*('d')*('t')*(qphysicalunit(\"rad\",\"\")))+ ((\"E_0\")*('d')*('t')*(qphysicalunit(\"rad\",\"\"))*(−1))))*(−2)))))",
-      "second": "qequalchain(vector(qnamedapplication('f','E'),qadjacent(qconj('p'),qnamedapplication('g','E')),qmul(qpower(qadd(qcos(qmul(qmul(qmul('d','t'),'δ'),qphysicalunit(\"rad\",\"\"))),−3),−1),qadd(qadd(−1,qcos(qmul(qmul(qmul('d','t'),'δ'),qphysicalunit(\"rad\",\"\")))),qmul(qcos(qadd(qmul(qmul(qmul('E','d'),'t'),qphysicalunit(\"rad\",\"\")),qmul(qmul(qmul(qmul(\"E_0\",'d'),'t'),qphysicalunit(\"rad\",\"\")),−1))),−2)))))"
-    },
-    {
-      "id": "IBM092-bdde16a2-M388",
-      "first": "(('E')<(\"E_0\" − |'δ'|) or ('E')>(\"E_0\" + |'δ'|))",
-      "second": "(('E')<(\"E_0\" − qbars('δ')) or ('E')>(\"E_0\" + qbars('δ')))"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

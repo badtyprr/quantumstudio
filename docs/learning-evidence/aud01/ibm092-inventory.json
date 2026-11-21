@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
   "source_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
-  "worker_sha256": "581513b06e467c5270be6e703ef72249e134dde983650238143ab8f96d455096",
-  "revision": "b0d61e92398ea73aee2f67292559e454d1b33bd0",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
   "mode": "Quantum notation",
   "markdown_cells": 65,
   "code_cells": 45,
   "summary": {
-    "exact": 321,
-    "diagnostic": 69
+    "exact": 322,
+    "diagnostic": 68
   },
   "figures": [
     {
@@ -3650,8 +3650,9 @@
       "start": 5576,
       "end": 5682,
       "literal": "$$\np^*(x) = \\frac{T_d\\left(\\frac{b + a - 2x}{b - a}\\right)}{T_d\\left(\\frac{b + a}{b - a}\\right)}, \\quad\n$$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 71"
+      "status": "exact",
+      "display": "qscalarat(\"p_star\", x) − qchebyshev('d', qsub(qadd('b', 'a'), qadjacent(2, x)) ∕ qsub('b', 'a')) ∕ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) = 0",
+      "copy": "(qadd(qmul(qmul(−1,qchebyshev('d',qmul(qsub(qadd('b','a'),qadjacent(2,x)),qpower(qsub('b','a'),−1)))),qpower(qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1))),−1)),qscalarat(\"p_star\",x)))==(0)"
     },
     {
       "id": "IBM092-bdde16a2-M366",
@@ -3660,8 +3661,8 @@
       "end": 5788,
       "literal": "$$\n\\beta(a, b, d) = T_d^{-1}\\left(\\frac{b + a}{b - a}\\right).\n$$",
       "status": "exact",
-      "display": "[((\"T_d\" ⋅ 'a'²'β' − \"T_d\" ⋅ 'a''b''β' + 'a' + 'b') ∕ (\"T_d\" ⋅ 'a' − \"T_d\" ⋅ 'b'))  ((\"T_d\" ⋅ 'b'²'β' − \"T_d\" ⋅ 'a''b''β' − 'a' − 'b') ∕ (\"T_d\" ⋅ 'b' − \"T_d\" ⋅ 'a'))  ((\"T_d\" ⋅ 'b''d''β' − \"T_d\" ⋅ 'a''d''β' − 'a' − 'b') ∕ (\"T_d\" ⋅ 'b' − \"T_d\" ⋅ 'a'))] = [0  0  0]",
-      "copy": "(vector((\"T_d\" ⋅ 'a'² ⋅ 'β' − \"T_d\" ⋅ 'a' ⋅ 'b' ⋅ 'β' + 'a' + 'b') ∕ (\"T_d\" ⋅ 'a' − \"T_d\" ⋅ 'b'),(\"T_d\" ⋅ 'b'² ⋅ 'β' − \"T_d\" ⋅ 'a' ⋅ 'b' ⋅ 'β' − 'a' − 'b') ∕ (\"T_d\" ⋅ 'b' − \"T_d\" ⋅ 'a'),(\"T_d\" ⋅ 'b' ⋅ 'd' ⋅ 'β' − \"T_d\" ⋅ 'a' ⋅ 'd' ⋅ 'β' − 'a' − 'b') ∕ (\"T_d\" ⋅ 'b' − \"T_d\" ⋅ 'a')))==(vector(0,0,0))"
+      "display": "0 ⋅ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) + qscalarat('β', ['a'  'b'  'd']) ⋅ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) = 1 and qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) ≠ 0",
+      "copy": "((qadd(qmul(0,qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1)))),qmul(qscalarat('β',vector('a','b','d')),qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1))))))==(1) and (qchebyshev('d',qadd('b', 'a') ∕ qsub('b', 'a')))!=(0))"
     },
     {
       "id": "IBM092-bdde16a2-M367",
@@ -3780,8 +3781,8 @@
       "end": 6725,
       "literal": "$$\nf(E) = p^* \\left( g(E) \\right) = \\frac{T_d\\left(1 + 2\\frac{\\cos\\big((E-E_0)dt\\big) - \\cos\\big(\\delta\\,dt\\big)}{1 +\\cos\\big(\\delta\\,dt\\big)}\\right)}{T_d\\left(1 + 2\\frac{1-\\cos\\big(\\delta\\,dt\\big)}{1 + \\cos\\big(\\delta\\,dt\\big)}\\right)}\n$$",
       "status": "exact",
-      "display": "f(E) = qconj('p') · g(E) = (cos('d''t''δ' rad) − 1 − 2 ⋅ cos(('E''d''t' − \"E_0\" ⋅ 'd''t') rad)) ∕ (cos('d''t''δ' rad) − 3)",
-      "copy": "qequalchain(vector(qnamedapplication('f','E'),qadjacent(qconj('p'),qnamedapplication('g','E')),(((cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ (−3))^(−1))*((−1)+ (cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ ((cos((('E')*('d')*('t')*(qphysicalunit(\"rad\",\"\")))+ ((\"E_0\")*('d')*('t')*(qphysicalunit(\"rad\",\"\"))*(−1))))*(−2)))))"
+      "display": "qscalarat('f', 'E') = qscalarat(\"p_star\", qscalarat('g', 'E')) = qchebyshev('d', qadd(1, qadjacent(2, qsub(qcos(qmul(qsub('E', \"E_0\"), \"dt\")), qcos(qmul('δ', \"dt\"))) ∕ qadd(1, qcos(qmul('δ', \"dt\")))))) ∕ qchebyshev('d', qadd(1, qadjacent(2, qsub(1, qcos(qmul('δ', \"dt\"))) ∕ qadd(1, qcos(qmul('δ', \"dt\"))))))",
+      "copy": "qequalchain(vector(qscalarat('f','E'),qscalarat(\"p_star\",qscalarat('g','E')),qmul(qchebyshev('d',qadd(1,qadjacent(2,qmul(qsub(qcos(qmul(qsub('E',\"E_0\"),\"dt\")),qcos(qmul('δ',\"dt\"))),qpower(qadd(1,qcos(qmul('δ',\"dt\"))),−1))))),qpower(qchebyshev('d',qadd(1,qadjacent(2,qmul(qsub(1,qcos(qmul('δ',\"dt\"))),qpower(qadd(1,qcos(qmul('δ',\"dt\"))),−1))))),−1))))"
     },
     {
       "id": "IBM092-bdde16a2-M379",
@@ -3879,8 +3880,8 @@
       "end": 7113,
       "literal": "$\\vert E-E_0 \\vert > \\delta$",
       "status": "exact",
-      "display": "E > \"E_0\" + |'δ'| or E < \"E_0\" − |'δ'|",
-      "copy": "(('E')<(\"E_0\" − |'δ'|) or ('E')>(\"E_0\" + |'δ'|))"
+      "display": "qdistancegreater('E', \"E_0\", 'δ')",
+      "copy": "qdistancegreater('E',\"E_0\",'δ')"
     },
     {
       "id": "IBM092-bdde16a2-M389",
