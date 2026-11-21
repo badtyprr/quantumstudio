@@ -42,6 +42,31 @@ bool readSignedPauli(const MathStructure &matrix,SignedPauli &out,bool hermitian
 SignedPauli multiplyPauli(const SignedPauli &a,const SignedPauli &b) {
  SignedPauli result;result.d=a.d;result.x=a.x^b.x;result.z=a.z^b.z;result.phase=(a.phase+b.phase+2*binaryParity(a.x&b.z))%4;return result;
 }
+bool anticommute(const SignedPauli &a,const SignedPauli &b) {
+ return binaryParity((a.x&b.z)^(a.z&b.x))!=0;
+}
+// Eliminate bit masks while tracking central phases. Squares, commutators
+// and dependent generators account for every scalar in the generated group.
+bool inPauliGroup(const std::vector<SignedPauli> &generators,SignedPauli probe,size_t omit,bool allowSign) {
+ SignedPauli basis[18];unsigned step=allowSign ? 2 : 4;
+ auto central=[&](unsigned phase) {if(phase&1)step=1;else if((phase&2) && step==4)step=2;};
+ auto reduce=[&](SignedPauli &word,bool insert) {
+  for(size_t column=18;column-->0;) {
+   size_t mask=(column<9 ? word.x : word.z),bit=size_t(1)<<(column%9);
+   if(!(mask&bit))continue;
+   if(!basis[column].d) {if(insert)basis[column]=word;return false;}
+   word=multiplyPauli(word,basis[column]);
+  }
+  return true;
+ };
+ for(size_t i=0;i<generators.size();++i)if(i!=omit) {
+  SignedPauli g=generators[i];
+  central(multiplyPauli(g,g).phase);
+  for(size_t j=0;j<i;++j)if(j!=omit && anticommute(g,generators[j]))central(2);
+  if(reduce(g,true))central(g.phase);
+ }
+ return reduce(probe,false) && probe.phase%step==0;
+}
 bool stabilizerGenerators(const MathStructure &input,std::vector<SignedPauli> &generators,size_t &rank) {
  std::vector<MathStructure> matrices;
  if(input.isMatrix() && input.rows()>0 && input.columns()>0 && element(input,0,0).isNumber())matrices.push_back(input);
@@ -72,7 +97,25 @@ class QuantumStabilizerFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
-  if(op=="qpauligroup") {
+  if(op=="qspacedimension") {
+   if(!a.isFunction() || a.function()->referenceName()!="qfixedspace" || a.size()!=1)return 0;
+   MathStructure ops=a[0];ops.eval(eo);
+   bool single=ops.isMatrix() && ops.rows() && ops.columns() && element(ops,0,0).isNumber();
+   if(!ops.isVector() || !ops.size() || (!single && ops.size()>32))return 0;
+   std::vector<SignedPauli> generators;
+   for(size_t i=0;i<(single ? 1 : ops.size());++i) {
+    SignedPauli gate;
+    if(!readSignedPauli(single ? ops : ops[i],gate,false))return 0;
+    if(!generators.empty() && gate.d!=generators[0].d)return 0;
+    if(multiplyPauli(gate,gate).phase==2) {out=0;return 1;}
+    for(const auto &g:generators)if(anticommute(g,gate)) {out=0;return 1;}
+    generators.push_back(gate);
+   }
+   SignedPauli minusIdentity;minusIdentity.d=generators[0].d;minusIdentity.phase=2;
+   if(inPauliGroup(generators,minusIdentity,generators.size(),false)) {out=0;return 1;}
+   out.set(CALCULATOR->getFunction("qstabilizerdimension"),&ops,NULL);return 1;
+  }
+  if(op=="qpauligroup" || op=="qpairwisecommute" || op=="qindependentpaulis" || op=="qsignedpaulimember" || op=="qsomeanticommute") {
    bool single=a.isMatrix() && a.rows() && a.columns() && element(a,0,0).isNumber();
    if(!a.isVector() || !a.size() || (!single && a.size()>32))return 0;
    std::vector<SignedPauli> generators;
@@ -86,6 +129,24 @@ class QuantumStabilizerFunction: public MathFunction {
     generators.push_back(g);
    }
    const size_t d=generators.front().d;
+   if(op=="qpairwisecommute" || op=="qindependentpaulis") {
+    for(size_t i=0;i<generators.size();++i) {
+     if(op=="qindependentpaulis" && inPauliGroup(generators,generators[i],i,false)) {out=0;return 1;}
+     if(op=="qpairwisecommute")for(size_t j=0;j<i;++j)
+      if(anticommute(generators[i],generators[j])) {out=0;return 1;}
+    }
+    out=1;return 1;
+   }
+   if(op=="qsignedpaulimember" || op=="qsomeanticommute") {
+    SignedPauli probe;
+    if(!readSignedPauli(args[1],probe,false) || probe.d!=d)return 0;
+    if(op=="qsignedpaulimember")out=inPauliGroup(generators,probe,generators.size(),true) ? 1 : 0;
+    else {
+     out=0;
+     for(const auto &g:generators)if(anticommute(g,probe)) {out=1;break;}
+    }
+    return 1;
+   }
    SignedPauli identity;identity.d=d;
    std::vector<SignedPauli> members(1,identity);
    std::set<std::tuple<size_t,size_t,unsigned>> seen{{0,0,0}};
@@ -219,5 +280,5 @@ std::string quantumPauliTensorNotation(const MathStructure &matrix) {
 }
 void registerQuantumStabilizer(Calculator &calculator) {
  registerQuantumCompactPauli(calculator);
- for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qpauligroup",1},{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qpauligroup",1},{"qspacedimension",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));
 }

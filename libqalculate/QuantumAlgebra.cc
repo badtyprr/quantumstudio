@@ -640,6 +640,49 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qbinarypowersum" || op=="qprojectorproduct") {
+   MathStructure operators=raw[0];operators.eval(eo);
+   if(!operators.isVector() || !operators.size())return 0;
+   bool single=operators.isMatrix() && operators.rows() && operators.columns() && operators.getElement(1,1)->isNumber();
+   const MathStructure &first=single ? operators : operators[0];
+   if(!first.isMatrix() || !first.rows() || first.rows()!=first.columns())return 0;
+   size_t size=first.rows();
+   if(op=="qprojectorproduct") {
+    MathStructure dimension=raw[1];dimension.eval(eo);
+    if(!dimension.isInteger() || dimension.number()!=size)return 0;
+   }
+   MathStructure identity;identity.clearMatrix();identity.resizeMatrix(size,size,m_zero);
+   for(size_t j=1;j<=size;++j)*identity.getElement(j,j)=m_one;
+   MathStructure product=identity;
+   // Distribute in order. No commutation between distinct factors is needed.
+   for(size_t k=0;k<(single ? 1 : operators.size());++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &factor=single ? operators : operators[k];
+    if(!factor.isMatrix() || factor.rows()!=size || factor.columns()!=size)return 0;
+    MathStructure term(CALCULATOR->getFunction("qadd"),&identity,&factor,NULL);
+    term.eval(eo);
+    if(op=="qprojectorproduct") {term/=MathStructure(2);term.eval(eo);}
+    MathStructure previous=product;
+    product.set(CALCULATOR->getFunction("qmul"),&previous,&term,NULL);product.eval(eo);
+   }
+   out=product;return 1;
+  }
+  if(op=="qfixedby") {
+   MathStructure operators=raw[0],state=raw[1];operators.eval(eo);state.eval(eo);
+   if(!operators.isVector() || !state.isMatrix() || state.columns()!=1 || state.containsUnknowns())return 0;
+   bool single=operators.isMatrix() && operators.rows() && operators.columns() && operators.getElement(1,1)->isNumber();
+   for(size_t k=0;k<(single ? 1 : operators.size());++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &gate=single ? operators : operators[k];
+    if(!gate.isMatrix() || gate.containsUnknowns())return 0;
+    if(gate.rows()!=state.rows() || gate.columns()!=state.rows()) {out=0;return 1;}
+    MathStructure image(CALCULATOR->getFunction("qmul"),&gate,&state,NULL);
+    image.eval(eo);
+    if(!image.isMatrix())return 0;
+    if(!image.equals(state)) {out=0;return 1;}
+   }
+   out=1;return 1;
+  }
   if(op=="qorderedpowers") {
    MathStructure factors=raw[0],powers=raw[1];factors.eval(eo);powers.eval(eo);
    bool single=factors.isMatrix() && factors.rows() && factors.columns() && factors.getElement(1,1)->isNumber();
@@ -664,6 +707,23 @@ class QuantumAlgebraFunction: public MathFunction {
    if(!left.isMatrix() || !right.isMatrix() || left.containsUnknowns() || right.containsUnknowns())return 0;
    if(left.equals(right)) {out=1;return 1;}
    right.negate();right.eval(eo);out=left.equals(right) ? 1 : 0;return 1;
+  }
+  if(op=="qallmembers") {
+   MathStructure entries=raw[0];entries.eval(eo);
+   // Indexed entries collapse to a single scalar when the family has length one.
+   if(!entries.isVector() && !entries.isNumber())return 0;
+   size_t count=entries.isVector() ? entries.size() : 1;
+   bool pending=false;
+   for(size_t j=0;j<count;++j) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &entry=entries.isVector() ? entries[j] : entries;
+    MathStructure member(CALCULATOR->getFunction("qmember"),&entry,&raw[1],NULL);
+    member.eval(eo);
+    if(member.isZero()) {out=0;return 1;}
+    if(!member.isOne())pending=true;
+   }
+   if(pending)return 0;
+   out=1;return 1;
   }
   if(op=="qstrictorder") {
    MathStructure entries=raw[0],direction=raw[1];entries.eval(eo);direction.eval(eo);
@@ -1359,8 +1419,12 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qbinarypowersum",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qprojectorproduct",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qfixedby",2));
  calculator.addFunction(new QuantumAlgebraFunction("qorderedpowers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));

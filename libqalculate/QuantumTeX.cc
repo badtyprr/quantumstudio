@@ -97,6 +97,27 @@ std::string booleanGraph(const std::string &outputs) {
  }
  return result+"))";
 }
+std::string quantifiedPaulis(const std::string &clause) {
+ // Match the quantifier as well as the algebra: removing a sign or changing
+ // an index can change whether the statement is universally true.
+ static const std::regex pair(R"re(([A-Z])_([a-z])\1_([a-z])=\1_\3\1_\2\\text\{\(forall\$\2,\3\\in\\\{1,\\ldots,([a-z])\\\}\$\)\})re");
+ static const std::regex independent(R"re(([A-Z])_([a-z])\\notin\\langle\1_1,\\ldots,\1_\{\2-1\},\1_\{\2\+1\},\\ldots,\1_([a-z])\\rangle\\text\{\(forall\$\2\\in\\\{1,\\ldots,\3\\\}\$\)\})re");
+ static const std::regex someAnti(R"re(([A-Z])_([a-z])([A-Z])=-\3\1_\2\\text\{foratleastone\}\2\\in\\\{1,\\ldots,([a-z])\\\})re");
+ static const std::regex allCommute(R"re(([A-Z])([A-Z])_([a-z])=\2_\3\1\\text\{forevery\}\3\\in\\\{1,\\ldots,([a-z])\\\})re");
+ static const std::regex signedMember(R"re(([A-Z])(=|\\neq)\\pm([A-Z])\\text\{(forsome|for)\}\3\\in\\langle([A-Z])_1,\\ldots,\5_([a-z])\\rangle)re");
+ std::smatch m;
+ auto family=[](const std::string &name,const std::string &bound) {return "qindexedentries(\""+name+"_\",1,"+bound+",vector())";};
+ if(std::regex_match(clause,m,pair))return "qpairwisecommute("+family(m[1],m[4])+")";
+ if(std::regex_match(clause,m,independent))return "qindependentpaulis("+family(m[1],m[3])+")";
+ if(std::regex_match(clause,m,someAnti))return "qsomeanticommute("+family(m[1],m[4])+",\""+m[3].str()+"\")";
+ if(std::regex_match(clause,m,allCommute))return "!(qsomeanticommute("+family(m[2],m[4])+",\""+m[1].str()+"\"))";
+ if(std::regex_match(clause,m,signedMember)) {
+  std::string member="qsignedpaulimember("+family(m[5],m[6])+",\""+m[1].str()+"\")";
+  if(m[2]=="=" && m[4]=="forsome")return member;
+  if(m[2]=="\\neq" && m[4]=="for")return "!("+member+")";
+ }
+ return "";
+}
 // In a standalone register declaration, sans-serif capital letters name
 // systems. Preserve their names even when the same letters are Pauli gates.
 std::string systemNames(const std::string &input) {
@@ -2155,7 +2176,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,identity,"syndromeI");
   s=std::regex_replace(s,pauli,"syndrome$1$3_$2");
  }
+ if(s.find("\\operatorname{dim}")!=std::string::npos) {
+  static const std::regex subspace(R"(\\operatorname\{dim\}\s*\(\s*\\mathcal\{([A-Z])\}\s*\))");
+  s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
+ }
  const std::string whole=trim(s);
+ if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {
+  std::string clause=s;
+  clause.erase(std::remove_if(clause.begin(),clause.end(),asciiSpace),clause.end());
+  static const std::regex space(R"(\\(?:qquad|quad|;|,))");
+  clause=std::regex_replace(clause,space,"");
+  const std::string conjunction=",\\text{but}";
+  size_t at=clause.find(conjunction);
+  std::string first=quantifiedPaulis(clause.substr(0,at));
+  if(!first.empty()) {
+   if(at==std::string::npos)return first;
+   std::string second=quantifiedPaulis(clause.substr(at+conjunction.size()));
+   if(!second.empty())return "("+first+") and ("+second+")";
+  }
+ }
+
  if(whole=="\\wedge" || whole=="\\land")return booleanGraph("0001");
  if(whole=="\\vee" || whole=="\\lor")return booleanGraph("0111");
  if(whole=="\\neg" || whole=="\\lnot")return booleanGraph("10");
@@ -2239,6 +2279,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(std::regex_match(s,match,monotone))
    return "qstrictorder(qindexedentries(\""+trim(quantumTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
  }
+ if(s.find("\\sum_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  const std::string bounds=R"(\\sum_\{\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\\{0,1\\\}\s*\}\s*)";
+  const std::string terms=R"(([A-Z])_1\^\{\1_1\}\s*\\cdots\s*\3_\2\^\{\1_\2\})";
+  static const std::regex traced(bounds+R"(\\operatorname\{Tr\}\s*\(\s*)"+terms+R"(\s*\))");
+  static const std::regex untraced(bounds+terms);
+  const std::string product="qbinarypowersum(qindexedentries(\"$3_\",1,$2,vector()))";
+  s=std::regex_replace(s,traced,"qtrace("+product+")");
+  s=std::regex_replace(s,untraced,product);
+ }
+ if(s.find("\\biggl")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  static const std::regex projectors(R"(\\biggl\(\\frac\{\\mathbb\{I\}\^\{\\otimes\s+([a-z])\}\s*\+\s*([A-Z])_1\}\{2\}\\biggr\)\s*\\cdots\s*\\biggl\(\\frac\{\\mathbb\{I\}\^\{\\otimes\s+\1\}\s*\+\s*\2_([a-z])\}\{2\}\\biggr\))");
+  s=std::regex_replace(s,projectors,"qprojectorproduct(qindexedentries(\"$2_\",1,$3,vector()),2^($1))");
+ }
  if(s.find("\\cdots")!=std::string::npos) {
   static const std::regex products(R"(((?:[A-Z]|\\Pi))_1(?:\^\{?([01]|[a-z]_1)\}?)?\s*\\cdots\s*\1_([a-z])(?:\^\{?([01]|[a-z]_[a-z])\}?)?)");
   std::string expanded;size_t start=0;
@@ -2255,6 +2308,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    start=m.position()+m.length();
   }
   if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
+ }
+ if(s.find("\\in")!=std::string::npos && s.find("\\ldots")!=std::string::npos) {
+  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z]|[0-9]+)\s*\\in\s*(\\\{[^{}]+\\\})\s*$)");
+  std::smatch match;
+  if(std::regex_match(s,match,membership))
+   return "qallmembers(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()),"+quantumTeX(match[3].str())+")";
+ }
+ if(s.find("\\cdots")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  static const std::regex fixed(R"(([A-Z])_1\s*(\\vert\s*\\[A-Za-z]+\s*\\rangle)\s*=\s*\\cdots\s*=\s*\1_([a-z])\s*\2\s*=\s*\2)");
+  std::smatch match;
+  if(std::regex_search(s,match,fixed)) {
+   std::string operators="qindexedentries(\""+match[1].str()+"_\",1,"+match[3].str()+",vector())";
+   std::string before=trim(match.prefix().str()),after=trim(match.suffix().str());
+   if(before.empty() && after.empty())return "qfixedby("+operators+","+quantumTeX(match[2].str())+")";
+   const size_t brace=before.find("\\bigl\\{");
+   if(brace!=std::string::npos && after=="\\bigr\\}") {
+    std::string binder=trim(before.substr(brace+7));
+    if(binder==match[2].str()+" \\,:\\,")s=before.substr(0,brace)+"qfixedspace("+operators+")";
+   }
+  }
  }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;

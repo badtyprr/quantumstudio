@@ -158,6 +158,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return text+")";
   }
+  if(quantumMode && result.type()==STRUCT_LOGICAL_NOT && result.size()==1)
+   return "!("+copyText(result[0],po,true)+")";
   if(result.isComparison() && result.size()==2) {
    const char *comparison="==";
    switch(result.comparisonType()) {
