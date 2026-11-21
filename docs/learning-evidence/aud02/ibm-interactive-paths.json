@@ -1,0 +1,814 @@
+{
+  "observed": "2026-11-21",
+  "summary": {
+    "topics": 6,
+    "material_paths": 12,
+    "materials": 49,
+    "expanded_lesson_links": 116,
+    "distinct_material_and_lesson_urls": 90
+  },
+  "topics": [
+    {
+      "topic": "introduction-to-quantum",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=introduction-to-quantum",
+      "paths": [
+        {
+          "title": "Introduction to quantum learning path",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=introduction-to-quantum",
+          "materials": [
+            {
+              "title": "Quickstart",
+              "url": "https://quantum.cloud.ibm.com/docs/en/guides/quick-start"
+            },
+            {
+              "title": "Run your first circuit on hardware",
+              "url": "https://quantum.cloud.ibm.com/docs/en/ibm-quantum-compute/hello-world"
+            },
+            {
+              "title": "IBM Quantum Composer",
+              "url": "https://quantum.cloud.ibm.com/docs/en/guides/composer"
+            },
+            {
+              "title": "Quantum computing in practice",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice",
+              "lessons": [
+                {
+                  "title": "Course introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/introduction"
+                },
+                {
+                  "title": "Running quantum circuits",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/running-quantum-circuits"
+                },
+                {
+                  "title": "Utility-scale QAOA",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/utility-scale-qaoa"
+                },
+                {
+                  "title": "Which problems are quantum computers good for?",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/applications-of-qc"
+                },
+                {
+                  "title": "Mapping",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/mapping"
+                },
+                {
+                  "title": "Simulating nature",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/simulating-nature"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/exam"
+                }
+              ]
+            },
+            {
+              "title": "Basics of quantum information",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information",
+              "lessons": [
+                {
+                  "title": "Single systems",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/single-systems/introduction"
+                },
+                {
+                  "title": "Multiple systems",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/multiple-systems/introduction"
+                },
+                {
+                  "title": "Quantum circuits",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/quantum-circuits/introduction"
+                },
+                {
+                  "title": "Entanglement in action",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/entanglement-in-action/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information/exam"
+                }
+              ]
+            },
+            {
+              "title": "CHSH inequality",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/chsh-inequality"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "optimization",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization",
+      "paths": [
+        {
+          "title": "Optimization: Beginner",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization%2Foptimization-i",
+          "materials": [
+            {
+              "title": "Quantum computing in practice",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice",
+              "lessons": [
+                {
+                  "title": "Course introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/introduction"
+                },
+                {
+                  "title": "Running quantum circuits",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/running-quantum-circuits"
+                },
+                {
+                  "title": "Utility-scale QAOA",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/utility-scale-qaoa"
+                },
+                {
+                  "title": "Which problems are quantum computers good for?",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/applications-of-qc"
+                },
+                {
+                  "title": "Mapping",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/mapping"
+                },
+                {
+                  "title": "Simulating nature",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/simulating-nature"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice/exam"
+                }
+              ]
+            },
+            {
+              "title": "Quantum approximate optimization algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/quantum-approximate-optimization-algorithm"
+            },
+            {
+              "title": "Quantum diagonalization algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction"
+                },
+                {
+                  "title": "Variational quantum eigensolver",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe"
+                },
+                {
+                  "title": "Quantum Krylov methods",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov"
+                },
+                {
+                  "title": "Sample-based quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview"
+                },
+                {
+                  "title": "Implementing SQD",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation"
+                },
+                {
+                  "title": "Sample-based Krylov quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/exam"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Optimization: Intermediate",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization%2Foptimization-ii",
+          "materials": [
+            {
+              "title": "Advanced techniques for QAOA",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/advanced-techniques-for-qaoa"
+            },
+            {
+              "title": "Solve the Market Split problem with Kipu Quantum's Iskay Quantum Optimizer",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/solve-market-split-problem-with-iskay-quantum-optimizer"
+            },
+            {
+              "title": "Dynamic portfolio optimization with Global Data Quantum's Portfolio Optimizer",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/global-data-quantum-optimizer"
+            },
+            {
+              "title": "Pauli correlation encoding to reduce max-cut requirements",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/pauli-correlation-encoding-for-qaoa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "data-science",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science",
+      "paths": [
+        {
+          "title": "Data science: Beginner",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science%2Fdata-science-i",
+          "materials": [
+            {
+              "title": "Fundamentals of quantum algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms",
+              "lessons": [
+                {
+                  "title": "Quantum query algorithms",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction"
+                },
+                {
+                  "title": "Quantum algorithmic foundations",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction"
+                },
+                {
+                  "title": "Phase estimation and factoring",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction"
+                },
+                {
+                  "title": "Grover's algorithm",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/exam"
+                }
+              ]
+            },
+            {
+              "title": "Grover's algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/grovers-algorithm"
+            },
+            {
+              "title": "Quantum machine learning",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/introduction"
+                },
+                {
+                  "title": "Classical machine learning review",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/classical-ml-review"
+                },
+                {
+                  "title": "Data encoding",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/data-encoding"
+                },
+                {
+                  "title": "Quantum kernels",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/quantum-kernel-methods"
+                },
+                {
+                  "title": "QVCs and QNNs",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/qvc-qnn"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning/exam"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Data science: Intermediate",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science%2Fdata-science-ii",
+          "materials": [
+            {
+              "title": "Quantum kernel training",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/quantum-kernel-training"
+            },
+            {
+              "title": "Enhance feature classification using projected quantum kernels",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/projected-quantum-kernels"
+            },
+            {
+              "title": "Quantum Fourier transform",
+              "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/qft"
+            },
+            {
+              "title": "Shor's algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/shors-algorithm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "physics-and-chemistry",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry",
+      "paths": [
+        {
+          "title": "Physics and chemistry: Beginner",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry%2Fphysics-and-chemistry-i",
+          "materials": [
+            {
+              "title": "Quantum chemistry with VQE",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/introduction"
+                },
+                {
+                  "title": "Building a chemical Hamiltonian",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/hamiltonian-construction"
+                },
+                {
+                  "title": "Ansatz",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ansatz"
+                },
+                {
+                  "title": "Classical optimizers",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/classical-optimizers"
+                },
+                {
+                  "title": "Ground state energies",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/ground-state"
+                },
+                {
+                  "title": "Molecular geometry",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/geometry"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe/exam"
+                }
+              ]
+            },
+            {
+              "title": "Ground-state energy estimation of the Heisenberg chain with VQE",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/spin-chain-vqe"
+            },
+            {
+              "title": "Utility-scale quantum computing",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/introduction"
+                },
+                {
+                  "title": "Bits, gates, and circuits",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/bits-gates-and-circuits"
+                },
+                {
+                  "title": "Teleportation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/teleportation"
+                },
+                {
+                  "title": "Grover's algorithm",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/grovers-algorithm"
+                },
+                {
+                  "title": "Quantum phase estimation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-phase-estimation"
+                },
+                {
+                  "title": "Variational quantum algorithms",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms"
+                },
+                {
+                  "title": "Quantum simulation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-simulation"
+                },
+                {
+                  "title": "Classical simulation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/classical-simulation"
+                },
+                {
+                  "title": "Hardware",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/hardware"
+                },
+                {
+                  "title": "Quantum circuit optimization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-circuit-optimization"
+                },
+                {
+                  "title": "Error mitigation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/error-mitigation"
+                },
+                {
+                  "title": "Utility I",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-i"
+                },
+                {
+                  "title": "Utility II",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-ii"
+                },
+                {
+                  "title": "Utility III",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-iii"
+                }
+              ]
+            },
+            {
+              "title": "Quantum diagonalization algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction"
+                },
+                {
+                  "title": "Variational quantum eigensolver",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe"
+                },
+                {
+                  "title": "Quantum Krylov methods",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov"
+                },
+                {
+                  "title": "Sample-based quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview"
+                },
+                {
+                  "title": "Implementing SQD",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation"
+                },
+                {
+                  "title": "Sample-based Krylov quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/exam"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Physics and chemistry: Intermediate",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry%2Fphysics-and-chemistry-ii",
+          "materials": [
+            {
+              "title": "Ground-state energy estimation of the Heisenberg chain with VQE",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/spin-chain-vqe"
+            },
+            {
+              "title": "Sample-based quantum diagonalization of a chemistry Hamiltonian",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-quantum-diagonalization"
+            },
+            {
+              "title": "Krylov quantum diagonalization of lattice Hamiltonians",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/krylov-quantum-diagonalization"
+            },
+            {
+              "title": "Sample-based Krylov quantum diagonalization of a fermionic lattice model",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-krylov-quantum-diagonalization"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "quantum-algorithm-development",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development",
+      "paths": [
+        {
+          "title": "Quantum algorithm developer: Beginner",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-i",
+          "materials": [
+            {
+              "title": "Fundamentals of quantum algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms",
+              "lessons": [
+                {
+                  "title": "Quantum query algorithms",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction"
+                },
+                {
+                  "title": "Quantum algorithmic foundations",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction"
+                },
+                {
+                  "title": "Phase estimation and factoring",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction"
+                },
+                {
+                  "title": "Grover's algorithm",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/exam"
+                }
+              ]
+            },
+            {
+              "title": "Utility-scale quantum computing",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/introduction"
+                },
+                {
+                  "title": "Bits, gates, and circuits",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/bits-gates-and-circuits"
+                },
+                {
+                  "title": "Teleportation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/teleportation"
+                },
+                {
+                  "title": "Grover's algorithm",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/grovers-algorithm"
+                },
+                {
+                  "title": "Quantum phase estimation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-phase-estimation"
+                },
+                {
+                  "title": "Variational quantum algorithms",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/variational-quantum-algorithms"
+                },
+                {
+                  "title": "Quantum simulation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-simulation"
+                },
+                {
+                  "title": "Classical simulation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/classical-simulation"
+                },
+                {
+                  "title": "Hardware",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/hardware"
+                },
+                {
+                  "title": "Quantum circuit optimization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/quantum-circuit-optimization"
+                },
+                {
+                  "title": "Error mitigation",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/error-mitigation"
+                },
+                {
+                  "title": "Utility I",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-i"
+                },
+                {
+                  "title": "Utility II",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-ii"
+                },
+                {
+                  "title": "Utility III",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing/utility-iii"
+                }
+              ]
+            },
+            {
+              "title": "Shor's algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/shors-algorithm"
+            },
+            {
+              "title": "Grover's algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/grovers-algorithm"
+            },
+            {
+              "title": "Quantum diagonalization algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms",
+              "lessons": [
+                {
+                  "title": "Introduction",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/introduction"
+                },
+                {
+                  "title": "Variational quantum eigensolver",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/vqe"
+                },
+                {
+                  "title": "Quantum Krylov methods",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/krylov"
+                },
+                {
+                  "title": "Sample-based quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-overview"
+                },
+                {
+                  "title": "Implementing SQD",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/sqd-implementation"
+                },
+                {
+                  "title": "Sample-based Krylov quantum diagonalization",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/skqd"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms/exam"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quantum algorithm developer: Intermediate",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-ii",
+          "materials": [
+            {
+              "title": "General formulation of quantum information",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information",
+              "lessons": [
+                {
+                  "title": "Density matrices",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/introduction"
+                },
+                {
+                  "title": "Quantum channels",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction"
+                },
+                {
+                  "title": "General measurements",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/introduction"
+                },
+                {
+                  "title": "Purifications and fidelity",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/exam"
+                }
+              ]
+            },
+            {
+              "title": "Quantum approximate optimization algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/quantum-approximate-optimization-algorithm"
+            },
+            {
+              "title": "Sample-based quantum diagonalization of a chemistry Hamiltonian",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-quantum-diagonalization"
+            },
+            {
+              "title": "Krylov quantum diagonalization of lattice Hamiltonians",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/krylov-quantum-diagonalization"
+            }
+          ]
+        },
+        {
+          "title": "Quantum algorithm developer: Advanced",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-iii",
+          "materials": [
+            {
+              "title": "Sample-based Krylov quantum diagonalization of a fermionic lattice model",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-krylov-quantum-diagonalization"
+            },
+            {
+              "title": "Advanced techniques for QAOA",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/advanced-techniques-for-qaoa"
+            },
+            {
+              "title": "Pauli correlation encoding to reduce max-cut requirements",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/pauli-correlation-encoding-for-qaoa"
+            },
+            {
+              "title": "Utility-scale error mitigation with probabilistic error amplification",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/probabilistic-error-amplification"
+            },
+            {
+              "title": "Foundations of quantum error correction",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction",
+              "lessons": [
+                {
+                  "title": "Correcting quantum errors",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction"
+                },
+                {
+                  "title": "The stabilizer formalism",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction"
+                },
+                {
+                  "title": "Quantum code constructions",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction"
+                },
+                {
+                  "title": "Fault-tolerant quantum computing",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/exam"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "topic": "qise",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise",
+      "paths": [
+        {
+          "title": "QISE: Beginner",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise%2Fqise-i",
+          "materials": [
+            {
+              "title": "Fundamentals of quantum algorithms",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms",
+              "lessons": [
+                {
+                  "title": "Quantum query algorithms",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction"
+                },
+                {
+                  "title": "Quantum algorithmic foundations",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/quantum-algorithmic-foundations/introduction"
+                },
+                {
+                  "title": "Phase estimation and factoring",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/introduction"
+                },
+                {
+                  "title": "Grover's algorithm",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/grover-algorithm/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms/exam"
+                }
+              ]
+            },
+            {
+              "title": "Grover's algorithm",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/grovers-algorithm"
+            },
+            {
+              "title": "Ground-state energy estimation of the Heisenberg chain with VQE",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/spin-chain-vqe"
+            },
+            {
+              "title": "General formulation of quantum information",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information",
+              "lessons": [
+                {
+                  "title": "Density matrices",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/density-matrices/introduction"
+                },
+                {
+                  "title": "Quantum channels",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/quantum-channels/introduction"
+                },
+                {
+                  "title": "General measurements",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/general-measurements/introduction"
+                },
+                {
+                  "title": "Purifications and fidelity",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information/exam"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "QISE: Intermediate",
+          "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise%2Fqise-ii",
+          "materials": [
+            {
+              "title": "Utility-scale error mitigation with probabilistic error amplification",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/probabilistic-error-amplification"
+            },
+            {
+              "title": "Foundations of quantum error correction",
+              "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction",
+              "lessons": [
+                {
+                  "title": "Correcting quantum errors",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction"
+                },
+                {
+                  "title": "The stabilizer formalism",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/stabilizer-formalism/introduction"
+                },
+                {
+                  "title": "Quantum code constructions",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction"
+                },
+                {
+                  "title": "Fault-tolerant quantum computing",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/introduction"
+                },
+                {
+                  "title": "Exam",
+                  "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction/exam"
+                }
+              ]
+            },
+            {
+              "title": "Repetition codes",
+              "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/repetition-codes"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
