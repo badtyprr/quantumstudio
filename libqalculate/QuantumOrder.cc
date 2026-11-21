@@ -546,11 +546,18 @@ class QuantumSymbolicEstimate: public MathFunction {
      !rule[0].isVector() || rule[0].isMatrix() || !rule[0].size() || rule[0].size()>128) {
    CALCULATOR->error(true,"Expected a symbolic estimate with 1 to 128 exact operands.",NULL);return 0;
   }
-  if(tolerance.isVector() || tolerance.isUndefined() || tolerance.containsInfinity() ||
+  if(!quantumScalarExpression(tolerance) || tolerance.isUndefined() || tolerance.containsInfinity() ||
      tolerance.representsNegative() || (tolerance.isNumber() && !tolerance.number().isReal())) {
    CALCULATOR->error(true,"An absolute tolerance must be finite, real and nonnegative.",NULL);return 0;
   }
   if(!tolerance.representsNonNegative() || !tolerance.representsFinite())return 0;
+  for(size_t i=0;i<=rule[0].size();++i) {
+   MathStructure value=i==rule[0].size() ? rule[1] : rule[0][i];
+   value.eval(eo);
+   if(!quantumScalarExpression(value) || value.isUndefined()) {
+    CALCULATOR->error(true,"An absolute estimate requires scalar operands.",NULL);return 0;
+   }
+  }
   bool pending=false;
   for(size_t i=1;i<rule[0].size();++i) {
    MathStructure equality=rule[0][i-1];

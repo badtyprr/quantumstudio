@@ -413,7 +413,9 @@ bool scalarExpression(const MathStructure &value,unsigned depth=0) {
  // An indexed label resolves to a scalar symbol. Series history checks below
  // separately reject assignments that could make an implicit label a matrix.
  if(name=="qindexedlabel" && value.size()==3)return true;
- if(name=="qsqrt" && value.size()==1)return scalarExpression(value[0],depth+1);
+ if(value.size()==1 && (name=="qsqrt" || name=="qasin" || name=="qacos" || name=="qatan" ||
+                        name=="qsin" || name=="qcos" || name=="qtan"))
+  return scalarExpression(value[0],depth+1);
  if(value.size()==2 && (name=="qadd" || name=="qsub" || name=="qmul" || name=="qadjacent" || name=="qpower"))
   return scalarExpression(value[0],depth+1) && scalarExpression(value[1],depth+1);
  return false;
