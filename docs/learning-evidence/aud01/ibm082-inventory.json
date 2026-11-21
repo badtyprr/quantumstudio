@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-suppression.ipynb",
   "source_sha256": "a3fcfc9e0a84f18267115e9b1597efca99d08deb94a9c5b37b1c8a27eb44dfc5",
-  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
-  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "worker_sha256": "0a498f87efd8690b4c161abdfb1feef79af727fbf5f9d072889aaf56c48002ff",
+  "revision": "4bd12264ffcf1f436cc2fd701eabb236b1633690",
   "mode": "Quantum notation",
   "markdown_cells": 41,
   "code_cells": 40,
@@ -161,8 +161,8 @@
       "end": 2353,
       "literal": "$$\n|\\psi(t)\\rangle = e^{-iZ\\omega_B t/2}\\frac{1}{\\sqrt{2}}\\left( |0\\rangle +|1\\rangle \\right)\n=\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t/2}|0\\rangle +e^{i\\omega_B t/2}|1\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "qstatecall('ψ', 't') = [(1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2))); (1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2)))] = [(1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2))); (e^((\"iω_B\" ⋅ 't') ∕ 2) ∕ √(2))]",
-      "copy": "qequalchain(vector(qstatecall('ψ','t'),matrix(2,1,[1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2)),1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2))]),matrix(2,1,[1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2)),e^((\"iω_B\" ⋅ 't') ∕ 2) ∕ √(2)])))"
+      "display": "qstatecall('ψ', 't') = [(1 ∕ (√(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2))); (e^((i't' ⋅ \"ω_B\") ∕ 2) ∕ √(2))] = [(1 ∕ (√(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2))); (e^((i't' ⋅ \"ω_B\") ∕ 2) ∕ √(2))]",
+      "copy": "qequalchain(vector(qstatecall('ψ','t'),matrix(2,1,[1 ∕ (√(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)),e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2) ∕ √(2)]),matrix(2,1,[1 ∕ (√(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)),e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2) ∕ √(2)])))"
     },
     {
       "id": "IBM082-a3fcfc9e-M010",
@@ -201,8 +201,8 @@
       "end": 4428,
       "literal": "$$\nX|\\psi(t_0)\\rangle = \\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t_0/2}|1\\rangle +e^{i\\omega_B t_0/2}|0\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "[0, 1; 1, 0] · qstatecall('ψ', \"t_0\") = [(e^(0.5 \"iω_B\" ⋅ \"t_0\") ∕ √(2)); (1 ∕ (√(2) ⋅ e^(0.5 \"iω_B\" ⋅ \"t_0\")))]",
-      "copy": "qcompare(qadjacent(matrix(2,2,[0,1,1,0]),qstatecall('ψ',\"t_0\")),matrix(2,1,[e^((\"iω_B\" ⋅ \"t_0\") ∕ 2) ∕ √(2),1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ \"t_0\") ∕ 2))]),4)"
+      "display": "[0, 1; 1, 0] · qstatecall('ψ', \"t_0\") = [(e^(0.5i ⋅ \"t_0\" ⋅ \"ω_B\") ∕ √(2)); (1 ∕ (√(2) ⋅ e^(0.5i ⋅ \"t_0\" ⋅ \"ω_B\")))]",
+      "copy": "qcompare(qadjacent(matrix(2,2,vector(0,1,1,0)),qstatecall('ψ',\"t_0\")),matrix(2,1,[e^((i ⋅ \"t_0\" ⋅ \"ω_B\") ∕ 2) ∕ √(2),1 ∕ (√(2) ⋅ e^((i ⋅ \"t_0\" ⋅ \"ω_B\") ∕ 2))]),4)"
     },
     {
       "id": "IBM082-a3fcfc9e-M014",
@@ -231,8 +231,8 @@
       "end": 4991,
       "literal": "$$\ne^{-iZ\\omega_B (t-t_0)/2}\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t_0/2}|1\\rangle +e^{i\\omega_B t_0/2}|0\\rangle \\right)\n=\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B (t-t_0)/2}e^{i\\omega_B t_0/2}|1\\rangle +e^{i\\omega_B (t-t_0)/2}e^{-i\\omega_B t_0/2}|0\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "[((e^(0.5i'B''Z''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''Z''_''t''ω' + 0.5 \"iω_B\" ⋅ \"t_0\") − e^(0.5i'B''_''t''ω' − 0.5i'B''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5 \"iω_B\" ⋅ \"t_0\")) ∕ √(2)); ((e^(0.5i'B''Z''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''Z''_''t''ω' − 0.5 \"iω_B\" ⋅ \"t_0\") − e^(0.5i'B''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''_''t''ω' + 0.5 \"iω_B\" ⋅ \"t_0\")) ∕ √(2))] = [0; 0]",
-      "copy": "(matrix(2,1,[(e^((i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω' + \"iω_B\" ⋅ \"t_0\") ∕ 2 − (i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2) − e^((i ⋅ 'B' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2 − (i ⋅ 'B' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω') ∕ 2 − (\"iω_B\" ⋅ \"t_0\") ∕ 2)) ∕ √(2),(e^((i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω') ∕ 2 − (i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2 − (\"iω_B\" ⋅ \"t_0\") ∕ 2) − e^((i ⋅ 'B' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω' + \"iω_B\" ⋅ \"t_0\") ∕ 2 − (i ⋅ 'B' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2)) ∕ √(2)]))==(matrix(2,1,[0,0]))"
+      "display": "[((e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − 0.5i't' ⋅ \"ω_B\") − e^(0.5i't' ⋅ \"ω_B\" − i ⋅ \"t_0\" ⋅ \"ω_B\")) ∕ √(2)); ((e^(0.5i't' ⋅ \"ω_B\" − i ⋅ \"t_0\" ⋅ \"ω_B\") − e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − 0.5i't' ⋅ \"ω_B\")) ∕ √(2))] = [0; 0]",
+      "copy": "(matrix(2,1,[(e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − (i ⋅ 't' ⋅ \"ω_B\") ∕ 2) − e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2 − i ⋅ \"t_0\" ⋅ \"ω_B\")) ∕ √(2),(e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2 − i ⋅ \"t_0\" ⋅ \"ω_B\") − e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − (i ⋅ 't' ⋅ \"ω_B\") ∕ 2)) ∕ √(2)]))==(matrix(2,1,[0,0]))"
     },
     {
       "id": "IBM082-a3fcfc9e-M017",
@@ -291,8 +291,8 @@
       "end": 6402,
       "literal": "$$\n|\\psi(t)\\rangle = e^{-iZ\\omega_B t/2}\\frac{1}{\\sqrt{2}}\\left( |0\\rangle +i|1\\rangle \\right)\n=\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t/2}|0\\rangle +i e^{i\\omega_B t/2}|1\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "qstatecall('ψ', 't') = [(1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2))); ((i ⋅ √(2)) ∕ (2e^((\"iZω_B\" ⋅ 't') ∕ 2)))] = [(1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2))); ((i ⋅ √(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2)) ∕ 2)]",
-      "copy": "qequalchain(vector(qstatecall('ψ','t'),matrix(2,1,[1 ∕ (√(2) ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2)),(i ⋅ √(2)) ∕ (2 ⋅ e^((\"iZω_B\" ⋅ 't') ∕ 2))]),matrix(2,1,[1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2)),(i ⋅ √(2) ⋅ e^((\"iω_B\" ⋅ 't') ∕ 2)) ∕ 2])))"
+      "display": "qstatecall('ψ', 't') = [(1 ∕ (√(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2))); ((i ⋅ √(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2)) ∕ 2)] = [(1 ∕ (√(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2))); ((i ⋅ √(2) ⋅ e^((i't' ⋅ \"ω_B\") ∕ 2)) ∕ 2)]",
+      "copy": "qequalchain(vector(qstatecall('ψ','t'),matrix(2,1,[1 ∕ (√(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)),(i ⋅ √(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)) ∕ 2]),matrix(2,1,[1 ∕ (√(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)),(i ⋅ √(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2)) ∕ 2])))"
     },
     {
       "id": "IBM082-a3fcfc9e-M023",
@@ -301,8 +301,8 @@
       "end": 6634,
       "literal": "$$\nX|\\psi(t_0)\\rangle = \\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t_0/2}|1\\rangle +i e^{i\\omega_B t_0/2}|0\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "[0, 1; 1, 0] · qstatecall('ψ', \"t_0\") = [(0.5i ⋅ √(2) ⋅ e^(0.5 \"iω_B\" ⋅ \"t_0\")); (1 ∕ (√(2) ⋅ e^(0.5 \"iω_B\" ⋅ \"t_0\")))]",
-      "copy": "qcompare(qadjacent(matrix(2,2,[0,1,1,0]),qstatecall('ψ',\"t_0\")),matrix(2,1,[(i ⋅ √(2) ⋅ e^((\"iω_B\" ⋅ \"t_0\") ∕ 2)) ∕ 2,1 ∕ (√(2) ⋅ e^((\"iω_B\" ⋅ \"t_0\") ∕ 2))]),4)"
+      "display": "[0, 1; 1, 0] · qstatecall('ψ', \"t_0\") = [(0.5i ⋅ √(2) ⋅ e^(0.5i ⋅ \"t_0\" ⋅ \"ω_B\")); (1 ∕ (√(2) ⋅ e^(0.5i ⋅ \"t_0\" ⋅ \"ω_B\")))]",
+      "copy": "qcompare(qadjacent(matrix(2,2,vector(0,1,1,0)),qstatecall('ψ',\"t_0\")),matrix(2,1,[(i ⋅ √(2) ⋅ e^((i ⋅ \"t_0\" ⋅ \"ω_B\") ∕ 2)) ∕ 2,1 ∕ (√(2) ⋅ e^((i ⋅ \"t_0\" ⋅ \"ω_B\") ∕ 2))]),4)"
     },
     {
       "id": "IBM082-a3fcfc9e-M024",
@@ -331,8 +331,8 @@
       "end": 7201,
       "literal": "$$\ne^{-iZ\\omega_B (t-t_0)/2}\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B t_0/2}|1\\rangle +i e^{i\\omega_B t_0/2}|0\\rangle \\right)\n=\\frac{1}{\\sqrt{2}}\\left( e^{-i\\omega_B (t-t_0)/2}e^{i\\omega_B t_0/2}|1\\rangle +i e^{i\\omega_B (t-t_0)/2}e^{-i\\omega_B t_0/2}|0\\rangle \\right)\n$$",
       "status": "exact",
-      "display": "[(0.5i ⋅ √(2) ⋅ e^(0.5i'B''Z''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''Z''_''t''ω' + 0.5 \"iω_B\" ⋅ \"t_0\") − 0.5i ⋅ √(2) ⋅ e^(0.5i'B''_''t''ω' − 0.5i'B''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5 \"iω_B\" ⋅ \"t_0\")); ((e^(0.5i'B''Z''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''Z''_''t''ω' − 0.5 \"iω_B\" ⋅ \"t_0\") − e^(0.5i'B''_' ⋅ \"t_0\" ⋅ 'ω' − 0.5i'B''_''t''ω' + 0.5 \"iω_B\" ⋅ \"t_0\")) ∕ √(2))] = [0; 0]",
-      "copy": "(matrix(2,1,[(i ⋅ √(2) ⋅ e^((i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω' + \"iω_B\" ⋅ \"t_0\") ∕ 2 − (i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2)) ∕ 2 − (i ⋅ √(2) ⋅ e^((i ⋅ 'B' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2 − (i ⋅ 'B' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω') ∕ 2 − (\"iω_B\" ⋅ \"t_0\") ∕ 2)) ∕ 2,(e^((i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω') ∕ 2 − (i ⋅ 'B' ⋅ 'Z' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2 − (\"iω_B\" ⋅ \"t_0\") ∕ 2) − e^((i ⋅ 'B' ⋅ '_' ⋅ \"t_0\" ⋅ 'ω' + \"iω_B\" ⋅ \"t_0\") ∕ 2 − (i ⋅ 'B' ⋅ '_' ⋅ 't' ⋅ 'ω') ∕ 2)) ∕ √(2)]))==(matrix(2,1,[0,0]))"
+      "display": "[(0.5i ⋅ √(2) ⋅ e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − 0.5i't' ⋅ \"ω_B\") − 0.5i ⋅ √(2) ⋅ e^(0.5i't' ⋅ \"ω_B\" − i ⋅ \"t_0\" ⋅ \"ω_B\")); ((e^(0.5i't' ⋅ \"ω_B\" − i ⋅ \"t_0\" ⋅ \"ω_B\") − e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − 0.5i't' ⋅ \"ω_B\")) ∕ √(2))] = [0; 0]",
+      "copy": "(matrix(2,1,[(i ⋅ √(2) ⋅ e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − (i ⋅ 't' ⋅ \"ω_B\") ∕ 2)) ∕ 2 − (i ⋅ √(2) ⋅ e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2 − i ⋅ \"t_0\" ⋅ \"ω_B\")) ∕ 2,(e^((i ⋅ 't' ⋅ \"ω_B\") ∕ 2 − i ⋅ \"t_0\" ⋅ \"ω_B\") − e^(i ⋅ \"t_0\" ⋅ \"ω_B\" − (i ⋅ 't' ⋅ \"ω_B\") ∕ 2)) ∕ √(2)]))==(matrix(2,1,[0,0]))"
     },
     {
       "id": "IBM082-a3fcfc9e-M027",
@@ -1078,7 +1078,7 @@
       "literal": "$e^{-i\\epsilon Z_j Z_{j+1}}$",
       "status": "exact",
       "display": "e^(−i'ε' · \"Z_j\" · Z_(j + 1))",
-      "copy": "e^qadjacent(qadjacent(−i'ε', \"Z_j\"), qindexedlabel(\"Z_\", qadd('j', 1), \"\"))"
+      "copy": "qpower(e,qadjacent(qadjacent(qmul(−i,'ε'),\"Z_j\"),qindexedlabel(\"Z_\",qadd('j',1),\"\")))"
     },
     {
       "id": "IBM082-a3fcfc9e-M103",
