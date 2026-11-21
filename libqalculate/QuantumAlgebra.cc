@@ -640,6 +640,12 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qsignedequal") {
+   MathStructure left=raw[0],right=raw[1];left.eval(eo);right.eval(eo);
+   if(!left.isMatrix() || !right.isMatrix() || left.containsUnknowns() || right.containsUnknowns())return 0;
+   if(left.equals(right)) {out=1;return 1;}
+   right.negate();right.eval(eo);out=left.equals(right) ? 1 : 0;return 1;
+  }
   if(op=="qstrictorder") {
    MathStructure entries=raw[0],direction=raw[1];entries.eval(eo);direction.eval(eo);
    if(!entries.isVector() || (!direction.isZero() && !direction.isOne()))return 0;
@@ -1334,6 +1340,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));

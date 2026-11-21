@@ -2296,6 +2296,8 @@ class QuantumIndexedFunction: public MathFunction {
     }
     return 0;
    }
+   // The generator family can remain symbolic until its operators are supplied.
+   if(op=="qmember" && members.isFunction() && members.function()->referenceName()=="qpauligroup")return 0;
    bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
    if(explicitSet) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.

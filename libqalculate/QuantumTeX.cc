@@ -1154,7 +1154,7 @@ class TeXReader {
   // Each row of a stabilizer generator table is an ordered tensor word.
   // Preserve it in the compact Pauli representation used by rank and distance.
   if(alignment.size()>=2 && alignment.size()<=25) {
-   std::string generators;
+   std::string generators;size_t width=0;
    bool matched=true;
    for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
     row=trim(row);
@@ -1166,7 +1166,8 @@ class TeXReader {
      if(row.empty())continue;
     }
     auto entries=indexedParts(row,"&");
-    if(entries.size()!=alignment.size()) {matched=false;break;}
+    if(!width)width=entries.size();
+    if(entries.size()!=width || width<2 || width>25) {matched=false;break;}
     unsigned x=0,z=0,phase=0;
     for(auto gate:entries) {
      gate=trim(gate);
