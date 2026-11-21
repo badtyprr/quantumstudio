@@ -142,7 +142,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    std::string text=(name=="qmatrix" ? "matrix" : quantumMode && name=="exp" ? "qexp" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
-    const bool entries=explicitEntries || (quantumMode && name=="qmul" && result[k].isMatrix()) || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
+    const bool entries=explicitEntries || (quantumMode && ((name=="qmul" && result[k].isMatrix()) ||
+        (name=="qadjacent" && (result[k].isMatrix() || result[k].isMultiplication())))) || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
     text+=copyText(result[k],po,quantumMode,entries);
    }
    return text+")";
@@ -196,7 +197,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
     return sum;
    }
   }
-  if(quantumMode && explicitEntries && result.isPower() && result.size()==2)
+  if(quantumMode && result.isPower() && result.size()==2 &&
+     (explicitEntries || result[1].containsFunction(CALCULATOR->getFunction("qadjacent"))))
    return "qpower("+copyText(result[0],po,true,true)+","+copyText(result[1],po,true,true)+")";
   if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&
      (explicitEntries || result.containsType(STRUCT_VECTOR) || containsDeferredQuantum(result,true))) {

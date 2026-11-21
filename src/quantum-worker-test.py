@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# Copying a deferred ordered product preserves its factors and matrix entries.
+for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
+    copied = data("quantum:"+expression)["copy_text"]
+    assert data("quantum:"+copied)["copy_text"] == copied
+
+# Bind the frequency after copying. A half turn gives distinct eigenphases.
+for generator, expected in (("", "-i"), ("Z", "(-i)*Z"), ("X", "(-i)*X"), ("Y", "(-i)*Y")):
+    phase = data(r"quantum:$e^{-i"+generator+r"\omega_B t/2}$")["copy_text"]
+    phase = phase.replace('"ω_B"', "2").replace("'t'", "(pi/2)")
+    assert data(f"quantum:qcompare(({phase}),({expected}),4)")["copy_text"] == "1"
+
 # Logical complements used as equation operands survive Copy and re-entry.
 for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
     predicate = data("quantum:"+spelling)["copy_text"]

@@ -2239,6 +2239,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex uniformKet(R"(\|([01])_1\s*\.\.\.\s*\1_[a-z]\s*\.\.\.\s*\1_([A-Z])\s*\\rangle)");
   s=std::regex_replace(s,uniformKet,"qtensorpow(|$1>,\"$2\")");
  }
+ // A subscript belongs to the angular frequency. Preserve the imaginary
+ // unit and optional Pauli generator as separate factors in a phase.
+ if(s.find("\\omega_")!=std::string::npos && s.find("e^{")!=std::string::npos) {
+  static const std::regex phase(R"(e\^\{(-?)i([XYZ]?)\\omega_([A-Za-z])\s+([a-z](?:_[0-9])?|\([a-z]-[a-z]_[0-9]\))/(\d+)\})");
+  std::smatch m;
+  while(std::regex_search(s,m,phase)) {
+   std::string angle="(\"ω_"+m[3].str()+"\"*("+quantumTeX(m[4].str())+")/"+m[5].str()+")";
+   std::string value=m[2].str().empty() ? "qexp("+m[1].str()+"i*"+angle+")" :
+      "qpropagator("+m[2].str()+","+(m[1].str().empty() ? "-" : "")+angle+")";
+   s.replace(m.position(),m.length(),value);
+  }
+ }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
   static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");
