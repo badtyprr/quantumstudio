@@ -1191,7 +1191,7 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
- bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
+ bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
  bool representsNonMatrix(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qfixedspace") {
@@ -1464,7 +1464,7 @@ class QuantumIndexedFunction: public MathFunction {
      CALCULATOR->error(true,"Each function table entry needs an input and a value.",NULL);return 0;
     }
     const MathStructure &value=pair[1];
-    if(scalar && (!value.isNumber() || value.number().includesInfinity())) {
+    if(scalar && (value.containsUnknowns() || !value.representsNumber() || !value.representsFinite())) {
      CALCULATOR->error(true,"Each scalar function entry needs an input and a finite numeric value.",NULL);return 0;
     }
     if(feature) {

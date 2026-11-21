@@ -2499,6 +2499,25 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,rhoKet,"qketstate(\"ρ_ref\")");
   static const std::regex unbracedTheta(R"(\\vec\s*\\theta(?![A-Za-z]))");
   s=std::regex_replace(s,unbracedTheta,"\\vec{\\theta}");
+  if(s.find("\\vec{\\theta^")!=std::string::npos) {
+   // Each superscript selects one trial parameter vector in the variational
+   // sequence. An adjoint acts on the gate evaluated at that vector.
+   static const std::regex trial(R"(\\vec\{\\theta\^(?:\{([a-z](?:-[0-9]+)?|[0-9]+)\}|([a-z]|[0-9]))\})");
+   static const std::regex ansatz(R"(U_A(\^(?:\\dagger|\{\\dagger\}))?\s*\(\s*(\\vec\{\\theta(?:\^(?:\{[a-z0-9-]+\}|[a-z0-9]))?\})\s*\))");
+   std::smatch match;
+   while(std::regex_search(s,match,ansatz)) {
+    std::string call="qoperatorat(\"U_A\","+match[2].str()+")";
+    s.replace(match.position(),match.length(),match[1].matched ? "qdag("+call+")" : call);
+   }
+   static const std::regex observable(R"(\\hat\{H\}(?![_^]))");
+   s=std::regex_replace(s,observable,"qoperatorref(\"H\")");
+   static const std::regex definition(R"((C_(?:[0-9]|\{[a-z]-[0-9]+\})\(\\vec\{\\theta\}\))\s*:=)");
+   s=std::regex_replace(s,definition,"$1 =");
+   while(std::regex_search(s,match,trial)) {
+    std::string index=match[1].str()+match[2].str();
+    s.replace(match.position(),match.length(),"qvectorref(qindexedlabel(\"θ^\","+index+",\"\"))");
+   }
+  }
   static const std::regex optimum(R"(\\vec\{\\theta\}\^(?:\*|\{\*\}))");
   s=std::regex_replace(s,optimum,"qvectorref(\"θ_star\")");
   if(s.find("\\pmod")==std::string::npos && s.find("\\bmod")==std::string::npos &&
@@ -2553,8 +2572,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return "qcompare(qmul("+adjoint+",qmul("+matrix+",qvectorref(\""+coefficients[2].str()+
        "\"))),qmul("+adjoint+",qvectorref(\""+coefficients[3].str()+"\")),4)";
   }
-  static const std::regex indexedCost(R"(\bC_([a-z0-9])\(\s*(?=\\vec))");
-  s=std::regex_replace(s,indexedCost,"qscalarat(qindexedlabel(\"C_\",\"$1\",\"\"),");
+  static const std::regex indexedCost(R"(\bC_(?:\{([a-z](?:-[0-9]+)?|[0-9]+)\}|([a-z0-9]))\(\s*(?=\\vec))");
+  s=std::regex_replace(s,indexedCost,"qscalarat(qindexedlabel(\"C_\",$1$2,\"\"),");
   static const std::regex gradient(R"(\\vec\{\\nabla\}\s*C\s*\()");
   s=std::regex_replace(s,gradient,"qfeatureat(\"∇C\",");
   static const std::regex costOnIndexedInput(R"(\bC\(\s*x_(?:\{([a-z0-9]+)\}|([a-z0-9]))\s*\))");
