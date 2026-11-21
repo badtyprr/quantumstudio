@@ -1,0 +1,16 @@
+{
+  "source": "IBM029-9ea5aee3-M357",
+  "worker_sha256": "08f7dfa6a2879813340e2f53f588b7b75450395e7778d34daa4c4410b0c8d839",
+  "widths": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    12,
+    32,
+    64
+  ],
+  "exact_memberships": 79,
+  "windows_sessions": 6
+}
