@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/mapping.ipynb",
   "source_sha256": "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4",
-  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
-  "revision": "73df7845",
+  "worker_sha256": "22fb4bfd354fd71d35519f22d42ab8fa2ee4fe06054711b4689eb351d18e512c",
+  "revision": "4270b8e3",
   "mode": "Quantum notation",
   "markdown_cells": 4,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 11,
-    "exact": 65
+    "diagnostic": 10,
+    "exact": 66
   },
   "figures": [
     {
@@ -310,8 +310,9 @@
       "start": 12387,
       "end": 12607,
       "literal": "$$\n\\begin{aligned}\nf_j^\\dagger &= \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j - i Y_j}{2} \\Bigr) \\\\\nf_j &= \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j + i Y_j}{2} \\Bigr)\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\lt at byte 59"
+      "status": "exact",
+      "display": "1.  qoperatorref(qindexedlabel(\"f_\", 'j', \"\"))† = qjwimage('N', 'j', 1)\n\n2.  qoperatorref(qindexedlabel(\"f_\", 'j', \"\")) = qjwimage('N', 'j', 0)",
+      "copy": "\\begin{gathered}qcompare(qdag(qoperatorref(qindexedlabel(\"f_\",'j',\"\"))),qjwimage('N','j',1),4)\\\\qcompare(qoperatorref(qindexedlabel(\"f_\",'j',\"\")),qjwimage('N','j',0),4)\\end{gathered}"
     },
     {
       "id": "IBM078-c73c951f-M030",

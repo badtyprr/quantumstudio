@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
   "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
-  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
-  "revision": "73df7845",
+  "worker_sha256": "22fb4bfd354fd71d35519f22d42ab8fa2ee4fe06054711b4689eb351d18e512c",
+  "revision": "4270b8e3",
   "mode": "Quantum notation",
   "markdown_cells": 12,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 16,
-    "exact": 45
+    "diagnostic": 14,
+    "exact": 47
   },
   "figures": [
     {
@@ -290,8 +290,9 @@
       "start": 5074,
       "end": 5175,
       "literal": "$\\hat{f}_j^\\dagger = \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j + i Y_j}{2} \\Bigr)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\lt at byte 47"
+      "status": "exact",
+      "display": "qoperatorref(qindexedlabel(\"f_\", 'j', \"\"))† = qjwimage('N', 'j', 0)",
+      "copy": "qcompare(qdag(qoperatorref(qindexedlabel(\"f_\",'j',\"\"))),qjwimage('N','j',0),4)"
     },
     {
       "id": "IBM079-7325643f-M021",
@@ -309,8 +310,9 @@
       "start": 5263,
       "end": 5355,
       "literal": "$\\hat{f}_j= \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j - i Y_j}{2} \\Bigr)$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\lt at byte 38"
+      "status": "exact",
+      "display": "qoperatorref(qindexedlabel(\"f_\", 'j', \"\")) = qjwimage('N', 'j', 1)",
+      "copy": "qcompare(qoperatorref(qindexedlabel(\"f_\",'j',\"\")),qjwimage('N','j',1),4)"
     },
     {
       "id": "IBM079-7325643f-M023",
