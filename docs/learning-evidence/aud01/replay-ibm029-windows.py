@@ -17,7 +17,7 @@ args = parser.parse_args()
 inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
 lesson = rows[0]["id"].split("-")[0].lower()
-assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035"} | {f"ibm{i:03d}" for i in range(45,53)} | {f"ibm{i:03d}" for i in range(54,57)} | {f"ibm{i:03d}" for i in range(58,61)} | {f"ibm{i:03d}" for i in range(62,65)} | {f"ibm{i:03d}" for i in range(66,69)} | {f"ibm{i:03d}" for i in range(69,73)} | {f"ibm{i:03d}" for i in range(76,80)} | {f"ibm{i:03d}" for i in range(81,89)} | {f"ibm{i:03d}" for i in range(91,96)}
+assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035"} | {f"ibm{i:03d}" for i in range(45,53)} | {f"ibm{i:03d}" for i in range(54,57)} | {f"ibm{i:03d}" for i in range(58,61)} | {f"ibm{i:03d}" for i in range(62,65)} | {f"ibm{i:03d}" for i in range(66,69)} | {f"ibm{i:03d}" for i in range(69,73)} | {f"ibm{i:03d}" for i in range(76,80)} | {f"ibm{i:03d}" for i in range(81,89)} | {f"ibm{i:03d}" for i in range(91,101)}
 pinned = json.loads(Path(__file__).with_name(lesson+"-inventory.json").read_bytes())
 assert inventory["source_sha256"] == pinned["source_sha256"]
 assert [(r["id"],r["literal"]) for r in rows] == [(r["id"],r["literal"]) for r in pinned["rows"]]

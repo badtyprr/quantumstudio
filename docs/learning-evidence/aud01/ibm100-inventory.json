@@ -1,0 +1,293 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/qvc-qnn.ipynb",
+  "source_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+  "worker_sha256": "d94862052a509ee4c80a81aaa76bfeb8a090a8a92e287fb3f1b035d0e4a45409",
+  "revision": "c71a521d0eeac0d297c126a27185cbaa34d71470",
+  "mode": "Quantum notation",
+  "markdown_cells": 42,
+  "code_cells": 42,
+  "summary": {
+    "exact": 27
+  },
+  "figures": [
+    {
+      "cell": 13,
+      "start": 519,
+      "end": 651,
+      "alt": "QML_CR_background_QNN_circuit-2.png",
+      "path": "/learning/images/courses/quantum-machine-learning/qvc-qnn/qml-cr-background-qnn-circuit.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM100-1f86ee57-M001",
+      "cell": 1,
+      "start": 382,
+      "end": 389,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "IBM100-1f86ee57-M002",
+      "cell": 1,
+      "start": 459,
+      "end": 470,
+      "literal": "$(0,\\pi/4)$",
+      "status": "exact",
+      "display": "(0, 0.25π)",
+      "copy": "qtuple(vector(0,π ∕ 4))"
+    },
+    {
+      "id": "IBM100-1f86ee57-M003",
+      "cell": 3,
+      "start": 273,
+      "end": 278,
+      "literal": "$70%$",
+      "status": "exact",
+      "display": "0.7",
+      "copy": "7 ∕ 10"
+    },
+    {
+      "id": "IBM100-1f86ee57-M004",
+      "cell": 3,
+      "start": 328,
+      "end": 333,
+      "literal": "$30%$",
+      "status": "exact",
+      "display": "0.3",
+      "copy": "3 ∕ 10"
+    },
+    {
+      "id": "IBM100-1f86ee57-M005",
+      "cell": 9,
+      "start": 149,
+      "end": 152,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M006",
+      "cell": 9,
+      "start": 169,
+      "end": 177,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M007",
+      "cell": 9,
+      "start": 210,
+      "end": 219,
+      "literal": "$\\vec{x}$",
+      "status": "exact",
+      "display": "qvectorref('x')",
+      "copy": "qvectorref('x')"
+    },
+    {
+      "id": "IBM100-1f86ee57-M008",
+      "cell": 9,
+      "start": 245,
+      "end": 281,
+      "literal": "$f_\\theta(\\vec{x}) \\rightarrow \\pm1$",
+      "status": "exact",
+      "display": "qscalarat('f', ['θ'  qvectorref('x')]) = 1 or qscalarat('f', ['θ'  qvectorref('x')]) = −1",
+      "copy": "((qscalarat('f',vector('θ',qvectorref('x'))))==(1) or (qscalarat('f',vector('θ',qvectorref('x'))))==(−1))"
+    },
+    {
+      "id": "IBM100-1f86ee57-M009",
+      "cell": 9,
+      "start": 388,
+      "end": 490,
+      "literal": "$$\nf_\\theta(\\vec{x}) = \\langle 0|U^{\\dagger}(\\vec{x})W^\\dagger(\\theta)OW(\\theta)U(\\vec{x})|0\\rangle\n$$",
+      "status": "exact",
+      "display": "qscalarat('f', ['θ'  qvectorref('x')]) = qexpect(qoperatorref('O'), qmul(qoperatorat('W', 'θ'), qzeroimage(qoperatorat('U', qvectorref('x')))))",
+      "copy": "qcompare(qscalarat('f',vector('θ',qvectorref('x'))),qexpect(qoperatorref('O'),qmul(qoperatorat('W','θ'),qzeroimage(qoperatorat('U',qvectorref('x'))))),4)"
+    },
+    {
+      "id": "IBM100-1f86ee57-M010",
+      "cell": 9,
+      "start": 497,
+      "end": 509,
+      "literal": "$U(\\vec{x})$",
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
+    },
+    {
+      "id": "IBM100-1f86ee57-M011",
+      "cell": 9,
+      "start": 595,
+      "end": 606,
+      "literal": "$W(\\theta)$",
+      "status": "exact",
+      "display": "W · 'θ'",
+      "copy": "'W''θ'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M012",
+      "cell": 9,
+      "start": 657,
+      "end": 665,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M013",
+      "cell": 9,
+      "start": 943,
+      "end": 946,
+      "literal": "$O$",
+      "status": "exact",
+      "display": "O",
+      "copy": "'O'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M014",
+      "cell": 13,
+      "start": 208,
+      "end": 220,
+      "literal": "$U(\\vec{x})$",
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
+    },
+    {
+      "id": "IBM100-1f86ee57-M015",
+      "cell": 13,
+      "start": 297,
+      "end": 308,
+      "literal": "$W(\\theta)$",
+      "status": "exact",
+      "display": "W · 'θ'",
+      "copy": "'W''θ'"
+    },
+    {
+      "id": "IBM100-1f86ee57-M016",
+      "cell": 15,
+      "start": 654,
+      "end": 657,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM100-1f86ee57-M017",
+      "cell": 15,
+      "start": 746,
+      "end": 749,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM100-1f86ee57-M018",
+      "cell": 15,
+      "start": 804,
+      "end": 807,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM100-1f86ee57-M019",
+      "cell": 15,
+      "start": 809,
+      "end": 816,
+      "literal": "$\\pm 1$",
+      "status": "exact",
+      "display": "\\{1, −1\\}",
+      "copy": "qset(vector(1,−1))"
+    },
+    {
+      "id": "IBM100-1f86ee57-M020",
+      "cell": 37,
+      "start": 30,
+      "end": 35,
+      "literal": "$60%$",
+      "status": "exact",
+      "display": "0.6",
+      "copy": "3 ∕ 5"
+    },
+    {
+      "id": "IBM100-1f86ee57-M021",
+      "cell": 44,
+      "start": 527,
+      "end": 530,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM100-1f86ee57-M022",
+      "cell": 44,
+      "start": 551,
+      "end": 556,
+      "literal": "$i+1$",
+      "status": "exact",
+      "display": "1 + i",
+      "copy": "1 + i"
+    },
+    {
+      "id": "IBM100-1f86ee57-M023",
+      "cell": 53,
+      "start": 0,
+      "end": 7,
+      "literal": "$100\\%$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM100-1f86ee57-M024",
+      "cell": 66,
+      "start": 174,
+      "end": 182,
+      "literal": "$q_{35}$",
+      "status": "exact",
+      "display": "\"q_35\"",
+      "copy": "\"q_35\""
+    },
+    {
+      "id": "IBM100-1f86ee57-M025",
+      "cell": 66,
+      "start": 187,
+      "end": 195,
+      "literal": "$q_{34}$",
+      "status": "exact",
+      "display": "\"q_34\"",
+      "copy": "\"q_34\""
+    },
+    {
+      "id": "IBM100-1f86ee57-M026",
+      "cell": 66,
+      "start": 301,
+      "end": 309,
+      "literal": "$q_{30}$",
+      "status": "exact",
+      "display": "\"q_30\"",
+      "copy": "\"q_30\""
+    },
+    {
+      "id": "IBM100-1f86ee57-M027",
+      "cell": 66,
+      "start": 314,
+      "end": 322,
+      "literal": "$q_{31}$",
+      "status": "exact",
+      "display": "\"q_31\"",
+      "copy": "\"q_31\""
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "notebook_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+  "optimizer": "COBYLA",
+  "backend": "StatevectorEstimator",
+  "training_images": 140,
+  "test_images": 60,
+  "models": [
+    {
+      "model": "first",
+      "qubits": 8,
+      "trained_weights": 16,
+      "objective_evaluations": 100,
+      "initial_loss": 1.0002309063537163,
+      "best_loss": 0.8899504023746132,
+      "train_accuracy": 0.6,
+      "test_accuracy": 0.6,
+      "first_test_expectation": 0.034905435821036314
+    },
+    {
+      "model": "revised",
+      "qubits": 8,
+      "trained_weights": 16,
+      "objective_evaluations": 100,
+      "initial_loss": 1.0049762969140237,
+      "best_loss": 0.7814124873395512,
+      "train_accuracy": 0.8071428571428572,
+      "test_accuracy": 0.8333333333333334,
+      "first_test_expectation": 0.15991125584097665
+    }
+  ]
+}

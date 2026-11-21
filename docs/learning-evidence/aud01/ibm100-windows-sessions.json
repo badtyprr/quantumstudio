@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/qvc-qnn.ipynb",
+  "notebook_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+  "worker_sha256": "d94862052a509ee4c80a81aaa76bfeb8a090a8a92e287fb3f1b035d0e4a45409",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "1c9a14518840574f1a1e603d44a982cb7ce361ef8aa8c6406acb06f2ee124f61",
+  "suite": {
+    "passed": true,
+    "checks": 243,
+    "calls": 27,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 27,
+    "restored_identically": 27,
+    "stable_after_text_reentry": 27
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

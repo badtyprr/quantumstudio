@@ -1,0 +1,257 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/data-encoding.ipynb",
+  "notebook_sha256": "09806407d3d3d6c7cc24de5f6ea0fd6a0a101f04b37fb8fcfc7eeaafeb2bc2a9",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "d27b1766500de2c71d3e35924609d5df017ccbc26ef12fd5bce034c2fcd267f4",
+  "suite": {
+    "passed": true,
+    "checks": 2231,
+    "calls": 293,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 235,
+    "restored_identically": 235,
+    "stable_after_text_reentry": 235,
+    "source_diagnostic": 58
+  },
+  "diagnostics": [
+    {
+      "id": "IBM098-09806407-M002",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM098-09806407-M004",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM098-09806407-M007",
+      "message": "Unsupported text in a mathematical expression at byte 10"
+    },
+    {
+      "id": "IBM098-09806407-M017",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM098-09806407-M019",
+      "message": "Unclosed quoted label at byte 227"
+    },
+    {
+      "id": "IBM098-09806407-M022",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM098-09806407-M023",
+      "message": "Unclosed quoted label at byte 21"
+    },
+    {
+      "id": "IBM098-09806407-M028",
+      "message": "Unexpected notation at byte 7"
+    },
+    {
+      "id": "IBM098-09806407-M029",
+      "message": "Unsupported TeX command: \\vertqvectorref at byte 16"
+    },
+    {
+      "id": "IBM098-09806407-M048",
+      "message": "Invalid decimal number at byte 38"
+    },
+    {
+      "id": "IBM098-09806407-M050",
+      "message": "Invalid register index expression."
+    },
+    {
+      "id": "IBM098-09806407-M077",
+      "message": "Unexpected notation at byte 61"
+    },
+    {
+      "id": "IBM098-09806407-M078",
+      "message": "A state-family argument must be a finite scalar expression."
+    },
+    {
+      "id": "IBM098-09806407-M087",
+      "message": "Unexpected notation at byte 88"
+    },
+    {
+      "id": "IBM098-09806407-M094",
+      "message": "Unexpected notation at byte 17"
+    },
+    {
+      "id": "IBM098-09806407-M095",
+      "message": "Expected {name} at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M098",
+      "message": "Expected {name} at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M107",
+      "message": "Unsupported TeX command: \\textstyle at byte 93"
+    },
+    {
+      "id": "IBM098-09806407-M110",
+      "message": "Unexpected notation at byte 26"
+    },
+    {
+      "id": "IBM098-09806407-M125",
+      "message": "Invalid state-family arguments."
+    },
+    {
+      "id": "IBM098-09806407-M126",
+      "message": "Invalid state-family arguments."
+    },
+    {
+      "id": "IBM098-09806407-M130",
+      "message": "Unmatched closing delimiter at byte 8"
+    },
+    {
+      "id": "IBM098-09806407-M139",
+      "message": "Unsupported TeX command: \\textstyle at byte 36"
+    },
+    {
+      "id": "IBM098-09806407-M140",
+      "message": "Unsupported TeX command: \\textstyle at byte 89"
+    },
+    {
+      "id": "IBM098-09806407-M141",
+      "message": "Unexpected notation at byte 26"
+    },
+    {
+      "id": "IBM098-09806407-M144",
+      "message": "Unsupported TeX command: \\textstyle at byte 125"
+    },
+    {
+      "id": "IBM098-09806407-M147",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM098-09806407-M154",
+      "message": "Unexpected notation at byte 28"
+    },
+    {
+      "id": "IBM098-09806407-M155",
+      "message": "A computational basis index must be a nonnegative integer."
+    },
+    {
+      "id": "IBM098-09806407-M156",
+      "message": "Expected a quantum expression at byte 3"
+    },
+    {
+      "id": "IBM098-09806407-M158",
+      "message": "Indexed operations require ascending integer bounds within -1000000 to 1000000."
+    },
+    {
+      "id": "IBM098-09806407-M175",
+      "message": "Expected an alignment tab on a grouped continuation at byte 303"
+    },
+    {
+      "id": "IBM098-09806407-M190",
+      "message": "Unsupported TeX command: \\dots at byte 26"
+    },
+    {
+      "id": "IBM098-09806407-M194",
+      "message": "Unsupported TeX command: \\ldots at byte 55"
+    },
+    {
+      "id": "IBM098-09806407-M195",
+      "message": "Unsupported TeX command: \\mathscr at byte 10"
+    },
+    {
+      "id": "IBM098-09806407-M197",
+      "message": "Unsupported TeX command: \\mathscr at byte 10"
+    },
+    {
+      "id": "IBM098-09806407-M201",
+      "message": "Unsupported TeX command: \\textstyle at byte 35"
+    },
+    {
+      "id": "IBM098-09806407-M203",
+      "message": "Unsupported TeX command: \\textstyle at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M208",
+      "message": "Unsupported TeX command: \\textstyle at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M210",
+      "message": "Unsupported TeX command: \\textstyle at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M212",
+      "message": "Unsupported TeX command: \\mathscr at byte 10"
+    },
+    {
+      "id": "IBM098-09806407-M213",
+      "message": "Unsupported TeX command: \\textstyle at byte 35"
+    },
+    {
+      "id": "IBM098-09806407-M217",
+      "message": "Unexpected notation at byte 5"
+    },
+    {
+      "id": "IBM098-09806407-M218",
+      "message": "Unsupported TeX command: \\textstyle at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M226",
+      "message": "Unsupported TeX command: \\textstyle at byte 20"
+    },
+    {
+      "id": "IBM098-09806407-M232",
+      "message": "Unsupported TeX command: \\ldots at byte 136"
+    },
+    {
+      "id": "IBM098-09806407-M241",
+      "message": "A paired coefficient subscript requires two indices at byte 11"
+    },
+    {
+      "id": "IBM098-09806407-M243",
+      "message": "Unexpected notation at byte 38"
+    },
+    {
+      "id": "IBM098-09806407-M244",
+      "message": "Unsupported TeX command: \\mathscr at byte 10"
+    },
+    {
+      "id": "IBM098-09806407-M246",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM098-09806407-M248",
+      "message": "Argument 1, n, in totient() must be an integer."
+    },
+    {
+      "id": "IBM098-09806407-M253",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM098-09806407-M258",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    },
+    {
+      "id": "IBM098-09806407-M260",
+      "message": "Set-indexed sums have no upper bound at byte 122"
+    },
+    {
+      "id": "IBM098-09806407-M262",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries.\nA set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM098-09806407-M266",
+      "message": "Invalid set entry."
+    },
+    {
+      "id": "IBM098-09806407-M269",
+      "message": "Cases text must introduce if or otherwise at byte 109"
+    },
+    {
+      "id": "IBM098-09806407-M281",
+      "message": "Unsupported TeX command: \\bar at byte 8"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

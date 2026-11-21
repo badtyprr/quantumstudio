@@ -1,0 +1,235 @@
+{
+  "figures": [
+    {
+      "lesson": "IBM096",
+      "cell": 0,
+      "start": 2756,
+      "end": 2888,
+      "alt": "QML_CR_background_Sup_Unsup.avif",
+      "path": "/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-sup-unsup.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-sup-unsup.avif",
+      "bytes": 63742,
+      "sha256": "2ec167b06d78a374b047bc7a365255d0ef11550531bc37fd7a89048409133c98"
+    },
+    {
+      "lesson": "IBM096",
+      "cell": 0,
+      "start": 4434,
+      "end": 4558,
+      "alt": "QML_CR_background_2D-3D.avif",
+      "path": "/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-2d-3d.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/introduction/qml-cr-background-2d-3d.avif",
+      "bytes": 164238,
+      "sha256": "e38d3206150d4a6a12a56eddeacbe015d776440c8442fbd3885050d84f5c7051"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 1,
+      "start": 1498,
+      "end": 1675,
+      "alt": "A diagrammatic representation of supervised and unsupervised learning.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-sup-unsup.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-sup-unsup.avif",
+      "bytes": 64386,
+      "sha256": "32ae4e5d56498fc7d297a096949c9a61f0ee1866fc9be4bac82b0b42853bf7ac"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 1,
+      "start": 2656,
+      "end": 2885,
+      "alt": "A diagram showing quadrants with algorithms on one axis and data on the other, where each can be quantum or classical in nature.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/cccqqcqq-quadrants-cp.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/cccqqcqq-quadrants-cp.avif",
+      "bytes": 54388,
+      "sha256": "5cd09912155c2356fb952ff72450a7df37bd5b70f1a8afa0a995eec95720e512"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 1,
+      "start": 4150,
+      "end": 4274,
+      "alt": "A diagram of a support vector machine.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/svm-cp.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/svm-cp.avif",
+      "bytes": 44387,
+      "sha256": "c80bbd9b96a4de94222b581af4152f9c13ef944ba715b309f3fac559403f36a1"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 2,
+      "start": 1659,
+      "end": 1967,
+      "alt": "A diagram showing a ring of one data type with a second data type filling in the middle of the ring. A second cell shows the data projected into 3D, as in a bowl shape. Now the data are linearly separable.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-2d-3d.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-2d-3d.avif",
+      "bytes": 178042,
+      "sha256": "41ce330f9222b948451a8cdce7bccf07d855654d58da9c6d11f6860b01fcafa2"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 2,
+      "start": 6195,
+      "end": 6369,
+      "alt": "An abstract representation of a kernel as a circuit.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/classical-review-background-kernel-circuit.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/classical-review-background-kernel-circuit.avif",
+      "bytes": 32048,
+      "sha256": "0629112008fbd6b893a779e117e9bbc3780d757905ade7add1254233d61f2889"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 3,
+      "start": 1332,
+      "end": 1480,
+      "alt": "QML\\_CR\\_background\\_QNN\\_2ndlayer.png",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-2ndlayer.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-2ndlayer.avif",
+      "bytes": 91432,
+      "sha256": "4181ac5519d93e4f32003937cd638644c222c5514cb8e158dd47192f27d9bc5d"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 3,
+      "start": 1890,
+      "end": 2034,
+      "alt": "QML\\_CR\\_background\\_QNN\\_output.png",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-output.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-output.avif",
+      "bytes": 15897,
+      "sha256": "fc952388023be4075211f15bd3db808021e0e4af8cdaa795414c2b0dcf71a38b"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 3,
+      "start": 3082,
+      "end": 3193,
+      "alt": "perceptron\\_CP.png",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/perceptron-cp.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/perceptron-cp.avif",
+      "bytes": 25079,
+      "sha256": "ae1e4e6a1e55d62f4dcee0888125bd1001b0cdb785c666b8021b1b69c7fe8ea7"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 4,
+      "start": 1299,
+      "end": 1469,
+      "alt": "A representation of a quantum neural network as a circuit.",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-ex-circuit.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/qml-cr-background-qnn-ex-circuit.avif",
+      "bytes": 38566,
+      "sha256": "52d6a0f939244b1cba59b66b96f0a1a34c55ce0de19e76b1410119201c12e028"
+    },
+    {
+      "lesson": "IBM097",
+      "cell": 4,
+      "start": 2270,
+      "end": 2440,
+      "alt": "A diagram showing several layers of gates within a quantum neural network",
+      "path": "/learning/images/courses/quantum-machine-learning/classical-ml-review/vqc-layers-meltem.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/classical-ml-review/vqc-layers-meltem.avif",
+      "bytes": 9277,
+      "sha256": "1492782bae8c742dff9b4d153b597bee37bb34e29fbf733b54e647916edc01ac"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 8,
+      "start": 1586,
+      "end": 1702,
+      "alt": "\"Output of the previous code cell\"",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/checkin2.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/checkin2.avif",
+      "bytes": 8345,
+      "sha256": "aa44ed6f90d27f3c00667d3a92b890c82493a61fd57e2c27a3a0ae5025589865"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 8,
+      "start": 3045,
+      "end": 3161,
+      "alt": "\"Output of the previous code cell\"",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/checkin3.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/checkin3.avif",
+      "bytes": 15964,
+      "sha256": "4a9b9de24cda8934b5a01b45571ab3370980ece64b82906262afa9d0b0be86a2"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 14,
+      "start": 1125,
+      "end": 1241,
+      "alt": "\"Output of the previous code cell\"",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/checkin4.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/checkin4.avif",
+      "bytes": 1417,
+      "sha256": "490d59930f459a7c2cdd05219a3b8d586c331cdb4abd12ea137f6044c59db92f"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 20,
+      "start": 634,
+      "end": 750,
+      "alt": "\"Output of the previous code cell\"",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/checkin5.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/checkin5.avif",
+      "bytes": 5478,
+      "sha256": "2e786aacf271db9cfa89597278aa0e0397c9490e608286a9f97317c50550039a"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 23,
+      "start": 878,
+      "end": 994,
+      "alt": "\"Output of the previous code cell\"",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/checkin6.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/checkin6.avif",
+      "bytes": 5133,
+      "sha256": "78b10bd4773d9f34c65dd6a80cc5422b9620348246daf97d55471702539420ac"
+    },
+    {
+      "lesson": "IBM098",
+      "cell": 61,
+      "start": 3135,
+      "end": 3251,
+      "alt": "Data encoding image",
+      "path": "/learning/images/courses/quantum-machine-learning/data-encoding/qml-03-data-encoding-24.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/data-encoding/qml-03-data-encoding-24.avif",
+      "bytes": 27975,
+      "sha256": "b47e1777ebc3dbfc86ea704deaf6ca8d6e692db31ff4b9b779923079cc4014a9"
+    },
+    {
+      "lesson": "IBM099",
+      "cell": 0,
+      "start": 3158,
+      "end": 3325,
+      "alt": "Classical_Review_background_kernel_circuit",
+      "path": "/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/classical-review-background-kernel-circuit.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/classical-review-background-kernel-circuit.avif",
+      "bytes": 32048,
+      "sha256": "0629112008fbd6b893a779e117e9bbc3780d757905ade7add1254233d61f2889"
+    },
+    {
+      "lesson": "IBM099",
+      "cell": 22,
+      "start": 1397,
+      "end": 1538,
+      "alt": "Bad results from a zz feature map.",
+      "path": "/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/zzfeaturemap-bad-results.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/quantum-kernel-methods/zzfeaturemap-bad-results.avif",
+      "bytes": 11903,
+      "sha256": "2619ee691a445b383a126ca65374821d26bac52db4f2e7b136defcb49e97c79e"
+    },
+    {
+      "lesson": "IBM100",
+      "cell": 13,
+      "start": 519,
+      "end": 651,
+      "alt": "QML_CR_background_QNN_circuit-2.png",
+      "path": "/learning/images/courses/quantum-machine-learning/qvc-qnn/qml-cr-background-qnn-circuit.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/quantum-machine-learning/qvc-qnn/qml-cr-background-qnn-circuit.avif",
+      "bytes": 39830,
+      "sha256": "698b6b1e9812bcae4d045600e9a758b3953b822c6782609cd2ea5f7c0e45997b"
+    }
+  ]
+}

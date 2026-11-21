@@ -42,6 +42,11 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381": ("IBM096", "introduction", 19, 2),
+    "4b10863c06d14367e736ad245ac715b4d61f3258e7b887ad6c1c46a43d200707": ("IBM097", "classical-ml-review", 65, 10),
+    "09806407d3d3d6c7cc24de5f6ea0fd6a0a101f04b37fb8fcfc7eeaafeb2bc2a9": ("IBM098", "data-encoding", 293, 6),
+    "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b": ("IBM099", "quantum-kernel-methods", 47, 2),
+    "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7": ("IBM100", "qvc-qnn", 27, 1),
     "0460de3a26c5a3f217a159e3b479e0a2c717050ccb58aa633483aa9ce8715d8f": ("IBM090", "introduction", 0, 0),
     "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c": ("IBM091", "vqe", 91, 6),
     "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218": ("IBM092", "krylov", 390, 8),
@@ -159,6 +164,11 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM096": (7,1),
+    "IBM097": (6,0),
+    "IBM098": (45,19),
+    "IBM099": (31,30),
+    "IBM100": (42,42),
     "IBM090": (3,0),
     "IBM091": (24,15),
     "IBM092": (65,45),
@@ -245,6 +255,8 @@ elif "IBM085" <= lesson <= "IBM089":
     course,chapter = "integrating-quantum-and-high-performance-computing",""
 elif "IBM090" <= lesson <= "IBM095":
     course,chapter = "quantum-diagonalization-algorithms",""
+elif "IBM096" <= lesson <= "IBM100":
+    course,chapter = "quantum-machine-learning",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

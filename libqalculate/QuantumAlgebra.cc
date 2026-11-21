@@ -877,6 +877,43 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qrealvectormember") {
+   MathStructure value=raw[0],dimension=raw[1];value.eval(eo);dimension.eval(eo);
+   if(!dimension.isNumber())return 0;
+   if(!dimension.number().isInteger() || dimension.number().isNegative()) {
+    CALCULATOR->error(true,"A real vector space needs a nonnegative integer dimension.",NULL);return 0;
+   }
+   if(value.isFunction() || value.isSymbolic() || value.isUnknown())return 0;
+   if(!value.isVector() || (value.isMatrix() && value.rows()!=1 && value.columns()!=1)) {out=0;return 1;}
+   size_t count=value.isMatrix() ? value.rows()*value.columns() : value.size();
+   if(dimension.number()!=Number((long int)count)) {out=0;return 1;}
+   for(size_t k=0;k<count;++k) {
+    const auto &part=value.isMatrix() ? *value.getElement(value.rows()==1 ? 1 : k+1,value.rows()==1 ? k+1 : 1) : value[k];
+    if(!part.isNumber())return 0;
+    if(!part.number().isReal() || part.number().includesInfinity()) {out=0;return 1;}
+   }
+   out=1;return 1;
+  }
+  if(op=="qvectordot") {
+   MathStructure vectors[2]={raw[0],raw[1]};
+   for(auto &v:vectors) {
+    v.eval(eo);
+    if(v.isFunction() || v.isSymbolic() || v.isUnknown())return 0;
+    if(!v.isVector() || (v.isMatrix() && v.rows()!=1 && v.columns()!=1)) {
+     CALCULATOR->error(true,"A vector dot product needs two rows or columns.",NULL);return 0;
+    }
+    if(v.isMatrix()) {
+     MathStructure flat;flat.clearVector();
+     for(size_t j=0;j<v.rows()*v.columns();++j)
+      flat.addChild(*v.getElement(v.rows()==1 ? 1 : j+1,v.rows()==1 ? j+1 : 1));
+     v=flat;
+    }
+   }
+   if(vectors[0].size()!=vectors[1].size()) {
+    CALCULATOR->error(true,"A vector dot product needs equal lengths.",NULL);return 0;
+   }
+   out.set(CALCULATOR->getFunction("dot"),&vectors[0],&vectors[1],NULL);out.eval(eo);return 1;
+  }
   if(op=="qvectorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(value.isSymbolic() || value.isUnknown() || (value.isFunction() && value.function()->referenceName()=="qindexedlabel"))return 0;
@@ -891,6 +928,20 @@ class QuantumAlgebraFunction: public MathFunction {
     }
    }
    out=value;return 1;
+  }
+  if(op=="qzeroimage") {
+   MathStructure opMatrix=raw[0];opMatrix.eval(eo);
+   if(!opMatrix.isMatrix()) {
+    if(opMatrix.isFunction() || opMatrix.isSymbolic() || opMatrix.isUnknown())return 0;
+    CALCULATOR->error(true,"An all-zero input requires a square qubit operator.",NULL);return 0;
+   }
+   size_t n=opMatrix.rows();
+   if(n==0 || n!=opMatrix.columns() || (n & (n-1))) {
+    CALCULATOR->error(true,"An all-zero input requires a square operator of power-of-two dimension.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(n,1,m_zero);
+   for(size_t r=0;r<n;++r)*out.getElement(r+1,1)=*opMatrix.getElement(r+1,1);
+   return 1;
   }
   if(op=="qoperatorref") {
    MathStructure value=raw[0];value.eval(eo);
@@ -1585,7 +1636,10 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
  calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
  calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qrealvectormember",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qzeroimage",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
