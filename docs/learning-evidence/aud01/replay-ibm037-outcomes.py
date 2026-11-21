@@ -84,3 +84,25 @@ for name in ("high", "medium", "low", "off"):
 assert evaluate(fr"quantum:$\mathrm{{other}}\in {domain_source}$") == "0"
 assert evaluate(f'quantum:cardinality({domain})') == "4"
 print("Verified all four named outcomes from M021, including Copy re-entry")
+
+# Bind the function names to the graphs printed in M067. Toggling both
+# outputs produces a counterexample on each input, including constant maps.
+functions = [(0,0), (0,1), (1,0), (1,1)]
+for row_number, function_number, inputs in [(68,1,[0,1]), (69,4,[0,1]), (72,2,[0,1]),
+                                           (75,3,[0]), (76,3,[1])]:
+    row = inventory["rows"][row_number - 1]
+    assert row["id"].endswith(f"M{row_number:03}")
+    copied = evaluate("quantum:" + row["literal"])
+    for bit in inputs:
+        for toggle in (0,1):
+            zero, one = (value ^ toggle for value in functions[function_number-1])
+            graph = f"qset(vector(tuple(0,{zero}),tuple(1,{one})))"
+            bound = f'replace(({copied}),"f_{function_number}",{graph})'
+            if "(a)" in row["literal"]:
+                bound = f"replace({bound},a,{bit})"
+            assert evaluate("quantum:" + bound) == str(1-toggle), (row["id"],bit,toggle)
+for pairs, key in [("tuple(0,0),tuple(0,1)",0), ("tuple(0,1),tuple(1,0)",2)]:
+    expr = f"quantum:qfiniteapply(qset(vector({pairs})),{key})"
+    process = subprocess.run([worker,"--json"],input=expr.encode(),env=environment,capture_output=True,timeout=30)
+    assert process.returncode == 2 and process.stderr.strip(), expr
+print("Verified the five indexed function equations on all eight inputs, including changed and invalid graphs")

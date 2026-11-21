@@ -1209,12 +1209,14 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out=digits[index.number().intValue()];return 1;
   }
-  if(op=="qfunctionrange" || op=="qpreimage" || op=="qfunctiontype") {
+  if(op=="qfunctionrange" || op=="qpreimage" || op=="qfunctiontype" || op=="qfiniteapply") {
+   const bool application=op=="qfiniteapply";
    bool signature=op=="qfunctiontype";
    bool inverse=op=="qpreimage";
    MathStructure graph=raw[0];graph.eval(eo);
    if(!graph.isFunction() || graph.function()->referenceName()!="qset") {
     if(pendingDomain(graph))return 0;
+    if(application) {CALCULATOR->error(true,"Function application requires a finite graph.",NULL);return 0;}
     if(signature) {CALCULATOR->error(true,"A function signature requires a finite graph.",NULL);return 0;}
     if(inverse) {CALCULATOR->error(true,"An inverse image requires a finite function graph.",NULL);return 0;}
     // Preserve the ordinary statistical range for data vectors.
@@ -1231,6 +1233,9 @@ class QuantumIndexedFunction: public MathFunction {
     if(targetState==DomainState::Pending)return 0;
     if(targetState!=DomainState::Finite) {CALCULATOR->error(true,"A finite target set is required.",NULL);return 0;}
    }
+   MathStructure probe;
+   if(application) {probe=raw[1];probe.eval(eo);}
+   bool pendingMatch=false;
    MathStructure outputs;outputs.clearVector();
    for(size_t k=0;k<pairs.size();++k) {
     if(CALCULATOR->aborted())return 0;
@@ -1257,7 +1262,16 @@ class QuantumIndexedFunction: public MathFunction {
      if(!found && uncertain)return 0;
      if(signature && !found) {out=0;return 1;}
      if(found)outputs.addChild(pair[0][0]);
+    } else if(application) {
+     const SetEquality match=setEquality(probe,pair[0][0]);
+     if(match==SetEquality::Equal)outputs.addChild(pair[0][1]);
+     if(match==SetEquality::Unknown)pendingMatch=true;
     } else outputs.addChild(pair[0][1]);
+   }
+   if(application) {
+    if(outputs.size()) {out=outputs[0];return 1;}
+    if(!pendingMatch)CALCULATOR->error(true,"The function graph has no value for this input.",NULL);
+    return 0;
    }
    out.set(CALCULATOR->getFunction("qset"),&outputs,NULL);
    if(signature) {
@@ -2511,6 +2525,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qunitcircle",0));
  calculator.addFunction(new QuantumIndexedFunction("qcomplexplane",0));
  calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));
+ calculator.addFunction(new QuantumIndexedFunction("qfiniteapply",2));
  calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));
