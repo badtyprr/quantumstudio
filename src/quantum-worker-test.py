@@ -60,6 +60,9 @@ for candidate, expected in [(4,1), (25,0)]:
     expr = f'replace(replace(replace(replace(({modular}),"k",2),"a",5),"N",21),"b",{candidate})'
     assert data("quantum:"+expr)["copy_text"] == str(expected)
 assert data(r"quantum:modpowers:$17 = 5^{-1}\in\mathbb{Z}_{21}$")["copy_text"] == "1"
+for formula in (r"$(2+3)^2\in\mathbb{Z}_{21}$", r"$4=5^{1+1}\in\mathbb{Z}_{7*3}$",
+                r"$4=4=5^{2+0}\in\mathbb{Z}_{21}^{\ast}$"):
+    assert data("quantum:modpowers:"+formula)["copy_text"] == "1"
 assert data(r"quantum:$5^2\in\mathbb{Z}_{21}$")["copy_text"] == "0"
 assert data("quantum:qmodpower(2,1000000000,21)")["copy_text"] == str(pow(2,1000000000,21))
 for invalid in ("qmodpower(2,-1,4)", "qmodpower(1,2,0)", "qmodpower(1/2,2,7)"):

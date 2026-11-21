@@ -428,6 +428,7 @@ class Parser {
  bool spinContext=false;
  bool setNotation=false;
  bool scalarNotation=false;
+ bool modularPowers=false;
  std::string updateVariable;
  std::vector<std::string> declaredGates;
  bool costContext=false;
@@ -2456,6 +2457,24 @@ class Parser {
     prepareEquality(left,right);
     operands.back()=left;
    }
+   if(modularPowers && (relation=="∈" || relation=="∉")) {
+    auto ungroup=[](std::string term) {
+     // Parser-produced compounds use function calls. Parentheses around a
+     // single operand preserve the grouping written in the original input.
+     while(term.size()>2 && term.front()=='(' && term.back()==')')term=term.substr(1,term.size()-2);
+     return term;
+    };
+    std::string power=ungroup(left),domain=ungroup(right);
+    size_t start=domain.compare(0,10,"qresidues(")==0 ? 10 : domain.compare(0,10,"qunitsmod(")==0 ? 10 : 0;
+    if(start && power.compare(0,7,"qpower(")==0 && power.back()==')' && domain.back()==')') {
+     left="qmodpower("+power.substr(7,power.size()-8)+","+domain.substr(start,domain.size()-start-1)+")";
+     if(!result.empty()) {
+      if(!exactPrefix || operands.size()<2)throw std::runtime_error("Group the modular power membership separately from this comparison.");
+      operands.back()=left;
+      result=operands.size()==2 ? "qcompare("+operands.front()+","+left+",4)" : equalityChain(operands,false);
+     }
+    }
+   }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
    if(relation=="≈") {
     clause=decimalMatch(left,right,s.substr(rightStart,p-rightStart));
@@ -2618,7 +2637,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -2683,11 +2702,13 @@ std::string translateQuantum(const std::string &expression) {
  std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
+ const size_t first=s.find_first_not_of(" \t\r\n");
+ const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets,scalars).run();
+ return Parser(s,spin,sets,scalars || modular,modular).run();
 }
