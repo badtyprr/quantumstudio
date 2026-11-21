@@ -1,0 +1,180 @@
+{
+  "version": 2,
+  "id": "qb020",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "ibm-runtime-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/ibm_quantum_jobs_with_runtime.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "99fd282cde1b9be2e1a80e16864afbaf1c1b4944ae7c83d220fa6786223e2e69",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "8e1db820a3186ffbe51fc6aa67964b3a76e9748b0bb36dfac246393fe05c9257"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "7c447bcf1c0f65427c95d1b0f2a43c7d030a466b5192aa59106f717dcea001a3"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "1d5064eb98a102f01f13d8301893d9684d8408e18d106add6183347e64f39e59"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "ee0438139a0d8967d1d204969e2c37d4f8ce99ee380738823c7bf8395f422a8d"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "c8a61fe7082401e311086ab821cc9fdf8aa1254b7a4c790e0cd9ac36a364bfe2"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "902bf1e272d08fcefd4f1ddac60bd58ca8839f0c356066516b5ed4be08772932"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "bc072ec0218cbc54673fde51f9860446628b4d888f278c497d84f516471c3258"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "0d742d146e5e3fe434887a0a863ba223d0d4f19a7022402d350c747aa8665ae0"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "3e714dfff0324f7a3c77039ac3891e06b44bd1fc7a5ae5a2deaee451b171a929"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "73731b34b6cb985c511cc948851413f76c8d33aa452de3734ba08caeb5b789da"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "1fdabeea5c86d71dd575dd3e4acef2c40f42b0012c997491a77ed2372a12c383"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "580f1369964be65c17dc7859bc974b2a2fe306004a4d6aefdf1cd1c013ca8dd1"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "7ea4d1d8658c4c0c6122c286ce94c3d674f4442952c2aaf2530fd5daa5d939f2"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "e349ecbea3e1d233cea47188d337287bfd4870b61adc4eef8a7950e171ba16dd"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "0fb95ef50dec610f9c1230fbab4f487fa3cd294441457599d898b66817081805"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "262ff2996f4ed8d54dda5f58001d6bc6f52818de04493a0e832791eec67e6341"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "21d2af8fc9766bf3bd1e10144b0e9a6581738779a5240d9cc0e6a2a90e90215f"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "7f45c3e1ae82556b8a813914cab24504330e6ffd23aafa21df104162b7bc0f56"
+      },
+      {
+        "index": 19,
+        "type": "markdown",
+        "sha256": "ada1ff481c93763cffd4edbd742e5cb23ad946c0927e580efb9a5d9b25aaea9e"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "7bca2b2a53a295ffe3b7fde37a5d292a10714368833b41410b5402192de6c23d"
+      },
+      {
+        "index": 21,
+        "type": "code",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 22,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    13,
+    15,
+    17,
+    18,
+    20
+  ],
+  "code_cells": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    13,
+    15,
+    17,
+    18,
+    20
+  ],
+  "excluded_code_cells": {
+    "21": "Empty source cell."
+  },
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb020.py",
+    "sha256": "fb575d393d9598ceca8f752ac4c8507367ce3b47dc6470286a219b1576ab8a25"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 2,
+      "role": "simulator-selection",
+      "path": "observers/qb020_simulator.py",
+      "sha256": "d402f574cef85550bacabca5bef9605989b6cf9dc1b1783534a85c8d8757017b"
+    }
+  ],
+  "required_images": [
+    18,
+    20
+  ],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "limits": [
+    "The authored configuration cell selects the source notebook's Aer simulator branch. IBM hardware submission and authenticated device discovery remain unverified."
+  ]
+}
