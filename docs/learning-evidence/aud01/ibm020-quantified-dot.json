@@ -1,0 +1,10 @@
+{
+  "worker_sha256": "737dd8dae35509e32c4bc8dc7d7490485839c3e53a0ffc37b472dcc6d21796cc",
+  "notebook_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "source_clause": "$z\\cdot x = 0$ for every string $x\\in\\Sigma^n$",
+  "predicates": 126,
+  "parities_enumerated": 2730,
+  "invalid_controls": 6,
+  "clipboard_sessions": 11,
+  "windows_checks": 121
+}
