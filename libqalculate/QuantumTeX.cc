@@ -2040,7 +2040,14 @@ class TeXReader {
     bool fourier=result.size()>=3 && result.substr(result.size()-3)=="QFT" &&
      (result.size()==3 || (!std::isalnum((unsigned char)result[result.size()-4]) && result[result.size()-4]!='_' && (unsigned char)result[result.size()-4]<128));
     ++pos; space(); std::string index;bool grouped=false;
-    if(pos<input.size() && input[pos]=='{') {grouped=true;index=group();}
+    if(input.compare(pos,6,"\\text{")==0 || input.compare(pos,7,"{\\text{")==0) {
+     static const std::regex textIndex(R"((?:\\text\{([A-Za-z0-9]+)\}|\{\\text\{([A-Za-z0-9]+)\}\}))");
+     std::smatch label;grouped=true;
+     if(std::regex_search(input.cbegin()+pos,input.cend(),label,textIndex,std::regex_constants::match_continuous)) {
+      index=label[1].str()+label[2].str();pos+=label.length();
+     } else index=input[pos]=='{' ? group() : argument();
+    }
+    else if(pos<input.size() && input[pos]=='{') {grouped=true;index=group();}
     else if(pos<input.size() && input[pos]=='(') {grouped=true;++pos;index=read(')');}
     else if(fourier && pos<input.size() && std::isdigit((unsigned char)input[pos])) {
      while(pos<input.size() && std::isdigit((unsigned char)input[pos]))index+=input[pos++];
@@ -2320,9 +2327,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
  }
- if(s.find("U_{\\text{")!=std::string::npos) {
+ if(s.find("U_{")!=std::string::npos) {
   static const std::regex applied(R"(U_\{\\text\{([A-Za-z]+)\}\}\s*\()");
   s=std::regex_replace(s,applied,"qoperatorat(\"U_$1\",");
+  static const std::regex plainApplied(R"(U_\{([A-Za-z]{2,})\}\s*\()");
+  s=std::regex_replace(s,plainApplied,"qoperatorat(\"U_$1\",");
   static const std::regex named(R"(U_\{\\text\{([A-Za-z]+)\}\})");
   s=std::regex_replace(s,named,"qoperatorref(\"U_$1\")");
  }
@@ -2619,7 +2628,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // may be ordinary exponentiation or part of an existing register binder.
  if(mathWrapper) {
   std::smatch m;
-  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\))\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
+  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\)|[a-z]|[0-9]+)\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
   if(std::regex_match(s,m,ordinal))return quantumTeX(m[1].str());
   static const std::regex sampledSet(R"(^\s*\\\{([a-z])_([a-z])\\\}_\{\2=(\d+)\}\^([A-Za-z0-9]+)\s*$)");
   if(std::regex_match(s,m,sampledSet))return "qindexedset(\""+m[1].str()+"_\","+m[3].str()+","+m[4].str()+",vector())";

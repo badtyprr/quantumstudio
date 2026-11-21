@@ -45,3 +45,8 @@ run("qoperatorat(vector(vector(vector(0,0),X),vector(vector(0,0),Z)),vector(0,0)
 state=source(14).replace("'ψ'","'trial'").replace('qindexedlabel("θ_",0,"")',"vector(2,5)")
 assert run(state,family=("trial(x)","|1>"))=="matrix(2,1,[0,1])"
 print("Verified the VQE parameter indices, vector shapes, two bound gates and a vector-parameter state family.")
+
+assert source(35)=='qketstate("ψ_var")'
+assert source(84)=='"N_GCP"'
+assert run(source(81).replace("n","7"))=="7"
+assert run(r"$U_{var}(\vec{\theta})$")==run(r"$U_{\text{var}}(\vec{\theta})$")
