@@ -88,10 +88,37 @@ std::string withoutTeXCommentLines(const std::string &s) {
  }
  return result;
 }
+std::string booleanGraph(const std::string &outputs) {
+ const int width=outputs.size()==2 ? 1 : 2;
+ std::string result="qset(vector(";
+ for(size_t index=0;index<outputs.size();++index) {
+  if(index)result+=",";
+  result+="qtuple(vector(qbitlabel("+std::to_string(index)+","+std::to_string(width)+"),"+outputs[index]+"))";
+ }
+ return result+"))";
+}
 // In a standalone register declaration, sans-serif capital letters name
 // systems. Preserve their names even when the same letters are Pauli gates.
 std::string systemNames(const std::string &input) {
  if(input.find("\\mathsf")==std::string::npos)return "";
+ // A subscript inside the typeface group names a wire; it is not a power,
+ // gate application, or subscript on an already evaluated expression.
+ if(input.find("_{")!=std::string::npos) {
+  std::string wires=trim(input);
+  if(wires.size()>1 && wires.front()=='(' && wires.back()==')')wires=trim(wires.substr(1,wires.size()-2));
+  const std::string wire=R"(\\mathsf\{([A-Za-z])_\{([0-9]+|[A-Za-z](?:-1)?)\}\})";
+  static const std::regex one(wire),range(wire+R"(\s*,\s*\\(?:ldots|cdots)\s*,\s*)"+wire);
+  std::smatch match;
+  if(std::regex_match(wires,match,one))
+   return "qindexedlabel(\""+match[1].str()+"_\","+match[2].str()+",\"\")";
+  if(std::regex_match(wires,match,range) && match[1].str()==match[3].str()) {
+   const bool descending=match[4].str()=="0";
+   if(descending || match[2].str()=="0") {
+    const std::string op=descending ? "qreverseindexedlist" : "qindexedlist";
+    return op+"(\""+match[1].str()+"_\",0,"+match[descending ? 2 : 4].str()+",vector())";
+   }
+  }
+ }
  size_t at=0;
  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  space();bool tuple=at<input.size() && input[at]=='(';
@@ -1051,14 +1078,43 @@ class TeXReader {
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
  // A horizontal rule separates column labels from reported numeric data.
- std::string numericTable() {
+ std::string numericTable(bool allowWrapper=true) {
   std::string alignment=nameGroup(true);
   alignment.erase(std::remove(alignment.begin(),alignment.end(),'|'),alignment.end());
   if(alignment.empty() || alignment.find_first_not_of("lcr")!=std::string::npos)
    throw std::runtime_error(error("A numeric table requires l, c or r for each column"));
   const std::string endMarker="\\end{array}";
+  space();
+  if(allowWrapper && alignment.size()==1 && input.compare(pos,13,"\\begin{array}")==0) {
+   pos+=13;std::string nested=numericTable(false);space();
+   while(input.compare(pos,2,"\\\\")==0){pos+=2;space();}
+   if(input.compare(pos,endMarker.size(),endMarker)!=0)throw std::runtime_error(error("Expected the end of the single-cell table"));
+   pos+=endMarker.size();return nested;
+  }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(alignment.size()==2) {
+   auto lines=indexedParts(input.substr(pos,end-pos),"\\\\");
+   auto heading=indexedParts(lines.front(),"&");
+   if(heading.size()==2 && (heading[0]=="a" || heading[0]=="ab") &&
+      (heading[1]=="\\neg a" || heading[1]=="a \\wedge b" || heading[1]=="a \\vee b" || heading[1]=="a \\oplus b")) {
+    if(lines.back().empty())lines.pop_back();
+    size_t width=heading[0].size(),count=size_t(1)<<width;
+    if(lines.size()!=count+1 || (width==1)!=(heading[1]=="\\neg a"))throw std::runtime_error(error("Truth table dimensions do not match its inputs"));
+    std::string outputs(count,'?');
+    for(size_t row=1;row<lines.size();++row) {
+     std::string line=lines[row];
+     if(row==1 && line.compare(0,6,"\\hline")==0)line=trim(line.substr(6));
+     auto cells=indexedParts(line,"&");
+     if(cells.size()!=2 || cells[0].size()!=width || cells[0].find_first_not_of("01")!=std::string::npos ||
+        (cells[1]!="0" && cells[1]!="1"))throw std::runtime_error(error("Invalid binary truth table row"));
+     size_t index=0;for(char bit:cells[0])index=index*2+(bit-'0');
+     if(outputs[index]!='?')throw std::runtime_error(error("Truth table contains a repeated input"));
+     outputs[index]=cells[1][0];
+    }
+    pos=end+endMarker.size();return booleanGraph(outputs);
+   }
+  }
   const size_t firstCell=input.find_first_not_of(" \t\r\n",pos);
   if(firstCell<end && input.compare(firstCell,5,"\\rule")==0) {
    auto rows=indexedParts(input.substr(pos,end-pos),"\\\\");
@@ -1440,8 +1496,11 @@ class TeXReader {
     bool grouped=false;
     while(true) {
      size_t saved=pos;space();
-     if(input.compare(pos,6,"\\qquad")!=0) {pos=saved;break;}
-     pos+=6;space();
+     bool spaced=false;
+     while(input.compare(pos,6,"\\qquad")==0 || input.compare(pos,5,"\\quad")==0) {
+      pos+=input.compare(pos,6,"\\qquad")==0 ? 6 : 5;space();spaced=true;
+     }
+     if(!spaced){pos=saved;break;}
      if(input.compare(pos,13,"\\begin{array}")!=0) {pos=saved;break;}
      pos+=13;
      tables+=","+numericTable();
@@ -1936,6 +1995,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
+ const std::string whole=trim(s);
+ if(whole=="\\wedge" || whole=="\\land")return booleanGraph("0001");
+ if(whole=="\\vee" || whole=="\\lor")return booleanGraph("0111");
+ if(whole=="\\neg" || whole=="\\lnot")return booleanGraph("10");
+ // As a standalone circuit gate label, the circled plus toggles one bit
+ // by the other. Infix \oplus retains its operand-dependent interpretation.
+ if(whole=="\\oplus")return booleanGraph("0110");
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
  // A sum written with an ellipsis must have matching indexed endpoints.

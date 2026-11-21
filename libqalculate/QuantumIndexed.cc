@@ -333,7 +333,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedsum" || value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedsum" || value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qreverseindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1995,7 +1995,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedsum" || op=="qindexedset" || op=="qindexedlist" || op=="qindexedentries") {
+  if(op=="qindexedsum" || op=="qindexedset" || op=="qindexedlist" || op=="qreverseindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
    if(op=="qindexedsum") {
@@ -2007,6 +2007,10 @@ class QuantumIndexedFunction: public MathFunction {
      MathStructure previous=out;
      out.set(CALCULATOR->getFunction("qadd"),&previous,&entries[i],NULL);out.eval(eo);
     }
+   } else if(op=="qreverseindexedlist") {
+    MathStructure reversed;reversed.clearVector();
+    for(size_t k=entries.size();k>0;--k)reversed.addChild(entries[k-1]);
+    out.set(CALCULATOR->getFunction("qtuple"),&reversed,NULL);
    } else if(op=="qindexedentries")out=entries;
    else out.set(CALCULATOR->getFunction(op=="qindexedset" ? "qset" : "qtuple"),&entries,NULL);
    return 1;
@@ -2612,6 +2616,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qreverseindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
