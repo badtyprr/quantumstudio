@@ -1,0 +1,16 @@
+{
+  "source": "IBM029-9ea5aee3-M061",
+  "finite_matrices": 123,
+  "matrix_entries": 146864,
+  "largest_dimension": 64,
+  "clipboard_sessions": 5,
+  "compatibility": {
+    "originals": 438,
+    "accepted_before": 427,
+    "accepted_after": 428,
+    "changed": [
+      "IBM029-9ea5aee3-M061"
+    ],
+    "timeouts": 0
+  }
+}
