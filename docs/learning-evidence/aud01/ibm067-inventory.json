@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation.ipynb",
   "source_sha256": "86969cf39e501273ae90ccf63633bbe71e30ce976458af053dd97449d0220305",
-  "worker_sha256": "604765cc3c2e851c0d27adc71e1b5ee765e4de2f45e794ad51d4ffeccceee0de",
-  "revision": "956323fa",
+  "worker_sha256": "c97f8db5379b10d8020ced9ba8d2a14217f947d185d680cac6fb710c3a9e1e4c",
+  "revision": "6b7f3d0f",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
@@ -486,7 +486,7 @@
       "literal": "$$\nT \\vert {+} \\rangle \\otimes \\vert\\psi\\rangle\n\\stackrel{\\text{CNOT}}{\\longmapsto}\n\\frac{1}{\\sqrt{2}} \\vert 0\\rangle \\otimes T \\vert \\psi\\rangle + \\frac{1+i}{2} \\vert 1\\rangle \\otimes T^{\\dagger} \\vert \\psi\\rangle\n$$",
       "status": "exact",
       "display": "[1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1] · [1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0] · [1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1] · ([[1  0]; [0  exp(0.25iπ)]] · [1; 1] / √(2) ⊗ |ψ⟩) = (1 / √(2)) ([1; 0]) ⊗ [[1  0]; [0  exp(0.25iπ)]] |ψ⟩ + (0.5 · (1 + i)) ([0; 1]) ⊗ [[1  0]; [0  exp(0.25iπ)]]† |ψ⟩",
-      "copy": "qcompare(qmul(qmul(qmul(matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1]),matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])),matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1])),qtensor(qadjacent(vertcat(vector(1,0),horzcat(0,exp(qmul(i ∕ 4,π)))),qmul(qpower(2,−1 ∕ 2),matrix(2,1,vector(1,1)))),qnamedket('ψ'))),qadd(qtensorchain(qadjacent(1 ∕ qsqrt(2),matrix(2,1,vector(1,0))),vector(vertcat(vector(1,0),horzcat(0,exp((iπ) ∕ 4))),qnamedket('ψ'))),qtensorchain(qadjacent(qadd(1, i) ∕ 2,matrix(2,1,vector(0,1))),vector(qdag(vertcat(vector(1,0),horzcat(0,exp((iπ) ∕ 4)))),qnamedket('ψ')))),4)"
+      "copy": "qcompare(qmul(qmul(qmul(matrix(4,4,vector(1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1)),matrix(4,4,vector(1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0))),matrix(4,4,vector(1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1))),qtensor(qadjacent(vertcat(vector(1,0),horzcat(0,qexp(qmul(i ∕ 4,π)))),qmul(qpower(2,−1 ∕ 2),matrix(2,1,vector(1,1)))),qnamedket('ψ'))),qadd(qtensorchain(qadjacent(1 ∕ qsqrt(2),matrix(2,1,vector(1,0))),vector(vertcat(vector(1,0),horzcat(0,qexp((iπ) ∕ 4))),qnamedket('ψ'))),qtensorchain(qadjacent(qadd(1, i) ∕ 2,matrix(2,1,vector(0,1))),vector(qdag(vertcat(vector(1,0),horzcat(0,qexp((iπ) ∕ 4)))),qnamedket('ψ')))),4)"
     },
     {
       "id": "IBM067-86969cf3-M043",
@@ -536,7 +536,7 @@
       "literal": "$T\\vert\\psi\\rangle$",
       "status": "exact",
       "display": "[[1  0]; [0  exp(0.25iπ)]] |ψ⟩",
-      "copy": "qadjacent(vertcat(vector(1,0),horzcat(0,exp((iπ) ∕ 4))),qnamedket('ψ'))"
+      "copy": "qadjacent(vertcat(vector(1,0),horzcat(0,qexp((iπ) ∕ 4))),qnamedket('ψ'))"
     },
     {
       "id": "IBM067-86969cf3-M048",
@@ -565,8 +565,8 @@
       "end": 12963,
       "literal": "$ST^{\\dagger}\\vert\\psi\\rangle = T\\vert \\psi\\rangle$",
       "status": "exact",
-      "display": "(S · T)† |ψ⟩ = [[1  0]; [0  exp(0.25iπ)]] |ψ⟩",
-      "copy": "qcompare(qadjacent(qdag('S''T'),qnamedket('ψ')),qadjacent(vertcat(vector(1,0),horzcat(0,exp((iπ) ∕ 4))),qnamedket('ψ')),4)"
+      "display": "[1, 0; 0, i] · [[1  0]; [0  exp(0.25iπ)]]† |ψ⟩ = [[1  0]; [0  exp(0.25iπ)]] |ψ⟩",
+      "copy": "qcompare(qmul(qmul(matrix(2,2,vector(1,0,0,i)),qdag(vertcat(vector(1,0),horzcat(0,qexp((iπ) ∕ 4))))),qnamedket('ψ')),qadjacent(vertcat(vector(1,0),horzcat(0,qexp((iπ) ∕ 4))),qnamedket('ψ')),4)"
     },
     {
       "id": "IBM067-86969cf3-M051",

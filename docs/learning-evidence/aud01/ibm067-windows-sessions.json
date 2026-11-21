@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/controlling-error-propagation.ipynb",
+  "notebook_sha256": "86969cf39e501273ae90ccf63633bbe71e30ce976458af053dd97449d0220305",
+  "worker_sha256": "c97f8db5379b10d8020ced9ba8d2a14217f947d185d680cac6fb710c3a9e1e4c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "4f63f4eb84dc7109abeae0e5817cbcba93d7fa5161ff3618049ad94cc152ae2d",
+  "suite": {
+    "passed": true,
+    "checks": 783,
+    "calls": 87,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 87,
+    "restored_identically": 87,
+    "stable_after_text_reentry": 87
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
