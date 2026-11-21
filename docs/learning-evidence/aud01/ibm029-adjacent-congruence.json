@@ -1,0 +1,9 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M051",
+    "IBM029-9ea5aee3-M052"
+  ],
+  "selection": "$a^r \\equiv 1$ $(\\textrm{mod } N)$",
+  "finite_cases": 120,
+  "clipboard_sessions": 3
+}
