@@ -2250,11 +2250,24 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex ringNote(R"(\\text\{\s*\(\s*working within\s+\$\\mathbb\{Z\}_([1-9]|\{[1-9][0-9]*\})\$\s*\)\s*\}\s*$)");
   std::smatch note;
   if(std::regex_search(s,note,ringNote)) {
-   auto sides=indexedParts(s.substr(0,note.position()),"=");
+   std::string equation=trim(s.substr(0,note.position()));
+   for(const std::string spacing:{"\\qquad","\\quad","\\;","\\,"})
+    if(equation.size()>=spacing.size() && equation.compare(equation.size()-spacing.size(),spacing.size(),spacing)==0)
+     equation=trim(equation.substr(0,equation.size()-spacing.size()));
+   while(equation.size()>2 && equation.front()=='(' && equation.back()==')') {
+    size_t depth=1,at=1;
+    for(;at<equation.size() && depth;++at) {
+     if(equation[at]=='(')++depth;
+     if(equation[at]==')')--depth;
+    }
+    if(depth || at!=equation.size())break;
+    equation=trim(equation.substr(1,equation.size()-2));
+   }
+   auto sides=indexedParts(equation,"=");
    if(sides.size()!=2 || sides[0].empty() || sides[1].empty())throw std::runtime_error("A residue-ring annotation requires one equation.");
    std::string modulus=note[1];
-   if(modulus.front()!='{')modulus="{"+modulus+"}";
-   s=sides[0]+" \\equiv "+sides[1]+" \\pmod"+modulus;
+   if(modulus.front()=='{')modulus=modulus.substr(1,modulus.size()-2);
+   return "qcompare(qringexpr("+modulus+","+quantumTeX(sides[0])+"),qringexpr("+modulus+","+quantumTeX(sides[1])+"),4)";
   }
  }
  if(sets && trim(s)=="S")return "\"S\"";

@@ -59,6 +59,11 @@ for equation, modulus, expected in [(r"5^2=1", "6", 1), (r"5^2=1", "7", 0),
     annotated = equation + r"\quad\text{(working within $\mathbb{Z}_" + modulus + "$)}"
     assert data("quantum:" + annotated)["copy_text"] == str(expected)
 run(r"quantum:5^2=1=7\quad\text{(working within $\mathbb{Z}_6$)}", success=False)
+for equation, modulus in [(r"(1=7)", "6"), (r"2^{-1}=4", "7"), (r"1/5=5", "6"),
+                          (r"2^{2^3}=4", "6")]:
+    assert data("quantum:"+equation+r"\quad\text{(working within $\mathbb{Z}_"+modulus+"$)}")["copy_text"] == "1"
+for equation in ("1/2=1/2", "0/2=0", "1 or 7=0", "7=0 or 1"):
+    run("quantum:"+equation+r"\quad\text{(working within $\mathbb{Z}_6$)}", success=False)
 
 modular = data(r"quantum:modpowers:$b = a^k \in \mathbb{Z}_N^{\ast}$")["copy_text"]
 assert data("quantum:"+modular)["copy_text"] == modular

@@ -348,7 +348,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
- {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qpower",2},{"qresidue",2},
+ {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qringexpr",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -429,6 +429,7 @@ class Parser {
  bool setNotation=false;
  bool scalarNotation=false;
  bool modularPowers=false;
+ std::string ringModulus;
  std::string updateVariable;
  std::vector<std::string> declaredGates;
  bool costContext=false;
@@ -1669,6 +1670,16 @@ class Parser {
      if(take(',')) {std::string wire=expression();a="qblochsub("+state+","+wire+")";}
      else a="qbloch("+state+")";
      need(')');
+    } else if(name=="qringexpr") {
+     std::string modulus=expression();need(',');
+     std::string previous=ringModulus;ringModulus=modulus;
+     bool previousScalar=scalarNotation;scalarNotation=true;
+     std::string value=setUnion();
+     scalarNotation=previousScalar;ringModulus=previous;need(')');
+     if(value.find("qcompare(")!=std::string::npos || value.find("qequalchain(")!=std::string::npos ||
+        value.find("&&")!=std::string::npos || value.find("||")!=std::string::npos)
+      throw std::runtime_error("A residue-ring equation requires arithmetic on both sides.");
+     a="qmodpower("+value+",1,"+modulus+")";
     } else if(name=="qbitvalue") {
      a="qbitvalue("+binaryArgument()+")";need(')');
     } else if(name=="qbitdot" || name=="qbitxor") {
@@ -1975,7 +1986,12 @@ class Parser {
   bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {
    kind=0;
-   if(a=="C") {
+   if(!ringModulus.empty()) {
+    std::string modulus;modulus.swap(ringModulus);
+    auto exponent=unary(false);
+    ringModulus.swap(modulus);
+    a="qmodpower("+a+","+exponent+","+ringModulus+")";
+   } else if(a=="C") {
     std::string controls;
     if(take('(')) { controls=expression(); need(')'); }
     else { ws(); size_t start=p; while(p<s.size() && std::isdigit((unsigned char)s[p])) ++p; controls=s.substr(start,p-start); }
@@ -2064,7 +2080,10 @@ class Parser {
     a=op+a+","+diracFactor()+")";
    }
    else if(take('*')) a="qmul("+a+","+diracFactor()+")";
-   else if(take('/')) a="("+a+"/("+diracFactor()+"))";
+   else if(take('/')) {
+    auto denominator=diracFactor();
+    a=ringModulus.empty() ? "("+a+"/("+denominator+"))" : "qmul("+a+",qmodpower("+denominator+",-1,"+ringModulus+"))";
+   }
    else if(take('@')) {
     std::string right=diracFactor();
     if(startsAtom()) {
