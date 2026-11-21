@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/ground-state.ipynb",
+  "source_sha256": "2047e9348a25dc9b11296a0d4638090409b68f629ffa06b3336256a00641c1bc",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "revision": "e13f4ecc5c4f74f0793e75adf23d8107c70e6bd1",
+  "mode": "Quantum notation",
+  "markdown_cells": 13,
+  "code_cells": 12,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

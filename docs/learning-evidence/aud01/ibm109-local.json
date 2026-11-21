@@ -1,0 +1,56 @@
+{
+  "notebook_sha256": "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d",
+  "code_cells": [
+    2,
+    4,
+    6,
+    9,
+    11,
+    12,
+    14,
+    16,
+    19,
+    21,
+    23,
+    25,
+    27,
+    29,
+    31,
+    33,
+    35,
+    37,
+    40
+  ],
+  "qiskit": "2.6.2",
+  "molecules": [
+    {
+      "molecule": "H2",
+      "qubits": 4,
+      "pauli_terms": 15,
+      "active_electrons": 2,
+      "basis_states": 6,
+      "sector_energy": -1.145977853854388,
+      "casci_energy": -1.1459778538543883
+    },
+    {
+      "molecule": "LiH",
+      "qubits": 10,
+      "pauli_terms": 276,
+      "active_electrons": 2,
+      "basis_states": 45,
+      "sector_energy": -7.972497020344746,
+      "casci_energy": -7.972497020344887
+    }
+  ],
+  "conversion_convention": "Matches the OpenFermion matrix in configured tensor order. Qiskit qubit indices run from the opposite end of the displayed label.",
+  "converted_terms": [
+    [
+      "XY",
+      "(0.25+0j)"
+    ],
+    [
+      "IZ",
+      "(-0.5+0j)"
+    ]
+  ]
+}

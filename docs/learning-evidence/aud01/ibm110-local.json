@@ -1,0 +1,68 @@
+{
+  "notebook_sha256": "3222364ec09800b5b71ca4116ce9a687a17af726ae3bf26f933953bbd7e8485a",
+  "code_cells": [
+    2,
+    4,
+    6,
+    7,
+    9,
+    11,
+    13,
+    15,
+    17,
+    19
+  ],
+  "qiskit": "2.6.2",
+  "circuits": {
+    "SU2_ansatz": {
+      "qubits": 4,
+      "parameters": 8,
+      "depth": 7
+    },
+    "SU2_ansatz2": {
+      "qubits": 4,
+      "parameters": 12,
+      "depth": 14
+    },
+    "SU2_ansatz3": {
+      "qubits": 4,
+      "parameters": 8,
+      "depth": 10
+    },
+    "SU2_ansatz4": {
+      "qubits": 4,
+      "parameters": 8,
+      "depth": 11
+    },
+    "two_ansatz": {
+      "qubits": 4,
+      "parameters": 18,
+      "depth": 9
+    },
+    "PtwoD_ansatz": {
+      "qubits": 5,
+      "parameters": 10,
+      "depth": 5
+    },
+    "qc": {
+      "qubits": 3,
+      "parameters": 3,
+      "depth": 9
+    },
+    "own_ansatz": {
+      "qubits": 3,
+      "parameters": 3,
+      "depth": 9
+    },
+    "own_ansatz2": {
+      "qubits": 4,
+      "parameters": 4,
+      "depth": 9
+    },
+    "su2_ansatz_long": {
+      "qubits": 4,
+      "parameters": 20,
+      "depth": 24
+    }
+  }
+}

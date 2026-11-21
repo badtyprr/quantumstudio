@@ -1,0 +1,35 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/geometry.ipynb",
+  "source_sha256": "dd8d2e4d69b27a513b2459334485069c212f9070db34992b2fe333ca92cb0510",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "revision": "e13f4ecc5c4f74f0793e75adf23d8107c70e6bd1",
+  "mode": "Quantum notation",
+  "markdown_cells": 12,
+  "code_cells": 14,
+  "summary": {
+    "exact": 2
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM113-dd8d2e4d-M001",
+      "cell": 15,
+      "start": 158,
+      "end": 161,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM113-dd8d2e4d-M002",
+      "cell": 15,
+      "start": 191,
+      "end": 194,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    }
+  ]
+}

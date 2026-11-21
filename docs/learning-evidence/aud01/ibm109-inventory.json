@@ -1,0 +1,44 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/hamiltonian-construction.ipynb",
+  "source_sha256": "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "revision": "e13f4ecc5c4f74f0793e75adf23d8107c70e6bd1",
+  "mode": "Quantum notation",
+  "markdown_cells": 23,
+  "code_cells": 19,
+  "summary": {
+    "exact": 1,
+    "diagnostic": 2
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM109-0f3a7679-M001",
+      "cell": 8,
+      "start": 1015,
+      "end": 1019,
+      "literal": "$2S$",
+      "status": "exact",
+      "display": "[2, 0; 0, 2i]",
+      "copy": "matrix(2,2,[2,0,0,2i])"
+    },
+    {
+      "id": "IBM109-0f3a7679-M002",
+      "cell": 8,
+      "start": 1073,
+      "end": 1079,
+      "literal": "$2S+1$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM109-0f3a7679-M003",
+      "cell": 10,
+      "start": 262,
+      "end": 274,
+      "literal": "$\\text{H}_2$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    }
+  ]
+}
