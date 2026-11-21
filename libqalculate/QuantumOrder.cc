@@ -534,6 +534,38 @@ class QuantumOrderFunction: public MathFunction {
   }
  }
 };
+class QuantumSymbolicEstimate: public MathFunction {
+ public:
+ QuantumSymbolicEstimate(const char *name):MathFunction(name,2) {}
+ ExpressionItem *copy() const {return new QuantumSymbolicEstimate(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(referenceName()=="qestimate")return 0;
+  MathStructure rule=raw[0],tolerance=raw[1];
+  rule.eval(eo);tolerance.eval(eo);
+  if(!rule.isFunction() || rule.function()->referenceName()!="qestimate" || rule.size()!=2 ||
+     !rule[0].isVector() || rule[0].isMatrix() || !rule[0].size() || rule[0].size()>128) {
+   CALCULATOR->error(true,"Expected a symbolic estimate with 1 to 128 exact operands.",NULL);return 0;
+  }
+  if(tolerance.isVector() || tolerance.isUndefined() || tolerance.containsInfinity() ||
+     tolerance.representsNegative() || (tolerance.isNumber() && !tolerance.number().isReal())) {
+   CALCULATOR->error(true,"An absolute tolerance must be finite, real and nonnegative.",NULL);return 0;
+  }
+  if(!tolerance.representsNonNegative() || !tolerance.representsFinite())return 0;
+  bool pending=false;
+  for(size_t i=1;i<rule[0].size();++i) {
+   MathStructure equality=rule[0][i-1];
+   equality.transform(COMPARISON_EQUALS,rule[0][i]);equality.eval(eo);
+   if(equality.isZero()) {out=0;return 1;}
+   if(!equality.isOne())pending=true;
+  }
+  MathStructure delta=rule[0][rule[0].size()-1];delta-=rule[1];
+  MathStructure bound(CALCULATOR->getFunction("abs"),&delta,NULL);
+  bound.transform(COMPARISON_EQUALS_LESS,tolerance);bound.eval(eo);
+  if(bound.isZero()) {out=0;return 1;}
+  if(pending || !bound.isOne())return 0;
+  out=1;return 1;
+ }
+};
 class QuantumDecimalMatch: public MathFunction {
  public:
  QuantumDecimalMatch():MathFunction("qdecimalmatch",4) {}
@@ -649,6 +681,8 @@ void registerQuantumOrder(Calculator &calculator) {
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));
  calculator.addFunction(new QuantumDecimalMatch());
+ calculator.addFunction(new QuantumSymbolicEstimate("qestimate"));
+ calculator.addFunction(new QuantumSymbolicEstimate("qestimatewithin"));
  calculator.addFunction(new QuantumEquivalence());
  calculator.addFunction(new QuantumOrderFunction());
  calculator.addFunction(new QuantumEqualityChain());
