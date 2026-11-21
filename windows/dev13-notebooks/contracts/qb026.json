@@ -1,0 +1,232 @@
+{
+  "version": 2,
+  "id": "qb026",
+  "route": "selected-cells/direct-native-execution",
+  "profiles": {
+    "win32": "qiskit-aer-win-py312",
+    "linux": "qiskit-aer-linux-py312"
+  },
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "b93f99cc82704b47f1ac29f830637ab6382fb6226cad0936e19bf2507d3529de"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "d9e5993bdedac20df2a8d0786e8fcf5ab883956089cea78b450873d3f44abbba"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "9869c52bb86262d628ae2c8d66da48f797adec17d9627a1b0a40dc8d72fbe077"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "da0faea6366040af963542fd309fbd1446abce664b152f75b3d65ab84cddb7bd"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "0be68ec9dcf7122cc56ef9cc2b1fad9327c3767b9e724173f999a51e01840083"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "223752ad02c22ee1d9a336e93422bf360ba32d88a37cc56be34c58d0964f2698"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "cf330fbffff8457fafbed4084a22f02aba57ab3036d134ca3fd77f26ce89bbaf"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "d29c680e8dc97ff8b692394feb63f08b6006a57f70d0b70536a843ccd00336c2"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "208d5616c448c336814385be69c66673da7c3e9fc47d7a7f6ac13b57f798918b"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "48d7af5423cf0f873dac23d0480c9b4b033a9502b27d01a41b008c9a00e7f054"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "ae9bce4c9db9fd3fdb576a4d8926f29c9986fc73bf42400231acd5dc642bf99f"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "888ef08b9f7106af38af75512ed9e3e192bf239c871cb9fc08e842262925ca38"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "8b3fe5010353747ff03fcddc15212a446ac70d70d5fbd32ce23f5f7b52d3d5ac"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "e8a52a8d5f53994544d6907fab6e35bf8c7416e6c989389ac12b8cd33aa73182"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "816da2fea51b38d5cd0dd96d6be2e03bc62e59476a3ffb70c661269eee1371c4"
+      },
+      {
+        "index": 15,
+        "type": "markdown",
+        "sha256": "7779a4e3e441a7f1541cae003c8c6df69077331b809893d715cb35f108f25993"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "source_revisions": [
+    {
+      "url": "https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/quobly_ghz_noise_benchmark.ipynb",
+      "revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+      "sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
+      "cells": [
+        {
+          "index": 0,
+          "type": "markdown",
+          "sha256": "b93f99cc82704b47f1ac29f830637ab6382fb6226cad0936e19bf2507d3529de"
+        },
+        {
+          "index": 1,
+          "type": "code",
+          "sha256": "d9e5993bdedac20df2a8d0786e8fcf5ab883956089cea78b450873d3f44abbba"
+        },
+        {
+          "index": 2,
+          "type": "code",
+          "sha256": "65227258a88c7aa1e13856a824b09f11ffec940199551af64181cc3be5797163"
+        },
+        {
+          "index": 3,
+          "type": "markdown",
+          "sha256": "da0faea6366040af963542fd309fbd1446abce664b152f75b3d65ab84cddb7bd"
+        },
+        {
+          "index": 4,
+          "type": "code",
+          "sha256": "5118a6de20d6e9fbac663cf8591f809264a0ee216c4b2729ae8a561552279b09"
+        },
+        {
+          "index": 5,
+          "type": "markdown",
+          "sha256": "223752ad02c22ee1d9a336e93422bf360ba32d88a37cc56be34c58d0964f2698"
+        },
+        {
+          "index": 6,
+          "type": "code",
+          "sha256": "3685a8578f9779827ae0752f1abc3d86b73d2abecc53f536ad8e8384ffc5a6bb"
+        },
+        {
+          "index": 7,
+          "type": "markdown",
+          "sha256": "d29c680e8dc97ff8b692394feb63f08b6006a57f70d0b70536a843ccd00336c2"
+        },
+        {
+          "index": 8,
+          "type": "code",
+          "sha256": "7f99f41334a96c3c848c70bd3ff35ffac88a882605f13929bff265905f530302"
+        },
+        {
+          "index": 9,
+          "type": "code",
+          "sha256": "91507b33e43f0be47a333a6b21a5cfeb4474d6005426bf6a9897570e2c21ad9b"
+        },
+        {
+          "index": 10,
+          "type": "markdown",
+          "sha256": "ae9bce4c9db9fd3fdb576a4d8926f29c9986fc73bf42400231acd5dc642bf99f"
+        },
+        {
+          "index": 11,
+          "type": "code",
+          "sha256": "4125ba2037a6ac22115651184de8f1a7ba2ade11943f78047f53412a384ddc28"
+        },
+        {
+          "index": 12,
+          "type": "markdown",
+          "sha256": "8b3fe5010353747ff03fcddc15212a446ac70d70d5fbd32ce23f5f7b52d3d5ac"
+        },
+        {
+          "index": 13,
+          "type": "code",
+          "sha256": "37bece10c9177b89f44aef5aae4bbbfac54a85c3a0f58ebd231201a7ce4a620e"
+        },
+        {
+          "index": 14,
+          "type": "markdown",
+          "sha256": "816da2fea51b38d5cd0dd96d6be2e03bc62e59476a3ffb70c661269eee1371c4"
+        },
+        {
+          "index": 15,
+          "type": "markdown",
+          "sha256": "7779a4e3e441a7f1541cae003c8c6df69077331b809893d715cb35f108f25993"
+        },
+        {
+          "index": 16,
+          "type": "markdown",
+          "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+        }
+      ]
+    }
+  ],
+  "selected_cells": [
+    4,
+    6,
+    8,
+    9,
+    11,
+    13
+  ],
+  "code_cells": [
+    4,
+    6,
+    8,
+    9,
+    11,
+    13
+  ],
+  "excluded_code_cells": {
+    "1": "The pinned environment supplies dependencies.",
+    "2": "Requires a remote provider and device metadata."
+  },
+  "input_data": {
+    "quobly_ghz_bench.json": "6d8dd3ea032411e396207ddeb3e59a70301fd59e2f062903747c757c46cc290e"
+  },
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb026.py",
+    "sha256": "bfa62cd54af4ffa5a2eb7fcc293e54c59d6bad7f0e4e91f8e6f452dae25c1945"
+  },
+  "required_images": [
+    11
+  ],
+  "required_text": {},
+  "output_artifacts": [],
+  "acceptance_field": "accepted",
+  "limits": [
+    "The original RUN_LIVE = False branch reads the published cache. Provider access and live performance remain unverified."
+  ]
+}

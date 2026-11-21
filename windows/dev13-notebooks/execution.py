@@ -21,7 +21,7 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
+CONTRACTS = {"qb026", "qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
 PROFILES = {"grover-win-py312", "qsim-win-py312", "algorithms-win-py312", "autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
 
@@ -569,7 +569,19 @@ def execute(request, events=None):
     if output.exists():
         raise FileExistsError(output)
     raw, config = validate_request(request)
+    data = {}
+    for filename, expected in config["contract"].get("input_data", {}).items():
+        if not re.fullmatch(r"[A-Za-z0-9_-]+\.json", filename):
+            raise ValueError("INVALID_INPUT_DATA_NAME")
+        content = (ROOT / "fixtures" / request["contract"] / filename).read_bytes()
+        if digest(content) != expected:
+            raise ValueError("INPUT_DATA_HASH_MISMATCH")
+        data[filename] = content
     output.mkdir(parents=True, exist_ok=False)
+    if data:
+        (output / "data").mkdir()
+        for filename, content in data.items():
+            (output / "data" / filename).write_bytes(content)
     (output / "source-original.ipynb").write_bytes(raw)
     return _supervise(output, config, events)
 

@@ -565,6 +565,22 @@ class ProfileInventoryTests(unittest.TestCase):
 
 
 class PlatformProfileTests(unittest.TestCase):
+    def test_cached_input_is_verified_before_the_run_directory_is_created(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            fixtures = root / "fixtures" / "qb026"
+            fixtures.mkdir(parents=True)
+            (fixtures / "counts.json").write_bytes(b"changed")
+            output = root / "run"
+            for name, error in (("counts.json", "INPUT_DATA_HASH_MISMATCH"),
+                                ("../counts.json", "INVALID_INPUT_DATA_NAME")):
+                config = {"contract": {"input_data": {name: execution.digest(b"original")}}}
+                with self.subTest(name=name), patch.object(execution, "ROOT", root), patch.object(
+                    execution, "validate_request", return_value=(b"{}", config)
+                ), self.assertRaisesRegex(ValueError, error):
+                    execution.execute({"contract": "qb026", "output": output})
+                self.assertFalse(output.exists())
+
     def test_revised_deutsch_lessons_keep_the_original_executable_cells(self):
         for name in ("ibm019", "ibm020"):
             contract = json.loads((execution.ROOT / "contracts" / (name + ".json")).read_bytes())
