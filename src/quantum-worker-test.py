@@ -400,6 +400,13 @@ for delimiters in ("$","$$"):
     for width,expected in (("2*n+1","1"),("n^2","0")):
         assert data(f'quantum:replace(({formula}),"m",{width})')["copy_text"]==expected
 run('quantum:replace(($m = O(n)),"m",2*n+1)',success=False)
+decimal_range=data(r"quantum:$0, 1, \ldots, 1023$")["copy_text"]
+assert decimal_range=="vector("+",".join(map(str,range(1024)))+")"
+assert data("quantum:"+decimal_range)["copy_text"]==decimal_range
+signed_entries=[str(i if i%2 else -i) for i in range(640)]
+signed_copy=data("quantum:vector("+", ".join(signed_entries)+")")["copy_text"]
+assert data("quantum:"+signed_copy)["copy_text"]==signed_copy
+run(r"quantum:$0, 1, \ldots, 1024$",success=False)
 assert data('quantum:1+replace (($m=O(n)$),"m",2*n+1)')["copy_text"]=="2"
 assert data('quantum:vector(replace(($m=O(n)$),"m",2*n+1),replace(($m=O(n)$),"m",n^2))')["copy_text"]=="vector(1,0)"
 assert data('quantum:replace(replace(($m=O(n)$),"m",n^2),"z",3)')["copy_text"]=="0"
