@@ -79,6 +79,8 @@ for x, expected in ((0,0),(2,4),(3,0),(6,6),(15,15)):
     assert data(f'quantum:replace(replace(replace(({probe}),"n",4),"a",2),"N",6)')["copy_text"] == str(expected)
 run("quantum:qregistermultiplier(2,6,n)",success=False)
 run("quantum:qregistermultipliergraph(a,9,3)",success=False)
+run("quantum:qregistermultipliergraph(4,N,2)",success=False)
+run("quantum:qregistermultiplier(62,N,2)",success=False)
 
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]

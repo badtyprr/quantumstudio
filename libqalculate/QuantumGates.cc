@@ -34,6 +34,9 @@ class QuantumGateFunction: public MathFunction {
     }
     if(explicitWidth && args[2].isInteger()) {
      registerDimension=size_t(1)<<args[2].number().intValue();
+     if(a.isInteger() && a.number()>=int(registerDimension)) {
+      CALCULATOR->error(true,"The multiplier must fit in the stated register width.",NULL);return 0;
+     }
      if(modulus.isInteger() && modulus.number()>int(registerDimension)) {
       CALCULATOR->error(true,"The modulus must fit in the stated register width.",NULL);return 0;
      }
