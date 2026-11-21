@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
   "notebook_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
-  "worker_sha256": "0364e55a22cbe8e09e811abdd413d1af0bdbf8f799a82ee2318e9b22263bce30",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "c54bace993ce4ab48728504a8ad145017bbef5db2e67f998739f65f27b6654da",
+  "records_sha256": "828fa5079850f347d0ad214846c628b3431c5a810888762ce060c590e941f1ee",
   "suite": {
     "passed": true,
-    "checks": 1898,
+    "checks": 1919,
     "calls": 284,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 190,
-    "restored_identically": 190,
-    "stable_after_text_reentry": 190,
-    "source_diagnostic": 94
+    "source_exact": 193,
+    "restored_identically": 193,
+    "stable_after_text_reentry": 193,
+    "source_diagnostic": 91
   },
   "diagnostics": [
     {
@@ -150,18 +150,6 @@
     {
       "id": "IBM083-0db143f4-M097",
       "message": "Unsupported text in a mathematical expression at byte 16"
-    },
-    {
-      "id": "IBM083-0db143f4-M107",
-      "message": "Unsupported TeX command: \\ell at byte 5"
-    },
-    {
-      "id": "IBM083-0db143f4-M108",
-      "message": "Unsupported TeX command: \\ell at byte 20"
-    },
-    {
-      "id": "IBM083-0db143f4-M109",
-      "message": "Unsupported TeX command: \\ell at byte 6"
     },
     {
       "id": "IBM083-0db143f4-M111",

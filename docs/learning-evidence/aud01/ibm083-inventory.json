@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
   "source_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
-  "worker_sha256": "0364e55a22cbe8e09e811abdd413d1af0bdbf8f799a82ee2318e9b22263bce30",
-  "revision": "2fa588d640236e6f5ac04eed5ce7c7f92939f0df",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
   "mode": "Quantum notation",
   "markdown_cells": 70,
   "code_cells": 74,
   "summary": {
-    "exact": 190,
-    "diagnostic": 94
+    "exact": 193,
+    "diagnostic": 91
   },
   "figures": [
     {
@@ -1067,8 +1067,9 @@
       "start": 655,
       "end": 661,
       "literal": "$\\ell$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\ell at byte 5"
+      "status": "exact",
+      "display": "'ℓ'",
+      "copy": "'ℓ'"
     },
     {
       "id": "IBM083-0db143f4-M108",
@@ -1076,8 +1077,9 @@
       "start": 669,
       "end": 690,
       "literal": "$G(G^\\dagger G)^\\ell$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\ell at byte 20"
+      "status": "exact",
+      "display": "(G^3 − iG^2 ⋅ ℑ(G))^'ℓ'",
+      "copy": "(G^3 − i ⋅ G^2 ⋅ ℑ(G))^'ℓ'"
     },
     {
       "id": "IBM083-0db143f4-M109",
@@ -1085,8 +1087,9 @@
       "start": 715,
       "end": 724,
       "literal": "$2\\ell+1$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\ell at byte 6"
+      "status": "exact",
+      "display": "2'ℓ' + 1",
+      "copy": "2'ℓ' + 1"
     },
     {
       "id": "IBM083-0db143f4-M110",
