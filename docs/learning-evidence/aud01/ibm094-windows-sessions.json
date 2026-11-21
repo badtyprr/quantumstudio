@@ -1,0 +1,184 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
+  "notebook_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "d95aafc2d0a2f352eb31f3b0f1ab3c2c17ac625487efc005cb217d7b2523276e",
+  "suite": {
+    "passed": true,
+    "checks": 1100,
+    "calls": 151,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 114,
+    "restored_identically": 114,
+    "stable_after_text_reentry": 112,
+    "source_diagnostic": 37
+  },
+  "diagnostics": [
+    {
+      "id": "IBM094-37477fb6-M003",
+      "message": "Unsupported TeX command: \\substack at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M009",
+      "message": "Unclosed ket; use |0> or |0⟩."
+    },
+    {
+      "id": "IBM094-37477fb6-M031",
+      "message": "Unsupported text in a mathematical expression at byte 10"
+    },
+    {
+      "id": "IBM094-37477fb6-M034",
+      "message": "Unsupported TeX command: \\mu at byte 27"
+    },
+    {
+      "id": "IBM094-37477fb6-M036",
+      "message": "Unsupported TeX command: \\mu at byte 13"
+    },
+    {
+      "id": "IBM094-37477fb6-M037",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M038",
+      "message": "Unsupported TeX command: \\mu at byte 11"
+    },
+    {
+      "id": "IBM094-37477fb6-M039",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M044",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M045",
+      "message": "Unsupported TeX command: \\mu at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M046",
+      "message": "Unsupported TeX command: \\mu at byte 26"
+    },
+    {
+      "id": "IBM094-37477fb6-M047",
+      "message": "Unsupported TeX command: \\mu at byte 27"
+    },
+    {
+      "id": "IBM094-37477fb6-M048",
+      "message": "Unsupported TeX command: \\mu at byte 12"
+    },
+    {
+      "id": "IBM094-37477fb6-M056",
+      "message": "Unsupported TeX command: \\mu at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M057",
+      "message": "Unsupported TeX command: \\mu at byte 26"
+    },
+    {
+      "id": "IBM094-37477fb6-M084",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M085",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M086",
+      "message": "Invalid TeX name at byte 11"
+    },
+    {
+      "id": "IBM094-37477fb6-M088",
+      "message": "Unsupported text in a mathematical expression at byte 84"
+    },
+    {
+      "id": "IBM094-37477fb6-M091",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM094-37477fb6-M104",
+      "message": "Unsupported TeX control symbol at byte 14"
+    },
+    {
+      "id": "IBM094-37477fb6-M105",
+      "message": "Unsupported TeX command: \\nonumber at byte 99"
+    },
+    {
+      "id": "IBM094-37477fb6-M112",
+      "message": "Expected a quantum expression at byte 4"
+    },
+    {
+      "id": "IBM094-37477fb6-M113",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M121",
+      "message": "Unsupported TeX command: \\nonumber at byte 24"
+    },
+    {
+      "id": "IBM094-37477fb6-M122",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M125",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M129",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M130",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM094-37477fb6-M135",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M136",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M140",
+      "message": "Unsupported TeX control symbol at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M141",
+      "message": "Unsupported TeX control symbol at byte 114"
+    },
+    {
+      "id": "IBM094-37477fb6-M143",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M144",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M146",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM094-37477fb6-M147",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM094-37477fb6-M089",
+      "first": "qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\")",
+      "second": "qindexedlabel(\"H_\",qpower(matrix(2,2,vector(1,0,0,i)),'k'),\"\")"
+    },
+    {
+      "id": "IBM094-37477fb6-M090",
+      "first": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,[1,0,0,i]),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))",
+      "second": "(qadjacent(qindexedlabel(\"H_\",qpower(matrix(2,2,vector(1,0,0,i)),'k'),\"\"),qcomputationalket(qpower('ψ','k'))))==(qadjacent(qpower('E','k'),qcomputationalket(qpower('ψ','k'))))"
+    }
+  ],
+  "failures": []
+}

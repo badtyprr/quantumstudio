@@ -1,0 +1,403 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
+  "notebook_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "d749f202a5b6cd0ab3ada157dfe58d82b6c6c90788f4c61d23ddd0b8789ee2d0",
+  "suite": {
+    "passed": true,
+    "checks": 2929,
+    "calls": 390,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 307,
+    "restored_identically": 307,
+    "stable_after_text_reentry": 298,
+    "source_diagnostic": 83
+  },
+  "diagnostics": [
+    {
+      "id": "IBM092-bdde16a2-M008",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM092-bdde16a2-M013",
+      "message": "Unsupported TeX command: \\perp at byte 18"
+    },
+    {
+      "id": "IBM092-bdde16a2-M022",
+      "message": "Empty aligned expression at byte 96"
+    },
+    {
+      "id": "IBM092-bdde16a2-M044",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M046",
+      "message": "Unexpected notation at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M053",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M054",
+      "message": "Unsupported TeX control symbol at byte 120"
+    },
+    {
+      "id": "IBM092-bdde16a2-M055",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM092-bdde16a2-M076",
+      "message": "Unsupported text in a mathematical expression at byte 42"
+    },
+    {
+      "id": "IBM092-bdde16a2-M088",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M098",
+      "message": "Schatten norm order must be a real number at least 1 or positive infinity."
+    },
+    {
+      "id": "IBM092-bdde16a2-M115",
+      "message": "Unsupported TeX command: \\nabla at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M118",
+      "message": "Unsupported TeX command: \\nabla at byte 7"
+    },
+    {
+      "id": "IBM092-bdde16a2-M126",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M130",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M131",
+      "message": "Unsupported text in a mathematical expression at byte 44"
+    },
+    {
+      "id": "IBM092-bdde16a2-M133",
+      "message": "Unsupported text in a mathematical expression at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M144",
+      "message": "Unsupported TeX command: \\it at byte 4"
+    },
+    {
+      "id": "IBM092-bdde16a2-M158",
+      "message": "Expected ')' at byte 34"
+    },
+    {
+      "id": "IBM092-bdde16a2-M160",
+      "message": "Expected ')' at byte 85"
+    },
+    {
+      "id": "IBM092-bdde16a2-M163",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM092-bdde16a2-M165",
+      "message": "Unsupported text in a mathematical expression at byte 43"
+    },
+    {
+      "id": "IBM092-bdde16a2-M166",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM092-bdde16a2-M172",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M177",
+      "message": "Unsupported text in a mathematical expression at byte 81"
+    },
+    {
+      "id": "IBM092-bdde16a2-M185",
+      "message": "Unsupported text in a mathematical expression at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M186",
+      "message": "Unsupported text in a mathematical expression at byte 33"
+    },
+    {
+      "id": "IBM092-bdde16a2-M188",
+      "message": "Unsupported TeX command: \\sim at byte 14"
+    },
+    {
+      "id": "IBM092-bdde16a2-M199",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM092-bdde16a2-M204",
+      "message": "Unsupported TeX command: \\vec at byte 18"
+    },
+    {
+      "id": "IBM092-bdde16a2-M207",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM092-bdde16a2-M208",
+      "message": "Unsupported TeX command: \\vec at byte 5"
+    },
+    {
+      "id": "IBM092-bdde16a2-M213",
+      "message": "A coefficient index must be an integer."
+    },
+    {
+      "id": "IBM092-bdde16a2-M216",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M217",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M219",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M221",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M224",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M228",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM092-bdde16a2-M231",
+      "message": "An ellipsis register requires indexed bit names, such as x_(n-1) ... x_0."
+    },
+    {
+      "id": "IBM092-bdde16a2-M237",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M240",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M242",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M243",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M246",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M250",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M253",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M254",
+      "message": "Unsupported text in a mathematical expression at byte 76"
+    },
+    {
+      "id": "IBM092-bdde16a2-M256",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M260",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M262",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M263",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M264",
+      "message": "Unsupported text in a mathematical expression at byte 27"
+    },
+    {
+      "id": "IBM092-bdde16a2-M265",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M266",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M267",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M268",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M269",
+      "message": "Unsupported text in a mathematical expression at byte 335"
+    },
+    {
+      "id": "IBM092-bdde16a2-M270",
+      "message": "Unsupported text in a mathematical expression at byte 342"
+    },
+    {
+      "id": "IBM092-bdde16a2-M271",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M272",
+      "message": "Unsupported text in a mathematical expression at byte 34"
+    },
+    {
+      "id": "IBM092-bdde16a2-M296",
+      "message": "Unsupported TeX command: \\vec at byte 15"
+    },
+    {
+      "id": "IBM092-bdde16a2-M301",
+      "message": "Unsupported text in a mathematical expression at byte 15"
+    },
+    {
+      "id": "IBM092-bdde16a2-M303",
+      "message": "Unsupported text in a mathematical expression at byte 17"
+    },
+    {
+      "id": "IBM092-bdde16a2-M307",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M311",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M319",
+      "message": "Bars require a scalar or finite flat collection."
+    },
+    {
+      "id": "IBM092-bdde16a2-M321",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM092-bdde16a2-M325",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M337",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M338",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM092-bdde16a2-M341",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M343",
+      "message": "A finite sum/product requires lower and upper bounds at byte 32"
+    },
+    {
+      "id": "IBM092-bdde16a2-M348",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M352",
+      "message": "norm and normalize require a column ket.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M353",
+      "message": "A finite sum/product requires lower and upper bounds at byte 22"
+    },
+    {
+      "id": "IBM092-bdde16a2-M354",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M364",
+      "message": "Unsupported TeX command: \\min at byte 23"
+    },
+    {
+      "id": "IBM092-bdde16a2-M365",
+      "message": "Expected a quantum expression at byte 71"
+    },
+    {
+      "id": "IBM092-bdde16a2-M370",
+      "message": "Unsupported text in a mathematical expression at byte 28"
+    },
+    {
+      "id": "IBM092-bdde16a2-M384",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M389",
+      "message": "Bars require a scalar or finite flat collection.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M390",
+      "message": "Unclosed bra."
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM092-bdde16a2-M081",
+      "first": "qcompare(qketstate('b'),qadjacent(qmul(qmul(299792458,qphysicalunit(\"m\",\"\")),qpower(qphysicalunit(\"s\",\"\"),−1)),qketstate(x)),4)",
+      "second": "qcompare(qketstate('b'),qadjacent(qmul(qmul(299792458,qphysicalunit('m',\"\")),qpower(qphysicalunit('s',\"\"),−1)),qketstate(x)),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M106",
+      "first": "qcompare(qketstate(\"p_0\") ⋅ 'f',qadd(qsub(qmul(qmul(qdag(qnamedket(\"p_0\")),'A'),qnamedket(\"p_0\")),qadjacent(2,qmul(qdag(qnamedket(\"R_0\")),qnamedket(\"p_0\")))),'d'),4)",
+      "second": "qcompare(qmul(qketstate(\"p_0\"),'f'),qadd(qsub(qmul(qmul(qdag(qnamedket(\"p_0\")),'A'),qnamedket(\"p_0\")),qadjacent(2,qmul(qdag(qnamedket(\"R_0\")),qnamedket(\"p_0\")))),'d'),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M112",
+      "first": "qketstate(\"p_0\") ⋅ 'f'",
+      "second": "qmul(qketstate(\"p_0\"),'f')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M313",
+      "first": "qequalchain(vector(qindexedcoefficient(\"H_tilde_\",'j','k'),qmul(qmul(qdag(qnamedket('ψ')),qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(i,'j'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))),qpower(e'H',qadjacent(qadjacent(qadjacent(−i,'k'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qpower(e'H',qadjacent(qadjacent(qmul(i,qsub('j','k')),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t')))),qnamedket('ψ'))))",
+      "second": "qequalchain(vector(qindexedcoefficient(\"H_tilde_\",'j','k'),qmul(qmul(qdag(qnamedket('ψ')),qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(i,'j'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))),qpower(qadjacent(e,'H'),qadjacent(qadjacent(qadjacent(−i,'k'),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t'))))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qpower(qadjacent(e,'H'),qadjacent(qadjacent(qmul(i,qsub('j','k')),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qmul('d','t')))),qnamedket('ψ'))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M333",
+      "first": "qcompare(qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ')),qsum(qadjacent(qmul(qmul(qmul(qmul(γ,'_'),'f'),'k'),qindexedlabel(\"E_\",\"qboundindex_0\",\"\")),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)",
+      "second": "qcompare(qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ')),qsum(qadjacent(qmul(qmul(qmul(qmul('γ','_'),'f'),'k'),qindexedlabel(\"E_\",\"qboundindex_0\",\"\")),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M347",
+      "first": "(((\"E_0\")==(1 ∕ |'f'|) and ('f')!=(0)) or ((\"E_0\")==(−1 ∕ |'f'|) and ('f')!=(0)))",
+      "second": "(((\"E_0\")==(1 ∕ qbars('f')) and ('f')!=(0)) or ((\"E_0\")==(−1 ∕ qbars('f')) and ('f')!=(0)))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M378",
+      "first": "qequalchain(vector(qnamedapplication('f','E'),qadjacent(qconj('p'),qnamedapplication('g','E')),(((cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ (−3))^(−1))*((−1)+ (cos(('d')*('t')*('δ')*(qphysicalunit(\"rad\",\"\"))))+ ((cos((('E')*('d')*('t')*(qphysicalunit(\"rad\",\"\")))+ ((\"E_0\")*('d')*('t')*(qphysicalunit(\"rad\",\"\"))*(−1))))*(−2)))))",
+      "second": "qequalchain(vector(qnamedapplication('f','E'),qadjacent(qconj('p'),qnamedapplication('g','E')),qmul(qpower(qadd(qcos(qmul(qmul(qmul('d','t'),'δ'),qphysicalunit(\"rad\",\"\"))),−3),−1),qadd(qadd(−1,qcos(qmul(qmul(qmul('d','t'),'δ'),qphysicalunit(\"rad\",\"\")))),qmul(qcos(qadd(qmul(qmul(qmul('E','d'),'t'),qphysicalunit(\"rad\",\"\")),qmul(qmul(qmul(qmul(\"E_0\",'d'),'t'),qphysicalunit(\"rad\",\"\")),−1))),−2)))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M386",
+      "first": "qequalchain(vector(\"E_0\" ⋅ 'f',0,1))",
+      "second": "qequalchain(vector(qmul(\"E_0\",'f'),0,1))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M388",
+      "first": "(('E')<(\"E_0\" − |'δ'|) or ('E')>(\"E_0\" + |'δ'|))",
+      "second": "(('E')<(\"E_0\" − qbars('δ')) or ('E')>(\"E_0\" + qbars('δ')))"
+    }
+  ],
+  "failures": []
+}

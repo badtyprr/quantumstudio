@@ -1,0 +1,53 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/skqd.ipynb",
+  "notebook_sha256": "3ed488d16f7bab398f07d32f95853e1767c1de384095e3712598af6309d09f94",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "43b91968b586f3a23081417fc2ac8c81acd8631de5f83f892df832a11a3110a7",
+  "suite": {
+    "passed": true,
+    "checks": 302,
+    "calls": 39,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 32,
+    "restored_identically": 32,
+    "stable_after_text_reentry": 32,
+    "source_diagnostic": 7
+  },
+  "diagnostics": [
+    {
+      "id": "IBM095-3ed488d1-M006",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 120"
+    },
+    {
+      "id": "IBM095-3ed488d1-M017",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM095-3ed488d1-M018",
+      "message": "An explicit range prefix must contain consecutive nonnegative integers at byte 134"
+    },
+    {
+      "id": "IBM095-3ed488d1-M020",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 25"
+    },
+    {
+      "id": "IBM095-3ed488d1-M025",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM095-3ed488d1-M031",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM095-3ed488d1-M038",
+      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

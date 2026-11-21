@@ -1,0 +1,20 @@
+{
+  "source_sha256": "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c",
+  "backend": "local Aer via Runtime estimator",
+  "initial_seed": 24,
+  "simulator_seed": 73,
+  "requested_shots": 10000,
+  "four_qubit_ground_energy": -1.1459778447627311,
+  "two_qubit_ground_energy": -0.702930394459531,
+  "exact_initial_energy": 0.0584741817508343,
+  "exact_final_energy": -0.7012302964014288,
+  "sampled_final_energy": -0.7005901,
+  "evaluations": 50,
+  "optimizer_message": "Return from COBYLA because the objective function has been evaluated MAXFUN times.",
+  "parameters": [
+    7.841865359916303,
+    5.307125677720404,
+    6.187469648877229,
+    1.616203754826172
+  ]
+}
