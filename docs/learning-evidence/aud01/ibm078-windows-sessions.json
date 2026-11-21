@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/mapping.ipynb",
   "notebook_sha256": "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4",
-  "worker_sha256": "62cd634bec9d073015c4ac8912e918b70991bac5f864dbb339b2bc2ca9690c3c",
+  "worker_sha256": "8e034e8b8026621e9095fb68e4fac27ba5926f58665fde93b0c9b0081eabde4e",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "da534dc4914633aba7d7b3018a94c562eb131931adff27433299e3a8ebf98acb",
+  "records_sha256": "c5be6b681a6ec4e773109911480fdeabad77147c396626df8a7fc47c1b4f6d85",
   "suite": {
     "passed": true,
-    "checks": 642,
+    "checks": 656,
     "calls": 76,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_diagnostic": 6,
-    "source_exact": 70,
-    "restored_identically": 70,
-    "stable_after_text_reentry": 70
+    "source_diagnostic": 4,
+    "source_exact": 72,
+    "restored_identically": 72,
+    "stable_after_text_reentry": 72
   },
   "diagnostics": [
     {
@@ -30,14 +30,6 @@
     {
       "id": "IBM078-c73c951f-M047",
       "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
-    },
-    {
-      "id": "IBM078-c73c951f-M064",
-      "message": "A finite sum/product requires lower and upper bounds at byte 59"
-    },
-    {
-      "id": "IBM078-c73c951f-M066",
-      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
     },
     {
       "id": "IBM078-c73c951f-M072",
