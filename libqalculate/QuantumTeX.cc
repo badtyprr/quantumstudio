@@ -1291,6 +1291,48 @@ class TeXReader {
    pos=end+endMarker.size();
    return "qbasiscolumns(qindexedentries(\""+quantumTeX(family)+"_\",1,"+indices[4]+",vector()),"+indices[2]+")";
   }
+  // Unlabelled codeword arrays present words of a common width in row order.
+  // Keep a Hadamard-basis state as a complete cell even when it is a vector.
+  {
+   static const std::regex gap(R"(^\[\s*-?[0-9]+(?:\.[0-9]+)?\s*(?:mm|cm|pt|em|ex)\s*\])");
+   static const std::regex hadamard(R"(\\vert\s*\{([+-]+)\}\s*\\rangle\s*(?:\\quad)?)");
+   std::string table;
+   size_t width=0;
+   bool valid=true,states=false;
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(std::regex_replace(trim(row),gap,""));
+    if(row.empty())continue;
+    const auto cells=indexedParts(row,"&");
+    if(cells.size()!=alignment.size()) {valid=false;break;}
+    std::string entries;
+    for(const auto &cell:cells) {
+     std::string word=trim(cell),entry;
+     std::smatch match;
+     bool state=std::regex_match(word,match,hadamard);
+     if(state)word=match[1].str();
+     else if(word.find_first_not_of("01")!=std::string::npos) {valid=false;break;}
+     if(word.size()<2 || word.size()> (state ? 10u : 30u)) {valid=false;break;}
+     if(!width) {width=word.size();states=state;}
+     if(width!=word.size() || states!=state) {valid=false;break;}
+     if(state) {
+      for(char sign:word) {
+       std::string factor=std::string("|")+sign+">";
+       entry=entry.empty() ? factor : "qtensor("+entry+","+factor+")";
+      }
+     } else {
+      unsigned mask=0;
+      for(char bit:word)mask=mask*2+(bit-'0');
+      entry="qbitlabel("+std::to_string(mask)+","+std::to_string(width)+")";
+     }
+     if(!entries.empty())entries+=",";
+     entries+=entry;
+    }
+    if(!valid)break;
+    if(!table.empty())table+=",";
+    table+=states ? "vector("+entries+")" : "qtuple(vector("+entries+"))";
+   }
+   if(valid && !table.empty()) {pos=end+endMarker.size();return states ? "vector("+table+")" : "qtuple(vector("+table+"))";}
+  }
   std::string values;
   size_t rows=0;
   while(pos<end) {
@@ -2181,12 +2223,54 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
  }
  if(mathWrapper && s.find("[[")!=std::string::npos) {
-  static const std::regex parameters(R"(^\s*\[\[\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*\]\]\s*$)");
-  std::smatch m;if(std::regex_match(s,m,parameters))return "vector("+m[1].str()+","+m[2].str()+","+m[3].str()+")";
+  static const std::regex parameters(R"(^\s*\[\[\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*\]\]\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,parameters))
+   return "vector("+quantumTeX(m[1].str())+","+quantumTeX(m[2].str())+","+quantumTeX(m[3].str())+")";
  }
  if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
+ }
+ // Apply the stated domain of the representative to the whole coset identity.
+ if(s.find("\\oplus")!=std::string::npos && s.find("\\text{(for")!=std::string::npos) {
+  std::string compact=s;
+  compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex identity(R"re(^(H\^\{\\otimes([a-z])\})?\\vert([a-z])\\oplus\\mathcal\{([A-Z])\}_([A-Z])\\rangle=\\frac\{1\}\{\\sqrt\{2\^([a-z])\}\}\\sum_\{([a-z])\\in\\mathcal\{\4\}_\5\}(H\^\{\\otimes([a-z])\})?\\vert\3\\oplus\7\\rangle\\qquad\\text\{\(for(?:all)?\$\3\\in\\mathcal\{([A-Z])\}_([A-Z])\$\)\}$)re");
+  std::smatch m;
+  if(std::regex_match(compact,m,identity) && m[1].str()==m[8].str()) {
+   std::string u=m[3],v=m[7],d="\""+m[4].str()+"_"+m[5].str()+"\"",c="\""+m[10].str()+"_"+m[11].str()+"\"";
+   std::string lhs="qcosetket("+u+","+d+")",term="qketstate(qoplus("+u+","+v+"))";
+   if(m[1].matched) {
+    std::string transform="qhadamardpower("+m[2].str()+")";
+    lhs="qmul("+transform+","+lhs+")";term="qmul("+transform+","+term+")";
+   }
+   std::string rhs="qmul(1/sqrt(2^"+m[6].str()+"),qsumset("+term+","+d+","+v+"))";
+   return "qsubset("+c+",qsetfilter(qcompare("+lhs+","+rhs+",4),"+c+","+u+"))";
+  }
+ }
+ // A binary code is specified by generators or homogeneous parity checks.
+ if(s.find("\\bigl\\{")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  static const std::regex span(R"(\\bigl\\\{\s*\\alpha_1\s+([a-z])_1\s*\\oplus\s*\\cdots\s*\\oplus\s*\\alpha_([a-z])\s+\1_\2\s*\\,\s*:\s*\\,\s*\\alpha_1\s*,\s*\\ldots\s*,\s*\\alpha_\2\s*\\in\s*\\\{0,1\\\}\s*\\bigr\\\})");
+  static const std::regex kernel(R"(\\bigl\\\{\s*([a-z])\s*\\in\s*\\Sigma\^([a-z])\s*\\,\s*:\s*\\,\s*\1\s*\\cdot\s*([a-z])_1\s*=\s*\\cdots\s*=\s*\1\s*\\cdot\s*\3_([a-z])\s*=\s*0\s*\\bigr\\\})");
+  s=std::regex_replace(s,span,"qwordspan(qindexedentries(\"$1_\",1,$2,vector()))");
+  s=std::regex_replace(s,kernel,"qwordkernel(qindexedentries(\"$3_\",1,$4,vector()),$2)");
+ }
+ // Sigma is an alphabet in these set relations. Elsewhere its power
+ // may be ordinary exponentiation or part of an existing register binder.
+ if(s.find("\\subseteq")!=std::string::npos) {
+  auto sides=indexedParts(s,"\\subseteq");
+  if(sides.size()==2) {
+   static const std::regex words(R"(\s*\\Sigma\^([a-z]|[0-9]+)\s*)");
+   std::smatch m;
+   std::string domain=std::regex_match(sides[1],m,words) ? "qwordpower(\"Σ\","+m[1].str()+")" : quantumTeX(sides[1]);
+   return "qsubset("+quantumTeX(sides[0])+","+domain+")";
+  }
+ }
+ if(s.find("\\ldots")!=std::string::npos && s.find("\\Sigma^")!=std::string::npos) {
+  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\Sigma\^([a-z]|[0-9]+)\s*$)");
+  std::smatch m;if(std::regex_match(s,m,membership))
+   return "qallmembers(qindexedentries(\""+m[1].str()+"_\",1,"+m[2].str()+",vector()),qwordpower(\"Σ\","+m[3].str()+"))";
  }
  const std::string whole=trim(s);
  if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {

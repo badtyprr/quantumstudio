@@ -84,6 +84,14 @@ lessons = {
         ("IBM059", "repetition-code-revisited", 79, 2),
     "3d9008806bedf42d297a5206c86df441a937583cbe8336d8c1e41728928b6d07":
         ("IBM060", "stabilizer-codes", 286, 2),
+    "68783d5d9bff267c13bdbf6373323ea5b2a62dfbd722e13d236e8e4de4b0316c":
+        ("IBM061", "introduction", 0, 0),
+    "41cd48f6fa424f1ebd9b8821826ae61b80da341d3b32e9cd1889f456c28d7646":
+        ("IBM062", "css-codes", 274, 0),
+    "cec837552067f7ac49ceb6f1e012acfc42d2c53cbdd74869209135f23b83efff":
+        ("IBM063", "toric-code", 134, 14),
+    "74ead1b72d7283a14c0c3cf9049a4a2ec0b85dbab8f1ad66812ab6530037ee65":
+        ("IBM064", "other-code-families", 15, 4),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
@@ -145,6 +153,8 @@ if lesson in {"IBM053","IBM054","IBM055","IBM056"}:
     course,chapter = "foundations-of-quantum-error-correction","correcting-quantum-errors"
 if lesson in {"IBM057","IBM058","IBM059","IBM060"}:
     course,chapter = "foundations-of-quantum-error-correction","stabilizer-formalism"
+if lesson in {"IBM061","IBM062","IBM063","IBM064"}:
+    course,chapter = "foundations-of-quantum-error-correction","quantum-code-constructions"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")

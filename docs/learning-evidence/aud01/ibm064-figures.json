@@ -1,0 +1,39 @@
+{
+  "color-code": {
+    "qubits": 19,
+    "x_rank": 9,
+    "z_rank": 9,
+    "logical": 1,
+    "z_distance": 5,
+    "x_distance": 5,
+    "distance": 5,
+    "sha256": "1ff8ee86e92b3517eb18c10e3cd81f97d2df12104536b34aa8dc58b7bbce937c"
+  },
+  "Steane-color-code": {
+    "qubits": 7,
+    "x_rank": 3,
+    "z_rank": 3,
+    "logical": 1,
+    "z_distance": 3,
+    "x_distance": 3,
+    "distance": 3,
+    "sha256": "d040d77606d2b0f8b4f8f1090d24fcc2de19fc8d8f26d4742fde91e61264c4ca"
+  },
+  "rotated-surface-code": {
+    "qubits": 25,
+    "x_rank": 12,
+    "z_rank": 12,
+    "logical": 1,
+    "z_distance": 5,
+    "x_distance": 5,
+    "distance": 5,
+    "sha256": "cce291a6c1e315ffe4b2b8027910ea4bba5b51f96d9f6675d42844ddf50d0ade"
+  },
+  "surface-code": {
+    "qubits": 128,
+    "x_rank": 64,
+    "z_rank": 63,
+    "logical": 1,
+    "sha256": "c52fd58d023e2576d7ac17376c075a065d2b27b31750c58f1284c0ff27e6a949"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/introduction.ipynb",
+  "source_sha256": "68783d5d9bff267c13bdbf6373323ea5b2a62dfbd722e13d236e8e4de4b0316c",
+  "worker_sha256": "5a90b733fd49a3ec7290ebe4a4f70149bcaaf9b93dd62c17c25a25dd2608bf7c",
+  "revision": "4dbec74a",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}
