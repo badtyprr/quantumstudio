@@ -1796,7 +1796,7 @@ class TeXReader {
    {"preceq","<="},{"succeq",">="},{"preccurlyeq","<="},{"succcurlyeq",">="},{"prec","<"},{"succ",">"},
    {"mapsto"," ↦ "},{"approx"," ≈ "},{"pm"," ± "},{"rightarrow"," → "},{"to"," → "},{"Leftrightarrow"," iff "},{"iff"," iff "},{"land"," and "},{"wedge"," and "},{"lor"," or "},{"vee"," or "},{"lnot"," not "},{"neg"," not "},{"veebar"," xor "},
    {"uparrow","↑"},{"downarrow","↓"},
-   {"infty","infinity"},{"pi","pi"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
+   {"infty","infinity"},{"pi","pi"},{"hbar","ℏ"},{"ell","ℓ"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
    {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
    {"zeta","ζ"},{"eta","η"},{"iota","ι"},{"kappa","κ"},{"nu","ν"},{"xi","ξ"},
@@ -2292,6 +2292,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s.replace(m.position(),m.length(),"qexpect("+observable+",qoperatorref(\""+state+"\"))");
   }
  }
+ if(mathWrapper && (trim(s)=="\\mu s" || trim(s)=="\\mu\\mathrm{s}"))
+  return "qphysicalunit(\"s\",\"micro\")";
  if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
  if(s.find("\\neq")!=std::string::npos) {
   static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
