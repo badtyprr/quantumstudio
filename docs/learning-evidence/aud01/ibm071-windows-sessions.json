@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/your-first-quantum-experiment.ipynb",
+  "notebook_sha256": "07ed4dc2bc61a2b36515bba6f8fb9b3ed0d2ad41b6265f1be17ad6b31bb6698c",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "4d307d93ec0b4e938212241a137ce1f1fa04395ca3979b92ae1097de115808c9",
+  "suite": {
+    "passed": true,
+    "checks": 180,
+    "calls": 20,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 20,
+    "restored_identically": 20,
+    "stable_after_text_reentry": 20
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
