@@ -1153,6 +1153,10 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
+ std::string withoutRowSpacing(const std::string &row) {
+  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
+  return !row.empty() && row.front()=='[' ? std::regex_replace(row,spacing,"") : row;
+ }
  // A gathered list beginning at zero can describe decimal inputs and their
  // fixed-width binary encodings. Check every printed example before filling
  // the gap indicated by the vertical ellipsis.
@@ -1160,12 +1164,11 @@ class TeXReader {
   if(body.find("\\mapsto")==std::string::npos || body.find("\\vdots")==std::string::npos)return "";
   auto rows=indexedParts(body,"\\\\");
   if(rows.size()<4)return "";
-  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   static const std::regex entry(R"(^(0|[1-9][0-9]*)\s*\\mapsto\s*([01]+)$)");
   size_t width=0;
   unsigned endpoint=0;
   for(size_t i=0;i<rows.size();++i) {
-   std::string row=i ? std::regex_replace(rows[i],spacing,"") : rows[i];
+   std::string row=i ? withoutRowSpacing(rows[i]) : rows[i];
    if(i==rows.size()-2) {
     if(row!="\\vdots")return "";
     continue;
@@ -1189,7 +1192,6 @@ class TeXReader {
  // Columns of the linear operator are the printed images of its basis kets.
  std::string basisActionTable(const std::string &body,size_t columns) {
   static const std::regex action(R"(^\s*M(?:_\{([0-9]+)\}|_([0-9]))\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
-  static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   std::vector<std::pair<std::string,std::string>> images;
   std::string name;
   auto rows=indexedParts(body,"\\\\");
@@ -1199,7 +1201,7 @@ class TeXReader {
     if(images.empty())return "";
     throw std::runtime_error(error("Empty row in a basis action table"));
    }
-   if(!images.empty() && row.front()=='[')row=std::regex_replace(row,rowSpace,"");
+   if(!images.empty())row=withoutRowSpacing(row);
    auto cells=indexedParts(row,"&");
    for(const auto &cell:cells) {
     std::smatch m;
@@ -1240,21 +1242,22 @@ class TeXReader {
  // editable when the user selects modular powers for the pasted equations.
  std::string modularPowerTable(const std::string &body,size_t columns) {
   static const std::regex power(R"(^\s*([0-9]+)\s*\^\s*(?:\{(-?[0-9]+)\}|([0-9]))\s*=\s*(-?[0-9]+)(?:\s|\\q?quad)*$)");
-  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   auto rows=indexedParts(body,"\\\\");
   if(!rows.empty() && rows.back().empty())rows.pop_back();
   if(rows.empty())return "";
   std::string entries;
   for(size_t i=0;i<rows.size();++i) {
-   auto cells=indexedParts(i ? std::regex_replace(rows[i],spacing,"") : rows[i],"&");
+   auto cells=indexedParts(i ? withoutRowSpacing(rows[i]) : rows[i],"&");
    if(cells.size()!=columns)return "";
    for(const auto &cell:cells) {
     std::smatch m;
     if(!std::regex_match(cell,m,power))return "";
     if(!entries.empty())entries+=",";
-    entries+="qcompare(qmodpower("+m[1].str()+","+m[2].str()+m[3].str()+",\"modulus\"),qmodpower("+m[4].str()+",1,\"modulus\"),4)";
+    entries+="qmodpowerequal("+m[1].str()+","+m[2].str()+m[3].str()+",\"modulus\","+m[4].str()+")";
    }
   }
+  // Each editable cell retains a four-argument predicate until binding.
+  if(rows.size()>64/columns)throw std::runtime_error(error("A modular power table supports at most 64 editable equations"));
   return "matrix("+std::to_string(rows.size())+","+std::to_string(columns)+",["+entries+"])";
  }
  // A horizontal rule separates column labels from reported numeric data.

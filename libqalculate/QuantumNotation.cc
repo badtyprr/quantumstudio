@@ -348,7 +348,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
  {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
- {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qringexpr",2},{"qpower",2},{"qresidue",2},
+ {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qmodpowerequal",4},{"qringexpr",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
