@@ -2471,6 +2471,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,indexedCost,"qscalarat(qindexedlabel(\"C_\",\"$1\",\"\"),");
   static const std::regex gradient(R"(\\vec\{\\nabla\}\s*C\s*\()");
   s=std::regex_replace(s,gradient,"qfeatureat(\"∇C\",");
+  static const std::regex costOnIndexedInput(R"(\bC\(\s*x_(?:\{([a-z0-9]+)\}|([a-z0-9]))\s*\))");
+  s=std::regex_replace(s,costOnIndexedInput,"qscalarat(\"C\",\"x_$1$2\")");
   static const std::regex costOnVector(R"(\bC\(\s*(?=\{?(?:\\vec|qvectorref)))");
   s=std::regex_replace(s,costOnVector,"qscalarat(\"C\",");
   static const std::regex probability(R"(^\s*P_([a-z0-9])\s*=\s*\|\\langle\s*\\phi_\1\s*\|\s*\\psi\s*\\rangle\|\^2\s*$)");

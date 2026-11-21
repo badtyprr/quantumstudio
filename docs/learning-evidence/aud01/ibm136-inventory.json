@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/designing-and-leading-quantum-projects/standing-up-team.mdx",
+  "source_sha256": "b1e8609c0f576556d0213d1a869e34b9b3d65e3d5baf74fd945b3883d9255b7f",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 13726,
+      "end": 13872,
+      "alt": "A workflow for scaling up a quantum calculations.",
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/standing-up-team/scaling.svg"
+    }
+  ],
+  "rows": []
+}

@@ -1,0 +1,27 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/quantum-technology.mdx",
+  "source_sha256": "198502379def6aec2ccd1b543b019b83c5f1ffdec25246914eabef34d0563be9",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 4736,
+      "end": 4860,
+      "alt": "IBM 127-qubit processor",
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-technology/127qubit-processer.avif"
+    },
+    {
+      "cell": 0,
+      "start": 11983,
+      "end": 12135,
+      "alt": "Development Roadmap",
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-technology/IBM-Quantum-Development-and-Innovation-Roadmap-2025.svg"
+    }
+  ],
+  "rows": []
+}

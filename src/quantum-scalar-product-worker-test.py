@@ -121,4 +121,11 @@ value("quantum:" + hamiltonian, hamiltonian)
 for candidate, expected in [("[1,1;1,-1]", "1"), ("Z", "0")]:
     value(f'quantum:replace({hamiltonian},vector("H","H_1","H_2"),vector({candidate},Z,X))', expected)
 
+# The cost of an indexed classical input is a function lookup.
+cost = copied("quantum:$C(x_i)$")
+table = "vector(vector(0,5),vector(1,7))"
+for bit, expected in [(0, "5"), (1, "7")]:
+    value(f'quantum:replace({cost},vector("C","x_i"),vector({table},{bit}))', expected)
+run(f'quantum:replace({cost},vector("C","x_i"),vector({table},2))', success=False)
+
 print(f"PASS: {len(records)} scalar-product worker calls")

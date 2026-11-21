@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/start-your-quantum-journey.mdx",
+  "source_sha256": "b00cb51d7b1d9df90208e6d1a43ad43448ec910e0a8962fb307de253ae699d13",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1554,
+      "end": 1654,
+      "alt": "IBM Quantum Business Badge",
+      "path": "/learning/images/courses/quantum-business-foundations/exam/badge.avif"
+    }
+  ],
+  "rows": []
+}

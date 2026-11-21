@@ -1,0 +1,440 @@
+{
+  "revision": "f842259423a7adc9adeafd54153cdb5d3c5b680b",
+  "lessons": [
+    {
+      "id": 128,
+      "source": "learning/courses/quantum-business-foundations/start-your-quantum-journey.mdx",
+      "sha256": "b00cb51d7b1d9df90208e6d1a43ad43448ec910e0a8962fb307de253ae699d13",
+      "headings": [
+        "Start your quantum journey",
+        "Get started",
+        "Tips for navigating this course",
+        "Earning the Quantum Business Foundations badge",
+        "Course overview"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/exam/badge.avif"
+      ],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    },
+    {
+      "id": 129,
+      "source": "learning/courses/quantum-business-foundations/introduction-to-quantum-computing.mdx",
+      "sha256": "702a47b687349a172c8060747ec8ccd7791959b5b619f90684449864bdb7dbef",
+      "headings": [
+        "Introduction to quantum computing",
+        "Learning objectives",
+        "A new way to address complicated problems",
+        "What problems could quantum computing solve?",
+        "The business case for quantum computing",
+        "Check your understanding",
+        "Potential problem classes for quantum computing",
+        "The path from science to systems",
+        "Check your understanding",
+        "Key takeaways",
+        "Sources"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/systemone.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/fourqubitdevice_small.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/IBM-Quantum-Experience_small.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/ibmq-computation-center_small.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/osprey_small.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Nature_Cover_small.avif",
+        "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Heron_small.avif"
+      ],
+      "videos": [
+        {
+          "id": "132596522",
+          "title": "Victoria Lipinska gives an overview of quantum computing as a paradigm-shifting technology."
+        },
+        {
+          "id": "134056414",
+          "title": "Katie Pizzolato describes several applications of quantum computers. These include carbon capture, chemical structure such as for fertilizers, and the design of novel materials like those used to design higher capacity batteries."
+        },
+        {
+          "id": "133010485",
+          "title": "Victoria Lipinska reviews different problem classes in which we expect quantum computing to be useful. These include search, optimization and simulating nature."
+        }
+      ],
+      "accordions": [
+        {
+          "title": "True or false: Quantum computers will replace classical computers in the future."
+        },
+        {
+          "title": "True or false: Quantum computing was first conceptualized in the 1990s."
+        }
+      ],
+      "code_fences": 0
+    },
+    {
+      "id": 130,
+      "source": "learning/courses/quantum-business-foundations/quantum-computing-fundamentals.mdx",
+      "sha256": "f5333824102166257d5235aeff8e951f820ecb00ec69641df5e9c7faf8564235",
+      "headings": [
+        "Quantum computing fundamentals",
+        "Learning objectives",
+        "What quantum computing is—and what it isn’t",
+        "A new way of seeing problems",
+        "How quantum computing is different from classical",
+        "Check your understanding",
+        "Principles of quantum information",
+        "Qubits",
+        "Superposition",
+        "How does superposition make quantum computers different from classical computers?",
+        "Classical vs. quantum probability?",
+        "Entanglement",
+        "Interference",
+        "Check your understanding",
+        "Quantum circuits",
+        "Business value of quantum circuits",
+        "Check your understanding",
+        "Programming a quantum circuit",
+        "Key takeaways"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/quantum-computing-fundamentals/tulips.avif"
+      ],
+      "videos": [
+        {
+          "id": "132984196",
+          "title": "Katie Pizzolato, Vice President, IBM Quantum Platform at IBM Quantum, dispels several quantum computing myths in 60 seconds. She points out that quantum computers are already real and that there are some problems for which quantum computers will probably not be useful."
+        },
+        {
+          "id": "133345142",
+          "title": "Director of Research at IBM, Darío Gil, contrasts the main unit of classical information (bit) with the main unit of quantum information (qubit)"
+        },
+        {
+          "id": "134056407",
+          "title": "Antonio Corcoles-Gonzales explains superposition and how it relates to probabilistic outcomes of measurements."
+        },
+        {
+          "id": "133345141",
+          "title": "Dario Gil describes quantum circuits and the gates that make them up. He motivates the business value of quantum computers by showing the computational states that can be simultaneously realized on a quantum computer."
+        },
+        {
+          "id": "134056416",
+          "title": "A short video that covers the pronunciation of Qiskit, and some of its key features."
+        }
+      ],
+      "accordions": [
+        {
+          "title": "Answer"
+        },
+        {
+          "title": "Answer"
+        },
+        {
+          "title": "Answer"
+        }
+      ],
+      "code_fences": 0
+    },
+    {
+      "id": 131,
+      "source": "learning/courses/quantum-business-foundations/quantum-technology.mdx",
+      "sha256": "198502379def6aec2ccd1b543b019b83c5f1ffdec25246914eabef34d0563be9",
+      "headings": [
+        "IBM Quantum technology",
+        "Learning objectives",
+        "IBM Quantum Platform",
+        "IBM Quantum Compute Service (formerly the Qiskit Runtime Service)",
+        "IBM superconducting quantum computers",
+        "Quantum computing performance",
+        "Measuring quantum computing performance",
+        "Check your understanding",
+        "What's next in quantum computing",
+        "Quantum utility",
+        "Error Correction",
+        "IBM Quantum Development Roadmap",
+        "5k challenge",
+        "Quantum-centric supercomputers",
+        "Key takeaways"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/quantum-technology/127qubit-processer.avif",
+        "/learning/images/courses/quantum-business-foundations/quantum-technology/IBM-Quantum-Development-and-Innovation-Roadmap-2025.svg"
+      ],
+      "videos": [
+        {
+          "id": "134056420",
+          "title": "This video outlines how noisy quantum computers use error mitigation to out-perform brute force classical methods on an example problem."
+        }
+      ],
+      "accordions": [
+        {
+          "title": "Answer"
+        },
+        {
+          "title": "Optional reading — expand to read more about the experiment"
+        }
+      ],
+      "code_fences": 0
+    },
+    {
+      "id": 132,
+      "source": "learning/courses/quantum-business-foundations/business-impacts.mdx",
+      "sha256": "2fcf7369306089ae35f467595e9c9e81d3724b9d128d2e11303949fb320532ec",
+      "headings": [
+        "Business impacts",
+        "Learning objectives",
+        "Potential quantum industry applications",
+        "Distribution and logistics",
+        "Financial services",
+        "Healthcare and life sciences",
+        "Industrial discrete manufacturing",
+        "Industrial process manufacturing",
+        "Utilities",
+        "Key takeaways"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/business-impacts/use-cases-by-industry.avif",
+        "/learning/images/courses/quantum-business-foundations/business-impacts/quantum_computing_use_cases_for_airlines.avif",
+        "/learning/images/courses/quantum-business-foundations/business-impacts/quadratic_speedup.avif",
+        "/learning/images/courses/quantum-business-foundations/business-impacts/potential_use_cases.avif"
+      ],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    },
+    {
+      "id": 133,
+      "source": "learning/courses/quantum-business-foundations/how-to-become-quantum-ready.mdx",
+      "sha256": "9ae51c31e1a87239327bf1e22f0cefbd84cdbe9c9671c93373557de276759f65",
+      "headings": [
+        "How to become quantum ready",
+        "Learning objectives",
+        "Solving valuable problems with quantum technology",
+        "Quantum readiness",
+        "Talent transformation",
+        "Use case selection",
+        "What makes for a good quantum use case?",
+        "Simulators",
+        "Possible simulator uses:",
+        "Where simulators are not useful:",
+        "Where simulators are dangerous:",
+        "Key takeaways on simulators:",
+        "Responsible Quantum Computing",
+        "Becoming quantum safe",
+        "The IBM Quantum Network",
+        "Develop your quantum workforce",
+        "Join quantum’s inner circle",
+        "Navigate IBM Quantum resources",
+        "Post-course survey",
+        "Key takeaways"
+      ],
+      "images": [
+        "/learning/images/courses/quantum-business-foundations/how-to-become-quantum-ready/talent_transformation.avif"
+      ],
+      "videos": [
+        {
+          "id": "133185610",
+          "title": "Olivia Lanes explains that responsible quantum computing means maintaining an awareness of its power and potential impacts."
+        }
+      ],
+      "accordions": [
+        {
+          "title": "**Strategy**"
+        },
+        {
+          "title": "**Technology**"
+        },
+        {
+          "title": "**Operations**"
+        },
+        {
+          "title": "**Good choices**"
+        },
+        {
+          "title": "**Risky choices**"
+        },
+        {
+          "title": "**Poor choices**"
+        }
+      ],
+      "code_fences": 0
+    },
+    {
+      "id": 134,
+      "source": "learning/courses/designing-and-leading-quantum-projects/introduction.mdx",
+      "sha256": "9f3ef33fc71f2cd5ab0ecc60a01a2c5a3a7e92cbea8e185b76aae47594efa9ff",
+      "headings": [
+        "Welcome",
+        "Key players and audience",
+        "The IBM Quantum&reg; Network",
+        "Quantum Innovation Centers",
+        "The quantum community"
+      ],
+      "images": [],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    },
+    {
+      "id": 135,
+      "source": "learning/courses/designing-and-leading-quantum-projects/early-stages.mdx",
+      "sha256": "7ca49380056336259b09fb322ec3a62ff6a499ffc8726bfffc77c978438e1548",
+      "headings": [
+        "Build your quantum program",
+        "Establish a vision and mission",
+        "Identify goals",
+        "Examples",
+        "Priorities",
+        "Metrics of success",
+        "Research or application focus"
+      ],
+      "images": [
+        "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities1.svg",
+        "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities2.svg",
+        "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/value-drivers-metrics.svg"
+      ],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    },
+    {
+      "id": 136,
+      "source": "learning/courses/designing-and-leading-quantum-projects/standing-up-team.mdx",
+      "sha256": "b1e8609c0f576556d0213d1a869e34b9b3d65e3d5baf74fd945b3883d9255b7f",
+      "headings": [
+        "Assemble your team",
+        "Build and onboard a new quantum team",
+        "Academic institution, research organization, or QIC",
+        "Enterprise organization",
+        "Startups",
+        "Global systems integrators",
+        "Courses and tutorials",
+        "Technical development best practices"
+      ],
+      "images": [
+        "/learning/images/courses/designing-and-leading-quantum-projects/standing-up-team/scaling.svg"
+      ],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    },
+    {
+      "id": 137,
+      "source": "learning/courses/designing-and-leading-quantum-projects/grant-writing.mdx",
+      "sha256": "3459d0b4507cb6d3af2e33c5a168c8a336480eb1aa3b2f0efa7f4989815ab8c8",
+      "headings": [
+        "Grant writing for quantum computing",
+        "General practices",
+        "Quantum-specific suggestions",
+        "Technical feasibility of projects",
+        "Resources",
+        "Examples of successful funding proposals",
+        "Concise wording on common grant needs",
+        "References"
+      ],
+      "images": [],
+      "videos": [],
+      "accordions": [],
+      "code_fences": 0
+    }
+  ],
+  "verified_images": [
+    {
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities1.svg",
+      "bytes": 148993,
+      "sha256": "106966b363888b187fe1725f0b2c797594c4fbc38db1d2f26e50799745b99607"
+    },
+    {
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities2.svg",
+      "bytes": 151407,
+      "sha256": "eb60bc9c4773c2392b26bcaad392e0fea71b520a772f923c0cfe573a22a55ca0"
+    },
+    {
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/value-drivers-metrics.svg",
+      "bytes": 1259819,
+      "sha256": "420d9cd25e64c47f4a0156b9c4cfb267d440ce19514ea9297f2302abc661bf6a"
+    },
+    {
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/standing-up-team/scaling.svg",
+      "bytes": 104598,
+      "sha256": "1711eee30bf85d08efe4bb2286398eab743e5ca8749a790f5d5e255718777c7d"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/potential_use_cases.avif",
+      "bytes": 9227,
+      "sha256": "779e9fcb2e737d5ea8add35ee7475150216e0cab7ae260075850ef5ad63ab53f"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/quadratic_speedup.avif",
+      "bytes": 7203,
+      "sha256": "8159fbdd695419e531cdf7eb37af4e79b3a75003418d76ac27e04b7e1e36dc5f"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/quantum_computing_use_cases_for_airlines.avif",
+      "bytes": 24496,
+      "sha256": "fb9c59a9a47285d0fe5adcedf112783d74dce5db66f2b69222545054f4ea68d4"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/use-cases-by-industry.avif",
+      "bytes": 184608,
+      "sha256": "056a17294e857850f863e2374798d088443386ec5d395b5502b04f2db2681c69"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/exam/badge.avif",
+      "bytes": 11531,
+      "sha256": "98522188134aae62c4f74ee630487d76760fa48de94ec46c1bdfa9d47822b602"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/how-to-become-quantum-ready/talent_transformation.avif",
+      "bytes": 120733,
+      "sha256": "02781d3ef7c8944a449fcd54a9d99511ef91a2149fc037d2c4bbaca88fed9a4b"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Heron_small.avif",
+      "bytes": 10493,
+      "sha256": "cdd81276d2884a01dd2314ba03f7f0c07626562b280aebb93c0356bb90294df2"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/IBM-Quantum-Experience_small.avif",
+      "bytes": 25713,
+      "sha256": "0c5554c0546f1aa161041e2bd44571d299ffd2833057945f87564d3e6ef86b97"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Nature_Cover_small.avif",
+      "bytes": 53075,
+      "sha256": "8470d06769b9a7f85efaddbeebc27003ac9ba1abe23ae151ebf48110930b2cf7"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/fourqubitdevice_small.avif",
+      "bytes": 11257,
+      "sha256": "b5716def5607a62e48b21d8a79c71b9ef0285ebf3bab344b013850432a8d85a1"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/ibmq-computation-center_small.avif",
+      "bytes": 10501,
+      "sha256": "9ac6c048e447e79df608d8bc9f7bed638d6e4dcff8a73f16861006368cc40cac"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/osprey_small.avif",
+      "bytes": 4137,
+      "sha256": "932b76a297300f19bf8c3e0a5982c9a70a4869605a9423ceb44b68d49f8b9aa4"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/systemone.avif",
+      "bytes": 199571,
+      "sha256": "c0f5269ae1e585b8ada33eb5dff7f4266d7440d0e3eee34c60656a1bb7ec4549"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-computing-fundamentals/tulips.avif",
+      "bytes": 24478,
+      "sha256": "439d54baa24d792d638bcad5dbaae7dffa00dfb47ded8d0aa7665819828cb33b"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-technology/127qubit-processer.avif",
+      "bytes": 10746,
+      "sha256": "7c83537744d342f67045d750c2a04516f65132e3296fc1d9c769d86fd546dd5a"
+    },
+    {
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-technology/IBM-Quantum-Development-and-Innovation-Roadmap-2025.svg",
+      "bytes": 921029,
+      "sha256": "1255bda12f0d84b8d6ba0a627d4716f03574d09e3948c936ec8c3402ff33c10c"
+    }
+  ]
+}

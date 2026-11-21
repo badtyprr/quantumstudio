@@ -1,0 +1,62 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/introduction-to-quantum-computing.mdx",
+  "source_sha256": "702a47b687349a172c8060747ec8ccd7791959b5b619f90684449864bdb7dbef",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 5098,
+      "end": 5244,
+      "alt": "IBM Quantum System One at Shin-Kawasaki",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/systemone.avif"
+    },
+    {
+      "cell": 0,
+      "start": 9712,
+      "end": 9866,
+      "alt": "The IBM four-qubit quantum computer",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/fourqubitdevice_small.avif"
+    },
+    {
+      "cell": 0,
+      "start": 10219,
+      "end": 10469,
+      "alt": "The launch of the IBM Quantum Experience in 2016 enabled users to access quantum computers from anywhere, even their tablet.",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/IBM-Quantum-Experience_small.avif"
+    },
+    {
+      "cell": 0,
+      "start": 10978,
+      "end": 11144,
+      "alt": "IBM Quantum data center in Poughkeepsie",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/ibmq-computation-center_small.avif"
+    },
+    {
+      "cell": 0,
+      "start": 13207,
+      "end": 13345,
+      "alt": "IBM Quantum Osprey processor",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/osprey_small.avif"
+    },
+    {
+      "cell": 0,
+      "start": 14213,
+      "end": 14342,
+      "alt": "Utility paper",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Nature_Cover_small.avif"
+    },
+    {
+      "cell": 0,
+      "start": 15064,
+      "end": 15178,
+      "alt": "Heron",
+      "path": "/learning/images/courses/quantum-business-foundations/introduction-to-quantum-computing/Heron_small.avif"
+    }
+  ],
+  "rows": []
+}

@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/business-impacts.mdx",
+  "notebook_sha256": "2fcf7369306089ae35f467595e9c9e81d3724b9d128d2e11303949fb320532ec",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "d9c6465a551e544c0d6f4822e3d55a1aac2b4197b3a8a65e1f86e1ca111f4680",
+  "suite": {
+    "passed": true,
+    "checks": 27,
+    "calls": 3,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 3,
+    "restored_identically": 3,
+    "stable_after_text_reentry": 3
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

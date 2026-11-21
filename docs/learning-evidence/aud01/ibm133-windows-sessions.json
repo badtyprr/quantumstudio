@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/how-to-become-quantum-ready.mdx",
+  "notebook_sha256": "9ae51c31e1a87239327bf1e22f0cefbd84cdbe9c9671c93373557de276759f65",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "883a964d034c961a6eab36195575266609541456a4a85e8d15dda24b13cffe90",
+  "suite": {
+    "passed": true,
+    "checks": 27,
+    "calls": 3,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 3,
+    "restored_identically": 3,
+    "stable_after_text_reentry": 3
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
