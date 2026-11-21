@@ -1921,7 +1921,8 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qblockcolumn") {
+  if(op=="qmissingblock" || op=="qopenblockcolumn")return 0;
+  if(op=="qblockcolumn" || op=="qmatchblockcolumn") {
    MathStructure blocks;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(blocks,raw[0],eo))return 0;
    if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(blocks.size())) {
@@ -1939,10 +1940,23 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(pending)return 0;
    if(blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
-   size_t size=width*blocks.size();out.clearMatrix();out.resizeMatrix(size,size,m_zero);
+   size_t size=width*blocks.size();bool match=op=="qmatchblockcolumn";
+   MathStructure candidate;
+   if(match) {
+    candidate=raw[2];candidate.eval(eo);
+    if(!candidate.isMatrix() && candidate.containsUnknowns())return 0;
+    if(!raw[3].isInteger() || (raw[3].number()!=4 && raw[3].number()!=5))return 0;
+    if(!candidate.isMatrix() || candidate.rows()!=size || candidate.columns()!=size) {out=raw[3].number()==5 ? 1 : 0;return 1;}
+   }
+   out.clearMatrix();out.resizeMatrix(size,match ? width : size,m_zero);
    for(size_t k=0;k<blocks.size();++k)for(size_t r=0;r<width;++r) {
     if(CALCULATOR->aborted())return 0;
     for(size_t c=0;c<width;++c)element(out,k*width+r,c)=element(blocks[k],r,c);
+   }
+   if(match) {
+    candidate.resizeMatrix(size,width,m_zero);
+    MathStructure expected=out;
+    out.set(CALCULATOR->getFunction("qcompare"),&candidate,&expected,&raw[3],NULL);
    }
    return 1;
   }
@@ -2546,6 +2560,9 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
+ calculator.addFunction(new QuantumIndexedFunction("qopenblockcolumn",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmatchblockcolumn",4));
+ calculator.addFunction(new QuantumIndexedFunction("qmissingblock",0));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));

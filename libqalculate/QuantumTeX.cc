@@ -569,8 +569,9 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
- // Square block array with one indexed column and zero blocks elsewhere.
- if(height==width && cells.front()[1]=="0") {
+ // All later block columns are either explicitly zero or independently unspecified.
+ const std::string &fill=cells.front()[1];
+ if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {
   size_t sub=cells.front()[0].find('_');
   if(sub!=std::string::npos) {
    std::string prefix=cells.front()[0].substr(0,sub+1);
@@ -579,7 +580,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
     for(size_t c=0;c<width;++c) {
      if(r==height-1 && c==0)continue;
      std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
-                          c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : "0";
+                          c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : fill;
      if(cells[r][c]!=expected)invalid();
     }
    }
@@ -587,7 +588,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    std::string name=quantumTeX(prefix.substr(0,sub))+"_";
    std::string family=indexedLabelRange(name+"0",name+cells.back()[0].substr(prefix.size()),"qindexedentries(");
    if(family.empty())invalid();
-   return "qblockcolumn("+family+","+std::to_string(height-2)+")";
+   return std::string(fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
   }
  }
  // A superscript names the one-based sample row. Subscripts label the
@@ -1357,6 +1358,11 @@ class TeXReader {
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
+  }
+  if(name=="fbox") {
+   space();
+   if(input.compare(pos,3,"{?}")==0) {pos+=3;return "qmissingblock()";}
+   throw std::runtime_error(error("Expected a boxed question mark for an unspecified block"));
   }
   if(name=="text") {
    std::string text=trim(group());
