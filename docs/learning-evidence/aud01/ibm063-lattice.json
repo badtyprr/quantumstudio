@@ -1,0 +1,85 @@
+{
+  "lattice": {
+    "edges": 162,
+    "stars": 81,
+    "faces": 81,
+    "ranks": [
+      80,
+      80
+    ],
+    "logical_qubits": 2
+  },
+  "figures": {
+    "toric-code-bit-flip": {
+      "sha256": "b83f7d5cb69d65ec9db4910b1c198c70100f7fdf3823792a21f7ad439635dbf5",
+      "errors": 1,
+      "corrections": 0,
+      "negative_checks": 2,
+      "closed_chain_winding": null
+    },
+    "X-error-chain": {
+      "sha256": "0984d0ed5721019c75d1ccae40ff2fd2f940931351631776f9ce8ac4f8b79f62",
+      "errors": 6,
+      "corrections": 0,
+      "negative_checks": 2,
+      "closed_chain_winding": null
+    },
+    "X-error-loop": {
+      "sha256": "b6e82655409a683d7e8771b8b3303bad132d08987e72c75307ac1c4da31ab6d8",
+      "errors": 10,
+      "corrections": 0,
+      "negative_checks": 0,
+      "closed_chain_winding": [
+        0,
+        0
+      ]
+    },
+    "X-error-loop-generated": {
+      "sha256": "d2445bd4e14453d8f10ceede8828d0a6fcbf45140e47c8e1d221b6f9207a6c28",
+      "errors": 10,
+      "corrections": 0,
+      "negative_checks": 0,
+      "closed_chain_winding": [
+        0,
+        0
+      ]
+    },
+    "X-error-logical": {
+      "sha256": "362dac866c1005279739e58022cc55c30093e4eebd16337fa12dafb5d26b61e9",
+      "errors": 13,
+      "corrections": 0,
+      "negative_checks": 0,
+      "closed_chain_winding": [
+        0,
+        1
+      ]
+    },
+    "X-error-correction": {
+      "sha256": "46c89e96c95be9ba7b89443cfa74e82caa36ea228dedbfd4b05a11ec8104dd83",
+      "errors": 6,
+      "corrections": 4,
+      "negative_checks": 2,
+      "closed_chain_winding": [
+        0,
+        0
+      ]
+    },
+    "correction-complete-error": {
+      "sha256": "51c6d9d371a615915d31c921dd2a60c453fa55fcd085b358a160d401844fcc74",
+      "errors": 7,
+      "corrections": 4,
+      "negative_checks": 2,
+      "closed_chain_winding": [
+        1,
+        0
+      ]
+    },
+    "multiple-correction-chains": {
+      "sha256": "1e0a4efb18a6caa4c97b4bef665c2baa4edc3a4ea4ab77444021023df1ccfd28",
+      "errors": 0,
+      "corrections": 10,
+      "negative_checks": 8,
+      "closed_chain_winding": null
+    }
+  }
+}

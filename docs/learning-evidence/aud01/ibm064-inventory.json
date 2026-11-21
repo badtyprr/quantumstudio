@@ -1,0 +1,194 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families.ipynb",
+  "source_sha256": "74ead1b72d7283a14c0c3cf9049a4a2ec0b85dbab8f1ad66812ab6530037ee65",
+  "worker_sha256": "5a90b733fd49a3ec7290ebe4a4f70149bcaaf9b93dd62c17c25a25dd2608bf7c",
+  "revision": "4dbec74a",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 15
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1333,
+      "end": 1471,
+      "alt": "Diagram of a surface code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/surface-code.svg"
+    },
+    {
+      "cell": 0,
+      "start": 2364,
+      "end": 2518,
+      "alt": "Diagram of a rotated surface code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/rotated-surface-code.svg"
+    },
+    {
+      "cell": 0,
+      "start": 4112,
+      "end": 4296,
+      "alt": "Diagram illustrating geometric locality of the 7-qubit Steane code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/Steane-color-code.svg"
+    },
+    {
+      "cell": 0,
+      "start": 5216,
+      "end": 5350,
+      "alt": "Diagram of a color code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/color-code.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM064-74ead1b7-M001",
+      "cell": 0,
+      "start": 1965,
+      "end": 1968,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M002",
+      "cell": 0,
+      "start": 2014,
+      "end": 2017,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M003",
+      "cell": 0,
+      "start": 2609,
+      "end": 2612,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M004",
+      "cell": 0,
+      "start": 2642,
+      "end": 2645,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M005",
+      "cell": 0,
+      "start": 2741,
+      "end": 2744,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M006",
+      "cell": 0,
+      "start": 3360,
+      "end": 3454,
+      "literal": "$(\\mathsf{Q}_6,\\mathsf{Q}_5,\\mathsf{Q}_4,\\mathsf{Q}_3,\\mathsf{Q}_2,\\mathsf{Q}_1,\\mathsf{Q}_0)$",
+      "status": "exact",
+      "display": "(\"Q_6\", \"Q_5\", \"Q_4\", \"Q_3\", \"Q_2\", \"Q_1\", \"Q_0\")",
+      "copy": "qtuple(vector(\"Q_6\",\"Q_5\",\"Q_4\",\"Q_3\",\"Q_2\",\"Q_1\",\"Q_0\"))"
+    },
+    {
+      "id": "IBM064-74ead1b7-M007",
+      "cell": 0,
+      "start": 3525,
+      "end": 3923,
+      "literal": "$$\n\\begin{array}{ccccccc}\nZ & Z & Z & Z & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nZ & Z & \\mathbb{I} & \\mathbb{I} & Z & Z & \\mathbb{I} \\\\[1mm]\nZ & \\mathbb{I} & Z & \\mathbb{I} & Z & \\mathbb{I} & Z \\\\[1mm]\nX & X & X & X & \\mathbb{I} & \\mathbb{I} & \\mathbb{I} \\\\[1mm]\nX & X & \\mathbb{I} & \\mathbb{I} & X & X & \\mathbb{I} \\\\[1mm]\nX & \\mathbb{I} & X & \\mathbb{I} & X & \\mathbb{I} & X\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[7, 0, 120, 0; 7, 0, 102, 0; 7, 0, 85, 0; 7, 120, 0, 0; 7, 102, 0, 0; 7, 85, 0, 0]",
+      "copy": "matrix(6,4,[7,0,120,0,7,0,102,0,7,0,85,0,7,120,0,0,7,102,0,0,7,85,0,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M008",
+      "cell": 0,
+      "start": 4337,
+      "end": 4340,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M009",
+      "cell": 0,
+      "start": 4369,
+      "end": 4372,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M010",
+      "cell": 0,
+      "start": 4659,
+      "end": 4662,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M011",
+      "cell": 0,
+      "start": 4667,
+      "end": 4670,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M012",
+      "cell": 0,
+      "start": 5184,
+      "end": 5196,
+      "literal": "$[[19,1,5]]$",
+      "status": "exact",
+      "display": "[19  1  5]",
+      "copy": "matrix(1,3,[19,1,5])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M013",
+      "cell": 0,
+      "start": 5865,
+      "end": 5868,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M014",
+      "cell": 0,
+      "start": 5873,
+      "end": 5876,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM064-74ead1b7-M015",
+      "cell": 0,
+      "start": 6371,
+      "end": 6386,
+      "literal": "$[[144,12,12]]$",
+      "status": "exact",
+      "display": "[144  12  12]",
+      "copy": "matrix(1,3,[144,12,12])"
+    }
+  ]
+}

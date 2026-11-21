@@ -1,0 +1,52 @@
+{
+  "url": "https://www.youtube.com/watch?v=9TCIOm8gcVQ",
+  "duration_seconds": 2802,
+  "title": "Quantum Error Correction | Understanding Quantum Information & Computation | Lesson 15",
+  "chapters": [
+    [
+      "0:00",
+      "Introduction"
+    ],
+    [
+      "1:22",
+      "Overview"
+    ],
+    [
+      "2:30",
+      "Classical linear codes"
+    ],
+    [
+      "9:31",
+      "CSS codes"
+    ],
+    [
+      "14:14",
+      "Error detection and correction"
+    ],
+    [
+      "17:47",
+      "Code spaces of CSS codes"
+    ],
+    [
+      "22:20",
+      "Toric code"
+    ],
+    [
+      "30:05",
+      "Errors and syndromes"
+    ],
+    [
+      "38:31",
+      "Correcting errors"
+    ],
+    [
+      "40:30",
+      "Other code families"
+    ],
+    [
+      "46:04",
+      "Conclusion"
+    ]
+  ],
+  "english_caption_bytes": 0
+}
