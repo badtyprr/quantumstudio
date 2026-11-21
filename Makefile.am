@@ -656,3 +656,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-symbols.json
 EXTRA_DIST += docs/learning-evidence/aud02/qbraid-reference-discovery.md
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm033-iterate.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm033-grover-derivations.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm033-alphabets.json docs/learning-evidence/aud01/replay-ibm033-alphabets.py

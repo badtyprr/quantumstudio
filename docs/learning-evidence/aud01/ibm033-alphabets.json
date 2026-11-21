@@ -1,0 +1,33 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis.ipynb",
+  "notebook_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "worker_sha256": "4511b23e6c108454ed5ea120d6a54025d236fcd16e1e6774a96995053b83883d",
+  "records_sha256": "3c7bb3da385cc311de6dd1fd5afbffce91261f1fd7d89874a2540c77d0a491b9",
+  "suite": {
+    "passed": true,
+    "checks": 72,
+    "calls": 8,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "mode": "Sets",
+  "inputs": [
+    "IBM033-cf35c640-M002",
+    "IBM033-cf35c640-M006",
+    "IBM033-cf35c640-M007",
+    "IBM033-cf35c640-M013",
+    "IBM033-cf35c640-M015",
+    "IBM033-cf35c640-M018",
+    "IBM033-cf35c640-M038",
+    "IBM033-cf35c640-M052"
+  ],
+  "binary_widths": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "ternary_width": 2
+}

@@ -1468,6 +1468,7 @@ class Parser {
     if(name=="bitstrings") name="qbitstrings";
     if(name=="cartesian")name="qcartesian";
     if(name=="cartesianpower")name="qcartesianpower";
+    if(name=="wordpower")name="qwordpower";
     if(name=="setimage")name="qsetimage";
     if(name=="setfilter")name="qsetfilter";
     if(name=="union")name="qsetunion";
@@ -1990,6 +1991,8 @@ class Parser {
     } else {
      p=start;
      if(sphere && groupedToken(exponent,0,exponent.size(),'1'))a="qunitcircle()";
+     else if(setNotation && a=="\"Σ\"" && s.compare(baseStart,2,"Σ")==0)
+      a="qwordpower("+a+","+exponent+")";
      else a="qpower("+a+","+exponent+")";
     }
    }

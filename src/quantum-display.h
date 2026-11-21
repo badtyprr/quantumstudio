@@ -444,6 +444,8 @@ class Printer {
   }
   if(name=="qcartesian" && value.size()==2)
    return Fragment("("+render(value[0],depth+1).text+") × ("+render(value[1],depth+1).text+")");
+  if(name=="qwordpower" && value.size()==2)
+   return Fragment("wordpower("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qcartesianpower" && value.size()==2)
    return Fragment("("+render(value[0],depth+1).text+")^("+render(value[1],depth+1).text+") (Cartesian power; nonnegative integer count)");
   if(name=="qbitstrings" && value.size()==1)
