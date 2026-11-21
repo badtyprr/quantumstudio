@@ -212,6 +212,11 @@ class Printer {
    return Fragment("integergcd("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qresidue" && value.size()==2)
    return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
+  if(name=="qestimate" && value.size()==2 && value[0].isVector() && value[0].size()) {
+   std::string text=render(value[0][0],depth+1).text;
+   for(size_t k=1;k<value[0].size();++k)text+=" = "+render(value[0][k],depth+1).text;
+   return Fragment(text+" ≈ "+render(value[1],depth+1).text,10);
+  }
   if(name=="qscalarupdate" && value.size()==2 && value[0].isSymbolic())
    return Fragment(value[0].symbol()+" ← "+render(value[1],depth+1).text);
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());

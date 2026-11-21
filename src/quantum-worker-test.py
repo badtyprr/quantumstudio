@@ -179,6 +179,8 @@ for formula, expected in [
     ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),
     ("n^3!=O(n^2)", "1"), ("123456 n=O(n^2)", "1"), ("(n+1)^2=O(n)", "0"),
     ("(n^3+n)-n^3=O(n)", "1"), ("0=O(0)", "1"), ("n=O(0)", "0"),
+    ("qestimatewithin(1≈(3/2),1/2)", "1"), ("qestimatewithin(1≈(3/2),49/100)", "0"),
+    ("qestimatewithin(1=2≈(2/1),10)", "0"), ("qestimatewithin(2=2≈(2/1),0)", "1"),
     (r"qstepvalue(T \leftarrow \lceil \frac{5}{4}T\rceil,8)", "10"),
     ("qstepvalue(T ← T(T+1),3)", "12"), ("qstepvalue(x ← 3,9)", "3"),
     ("1=±1=O(n)", "1"), ("1=±1=O(0)", "0"),
@@ -1858,6 +1860,8 @@ for function, expected in [("qasin", ("0", "1", "1", "1")), ("qacos", ("1", "1",
     assert data("quantum:"+copied)["copy_text"] == copied
     for value, truth in zip(("-1/2", "0", "1/2", "1"), expected):
         assert data(f"quantum:replace(({copied}),'x',{value})")["copy_text"] == truth
+for tolerance in ("-1", "i", "infinity", "[1;2]"):
+    run(f"quantum:qestimatewithin(1≈(3/2),{tolerance})", "--json", success=False)
 for invalid_update in ("x ← (y ← 1)", "qstepvalue(x ← x+1,[1;2])", "qstepvalue(3,5)"):
     run("quantum:"+invalid_update, "--json", success=False)
 print(f"PASS: {checks} worker process checks")

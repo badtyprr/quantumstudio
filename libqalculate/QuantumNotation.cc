@@ -230,7 +230,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
+ {"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qestimate",2},{"qestimatewithin",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -2171,7 +2171,10 @@ class Parser {
    if(imag<0 || text.substr(at)!="i")real=-1;
    else ++at;
   }
-  if(real<0 || at!=text.size())throw std::runtime_error("Approximate equality requires a printed real decimal or a pair of decimal components a + b i.");
+  if(real<0 || at!=text.size()) {
+   if(text.find_first_not_of("0123456789.+-i")!=std::string::npos)return "";
+   throw std::runtime_error("Approximate equality requires a printed real decimal or a pair of decimal components a + b i.");
+  }
   return "qdecimalmatch("+left+","+right+","+std::to_string(real)+","+std::to_string(imag)+")";
  }
  static int comparisonKind(const std::string &relation) {
@@ -2353,6 +2356,7 @@ class Parser {
     result="qcompare(qresidue("+left+","+modulus+"),qresidue("+right+","+modulus+"),4)";
     checkSize(result);return result;
    }
+   const bool exactPrefix=equalities;
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
    size_t rightStart=p;std::string right;
@@ -2428,7 +2432,16 @@ class Parser {
     operands.back()=left;
    }
    std::string clause="qcompare("+left+","+right+","+std::to_string(kind)+")";
-   if(relation=="≈")clause=decimalMatch(left,right,s.substr(rightStart,p-rightStart));
+   if(relation=="≈") {
+    clause=decimalMatch(left,right,s.substr(rightStart,p-rightStart));
+    if(clause.empty()) {
+     if(!exactPrefix || !takeComparisonRelation().empty())
+      throw std::runtime_error("A symbolic estimate must follow its exact operands and end the chain.");
+     std::string values="vector(";
+     for(size_t i=0;i<operands.size();++i) {if(i)values+=",";values+=operands[i];checkSize(values);}
+     return "qestimate("+values+"),"+right+")";
+    }
+   }
    if(allowSharedOperands && kind<4 && take(','))clause=sharedBounds(left,kind,right);
    operands.push_back(right);
    if(relation=="∈" || relation=="∉") {clause="qmember("+left+","+right+")";if(relation=="∉")clause="!("+clause+")";}
