@@ -123,7 +123,7 @@ for path,meta in sorted(listed.items()):
         # Include individually labelled exercises and questions within a practice section.
         for line in plain.splitlines():
             heading=re.match(r"^\s*(?:#{1,6}\s+|\*\*|__)(.{1,180})",line)
-            if heading and re.search(r"^(?:exercises?|practice(?:\s+problems?)?|quiz|questions?|problems?\s+\d+|check your (?:understanding|knowledge)|try it yourself)\b",heading[1],re.I):
+            if heading and re.search(r"^(?:\d+(?:\.\d+)*\.?\s+)?(?:exercises?|practice(?:\s+problems?)?|quiz|questions?|problems?\s+\d+|check your (?:understanding|knowledge)|try it yourself)\b",heading[1],re.I):
                 label=heading[1].strip("*_ #")
                 pos=seen.get(label,0)+1;seen[label]=pos
                 add("practice",path+"#"+label+(f" ({pos})" if pos>1 else ""),i)

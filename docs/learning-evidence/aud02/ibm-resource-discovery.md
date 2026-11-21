@@ -6,7 +6,7 @@ The public English course and module directories showed the same 15 course and 1
 
 ## Resource queue
 
-ibm-resource-inventory.json lists 1,643 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
+ibm-resource-inventory.json lists 1,652 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
 
 | Resource | Targets |
 | --- | ---: |
@@ -14,14 +14,14 @@ ibm-resource-inventory.json lists 1,643 typed targets. Each target has an ID der
 | Image | 426 |
 | Notebook | 141 |
 | Overview | 19 |
-| Practice headings | 139 |
+| Practice headings | 148 |
 | Expandable answers, hints and practice questions | 178 |
 | Expandable readings | 19 |
 | Reference | 574 |
 | Tutorial | 15 |
 | Video | 106 |
 
-Practice detection covers explicit exercise headings and all 197 expandable panels in this revision. Panels include 171 answer keys, two sets of hints, one guidance panel, four questions named in their titles, and 19 supplementary readings. Each panel has a source location and a separate audit task. A question heading and its answer panel can belong to the same exercise. A prose question without a label may require manual inventory. The queue includes the 69 distinct IBM video IDs, external video links, overview pages, assessment pages and launch destinations, notebook sources, illustrations and tutorial links. Ordinary links remain reference-review tasks. External destinations, authenticated assessment content, playback and exercises still require source-specific acceptance.
+Nine numbered section headings identify exercises, including a QFT calculation and a second-order Suzuki–Trotter simulation. Practice detection covers explicit exercise headings and all 197 expandable panels in this revision. Panels include 171 answer keys, two sets of hints, one guidance panel, four questions named in their titles, and 19 supplementary readings. Each panel has a source location and a separate audit task. A question heading and its answer panel can belong to the same exercise. A prose question without a label may require manual inventory. The queue includes the 69 distinct IBM video IDs, external video links, overview pages, assessment pages and launch destinations, notebook sources, illustrations and tutorial links. Ordinary links remain reference-review tasks. External destinations, authenticated assessment content, playback and exercises still require source-specific acceptance.
 
 To rebuild, run fetch-learning-resources.py with a cache directory. Run inventory-learning-resources.py with that directory and an output JSON path using Python and markdown-it-py 3.0.0. The fetcher defaults to this immutable revision and verifies every expected blob. The generator skips fenced code and indexes prose inside MDX components. The public URL observations are recorded separately from repository content.
 
