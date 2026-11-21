@@ -28,6 +28,7 @@ for index in sorted(indices):
     row = inventory["rows"][index-1]
     assert row["id"].endswith(f"M{index:03}") and row["status"] == "diagnostic"
     result = evaluate(row["literal"])
+    assert evaluate(result["copy_text"])["copy_text"] == result["copy_text"], row["id"]
     parameter = "s" if index in (97,106) else "1"
     checks = 0
     for size, marked in [(8,1), (16,4), (32,16)]:
