@@ -115,3 +115,26 @@ for dimension in (2, 3):
                 bound = f"replace(({bound}),{name},{value})"
             assert evaluate(bound) == ("0" if changed else "1")
 print("Verified the block matrix layout and its zero-filled columns in dimensions two and three")
+
+completion = evaluate(rows[218]["literal"])
+assert completion == rows[218]["copy"]
+placeholder = evaluate(rows[220]["literal"])
+assert placeholder == "qmissingblock()" and evaluate(placeholder) == placeholder
+for dimension in (2, 3):
+    size = dimension ** 2
+    fixed = [i * dimension + i for i in range(dimension)]
+    free = [i for i in range(size) if i not in fixed]
+    for remaining in (free, list(reversed(free))):
+        for matches in (True, False):
+            permutation = fixed + remaining
+            if not matches:
+                permutation[0], permutation[-1] = permutation[-1], permutation[0]
+            cells = [int(permutation[col] == row) for row in range(size) for col in range(size)]
+            matrix = f"matrix({size},{size},[" + ",".join(map(str, cells)) + "])"
+            assert evaluate(f"dagger({matrix})*{matrix}=identity({size})") == "1"
+            bound = f'replace(({completion}),"U",{matrix})'
+            for k in range(dimension):
+                ket = f"basis({k},{dimension})"
+                bound = f'replace(({bound}),"Π_{k}",{ket}*dagger({ket}))'
+            assert evaluate(f"replace(({bound}),m,{dimension})") == ("1" if matches else "0")
+print("Verified two unitary completions per dimension and rejected unitary matrices with a different first block column")

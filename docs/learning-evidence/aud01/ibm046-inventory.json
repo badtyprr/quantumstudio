@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "6272e8e7e4b6151cf77c8d740fabf173834546f6a52e374b3623791861a996bb",
-  "revision": "bfcc49e5a00a3a5c75388944d8fd8c8b7d1d4633",
+  "worker_sha256": "3b10d276b5a00fe82d03202b43662fb5256d2d98c11555edbdcbfa3a077e30f9",
+  "revision": "a5198eb6f138f0bbe9053dc0f4472005542aae7d",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 233,
-    "diagnostic": 6
+    "exact": 235,
+    "diagnostic": 4
   },
   "figures": [],
   "rows": [
@@ -2194,8 +2194,9 @@
       "start": 26477,
       "end": 26686,
       "literal": "$$\nU = \\begin{pmatrix}\n\\Pi_0 & \\fbox{?} & \\cdots & \\fbox{?}\\\\[1mm]\n\\Pi_1 & \\fbox{?} & \\cdots & \\fbox{?}\\\\[1mm]\n\\vdots & \\vdots & \\ddots & \\vdots\\\\[1mm]\n\\Pi_{m-1} & \\fbox{?} & \\cdots & \\fbox{?}\n\\end{pmatrix}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\fbox at byte 35"
+      "status": "exact",
+      "display": "qmatchblockcolumn(qindexedentries(\"Π_\", 0, qsub('m', 1), []), 2, 'U', 4)",
+      "copy": "qmatchblockcolumn(qindexedentries(\"Π_\",0,qsub('m',1),vector()),2,'U',4)"
     },
     {
       "id": "IBM046-3c1262a5-M220",
@@ -2213,8 +2214,9 @@
       "start": 26808,
       "end": 26818,
       "literal": "$\\fbox{?}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\fbox at byte 6"
+      "status": "exact",
+      "display": "qmissingblock()",
+      "copy": "qmissingblock()"
     },
     {
       "id": "IBM046-3c1262a5-M222",
