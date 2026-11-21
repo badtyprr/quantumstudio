@@ -1251,6 +1251,58 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out=digits[index.number().intValue()];return 1;
   }
+  if(op=="qregisterxoraction" || op=="qregisterinversexoraction") {
+   MathStructure graph=raw[0],x=raw[1],y=raw[2];
+   graph.eval(eo);x.eval(eo);y.eval(eo);
+   unsigned dimension=0;
+   std::vector<int> images;
+   if(graph.isFunction() && graph.function()->referenceName()=="qset") {
+    MathStructure pairs;
+    DomainState status=finiteDomain(graph,pairs,eo);
+    if(status==DomainState::Pending)return 0;
+    dimension=pairs.size();
+    if(status!=DomainState::Finite || dimension<2 || dimension>64 || (dimension&(dimension-1))) {
+     CALCULATOR->error(true,"A register XOR action requires a full function graph on 1 to 6 bits.",NULL);return 0;
+    }
+    images.assign(dimension,-1);
+    std::vector<bool> seen(dimension,false);
+    for(size_t k=0;k<dimension;++k) {
+     const MathStructure &pair=pairs[k];
+     if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" || pair.size()!=1 ||
+        !pair[0].isVector() || pair[0].size()!=2) {
+      CALCULATOR->error(true,"A register XOR graph requires ordered pairs.",NULL);return 0;
+     }
+     const MathStructure &key=pair[0][0],&value=pair[0][1];
+     if(!key.isInteger() || key.isApproximate() || key.number()<0 || key.number()>=int(dimension) ||
+        !value.isInteger() || value.isApproximate() || value.number()<0 || value.number()>=int(dimension) ||
+        seen[key.number().intValue()]) {
+      CALCULATOR->error(true,"A register XOR graph must map every register label to one label of the same width.",NULL);return 0;
+     }
+     int from=key.number().intValue(),to=value.number().intValue();
+     seen[from]=true;
+     if(op=="qregisterinversexoraction")std::swap(from,to);
+     if(images[from]!=-1) {CALCULATOR->error(true,"An inverse register function must be one-to-one.",NULL);return 0;}
+     images[from]=to;
+    }
+   } else if(graph.isFunction() && graph.function()->referenceName()=="qregistermultipliergraph") {
+    if(graph[2].isInteger() && graph[2].number()>=1 && graph[2].number()<=6)dimension=1u<<graph[2].number().intValue();
+   } else if(!graph.isSymbolic() && !graph.isUnknown()) {
+    CALCULATOR->error(true,"A register XOR action requires a finite function graph.",NULL);return 0;
+   }
+   for(const MathStructure *label:{&x,&y}) {
+    if(!label->isNumber() && label->containsUnknowns() && label->representsScalar())continue;
+    if(!label->isInteger() || label->isApproximate() || label->number()<0 || label->number()>=int(dimension ? dimension : 64)) {
+     CALCULATOR->error(true,"An XOR basis label must be an exact integer inside the register.",NULL);return 0;
+    }
+   }
+   if(images.empty() || !x.isInteger() || !y.isInteger())return 0;
+   int source=x.number().intValue(),target=y.number().intValue();
+   MathStructure size(int(dimension*dimension),1),input(int(source*dimension+target),1);
+   MathStructure output(int(source*dimension+(target^images[source])),1);
+   MathStructure before(CALCULATOR->getFunction("qbasis"),&input,&size,NULL);
+   MathStructure after(CALCULATOR->getFunction("qbasis"),&output,&size,NULL);
+   out.set(CALCULATOR->getFunction("qstateaction"),&before,&after,NULL);return 1;
+  }
   if(op=="qfunctionrange" || op=="qpreimage" || op=="qfunctiontype" || op=="qfiniteapply") {
    const bool application=op=="qfiniteapply";
    bool signature=op=="qfunctiontype";
@@ -3037,6 +3089,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qcomplexplane",0));
  calculator.addFunction(new QuantumIndexedFunction("qfunctiontype",3));
  calculator.addFunction(new QuantumIndexedFunction("qfiniteapply",2));
+ calculator.addFunction(new QuantumIndexedFunction("qregisterxoraction",3));
+ calculator.addFunction(new QuantumIndexedFunction("qregisterinversexoraction",3));
  calculator.addFunction(new QuantumIndexedFunction("qfunctionrange",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qtuple",1));

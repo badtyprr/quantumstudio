@@ -2470,6 +2470,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(modularPowers && s.find("\\mapsto")!=std::string::npos && s.find("\\oplus")!=std::string::npos) {
+  static const std::regex update(
+   R"(^\s*(?:\\vert(?![A-Za-z])|\|)\s*([a-z])\s*\\rangle\s*(?:\\vert(?![A-Za-z])|\|)\s*([a-z])\s*\\rangle\s*\\mapsto\s*)"
+   R"((?:\\vert(?![A-Za-z])|\|)\s*\1\s*\\rangle\s*(?:\\bigl\s*)?(?:\\vert(?![A-Za-z])|\|)\s*\2\s*\\oplus\s*)"
+   R"(f_(?:\{([a-z])\^\{-1\}\}|\{([a-z])\}|([a-z]))\s*\(\s*\1\s*\)\s*(?:\\bigr\s*)?\\rangle\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,update)) {
+   std::string a=m[3].str()+m[4].str()+m[5].str();
+   std::string graph="qregistermultipliergraph(\""+a+"\",\"N\",\"n\")";
+   return std::string(m[3].matched ? "qregisterinversexoraction(" : "qregisterxoraction(")+graph+",\""+m[1].str()+"\",\""+m[2].str()+"\")";
+  }
+ }
  if(modularPowers && s.find("\\psi_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
   // The modular notation supplies the residue-basis convention; the omitted
   // modulus remains an editable parameter in the state definition.
