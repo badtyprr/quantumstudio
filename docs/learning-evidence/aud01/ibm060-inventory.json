@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes.ipynb",
   "source_sha256": "3d9008806bedf42d297a5206c86df441a937583cbe8336d8c1e41728928b6d07",
-  "worker_sha256": "130714c626915c5b8f5f342f6c8abe80d009afc36590952d1cde90e9d7e2ba95",
-  "revision": "076863db919a154f2af555b56db38f1e139f7cee",
+  "worker_sha256": "5a90b733fd49a3ec7290ebe4a4f70149bcaaf9b93dd62c17c25a25dd2608bf7c",
+  "revision": "4dbec74a9a98c8c3a365a87599cad180310f6f98",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 275,
-    "diagnostic": 11
+    "exact": 286
   },
   "figures": [
     {
@@ -63,8 +62,9 @@
       "start": 726,
       "end": 802,
       "literal": "$$\n   P_j P_k = P_k P_j \\qquad \\text{(for all $j,k\\in\\{1,\\ldots,r\\}$)}\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 69"
+      "status": "exact",
+      "display": "qpairwisecommute(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "qpairwisecommute(qindexedentries(\"P_\",1,'r',vector()))"
     },
     {
       "id": "IBM060-3d900880-M005",
@@ -72,8 +72,9 @@
       "start": 870,
       "end": 990,
       "literal": "$$\n   P_k \\notin \\langle P_1,\\ldots,P_{k-1},P_{k+1},\\ldots,P_r\\rangle \\qquad \\text{(for all $k\\in\\{1,\\ldots,r\\}$)}\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 113"
+      "status": "exact",
+      "display": "qindependentpaulis(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "qindependentpaulis(qindexedentries(\"P_\",1,'r',vector()))"
     },
     {
       "id": "IBM060-3d900880-M006",
@@ -83,7 +84,7 @@
       "literal": "$$\n   -\\mathbb{I}^{\\otimes n} \\notin \\langle P_1,\\ldots, P_r\\rangle\n   $$",
       "status": "exact",
       "display": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))",
-      "copy": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))"
+      "copy": "!(qmember(qmul(−1,qtensorpow(qimplicitidentity(),n)),qpauligroup(qindexedentries(\"P_\",1,'r',vector()))))"
     },
     {
       "id": "IBM060-3d900880-M007",
@@ -101,8 +102,9 @@
       "start": 1290,
       "end": 1363,
       "literal": "$P_1 \\vert\\psi\\rangle = \\cdots = P_r \\vert\\psi\\rangle = \\vert\\psi\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 30"
+      "status": "exact",
+      "display": "qfixedby(qindexedentries(\"P_\", 1, 'r', []), qnamedket('ψ'))",
+      "copy": "qfixedby(qindexedentries(\"P_\",1,'r',vector()),qnamedket('ψ'))"
     },
     {
       "id": "IBM060-3d900880-M009",
@@ -112,7 +114,7 @@
       "literal": "$-\\mathbb{I}^{\\otimes n} \\notin \\langle P_1,\\ldots, P_r\\rangle$",
       "status": "exact",
       "display": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))",
-      "copy": "!qmember(−qtensorpow(qimplicitidentity(), n), qpauligroup(qindexedentries(\"P_\", 1, 'r', [])))"
+      "copy": "!(qmember(qmul(−1,qtensorpow(qimplicitidentity(),n)),qpauligroup(qindexedentries(\"P_\",1,'r',vector()))))"
     },
     {
       "id": "IBM060-3d900880-M010",
@@ -160,8 +162,9 @@
       "start": 1759,
       "end": 1889,
       "literal": "$$\n\\mathcal{C} = \\bigl\\{ \\vert\\psi\\rangle \\,:\\, P_1 \\vert\\psi\\rangle = \\cdots = P_r \\vert\\psi\\rangle = \\vert\\psi\\rangle \\bigr\\}\n$$",
-      "status": "diagnostic",
-      "message": "Use an index, finite collection and predicate in a set builder at byte 126"
+      "status": "exact",
+      "display": "C = qfixedspace(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "('C')==(qfixedspace(qindexedentries(\"P_\",1,'r',vector())))"
     },
     {
       "id": "IBM060-3d900880-M015",
@@ -749,8 +752,9 @@
       "start": 15287,
       "end": 15313,
       "literal": "$a_1,\\ldots,a_r\\in\\{0,1\\}$",
-      "status": "diagnostic",
-      "message": "Membership requires a scalar or binary-string label."
+      "status": "exact",
+      "display": "qallmembers(qindexedentries(\"a_\", 1, 'r', []), qset([0  1]))",
+      "copy": "qallmembers(qindexedentries(\"a_\",1,'r',vector()),qset(vector(0,1)))"
     },
     {
       "id": "IBM060-3d900880-M074",
@@ -908,8 +912,9 @@
       "start": 16643,
       "end": 16853,
       "literal": "$$\n\\Pi_1\\cdots\\Pi_r\n= \\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_1}{2}\\biggr)\\cdots\\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_r}{2}\\biggr)\n= \\frac{1}{2^r}\\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} P_1^{a_1}\\cdots P_r^{a_r}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 116"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"Π_\", 1, 'r', []), 1) = qprojectorproduct(qindexedentries(\"P_\", 1, 'r', []), qpower(2, n)) = 1 / 2^r · qbinarypowersum(qindexedentries(\"P_\", 1, 'r', []))",
+      "copy": "qequalchain(vector(qorderedpowers(qindexedentries(\"Π_\",1,'r',vector()),1),qprojectorproduct(qindexedentries(\"P_\",1,'r',vector()),qpower(2,n)),qadjacent(1 ∕ qpower(2, 'r'),qbinarypowersum(qindexedentries(\"P_\",1,'r',vector())))))"
     },
     {
       "id": "IBM060-3d900880-M090",
@@ -927,8 +932,9 @@
       "start": 17276,
       "end": 17446,
       "literal": "$$\n\\operatorname{dim}(\\mathcal{C}) =\n\\operatorname{Tr}(\\Pi_1\\cdots\\Pi_r) =\n\\frac{1}{2^r} \\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r})\n$$",
-      "status": "diagnostic",
-      "message": "A register sum requires matching indexed endpoints and an explicit alphabet power at byte 158"
+      "status": "exact",
+      "display": "qspacedimension('C') = Tr(qorderedpowers(qindexedentries(\"Π_\", 1, 'r', []), 1)) = (1 ∕ 2)^r · Tr(qbinarypowersum(qindexedentries(\"P_\", 1, 'r', [])))",
+      "copy": "qequalchain(vector(qspacedimension('C'),qtrace(qorderedpowers(qindexedentries(\"Π_\",1,'r',vector()),1)),qmul(qpower(1 ∕ 2,'r'),qtrace(qbinarypowersum(qindexedentries(\"P_\",1,'r',vector()))))))"
     },
     {
       "id": "IBM060-3d900880-M092",
@@ -1036,8 +1042,9 @@
       "start": 18239,
       "end": 18481,
       "literal": "$$\n\\begin{aligned}\n\\operatorname{dim}(\\mathcal{C}) & =\n\\frac{1}{2^r} \\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r}) \\\\\n& = \\frac{1}{2^r} \\operatorname{Tr}(P_1^{0}\\cdots P_r^{0}) \\\\\n& = 2^{n-r}.\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "A register sum requires matching indexed endpoints and an explicit alphabet power at byte 101"
+      "status": "exact",
+      "display": "qspacedimension('C') = (1 ∕ 2)^r · Tr(qbinarypowersum(qindexedentries(\"P_\", 1, 'r', []))) = (1 ∕ 2)^r · Tr(qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), 0)) = (1 ∕ 2)^r · 2^n",
+      "copy": "qequalchain(vector(qspacedimension('C'),qmul(qpower(1 ∕ 2,'r'),qtrace(qbinarypowersum(qindexedentries(\"P_\",1,'r',vector())))),qmul(qpower(1 ∕ 2,'r'),qtrace(qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),0))),(1 ∕ 2)^'r' ⋅ 2^n))"
     },
     {
       "id": "IBM060-3d900880-M103",
@@ -1187,7 +1194,7 @@
       "literal": "$\\alpha\\notin\\{+1,-1\\}$",
       "status": "exact",
       "display": "!qmember('α', qset([1  −1]))",
-      "copy": "!qmember('α', qset([1  −1]))"
+      "copy": "!(qmember('α',qset(vector(1,−1))))"
     },
     {
       "id": "IBM060-3d900880-M118",
@@ -1665,8 +1672,9 @@
       "start": 25629,
       "end": 25707,
       "literal": "$$\n   E = \\pm Q \\; \\text{for some}\\; Q \\in \\langle P_1,\\ldots,P_r\\rangle\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 33"
+      "status": "exact",
+      "display": "qsignedpaulimember(qindexedentries(\"P_\", 1, 'r', []), 'E')",
+      "copy": "qsignedpaulimember(qindexedentries(\"P_\",1,'r',vector()),'E')"
     },
     {
       "id": "IBM060-3d900880-M166",
@@ -1714,8 +1722,9 @@
       "start": 26011,
       "end": 26159,
       "literal": "$$\n   E\\neq \\pm Q\\; \\text{for} \\; Q \\in \\langle P_1,\\ldots,P_r\\rangle, \\;\\text{but}\\;\n   E P_k = P_k E \\;\\text{for every}\\; k\\in\\{1,\\ldots,r\\}\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 29"
+      "status": "exact",
+      "display": "!qsignedpaulimember(qindexedentries(\"P_\", 1, 'r', []), 'E') and !qsomeanticommute(qindexedentries(\"P_\", 1, 'r', []), 'E')",
+      "copy": "(!(qsignedpaulimember(qindexedentries(\"P_\",1,'r',vector()),'E')) and !(qsomeanticommute(qindexedentries(\"P_\",1,'r',vector()),'E')))"
     },
     {
       "id": "IBM060-3d900880-M171",
@@ -1763,8 +1772,9 @@
       "start": 26461,
       "end": 26536,
       "literal": "$$\n   P_k E = -E P_k \\; \\text{for at least one} \\; k\\in\\{1,\\ldots,r\\}\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 46"
+      "status": "exact",
+      "display": "qsomeanticommute(qindexedentries(\"P_\", 1, 'r', []), 'E')",
+      "copy": "qsomeanticommute(qindexedentries(\"P_\",1,'r',vector()),'E')"
     },
     {
       "id": "IBM060-3d900880-M176",
