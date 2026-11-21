@@ -1,0 +1,14 @@
+{
+  "worker_sha256": "3ad3634e45ac1c1fa999a5def628df6ebecc119037a91fc8fba31b8d24a9f70a",
+  "source_spans": [
+    3,
+    4,
+    48,
+    123,
+    155
+  ],
+  "maximum_digit_list": 1024,
+  "oversize_diagnostic": 1025,
+  "clipboard_sessions": 13,
+  "windows_checks": 143
+}

@@ -1,0 +1,13 @@
+{
+  "worker_sha256": "3ad3634e45ac1c1fa999a5def628df6ebecc119037a91fc8fba31b8d24a9f70a",
+  "source_spans": [
+    138,
+    140,
+    143,
+    148,
+    150
+  ],
+  "bound_expressions": 21,
+  "clipboard_sessions": 26,
+  "windows_checks": 286
+}

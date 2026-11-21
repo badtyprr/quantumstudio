@@ -682,3 +682,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm029-modular-xor-actions.json docs/
 EXTRA_DIST += docs/learning-evidence/aud01/ibm029-xor-clipboard.json docs/learning-evidence/aud01/ibm029-ring-context.json docs/learning-evidence/aud01/replay-ibm029-ring-context.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm029-width-bound.json docs/learning-evidence/aud01/replay-ibm029-width-bound.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm037-indexed-windows.json
+EXTRA_DIST += docs/learning-evidence/aud01/learning_clipboard_checks.py docs/learning-evidence/aud01/ibm037-ordered-windows.json docs/learning-evidence/aud01/ibm038-single-windows.json
