@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
   "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
-  "worker_sha256": "1651d6a4ad33e0dbb781fffa2cd5fc69486affd3f155e832fd27a8a9421e5342",
-  "revision": "a41fa8a6",
+  "worker_sha256": "9af4e972c52cb79fc6d3ae387104549de500858556f0814c8fad57a0d6b1bb82",
+  "revision": "aba793d6",
   "mode": "Quantum notation",
   "markdown_cells": 12,
   "code_cells": 0,
   "summary": {
-    "diagnostic": 12,
-    "exact": 49
+    "diagnostic": 9,
+    "exact": 52
   },
   "figures": [
     {
@@ -635,8 +635,9 @@
       "start": 4148,
       "end": 4235,
       "literal": "$$\n\\langle A(\\lambda)\\rangle = \\langle A(0)\\rangle + \\sum_{k=0}^m {a_k \\lambda^k}+R,\n$$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qmeanat('A', 0) + (∑_{k=0}^{m} (a_k · 'λ'^k)) + R = qmeanat('A', 'λ')",
+      "copy": "(qadd(qadd(qmeanat('A',0),qsum(qadjacent(qindexedlabel(\"a_\",\"qboundindex_0\",\"\"),qpower('λ',\"qboundindex_0\")),0,'m',\"qboundindex_0\")),'R'))==(qmeanat('A','λ'))"
     },
     {
       "id": "IBM079-7325643f-M056",
@@ -674,8 +675,9 @@
       "start": 4543,
       "end": 4572,
       "literal": "$\\langle A(\\lambda_1)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qmeanat('A', \"λ_1\")",
+      "copy": "qmeanat('A',\"λ_1\")"
     },
     {
       "id": "IBM079-7325643f-M060",
@@ -683,8 +685,9 @@
       "start": 4574,
       "end": 4603,
       "literal": "$\\langle A(\\lambda_2)\\rangle$",
-      "status": "diagnostic",
-      "message": "Unclosed bra."
+      "status": "exact",
+      "display": "qmeanat('A', \"λ_2\")",
+      "copy": "qmeanat('A',\"λ_2\")"
     },
     {
       "id": "IBM079-7325643f-M061",
