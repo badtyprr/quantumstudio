@@ -24,6 +24,10 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("|00〉",translateQuantum("|00>"));
+ equal("|00110100〉",translateQuantum("|00110100>"));
+ equal("〈00110100|00110100〉",translateQuantum("<00110100|00110100>"));
+ equal("qoperatorref(\"〈x〉\")", "qoperatorref(\"〈x〉\")");
  equal("U (|0>@|1>)",translateQuantum("qmul(\"U\",(|0>@|1>))"));
  equal("U (0,pi,0)",translateQuantum("U(0,pi,0)"));
  rejects("U(0)");
