@@ -385,6 +385,35 @@ int main(int argc,char **argv) {
  if(quantumStart && input.find("\\begin")!=std::string::npos)try {
   quantumTeX(input.substr(quantumStart),&independentLines);
  } catch(const std::exception &error) {std::cerr << error.what() << '\n';return 2;}
+ // A whole alignment of wide Pauli words can be evaluated in the exact
+ // binary symplectic representation. Other uses still receive dense matrices.
+ std::vector<std::string> pauliLines;
+ if(json && !approximate && independentLines.size()>1 && input.find("context(")==std::string::npos) {
+  std::string packed="quantum:vector(";
+  for(const auto &line:independentLines) {
+   std::string word,shown;
+   std::string literal;
+   for(unsigned char c:line)if(!std::isspace(c))literal+=c;
+   if(literal.size()>1 && literal.front()=='(' && literal.back()==')')literal=literal.substr(1,literal.size()-2);
+   size_t pos=0;
+   while(pos<literal.size()) {
+    char gate=literal[pos];
+    if(literal.compare(pos,19,"qimplicitidentity()")==0) {gate='I';pos+=19;}
+    else if(gate=='I' || gate=='X' || gate=='Y' || gate=='Z')++pos;
+    else {word.clear();break;}
+    word+=gate;
+    if(!shown.empty())shown+="@";
+    shown+=gate;
+    if(pos==literal.size())break;
+    if(literal[pos++]!='@' || pos==literal.size()) {word.clear();break;}
+   }
+   if(word.size()<6 || word.size()>9) {pauliLines.clear();break;}
+   if(!pauliLines.empty())packed+=",";
+   packed+="compact_pauli(\""+word+"\")";
+   pauliLines.push_back("("+shown+")");
+  }
+  if(!pauliLines.empty())input=packed+")";
+ }
  MathStructure result=calculator.calculate(input,eo);
  bool failed=false;
  while(calculator.message()) {
@@ -406,8 +435,7 @@ int main(int argc,char **argv) {
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
  // Wide Pauli tables have compact exact forms. Formatting each dense zero
  // before replacing the text can exhaust the interactive calculation deadline.
- std::vector<std::string> pauliLines;
- if(json && multipleLines)for(size_t i=0;i<result.size();++i) {
+ if(pauliLines.empty() && json && multipleLines)for(size_t i=0;i<result.size();++i) {
   if(!result[i].isMatrix()) {pauliLines.clear();break;}
   std::string word=quantumPauliTensorNotation(result[i]);
   if(word.empty()) {pauliLines.clear();break;}
