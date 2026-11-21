@@ -2475,7 +2475,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // modulus remains an editable parameter in the state definition.
   static const std::regex openKet(R"(\\vert(?![A-Za-z]))"),closeKet(R"(\\rangle(?![A-Za-z]))");
   std::string state=std::regex_replace(std::regex_replace(s,openKet,"|"),closeKet,">");
+  // Keep separated control words and letters distinct when ignoring layout.
+  static const std::regex splitWord(R"((\\[A-Za-z]+)\s+([A-Za-z]))"),singleIndex(R"(_\{([A-Za-z0-9])\})");
+  state=std::regex_replace(state,splitWord,"$1#$2");
   state.erase(std::remove_if(state.begin(),state.end(),asciiSpace),state.end());
+  state=std::regex_replace(state,singleIndex,"_$1");
   static const std::regex uniform(R"(^\|\\psi_0>=\\frac\{\|1>\+\|([a-z])>\+\\cdots\+\|\1\^\{([a-z])-1\}>\}\{\\sqrt\{\2\}\}$)");
   static const std::regex phased(R"(^\|\\psi_1>=\\frac\{\|1>\+\\omega_([a-z])\^\{-1\}\|([a-z])>\+\\cdots\+\\omega_\1\^\{-\(\1-1\)\}\|\2\^\{\1-1\}>\}\{\\sqrt\{\1\}\}$)");
   std::smatch m;

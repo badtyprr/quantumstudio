@@ -26,26 +26,39 @@ class QuantumGateFunction: public MathFunction {
      CALCULATOR->error(true,"An orbit ket requires exact integer parameters on a residue basis of dimension 2 to 64.",NULL);return 0;
     }
    }
-   const MathStructure &modulus=args[1],&order=args[2],&phase=args[3];
-   if((phase.isInteger() && order.isInteger() && phase.number()>=order.number()) ||
-      (order.isInteger() && modulus.isInteger() && order.number()>=modulus.number())) {
-    CALCULATOR->error(true,"The orbit ket requires a Fourier index below the order and an order below the modulus.",NULL);return 0;
+   int known[4];
+   bool shared[4][4]={};
+   for(size_t k=0;k<4;++k) {
+    known[k]=args[k].isInteger() ? args[k].number().intValue() : -1;
+    for(size_t h=0;h<k;++h)shared[k][h]=args[k].equals(args[h]);
    }
+   // Check feasibility before deferring. With a finite residue basis the
+   // order is determined by the multiplier, even if the order is unbound.
    std::vector<unsigned> orbit;
-   if(a.isInteger() && modulus.isInteger()) {
-    unsigned base=a.number().intValue(),n=modulus.number().intValue(),x=1;
-    Number divisor=a.number();
-    if(base>=n || !divisor.gcd(modulus.number()) || !divisor.isOne()) {
-     CALCULATOR->error(true,"An orbit ket requires a unit multiplier smaller than the modulus.",NULL);return 0;
-    }
-    do {orbit.push_back(x);x=(base*x)%n;} while(x!=1);
-    if(order.isInteger() && order.number()!=int(orbit.size())) {
-     CALCULATOR->error(true,"The supplied order must equal the length of the multiplier orbit.",NULL);return 0;
+   unsigned r=0,j=0,n=0;
+   for(int modulus=known[1]<0 ? 2 : known[1];modulus<=(known[1]<0 ? 64 : known[1]) && !r;++modulus) {
+    for(int base=known[0]<0 ? 1 : known[0];base<modulus && (known[0]<0 || base==known[0]) && !r;++base) {
+     if(CALCULATOR->aborted())return 0;
+     orbit.clear();
+     int x=1;
+     do {orbit.push_back(x);x=base*x%modulus;} while(x!=1 && int(orbit.size())<modulus);
+     int length=int(orbit.size());
+     if(x!=1 || (known[2]>=0 && known[2]!=length))continue;
+     for(int phase=known[3]<0 ? 0 : known[3];phase<length && (known[3]<0 || phase==known[3]);++phase) {
+      const int values[]={base,modulus,length,phase};
+      bool consistent=true;
+      for(size_t k=1;k<4;++k)for(size_t h=0;h<k;++h)
+       if(shared[k][h] && values[k]!=values[h])consistent=false;
+      if(!consistent)continue;
+      if(pending)return 0;
+      n=modulus;r=length;j=phase;break;
+     }
     }
    }
-   if(pending)return 0;
-   unsigned r=orbit.size(),j=phase.number().intValue();
-   out.clearMatrix();out.resizeMatrix(modulus.number().intValue(),1,m_zero);
+   if(!r) {
+    CALCULATOR->error(true,"No modular orbit fits these parameters: a must be a unit below N, r its order and 0 <= j < r.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(n,1,m_zero);
    for(unsigned k=0;k<r;++k) {
     if(CALCULATOR->aborted())return 0;
     unsigned angle=(r-(k*j)%r)%r;
