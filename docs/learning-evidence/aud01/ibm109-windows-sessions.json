@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/hamiltonian-construction.ipynb",
+  "notebook_sha256": "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d",
+  "worker_sha256": "b83d9271a9ea00e36bd51638e780eda018edd224f7e5db9e68ce0280136ebb4c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "efcb27c37c96c3caf2e489fd5d00a7e2981ea194058aede47031a5ab0d946186",
+  "suite": {
+    "passed": true,
+    "checks": 20,
+    "calls": 3,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 2,
+    "restored_identically": 2,
+    "stable_after_text_reentry": 2,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM109-0f3a7679-M002",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
