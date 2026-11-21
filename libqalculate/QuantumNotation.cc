@@ -250,7 +250,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssstate",3},
  {"qcssencoder",2},
  {"qbitvalue",1},{"qbinaryfraction",3},{"qbinarytail",2},
- {"qbitword",1},
+ {"qbitword",1},{"qallbitdot",3},
  {"qbloch",1},
  {"qblochsub",2},
  {"qpovm",2},

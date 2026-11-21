@@ -57,6 +57,34 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qallbitdot") {
+   MathStructure width=args[1],zero(0);
+   if(validateQuantumBitLabel(zero,width,eo)==QuantumBitLabelState::Invalid)return 0;
+   const MathStructure &target=args[2];
+   if(target.isApproximate() || (!target.isZero() && !target.isOne())) {
+    CALCULATOR->error(true,"A universal binary dot comparison requires a target bit.",NULL);return 0;
+   }
+   MathStructure word=a;
+   if(a.isVector()) {
+    word.set(CALCULATOR->getFunction("qbitword"),&a,NULL);word.eval(eo);
+    if(!isQuantumBitLabel(word))return 0;
+   }
+   MathStructure index=word;
+   if(isQuantumBitLabel(word)) {
+    index=word[0];MathStructure labelWidth=word[1];
+    if(validateQuantumBitLabel(index,labelWidth,eo)==QuantumBitLabelState::Invalid)return 0;
+    if(labelWidth.isNumber() && width.isNumber() && !labelWidth.equals(width)) {
+     CALCULATOR->error(true,"The word and the quantified binary strings must have the same width.",NULL);return 0;
+    }
+    if(!labelWidth.isNumber() || !width.isNumber()) {
+     validateQuantumBitLabel(index,width,eo);return 0;
+    }
+   }
+   if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete)return 0;
+   // The zero input gives parity zero. Every nonzero word has a set bit
+   // whose corresponding unit vector gives parity one.
+   out=index.isZero() && target.isZero() ? 1 : 0;return 1;
+  }
   if(op=="qbinarytail") {
    if(!a.isSymbolic() || !args[1].isInteger() || !args[1].number().isPositive())
     CALCULATOR->error(true,"A binary tail requires a digit family and a positive starting index.",NULL);
@@ -357,6 +385,7 @@ class QuantumBinaryFunction: public MathFunction {
 };
 }
 void registerQuantumBinary(Calculator &calculator) {
+ calculator.addFunction(new QuantumBinaryFunction("qallbitdot",3));
  calculator.addFunction(new QuantumBinaryFunction("qbinarytail",2));
  calculator.addFunction(new QuantumBinaryFunction("qbinaryfraction",3));
  calculator.addFunction(new QuantumBinaryFunction("qbitword",1));

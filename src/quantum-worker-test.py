@@ -407,6 +407,14 @@ signed_entries=[str(i if i%2 else -i) for i in range(640)]
 signed_copy=data("quantum:vector("+", ".join(signed_entries)+")")["copy_text"]
 assert data("quantum:"+signed_copy)["copy_text"]==signed_copy
 run(r"quantum:$0, 1, \ldots, 1024$",success=False)
+quantified = r"$z\cdot x = 0$ for every string $x\in\Sigma^n$"
+copied = data("quantum:"+quantified)["copy_text"]
+assert copied=="qallbitdot('z','n',0)" and data("quantum:"+copied)["copy_text"]==copied
+for word,truth in ((0,"1"),(3,"0")):
+    assert data(f'quantum:replace(replace(({copied}),"n",4),"z",qbitlabel({word},4))')["copy_text"]==truth
+run("quantum:qallbitdot(qbitlabel(0,3),4,0)",success=False)
+run("quantum:qallbitdot(qbitlabel(31,m),4,0)",success=False)
+assert data("quantum:qallbitdot(0,0,1)")["copy_text"]=="0"
 assert data('quantum:1+replace (($m=O(n)$),"m",2*n+1)')["copy_text"]=="2"
 assert data('quantum:vector(replace(($m=O(n)$),"m",2*n+1),replace(($m=O(n)$),"m",n^2))')["copy_text"]=="vector(1,0)"
 assert data('quantum:replace(replace(($m=O(n)$),"m",n^2),"z",3)')["copy_text"]=="0"

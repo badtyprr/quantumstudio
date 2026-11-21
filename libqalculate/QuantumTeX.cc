@@ -2446,6 +2446,17 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   return quantumTeX(binaryLogs ? "binarylogs:"+part : part);
  };
  std::string s=input.substr(first,last-first+1);
+ if(s.find("for every string")!=std::string::npos) {
+  static const std::regex quantified(R"(^\$\s*([a-z])\s*\\cdot(?![A-Za-z])\s*([a-z])\s*=\s*([01])\s*\$\s+for every string\s+\$\s*([a-z])\s*\\in\s*\\Sigma\s*\^\s*(?:\{([a-z]|[0-9]+)\}|([a-z]|[0-9]+))\s*\$\s*[.,]?$)");
+  std::smatch match;
+  if(std::regex_match(s,match,quantified) && match[1]!=match[2] && (match[1]==match[4] || match[2]==match[4])) {
+   std::string free=match[1]==match[4] ? match[2].str() : match[1].str(),width=match[5].matched ? match[5].str() : match[6].str();
+   if(width!=match[4].str()) {
+    if(std::isalpha((unsigned char)width[0]))width="\""+width+"\"";
+    return "qallbitdot(\""+free+"\","+width+","+match[3].str()+")";
+   }
+  }
+ }
  // Keep a pasted lesson formula intact as the first argument of a
  // substitution. Its relation must be parsed before binding the parameter.
  if(s.find('$')!=std::string::npos && s.find("replace")!=std::string::npos && s.front()!='$') {
