@@ -61,3 +61,21 @@ for index in (76, 100):
         assert evaluate(f"replace(replace(({family}),m,{start}),n,{end})") == expected
         assert evaluate(f"replace(replace(({family}),n,{end}),m,{start})") == expected
 print("Verified both basis-completion ranges, including an already complete basis")
+
+for index in (127, 167, 176, 207, 220, 238):
+    family = evaluate(rows[index - 1]["literal"])
+    assert family == rows[index - 1]["copy"]
+    first, second = "|0><0|", "|1><1|"
+    bindings = [("m", "2"), ('"Π_0"', first), ('"Π_1"', second)]
+    for sequence in (bindings, list(reversed(bindings))):
+        bound = family
+        for name, value in sequence:
+            bound = f"replace(({bound}),{name},{value})"
+        if index == 220:
+            assert evaluate(bound) == evaluate(f"vector({first},{second})")
+            assert evaluate(bound) != evaluate(f"vector({second},{first})")
+        else:
+            assert evaluate(f"cardinality({bound})") == "2"
+            assert evaluate(f"({second}) ∈ ({bound})") == "1"
+            assert evaluate(f"(|+><+|) ∈ ({bound})") == "0"
+print("Verified five projector sets and the ordered operator list in both binding orders")

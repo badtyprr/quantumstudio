@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "dfdecd34d5e850d74f16c58370827f05bc78758bb60b4849e7c66bccb7d967ca",
-  "revision": "d5f267695b44a2966c87d6b944fac1363b70fb73",
+  "worker_sha256": "bba0b4cd6bbdc877b4658bf836404770aaa2cba7a6803a7a4a2ea4e449fa930c",
+  "revision": "d9b9e21a62efdf05d2164734c2b79acf34a278ff",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 225,
-    "diagnostic": 14
+    "exact": 231,
+    "diagnostic": 8
   },
   "figures": [],
   "rows": [
@@ -1275,8 +1275,9 @@
       "start": 18732,
       "end": 18760,
       "literal": "$\\{\\Pi_0,\\ldots,\\Pi_{m-1}\\}$",
-      "status": "diagnostic",
-      "message": "Finite index ranges require integer endpoints."
+      "status": "exact",
+      "display": "qindexedset(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedset(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M128",
@@ -1673,8 +1674,9 @@
       "start": 22243,
       "end": 22271,
       "literal": "$\\{\\Pi_0,\\ldots,\\Pi_{m-1}\\}$",
-      "status": "diagnostic",
-      "message": "Finite index ranges require integer endpoints."
+      "status": "exact",
+      "display": "qindexedset(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedset(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M168",
@@ -1762,8 +1764,9 @@
       "start": 22830,
       "end": 22857,
       "literal": "$\\{\\Pi_0\\ldots,\\Pi_{m-1}\\}$",
-      "status": "diagnostic",
-      "message": "Expected ')' at byte 17"
+      "status": "exact",
+      "display": "qindexedset(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedset(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M177",
@@ -2070,8 +2073,9 @@
       "start": 25187,
       "end": 25215,
       "literal": "$\\{\\Pi_0,\\ldots,\\Pi_{m-1}\\}$",
-      "status": "diagnostic",
-      "message": "Finite index ranges require integer endpoints."
+      "status": "exact",
+      "display": "qindexedset(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedset(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M208",
@@ -2197,8 +2201,9 @@
       "start": 26716,
       "end": 26740,
       "literal": "$\\Pi_0,\\ldots,\\Pi_{m-1}$",
-      "status": "diagnostic",
-      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+      "status": "exact",
+      "display": "qindexedentries(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedentries(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M221",
@@ -2375,8 +2380,9 @@
       "start": 27978,
       "end": 28006,
       "literal": "$\\{\\Pi_0,\\ldots,\\Pi_{m-1}\\}$",
-      "status": "diagnostic",
-      "message": "Finite index ranges require integer endpoints."
+      "status": "exact",
+      "display": "qindexedset(\"Π_\", 0, qsub('m', 1), [])",
+      "copy": "qindexedset(\"Π_\",0,qsub('m',1),vector())"
     },
     {
       "id": "IBM046-3c1262a5-M239",
