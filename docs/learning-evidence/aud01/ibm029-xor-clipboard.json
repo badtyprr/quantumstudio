@@ -1,0 +1,19 @@
+{
+  "profile": "xor",
+  "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "73aa7ad3b1c6a668ba29c9df6e95d893de3863292c5b25f4410ecf62d59f1394",
+  "source_spans": 438,
+  "clipboard_sessions": 436,
+  "stable_copies": 436,
+  "mode_counts": {
+    "0": 420,
+    "7": 9,
+    "8": 2,
+    "6": 5
+  },
+  "diagnostics": [
+    "IBM029-9ea5aee3-M051",
+    "IBM029-9ea5aee3-M052"
+  ],
+  "M234_exact_rational_checks": 80
+}

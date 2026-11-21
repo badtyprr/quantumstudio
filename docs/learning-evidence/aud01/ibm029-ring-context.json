@@ -1,0 +1,40 @@
+{
+  "source_spans": [
+    19,
+    80,
+    82
+  ],
+  "congruences": 255,
+  "inverses": 82,
+  "nonunit_diagnostics": 54,
+  "clipboard_sessions": 8,
+  "corpus_comparison": {
+    "builds": {
+      "modxor3.exe": "73aa7ad3b1c6a668ba29c9df6e95d893de3863292c5b25f4410ecf62d59f1394",
+      "ringcontext.exe": "853e7a702c2ea49f0b8d542eb8f5b99187fba4bd2c54d03498d8d49c58837ac9"
+    },
+    "rows": 438,
+    "counts": [
+      436,
+      436
+    ],
+    "changes": [
+      {
+        "id": "IBM029-9ea5aee3-M019",
+        "old": "0",
+        "new": "qmodpowerequal(qmul(3,5),1,\"modulus\",1)"
+      },
+      {
+        "id": "IBM029-9ea5aee3-M080",
+        "old": "(('a')==(1 \u2215 'b') and ('b')!=(0))",
+        "new": "qmodpowerequal(qmul('a','b'),1,\"modulus\",1)"
+      },
+      {
+        "id": "IBM029-9ea5aee3-M082",
+        "old": "1 \u2215 'a'",
+        "new": "qmodpower('a',\u22121,\"modulus\")"
+      }
+    ],
+    "timeouts": 0
+  }
+}
