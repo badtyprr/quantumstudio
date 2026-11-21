@@ -61,6 +61,17 @@ assert data(r"quantum:\lfloor\log(8)\rfloor")["copy_text"] == "2"
 run("quantum:qstepvalue(y ← 3,qbinarylog(vector(x,2)))", success=False)
 assert data("quantum:qstepvalue(y ← 3,qbinarylog(x))")["copy_text"] == "3"
 
+residue_action = r"M_a\vert x\rangle=\vert ax\rangle\quad\text{(for each $x\in\mathbb{Z}_N$)}"
+residue_copy = data("quantum:"+residue_action)["copy_text"]
+assert data("quantum:"+residue_copy)["copy_text"] == residue_copy
+for a,n in ((2,3),(2,5),(4,15)):
+    matrix = data(f'quantum:replace(replace(({residue_copy}),"N",{n}),"a",{a})')["copy_text"]
+    cells = [str(int(target==a*source%n)) for target in range(n) for source in range(n)]
+    assert matrix == f"matrix({n},{n},["+",".join(cells)+"])"
+run("quantum:qresiduemultiplier(3,15)",success=False)
+run("quantum:qresiduemultiplier(a,65)",success=False)
+run("quantum:qresiduemultiplier(a,a)",success=False)
+
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]
 encoding_pairs = [f"qtuple(vector({j},qbitlabel({j},3)))" for j in range(6)]

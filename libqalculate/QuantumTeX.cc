@@ -3342,6 +3342,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   clause.erase(std::remove_if(clause.begin(),clause.end(),asciiSpace),clause.end());
   static const std::regex space(R"(\\(?:qquad|quad|;|,))");
   clause=std::regex_replace(clause,space,"");
+  // The quantified residue basis supplies the dimension and the implicit
+  // modulus of the product inside the output ket.
+  static const std::regex residueAction(
+   R"re(^\s*M_(?:\{([A-Za-z]|[0-9]+)\}|([A-Za-z0-9]))\s*(?:\\vert(?![A-Za-z])|\|)\s*([a-z])\s*\\rangle\s*=\s*)re"
+   R"re((?:\\vert(?![A-Za-z])|\|)\s*([A-Za-z]|[0-9]+)\s*(?:\\cdot(?![A-Za-z])\s*)?\3\s*\\rangle(?:\s|\\q?quad|\\[,;])*)re"
+   R"re(\\text\{\s*\(\s*for\s+each\s+\$\s*\3\s*\\in\s*\\mathbb\{Z\}_(?:\{([A-Za-z]|[0-9]+)\}|([A-Za-z0-9]))\s*\$\s*\)\s*\}\s*$)re");
+  std::smatch action;
+  if(std::regex_match(s,action,residueAction)) {
+   std::string multiplier=action[1].str()+action[2].str(),modulus=action[5].str()+action[6].str();
+   if(multiplier!=action[4].str() || multiplier==action[3].str() || modulus==action[3].str())
+    throw std::runtime_error("The multiplier and modulus must be fixed throughout a residue-basis action.");
+   auto parameter=[](const std::string &value) {return asciiLetter(value[0]) ? "\""+value+"\"" : value;};
+   return "qresiduemultiplier("+parameter(multiplier)+","+parameter(modulus)+")";
+  }
   const std::string conjunction=",\\text{but}";
   size_t at=clause.find(conjunction);
   std::string first=quantifiedPaulis(clause.substr(0,at));
