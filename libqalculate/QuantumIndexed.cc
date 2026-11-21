@@ -205,7 +205,7 @@ bool pendingDomain(const MathStructure &value) {
  return value.isSymbolic() || (value.isVariable() && !value.variable()->isKnown()) || domainExpression(value);
 }
 // Keep tuples distinct from vectors/matrices, including the zero-length tuple.
-bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &pending,unsigned depth=0) {
+bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &pending,unsigned depth=0,bool operators=false) {
  if(depth>32)return false;
  if(namedOutcome(value))return value.size()==1 && value[0].isSymbolic() && !value[0].symbol().empty();
  if(value.isFunction() && value.function()->referenceName()=="qtuple") {
@@ -228,8 +228,8 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
  }
  value.eval(eo);
  if(!depth && namedKet(value))return true;
- if(!depth && namedProjector(value)) {pending=true;return true;}
- if(!depth && value.isMatrix() && value.rows() && value.columns()) {
+ if(!depth && operators && namedProjector(value)) {pending=true;return true;}
+ if(!depth && value.isMatrix() && value.rows() && (value.columns()==1 || (operators && value.columns()))) {
   for(size_t k=0;k<value.size();++k)for(size_t j=0;j<value[k].size();++j)
    if(!value[k][j].representsScalar() || value[k][j].isUndefined())return false;
   return true;
@@ -237,8 +237,8 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
  return value.representsScalar() && !value.isUndefined();
 }
 enum class DomainState { Invalid, Pending, Finite };
-bool normalizeSetEntries(MathStructure &members,const EvaluationOptions &eo,bool &pending) {
- for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending))return false;
+bool normalizeSetEntries(MathStructure &members,const EvaluationOptions &eo,bool &pending,bool operators) {
+ for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending,0,operators))return false;
  for(size_t k=members.size();k>0;--k)for(size_t j=0;j<k-1;++j)if(setEquality(members[k-1],members[j])==SetEquality::Equal) {members.delChild(k);break;}
  return true;
 }
@@ -256,12 +256,13 @@ void evaluateDomain(const MathStructure &raw,MathStructure &members,const Evalua
 }
 DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
  evaluateDomain(raw,members,eo);
- if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
+ bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
+ if(explicitSet) {MathStructure entries=members[0];members=entries;}
  if(!members.isVector() && collectionExpression(raw) && !domainExpression(members))members.transform(STRUCT_VECTOR);
  if(pendingDomain(members))return DomainState::Pending;
  if(!members.isVector() || members.size()>1024)return DomainState::Invalid;
  bool pending=false;
- if(!normalizeSetEntries(members,eo,pending))return DomainState::Invalid;
+ if(!normalizeSetEntries(members,eo,pending,explicitSet))return DomainState::Invalid;
  return pending ? DomainState::Pending : DomainState::Finite;
 }
 // A register family retains bit assignments made before its width is known.
@@ -1356,7 +1357,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(!entries.isVector() || entries.size()>1024) {CALCULATOR->error(true,"A set requires a vector of at most 1024 valid entries.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;bool pending=false;
-   if(!normalizeSetEntries(entries,exact,pending)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
+   if(!normalizeSetEntries(entries,exact,pending,true)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
    if(pending && entries.containsFunction(CALCULATOR->getFunction("qimplicitidentity")))return 0;
    if(!entries.equals(raw[0])) {out.set(this,&entries,NULL);return 1;}
    return 0;
@@ -2187,7 +2188,8 @@ class QuantumIndexedFunction: public MathFunction {
     }
     return 0;
    }
-   if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
+   bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
+   if(explicitSet) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
    bool bitLabel=members.isFunction() && members.function()->referenceName()=="qbitlabel";
@@ -2198,7 +2200,7 @@ class QuantumIndexedFunction: public MathFunction {
    // count, deduplicate, or test membership before their domains are known.
    bool deferredLabels=false;
    auto validateLabel=[&](MathStructure &value)->bool {
-    return canonicalSetElement(value,exact,deferredLabels);
+    return canonicalSetElement(value,exact,deferredLabels,0,explicitSet);
    };
    MathStructure probe=raw[0];
    if(op=="qmember") {
