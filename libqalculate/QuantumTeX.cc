@@ -541,6 +541,18 @@ std::string indexedColumn(const std::string &raw, bool tex) {
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.
+std::string ungroupTeX(std::string text) {
+ while(text.size()>1 && text.front()=='(' && text.back()==')') {
+  size_t depth=1,at=1;
+  for(;at<text.size() && depth;++at) {
+   if(text[at]=='(')++depth;
+   if(text[at]==')')--depth;
+  }
+  if(depth || at!=text.size())break;
+  text=trim(text.substr(1,text.size()-2));
+ }
+ return text;
+}
 std::vector<std::string> indexedParts(const std::string &raw,const std::string &separator) {
  std::vector<std::string> parts;size_t start=0;unsigned nesting=0;char quote=0;
  for(size_t i=0;i<raw.size();++i) {
@@ -1736,9 +1748,15 @@ class TeXReader {
     std::string branches=read(0,true,env);
     if(preceding && branches.find(" qpostmod ")!=std::string::npos) {
      std::string lhs=trim(*preceding);
-     static const std::regex indexedCall(R"(^[A-Za-z]+_[A-Za-z0-9]+\s*\([A-Za-z]+\)\s*=$)");
-     if(std::regex_match(lhs,indexedCall))
-      throw std::runtime_error(error("An indexed modular map requires an explicit function or operator binding"));
+     if(!lhs.empty() && lhs.back()=='=') {
+      lhs=trim(lhs.substr(0,lhs.size()-1));
+      lhs=ungroupTeX(lhs);
+      size_t open=lhs.find('(');
+      static const std::regex indexedName(R"([A-Za-z]+_[A-Za-z0-9]+)");
+      if(open!=std::string::npos && std::regex_match(trim(lhs.substr(0,open)),indexedName) &&
+         ungroupTeX(lhs.substr(open))!=lhs.substr(open))
+       throw std::runtime_error(error("An indexed modular map requires an explicit function or operator binding"));
+     }
     }
     return branches;
    }
@@ -2262,15 +2280,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    for(const std::string spacing:{"\\qquad","\\quad","\\;","\\,"})
     if(equation.size()>=spacing.size() && equation.compare(equation.size()-spacing.size(),spacing.size(),spacing)==0)
      equation=trim(equation.substr(0,equation.size()-spacing.size()));
-   while(equation.size()>2 && equation.front()=='(' && equation.back()==')') {
-    size_t depth=1,at=1;
-    for(;at<equation.size() && depth;++at) {
-     if(equation[at]=='(')++depth;
-     if(equation[at]==')')--depth;
-    }
-    if(depth || at!=equation.size())break;
-    equation=trim(equation.substr(1,equation.size()-2));
-   }
+   equation=ungroupTeX(equation);
    auto sides=indexedParts(equation,"=");
    if(sides.size()!=2 || sides[0].empty() || sides[1].empty())throw std::runtime_error("A residue-ring annotation requires one equation.");
    std::string modulus=note[1];
