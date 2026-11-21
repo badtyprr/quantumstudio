@@ -127,12 +127,16 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
     return name+"("+copyCollection(result[0],po,1,quantumMode)+","+copyCollection(result[1],po,1,quantumMode)+","+copyCollection(result[2],po,1,quantumMode)+")";
    // Quantum input resolves the public matrix constructor to qmatrix on re-entry.
    std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
-   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po,quantumMode);}
+   for(size_t k=0;k<result.size();++k) {
+    if(k)text+=",";
+    const bool entries=explicitEntries || ((name=="qmatrix" || name=="matrix") && k==2);
+    text+=copyText(result[k],po,quantumMode,entries);
+   }
    return text+")";
   }
   if(result.isVector()) {
    std::string text="vector(";
-   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po,quantumMode);}
+   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po,quantumMode,explicitEntries);}
    return text+")";
   }
   if(result.isLogicalAnd() || result.isLogicalOr()) {
@@ -161,8 +165,10 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
+  if(quantumMode && explicitEntries && result.isPower() && result.size()==2)
+   return "qpower("+copyText(result[0],po,true,true)+","+copyText(result[1],po,true,true)+")";
   if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&
-     (explicitEntries || containsDeferredQuantum(result,!result.containsType(STRUCT_VECTOR)))) {
+     (explicitEntries || result.containsType(STRUCT_VECTOR) || containsDeferredQuantum(result,true))) {
    const std::string op=result.isAddition() ? "qadd(" : "qmul(";
    std::string text=copyText(result[0],po,true,true);
    for(size_t k=1;k<result.size();++k)text=op+text+","+copyText(result[k],po,true,true)+")";
@@ -194,7 +200,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
   if(r!=1 || c!=1)text+=",";
   const MathStructure &cell=*result.getElement(r,c);
-  text+=quantumMode && (useVector || cell.containsType(STRUCT_UNIT)) ? copyText(cell,po,quantumMode) : copyScalar(cell,po);
+  text+=quantumMode && (useVector || cell.containsType(STRUCT_UNIT)) ? copyText(cell,po,quantumMode,useVector) : copyScalar(cell,po);
  }
  return text+(useVector ? "))" : "])");
 }

@@ -1324,6 +1324,10 @@ class Parser {
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
    // Match complete gate names first, notably iSWAP.
    if(a.size()>1 && a[0]=='i' && gates.find(a)==gates.end() && gates.find(a.substr(1))!=gates.end()) {p=b+1;a="i";}
+   // With a suffix, the final letter is a separate powered/adjointed gate.
+   size_t suffix=s.find_first_not_of(" \t\r\n",p);
+   if(a.size()>1 && a.find_first_not_of("XYZ")==std::string::npos && suffix!=std::string::npos &&
+      std::string("^~?`").find(s[suffix])!=std::string::npos) {p=b+1;a.resize(1);}
    if(a.compare(0,4,"SUM_")==0) {
     std::string dimension=a.substr(4);
     if(dimension.empty() || dimension.find_first_not_of("0123456789")!=std::string::npos) throw std::runtime_error("SUM subscripts require an integer dimension; use SUM(d) for an expression.");
@@ -1861,6 +1865,14 @@ class Parser {
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
+    else if(a.size()>1 && a.find_first_not_of("XYZ")==std::string::npos) {
+     std::string word=gates.at(a.substr(0,1));
+     for(size_t k=1;k<a.size();++k) {
+      if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
+      word="qmul("+word+","+gates.at(a.substr(k,1))+")";checkSize(word);
+     }
+     a=word;
+    }
     // An unsized Fourier transform names the operator family. A subscript
     // supplies its dimension and a QFT(...) call supplies its qubit count.
     else if(a=="QFT")a=indexableLabel(a);
