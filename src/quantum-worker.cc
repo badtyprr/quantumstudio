@@ -149,7 +149,9 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
     const bool entries=explicitEntries || (quantumMode && (matrixOperand ||
         (name=="qadjacent" && result[k].isMultiplication()))) || name=="qtensor" || name=="qmember" ||
         ((name=="qmatrix" || name=="matrix") && k==2);
-    text+=copyText(result[k],po,quantumMode,entries);
+    // Canonical quantum operators can also be pasted into the plain input mode.
+    const bool quantumMatrix=matrixOperand && (name=="qtensorpow" || name=="qsub");
+    text+=copyText(result[k],po,quantumMode || quantumMatrix,entries || quantumMatrix);
    }
    return text+")";
   }
