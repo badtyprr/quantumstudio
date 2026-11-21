@@ -58,6 +58,10 @@ encoding_copy = data("quantum:"+encoding_table)["copy_text"]
 encoding_pairs = [f"qtuple(vector({j},qbitlabel({j},3)))" for j in range(6)]
 assert encoding_copy == "qset(vector("+",".join(encoding_pairs)+"))"
 assert data("quantum:"+encoding_copy)["copy_text"] == encoding_copy
+large_graph = encoding_table.replace("000", "0000000000").replace("001\\","0000000001\\").replace("5\\mapsto 101","1023\\mapsto 1111111111")
+large_copy = data("quantum:"+large_graph)["copy_text"]
+assert large_copy == "qsetimage(qtuple(vector(j,qbitlabel(j,10))),qindexrange(0,1023),j)"
+assert data("quantum:"+large_copy)["copy_text"] == large_copy
 for inconsistent in (encoding_table.replace("101","100"), encoding_table.replace("001","01"),
                      encoding_table.replace("1\\mapsto","2\\mapsto")):
     run("quantum:"+inconsistent, success=False)
