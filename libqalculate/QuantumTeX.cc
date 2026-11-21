@@ -625,6 +625,32 @@ void nextDecimalIndex(std::string &index) {
 }
 // Open-ended families need a common label and consecutive integer subscripts.
 // Keep only the first index; a trailing comma after the ellipsis is typography.
+// A standalone list with two or more consecutive printed indices is ordered.
+std::string explicitIntegerList(const std::string &expression) {
+ if(expression.find("...")==std::string::npos)return "";
+ std::vector<std::string> entries;
+ size_t at=0;
+ while(at<expression.size()) {
+  size_t comma=expression.find(',',at);
+  entries.push_back(trim(expression.substr(at,comma==std::string::npos ? comma : comma-at)));
+  if(comma==std::string::npos)break;
+  at=comma+1;
+ }
+ if(entries.size()<4 || entries[entries.size()-2]!="...")return "";
+ for(size_t k=0;k<entries.size();++k) {
+  if(k==entries.size()-2)continue;
+  const auto &entry=entries[k];
+  if(entry.empty() || entry.find_first_not_of("0123456789")!=std::string::npos || (entry.size()>1 && entry[0]=='0'))return "";
+ }
+ std::string value=entries.front();
+ for(size_t k=1;k+2<entries.size();++k) {
+  nextDecimalIndex(value);
+  if(value!=entries[k])throw std::runtime_error("An integer list requires consecutive prefix values");
+ }
+ const auto &last=entries.back();
+ if(value.size()>last.size() || (value.size()==last.size() && value>last))throw std::runtime_error("Integer list endpoint precedes its prefix");
+ return "qindexsequence("+entries.front()+","+last+")";
+}
 std::string openIndexedFamily(const std::vector<std::string> &entries) {
  size_t end=entries.size();
  if(end && entries[end-1].empty())--end;
@@ -1635,6 +1661,8 @@ class TeXReader {
  explicit TeXReader(const std::string &s):input(s) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
+  std::string integers=explicitIntegerList(result);
+  if(!integers.empty())return integers;
   std::string list=orderedKetList(result);
   if(!list.empty())return list;
   if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;

@@ -11,12 +11,12 @@ args = parser.parse_args()
 worker = args.worker.resolve()
 environment = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent / "data"))
 
-def evaluate(source):
+def evaluate(source, field="copy_text"):
     process = subprocess.run([worker, "--json"], input=source.encode(), capture_output=True,
                              check=True, timeout=30, env=environment)
     result = json.loads(process.stdout)
     assert not result["approximate"], source
-    return result["copy_text"]
+    return result[field]
 
 inventory = json.loads(Path(__file__).with_name("ibm037-inventory.json").read_text(encoding="utf-8"))
 heads, tails = evaluate("quantum:|0>"), evaluate("quantum:|1>")
@@ -76,6 +76,9 @@ domain_source = outcome_definition["literal"].strip("$").split("=")[1]
 domain = evaluate("quantum:$" + domain_source + "$")
 assert domain == 'qset(vector(qoutcome("high"),qoutcome("medium"),qoutcome("low"),qoutcome("off")))' and domain in definition
 assert evaluate(domain) == domain
+displayed = evaluate(domain, "display_text")
+assert evaluate("quantum:" + displayed) == domain
+assert evaluate(f"qmember(0,{domain})") == "0"
 for name in ("high", "medium", "low", "off"):
     assert evaluate(fr"quantum:$\mathrm{{{name}}}\in {domain_source}$") == "1"
 assert evaluate(fr"quantum:$\mathrm{{other}}\in {domain_source}$") == "0"

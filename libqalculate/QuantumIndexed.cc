@@ -124,7 +124,10 @@ bool stateColumn(const MathStructure &value) {
 }
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
- if(namedOutcome(left) && namedOutcome(right))return SetEquality::Different;
+ if(namedOutcome(left) || namedOutcome(right)) {
+  const MathStructure &other=namedOutcome(left) ? right : left;
+  if(namedOutcome(other) || other.isNumber())return SetEquality::Different;
+ }
  if(namedKet(left) || namedKet(right))return SetEquality::Unknown;
  if(stateColumn(left) && stateColumn(right)) {
   if(left.rows()!=right.rows())return SetEquality::Different;
@@ -2015,7 +2018,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
-  if(op=="qindexrange") {
+  if(op=="qindexrange" || op=="qindexsequence") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure first=raw[0],last=raw[1];first.eval(exact);last.eval(exact);
    bool pending=false;
@@ -2026,14 +2029,15 @@ class QuantumIndexedFunction: public MathFunction {
    if(pending)return 0;
    if(CALCULATOR->aborted())return 0;
    out.clearVector();Number span=last.number();span-=first.number();
-   if(span.isNegative()) {MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;}
+
    if(span>1023) {CALCULATOR->error(true,"Finite index ranges support at most 1024 entries.",NULL);return 0;}
-   int count=span.intValue()+1;Number value=first.number();
+   int count=span.isNegative() ? 0 : span.intValue()+1;Number value=first.number();
    for(int k=0;k<count;++k) {
     if(CALCULATOR->aborted())return 0;
     out.addChild(MathStructure(value));value+=1;
    }
-   MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+   if(op=="qindexrange") {MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);}
+   return 1;
   }
   if(op=="qbars") {
    MathStructure source=raw[0];
@@ -2491,7 +2495,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsetimage",3));
  calculator.addFunction(new QuantumIndexedFunction("qsetfilter",3));
  for(const char *name:{"qsetunion","qsetintersect","qsetdiff"})calculator.addFunction(new QuantumIndexedFunction(name,2));
- for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qphasefunction",3),{"qsequence",3},{"qsumset",3},{"qindexrange",2},{"qindexsequence",2},{"qoraclefunction",4},{"qtensorproduct",4},{"qblocksum",4}})calculator.addFunction(new QuantumIndexedFunction(entry.first,entry.second));
 }
 void defineQuantumStateFamily(Calculator &calculator,const std::string &name,const MathStructure &body,const MathStructure &parameter) {
  defineQuantumStateFamily(calculator,name,body,std::vector<MathStructure>{parameter});

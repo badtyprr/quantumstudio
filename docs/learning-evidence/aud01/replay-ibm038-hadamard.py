@@ -33,3 +33,10 @@ for changed in [None, 0, 1, 2, 3]:
     assert copied == r"\begin{gathered}" + r"\\".join(expected) + r"\end{gathered}", changed
     assert evaluate(copied) == copied, changed
 print("Verified all four Hadamard identities and four position-specific negative controls through Copy")
+
+digits = json.loads(Path(__file__).with_name("ibm038-inventory.json").read_bytes())["rows"][47]
+assert digits["id"].endswith("M048")
+copied = evaluate(digits["literal"])
+assert copied == "vector(" + ",".join(map(str, range(10))) + ")"
+assert evaluate(copied) == copied
+print("Verified the ten decimal digits in source order through Copy")

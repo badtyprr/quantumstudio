@@ -17,6 +17,9 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($8,9,\ldots,11$)","qindexsequence(8,11)");
+  rejects(R"($8,10,\ldots,12$)");
+  rejects(R"($8,9,\ldots,7$)");
   equal(R"(\{\mathrm{ready},\mathrm{off}\})","qset(vector(qoutcome(\"ready\"),qoutcome(\"off\")))");
   equal(R"(M_n \,\cdots\, M_1)","qcomposemaps(qindexedentries(\"M_\",1,n,vector()))");
   rejects(R"(M_n \,\cdots\, K_1)");
