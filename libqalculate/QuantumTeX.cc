@@ -2223,6 +2223,31 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
+ if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
+  static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");
+  s=std::regex_replace(s,combined,"qpropagator((\"H_$1\"+\"H_$2\"),$3)");
+  std::smatch m;
+  while(std::regex_search(s,m,evolution)) {
+   std::string name=m[1].matched ? "H_"+m[1].str() : "H";
+   std::string time=m[2].str()+(m[3].matched ? "/"+m[3].str() : "");
+   s.replace(m.position(),m.length(),"qpropagator(\""+name+"\","+time+")");
+  }
+  if(s.find("qpropagator(")!=std::string::npos) {
+   static const std::regex definition(R"(^\s*U\(([a-z])\)\s*=)");
+   s=std::regex_replace(s,definition,"qoperatorref(qindexedlabel(\"U(\",$1,\")\"))=");
+   static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
+   s=std::regex_replace(s,initialState,"\\phi(0)");
+  }
+ }
+ if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
+ if(s.find("\\neq")!=std::string::npos) {
+  static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
+  std::smatch m;if(std::regex_match(s,m,commutator)) {
+   const std::string a="qoperatorref(\"H_"+m[1].str()+"\")",b="qoperatorref(\"H_"+m[2].str()+"\")";
+   return "qcompare(qmul("+a+","+b+"),qmul("+b+","+a+"),5)";
+  }
+ }
  // Both occupation conventions occur in the lessons. The sign on iY,
  // not the operator's printed name, selects its actual ladder matrix.
  if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {
