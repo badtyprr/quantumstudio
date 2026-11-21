@@ -333,7 +333,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedsum" || value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1921,10 +1921,19 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedset" || op=="qindexedlist" || op=="qindexedentries") {
+  if(op=="qindexedsum" || op=="qindexedset" || op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
-   if(op=="qindexedentries")out=entries;
+   if(op=="qindexedsum") {
+    if(!entries.size()) {out=m_zero;return 1;}
+    for(size_t i=0;i<entries.size();++i)if(entries[i].isSymbolic())return 0;
+    out=entries[0];
+    for(size_t i=1;i<entries.size();++i) {
+     if(CALCULATOR->aborted())return 0;
+     MathStructure previous=out;
+     out.set(CALCULATOR->getFunction("qadd"),&previous,&entries[i],NULL);out.eval(eo);
+    }
+   } else if(op=="qindexedentries")out=entries;
    else out.set(CALCULATOR->getFunction(op=="qindexedset" ? "qset" : "qtuple"),&entries,NULL);
    return 1;
   }
@@ -2510,6 +2519,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));

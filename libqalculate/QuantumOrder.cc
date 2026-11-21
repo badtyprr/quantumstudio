@@ -342,7 +342,7 @@ bool introducesUnknown(const MathStructure &result,const MathStructure &operands
 bool inferProductIdentity(MathStructure &identity,const MathStructure &product) {
  if(!identity.isFunction() || identity.function()->referenceName()!="qimplicitidentity" || !product.isFunction())return false;
  const std::string &op=product.function()->referenceName();
- if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
+ if(op!="qindexedsum" && ((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag"))))return false;
  identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
 }
 // Real inequality isolation is invalid inside the modulus of a complex
@@ -449,7 +449,7 @@ class QuantumOrderFunction: public MathFunction {
    if(kind>=4)for(unsigned k=0;k<2;++k) {
     const MathStructure &identity=args[k], &product=args[1-k];
     if(identity.isFunction() && identity.function()->referenceName()=="qidentitylike" &&
-       identity.size()==1 && identity[0].equals(product) && gramFactor(product))return 0;
+       identity.size()==1 && identity[0].equals(product) && (gramFactor(product) || (product.isFunction() && product.function()->referenceName()=="qindexedsum")))return 0;
    }
    if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
     if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {

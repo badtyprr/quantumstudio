@@ -1832,6 +1832,25 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
+ // A sum written with an ellipsis must have matching indexed endpoints.
+ if(s.find("\\cdots")!=std::string::npos || s.find("\\ldots")!=std::string::npos) {
+  auto sides=indexedParts(s,"=");bool changed=false;
+  for(auto &side:sides) {
+   auto terms=indexedParts(side,"+");
+   if(terms.size()!=3 || (terms[1]!="\\cdots" && terms[1]!="\\ldots") ||
+      terms.front().find('_')==std::string::npos || terms.back().find('_')==std::string::npos)continue;
+   size_t sub=terms.front().find('_');
+   std::string base=terms.front().substr(0,sub);
+   if(base.empty() || terms.back().compare(0,sub+1,base+"_")!=0)continue;
+   size_t firstLetter=base.front()=='\\' ? 1 : 0;
+   if(firstLetter==base.size() || !std::all_of(base.begin()+firstLetter,base.end(),
+       [](unsigned char c){return c>=128 || asciiLetter(c);}))continue;
+   std::string name=trim(TeXReader(base).run(nullptr));
+   std::string family=indexedLabelRange(name+terms.front().substr(sub),name+terms.back().substr(sub),"qindexedsum(");
+   if(!family.empty()) {side=family;changed=true;}
+  }
+  if(changed) {s=sides[0];for(size_t i=1;i<sides.size();++i)s+="="+sides[i];}
+ }
  if(fractionBits) {
   std::string expansion=openBinaryFraction(s);
   if(!expansion.empty())s=expansion;
