@@ -16,6 +16,43 @@ class QuantumGateFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qorbitket") {
+   // Parameters are multiplier, modulus, order and Fourier index.
+   const int minimum[]={1,2,1,0},maximum[]={63,64,63,62};
+   bool pending=false;
+   for(size_t k=0;k<4;++k) {
+    if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar()) {pending=true;continue;}
+    if(!args[k].isInteger() || args[k].isApproximate() || args[k].number()<minimum[k] || args[k].number()>maximum[k]) {
+     CALCULATOR->error(true,"An orbit ket requires exact integer parameters on a residue basis of dimension 2 to 64.",NULL);return 0;
+    }
+   }
+   const MathStructure &modulus=args[1],&order=args[2],&phase=args[3];
+   if((phase.isInteger() && order.isInteger() && phase.number()>=order.number()) ||
+      (order.isInteger() && modulus.isInteger() && order.number()>=modulus.number())) {
+    CALCULATOR->error(true,"The orbit ket requires a Fourier index below the order and an order below the modulus.",NULL);return 0;
+   }
+   std::vector<unsigned> orbit;
+   if(a.isInteger() && modulus.isInteger()) {
+    unsigned base=a.number().intValue(),n=modulus.number().intValue(),x=1;
+    Number divisor=a.number();
+    if(base>=n || !divisor.gcd(modulus.number()) || !divisor.isOne()) {
+     CALCULATOR->error(true,"An orbit ket requires a unit multiplier smaller than the modulus.",NULL);return 0;
+    }
+    do {orbit.push_back(x);x=(base*x)%n;} while(x!=1);
+    if(order.isInteger() && order.number()!=int(orbit.size())) {
+     CALCULATOR->error(true,"The supplied order must equal the length of the multiplier orbit.",NULL);return 0;
+    }
+   }
+   if(pending)return 0;
+   unsigned r=orbit.size(),j=phase.number().intValue();
+   out.clearMatrix();out.resizeMatrix(modulus.number().intValue(),1,m_zero);
+   for(unsigned k=0;k<r;++k) {
+    if(CALCULATOR->aborted())return 0;
+    unsigned angle=(r-(k*j)%r)%r;
+    element(out,orbit[k],0)=CALCULATOR->calculate("exp(2*pi*i*"+std::to_string(angle)+"/"+std::to_string(r)+")/sqrt("+std::to_string(r)+")",eo);
+   }
+   return 1;
+  }
   const bool graph=op=="qregistermultipliergraph";
   const bool explicitWidth=graph || op=="qregistermultiplier";
   if(op=="qmodmul" || op=="qresiduemultiplier" || explicitWidth) {
@@ -154,6 +191,6 @@ class QuantumGateFunction: public MathFunction {
 };
 }
 void registerQuantumGates(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qmodmul",2),{"qresiduemultiplier",2},{"qregistermultiplier",3},{"qregistermultipliergraph",3},{"qoracle",2},{"qphaseoracle",2},{"qdiffusion",1},{"qsumgate",2},{"qft",1},{"qfourier",1},{"qshift",1},{"qclock",1}})
+ for(const auto &entry:{std::pair<const char *,int>("qmodmul",2),{"qresiduemultiplier",2},{"qorbitket",4},{"qregistermultiplier",3},{"qregistermultipliergraph",3},{"qoracle",2},{"qphaseoracle",2},{"qdiffusion",1},{"qsumgate",2},{"qft",1},{"qfourier",1},{"qshift",1},{"qclock",1}})
   calculator.addFunction(new QuantumGateFunction(entry.first,entry.second));
 }

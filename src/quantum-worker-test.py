@@ -78,6 +78,12 @@ for a,n in ((2,3),(2,5),(4,15)):
 run("quantum:qresiduemultiplier(3,15)",success=False)
 run("quantum:qresiduemultiplier(a,65)",success=False)
 run("quantum:qresiduemultiplier(a,a)",success=False)
+uniform_orbit = r"\vert\psi_0\rangle=\frac{|1\rangle+|a\rangle+\cdots+|a^{r-1}\rangle}{\sqrt{r}}"
+orbit_copy = data("quantum:modpowers:"+uniform_orbit)["copy_text"]
+assert orbit_copy == "qorbitket('a','N','r',0)"
+assert data("quantum:norm(qorbitket(2,15,4,1)-(basis(1,15)-i*basis(2,15)-basis(4,15)+i*basis(8,15))/2)")["copy_text"] == "0"
+run("quantum:qorbitket(2,15,8,0)",success=False)
+run("quantum:qorbitket(3,15,r,0)",success=False)
 definition = r"f_a(x)=\begin{cases}ax\;(\textrm{mod}\;N)&0\leq x<N\\x&N\leq x<2^n\end{cases}"
 graph = data("quantum:"+definition)["copy_text"]
 assert graph == "qregistermultipliergraph('a','N','n')"

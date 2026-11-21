@@ -2470,6 +2470,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(modularPowers && s.find("\\psi_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  // The modular notation supplies the residue-basis convention; the omitted
+  // modulus remains an editable parameter in the state definition.
+  static const std::regex openKet(R"(\\vert(?![A-Za-z]))"),closeKet(R"(\\rangle(?![A-Za-z]))");
+  std::string state=std::regex_replace(std::regex_replace(s,openKet,"|"),closeKet,">");
+  state.erase(std::remove_if(state.begin(),state.end(),asciiSpace),state.end());
+  static const std::regex uniform(R"(^\|\\psi_0>=\\frac\{\|1>\+\|([a-z])>\+\\cdots\+\|\1\^\{([a-z])-1\}>\}\{\\sqrt\{\2\}\}$)");
+  static const std::regex phased(R"(^\|\\psi_1>=\\frac\{\|1>\+\\omega_([a-z])\^\{-1\}\|([a-z])>\+\\cdots\+\\omega_\1\^\{-\(\1-1\)\}\|\2\^\{\1-1\}>\}\{\\sqrt\{\1\}\}$)");
+  std::smatch m;
+  if(std::regex_match(state,m,uniform))return "qorbitket(\""+m[1].str()+"\",\"N\",\""+m[2].str()+"\",0)";
+  if(std::regex_match(state,m,phased))return "qorbitket(\""+m[2].str()+"\",\"N\",\""+m[1].str()+"\",1)";
+ }
  if(s.find("\\begin{cases}")!=std::string::npos) {
   std::string definition=registerMultiplierCases(s);
   if(!definition.empty())return definition;
