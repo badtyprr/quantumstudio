@@ -128,5 +128,93 @@
   "profiles": {
     "win32": "qiskit-aer-win-py312",
     "linux": "qiskit-aer-linux-py312"
-  }
+  },
+  "source_revisions": [
+    {
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+      "sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+      "cells": [
+        {
+          "index": 0,
+          "type": "markdown",
+          "sha256": "7eb90b7fc1c2775e147fd575e0e6d68779ec25db40a1c61efb8f66145ea35c9b"
+        },
+        {
+          "index": 1,
+          "type": "markdown",
+          "sha256": "e91e5bf50bae6a1b1b81d0514d6a095297aa617ed235fd03af47a1e39b9fd129"
+        },
+        {
+          "index": 2,
+          "type": "code",
+          "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80"
+        },
+        {
+          "index": 3,
+          "type": "code",
+          "sha256": "0f8cd08c48a98dd1d530a9045b0c726ac7361de4bd0d8acba93ae00e5518db61"
+        },
+        {
+          "index": 4,
+          "type": "markdown",
+          "sha256": "969a730b5a9e5dea5ef81985e643af96fcabc54092e6e506b6969b9a0450abcc"
+        },
+        {
+          "index": 5,
+          "type": "code",
+          "sha256": "890c5cf7a475ca211c14a959bfbb5e6accf78c7644c5f3fc68910c2bba9bb87e"
+        },
+        {
+          "index": 6,
+          "type": "markdown",
+          "sha256": "d1669c5d70158bad10c2d4613337785ddb9c6c67e7a98009902edb04e7e0ff72"
+        },
+        {
+          "index": 7,
+          "type": "code",
+          "sha256": "b7072258896520d0823a1834e24bfe4f8d66486c55aa2b61c423a9938573ae99"
+        },
+        {
+          "index": 8,
+          "type": "markdown",
+          "sha256": "620c86af1956ce3c4643c0a454843d247ecde6aced000be80d2b8c6db75f62f8"
+        },
+        {
+          "index": 9,
+          "type": "code",
+          "sha256": "ae6a4337303cc4dcdef6b8c1a0a6ddb156c9260057c54694f97355e3def597b8"
+        },
+        {
+          "index": 10,
+          "type": "markdown",
+          "sha256": "7a049f0f7e1c04103c83451e253b7a9fe940958ea686b7ee537e8afc644b76a9"
+        },
+        {
+          "index": 11,
+          "type": "code",
+          "sha256": "5cf7801fff08ffc6da621b4ab00f565bf5c268bd13e2058caef62c715100ca96"
+        },
+        {
+          "index": 12,
+          "type": "markdown",
+          "sha256": "0cb3eab6e8fc8808349c4e8ea4b1bc43a99bc60f522cd8ae5d26e641910ebb14"
+        },
+        {
+          "index": 13,
+          "type": "code",
+          "sha256": "a12dd3741f410b738ec09a1b965ea0e67df188e034ac38a9ce7f536c0d6d6714"
+        },
+        {
+          "index": 14,
+          "type": "markdown",
+          "sha256": "fdb0cfa8beb6c1872e9a76dbeff785fda38cb5004ea83e7fccf21b122d4d242d"
+        },
+        {
+          "index": 15,
+          "type": "code",
+          "sha256": "e6c54a1d2d0a3aa92f5e029e71fbb3262dd67b9636b6b603b5a0f356c4d18c30"
+        }
+      ]
+    }
+  ]
 }

@@ -565,6 +565,17 @@ class ProfileInventoryTests(unittest.TestCase):
 
 
 class PlatformProfileTests(unittest.TestCase):
+    def test_revised_deutsch_lessons_keep_the_original_executable_cells(self):
+        for name in ("ibm019", "ibm020"):
+            contract = json.loads((execution.ROOT / "contracts" / (name + ".json")).read_bytes())
+            original = contract["source"]
+            code = [cell for cell in original["cells"] if cell["type"] == "code"]
+            self.assertEqual([cell["index"] for cell in code], contract["code_cells"])
+            self.assertTrue(contract["source_revisions"])
+            for revision in contract["source_revisions"]:
+                self.assertNotEqual(revision["sha256"], original["sha256"])
+                self.assertEqual([cell for cell in revision["cells"] if cell["type"] == "code"], code)
+
     def test_both_original_contracts_select_only_the_host_profile(self):
         for name in ("ibm019", "ibm020"):
             contract = json.loads((execution.ROOT / "contracts" / (name + ".json")).read_bytes())
