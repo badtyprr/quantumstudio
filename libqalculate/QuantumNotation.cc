@@ -2163,6 +2163,11 @@ class Parser {
     throw std::runtime_error("A reported decimal must be a single numeric literal.");
    text+=c;gap=false;
   }
+  // Grouping a printed decimal does not change its last reported place.
+  size_t begin=text.find_first_not_of('('),end=text.find_last_not_of(')');
+  if(begin!=std::string::npos && end!=std::string::npos && begin<=end &&
+     begin==text.size()-end-1 && text.find_first_of("()",begin)>end)
+   text=text.substr(begin,end-begin+1);
   size_t at=0;
   if(at<text.size() && (text[at]=='+' || text[at]=='-'))++at;
   int real=decimalPlaces(text,at),imag=-1;
