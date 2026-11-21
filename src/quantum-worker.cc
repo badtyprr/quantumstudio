@@ -126,15 +126,23 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
     for(size_t k=1;k<factors.size();++k)exponent+=","+factors[k]+")";
     return "qpower("+copyText(result[0],po,quantumMode)+","+exponent+")";
    }
+   if(quantumMode && name=="qbigorder" && result.size()==1 && result[0].isMultiplication() && result[0].size()>1) {
+    std::vector<std::string> factors;
+    for(size_t k=0;k<result[0].size();++k)factors.push_back(copyText(result[0][k],po,true));
+    std::sort(factors.begin(),factors.end());
+    std::string product=factors[0];
+    for(size_t k=1;k<factors.size();++k)product="qmul("+product+","+factors[k]+")";
+    return "qbigorder("+product+")";
+   }
    if((name=="qpovm" || name=="qinstrument") && result.size()==2)
     return name+"("+copyCollection(result[0],po,1,quantumMode)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1,quantumMode)+")";
    if(name=="qensemble" && result.size()==3)
     return name+"("+copyCollection(result[0],po,1,quantumMode)+","+copyCollection(result[1],po,1,quantumMode)+","+copyCollection(result[2],po,1,quantumMode)+")";
    // Quantum input resolves the public matrix constructor to qmatrix on re-entry.
-   std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
+   std::string text=(name=="qmatrix" ? "matrix" : quantumMode && name=="exp" ? "qexp" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
-    const bool entries=explicitEntries || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
+    const bool entries=explicitEntries || (quantumMode && name=="qmul" && result[k].isMatrix()) || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
     text+=copyText(result[k],po,quantumMode,entries);
    }
    return text+")";

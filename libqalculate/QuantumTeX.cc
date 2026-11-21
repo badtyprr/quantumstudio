@@ -2232,6 +2232,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
  }
+ // A single-qubit gate's dagger binds before composition with its neighbor.
+ if(s.find("\\dagger")!=std::string::npos) {
+  static const std::regex gates(R"(\b([HSTXYZ])([HSTXYZ])\^\{\\dagger\}\s*(?=\\(?:vert|ket)\b))");
+  s=std::regex_replace(s,gates,"$1*qdag($2)*");
+ }
  // A textual subscript on a scalar parameter names it (e.g. a threshold).
  if(s.find("_{\\text{")!=std::string::npos) {
   static const std::regex subscript(R"(\b([a-z])_\{\\text\{([a-z]+)\}\})");
