@@ -1,0 +1,41 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/classical-ml-review.ipynb",
+  "notebook_sha256": "4b10863c06d14367e736ad245ac715b4d61f3258e7b887ad6c1c46a43d200707",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "ba02318d40a7b796fc4aa51bb6de240c4873ebd2419e9f7831e2b113fd2d03ac",
+  "suite": {
+    "passed": true,
+    "checks": 557,
+    "calls": 65,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 61,
+    "restored_identically": 61,
+    "stable_after_text_reentry": 61,
+    "source_diagnostic": 4
+  },
+  "diagnostics": [
+    {
+      "id": "IBM097-4b10863c-M028",
+      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM097-4b10863c-M056",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM097-4b10863c-M057",
+      "message": "A coefficient index must be an integer."
+    },
+    {
+      "id": "IBM097-4b10863c-M060",
+      "message": "A coefficient index must be an integer."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

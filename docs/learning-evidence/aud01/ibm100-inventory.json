@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/qvc-qnn.ipynb",
   "source_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
-  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "worker_sha256": "d94862052a509ee4c80a81aaa76bfeb8a090a8a92e287fb3f1b035d0e4a45409",
+  "revision": "c71a521d0eeac0d297c126a27185cbaa34d71470",
   "mode": "Quantum notation",
   "markdown_cells": 42,
   "code_cells": 42,
   "summary": {
-    "exact": 20,
-    "diagnostic": 7
+    "exact": 27
   },
   "figures": [
     {
@@ -46,8 +45,9 @@
       "start": 273,
       "end": 278,
       "literal": "$70%$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 4"
+      "status": "exact",
+      "display": "0.7",
+      "copy": "7 ∕ 10"
     },
     {
       "id": "IBM100-1f86ee57-M004",
@@ -55,8 +55,9 @@
       "start": 328,
       "end": 333,
       "literal": "$30%$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 4"
+      "status": "exact",
+      "display": "0.3",
+      "copy": "3 ∕ 10"
     },
     {
       "id": "IBM100-1f86ee57-M005",
@@ -94,8 +95,9 @@
       "start": 245,
       "end": 281,
       "literal": "$f_\\theta(\\vec{x}) \\rightarrow \\pm1$",
-      "status": "diagnostic",
-      "message": "Unexpected notation at byte 24"
+      "status": "exact",
+      "display": "qscalarat('f', ['θ'  qvectorref('x')]) = 1 or qscalarat('f', ['θ'  qvectorref('x')]) = −1",
+      "copy": "((qscalarat('f',vector('θ',qvectorref('x'))))==(1) or (qscalarat('f',vector('θ',qvectorref('x'))))==(−1))"
     },
     {
       "id": "IBM100-1f86ee57-M009",
@@ -103,8 +105,9 @@
       "start": 388,
       "end": 490,
       "literal": "$$\nf_\\theta(\\vec{x}) = \\langle 0|U^{\\dagger}(\\vec{x})W^\\dagger(\\theta)OW(\\theta)U(\\vec{x})|0\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 78"
+      "status": "exact",
+      "display": "qscalarat('f', ['θ'  qvectorref('x')]) = qexpect(qoperatorref('O'), qmul(qoperatorat('W', 'θ'), qzeroimage(qoperatorat('U', qvectorref('x')))))",
+      "copy": "qcompare(qscalarat('f',vector('θ',qvectorref('x'))),qexpect(qoperatorref('O'),qmul(qoperatorat('W','θ'),qzeroimage(qoperatorat('U',qvectorref('x'))))),4)"
     },
     {
       "id": "IBM100-1f86ee57-M010",
@@ -112,8 +115,9 @@
       "start": 497,
       "end": 509,
       "literal": "$U(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
     },
     {
       "id": "IBM100-1f86ee57-M011",
@@ -151,8 +155,9 @@
       "start": 208,
       "end": 220,
       "literal": "$U(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
     },
     {
       "id": "IBM100-1f86ee57-M015",
@@ -210,8 +215,9 @@
       "start": 30,
       "end": 35,
       "literal": "$60%$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 4"
+      "status": "exact",
+      "display": "0.6",
+      "copy": "3 ∕ 5"
     },
     {
       "id": "IBM100-1f86ee57-M021",

@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/classical-ml-review.ipynb",
   "source_sha256": "4b10863c06d14367e736ad245ac715b4d61f3258e7b887ad6c1c46a43d200707",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
-  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
   "mode": "Quantum notation",
   "markdown_cells": 6,
   "code_cells": 0,
   "summary": {
-    "exact": 60,
-    "diagnostic": 5
+    "exact": 61,
+    "diagnostic": 4
   },
   "figures": [
     {
@@ -170,8 +170,8 @@
       "end": 6183,
       "literal": "$$\nf_1(\\vec{x}) = \\Theta^T \\Phi(\\vec{x})+b\n$$",
       "status": "exact",
-      "display": "qfiniteapply(\"f_1\", qvectorref('x')) = qtranspose('Θ') · qvectorref('x') ⋅ 'Φ' + b",
-      "copy": "qcompare(qfiniteapply(\"f_1\",qvectorref('x')),qadd(qadjacent(qtranspose('Θ'),qmul('Φ',qvectorref('x'))),'b'),4)"
+      "display": "qvectordot(qvectorref('Θ'), qfeatureat('Φ', qvectorref('x'))) + b = qscalarat(\"f_1\", qvectorref('x'))",
+      "copy": "(qadd(qvectordot(qvectorref('Θ'),qfeatureat('Φ',qvectorref('x'))),'b'))==(qscalarat(\"f_1\",qvectorref('x')))"
     },
     {
       "id": "IBM097-4b10863c-M010",
@@ -180,8 +180,8 @@
       "end": 6263,
       "literal": "$$\nf_2(\\vec{x}) = \\sum_{i=1}^n \\alpha_i y_i \\Phi^T(\\vec{x}_i)\\Phi(\\vec{x})+b\n$$",
       "status": "exact",
-      "display": "qfiniteapply(\"f_2\", qvectorref('x')) = (∑_{k=1}^{n} (α_k · y_k · qtranspose('Φ') · qvectorref(qindexedlabel(\"x_\", 'i', \"\")) · qvectorref('x') ⋅ 'Φ')) + b",
-      "copy": "qcompare(qfiniteapply(\"f_2\",qvectorref('x')),qadd(qsum(qadjacent(qadjacent(qadjacent(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"y_\",\"qboundindex_0\",\"\")),qtranspose('Φ')),qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qmul('Φ',qvectorref('x'))),1,n,\"qboundindex_0\"),'b'),4)"
+      "display": "qadd(qsum(qadjacent(qadjacent(qindexedlabel(\"α_\", \"qboundindex_0\", \"\"), qindexedlabel(\"y_\", \"qboundindex_0\", \"\")), qvectordot(qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", \"qboundindex_0\", \"\"))), qfeatureat('Φ', qvectorref('x')))), 1, n, \"qboundindex_0\"), 'b') = qscalarat(\"f_2\", qvectorref('x'))",
+      "copy": "(qadd(qsum(qadjacent(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"y_\",\"qboundindex_0\",\"\")),qvectordot(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",\"qboundindex_0\",\"\"))),qfeatureat('Φ',qvectorref('x')))),1,n,\"qboundindex_0\"),'b'))==(qscalarat(\"f_2\",qvectorref('x')))"
     },
     {
       "id": "IBM097-4b10863c-M011",
@@ -230,8 +230,8 @@
       "end": 2422,
       "literal": "$$\n\\vec{\\Phi}(\\vec{x}) = \\begin{pmatrix}x_1 \\\\ x_2 \\\\ {x_1}^2+{x_2}^2\\end{pmatrix}\n$$",
       "status": "exact",
-      "display": "[−\"x_1\"; −\"x_2\"; (−\"x_1\"² − \"x_2\"²)] + qvectorref('Φ') · qvectorref('x') = 0",
-      "copy": "(qadd(matrix(3,1,vector(qmul(−1,\"x_1\"),qmul(−1,\"x_2\"),qadd(qmul(−1,qpower(\"x_1\",2)),qmul(−1,qpower(\"x_2\",2))))),qadjacent(qvectorref('Φ'),qvectorref('x'))))==(0)"
+      "display": "[−\"x_1\"; −\"x_2\"; (−\"x_1\"² − \"x_2\"²)] + qfeatureat('Φ', qvectorref('x')) = 0",
+      "copy": "(qadd(matrix(3,1,vector(qmul(−1,\"x_1\"),qmul(−1,\"x_2\"),qadd(qmul(−1,qpower(\"x_1\",2)),qmul(−1,qpower(\"x_2\",2))))),qfeatureat('Φ',qvectorref('x'))))==(0)"
     },
     {
       "id": "IBM097-4b10863c-M016",
@@ -240,8 +240,8 @@
       "end": 2764,
       "literal": "$$\nf_1(\\vec{x}) = \\Theta^T \\Phi(\\vec{x})+b\n$$",
       "status": "exact",
-      "display": "qfiniteapply(\"f_1\", qvectorref('x')) = qtranspose('Θ') · qvectorref('x') ⋅ 'Φ' + b",
-      "copy": "qcompare(qfiniteapply(\"f_1\",qvectorref('x')),qadd(qadjacent(qtranspose('Θ'),qmul('Φ',qvectorref('x'))),'b'),4)"
+      "display": "qvectordot(qvectorref('Θ'), qfeatureat('Φ', qvectorref('x'))) + b = qscalarat(\"f_1\", qvectorref('x'))",
+      "copy": "(qadd(qvectordot(qvectorref('Θ'),qfeatureat('Φ',qvectorref('x'))),'b'))==(qscalarat(\"f_1\",qvectorref('x')))"
     },
     {
       "id": "IBM097-4b10863c-M017",
@@ -250,8 +250,8 @@
       "end": 2844,
       "literal": "$$\nf_2(\\vec{x}) = \\sum_{i=1}^n \\alpha_i y_i \\Phi^T(\\vec{x}_i)\\Phi(\\vec{x})+b\n$$",
       "status": "exact",
-      "display": "qfiniteapply(\"f_2\", qvectorref('x')) = (∑_{k=1}^{n} (α_k · y_k · qtranspose('Φ') · qvectorref(qindexedlabel(\"x_\", 'i', \"\")) · qvectorref('x') ⋅ 'Φ')) + b",
-      "copy": "qcompare(qfiniteapply(\"f_2\",qvectorref('x')),qadd(qsum(qadjacent(qadjacent(qadjacent(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"y_\",\"qboundindex_0\",\"\")),qtranspose('Φ')),qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qmul('Φ',qvectorref('x'))),1,n,\"qboundindex_0\"),'b'),4)"
+      "display": "qadd(qsum(qadjacent(qadjacent(qindexedlabel(\"α_\", \"qboundindex_0\", \"\"), qindexedlabel(\"y_\", \"qboundindex_0\", \"\")), qvectordot(qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", \"qboundindex_0\", \"\"))), qfeatureat('Φ', qvectorref('x')))), 1, n, \"qboundindex_0\"), 'b') = qscalarat(\"f_2\", qvectorref('x'))",
+      "copy": "(qadd(qsum(qadjacent(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"y_\",\"qboundindex_0\",\"\")),qvectordot(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",\"qboundindex_0\",\"\"))),qfeatureat('Φ',qvectorref('x')))),1,n,\"qboundindex_0\"),'b'))==(qscalarat(\"f_2\",qvectorref('x')))"
     },
     {
       "id": "IBM097-4b10863c-M018",
@@ -270,8 +270,8 @@
       "end": 3563,
       "literal": "$\\vec{\\Phi}^T(\\vec{x}_i)\\cdot \\vec{\\Phi}(\\vec{x}_j)$",
       "status": "exact",
-      "display": "qcenterdot(qadjacent(qtranspose(qvectorref('Φ')), qvectorref(qindexedlabel(\"x_\", 'i', \"\"))), qvectorref('Φ')) · qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
-      "copy": "qadjacent(qcenterdot(qadjacent(qtranspose(qvectorref('Φ')),qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qvectorref('Φ')),qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
+      "display": "qvectordot(qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))), qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))))",
+      "copy": "qvectordot(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))))"
     },
     {
       "id": "IBM097-4b10863c-M020",
@@ -280,8 +280,8 @@
       "end": 3610,
       "literal": "$k(\\vec{x}_i, \\vec{x}_j)$",
       "status": "exact",
-      "display": "[(qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'k')  (qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'k')]",
-      "copy": "vector(qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'k',qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'k')"
+      "display": "qscalarat('k', [qvectorref(qindexedlabel(\"x_\", 'i', \"\"))  qvectorref(qindexedlabel(\"x_\", 'j', \"\"))])",
+      "copy": "qscalarat('k',vector(qvectorref(qindexedlabel(\"x_\",'i',\"\")),qvectorref(qindexedlabel(\"x_\",'j',\"\"))))"
     },
     {
       "id": "IBM097-4b10863c-M021",
@@ -320,8 +320,8 @@
       "end": 3795,
       "literal": "$\\vec{\\Phi}^T(\\vec{x}_i)\\cdot \\vec{\\Phi}(\\vec{x}_j)$",
       "status": "exact",
-      "display": "qcenterdot(qadjacent(qtranspose(qvectorref('Φ')), qvectorref(qindexedlabel(\"x_\", 'i', \"\"))), qvectorref('Φ')) · qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
-      "copy": "qadjacent(qcenterdot(qadjacent(qtranspose(qvectorref('Φ')),qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qvectorref('Φ')),qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
+      "display": "qvectordot(qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))), qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))))",
+      "copy": "qvectordot(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))))"
     },
     {
       "id": "IBM097-4b10863c-M025",
@@ -330,8 +330,8 @@
       "end": 3878,
       "literal": "$\\vec{x}_i^T\\vec{x}_j$",
       "status": "exact",
-      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\"))^(qvectorref(qindexedlabel(\"x_\", 'j', \"\")) · T)",
-      "copy": "qvectorref(qindexedlabel(\"x_\", 'i', \"\"))^(qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'T')"
+      "display": "qvectordot(qvectorref(qindexedlabel(\"x_\", 'i', \"\")), qvectorref(qindexedlabel(\"x_\", 'j', \"\")))",
+      "copy": "qvectordot(qvectorref(qindexedlabel(\"x_\",'i',\"\")),qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
     },
     {
       "id": "IBM097-4b10863c-M026",
@@ -350,8 +350,8 @@
       "end": 4279,
       "literal": "$k(\\vec{x}_i, \\vec{x}_j)$",
       "status": "exact",
-      "display": "[(qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'k')  (qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'k')]",
-      "copy": "vector(qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'k',qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'k')"
+      "display": "qscalarat('k', [qvectorref(qindexedlabel(\"x_\", 'i', \"\"))  qvectorref(qindexedlabel(\"x_\", 'j', \"\"))])",
+      "copy": "qscalarat('k',vector(qvectorref(qindexedlabel(\"x_\",'i',\"\")),qvectorref(qindexedlabel(\"x_\",'j',\"\"))))"
     },
     {
       "id": "IBM097-4b10863c-M028",
@@ -429,8 +429,8 @@
       "end": 6098,
       "literal": "$\\vec{\\Phi}(\\vec{x}_i)$",
       "status": "exact",
-      "display": "qvectorref('Φ') · qvectorref(qindexedlabel(\"x_\", 'i', \"\"))",
-      "copy": "qadjacent(qvectorref('Φ'),qvectorref(qindexedlabel(\"x_\",'i',\"\")))"
+      "display": "qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\")))",
+      "copy": "qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))"
     },
     {
       "id": "IBM097-4b10863c-M036",
@@ -439,8 +439,8 @@
       "end": 6126,
       "literal": "$\\vec{\\Phi}(\\vec{x}_j)$",
       "status": "exact",
-      "display": "qvectorref('Φ') · qvectorref(qindexedlabel(\"x_\", 'j', \"\"))",
-      "copy": "qadjacent(qvectorref('Φ'),qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
+      "display": "qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'j', \"\")))",
+      "copy": "qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
     },
     {
       "id": "IBM097-4b10863c-M037",
@@ -499,8 +499,8 @@
       "end": 3266,
       "literal": "$$\nf(\\vec{x}) = \\sigma (\\vec{w}\\cdot \\vec{x}+\\vec{b})\n$$",
       "status": "exact",
-      "display": "qcenterdot(qvectorref('w'), qvectorref('x')) + qvectorref('b') = 5.39681619171272108951271703243 · qvectorref('x') · f / π⁵ · s⋅K⁴ ∕ (nA⋅T)",
-      "copy": "(qadd(qcenterdot(qvectorref('w'),qvectorref('x')),qvectorref('b')))==((29438455734650141042413712126365436049 ∕ 5454781984210512994952000000)*(1 ∕ π⁵)*('f')*((qphysicalunit(\"K\",\"\"))^(4))*(qphysicalunit(\"s\",\"\"))*((qphysicalunit(\"A\",\"\"))^(−1))*((qphysicalunit(\"T\",\"\"))^(−1))*(qvectorref('x')))"
+      "display": "qscalarat('σ', qadd(qvectordot(qvectorref('w'), qvectorref('x')), 'b')) = qscalarat('f', qvectorref('x'))",
+      "copy": "(qscalarat('σ',qadd(qvectordot(qvectorref('w'),qvectorref('x')),'b')))==(qscalarat('f',qvectorref('x')))"
     },
     {
       "id": "IBM097-4b10863c-M043",
@@ -608,8 +608,9 @@
       "start": 3661,
       "end": 3674,
       "literal": "$L^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "L",
+      "copy": "'L'"
     },
     {
       "id": "IBM097-4b10863c-M054",

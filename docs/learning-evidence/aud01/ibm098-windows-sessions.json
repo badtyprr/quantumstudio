@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/data-encoding.ipynb",
   "notebook_sha256": "09806407d3d3d6c7cc24de5f6ea0fd6a0a101f04b37fb8fcfc7eeaafeb2bc2a9",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "fb153e7f8071e2ab4c76d2302a92bda898ff40d385950abbc03a126a2a9027fe",
+  "records_sha256": "d27b1766500de2c71d3e35924609d5df017ccbc26ef12fd5bce034c2fcd267f4",
   "suite": {
     "passed": true,
-    "checks": 2154,
+    "checks": 2231,
     "calls": 293,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 224,
-    "restored_identically": 224,
-    "stable_after_text_reentry": 218,
-    "source_diagnostic": 69
+    "source_exact": 235,
+    "restored_identically": 235,
+    "stable_after_text_reentry": 235,
+    "source_diagnostic": 58
   },
   "diagnostics": [
     {
@@ -30,14 +30,6 @@
     {
       "id": "IBM098-09806407-M007",
       "message": "Unsupported text in a mathematical expression at byte 10"
-    },
-    {
-      "id": "IBM098-09806407-M014",
-      "message": "Expected ',' at byte 18"
-    },
-    {
-      "id": "IBM098-09806407-M016",
-      "message": "Expected ',' at byte 18"
     },
     {
       "id": "IBM098-09806407-M017",
@@ -64,32 +56,12 @@
       "message": "Unsupported TeX command: \\vertqvectorref at byte 16"
     },
     {
-      "id": "IBM098-09806407-M032",
-      "message": "Unsupported text in a mathematical expression at byte 9"
-    },
-    {
-      "id": "IBM098-09806407-M035",
-      "message": "Unsupported text in a mathematical expression at byte 10"
-    },
-    {
-      "id": "IBM098-09806407-M038",
-      "message": "Unsupported text in a mathematical expression at byte 9"
-    },
-    {
       "id": "IBM098-09806407-M048",
       "message": "Invalid decimal number at byte 38"
     },
     {
       "id": "IBM098-09806407-M050",
       "message": "Invalid register index expression."
-    },
-    {
-      "id": "IBM098-09806407-M054",
-      "message": "Unsupported text in a mathematical expression at byte 9"
-    },
-    {
-      "id": "IBM098-09806407-M075",
-      "message": "Unsupported text in a mathematical expression at byte 9"
     },
     {
       "id": "IBM098-09806407-M077",
@@ -176,10 +148,6 @@
       "message": "Expected an alignment tab on a grouped continuation at byte 303"
     },
     {
-      "id": "IBM098-09806407-M184",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
-    },
-    {
       "id": "IBM098-09806407-M190",
       "message": "Unsupported TeX command: \\dots at byte 26"
     },
@@ -204,10 +172,6 @@
       "message": "Unsupported TeX command: \\textstyle at byte 11"
     },
     {
-      "id": "IBM098-09806407-M206",
-      "message": "Unsupported text in a mathematical expression at byte 12"
-    },
-    {
       "id": "IBM098-09806407-M208",
       "message": "Unsupported TeX command: \\textstyle at byte 11"
     },
@@ -224,10 +188,6 @@
       "message": "Unsupported TeX command: \\textstyle at byte 35"
     },
     {
-      "id": "IBM098-09806407-M215",
-      "message": "Unsupported TeX command: \\mathscr at byte 9"
-    },
-    {
       "id": "IBM098-09806407-M217",
       "message": "Unexpected notation at byte 5"
     },
@@ -241,7 +201,7 @@
     },
     {
       "id": "IBM098-09806407-M232",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
+      "message": "Unsupported TeX command: \\ldots at byte 136"
     },
     {
       "id": "IBM098-09806407-M241",
@@ -269,15 +229,11 @@
     },
     {
       "id": "IBM098-09806407-M258",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
-    },
-    {
-      "id": "IBM098-09806407-M259",
-      "message": "Expected ',' at byte 18"
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
     },
     {
       "id": "IBM098-09806407-M260",
-      "message": "Set-indexed sums have no upper bound at byte 98"
+      "message": "Set-indexed sums have no upper bound at byte 122"
     },
     {
       "id": "IBM098-09806407-M262",
@@ -289,44 +245,13 @@
     },
     {
       "id": "IBM098-09806407-M269",
-      "message": "Cases text must introduce if or otherwise at byte 99"
+      "message": "Cases text must introduce if or otherwise at byte 109"
     },
     {
       "id": "IBM098-09806407-M281",
       "message": "Unsupported TeX command: \\bar at byte 8"
     }
   ],
-  "changed_copy": [
-    {
-      "id": "IBM098-09806407-M011",
-      "first": "qvectorref('x') ⋅ 'Φ'",
-      "second": "qmul(qvectorref('x'),'Φ')"
-    },
-    {
-      "id": "IBM098-09806407-M015",
-      "first": "qvectorref('x') ⋅ 'Φ'",
-      "second": "qmul(qvectorref('x'),'Φ')"
-    },
-    {
-      "id": "IBM098-09806407-M172",
-      "first": "(qadd(matrix(4,1,vector(qmul(qmul(−1,cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ','b')))==(0)",
-      "second": "(qadd(matrix(4,1,vector(qmul(qmul(−1,qcos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),qsin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),qsin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),qsin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qsin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ','b')))==(0)"
-    },
-    {
-      "id": "IBM098-09806407-M174",
-      "first": "(qadd(matrix(4,1,vector(qmul(qmul(−1,cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ',qmul(2,'b'))))==(0)",
-      "second": "(qadd(matrix(4,1,vector(qmul(qmul(−1,qcos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),qsin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qsin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),qsin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),qsin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qcos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ',qmul(2,'b'))))==(0)"
-    },
-    {
-      "id": "IBM098-09806407-M268",
-      "first": "((√(5) + 1) ⋅ qvectorref('x') ⋅ 'S' ⋅ '_') ∕ 2",
-      "second": "qmul(qmul(qmul(qadd(qpower(5, 1 ∕ 2), 1), qvectorref('x')), 'S'), '_') ∕ 2"
-    },
-    {
-      "id": "IBM098-09806407-M272",
-      "first": "matrix(2,2,vector(qadd(cos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t'))))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qadd(cos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(−i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))))))",
-      "second": "matrix(2,2,vector(qadd(qcos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t'))))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qadd(qcos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(−i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))))))"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

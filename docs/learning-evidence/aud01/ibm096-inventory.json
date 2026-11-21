@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/introduction.ipynb",
   "source_sha256": "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
-  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
   "mode": "Quantum notation",
   "markdown_cells": 7,
   "code_cells": 1,
@@ -208,8 +208,8 @@
       "end": 498,
       "literal": "$P_i = |\\langle\\phi_i|\\psi\\rangle|^2$",
       "status": "exact",
-      "display": "\"P_i\" = |qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ'))|²",
-      "copy": "qcompare(\"P_i\",|qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ'))|²,4)"
+      "display": "\"P_i\" = |⟨φ_i|ψ⟩|^2",
+      "copy": "qcompare(\"P_i\",qbars(qmul(qdag(qketstate(\"φ_i\")), qketstate('ψ')))²,4)"
     }
   ]
 }

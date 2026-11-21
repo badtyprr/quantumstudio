@@ -1,36 +1,24 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/quantum-kernel-methods.ipynb",
   "notebook_sha256": "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "62a56b365c969412d15763f4062c2c3ae4bf08bec1e4c1e6adc3298e4d2dda59",
+  "records_sha256": "2ff53bd7fe737d43046d9679295d82eda2518a668dc6b8803ef784c880c085bb",
   "suite": {
     "passed": true,
-    "checks": 388,
+    "checks": 409,
     "calls": 47,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 42,
-    "restored_identically": 42,
-    "source_diagnostic": 5,
-    "stable_after_text_reentry": 38
+    "source_exact": 45,
+    "restored_identically": 45,
+    "stable_after_text_reentry": 45,
+    "source_diagnostic": 2
   },
   "diagnostics": [
-    {
-      "id": "IBM099-76b7eaf2-M002",
-      "message": "Membership requires a scalar or binary-string label."
-    },
-    {
-      "id": "IBM099-76b7eaf2-M003",
-      "message": "Unclosed quoted label at byte 41"
-    },
-    {
-      "id": "IBM099-76b7eaf2-M004",
-      "message": "Unclosed quoted label at byte 5"
-    },
     {
       "id": "IBM099-76b7eaf2-M023",
       "message": "Unclosed magnitude of a Dirac expression; use |<a|U|b>|."
@@ -40,27 +28,6 @@
       "message": "Unclosed ASCII norm; use ||expression||."
     }
   ],
-  "changed_copy": [
-    {
-      "id": "IBM099-76b7eaf2-M001",
-      "first": "qvectorref('x') ⋅ 'Φ'",
-      "second": "qmul(qvectorref('x'),'Φ')"
-    },
-    {
-      "id": "IBM099-76b7eaf2-M013",
-      "first": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
-      "second": "qmul(qvectorref(qindexedlabel(\"x_\",'i',\"\")),'Φ')"
-    },
-    {
-      "id": "IBM099-76b7eaf2-M015",
-      "first": "qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ'",
-      "second": "qmul(qvectorref(qindexedlabel(\"x_\",'j',\"\")),'Φ')"
-    },
-    {
-      "id": "IBM099-76b7eaf2-M021",
-      "first": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
-      "second": "qmul(qvectorref(qindexedlabel(\"x_\",'i',\"\")),'Φ')"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

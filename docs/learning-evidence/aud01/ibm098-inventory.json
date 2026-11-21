@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/data-encoding.ipynb",
   "source_sha256": "09806407d3d3d6c7cc24de5f6ea0fd6a0a101f04b37fb8fcfc7eeaafeb2bc2a9",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
-  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
   "mode": "Quantum notation",
   "markdown_cells": 45,
   "code_cells": 19,
   "summary": {
-    "exact": 224,
-    "diagnostic": 69
+    "exact": 235,
+    "diagnostic": 58
   },
   "figures": [
     {
@@ -159,8 +159,8 @@
       "end": 3320,
       "literal": "$\\Phi(\\vec{x})$",
       "status": "exact",
-      "display": "qvectorref('x') ⋅ 'Φ'",
-      "copy": "qvectorref('x') ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref('x'))",
+      "copy": "qfeatureat('Φ',qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M012",
@@ -188,8 +188,9 @@
       "start": 3482,
       "end": 3494,
       "literal": "$U(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M015",
@@ -198,8 +199,8 @@
       "end": 3697,
       "literal": "$\\Phi(\\vec{x})$",
       "status": "exact",
-      "display": "qvectorref('x') ⋅ 'Φ'",
-      "copy": "qvectorref('x') ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref('x'))",
+      "copy": "qfeatureat('Φ',qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M016",
@@ -207,8 +208,9 @@
       "start": 3769,
       "end": 3781,
       "literal": "$U(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M017",
@@ -360,8 +362,9 @@
       "start": 101,
       "end": 121,
       "literal": "$\\text{X}_\\text{ex}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 9"
+      "status": "exact",
+      "display": "\"X_ex\"",
+      "copy": "\"X_ex\""
     },
     {
       "id": "IBM098-09806407-M033",
@@ -389,8 +392,9 @@
       "start": 183,
       "end": 253,
       "literal": "$$\n\\text{X}_{\\text{ex}}=\\{(4,8,5),(9,8,6),(2,9,2),(5,7,0),(3,7,5)\\}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 10"
+      "status": "exact",
+      "display": "\"X_ex\" = \\{(4, 8, 5), (9, 8, 6), (2, 9, 2), (5, 7, 0), (3, 7, 5)\\}",
+      "copy": "(\"X_ex\")==(qset(vector(qtuple(vector(4,8,5)),qtuple(vector(9,8,6)),qtuple(vector(2,9,2)),qtuple(vector(5,7,0)),qtuple(vector(3,7,5)))))"
     },
     {
       "id": "IBM098-09806407-M036",
@@ -418,8 +422,9 @@
       "start": 372,
       "end": 394,
       "literal": "$\\text{X}_{\\text{ex}}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 9"
+      "status": "exact",
+      "display": "\"X_ex\"",
+      "copy": "\"X_ex\""
     },
     {
       "id": "IBM098-09806407-M039",
@@ -575,8 +580,9 @@
       "start": 93,
       "end": 115,
       "literal": "$\\text{X}_{\\text{ex}}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 9"
+      "status": "exact",
+      "display": "\"X_ex\"",
+      "copy": "\"X_ex\""
     },
     {
       "id": "IBM098-09806407-M055",
@@ -784,8 +790,9 @@
       "start": 1567,
       "end": 1587,
       "literal": "$\\text{X}_\\text{ex}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 9"
+      "status": "exact",
+      "display": "\"X_ex\"",
+      "copy": "\"X_ex\""
     },
     {
       "id": "IBM098-09806407-M076",
@@ -1734,8 +1741,8 @@
       "end": 719,
       "literal": "$$\n|\\psi\\rangle_{b1} = \\left(\\cos\\left(\\frac{\\theta_1}{2}\\right)|0\\rangle+\\sin\\left(\\frac{\\theta_1}{2}\\right)e^{i\\theta_3}|1\\rangle\\right)\\otimes\\left(\\cos\\left(\\frac{\\theta_0}{2}\\right)|0\\rangle+\\sin\\left(\\frac{\\theta_0}{2}\\right)e^{i\\theta_2}|1\\rangle\\right)\n$$",
       "status": "exact",
-      "display": "[(−cos(0.5 \"θ_0\" rad) ⋅ cos(0.5 \"θ_1\" rad)); (−e^\"iθ_2\" ⋅ cos(0.5 \"θ_1\" rad) ⋅ sin(0.5 \"θ_0\" rad)); (−e^\"iθ_3\" ⋅ cos(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (−e^(\"iθ_2\" + \"iθ_3\") ⋅ sin(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad))] + |'ψ'⟩_{b} = 0",
-      "copy": "(qadd(matrix(4,1,vector(qmul(qmul(−1,cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ','b')))==(0)"
+      "display": "|ψ_b1⟩ = [(cos(0.5 \"θ_0\" rad) ⋅ cos(0.5 \"θ_1\" rad)); (e^(i ⋅ \"θ_2\") ⋅ cos(0.5 \"θ_1\" rad) ⋅ sin(0.5 \"θ_0\" rad)); (e^(i ⋅ \"θ_3\") ⋅ cos(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (e^(i ⋅ \"θ_2\" + i ⋅ \"θ_3\") ⋅ sin(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad))]",
+      "copy": "qcompare(qketstate(\"ψ_b1\"),matrix(4,1,[(cos((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(cos((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(cos((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(e^(i ⋅ \"θ_2\"))*(sin((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(cos((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(e^(i ⋅ \"θ_3\"))*(sin((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(e^(i ⋅ \"θ_2\" + i ⋅ \"θ_3\"))*(sin((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(sin((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))]),4)"
     },
     {
       "id": "IBM098-09806407-M173",
@@ -1754,8 +1761,8 @@
       "end": 439,
       "literal": "$$\n\\begin{aligned}\n|\\psi\\rangle_{b2} = & \\cos\\left(\\frac{\\theta_1}{2}\\right)\\cos\\left(\\frac{\\theta_0}{2}\\right)|00\\rangle+\\cos\\left(\\frac{\\theta_1}{2}\\right)\\sin\\left(\\frac{\\theta_0}{2}\\right)e^{i\\theta_2}|11\\rangle\\\\\n+ & \\sin\\left(\\frac{\\theta_1}{2}\\right)\\cos\\left(\\frac{\\theta_0}{2}\\right)e^{i\\theta_3}|10\\rangle+\\sin\\left(\\frac{\\theta_1}{2}\\right)\\sin\\left(\\frac{\\theta_0}{2}\\right)e^{i\\theta_2}e^{i\\theta_3}|01\\rangle\n\\end{aligned}\n$$",
       "status": "exact",
-      "display": "[(−cos(0.5 \"θ_0\" rad) ⋅ cos(0.5 \"θ_1\" rad)); (−e^(\"iθ_2\" + \"iθ_3\") ⋅ sin(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (−e^\"iθ_3\" ⋅ cos(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (−e^\"iθ_2\" ⋅ cos(0.5 \"θ_1\" rad) ⋅ sin(0.5 \"θ_0\" rad))] + |'ψ'⟩_{2 · b} = 0",
-      "copy": "(qadd(matrix(4,1,vector(qmul(qmul(−1,cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,qadd(\"iθ_2\",\"iθ_3\"))),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_3\")),sin(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),qmul(qmul(qmul(−1,qpower(e,\"iθ_2\")),sin(qmul(qmul(1 ∕ 2,\"θ_0\"),qphysicalunit(\"rad\",\"\")))),cos(qmul(qmul(1 ∕ 2,\"θ_1\"),qphysicalunit(\"rad\",\"\")))))),qbasis('ψ',qmul(2,'b'))))==(0)"
+      "display": "|ψ_b2⟩ = [(cos(0.5 \"θ_0\" rad) ⋅ cos(0.5 \"θ_1\" rad)); (e^(i ⋅ \"θ_2\" + i ⋅ \"θ_3\") ⋅ sin(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (e^(i ⋅ \"θ_3\") ⋅ cos(0.5 \"θ_0\" rad) ⋅ sin(0.5 \"θ_1\" rad)); (e^(i ⋅ \"θ_2\") ⋅ cos(0.5 \"θ_1\" rad) ⋅ sin(0.5 \"θ_0\" rad))]",
+      "copy": "qcompare(qketstate(\"ψ_b2\"),matrix(4,1,[(cos((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(cos((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(e^(i ⋅ \"θ_2\" + i ⋅ \"θ_3\"))*(sin((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(sin((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(cos((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(e^(i ⋅ \"θ_3\"))*(sin((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),(cos((\"θ_1\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(e^(i ⋅ \"θ_2\"))*(sin((\"θ_0\")*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))]),4)"
     },
     {
       "id": "IBM098-09806407-M175",
@@ -1852,8 +1859,9 @@
       "start": 387,
       "end": 469,
       "literal": "$$\n\\mathscr{U}_{\\text{ZFM}}(\\vec{x})|0\\rangle^{\\otimes N}=|\\phi(\\vec{x})\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
+      "status": "exact",
+      "display": "qoperatorat(\"U_ZFM\", qvectorref('x')) · |0^N⟩ = qstatecall('φ', qvectorref('x'))",
+      "copy": "qcompare(qadjacent(qoperatorat(\"U_ZFM\",qvectorref('x')),qtensorpow(matrix(2,1,vector(1,0)),'N')),qstatecall('φ',qvectorref('x')),4)"
     },
     {
       "id": "IBM098-09806407-M185",
@@ -2065,8 +2073,9 @@
       "start": 2521,
       "end": 2534,
       "literal": "$N^\\text{th}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 12"
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
     },
     {
       "id": "IBM098-09806407-M207",
@@ -2150,8 +2159,9 @@
       "start": 304,
       "end": 339,
       "literal": "$\\mathscr{U}_{\\text{ZFM}}(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mathscr at byte 9"
+      "status": "exact",
+      "display": "qoperatorat(\"U_ZFM\", qvectorref('x'))",
+      "copy": "qoperatorat(\"U_ZFM\",qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M216",
@@ -2317,7 +2327,7 @@
       "end": 632,
       "literal": "$$\n\\mathscr{U}_{\\text{ZZFM}}(\\vec{x}) = U_{ZZ}(\\vec{x})\\big(P(\\vec{x}_1)\\otimes\\ldots P(\\vec{x}_k)\\otimes\\ldots P(\\vec{x}_N)H^{\\otimes N}\\big)=U_{ZZ}(\\vec{x})\\left(\\bigotimes_{k = 1}^N P(\\vec{x}_k)\\right)H^{\\otimes N},\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
+      "message": "Unsupported TeX command: \\ldots at byte 136"
     },
     {
       "id": "IBM098-09806407-M233",
@@ -2570,7 +2580,7 @@
       "end": 366,
       "literal": "$$\n\\mathscr{U}_{\\text{PFM}}(\\vec{x}) = \\prod_{s=1}^{r} U(\\vec{x}) H^{\\otimes n}.\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mathscr at byte 10"
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
     },
     {
       "id": "IBM098-09806407-M259",
@@ -2578,8 +2588,9 @@
       "start": 377,
       "end": 389,
       "literal": "$U(\\vec{x})$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 18"
+      "status": "exact",
+      "display": "qoperatorat('U', qvectorref('x'))",
+      "copy": "qoperatorat('U',qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M260",
@@ -2588,7 +2599,7 @@
       "end": 628,
       "literal": "$$\nU(\\vec{x}) = \\exp\\left(i \\sum_{S \\in\\mathcal{I}} \\phi_S(\\vec{x}) \\prod_{i \\in S} \\sigma_i \\right),\n$$",
       "status": "diagnostic",
-      "message": "Set-indexed sums have no upper bound at byte 98"
+      "message": "Set-indexed sums have no upper bound at byte 122"
     },
     {
       "id": "IBM098-09806407-M261",
@@ -2665,8 +2676,8 @@
       "end": 1134,
       "literal": "$\\phi_S(\\vec{x})$",
       "status": "exact",
-      "display": "(0.5 ⋅ √(5) + 0.5) · qvectorref('x') · S · '_'",
-      "copy": "((√(5) + 1) ⋅ qvectorref('x') ⋅ 'S' ⋅ '_') ∕ 2"
+      "display": "qscalarat(\"φ_S\", qvectorref('x'))",
+      "copy": "qscalarat(\"φ_S\",qvectorref('x'))"
     },
     {
       "id": "IBM098-09806407-M269",
@@ -2675,7 +2686,7 @@
       "end": 1448,
       "literal": "$$\n\\phi_S(\\vec{x})=\n    \\begin{cases}\n      x_i & \\text{if } S= \\{i\\} \\text{ (single-qubit)}\\\\\n      \\prod_{j\\in{S}}(\\pi-x_j) & \\text{if } |S|\\ge2 \\text{ (multi-qubit)}\\\\\n    \\end{cases}\n$$",
       "status": "diagnostic",
-      "message": "Cases text must introduce if or otherwise at byte 99"
+      "message": "Cases text must introduce if or otherwise at byte 109"
     },
     {
       "id": "IBM098-09806407-M270",
@@ -2704,8 +2715,8 @@
       "end": 1820,
       "literal": "$\\exp(it\\mathcal{H})$",
       "status": "exact",
-      "display": "[0.5i · √(2) · qsinhc(i |'t'|) · t + cos(|'t'| rad), 0.5i · √(2) · qsinhc(i |'t'|) · t; 0.5i · √(2) · qsinhc(i |'t'|) · t, cos(|'t'| rad) − (0.5i · √(2) · qsinhc(i |'t'|) · t)]",
-      "copy": "matrix(2,2,vector(qadd(cos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t'))))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qmul(qmul(qmul(i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))),qadd(cos(qmul(qphysicalunit(\"rad\",\"\"),abs('t'))),qmul(qmul(qmul(−i ∕ 2,qpower(2,1 ∕ 2)),'t'),qsinhc(qmul(i,abs('t')))))))"
+      "display": "qpropagator('H', −'t')",
+      "copy": "qpropagator('H',−'t')"
     },
     {
       "id": "IBM098-09806407-M273",

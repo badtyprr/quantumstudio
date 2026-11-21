@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/quantum-kernel-methods.ipynb",
   "source_sha256": "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b",
-  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
-  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "worker_sha256": "4b790b3bb04bbb790427c69f26c82c4e35200f9d40fad52ae6f5e9bc683bcb2c",
+  "revision": "9f9778d769e5db283dd32e27088ccd3771c9b096",
   "mode": "Quantum notation",
   "markdown_cells": 31,
   "code_cells": 30,
   "summary": {
-    "exact": 42,
-    "diagnostic": 5
+    "exact": 45,
+    "diagnostic": 2
   },
   "figures": [
     {
@@ -34,8 +34,8 @@
       "end": 577,
       "literal": "$\\Phi(\\vec{x})$",
       "status": "exact",
-      "display": "qvectorref('x') ⋅ 'Φ'",
-      "copy": "qvectorref('x') ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref('x'))",
+      "copy": "qfeatureat('Φ',qvectorref('x'))"
     },
     {
       "id": "IBM099-76b7eaf2-M002",
@@ -43,8 +43,9 @@
       "start": 596,
       "end": 621,
       "literal": "$\\vec{x}\\in \\mathbb{R}^d$",
-      "status": "diagnostic",
-      "message": "Membership requires a scalar or binary-string label."
+      "status": "exact",
+      "display": "qrealvectormember(qvectorref('x'), 'd')",
+      "copy": "qrealvectormember(qvectorref('x'),'d')"
     },
     {
       "id": "IBM099-76b7eaf2-M003",
@@ -52,8 +53,9 @@
       "start": 625,
       "end": 659,
       "literal": "$\\Phi(\\vec{x})\\in \\mathbb{R}^{d'}$",
-      "status": "diagnostic",
-      "message": "Unclosed quoted label at byte 41"
+      "status": "exact",
+      "display": "qrealvectormember(qfeatureat('Φ', qvectorref('x')), \"d_prime\")",
+      "copy": "qrealvectormember(qfeatureat('Φ',qvectorref('x')),\"d_prime\")"
     },
     {
       "id": "IBM099-76b7eaf2-M004",
@@ -61,8 +63,9 @@
       "start": 675,
       "end": 681,
       "literal": "$d'>d$",
-      "status": "diagnostic",
-      "message": "Unclosed quoted label at byte 5"
+      "status": "exact",
+      "display": "d < \"d_prime\"",
+      "copy": "('d')<(\"d_prime\")"
     },
     {
       "id": "IBM099-76b7eaf2-M005",
@@ -151,8 +154,8 @@
       "end": 3665,
       "literal": "$\\Phi(\\vec{x}_i)$",
       "status": "exact",
-      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
-      "copy": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\")))",
+      "copy": "qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))"
     },
     {
       "id": "IBM099-76b7eaf2-M014",
@@ -171,8 +174,8 @@
       "end": 3748,
       "literal": "$\\Phi(\\vec{x}_j)$",
       "status": "exact",
-      "display": "qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ'",
-      "copy": "qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'j', \"\")))",
+      "copy": "qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\")))"
     },
     {
       "id": "IBM099-76b7eaf2-M016",
@@ -181,8 +184,8 @@
       "end": 3847,
       "literal": "$$\n|\\psi(\\vec{x}_i)\\rangle = \\Phi(\\vec{x}_i)|0\\rangle^{\\otimes N}\n$$",
       "status": "exact",
-      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ' · |0^N⟩",
-      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qadjacent(qmul('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) · |0^N⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qadjacent(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
     },
     {
       "id": "IBM099-76b7eaf2-M017",
@@ -191,8 +194,8 @@
       "end": 3917,
       "literal": "$$\n|\\psi(\\vec{x}_j)\\rangle = \\Phi(\\vec{x}_j)|0\\rangle^{\\otimes N}.\n$$",
       "status": "exact",
-      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))) = qvectorref(qindexedlabel(\"x_\", 'j', \"\")) ⋅ 'Φ' · |0^N⟩",
-      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qadjacent(qmul('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))) = qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'j', \"\"))) · |0^N⟩",
+      "copy": "qcompare(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qadjacent(qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
     },
     {
       "id": "IBM099-76b7eaf2-M018",
@@ -201,8 +204,8 @@
       "end": 4170,
       "literal": "$$\n\\langle\\psi(\\vec{x}_j)|\\psi(\\vec{x}_i)\\rangle = \\langle 0 |^{\\otimes N}\\Phi^\\dagger(\\vec{x}_j)\\Phi(\\vec{x}_i)|0\\rangle^{\\otimes N}.\n$$",
       "status": "exact",
-      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\")))† · qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = [1; 0]†^{⊗ N} · 'Φ'† · qvectorref(qindexedlabel(\"x_\", 'j', \"\")) · qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ' · |0^N⟩",
-      "copy": "qcompare(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\")))),qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(qdag(matrix(2,1,vector(1,0))),'N'),qdag('Φ')),qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qmul('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
+      "display": "qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'j', \"\")))† · qstatecall('ψ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) = [1; 0]†^{⊗ N} · 'Φ'† · qvectorref(qindexedlabel(\"x_\", 'j', \"\")) · qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\"))) · |0^N⟩",
+      "copy": "qcompare(qmul(qdag(qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'j',\"\")))),qstatecall('ψ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(qdag(matrix(2,1,vector(1,0))),'N'),qdag('Φ')),qvectorref(qindexedlabel(\"x_\",'j',\"\"))),qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))),qtensorpow(matrix(2,1,vector(1,0)),'N')),4)"
     },
     {
       "id": "IBM099-76b7eaf2-M019",
@@ -231,8 +234,8 @@
       "end": 4304,
       "literal": "$\\Phi(\\vec{x}_i)$",
       "status": "exact",
-      "display": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'",
-      "copy": "qvectorref(qindexedlabel(\"x_\", 'i', \"\")) ⋅ 'Φ'"
+      "display": "qfeatureat('Φ', qvectorref(qindexedlabel(\"x_\", 'i', \"\")))",
+      "copy": "qfeatureat('Φ',qvectorref(qindexedlabel(\"x_\",'i',\"\")))"
     },
     {
       "id": "IBM099-76b7eaf2-M022",
