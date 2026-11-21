@@ -116,6 +116,8 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - Acceptance: Add explicit unitary/Hermitian/projector assumptions with dimension checks; simplify U†U and projector products only when justified. Reject incompatible substitutions and preserve noncommuting order.
 - Implementation: [#360](https://github.com/badtyprr/quantumstudio/pull/360), [#361](https://github.com/badtyprr/quantumstudio/pull/361), and [#362](https://github.com/badtyprr/quantumstudio/pull/362). [Source and acceptance evidence](learning-evidence/DEV-04.md) maps assumptions, guarded identities, incompatible substitutions and noncommuting order to regressions. Released in REL-15 with all explicit acceptance criteria verified. This does not claim complete lesson/channel coverage.
 
+- [ ] **DEV-04 Grover reflections and rotation matrices.** IBM-033 M056, M064, M067 and M111 reach the recursion limit. M076 and M080–082 fail to assemble the two-dimensional rotation matrices. Check the literal identities against explicit marked and unmarked subspaces, including all entries and the rotation sign. IBM-034 M152–153 also require a consistent global sign across each equation. [Analysis inventory](learning-evidence/aud01/ibm033-inventory.json) and [iteration inventory](learning-evidence/aud01/ibm034-inventory.json).
+
 ### DEV-05
 
 - [ ] **Register dimensions and symbolic bit strings** — P1; released scope, broader coverage open; size M; dependencies: None.
@@ -190,6 +192,8 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - Acceptance: Support required Cartesian alphabets, symbolic membership/cardinality and lesson-specific indexed families. Preserve singleton/empty sets, binder scopes and unresolved equality. Add actual failing source fixtures before implementing each extension.
 - Delivered in PRs [#412](https://github.com/badtyprr/quantumstudio/pull/412) and [#413](https://github.com/badtyprr/quantumstudio/pull/413), verified release [7d8b5c15](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-7d8b5c15). [Source inputs, adaptations, independent expectations, reviews, validation and limits](learning-evidence/DEV-10.md). Whole-lesson coverage remains open.
 
+- [ ] **DEV-10 Grover predicates and ranges.** IBM-033 M036 combines Boolean complement, XOR and a cases definition. M069 joins the two overlap equalities with a printed conjunction. Verify the first on both Boolean inputs and the second against independently constructed normalized states. IBM-034 M132 needs the inclusive range from 1 to a symbolic upper endpoint with subsequent integer substitution. [Analysis inventory](learning-evidence/aud01/ibm033-inventory.json) and [iteration inventory](learning-evidence/aud01/ibm034-inventory.json).
+
 ### DEV-11
 
 - [ ] **Error-correction lesson operations** — P2; Partial; size L; dependencies: DEV-04.
@@ -206,6 +210,8 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 - Source focus: Variational design; chemistry; diagonalization; ML. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Inventory unsupported objectives, derivatives, matrix functions and eigensolvers from source examples. Verify small reference problems and report numerical tolerances independently of exact arithmetic.
 - Scoped delivery: [52c37a2a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-52c37a2a) (REL-29), through reviewed and CI-gated PRs #423–#425. [Source-backed finite evidence and remaining surfaces](learning-evidence/DEV-12.md). Bounded numerical Hermitian eigenpairs are new; selected variational and ML routes already work. Fresh final package: 78 variational requests, 32 eigenpair requests, 60 chemistry operations, 65 ML expressions/re-entries and 15 separate native circuits; real GUI and historical regressions verified. All 27 whole-source rows remain unchecked; source SDK execution and optimizer convergence remain open.
+
+- [ ] **DEV-12 Grover iteration estimates.** IBM-034 M026, M028 and M040 compare symbolic estimates without a printed decimal precision. M137 updates the iteration limit by multiplying by five fourths and rounding up. Check the update at integral and nonintegral products and preserve the distinction between an estimate and an exact equality. M054, M087 and M096 reject the original TeX tables. Their 46 numeric entries have [verified values](learning-evidence/aud01/ibm034-tables.json). [Original formulas and diagnostics](learning-evidence/aud01/ibm034-inventory.json).
 
 ### DEV-13
 
