@@ -193,6 +193,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
   if(quantumMode && (result.isAddition() || result.isMultiplication() || result.isPower()) &&
      (result.containsFunction(CALCULATOR->getFunction("qwalkdelta")) ||
       result.containsFunction(CALCULATOR->getFunction("qpairtotal")) ||
+      result.containsFunction(CALCULATOR->getFunction("qprobabilitycall")) ||
       result.containsFunction(CALCULATOR->getFunction("qmeanat")))) {
    explicitEntries=true;
    if(result.isAddition() && result.size()>1) {
