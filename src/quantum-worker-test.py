@@ -86,7 +86,7 @@ run("quantum:qorbitket(2,15,8,0)",success=False)
 run("quantum:qorbitket(3,15,r,0)",success=False)
 for impossible in ("a,a,r,1","a,N,r,r","a,5,r,4","2,15,r,4","1,N,2,0","a,15,7,0"):
     run("quantum:qorbitket("+impossible+")",success=False)
-assert data("quantum:qorbitket(2,15,r,3)")["copy_text"] == "qorbitket(2,15,r,3)"
+assert data("quantum:qorbitket(2,15,r,3)")["copy_text"] == "qorbitket(2,15,'r',3)"
 definition = r"f_a(x)=\begin{cases}ax\;(\textrm{mod}\;N)&0\leq x<N\\x&N\leq x<2^n\end{cases}"
 graph = data("quantum:"+definition)["copy_text"]
 assert graph == "qregistermultipliergraph('a','N','n')"

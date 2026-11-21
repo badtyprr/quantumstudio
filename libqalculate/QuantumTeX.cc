@@ -2485,6 +2485,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   std::smatch m;
   if(std::regex_match(state,m,uniform))return "qorbitket(\""+m[1].str()+"\",\"N\",\""+m[2].str()+"\",0)";
   if(std::regex_match(state,m,phased))return "qorbitket(\""+m[2].str()+"\",\"N\",\""+m[1].str()+"\",1)";
+  auto steps=indexedParts(state,"=");
+  static const std::regex action(R"(^M_([a-z])\|\\psi_0>$)");
+  if(steps.size()==4 && steps.back()=="|\\psi_0>" && std::regex_match(steps[0],m,action)) {
+   std::string a=m[1].str();
+   static const std::regex denominator(R"(\}\{\\sqrt\{([a-z])\}\}$)");
+   if(std::regex_search(steps[1],m,denominator)) {
+    std::string r=m[1].str(),tail="}{\\sqrt{"+r+"}}";
+    std::string sum="\\frac{|"+a+">+\\cdots+|"+a+"^{"+r+"-1}>+|";
+    if(steps[1]==sum+a+"^"+r+">"+tail && steps[2]==sum+"1>"+tail)
+     return "qfixedby(qresiduemultiplier(\""+a+"\",\"N\"),qorbitket(\""+a+"\",\"N\",\""+r+"\",0))";
+   }
+  }
  }
  if(s.find("\\begin{cases}")!=std::string::npos) {
   std::string definition=registerMultiplierCases(s);

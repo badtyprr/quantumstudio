@@ -17,7 +17,7 @@ parser.add_argument("worker", type=Path)
 parser.add_argument("directory", type=Path)
 parser.add_argument("report", type=Path)
 parser.add_argument("--prepare", action="store_true")
-parser.add_argument("--profile",choices=("original","current"),default="original")
+parser.add_argument("--profile",choices=("original","current","orbit"),default="original")
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -28,8 +28,10 @@ if args.profile == "original":
     historical = json.loads(Path(__file__).with_name("ibm029-clipboard-corpus.json").read_bytes())
     rejected = set(historical["diagnostics"])
 else:
-    rejected = {key for key in row_ids if int(key[-3:]) in (51,52,92,98,107,152,157,162)}
-assert len(rejected) == (16 if args.profile=="original" else 8) and rejected <= set(row_ids)
+    remaining = {51,52,152,157,162}
+    if args.profile=="current": remaining.update((92,98,107))
+    rejected = {key for key in row_ids if int(key[-3:]) in remaining}
+assert len(rejected)=={"original":16,"current":8,"orbit":5}[args.profile] and rejected <= set(row_ids)
 required = set(row_ids) - rejected
 
 def check_expected(expected):
@@ -37,7 +39,8 @@ def check_expected(expected):
 
 def notation(key):
     span = int(key[-3:])
-    if args.profile == "current":
+    if args.profile == "orbit" and span in (92,98,107):return "7"
+    if args.profile != "original":
         if span in (136,379):return "8"
         if span == 45:return "7"
     if span in (176,178):return "7"
