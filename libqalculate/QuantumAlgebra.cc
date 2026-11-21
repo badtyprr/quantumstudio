@@ -648,7 +648,10 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qpropagator") {
    MathStructure h=raw[0],time=raw[1];h.eval(eo);time.eval(eo);
-   if(!h.isMatrix() || !time.representsReal())return 0;
+   if(!h.isMatrix() || !time.representsReal()) {
+    if(h.equals(raw[0]) && time.equals(raw[1]))return 0;
+    out.set(this,&h,&time,NULL);return 1;
+   }
    out.set(CALCULATOR->getFunction("qevolution"),&h,&time,NULL);out.eval(eo);return 1;
   }
   if(op=="qspinladder") {

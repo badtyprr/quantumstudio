@@ -2262,6 +2262,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  static const std::regex dimensioned(R"(e\^\{\s*(?:-|−)\s*i\s*H\s*([a-z])\s*/\s*\\hbar\s*\})");
+  s=std::regex_replace(s,dimensioned,"qpropagator(\"H\",($1/ℏ))");
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
   static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");
   s=std::regex_replace(s,combined,"qpropagator((\"H_$1\"+\"H_$2\"),$3)");
