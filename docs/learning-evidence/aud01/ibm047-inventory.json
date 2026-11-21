@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "afa1fa94de30a278bd6f0ce9a57bde9ac1304a73ec8969ef11143817218c2853",
-  "revision": "18a6edd60c5da3cbdd38f55c94dea4ab227a41c2",
+  "worker_sha256": "61054fce23d5dab52022b223ae21c140780999894346fc1767e5abc26326e215",
+  "revision": "e069d6a77971dac124829ddebab1520a84cded2c",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 132,
-    "diagnostic": 14
+    "exact": 133,
+    "diagnostic": 13
   },
   "figures": [
     {
@@ -552,8 +552,9 @@
       "start": 5935,
       "end": 6032,
       "literal": "$$\n\\vert\\psi\\rangle \\otimes \\vert \\phi\\rangle\\mapsto\\vert\\psi\\rangle \\otimes \\vert \\psi\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "A state mapping requires an input ket and an output ket."
+      "status": "exact",
+      "display": "|ψ⟩ ⊗ |φ⟩ ↦ |ψ⟩ ⊗ |ψ⟩",
+      "copy": "qstateaction(qtensor(qnamedket('ψ'),qnamedket('φ')),qtensor(qnamedket('ψ'),qnamedket('ψ')))"
     },
     {
       "id": "IBM047-f4526623-M054",
@@ -1206,7 +1207,7 @@
       "literal": "$$\n\\bigl(U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr)\\bigr)^{\\dagger}\n= \\bigl( \\langle\\gamma_0\\vert\\langle 0\\vert \\bigr)U,\n$$",
       "status": "exact",
       "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† − ((|γ_0⟩ ⊗ [1; 0])† · U) = 0",
-      "copy": "(((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U')))+ (qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))))==(0)"
+      "copy": "((qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))))+ ((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'))))==(0)"
     },
     {
       "id": "IBM047-f4526623-M120",

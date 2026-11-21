@@ -38,4 +38,9 @@ for index in (65, 66):
 
 # The hypothetical cloning equation contradicts the linear action on the sum.
 check(69, [('"U"', "CNOT"), *basis], "0")
-print("Verified seven source formulas with 17 no-cloning checks")
+mapping = evaluate(rows[52]["literal"])
+assert mapping == rows[52]["copy"]
+for state, truth in [("|0>", "1"), ("|1>", "1"), ("|+>", "0")]:
+    bound = f'replace(replace(({mapping}),qnamedket("ψ"),{state}),qnamedket("φ"),|0>)'
+    assert evaluate(f"checkaction(CNOT,{bound})") == truth
+print("Verified eight source formulas with 20 no-cloning checks")
