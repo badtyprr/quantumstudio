@@ -2199,8 +2199,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool dimensions=input.compare(first,11,"dimensions:")==0;
  const bool fractionBits=input.compare(first,13,"fractionbits:")==0;
  const bool bitWord=input.compare(first,8,"bitword:")==0;
- if(dimensions || fractionBits || bitWord) {
-  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : 8));
+ const bool spinNumber=input.compare(first,5,"spin:")==0;
+ if(dimensions || fractionBits || bitWord || spinNumber) {
+  first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : 8));
   if(first==std::string::npos)return "";
  } else if(input.compare(first,5,"sets:")==0) {
   if(setNotation)*setNotation=true;
@@ -2232,7 +2233,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(spinNumber) {
+  // Only the bare symbol S changes meaning in a declared scalar spin formula.
+  // Keep named operators, quoted labels and other TeX commands independent.
+  static const std::regex spinArithmetic(R"(^[0-9S .()+*/^\t\r\n−-]+$)");
+  if(!std::regex_match(s,spinArithmetic) || s.find('S')==std::string::npos)
+   throw std::runtime_error("Spin notation requires an arithmetic expression in the total-spin quantum number S.");
+  for(size_t at=s.find('S');at!=std::string::npos;at=s.find('S',at)) {
+   std::string value="qspinnumber(\"S\")";
+   if(at && (isdigit((unsigned char)s[at-1]) || s[at-1]==')'))value="*"+value;
+   s.replace(at,1,value);at+=value.size();
+  }
+ }
  if(mathWrapper) {
+  static const std::regex hydrogen(R"(^\s*\\text\{H\}_\{?2\}?\s*$)");
+  if(std::regex_match(s,hydrogen))return "\"H₂\"";
   static const std::regex percentage(R"(^\s*([+-]?[0-9]+(?:\.[0-9]+)?)\s*\\?%\s*$)");
   std::smatch percent;
   if(std::regex_match(s,percent,percentage))return "("+percent[1].str()+"/100)";

@@ -265,7 +265,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpoststate",3},
  {"qnaimark",2},
  {"qborn",2},
- {"qchannel",2},{"qorderedpowers",2},{"qsignedequal",2},{"qstrictorder",2},{"qallmembers",2},{"qfixedby",2},{"qbinarypowersum",1},{"qprojectorproduct",2},{"qfixedspace",1},{"qsubset",2},{"qwordspan",1},{"qcosetket",2},{"qbinaryminimum",2},{"qpairtotal",6},{"qisingenergy",3},{"qsetminimum",1},{"qisingfield",2},{"qisinghamiltonian",2},{"qisingequivalent",3},{"qwalkdelta",4},{"qwalkdistance",3},{"qwalkindicator",3},{"qoperatorat",2},{"qscalarat",2},{"qfeatureat",2},{"qmeanat",2},{"qmaxcut",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qkrylovstates",4},{"qoperatorunequal",2},{"qwordkernel",2},{"qspacedimension",1},{"qpauligroup",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qkrausapply",2},{"qoperatorref",1},{"qchebyshev",2},{"qdistancegreater",3},{"qpolynomialat",2},{"qrealvectormember",2},{"qvectordot",2},{"qwireoperatorlike",3},{"qwireapply",4},{"qzeroimage",1},{"qvectorref",1},
+ {"qchannel",2},{"qorderedpowers",2},{"qsignedequal",2},{"qstrictorder",2},{"qallmembers",2},{"qfixedby",2},{"qbinarypowersum",1},{"qprojectorproduct",2},{"qfixedspace",1},{"qsubset",2},{"qwordspan",1},{"qcosetket",2},{"qbinaryminimum",2},{"qpairtotal",6},{"qisingenergy",3},{"qsetminimum",1},{"qisingfield",2},{"qisinghamiltonian",2},{"qisingequivalent",3},{"qwalkdelta",4},{"qwalkdistance",3},{"qwalkindicator",3},{"qoperatorat",2},{"qscalarat",2},{"qfeatureat",2},{"qmeanat",2},{"qmaxcut",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qkrylovstates",4},{"qoperatorunequal",2},{"qwordkernel",2},{"qspacedimension",1},{"qpauligroup",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qkrausapply",2},{"qoperatorref",1},{"qspinnumber",1},{"qchebyshev",2},{"qdistancegreater",3},{"qpolynomialat",2},{"qrealvectormember",2},{"qvectordot",2},{"qwireoperatorlike",3},{"qwireapply",4},{"qzeroimage",1},{"qvectorref",1},
  {"qchoi",1},
  {"qchi",1},
  {"qspre",1},
@@ -1356,6 +1356,7 @@ class Parser {
     if(name=="J_z") name="Jz";
     if(name=="J₊") name="Jplus";
     if(name=="J₋") name="Jminus";
+    if(name=="RX" || name=="RY" || name=="RZ")name[1]=std::tolower((unsigned char)name[1]);
     if(name=="CRX" || name=="CR_x" || name=="CR_{x}") name="CRx";
     if(name=="CRY" || name=="CR_y" || name=="CR_{y}") name="CRy";
     if(name=="CRZ" || name=="CR_z" || name=="CR_{z}") name="CRz";

@@ -1,0 +1,98 @@
+{
+  "worker_sha256": "b83d9271a9ea00e36bd51638e780eda018edd224f7e5db9e68ce0280136ebb4c",
+  "suite": {
+    "passed": true,
+    "checks": 153,
+    "calls": 17,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "cases": [
+    {
+      "name": "spin-source-1",
+      "expression": "spin:$2S$",
+      "copy": "qmul(2,qspinnumber('S'))"
+    },
+    {
+      "name": "spin-1-0",
+      "expression": "qmul(2,qspinnumber((0/2)))",
+      "copy": "0"
+    },
+    {
+      "name": "spin-1-1",
+      "expression": "qmul(2,qspinnumber((1/2)))",
+      "copy": "1"
+    },
+    {
+      "name": "spin-1-2",
+      "expression": "qmul(2,qspinnumber((2/2)))",
+      "copy": "2"
+    },
+    {
+      "name": "spin-1-3",
+      "expression": "qmul(2,qspinnumber((3/2)))",
+      "copy": "3"
+    },
+    {
+      "name": "spin-1-4",
+      "expression": "qmul(2,qspinnumber((4/2)))",
+      "copy": "4"
+    },
+    {
+      "name": "spin-source-2",
+      "expression": "spin:$2S+1$",
+      "copy": "qadd(qmul(2,qspinnumber('S')),1)"
+    },
+    {
+      "name": "spin-2-0",
+      "expression": "qadd(qmul(2,qspinnumber((0/2))),1)",
+      "copy": "1"
+    },
+    {
+      "name": "spin-2-1",
+      "expression": "qadd(qmul(2,qspinnumber((1/2))),1)",
+      "copy": "2"
+    },
+    {
+      "name": "spin-2-2",
+      "expression": "qadd(qmul(2,qspinnumber((2/2))),1)",
+      "copy": "3"
+    },
+    {
+      "name": "spin-2-3",
+      "expression": "qadd(qmul(2,qspinnumber((3/2))),1)",
+      "copy": "4"
+    },
+    {
+      "name": "spin-2-4",
+      "expression": "qadd(qmul(2,qspinnumber((4/2))),1)",
+      "copy": "5"
+    },
+    {
+      "name": "phase-gate-default",
+      "expression": "qcompare(2*S,matrix(2,2,[2,0,0,2*i]),4)",
+      "copy": "1"
+    },
+    {
+      "name": "molecule",
+      "expression": "$\\text{H}_2$",
+      "copy": "\"H₂\""
+    },
+    {
+      "name": "rotation-source",
+      "expression": "$RY(pi/4)$",
+      "copy": "matrix(2,2,[√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2,√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2])"
+    },
+    {
+      "name": "rotation-axis",
+      "expression": "qcompare(matrix(2,2,[√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2,√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),Ry(pi/4),4)",
+      "copy": "1"
+    },
+    {
+      "name": "rotation-sign",
+      "expression": "qcompare(matrix(2,2,[√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2,√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),Ry(-pi/4),4)",
+      "copy": "0"
+    }
+  ]
+}
