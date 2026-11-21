@@ -1,0 +1,335 @@
+{
+  "ibm_player": "https://video.ibm.com/embed/recorded/134056224?showtitle=false",
+  "track": "Generated English (US)",
+  "playlist_segments": 170,
+  "caption_digest": "f2de70df1b909bbb38486b1c235e8b1719df0d9f2345f22b089ee2e0062b3b0b",
+  "digest_method": "SHA-256 of concatenated binary SHA-256 digests in player playlist order",
+  "cue_entries": 1527,
+  "first_cue_s": 0.86,
+  "last_cue_end_s": 3643.179,
+  "chapters": [
+    {
+      "topic": "Introduction",
+      "start_s": 0,
+      "end_s": 66,
+      "cues": 32
+    },
+    {
+      "topic": "Lesson overview",
+      "start_s": 66,
+      "end_s": 148,
+      "cues": 34
+    },
+    {
+      "topic": "Classical circuit model",
+      "start_s": 148,
+      "end_s": 445,
+      "cues": 117
+    },
+    {
+      "topic": "Quantum gates and measurement",
+      "start_s": 445,
+      "end_s": 1107,
+      "cues": 287
+    },
+    {
+      "topic": "Inner products",
+      "start_s": 1107,
+      "end_s": 1455,
+      "cues": 146
+    },
+    {
+      "topic": "Orthogonality and orthonormality",
+      "start_s": 1455,
+      "end_s": 1955,
+      "cues": 201
+    },
+    {
+      "topic": "Projection matrices",
+      "start_s": 1955,
+      "end_s": 2182,
+      "cues": 96
+    },
+    {
+      "topic": "Projective measurements",
+      "start_s": 2182,
+      "end_s": 2627,
+      "cues": 191
+    },
+    {
+      "topic": "Global and relative phase",
+      "start_s": 2627,
+      "end_s": 2893,
+      "cues": 111
+    },
+    {
+      "topic": "No-cloning theorem",
+      "start_s": 2893,
+      "end_s": 3217,
+      "cues": 134
+    },
+    {
+      "topic": "State discrimination",
+      "start_s": 3217,
+      "end_s": 3599,
+      "cues": 160
+    },
+    {
+      "topic": "Summary",
+      "start_s": 3599,
+      "end_s": 3652,
+      "cues": 18
+    }
+  ],
+  "runs": {
+    "released": {
+      "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "windows": {
+        "passed": true,
+        "checks": 279,
+        "calls": 31,
+        "sessionsOnly": true,
+        "clipboardRetries": 0,
+        "clipboardRestored": false
+      },
+      "records_sha256": "844adf5ad7750afc52184305fc8a93f8e9d29580b716be935e0cc3dfb53f6f50",
+      "observed": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "0",
+        "1",
+        "1",
+        "0"
+      ],
+      "revision": "c5a456cd"
+    },
+    "candidate": {
+      "worker_sha256": "c76289b07d8e0305e14a69ba743f7bc18014a39bd881a5658dcf2a5d25942b86",
+      "windows": {
+        "passed": true,
+        "checks": 279,
+        "calls": 31,
+        "sessionsOnly": true,
+        "clipboardRetries": 0,
+        "clipboardRestored": false
+      },
+      "records_sha256": "844adf5ad7750afc52184305fc8a93f8e9d29580b716be935e0cc3dfb53f6f50",
+      "observed": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "0",
+        "1",
+        "1",
+        "0"
+      ],
+      "revision": "e87bb8cc"
+    }
+  },
+  "cases": [
+    {
+      "case": "slide-0",
+      "expression": "(1 and not 0) or ((not 1) and 0)",
+      "expected": "1"
+    },
+    {
+      "case": "slide-1",
+      "expression": "(x*x+y)*(y+1)==x^2*y+x^2+y^2+y",
+      "expected": "1"
+    },
+    {
+      "case": "slide-2",
+      "expression": "T*H*S*H*|0>==[(1+i)/2;1/sqrt(2)]",
+      "expected": "1"
+    },
+    {
+      "case": "slide-3",
+      "expression": "probs(SWAP*CNOT*SWAP*(I@H)*|00>)==[1/2;0;0;1/2]",
+      "expected": "1"
+    },
+    {
+      "case": "slide-4",
+      "expression": "|->~*[1/2;sqrt(3)/2]==(1-sqrt(3))/(2*sqrt(2))",
+      "expected": "1"
+    },
+    {
+      "case": "slide-5",
+      "expression": "[sqrt(3)/2;-1/2]~*[1/2;sqrt(3)/2]==0",
+      "expected": "1"
+    },
+    {
+      "case": "slide-6",
+      "expression": "[i;1]~*[1;0]==-i",
+      "expected": "1"
+    },
+    {
+      "case": "slide-7",
+      "expression": "[i;1]~*[i;1]==2",
+      "expected": "1"
+    },
+    {
+      "case": "slide-8",
+      "expression": "<0|*(i*|0>+|1>)==i",
+      "expected": "1"
+    },
+    {
+      "case": "slide-9",
+      "expression": "(i*|0>+|1>)~*|0>==-i",
+      "expected": "1"
+    },
+    {
+      "case": "slide-10",
+      "expression": "abs(<0|+>)<=1",
+      "expected": "1"
+    },
+    {
+      "case": "slide-11",
+      "expression": "<+|->==0",
+      "expected": "1"
+    },
+    {
+      "case": "slide-12",
+      "expression": "<0|+>==1/sqrt(2)",
+      "expected": "1"
+    },
+    {
+      "case": "slide-13",
+      "expression": "H~*H==I",
+      "expected": "1"
+    },
+    {
+      "case": "slide-14",
+      "expression": "(|+><+|)*(|+><+|)==|+><+|",
+      "expected": "1"
+    },
+    {
+      "case": "slide-15",
+      "expression": "probs(|+>)==[1/2;1/2]",
+      "expected": "1"
+    },
+    {
+      "case": "slide-16",
+      "expression": "(I@I@H)*((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*(I@I@H)*(((|01>+|10>)/sqrt(2))@|0>)==((|01>+|10>)/sqrt(2))@|0>",
+      "expected": "1"
+    },
+    {
+      "case": "slide-17",
+      "expression": "(I@I@H)*((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*(I@I@H)*(((|01>-|10>)/sqrt(2))@|0>)==((|01>-|10>)/sqrt(2))@|1>",
+      "expected": "1"
+    },
+    {
+      "case": "slide-18",
+      "expression": "probs(i*|->)==probs(|->)",
+      "expected": "1"
+    },
+    {
+      "case": "slide-19",
+      "expression": "probs(H*|->)==[0;1]",
+      "expected": "1"
+    },
+    {
+      "case": "slide-20",
+      "expression": "CNOT*(|+>@|0>)!=(|+>@|+>)",
+      "expected": "1"
+    },
+    {
+      "case": "slide-21",
+      "expression": "probs(H*|+>)==[1;0]",
+      "expected": "1"
+    },
+    {
+      "case": "relative-phase-plus",
+      "expression": "probs(H*|+>)==[1;0]",
+      "expected": "1"
+    },
+    {
+      "case": "relative-phase-minus",
+      "expression": "probs(H*|->)==[0;1]",
+      "expected": "1"
+    },
+    {
+      "case": "copy-zero",
+      "expression": "CNOT*(|0>@|0>)==|00>",
+      "expected": "1"
+    },
+    {
+      "case": "copy-one",
+      "expression": "CNOT*(|1>@|0>)==|11>",
+      "expected": "1"
+    },
+    {
+      "case": "linear-superposition",
+      "expression": "CNOT*(|+>@|0>)==((|00>+|11>)/sqrt(2))",
+      "expected": "1"
+    },
+    {
+      "case": "nonlinear-clone",
+      "expression": "CNOT*(|+>@|0>)==(|+>@|+>)",
+      "expected": "0"
+    },
+    {
+      "case": "input-overlap",
+      "expression": "(<0|@<0|)*(|+>@|0>)==1/sqrt(2)",
+      "expected": "1"
+    },
+    {
+      "case": "distinct-output-bits",
+      "expression": "(<0|@<+|)*(|1>@|->)==0",
+      "expected": "1"
+    },
+    {
+      "case": "same-bits-control",
+      "expression": "(<0|@<+|)*(|0>@|+>)==0",
+      "expected": "0"
+    }
+  ]
+}
