@@ -1,0 +1,25 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/concluding-remarks.ipynb",
+  "source_sha256": "fb35d58b14dfd991da94ea11ef5e72bcd384287217182ddfebe1a2129b3e254a",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "revision": "bc3bb3f7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 1
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM035-fb35d58b-M001",
+      "cell": 0,
+      "start": 395,
+      "end": 408,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    }
+  ]
+}

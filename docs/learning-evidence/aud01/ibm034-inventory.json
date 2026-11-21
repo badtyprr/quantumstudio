@@ -1,0 +1,1551 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "revision": "bc3bb3f7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 140,
+    "diagnostic": 15
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM034-94ee62dd-M001",
+      "cell": 0,
+      "start": 249,
+      "end": 261,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M002",
+      "cell": 0,
+      "start": 335,
+      "end": 353,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M003",
+      "cell": 0,
+      "start": 358,
+      "end": 376,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M004",
+      "cell": 0,
+      "start": 458,
+      "end": 468,
+      "literal": "$x\\in A_1$",
+      "status": "exact",
+      "display": "x ∈ \"A_1\"",
+      "copy": "qmember(x,\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M005",
+      "cell": 0,
+      "start": 532,
+      "end": 550,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M006",
+      "cell": 0,
+      "start": 629,
+      "end": 639,
+      "literal": "$x\\in A_1$",
+      "status": "exact",
+      "display": "x ∈ \"A_1\"",
+      "copy": "qmember(x,\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M007",
+      "cell": 0,
+      "start": 665,
+      "end": 677,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M008",
+      "cell": 0,
+      "start": 684,
+      "end": 687,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M009",
+      "cell": 0,
+      "start": 713,
+      "end": 839,
+      "literal": "$$\nG^t \\vert u \\rangle\n= \\cos\\bigl((2t + 1)\\theta\\bigr) \\vert A_0\\rangle\n+ \\sin\\bigl((2t + 1)\\theta\\bigr) \\vert A_1\\rangle,\n$$",
+      "status": "exact",
+      "display": "(G^t) (qketstate('u')) = cos((2 · t + 1) · 'θ') |A_0⟩ + sin((2 · t + 1) · 'θ') |A_1⟩",
+      "copy": "qcompare(qadjacent(qpower(G,'t'),qketstate('u')),qadd(qadjacent(qcos(qadjacent(qadd(qadjacent(2,'t'),1),'θ')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(qadd(qadjacent(2,'t'),1),'θ')),qnamedket(\"A_1\"))),4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M010",
+      "cell": 0,
+      "start": 858,
+      "end": 861,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M011",
+      "cell": 0,
+      "start": 871,
+      "end": 937,
+      "literal": "$$\n\\langle A_1 \\vert G^t \\vert u \\rangle =\n\\sin((2t + 1)\\theta)\n$$",
+      "status": "exact",
+      "display": "⟨A_1| G^t · qketstate('u') = sin((2't''θ' + 'θ') rad)",
+      "copy": "qcompare(qmul(qmul(qdag(qnamedket(\"A_1\")),qpower(G,'t')),qketstate('u')),sin((('t')*('θ')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('θ')*(qphysicalunit(\"rad\",\"\")))),4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M012",
+      "cell": 0,
+      "start": 954,
+      "end": 957,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM034-94ee62dd-M013",
+      "cell": 0,
+      "start": 1027,
+      "end": 1037,
+      "literal": "$x\\in A_1$",
+      "status": "exact",
+      "display": "x ∈ \"A_1\"",
+      "copy": "qmember(x,\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M014",
+      "cell": 0,
+      "start": 1074,
+      "end": 1095,
+      "literal": "$\\theta \\in (0,2\\pi)$",
+      "status": "exact",
+      "display": "'θ' ∈ (0, 2 · π)",
+      "copy": "qmember('θ',qrealinterval(0,qadjacent(2,π),0,0))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M015",
+      "cell": 0,
+      "start": 1107,
+      "end": 1129,
+      "literal": "$\\sin((2t + 1)\\theta)$",
+      "status": "exact",
+      "display": "sin((2't''θ' + 'θ') rad)",
+      "copy": "sin((('t')*('θ')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('θ')*(qphysicalunit(\"rad\",\"\"))))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M016",
+      "cell": 0,
+      "start": 1146,
+      "end": 1149,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M017",
+      "cell": 0,
+      "start": 1338,
+      "end": 1348,
+      "literal": "$x\\in A_1$",
+      "status": "exact",
+      "display": "x ∈ \"A_1\"",
+      "copy": "qmember(x,\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M018",
+      "cell": 0,
+      "start": 1406,
+      "end": 1409,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M019",
+      "cell": 0,
+      "start": 1446,
+      "end": 1449,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M020",
+      "cell": 0,
+      "start": 1480,
+      "end": 1483,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM034-94ee62dd-M021",
+      "cell": 0,
+      "start": 1493,
+      "end": 1496,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M022",
+      "cell": 0,
+      "start": 1521,
+      "end": 1524,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M023",
+      "cell": 0,
+      "start": 1555,
+      "end": 1579,
+      "literal": "$\\sin( (2t + 1) \\theta)$",
+      "status": "exact",
+      "display": "sin((2't''θ' + 'θ') rad)",
+      "copy": "sin((('t')*('θ')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('θ')*(qphysicalunit(\"rad\",\"\"))))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M024",
+      "cell": 0,
+      "start": 1589,
+      "end": 1592,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM034-94ee62dd-M025",
+      "cell": 0,
+      "start": 1650,
+      "end": 1653,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M026",
+      "cell": 0,
+      "start": 1663,
+      "end": 1707,
+      "literal": "$$\n(2t + 1) \\theta \\approx \\frac{\\pi}{2}.\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M027",
+      "cell": 0,
+      "start": 1721,
+      "end": 1724,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M028",
+      "cell": 0,
+      "start": 1733,
+      "end": 1783,
+      "literal": "$$\nt \\approx \\frac{\\pi}{4\\theta} - \\frac{1}{2}.\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M029",
+      "cell": 0,
+      "start": 1796,
+      "end": 1799,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M030",
+      "cell": 0,
+      "start": 1955,
+      "end": 2011,
+      "literal": "$$\nt = \\Bigl\\lfloor \\frac{\\pi}{4\\theta} \\Bigr\\rfloor.\n$$",
+      "status": "exact",
+      "display": "t = floor(π ∕ (4'θ'))",
+      "copy": "('t')==(floor(π ∕ (4 ⋅ 'θ')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M031",
+      "cell": 0,
+      "start": 2267,
+      "end": 2288,
+      "literal": "$\\pi/(4\\theta) - 1/2$",
+      "status": "exact",
+      "display": "π ∕ (4'θ') − 0.5",
+      "copy": "π ∕ (4 ⋅ 'θ') − 1 ∕ 2"
+    },
+    {
+      "id": "IBM034-94ee62dd-M032",
+      "cell": 0,
+      "start": 2361,
+      "end": 2364,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M033",
+      "cell": 0,
+      "start": 2596,
+      "end": 2604,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M034",
+      "cell": 0,
+      "start": 2630,
+      "end": 2700,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl(\\sqrt{\\frac{\\vert A_1\\vert}{N}}\\biggr),\n$$",
+      "status": "exact",
+      "display": "asin(√(|\"A_1\"| / N)) = 'θ'",
+      "copy": "(qasin(qsqrt(qbars(\"A_1\") ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M035",
+      "cell": 0,
+      "start": 2751,
+      "end": 2754,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M036",
+      "cell": 0,
+      "start": 2791,
+      "end": 2796,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M037",
+      "cell": 0,
+      "start": 2981,
+      "end": 2984,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM034-94ee62dd-M038",
+      "cell": 0,
+      "start": 2995,
+      "end": 3003,
+      "literal": "$f(x)=1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M039",
+      "cell": 0,
+      "start": 3121,
+      "end": 3180,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl( \\sqrt{\\frac{1}{N}} \\biggr),\n$$",
+      "status": "exact",
+      "display": "asin(√(1 / N)) = 'θ'",
+      "copy": "(qasin(qsqrt(1 ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M040",
+      "cell": 0,
+      "start": 3225,
+      "end": 3310,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl( \\sqrt{\\frac{1}{N}} \\biggr) \\approx \\sqrt{\\frac{1}{N}}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M041",
+      "cell": 0,
+      "start": 3317,
+      "end": 3320,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M042",
+      "cell": 0,
+      "start": 3350,
+      "end": 3371,
+      "literal": "$\\theta = 1/\\sqrt{N}$",
+      "status": "exact",
+      "display": "N = 1 ∕ 'θ'² and 'θ' > 0",
+      "copy": "(('N')==(1 ∕ 'θ'²) and ('θ')>(0))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M043",
+      "cell": 0,
+      "start": 3393,
+      "end": 3448,
+      "literal": "$$\nt = \\Bigl\\lfloor \\frac{\\pi}{4\\theta} \\Bigr\\rfloor\n$$",
+      "status": "exact",
+      "display": "t = floor(π ∕ (4'θ'))",
+      "copy": "('t')==(floor(π ∕ (4 ⋅ 'θ')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M044",
+      "cell": 0,
+      "start": 3461,
+      "end": 3519,
+      "literal": "$$\nt = \\Bigl\\lfloor \\frac{\\pi}{4}\\sqrt{N} \\Bigr\\rfloor.\n$$",
+      "status": "exact",
+      "display": "floor(0.25π ⋅ √('N')) = t",
+      "copy": "(floor((π ⋅ √('N')) ∕ 4))==('t')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M045",
+      "cell": 0,
+      "start": 3536,
+      "end": 3539,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M046",
+      "cell": 0,
+      "start": 3586,
+      "end": 3589,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM034-94ee62dd-M047",
+      "cell": 0,
+      "start": 3651,
+      "end": 3654,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M048",
+      "cell": 0,
+      "start": 3749,
+      "end": 3762,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M049",
+      "cell": 0,
+      "start": 3830,
+      "end": 3833,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M050",
+      "cell": 0,
+      "start": 3947,
+      "end": 3999,
+      "literal": "$$\np(N,1) = \\sin^2 \\bigl( (2t + 1) \\theta \\bigr).\n$$",
+      "status": "exact",
+      "display": "[('N''p' − sin((2't''θ' + 'θ') rad)²)  ('p' − sin((2't''θ' + 'θ') rad)²)] = [0  0]",
+      "copy": "(vector(('N''p')+ (((sin((('t')*('θ')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('θ')*(qphysicalunit(\"rad\",\"\")))))^(2))*(−1)),('p')+ (((sin((('t')*('θ')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('θ')*(qphysicalunit(\"rad\",\"\")))))^(2))*(−1))))==(vector(0,0))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M051",
+      "cell": 0,
+      "start": 4021,
+      "end": 4024,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M052",
+      "cell": 0,
+      "start": 4112,
+      "end": 4115,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM034-94ee62dd-M053",
+      "cell": 0,
+      "start": 4330,
+      "end": 4339,
+      "literal": "$N = 2^n$",
+      "status": "exact",
+      "display": "N = 2^n",
+      "copy": "('N')==(2^n)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M054",
+      "cell": 0,
+      "start": 4342,
+      "end": 4739,
+      "literal": "$$\n\\begin{array}{ll}\nN & p(N,1)\\\\ \\hline\n2\t& 0.5000000000\\\\\n4\t& 1.0000000000\\\\\n8\t& 0.9453125000\\\\\n16\t& 0.9613189697\\\\\n32\t& 0.9991823155\\\\\n64\t& 0.9965856808\\\\\n128\t& 0.9956198657\\\\\n256\t& 0.9999470421\\\\\n512\t& 0.9994480262\\\\\n1024 &\t 0.9994612447\\\\\n2048 &\t 0.9999968478\\\\\n4096 &\t 0.9999453461\\\\\n8192 &\t 0.9999157752\\\\\n16384 &\t 0.9999997811\\\\\n32768 &\t 0.9999868295\\\\\n65536 &\t 0.9999882596\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M055",
+      "cell": 0,
+      "start": 4853,
+      "end": 4858,
+      "literal": "$N=4$",
+      "status": "exact",
+      "display": "N = 4",
+      "copy": "('N')==(4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M056",
+      "cell": 0,
+      "start": 4944,
+      "end": 4977,
+      "literal": "$$\np(N,1) \\geq 1 - \\frac{1}{N}\n$$",
+      "status": "diagnostic",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM034-94ee62dd-M057",
+      "cell": 0,
+      "start": 4987,
+      "end": 4990,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M058",
+      "cell": 0,
+      "start": 5030,
+      "end": 5033,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM034-94ee62dd-M059",
+      "cell": 0,
+      "start": 5050,
+      "end": 5053,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M060",
+      "cell": 0,
+      "start": 5173,
+      "end": 5190,
+      "literal": "$p(N,1) \\geq 1/2$",
+      "status": "diagnostic",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM034-94ee62dd-M061",
+      "cell": 0,
+      "start": 5271,
+      "end": 5274,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM034-94ee62dd-M062",
+      "cell": 0,
+      "start": 5343,
+      "end": 5353,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M063",
+      "cell": 0,
+      "start": 5378,
+      "end": 5381,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M064",
+      "cell": 0,
+      "start": 5426,
+      "end": 5429,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM034-94ee62dd-M065",
+      "cell": 0,
+      "start": 5440,
+      "end": 5450,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M066",
+      "cell": 0,
+      "start": 5476,
+      "end": 5481,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM034-94ee62dd-M067",
+      "cell": 0,
+      "start": 5524,
+      "end": 5527,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M068",
+      "cell": 0,
+      "start": 5611,
+      "end": 5614,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM034-94ee62dd-M069",
+      "cell": 0,
+      "start": 5640,
+      "end": 5648,
+      "literal": "$2^{-m}$",
+      "status": "exact",
+      "display": "0.5^m",
+      "copy": "(1 ∕ 2)^'m'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M070",
+      "cell": 0,
+      "start": 5665,
+      "end": 5680,
+      "literal": "$O(m \\sqrt{N})$",
+      "status": "exact",
+      "display": "O(m · √(N))",
+      "copy": "qbigorder(qadjacent('m',qsqrt('N')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M071",
+      "cell": 0,
+      "start": 5692,
+      "end": 5695,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M072",
+      "cell": 0,
+      "start": 5730,
+      "end": 5733,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM034-94ee62dd-M073",
+      "cell": 0,
+      "start": 5760,
+      "end": 5772,
+      "literal": "$1 - 2^{-m}$",
+      "status": "exact",
+      "display": "1 − 0.5^m",
+      "copy": "1 − (1 ∕ 2)^'m'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M074",
+      "cell": 0,
+      "start": 5797,
+      "end": 5818,
+      "literal": "$p(N,1) \\geq 1 - 1/N$",
+      "status": "diagnostic",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM034-94ee62dd-M075",
+      "cell": 0,
+      "start": 5856,
+      "end": 5866,
+      "literal": "$x\\in A_1$",
+      "status": "exact",
+      "display": "x ∈ \"A_1\"",
+      "copy": "qmember(x,\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M076",
+      "cell": 0,
+      "start": 5906,
+      "end": 5918,
+      "literal": "$1 - N^{-m}$",
+      "status": "exact",
+      "display": "1 − (1 / N^m)",
+      "copy": "1 − 1 ∕ 'N'^'m'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M077",
+      "cell": 0,
+      "start": 5973,
+      "end": 5978,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M078",
+      "cell": 0,
+      "start": 6009,
+      "end": 6017,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M079",
+      "cell": 0,
+      "start": 6135,
+      "end": 6156,
+      "literal": "$s = \\vert A_1 \\vert$",
+      "status": "exact",
+      "display": "|\"A_1\"| = s",
+      "copy": "(qbars(\"A_1\"))==('s')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M080",
+      "cell": 0,
+      "start": 6224,
+      "end": 6233,
+      "literal": "$s\\geq 1$",
+      "status": "exact",
+      "display": "s ≥ 1",
+      "copy": "('s')>=(1)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M081",
+      "cell": 0,
+      "start": 6288,
+      "end": 6295,
+      "literal": "$s = 4$",
+      "status": "exact",
+      "display": "s = 4",
+      "copy": "('s')==(4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M082",
+      "cell": 0,
+      "start": 6378,
+      "end": 6437,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl( \\sqrt{\\frac{4}{N}} \\biggr),\n$$",
+      "status": "exact",
+      "display": "asin(√(4 / N)) = 'θ'",
+      "copy": "(qasin(qsqrt(4 ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M083",
+      "cell": 0,
+      "start": 6493,
+      "end": 6514,
+      "literal": "$\\vert A_1 \\vert = 1$",
+      "status": "exact",
+      "display": "|\"A_1\"| = 1",
+      "copy": "(qbars(\"A_1\"))==(1)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M084",
+      "cell": 0,
+      "start": 6525,
+      "end": 6528,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M085",
+      "cell": 0,
+      "start": 6610,
+      "end": 6613,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M086",
+      "cell": 0,
+      "start": 6650,
+      "end": 6732,
+      "literal": "$$\nt = \\Biggl\\lfloor \\frac{\\pi}{4\\sin^{-1}\\bigl(1/\\sqrt{N}\\bigr)}\\Biggr\\rfloor.\n$$",
+      "status": "exact",
+      "display": "floor(π ∕ qadjacent(4, qasin(1 ∕ qsqrt('N')))) = t",
+      "copy": "(floor(π ∕ qadjacent(4, qasin(1 ∕ qsqrt('N')))))==('t')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M087",
+      "cell": 0,
+      "start": 6816,
+      "end": 7207,
+      "literal": "$$\n\\begin{array}{ll}\nN & \\text{Success probability}\\\\ \\hline\n4\t& 1.0000000000\\\\\n8\t& 0.5000000000\\\\\n16\t& 0.2500000000\\\\\n32\t& 0.0122070313\\\\\n64\t& 0.0203807689\\\\\n128\t& 0.0144530758\\\\\n256\t& 0.0000705058\\\\\n512\t& 0.0019310741\\\\\n1024\t& 0.0023009083\\\\\n2048\t& 0.0000077506\\\\\n4096\t& 0.0002301502\\\\\n8192\t& 0.0003439882\\\\\n16384\t& 0.0000007053\\\\\n32768\t& 0.0000533810\\\\\n65536\t& 0.0000472907\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M088",
+      "cell": 0,
+      "start": 7254,
+      "end": 7257,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM034-94ee62dd-M089",
+      "cell": 0,
+      "start": 7261,
+      "end": 7264,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M090",
+      "cell": 0,
+      "start": 7426,
+      "end": 7444,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M091",
+      "cell": 0,
+      "start": 7462,
+      "end": 7481,
+      "literal": "$-\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "−|A_0⟩",
+      "copy": "−qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M092",
+      "cell": 0,
+      "start": 7537,
+      "end": 7540,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M093",
+      "cell": 0,
+      "start": 7552,
+      "end": 7606,
+      "literal": "$$\nt = \\Bigl\\lfloor \\frac{\\pi}{4\\theta}\\Bigr\\rfloor\n$$",
+      "status": "exact",
+      "display": "t = floor(π ∕ (4'θ'))",
+      "copy": "('t')==(floor(π ∕ (4 ⋅ 'θ')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M094",
+      "cell": 0,
+      "start": 7613,
+      "end": 7672,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl( \\sqrt{\\frac{s}{N}} \\biggr),\n$$",
+      "status": "exact",
+      "display": "asin(√(s / N)) = 'θ'",
+      "copy": "(qasin(qsqrt('s' ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M095",
+      "cell": 0,
+      "start": 7752,
+      "end": 7755,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M096",
+      "cell": 0,
+      "start": 7797,
+      "end": 8176,
+      "literal": "$$\n\\begin{array}{ll}\nN & p(N,4)\\\\ \\hline\n4\t & 1.0000000000\\\\\n8\t & 0.5000000000\\\\\n16\t & 1.0000000000\\\\\n32\t & 0.9453125000\\\\\n64\t & 0.9613189697\\\\\n128\t & 0.9991823155\\\\\n256\t & 0.9965856808\\\\\n512\t & 0.9956198657\\\\\n1024\t& 0.9999470421\\\\\n2048\t& 0.9994480262\\\\\n4096\t& 0.9994612447\\\\\n8192\t& 0.9999968478\\\\\n16384\t& 0.9999453461\\\\\n32768\t& 0.9999157752\\\\\n65536\t& 0.9999997811\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M097",
+      "cell": 0,
+      "start": 8240,
+      "end": 8274,
+      "literal": "$$\np(N,s) \\geq 1 - \\frac{s}{N},\n$$",
+      "status": "diagnostic",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM034-94ee62dd-M098",
+      "cell": 0,
+      "start": 8326,
+      "end": 8334,
+      "literal": "$p(N,s)$",
+      "status": "exact",
+      "display": "['N''p'  'p''s']",
+      "copy": "vector('N''p','p''s')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M099",
+      "cell": 0,
+      "start": 8391,
+      "end": 8394,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M100",
+      "cell": 0,
+      "start": 8440,
+      "end": 8443,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M101",
+      "cell": 0,
+      "start": 8470,
+      "end": 8473,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M102",
+      "cell": 0,
+      "start": 8510,
+      "end": 8519,
+      "literal": "$1 - s/N$",
+      "status": "exact",
+      "display": "1 − (s / N)",
+      "copy": "1 − 's' ∕ 'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M103",
+      "cell": 0,
+      "start": 8654,
+      "end": 8657,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M104",
+      "cell": 0,
+      "start": 8688,
+      "end": 8691,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M105",
+      "cell": 0,
+      "start": 8800,
+      "end": 8808,
+      "literal": "$p(N,s)$",
+      "status": "exact",
+      "display": "['N''p'  'p''s']",
+      "copy": "vector('N''p','p''s')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M106",
+      "cell": 0,
+      "start": 8903,
+      "end": 8933,
+      "literal": "$$\np(N,s) \\geq \\frac{s}{N}.\n$$",
+      "status": "diagnostic",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM034-94ee62dd-M107",
+      "cell": 0,
+      "start": 8992,
+      "end": 9006,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M108",
+      "cell": 0,
+      "start": 9138,
+      "end": 9143,
+      "literal": "$t=0$",
+      "status": "exact",
+      "display": "t = 0",
+      "copy": "('t')==(0)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M109",
+      "cell": 0,
+      "start": 9273,
+      "end": 9328,
+      "literal": "$$\nt = \\Bigl\\lfloor \\frac{\\pi}{4\\theta}\\Bigr\\rfloor,\n$$",
+      "status": "exact",
+      "display": "t = floor(π ∕ (4'θ'))",
+      "copy": "('t')==(floor(π ∕ (4 ⋅ 'θ')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M110",
+      "cell": 0,
+      "start": 9335,
+      "end": 9392,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl(\\sqrt{\\frac{s}{N}}\\biggr).\n$$",
+      "status": "exact",
+      "display": "asin(√(s / N)) = 'θ'",
+      "copy": "(qasin(qsqrt('s' ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M111",
+      "cell": 0,
+      "start": 9404,
+      "end": 9422,
+      "literal": "$\\alpha \\in [0,1]$",
+      "status": "exact",
+      "display": "'α' ∈ [0, 1]",
+      "copy": "qmember('α',qrealinterval(0,1,1,1))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M112",
+      "cell": 0,
+      "start": 9444,
+      "end": 9474,
+      "literal": "$\\sin^{-1}(\\alpha)\\geq \\alpha$",
+      "status": "exact",
+      "display": "asin('α') − 'α' ≥ 0",
+      "copy": "(qasin('α') − 'α')>=(0)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M113",
+      "cell": 0,
+      "start": 9484,
+      "end": 9564,
+      "literal": "$$\n\\theta = \\sin^{-1}\\left(\\sqrt{\\frac{s}{N}}\\right) \\geq \\sqrt{\\frac{s}{N}}.\n$$",
+      "status": "exact",
+      "display": "s = 0 and 'θ' = 0 and N > 0 or s = 0 and 'θ' = 0 and N < 0 or asin(√(s / N)) = 'θ' and N > 0 and N ≥ s / 'θ'² and s ≥ 0 or asin(√(s / N)) = 'θ' and N < 0 and N ≤ s / 'θ'² and s ≤ 0",
+      "copy": "((('N')<(0) and ('N')<=('s' ∕ 'θ'²) and ('s')<=(0) and (qasin(qsqrt('s' ∕ 'N')))==('θ')) or (('N')<(0) and ('s')==(0) and ('θ')==(0)) or (('N')>(0) and ('N')>=('s' ∕ 'θ'²) and ('s')>=(0) and (qasin(qsqrt('s' ∕ 'N')))==('θ')) or (('N')>(0) and ('s')==(0) and ('θ')==(0)))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M114",
+      "cell": 0,
+      "start": 9585,
+      "end": 9655,
+      "literal": "$$\nt \\leq \\frac{\\pi}{4\\theta} \\leq \\frac{\\pi}{4}\\sqrt{\\frac{N}{s}}.\n$$",
+      "status": "exact",
+      "display": "N ≥ 0 and N ≥ s / 'θ'² and s > 0 and t ≤ π ∕ (4'θ') or N ≤ 0 and N ≤ s / 'θ'² and s < 0 and t ≤ π ∕ (4'θ')",
+      "copy": "((('N')<=('s' ∕ 'θ'²) and ('N')<=(0) and ('s')<(0) and ('t')<=(π ∕ (4 ⋅ 'θ'))) or (('N')>=('s' ∕ 'θ'²) and ('N')>=(0) and ('s')>(0) and ('t')<=(π ∕ (4 ⋅ 'θ'))))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M115",
+      "cell": 0,
+      "start": 9714,
+      "end": 9717,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M116",
+      "cell": 0,
+      "start": 9775,
+      "end": 9815,
+      "literal": "$$\nO\\biggl(\\sqrt{\\frac{N}{s}}\\biggr).\n$$",
+      "status": "exact",
+      "display": "O(√(N / s))",
+      "copy": "qbigorder(qsqrt('N' ∕ 's'))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M117",
+      "cell": 0,
+      "start": 9876,
+      "end": 9897,
+      "literal": "$s = \\vert A_1 \\vert$",
+      "status": "exact",
+      "display": "|\"A_1\"| = s",
+      "copy": "(qbars(\"A_1\"))==('s')"
+    },
+    {
+      "id": "IBM034-94ee62dd-M118",
+      "cell": 0,
+      "start": 9997,
+      "end": 10000,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M119",
+      "cell": 0,
+      "start": 10025,
+      "end": 10028,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M120",
+      "cell": 0,
+      "start": 10106,
+      "end": 10180,
+      "literal": "$$\nt \\in \\Bigl\\{ 1,\\ldots,\\bigl\\lfloor\\pi\\sqrt{N}/4\\bigr\\rfloor \\Bigr\\}\n$$",
+      "status": "exact",
+      "display": "t ∈ indexrange(1, floor(0.25π ⋅ √('N')))",
+      "copy": "qmember('t',qindexrange(1,floor((π ⋅ √('N')) ∕ 4)))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M121",
+      "cell": 0,
+      "start": 10215,
+      "end": 10218,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M122",
+      "cell": 0,
+      "start": 10504,
+      "end": 10516,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M123",
+      "cell": 0,
+      "start": 10620,
+      "end": 10638,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M124",
+      "cell": 0,
+      "start": 10643,
+      "end": 10661,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M125",
+      "cell": 0,
+      "start": 10710,
+      "end": 10728,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM034-94ee62dd-M126",
+      "cell": 0,
+      "start": 10901,
+      "end": 10904,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM034-94ee62dd-M127",
+      "cell": 0,
+      "start": 10977,
+      "end": 10992,
+      "literal": "$O(\\sqrt{N/s})$",
+      "status": "exact",
+      "display": "O(√(N / s))",
+      "copy": "qbigorder(qsqrt('N' ∕ 's'))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M128",
+      "cell": 0,
+      "start": 11036,
+      "end": 11039,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M129",
+      "cell": 0,
+      "start": 11067,
+      "end": 11080,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M130",
+      "cell": 0,
+      "start": 11135,
+      "end": 11140,
+      "literal": "$s=0$",
+      "status": "exact",
+      "display": "s = 0",
+      "copy": "('s')==(0)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M131",
+      "cell": 0,
+      "start": 11171,
+      "end": 11174,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M132",
+      "cell": 0,
+      "start": 11208,
+      "end": 11224,
+      "literal": "$\\{1,\\ldots,T\\}$",
+      "status": "diagnostic",
+      "message": "Finite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM034-94ee62dd-M133",
+      "cell": 0,
+      "start": 11263,
+      "end": 11266,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM034-94ee62dd-M134",
+      "cell": 0,
+      "start": 11301,
+      "end": 11308,
+      "literal": "$T = 1$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM034-94ee62dd-M135",
+      "cell": 0,
+      "start": 11414,
+      "end": 11417,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM034-94ee62dd-M136",
+      "cell": 0,
+      "start": 11638,
+      "end": 11641,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM034-94ee62dd-M137",
+      "cell": 0,
+      "start": 11702,
+      "end": 11742,
+      "literal": "$T \\leftarrow \\lceil \\frac{5}{4}T\\rceil$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\leftarrow at byte 13"
+    },
+    {
+      "id": "IBM034-94ee62dd-M138",
+      "cell": 0,
+      "start": 11797,
+      "end": 11800,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM034-94ee62dd-M139",
+      "cell": 0,
+      "start": 12034,
+      "end": 12242,
+      "literal": "$$\n\\begin{aligned}\n  \\vert A_0\\rangle &= \\frac{1}{\\sqrt{\\vert A_0\\vert}} \\sum_{x\\in A_0} \\vert x\\rangle \\\\\n  \\vert A_1\\rangle &= \\frac{1}{\\sqrt{\\vert A_1\\vert}} \\sum_{x\\in A_1} \\vert x\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  |A_0⟩ = 1 / √(|\"A_0\"|) · (∑_{k ∈ \"A_0\"} (|k⟩))\n\n2.  |A_1⟩ = 1 / √(|\"A_1\"|) · (∑_{k ∈ \"A_1\"} (|k⟩))",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_0\"),\"A_0\",\"qboundindex_0\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_1\"),\"A_1\",\"qboundindex_1\")),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM034-94ee62dd-M140",
+      "cell": 0,
+      "start": 12276,
+      "end": 12281,
+      "literal": "$A_0$",
+      "status": "exact",
+      "display": "\"A_0\"",
+      "copy": "\"A_0\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M141",
+      "cell": 0,
+      "start": 12286,
+      "end": 12291,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M142",
+      "cell": 0,
+      "start": 12466,
+      "end": 12480,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M143",
+      "cell": 0,
+      "start": 12749,
+      "end": 12754,
+      "literal": "$A_0$",
+      "status": "exact",
+      "display": "\"A_0\"",
+      "copy": "\"A_0\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M144",
+      "cell": 0,
+      "start": 12759,
+      "end": 12764,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M145",
+      "cell": 0,
+      "start": 12787,
+      "end": 12790,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M146",
+      "cell": 0,
+      "start": 12804,
+      "end": 12809,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M147",
+      "cell": 0,
+      "start": 12824,
+      "end": 12834,
+      "literal": "$f(x) = 0$",
+      "status": "exact",
+      "display": "f(x) = 0",
+      "copy": "qcompare(qnamedapplication('f',x),0,4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M148",
+      "cell": 0,
+      "start": 12845,
+      "end": 12859,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M149",
+      "cell": 0,
+      "start": 12865,
+      "end": 12870,
+      "literal": "$A_0$",
+      "status": "exact",
+      "display": "\"A_0\"",
+      "copy": "\"A_0\""
+    },
+    {
+      "id": "IBM034-94ee62dd-M150",
+      "cell": 0,
+      "start": 12885,
+      "end": 12895,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M151",
+      "cell": 0,
+      "start": 12906,
+      "end": 12920,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M152",
+      "cell": 0,
+      "start": 12939,
+      "end": 12985,
+      "literal": "$$\nZ_f \\vert u\\rangle = \\pm \\vert u\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Invalid set entry.\nMembership requires a scalar or binary-string label."
+    },
+    {
+      "id": "IBM034-94ee62dd-M153",
+      "cell": 0,
+      "start": 13002,
+      "end": 13256,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert u \\rangle\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) Z_f\\vert u\\rangle \\\\\n  & = \\pm \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) \\vert u\\rangle \\\\\n  & = \\pm \\vert u\\rangle.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Group a plus-minus equality separately from a comparison chain."
+    },
+    {
+      "id": "IBM034-94ee62dd-M154",
+      "cell": 0,
+      "start": 13303,
+      "end": 13306,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM034-94ee62dd-M155",
+      "cell": 0,
+      "start": 13394,
+      "end": 13408,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    }
+  ]
+}

@@ -1,0 +1,635 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/grover-algorithm-description.ipynb",
+  "source_sha256": "d60b500f57ce51007665c53daae3a04cfc3fef6054af2e6abe27297d2d91151a",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "revision": "bc3bb3f7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 59
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 869,
+      "end": 1064,
+      "alt": "A quantum circuit implementing a Z_f gate using one query gate together with the phase kickback phenomenon",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/Z_f.svg"
+    },
+    {
+      "cell": 0,
+      "start": 3746,
+      "end": 3904,
+      "alt": "A quantum circuit representation of the Grover operation",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/Grover_operation.svg"
+    },
+    {
+      "cell": 0,
+      "start": 4665,
+      "end": 4814,
+      "alt": "A quantum circuit for Grover's algorithm when t=3",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/Grover_circuit.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM032-d60b500f-M001",
+      "cell": 0,
+      "start": 553,
+      "end": 558,
+      "literal": "$U_f$",
+      "status": "exact",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M002",
+      "cell": 0,
+      "start": 589,
+      "end": 592,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M003",
+      "cell": 0,
+      "start": 668,
+      "end": 671,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M004",
+      "cell": 0,
+      "start": 687,
+      "end": 740,
+      "literal": "$$\nZ_f \\vert x\\rangle = (-1)^{f(x)} \\vert x\\rangle\n$$",
+      "status": "exact",
+      "display": "\"Z_f\" |x⟩ = (−1)^f(x) |x⟩",
+      "copy": "qcompare(qadjacent(\"Z_f\",qketstate(x)),qadjacent(qpower(−1,qnamedapplication('f',x)),qketstate(x)),4)"
+    },
+    {
+      "id": "IBM032-d60b500f-M005",
+      "cell": 0,
+      "start": 759,
+      "end": 773,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM032-d60b500f-M006",
+      "cell": 0,
+      "start": 790,
+      "end": 795,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M007",
+      "cell": 0,
+      "start": 836,
+      "end": 841,
+      "literal": "$U_f$",
+      "status": "exact",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M008",
+      "cell": 0,
+      "start": 1186,
+      "end": 1202,
+      "literal": "$\\vert -\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM032-d60b500f-M009",
+      "cell": 0,
+      "start": 1255,
+      "end": 1272,
+      "literal": "$\\vert - \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM032-d60b500f-M010",
+      "cell": 0,
+      "start": 1362,
+      "end": 1367,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M011",
+      "cell": 0,
+      "start": 1440,
+      "end": 1445,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M012",
+      "cell": 0,
+      "start": 1499,
+      "end": 1502,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM032-d60b500f-M013",
+      "cell": 0,
+      "start": 1564,
+      "end": 1578,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM032-d60b500f-M014",
+      "cell": 0,
+      "start": 1581,
+      "end": 1669,
+      "literal": "$$\n\\mathrm{OR}(x) =\n\\begin{cases}\n  0 & x = 0^n\\\\[0.5mm]\n  1 & x \\neq 0^n\n\\end{cases}\n$$",
+      "status": "exact",
+      "display": "O · R · x − if(qcompare(x, qcomparisonzero(x, n), 4), 0, if(qcompare(x, qcomparisonzero(x, n), 5), 1, undefined)) = 0",
+      "copy": "('O''R'x − if(qcompare(x, qcomparisonzero(x, n), 4), 0, if(qcompare(x, qcomparisonzero(x, n), 5), 1, undefined)))==(0)"
+    },
+    {
+      "id": "IBM032-d60b500f-M015",
+      "cell": 0,
+      "start": 1712,
+      "end": 1715,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM032-d60b500f-M016",
+      "cell": 0,
+      "start": 1753,
+      "end": 1885,
+      "literal": "$$\nZ_{\\mathrm{OR}} \\vert x\\rangle\n= \\begin{cases}\n  \\vert x\\rangle & x = 0^n \\\\[0.5mm]\n- \\vert x\\rangle & x \\neq 0^n.\n\\end{cases}\n$$",
+      "status": "exact",
+      "display": "(\"Z_\" · O · R) (|x⟩) = if(qcompare(x, qcomparisonzero(x, n), 4), qketstate(x), if(qcompare(x, qcomparisonzero(x, n), 5), −qketstate(x), undefined))",
+      "copy": "qcompare(qadjacent(qadjacent(\"Z_\",'O''R'),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)"
+    },
+    {
+      "id": "IBM032-d60b500f-M017",
+      "cell": 0,
+      "start": 1912,
+      "end": 1929,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M018",
+      "cell": 0,
+      "start": 2062,
+      "end": 2079,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M019",
+      "cell": 0,
+      "start": 2197,
+      "end": 2214,
+      "literal": "$U_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"U_\"",
+      "copy": "'O''R' ⋅ \"U_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M020",
+      "cell": 0,
+      "start": 2265,
+      "end": 2268,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM032-d60b500f-M021",
+      "cell": 0,
+      "start": 2379,
+      "end": 2396,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M022",
+      "cell": 0,
+      "start": 2489,
+      "end": 2506,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M023",
+      "cell": 0,
+      "start": 2541,
+      "end": 2544,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M024",
+      "cell": 0,
+      "start": 2692,
+      "end": 2697,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M025",
+      "cell": 0,
+      "start": 2702,
+      "end": 2719,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M026",
+      "cell": 0,
+      "start": 2791,
+      "end": 2794,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M027",
+      "cell": 0,
+      "start": 2899,
+      "end": 2902,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M028",
+      "cell": 0,
+      "start": 2929,
+      "end": 2932,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M029",
+      "cell": 0,
+      "start": 3109,
+      "end": 3112,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM032-d60b500f-M030",
+      "cell": 0,
+      "start": 3128,
+      "end": 3140,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM032-d60b500f-M031",
+      "cell": 0,
+      "start": 3163,
+      "end": 3182,
+      "literal": "$\\vert 0^n \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]^{⊗ n}",
+      "copy": "qtensorpow(matrix(2,1,[1,0]),n)"
+    },
+    {
+      "id": "IBM032-d60b500f-M032",
+      "cell": 0,
+      "start": 3236,
+      "end": 3248,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM032-d60b500f-M033",
+      "cell": 0,
+      "start": 3259,
+      "end": 3262,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M034",
+      "cell": 0,
+      "start": 3291,
+      "end": 3344,
+      "literal": "$G = H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} Z_f$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_f\" = G",
+      "copy": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)"
+    },
+    {
+      "id": "IBM032-d60b500f-M035",
+      "cell": 0,
+      "start": 3361,
+      "end": 3373,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM032-d60b500f-M036",
+      "cell": 0,
+      "start": 3399,
+      "end": 3411,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM032-d60b500f-M037",
+      "cell": 0,
+      "start": 3514,
+      "end": 3567,
+      "literal": "$G = H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} Z_f$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_f\" = G",
+      "copy": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)"
+    },
+    {
+      "id": "IBM032-d60b500f-M038",
+      "cell": 0,
+      "start": 3736,
+      "end": 3743,
+      "literal": "$n=7\\!$",
+      "status": "exact",
+      "display": "n = 7",
+      "copy": "(n)==(7)"
+    },
+    {
+      "id": "IBM032-d60b500f-M039",
+      "cell": 0,
+      "start": 3927,
+      "end": 3932,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M040",
+      "cell": 0,
+      "start": 3976,
+      "end": 3993,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M041",
+      "cell": 0,
+      "start": 4141,
+      "end": 4146,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M042",
+      "cell": 0,
+      "start": 4172,
+      "end": 4189,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M043",
+      "cell": 0,
+      "start": 4265,
+      "end": 4268,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M044",
+      "cell": 0,
+      "start": 4315,
+      "end": 4320,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM032-d60b500f-M045",
+      "cell": 0,
+      "start": 4431,
+      "end": 4448,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM032-d60b500f-M046",
+      "cell": 0,
+      "start": 4519,
+      "end": 4524,
+      "literal": "$n=7$",
+      "status": "exact",
+      "display": "n = 7",
+      "copy": "(n)==(7)"
+    },
+    {
+      "id": "IBM032-d60b500f-M047",
+      "cell": 0,
+      "start": 4529,
+      "end": 4534,
+      "literal": "$t=3$",
+      "status": "exact",
+      "display": "t = 3",
+      "copy": "('t')==(3)"
+    },
+    {
+      "id": "IBM032-d60b500f-M048",
+      "cell": 0,
+      "start": 4557,
+      "end": 4560,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M049",
+      "cell": 0,
+      "start": 4933,
+      "end": 4936,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M050",
+      "cell": 0,
+      "start": 5030,
+      "end": 5033,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M051",
+      "cell": 0,
+      "start": 5069,
+      "end": 5072,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M052",
+      "cell": 0,
+      "start": 5093,
+      "end": 5107,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM032-d60b500f-M053",
+      "cell": 0,
+      "start": 5130,
+      "end": 5133,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM032-d60b500f-M054",
+      "cell": 0,
+      "start": 5148,
+      "end": 5151,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM032-d60b500f-M055",
+      "cell": 0,
+      "start": 5192,
+      "end": 5202,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM032-d60b500f-M056",
+      "cell": 0,
+      "start": 5261,
+      "end": 5264,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM032-d60b500f-M057",
+      "cell": 0,
+      "start": 5284,
+      "end": 5294,
+      "literal": "$f(x) = 0$",
+      "status": "exact",
+      "display": "f(x) = 0",
+      "copy": "qcompare(qnamedapplication('f',x),0,4)"
+    },
+    {
+      "id": "IBM032-d60b500f-M058",
+      "cell": 0,
+      "start": 5377,
+      "end": 5380,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM032-d60b500f-M059",
+      "cell": 0,
+      "start": 5512,
+      "end": 5529,
+      "literal": "$t = O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "t = O(√(N))",
+      "copy": "qcompare('t',qbigorder(qsqrt('N')),4)"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Grover's algorithm",
+      "cell": 0,
+      "start": 3056,
+      "end": 3498
+    }
+  ]
+}
