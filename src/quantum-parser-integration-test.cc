@@ -25,6 +25,9 @@ int main(){try {
  equal("quantum:x=x=x","1");
  equal("quantum:binaryfraction(vector(1,0,1),3,1/3)","2/3");
  equal("quantum:binaryfraction(vector(1,0,1),2,1/3)","4/3");
+ equal(R"(quantum: 1/6 ∈ recoverphase(171/1024,21))","1");
+ equal(R"(quantum: cardinality(recoverphase(1/8,2)))","0");
+ equal(R"(quantum: 5/7 ∈ recoverphase(sqrt(2)/2,8))","1");
  equal(R"(quantum:replace(replace(replace(binarytail("a_",4),a_5,1),a_4,0),binarytail("a_",6),0))","1/4");
  equal(R"(quantum:checkaction(X,(|0>\mapsto|1>)))","1");
  equal("quantum:checkaction(Z,(|0>↦|1>))","0");
@@ -36,6 +39,7 @@ int main(){try {
  equal("quantum:exp(2*pi*i/100)≈0.998-0.063i","0");
  equal(R"(quantum:replace((δ=\pm 1/2),δ,-1/2))","1");
  equal("quantum:replace((δ=±1/2),δ,0)","0");
+ equal(R"(quantum:replace((Z_{\mathrm{OR}}), "Z_OR", 7))","7");
  equal("quantum:3=1±2*3-4","1");
  equal(R"(quantum:0\in\bigl[-1/2,1/2\bigr])","1");
  equal("quantum:1∈(0,1)","0");equal("quantum:1∈[1,1]","1");

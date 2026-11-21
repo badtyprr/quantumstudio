@@ -1,0 +1,25 @@
+{
+  "source_sha256": {
+    "32": "d60b500f57ce51007665c53daae3a04cfc3fef6054af2e6abe27297d2d91151a",
+    "33": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe"
+  },
+  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
+  "results": [
+    {
+      "source_id": "IBM032-d60b500f-M016",
+      "substitutions": 84,
+      "copy": "qcompare(qadjacent(\"Z_OR\",qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)"
+    },
+    {
+      "source_id": "IBM032-d60b500f-M017",
+      "substitutions": 9,
+      "copy": "\"Z_OR\""
+    },
+    {
+      "source_id": "IBM033-cf35c640-M055",
+      "substitutions": 9,
+      "copy": "qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_OR\"),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))"
+    }
+  ],
+  "mode": "worker"
+}

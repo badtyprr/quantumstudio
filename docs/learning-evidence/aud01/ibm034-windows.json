@@ -1,0 +1,101 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+  "notebook_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "4d3f5c418c412eeb39f974acc76f39f59ba4e71f286741d674dc69d3272aff8e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "34281e309ee75e6719b64790eeaf21f42e1c857c9a3abc034a375cc0a833ed26",
+  "suite": {
+    "passed": true,
+    "checks": 1615,
+    "calls": 155,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "counts": {
+    "source_exact": 145,
+    "restored_identically": 145,
+    "exact_after_reentry": 145,
+    "stable_copy_text": 138,
+    "source_diagnostic": 10
+  },
+  "diagnostics": [
+    {
+      "id": "IBM034-94ee62dd-M026",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M028",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M040",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM034-94ee62dd-M054",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M087",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M096",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM034-94ee62dd-M132",
+      "message": "Finite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM034-94ee62dd-M137",
+      "message": "Unsupported TeX command: \\leftarrow at byte 13"
+    },
+    {
+      "id": "IBM034-94ee62dd-M152",
+      "message": "Invalid set entry.\nMembership requires a scalar or binary-string label."
+    },
+    {
+      "id": "IBM034-94ee62dd-M153",
+      "message": "Group a plus-minus equality separately from a comparison chain."
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM034-94ee62dd-M056",
+      "first": "((('N')<(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')<=(−1)) or (('N')>(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')>=(−1)))",
+      "second": "((('N')<(0) and (qsub(qmul(qprobabilitycall('N',1),'N'),'N'))<=(−1)) or (('N')>(0) and (qsub(qmul(qprobabilitycall('N',1),'N'),'N'))>=(−1)))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M074",
+      "first": "((('N')<(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')<=(−1)) or (('N')>(0) and (qprobabilitycall('N', 1) ⋅ 'N' − 'N')>=(−1)))",
+      "second": "((('N')<(0) and (qsub(qmul(qprobabilitycall('N',1),'N'),'N'))<=(−1)) or (('N')>(0) and (qsub(qmul(qprobabilitycall('N',1),'N'),'N'))>=(−1)))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M097",
+      "first": "((('N')<(0) and (qprobabilitycall('N', 's') ⋅ 'N' − 'N')<=(−'s')) or (('N')>(0) and (qprobabilitycall('N', 's') ⋅ 'N' − 'N')>=(−'s')))",
+      "second": "((('N')<(0) and (qsub(qmul(qprobabilitycall('N','s'),'N'),'N'))<=(−'s')) or (('N')>(0) and (qsub(qmul(qprobabilitycall('N','s'),'N'),'N'))>=(−'s')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M106",
+      "first": "((('N')<(0) and (qprobabilitycall('N', 's') ⋅ 'N')<=('s')) or (('N')>(0) and (qprobabilitycall('N', 's') ⋅ 'N')>=('s')))",
+      "second": "((('N')<(0) and (qmul(qprobabilitycall('N','s'),'N'))<=('s')) or (('N')>(0) and (qmul(qprobabilitycall('N','s'),'N'))>=('s')))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M112",
+      "first": "(qasin('α') − 'α')>=(0)",
+      "second": "(qsub(qasin('α'),'α'))>=(0)"
+    },
+    {
+      "id": "IBM034-94ee62dd-M120",
+      "first": "qmember('t',qindexrange(1,floor((π ⋅ √('N')) ∕ 4)))",
+      "second": "qmember('t',qindexrange(1,floor(qmul(π, qpower('N', 1 ∕ 2)) ∕ 4)))"
+    },
+    {
+      "id": "IBM034-94ee62dd-M139",
+      "first": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_0\"),\"A_0\",\"qboundindex_0\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_1\"),\"A_1\",\"qboundindex_1\")),4)\\end{gathered}",
+      "second": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_2\"),\"A_0\",\"qboundindex_2\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_3\"),\"A_1\",\"qboundindex_3\")),4)\\end{gathered}"
+    }
+  ],
+  "failures": []
+}

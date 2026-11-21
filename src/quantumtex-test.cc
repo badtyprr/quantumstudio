@@ -17,9 +17,19 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\mathbb{Z}_N)","qresidues(N)");
+  equal(R"(\mathbb{Z}_{21}^{\ast})","qunitsmod(21)");
+  equal(R"($5.333 \cdots$)","(5+3/9)");
+  equal(R"($-0.777\ldots$)","-(0+7/9)");
+  rejects(R"($1.234\cdots$)");
+  equal("$$1 +\n  % skip the unused expression {\n2$$",quantumTeX("$$1 +\n\n2$$"));
+  equal(R"(\gcd(a,N))","integergcd(a,N)");
   equal(R"($\vert\phi_0\rangle,\ldots,\vert\phi_3\rangle$)",R"(qindexedketlist("φ_",0,3,vector()))");
   equal(R"(\vert 0\rangle,\ldots,\vert N - 1\rangle)","qbasiskets(N)");
   equal(R"(\vert 00\rangle,\ldots,\vert 11\rangle)","qbasiskets(2^2)");
+  equal(R"($\{\vert 0\rangle,\ldots,\vert 14\rangle\}$)","qbasisketset((14)+1)");
+  equal(R"($\{\vert 0\rangle,\ldots,\vert N-1\rangle\}$)","qbasisketset(N)");
+  equal(R"($\{\vert 00\rangle,\ldots,\vert 11\rangle\}$)","qbasisketset(2^2)");
   rejects(R"(\vert 0\rangle,\ldots,\vert 11\rangle)");
   equal(R"(1 + r + r^2 + \cdots + r^{n-1})","qgeometricsum(r,(n-1)+1)");
   rejects(R"(1 + r + s^2 + \cdots + r^{n-1})");
@@ -173,7 +183,9 @@ int main() {
   equal(R"(\{0,\cdots,3\})","qindexrange(0,3)");
   equal(R"(\{0,...,3\})","qindexrange(0,3)");
   rejects(R"(\{0,\ldots\})");
-  rejects(R"(\{0,1,\ldots,3\})");
+  equal(R"(\{0,1,\ldots,3\})","qindexrange(0,3)");
+  rejects(R"(\{0,2,\ldots,3\})");
+  rejects(R"(\{8,9,10,\ldots,7\})");
 
   equal(R"(\{\})","qset(vector())");
   equal(R"(\{"a:b",'c:d'\})",R"(qset(vector("a:b",'c:d')))");
@@ -199,6 +211,9 @@ int main() {
   equal(R"(\tilde{\rho}_0)"," ρ_tilde_0");
   rejects(R"(\tilde{})");
   rejects(R"(\tilde{x+y})");
+  equal(R"(a=1\text{and}b=2)","a=1 and b=2");
+  equal(R"(a=1\text{ or }b=2)","a=1 or b=2");
+  rejects(R"(a=1\text{and then}b=2)");
   equal(R"(\begin{cases}1 & x=0\\2 & \text{otherwise}\end{cases})","(if(x=0,1,2))");
   equal(R"(\begin{cases}1 & y=z\\0 & y\neq z,\end{cases})",
         quantumTeX(R"(\begin{cases}1 & y=z\\0 & y\neq z\end{cases})"));
@@ -306,6 +321,13 @@ int main() {
   equal(R"(\begin{pmatrix}a_{0,0}&a_{0,1}\\a_{1,0}&a_{1,1}\end{pmatrix})", "[qindexedcoefficient(\"a_\",(0),(0)),qindexedcoefficient(\"a_\",(0),(1));qindexedcoefficient(\"a_\",(1),(0)),qindexedcoefficient(\"a_\",(1),(1))]");
   rejects("a_(0,1,2)");rejects("a_(0,)");
   equal("2a_(0,1)", "2qindexedcoefficient(\"a_\",(0),(1))");
+  equal(R"(\begin{array}{lr}N & \text{Success probability}\\ \hline 2 & 0.50\\4 & 1.00\end{array})",
+        "matrix(3,2,vector(\"N\",\"Success probability\",2,0.50,4,1.00))");
+  rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2\end{array})");
+  rejects(R"(\begin{array}{cc}N & p(N,1)\\ \hline 2 & 1.2.3\end{array})");
+  rejects(R"(\begin{array}{c}N\\ 2\end{array})");
+  equal(R"(Z_{\mathrm{OR}})","Z_OR");
+  equal(R"(U_{ f })","U_f");
   // A rejected call must not affect a subsequent independent translation.
   equal(R"(\ket{1})","|1>");
   std::cout<<"PASS: "<<checks<<" TeX translation and rejection checks\n";

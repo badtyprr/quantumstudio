@@ -84,6 +84,8 @@ The [IBM phase-estimation procedure](https://quantum.cloud.ibm.com/learning/en/c
 - Space-separated computational bits such as `|a_1 a_0>`: with phase parameter 1/4, the tested intermediate state after the first controlled operation is `[1;i;1;i]/2`. Each bit must evaluate to 0 or 1.
 - Open-ended circuit families such as `\{C_1,C_2,C_3,\ldots\}` retain the sequence of circuit names. Use `familyat(family,n)` with a concrete subscript, or substitute one later. For example, index 12 returns `C_12`. The explicit subscripts must be consecutive and use the same name.
 - A trial-divisor list such as `2,\ldots,\sqrt{N}` enumerates integers from 2 through the floor of the square root. For 15 it gives {2, 3}, for 16 it includes 4, and for 3 it is empty. A symbolic bound can be copied and assigned later. Finite ranges support up to 1,024 entries.
+- `basisset(N)` is the set of computational basis vectors in dimension N. Paste `$\{\vert 0\rangle,\ldots,\vert N-1\rangle\}$` for the same set. For example, `cardinality(basisset(15))` is 15 and `basis(0,16) ∈ basisset(15)` is false. For qubit words, matching endpoint widths set the dimension. `$\{\vert 00\rangle,\ldots,\vert 11\rangle\}$` contains four states.
+- An explicit modular congruence compares both residues. For example, `$3 \cdot 5 \equiv 1\;(\textrm{mod }7)$` gives 1, and `$-2\equiv4\pmod{7}$` gives 0. A symbolic modulus is supported in expressions such as `$a^r\equiv1\pmod{N}$`. Include the modulus in the same expression.
 - Modular powers such as `N^K\hspace{1mm} (\text{mod }M)` preserve all three operands. With integer base, nonnegative integer exponent and positive integer modulus, evaluation uses modular exponentiation. For example, `23^5 pmod (17)` gives 7.
 - TeX matrix row spacing such as `\\[1mm]`: the spacing is ignored, and the lesson's four-dimensional Fourier matrix is checked against `qfourier(4)`.
 - A TeX percentage scales its operand by one hundredth. For example, `40\%` gives 2/5 and `1/(25\%)` gives 4.
@@ -244,7 +246,7 @@ In `y = 0^m`, binding `y` to a bit string compares it with the all-zero word of 
 
 Use `bitstring("011")` to enter the three-bit word printed in Simon's lesson. It copies as `qbitlabel(3,3)`. In a definition such as `s=011`, binding `s` to a bit string compares both value and width. Binding `s` to a number selects decimal comparison. Similarly, `z=f(x)` keeps the application through Copy so a later binding of `f` to a finite graph performs a lookup.
 
-In a shared bound such as `0 ≤ N,M ≤ 2^n - 1`, both inequalities apply to each middle operand. Parenthesize the full bound when passing it to a function. For example, `vector(0 ≤ 3, 4 ≤ 2)` contains two independent comparisons.
+In a shared bound such as `0 ≤ N,M ≤ 2^n - 1`, both inequalities apply to each middle operand. A one-sided bound such as `b,c >= 2` requires both operands to satisfy the comparison. Here `c` names a scalar variable. Parenthesize the full bound when passing it to a function. For example, `vector(0 ≤ 3, 4 ≤ 2)` contains two independent comparisons.
 
 
 Internally, `bitstring(value,width)` constructs a width-carrying label, rather than an integer or state vector. `bitvalue`, `bitdot` and `bitxor` accept these labels. XOR of two labels preserves their width; mixing a label with an existing bit vector returns a bit vector. Dot products return parity, and binary operations require equal widths. The empty string has integer value zero and dot product zero with itself; its XOR with itself is the empty string. For example, `qketstate(bitxor(bitstring(5,4),bitstring(6,4)))` produces `|0011>`. Filtered binary domains work with concrete predicates, including empty and singleton results: `|\{x\in\{0,1\}^3:bitvalue(x)<3\}|` gives `3`. Duplicate labels compare by both width and value; `01` and `001` remain distinct strings. Label sets contain at most 1024 entries and are ordered first by width, then integer value. For an explicit list of labels, use `vector(bitstring(1,2),bitstring(1,3))`; square brackets currently route these non-scalar entries through matrix concatenation and reject them. General arithmetic on descriptors, arbitrary Cartesian alphabets, implicit definitions of `Sigma`, and unbounded materialization remain unfinished. Unsupported literal alphabets reject instead of being interpreted as vector powers. This does not establish whole-lesson compatibility.
@@ -335,6 +337,10 @@ Quantum-mode `[7]` preserves a one-element vector. For a named one-element colle
 
 Collections contain at most 1024 scalar entries, before duplicate removal. Entries are evaluated in exact mode and structurally equal results are counted once; this does not prove equality of arbitrary symbolic expressions. The empty sum is scalar zero. Matrix-valued summands are supported. Basis labels still require their dimension when it cannot be inferred: `\sum_{k\in\{0,1\}} |k>_2<k|_2` gives the two-dimensional identity, while bare `|k>` names a state.
 
+For phase-estimation postprocessing, `recoverphase(α,N)` finds the reduced fraction u/v with 0 ≤ u < N, 1 ≤ v < N, and |α − u/v| < 1/(2N²). Supply an exact phase strictly between 0 and 1 and an integer bound N ≥ 2. The result is a singleton set if the fraction exists and an empty set otherwise. For example, `recoverphase(171/1024,21)` gives {1/6}. At the strict boundary, `recoverphase(1/8,2)` gives the empty set. Check a candidate denominator r by computing `a^r pmod (N)` before using it to split N. A zero phase-estimation outcome supplies no denominator information.
+
+In quantum notation, `residues(N)` denotes the integer representatives from 0 through N − 1 for a positive exact modulus. `invertible_residues(N)` selects the representatives coprime to N. You can paste `\mathbb{Z}_N` and `\mathbb{Z}_N^{\ast}` directly. Moduli up to 1024 expand into finite sets. Membership at larger moduli is computed directly, for example `5 ∈ invertible_residues(10^30)` returns 0.
+
 Escaped set braces and membership are recognized in summation bounds. Arbitrary set algebra, infinite sets, and set-indexed products remain unfinished. The native function is `qsumset(body,collection,index)`. When directly nesting it inside the library's ordinary `sum` or `product` outside quantum mode, use distinct index names: those existing outer functions perform unscoped replacement. Quantum-mode parsing gives set-sum indices unique names to avoid that capture. Parser byte and node limits can reject an input before the collection-size limit is reached.
 
 ## Finite set literals and filtering comprehensions
@@ -352,6 +358,20 @@ Inside a TeX set, `\{a,\ldots,b\}` denotes the ascending integer range from `a` 
 This convention supports IBM's finite index domains `\{0,\ldots,n-1\}` after supplying `n`. An upper endpoint below the lower endpoint gives the empty range, so `n=0` yields an empty domain; equal endpoints give one member. The native function `qindexrange(first,last)` checks the span before allocating and permits at most 1024 entries. Large integer endpoints are allowed when their span fits that limit, and cancellation is checked during expansion. Range results compose with filtering comprehensions and set-indexed sums.
 
 This is an explicit step +1 convention, not arbitrary sequence inference. Descending or stepped sequences, multiple leading terms such as `\{0,1,\ldots,3\}`, tuples of ensemble entries, and infinite endpoints are not inferred by this form. Existing parser and collection limits still apply.
+
+A single gate letter used as an integer range endpoint denotes a variable. For example, `replace(indexrange(1,T),"T",3)` returns the set containing 1, 2 and 3.
+
+## Numeric tables in TeX
+
+Paste a TeX `array` with column labels, a `\hline` below those labels and integer or decimal data. The column declaration accepts `l`, `c` and `r`. The result is a matrix with the labels in its first row. A header such as `p(N,1)` is a label. Numeric cells contain the printed values and can be used in calculations.
+
+## Textual logical operators
+
+TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`. A negated operand can appear in a comparison, as in `g(x) = \neg f(x)`. The copied prefix `!` is accepted on re-entry.
+
+## Two-argument probability functions
+
+In Quantum notation, `p(N,s)` represents a scalar probability with two ordered arguments. It stays symbolic until you supply a value. For example, `replace((p(16,4) >= 3/4), p(16,4), 2/3)` returns 0. The displayed expression and its Copy text both accept substitutions. The existing input-size convention for `p(n,m)` and explicit `cost(...)` expressions still applies.
 
 ## Numerical conventions
 

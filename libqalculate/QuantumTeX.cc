@@ -71,8 +71,27 @@ std::string openBinaryFraction(const std::string &source) {
 }
 // Display mathematics may end with a sentence period or comma. Preserve decimals,
 // quoted labels, ellipses and dots following incomplete operators.
+// Full-line comments occur in pasted display derivations. Keep inline
+// remainder operators and escaped percentage signs in their original form.
+std::string withoutTeXCommentLines(const std::string &s) {
+ std::string result;
+ for(size_t begin=0;begin<s.size();) {
+  size_t end=s.find_first_of("\r\n",begin);
+  if(end==std::string::npos)end=s.size();
+  size_t first=begin;
+  while(first<end && (s[first]==' ' || s[first]=='\t'))++first;
+  if(first==end || s[first]!='%')result.append(s,begin,end-begin);
+  if(end==s.size())break;
+  result+=s[end];begin=end+1;
+ }
+ return result;
+}
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
+ // Display spacing may follow the sentence comma inside a math span.
+ while(mark!=std::string::npos && mark>1 && value[mark-1]=='\\' &&
+       (value[mark]==';' || value[mark]==',' || value[mark]=='!'))
+  mark=value.find_last_not_of(" \t\r\n",mark-2);
  if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
  if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1])) {
   // An unbraced TeX superscript consumes one token. The following period
@@ -564,6 +583,11 @@ bool registerSumDeclaration(const std::string &variable,const std::string &domai
  alphabet=trim(text.substr(0,power));width=trim(text.substr(power+1));
  return atom(alphabet) && atom(width);
 }
+void nextDecimalIndex(std::string &index) {
+ size_t pos=index.find_last_not_of('9');
+ if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
+ else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+}
 // Open-ended families need a common label and consecutive integer subscripts.
 // Keep only the first index; a trailing comma after the ellipsis is typography.
 std::string openIndexedFamily(const std::vector<std::string> &entries) {
@@ -577,9 +601,7 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || (start.size()>1 && start[0]=='0'))return "";
  for(size_t k=0;k+1<end;++k) {
   if(entries[k]!=prefix+index)return "";
-  size_t pos=index.find_last_not_of('9');
-  if(pos==std::string::npos)index="1"+std::string(index.size(),'0');
-  else {++index[pos];std::fill(index.begin()+pos+1,index.end(),'0');}
+  nextDecimalIndex(index);
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
@@ -590,17 +612,18 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
  std::string first=label(entries.front()),last=label(entries.back());
- if(ordered && first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
+ const std::string basis=ordered ? "qbasiskets(" : "qbasisketset(";
+ if(first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
     last.size()==first.size() && last.find_first_not_of("1")==std::string::npos)
-  return "qbasiskets(2^"+std::to_string(first.size())+")";
- if(ordered && first=="0" && last.size()>1 && last.find_first_not_of("01")==std::string::npos)
+  return basis+"2^"+std::to_string(first.size())+")";
+ if(first=="0" && last.size()>1 && last.find_first_not_of("01")==std::string::npos)
   throw std::runtime_error("Binary ket list endpoints must specify matching register widths.");
- if(ordered && first=="0") {
+ if(first=="0") {
   if(!last.empty() && last.find_first_not_of("0123456789")==std::string::npos && (last.size()==1 || last[0]!='0'))
-   return "qbasiskets(("+last+")+1)";
+   return basis+"("+last+")+1)";
   if(!last.empty() && asciiLetter(last[0])) {
    std::string offset=trim(last.substr(1));
-   if(!offset.empty() && offset[0]=='-' && trim(offset.substr(1))=="1")return "qbasiskets("+last.substr(0,1)+")";
+   if(!offset.empty() && offset[0]=='-' && trim(offset.substr(1))=="1")return basis+last.substr(0,1)+")";
   }
  }
  size_t split=first.rfind('_');
@@ -692,11 +715,15 @@ class TeXReader {
   ++pos;
  }
  // Match only the text label that introduces a parenthesized modulus.
- bool takeModulusLabel() {
+ bool takeModulusLabel(bool congruence) {
   size_t start=pos;
   space();
-  if(input.compare(pos,5,"\\text")==0) {
-   pos+=5;space();
+  size_t length=0;
+  if(congruence && input.compare(pos,7,"\\textrm")==0)length=7;
+  else if(congruence && input.compare(pos,7,"\\mathrm")==0)length=7;
+  else if(input.compare(pos,5,"\\text")==0)length=5;
+  if(length) {
+   pos+=length;space();
    if(pos<input.size() && input[pos]=='{') {
     ++pos;space();
     if(input.compare(pos,3,"mod")==0) {
@@ -783,8 +810,22 @@ class TeXReader {
     alphabet=openIndexedFamily(entries);
     if(alphabet.empty())alphabet=indexedKets(entries,false);
     if(alphabet.empty()) {
-     if(entries.size()!=3 || entries[1]!="..." || entries[0].empty() || entries[2].empty() || entries[0]=="..." || entries[2]=="...")throw std::runtime_error(error("Use two endpoints around one ellipsis for an ascending integer index range"));
-     alphabet="qindexrange("+entries[0]+","+entries[2]+")";
+     if(entries.size()<3 || entries[entries.size()-2]!="..." || entries.front().empty() || entries.back().empty() ||
+        entries.front()=="..." || entries.back()=="...")throw std::runtime_error(error("Expected endpoints for an ascending integer range"));
+     if(entries.size()>3) {
+      std::string index=entries.front();
+      if(index.find_first_not_of("0123456789")!=std::string::npos || (index.size()>1 && index.front()=='0'))
+       throw std::runtime_error(error("An explicit range prefix must contain consecutive nonnegative integers"));
+      for(size_t i=1;i+2<entries.size();++i) {
+       nextDecimalIndex(index);
+       if(entries[i]!=index)throw std::runtime_error(error("An explicit range prefix must contain consecutive integers"));
+      }
+      const std::string &end=entries.back();
+      if(end.find_first_not_of("0123456789")==std::string::npos &&
+         (end.size()<index.size() || (end.size()==index.size() && end<index)))
+       throw std::runtime_error(error("Range endpoint precedes its explicit prefix"));
+     }
+     alphabet="qindexrange("+entries.front()+","+entries.back()+")";
     }
    }
    size_t afterSet=pos;space();
@@ -811,6 +852,54 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
+ // A horizontal rule separates column labels from reported numeric data.
+ std::string numericTable() {
+  const std::string alignment=nameGroup();
+  if(alignment.empty() || alignment.find_first_not_of("lcr")!=std::string::npos)
+   throw std::runtime_error(error("A numeric table requires l, c or r for each column"));
+  const std::string endMarker="\\end{array}";
+  const size_t end=input.find(endMarker,pos);
+  if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  std::string values;
+  size_t rows=0;
+  while(pos<end) {
+   size_t rowEnd=input.find("\\\\",pos);
+   if(rowEnd==std::string::npos || rowEnd>end)rowEnd=end;
+   std::string row=trim(input.substr(pos,rowEnd-pos));
+   pos=rowEnd==end ? end : rowEnd+2;
+   if(row.empty() && pos==end)break;
+   if(rows==1) {
+    if(row.compare(0,6,"\\hline")!=0)throw std::runtime_error(error("A numeric table requires a horizontal rule below the labels"));
+    row=trim(row.substr(6));
+   }
+   size_t column=0,start=0;
+   while(true) {
+    size_t separator=row.find('&',start);
+    std::string cell=trim(row.substr(start,separator==std::string::npos ? std::string::npos : separator-start));
+    if(!rows) {
+     if(cell.compare(0,6,"\\text{")==0 && cell.back()=='}')cell=trim(cell.substr(6,cell.size()-7));
+     if(cell.empty() || cell.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ (),-")!=std::string::npos)
+      throw std::runtime_error(error("Unsupported column label in numeric table"));
+     cell="\""+cell+"\"";
+    } else {
+     size_t digit=!cell.empty() && (cell[0]=='+' || cell[0]=='-') ? 1 : 0;
+     const size_t point=cell.find('.',digit);
+     if(cell.find_first_of("0123456789",digit)==std::string::npos || cell.find_first_not_of("0123456789.",digit)!=std::string::npos ||
+        (point!=std::string::npos && cell.find('.',point+1)!=std::string::npos))
+      throw std::runtime_error(error("Numeric table entries must be integers or decimals"));
+    }
+    if(!values.empty())values+=",";
+    values+=cell;++column;
+    if(separator==std::string::npos)break;
+    start=separator+1;
+   }
+   if(column!=alignment.size())throw std::runtime_error(error("Numeric table row width differs from its column declaration"));
+   ++rows;
+  }
+  if(rows<2)throw std::runtime_error(error("A numeric table requires column labels and data"));
+  pos=end+endMarker.size();
+  return "matrix("+std::to_string(rows)+","+std::to_string(alignment.size())+",vector("+values+"))";
+ }
  std::string command(bool matrix, int &norms, bool cases=false,bool registerLabel=false,std::string *preceding=nullptr) {
   ++pos;
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
@@ -832,6 +921,12 @@ class TeXReader {
   }
   size_t start=pos; while(pos<input.size() && asciiLetter((unsigned char)input[pos])) ++pos;
   std::string name=input.substr(start,pos-start);
+  if(name=="equiv")return " qtexcongruent ";
+  if(name=="pmod") {
+   std::string modulus=trim(group());
+   if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
+   return " qtexmodulus ("+modulus+")";
+  }
   if(name=="hspace") {
    space();
    if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
@@ -1027,6 +1122,21 @@ class TeXReader {
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
    if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
+   if(name=="mathbb" && a=="Z") {
+    space();
+    if(pos<input.size() && input[pos]=='_') {
+     ++pos;std::string modulus=argument();
+     size_t end=pos;space();
+     bool units=false;
+     if(pos<input.size() && input[pos]=='^') {
+      ++pos;space();
+      for(const std::string suffix:{"{\\ast}","{*}","\\ast","*"})
+       if(input.compare(pos,suffix.size(),suffix)==0) {pos+=suffix.size();units=true;break;}
+     }
+     if(!units)pos=end;
+     return std::string(units ? "qunitsmod(" : "qresidues(")+modulus+")";
+    }
+   }
    if(name=="mathbb" && a=="T")return " qunitcircle() ";
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if(name=="operatorname" && a=="lg")a="qbitlength";
@@ -1034,8 +1144,10 @@ class TeXReader {
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
    return " "+a+" ";
   }
-  if(name=="text" && cases) {
+  if(name=="text") {
    std::string text=trim(group());
+   if(text=="and" || text=="or")return " "+text+" ";
+   if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
    if(text=="otherwise")return text;
    if(text!="if" && (text.size()<3 || text.compare(0,2,"if")!=0 || !std::isspace((unsigned char)text[2])))throw std::runtime_error(error("Cases text must introduce if or otherwise"));
    text=trim(text.substr(2));
@@ -1044,6 +1156,7 @@ class TeXReader {
   }
   if(name=="begin") {
    auto env=nameGroup();
+   if(env=="array")return numericTable();
    if(env=="cases") {
     // On the left of a cases definition, 0.a denotes a single fractional
     // bit. Validate its width when the bit is assigned a concrete value.
@@ -1079,6 +1192,24 @@ class TeXReader {
    return m;
   }
   if(name=="vdots" && matrix)return "⋮";
+  // A decimal followed immediately by an ellipsis can specify a recurring
+  // digit, as in 5.333... . Do not infer a repetend from mixed digits.
+  if((name=="cdots" || name=="ldots") && preceding) {
+   size_t end=preceding->find_last_not_of(" \t\r\n");
+   if(end!=std::string::npos && std::isdigit((unsigned char)(*preceding)[end])) {
+    size_t point=end;
+    while(point && (*preceding)[point]==(*preceding)[end])--point;
+    if((*preceding)[point]=='.' && end-point>=3) {
+     size_t begin=point;
+     while(begin && std::isdigit((unsigned char)(*preceding)[begin-1]))--begin;
+     if(begin<point && (!begin || (*preceding)[begin-1]!='.')) {
+      std::string whole=preceding->substr(begin,point-begin);
+      char digit=(*preceding)[end];preceding->erase(begin);
+      return "("+whole+"+"+digit+"/9)";
+     }
+    }
+   }
+  }
   if(name=="cdots" && matrix)return "⋯";
   if(name=="ddots" && matrix)return "⋱";
   if(name=="lVert") { ++norms; return "norm("; }
@@ -1103,7 +1234,7 @@ class TeXReader {
    {"Gamma","Γ"},{"Delta","Δ"},{"Theta","Θ"},{"Lambda","Λ"},{"Xi","Ξ"},
    {"Pi","Π"},{"Sigma","Σ"},{"Upsilon","Υ"},{"Omega","Ω"},
    {"sin","sin"},{"cos","cos"},{"tan","tan"},{"arcsin","asin"},{"arccos","acos"},{"arctan","atan"},{"exp","exp"},{"log","ln"},{"ln","ln"},
-   {"det","det"},{"tr","tr"},{"Tr","Tr"},{"quad"," "},{"qquad"," "}
+   {"gcd","integergcd"},{"det","det"},{"tr","tr"},{"Tr","Tr"},{"quad"," "},{"qquad"," "}
   };
   auto it=aliases.find(name); if(it!=aliases.end()) return it->second;
   throw std::runtime_error(error("Unsupported TeX command: \\"+name));
@@ -1115,7 +1246,7 @@ class TeXReader {
    ~MatrixScope() {if(active)--depth;}
   } matrixScope(matrixDepth,matrix || close==']');
   if(++depth>128) throw std::runtime_error(error("TeX nesting exceeds 128"));
-  std::string result; int norms=0; bool closed=false;
+  std::string result; int norms=0; bool closed=false,congruence=false;
   const bool alignment=environment=="aligned" || environment=="align" || environment=="align*" || environment=="gathered" || environment=="gather" || environment=="gather*" || environment=="split";
   const bool gathered=environment=="gathered" || environment=="gather" || environment=="gather*";
   std::vector<std::string> alignmentCells,expressions;
@@ -1240,6 +1371,11 @@ class TeXReader {
      result.find('_',delimiter+1)!=std::string::npos;
     size_t commandStart=pos;
     std::string part=command(matrix,norms,environment=="cases",registerLabel,&result);
+    if(part==" qtexcongruent ")congruence=true;
+    else if(part.compare(0,14," qtexmodulus (")==0) {
+     if(!congruence)throw std::runtime_error(error("A congruence modulus must follow a congruence relation"));
+     congruence=false;
+    }
     // A final TeX row break terminates the last row. Exclude it from both
     // the translated matrix and the raw rows used to infer indexed entries.
     if(matrixBodyEnd && part==";") {
@@ -1253,10 +1389,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
-    if(open=='(' && takeModulusLabel()) {
+    if(open=='(' && takeModulusLabel(congruence)) {
      auto modulus=trim(read(end));
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
-     result=trim(result)+" pmod ("+modulus+")";continue;
+     result=trim(result)+(congruence ? " qtexmodulus (" : " pmod (")+modulus+")";
+     congruence=false;continue;
     }
     // Mixed delimiters denote a half-open interval only after membership.
     // The recursive reader still checks grouping inside either endpoint.
@@ -1332,6 +1469,7 @@ class TeXReader {
      else result+="_"+index;
     } else if(grouped && !result.empty() && (result.back()=='>' || result.back()=='|'))result+="_("+index+")";
     else {
+     index=trim(index);
      bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !std::isspace(c))compound=true;
      // Preserve arithmetic subscripts for scalar references and declarations
      // as well as state families. Atomic labels retain their spelling.
@@ -1465,7 +1603,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
- if(mathWrapper)s=withoutDisplayPunctuation(s);
+ if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
  if(fractionBits) {
   std::string expansion=openBinaryFraction(s);
   if(!expansion.empty())s=expansion;

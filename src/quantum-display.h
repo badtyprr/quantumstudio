@@ -119,6 +119,8 @@ class Printer {
   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value.equals(i->first))return Fragment(i->second);
   if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return Fragment(familyName(value.symbol()));
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
+  // Bare c denotes the speed of light on re-entry.
+  if(value.isSymbolic() && value.symbol()=="c")return Fragment("'c'");
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
   if(value.isLogicalAnd() || value.isLogicalOr()) {
    const int level=value.isLogicalAnd() ? 3 : 2;
@@ -202,6 +204,12 @@ class Printer {
   }
   if(name=="qfloorlog2" && value.size()==1)return Fragment("floor(log2("+render(value[0],depth+1).text+"))");
   if(name=="qbitlength" && value.size()==1)return Fragment("bitlength("+render(value[0],depth+1).text+")");
+  if((name=="qresidues" || name=="qunitsmod") && value.size()==1)
+   return Fragment(std::string(name=="qresidues" ? "residues(" : "invertible_residues(")+render(value[0],depth+1).text+")");
+  if(name=="qrecoverphase" && value.size()==2)
+   return Fragment("recoverphase("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
+  if(name=="qintegergcd" && value.size()==2)
+   return Fragment("integergcd("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qresidue" && value.size()==2)
    return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
@@ -216,6 +224,8 @@ class Printer {
    if((head=="f" || head=="g" || head=="h") && arg.size()==1 && std::isalpha((unsigned char)arg[0]))
     return Fragment(head+"("+arg+")");
   }
+  if(name=="qprobabilitycall" && value.size()==2)
+   return Fragment("p("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
   if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
    const std::string &function=value[0].symbol();
@@ -243,10 +253,10 @@ class Printer {
   if(name=="qset" && value.size()==1) {
    // Formatting collapses a singleton vector; the enclosing descriptor keeps
    // its collection meaning even in this presentation-only tree.
-   if(!value[0].isVector())return Fragment("{"+render(value[0],depth+1).text+"}");
-   std::string text="{";
+   if(!value[0].isVector())return Fragment("\\{"+render(value[0],depth+1).text+"\\}");
+   std::string text="\\{";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
-   return Fragment(text+"}");
+   return Fragment(text+"\\}");
   }
   if(name=="qstateaction" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ↦ "+render(value[1],depth+1).text,2);
@@ -419,6 +429,7 @@ class Printer {
    return Fragment("binaryfraction("+digits+"), "+render(value[1],depth+1).text+", "+render(value[2],depth+1).text+")");
   }
   if(name=="qbasiskets" && value.size()==1)return Fragment("basislist("+render(value[0],depth+1).text+")");
+  if(name=="qbasisketset" && value.size()==1)return Fragment("basisset("+render(value[0],depth+1).text+")");
   if(name=="qtuple" && value.size()==1 && value[0].isVector()) {
    std::string text="(";
    for(size_t k=0;k<value[0].size();++k) {if(k)text+=", ";text+=render(value[0][k],depth+1).text;}
@@ -437,12 +448,14 @@ class Printer {
    const std::string &prefix=value[0].symbol();
    return Fragment("{"+prefix+value[1].number().print(decimal)+", "+prefix+next.print(decimal)+", …}");
   }
+  if(name=="qindexrange" && value.size()==2 && depth)
+   return Fragment("indexrange("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qindexrange" && value.size()==2)
    return Fragment("{"+render(value[0],depth+1).text+", …, "+render(value[1],depth+1).text+"} (integer endpoints)");
   if((name=="qsetimage" || name=="qsetfilter") && value.size()==3) {
    Fragment domain=render(value[1],depth+1);std::string index=fresh();
    bindings.push_back({value[2],index});Fragment body=render(value[0],depth+1);bindings.pop_back();
-   return Fragment(name=="qsetimage" ? "{"+body.text+" : "+index+" ∈ "+domain.text+"}" : "{"+index+" ∈ "+domain.text+" : "+body.text+"}");
+   return Fragment(name=="qsetimage" ? "\\{"+body.text+" : "+index+" ∈ "+domain.text+"\\}" : "\\{"+index+" ∈ "+domain.text+" : "+body.text+"\\}");
   }
   if(name=="qsumset" && value.size()==3) {
    Fragment domain=render(value[1],depth+1);std::string index=fresh();

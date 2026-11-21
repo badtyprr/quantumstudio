@@ -1,0 +1,134 @@
+{
+  "source_sha256": "9bc1492a52076f45c99e20d10be00d847a3901be147f56caf2a1ba0849a981fc",
+  "worker_sha256": "ab0fc4d1a2460e654dc5346042022bd806c487ece784abde94a895bd012e5b78",
+  "predicate_id": "IBM031-9bc1492a-M005",
+  "cases": [
+    {
+      "oracle_mask": 0,
+      "solutions": [],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 1,
+      "solutions": [
+        "00"
+      ],
+      "unique_promise": true
+    },
+    {
+      "oracle_mask": 2,
+      "solutions": [
+        "01"
+      ],
+      "unique_promise": true
+    },
+    {
+      "oracle_mask": 3,
+      "solutions": [
+        "00",
+        "01"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 4,
+      "solutions": [
+        "10"
+      ],
+      "unique_promise": true
+    },
+    {
+      "oracle_mask": 5,
+      "solutions": [
+        "00",
+        "10"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 6,
+      "solutions": [
+        "01",
+        "10"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 7,
+      "solutions": [
+        "00",
+        "01",
+        "10"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 8,
+      "solutions": [
+        "11"
+      ],
+      "unique_promise": true
+    },
+    {
+      "oracle_mask": 9,
+      "solutions": [
+        "00",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 10,
+      "solutions": [
+        "01",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 11,
+      "solutions": [
+        "00",
+        "01",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 12,
+      "solutions": [
+        "10",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 13,
+      "solutions": [
+        "00",
+        "10",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 14,
+      "solutions": [
+        "01",
+        "10",
+        "11"
+      ],
+      "unique_promise": false
+    },
+    {
+      "oracle_mask": 15,
+      "solutions": [
+        "00",
+        "01",
+        "10",
+        "11"
+      ],
+      "unique_promise": false
+    }
+  ]
+}

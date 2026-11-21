@@ -34,12 +34,12 @@ size_t quantumSpaceLength(const std::string &s,size_t p) {
  }
  return 0;
 }
-std::string quantumWhitespace(const std::string &s) {
+std::string quantumWhitespace(const std::string &s,bool keepLines=false) {
  std::string out;char quoted=0;
  for(size_t p=s.compare(0,3,"\xef\xbb\xbf")==0 ? 3 : 0;p<s.size();) {
   if(s[p]=='"' || s[p]=='\'') {if(quoted==s[p])quoted=0;else if(!quoted)quoted=s[p];}
   size_t length=quoted ? 0 : quantumSpaceLength(s,p);
-  if(length){out+=' ';p+=length;}else out+=s[p++];
+  if(length){out+=keepLines && (s[p]=='\n' || s[p]=='\r') ? s[p] : ' ';p+=length;}else out+=s[p++];
  }
  return out;
 }
@@ -215,7 +215,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -343,9 +343,9 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
- {"qpower",2},{"qresidue",2},
+ {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
  {"qsqrt",1},
  {"qprobs",1},
@@ -367,7 +367,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qresetall",1},
  {"qshift",1},
  {"qsinhc",1},
- {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},{"qfrequency",1},
+ {"qasin",1},{"qacos",1},{"qatan",1},{"qsin",1},{"qcos",1},{"qtan",1},{"qfrequency",1},{"qphysicalunit",2},
  {"qsumgate",2},
  {"qsuperop",1},
  {"qtensor",2},
@@ -720,7 +720,7 @@ class Parser {
   } while(true);
  }
  bool setOperatorAhead() const {return s.compare(p,3,"↦")==0 || s.compare(p,3,"≈")==0 || s.compare(p,3,"→")==0 || s.compare(p,3,"∪")==0 || s.compare(p,3,"∩")==0 || s.compare(p,3,"∖")==0 || s.compare(p,3,"∈")==0 || s.compare(p,3,"∉")==0;}
- bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
+ bool startsAtom() { ws(); if(p == s.size() || s.compare(p,3,"⋅")==0 || s.compare(p,2,"±")==0 || setOperatorAhead() || word("qtexcongruent") || word("qtexmodulus") || word("pmod") || word("iff") || word("and") || word("or") || word("xor") || word("not")) return false; unsigned char c=s[p]; return c=='\'' || c=='"' || c=='(' || c=='[' || c=='|' || (c=='<' && startsBra()) || std::isalnum(c) || c=='_' || c>=128; }
  bool startsBra() {
   // A non-strict comparison cannot start a bra, even if its RHS has bars.
   if(s.compare(p,2,"<=")==0)return false;
@@ -931,6 +931,15 @@ class Parser {
   while(p<s.size() && s[p]>='0' && s[p]<='9')++p;
   if(p==start || (p<s.size() && (s[p]=='.' || std::isalnum((unsigned char)s[p]))))throw std::runtime_error("Put a basis dimension expression in braces or parentheses.");
   return s.substr(start,p-start);
+ }
+ std::string rangeEndpoint() {
+  ws();size_t begin=p;
+  std::string value=expression();
+  size_t end=p;
+  while(end>begin && std::isspace((unsigned char)s[end-1]))--end;
+  // A single gate letter in an integer endpoint denotes an index variable.
+  if(end==begin+1 && gates.count(s.substr(begin,1)))return indexableLabel(s.substr(begin,1));
+  return value;
  }
  std::string binaryArgument() {
   if(!take('"'))return expression();
@@ -1322,6 +1331,7 @@ class Parser {
     if(name=="binarytail")name="qbinarytail";
     if(name=="binaryfraction")name="qbinaryfraction";
     if(name=="basislist")name="qbasiskets";
+    else if(name=="basisset")name="qbasisketset";
     if(name=="matrix")name="qmatrix";
     if(name=="identity")name="qidentity";
     if(name=="tr" || name=="Tr" || name=="trace") name="qtrace";
@@ -1352,6 +1362,10 @@ class Parser {
     if(name=="css_encoder")name="qcssencoder";
     if(name=="bitvalue")name="qbitvalue";
     if(name=="bitword")name="qbitword";
+    if(name=="residues")name="qresidues";
+    if(name=="invertible_residues")name="qunitsmod";
+    if(name=="recoverphase")name="qrecoverphase";
+    if(name=="integergcd")name="qintegergcd";
     if(name=="geosum")name="qgeometricsum";
     if(name=="density") name="qdensity";
     if(name=="bloch") name="qbloch";
@@ -1490,6 +1504,9 @@ class Parser {
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
      a=pauliLabelExpression(label,name=="compact_pauli");
+    } else if(name=="qindexrange") {
+     std::string first=rangeEndpoint();need(',');std::string last=rangeEndpoint();need(')');
+     a="qindexrange("+first+","+last+")";
     } else if(name=="matrixcontext") {
      std::string label=expression();need(',');
      if(label.size()<3 || label.front()!='"' || label.back()!='"')throw std::runtime_error("Expected a quoted matrix name.");
@@ -1771,6 +1788,7 @@ class Parser {
      args.insert(args.begin(),indexableLabel(name));name="qmul";
     }
     if(publicName=="O")name="qbigorder";
+    if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
@@ -1926,6 +1944,7 @@ class Parser {
   std::string a;ws();unsigned root=radical();
   if(root) {p+=3;a="qpower("+unary(allowPercent)+",1/"+std::to_string(root)+")";diracKind=0;}
   else if(takeSetOperator("±"))throw std::runtime_error("A plus-minus sign requires an equality with two alternatives.");
+  else if(take('!')) {a="!("+unary(allowPercent)+")";diracKind=0;}
   else if(take('+'))a=unary(allowPercent);
   else if(take('-'))a="(-"+unary(allowPercent)+")";
   else a=power(allowPercent);
@@ -2054,6 +2073,7 @@ class Parser {
   builder=graphCalls(builder,std::string(1,name));
  }
  std::string takeComparisonRelation() {
+  if(takeWord("qtexcongruent"))return "congruence";
   for(const char *token:{"≈","∈","∉","<=",">=","!=","==","=","<",">"})
    if(takeSetOperator(token))return token;
   return "";
@@ -2205,12 +2225,21 @@ class Parser {
    } else {
     std::vector<std::string> probes{left};
     do {probes.push_back(setUnion());} while(take(','));
-    bool excluded=takeSetOperator("∉");
-    if(!excluded && !takeSetOperator("∈"))throw std::runtime_error("Expected a shared set membership relation after the comma-separated operands.");
+    const std::string relation=takeComparisonRelation();
+    bool membership=relation=="∈" || relation=="∉";
+    int kind=comparisonKind(relation);
+    if(!membership && kind>=4)throw std::runtime_error("Expected a shared ordering or set membership relation after the comma-separated operands.");
     left=setUnion();
     for(const auto &probe:probes) {
-     std::string member="qmember("+probe+","+left+")";
-     if(excluded)member="!("+member+")";
+     std::string member;
+     if(membership) {
+      member="qmember("+probe+","+left+")";
+      if(relation=="∉")member="!("+member+")";
+     } else {
+      // In a shared bound, a bare c names a scalar parameter.
+      const std::string operand=probe=="c" ? indexableLabel(probe) : probe;
+      member="qcompare("+operand+","+left+","+std::to_string(kind)+")";
+     }
      if(!result.empty())result+="&&";
      result+=member;checkSize(result);
     }
@@ -2221,6 +2250,14 @@ class Parser {
   while(true) {
    std::string relation=takeComparisonRelation();
    if(relation.empty())break;
+   if(relation=="congruence") {
+    if(!result.empty())throw std::runtime_error("Group a congruence separately from other comparisons.");
+    std::string right=comparisonOperand();
+    if(!takeWord("qtexmodulus"))throw std::runtime_error("A congruence requires an explicit modulus.");
+    need('(');std::string modulus=expression();need(')');
+    result="qcompare(qresidue("+left+","+modulus+"),qresidue("+right+","+modulus+"),4)";
+    checkSize(result);return result;
+   }
    equalities=equalities && (relation=="=" || relation=="==");
    int kind=comparisonKind(relation);
    size_t rightStart=p;std::string right;
@@ -2230,7 +2267,10 @@ class Parser {
    else if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
-   } else right=comparisonOperand();
+   } else {
+    size_t negations=logicalNotCount();
+    right=applyLogicalNot(comparisonOperand(),negations);
+   }
    if(leadingSign || (equality && takeSetOperator("±"))) {
     if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
     std::string magnitude=product();
@@ -2291,12 +2331,18 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot(bool allowSharedOperands) {
+ size_t logicalNotCount() {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison(allowSharedOperands);
+  return count;
+ }
+ std::string applyLogicalNot(std::string result,size_t count) {
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
+ }
+ std::string logicalNot(bool allowSharedOperands) {
+  size_t count=logicalNotCount();
+  return applyLogicalNot(comparison(allowSharedOperands),count);
  }
  std::string logicalAnd(bool allowSharedOperands) {
   std::string result=logicalNot(allowSharedOperands);
@@ -2407,11 +2453,12 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
  if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
- std::string s=unicodeArithmetic(quantumWhitespace(expression));
+ std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
  bool sets=false;
  s=quantumTeX(s,nullptr,&sets);
+ if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);

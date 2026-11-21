@@ -24,6 +24,97 @@ def data(expression, *flags):
     return value
 
 
+# Logical complements used as equation operands survive Copy and re-entry.
+for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
+    predicate = data("quantum:"+spelling)["copy_text"]
+    copied = data("quantum:"+predicate)["copy_text"]
+    for f in (0,1):
+        for g in (0,1):
+            bound = f"replace(replace(({copied}),f(x),{f}),g(x),{g})"
+            assert data("quantum:"+bound)["copy_text"] == str(int(g == 1-f))
+assert data("quantum:not 1=2")["copy_text"] == "1"
+assert data("quantum:1!=2")["copy_text"] == "1"
+
+# A bare gate letter in an integer range can be bound after Copy.
+held_range = data(r"quantum:$\{1,\ldots,T\}$")["copy_text"]
+assert data("quantum:"+held_range)["copy_text"] == held_range
+for endpoint, expected in [(3,"qset(vector(1,2,3))"),(1,"qset(vector(1))"),(0,"qset(vector())")]:
+    assert data(f'quantum:replace({held_range},"T",{endpoint})')["copy_text"] == expected
+assert data('quantum:replace(indexrange(X,2),"X",1)')["copy_text"] == "qset(vector(1,2))"
+assert data("quantum:T")["rows"] == 2
+
+# Cardinalities are scalar matrix entries even before the set is supplied.
+bars_matrix = data(r"quantum:$\begin{pmatrix}\vert A_0\vert & 1 \\ 0 & 1\end{pmatrix}$")
+assert (bars_matrix["rows"], bars_matrix["columns"]) == (2,2)
+assert data(f'quantum:replace(({bars_matrix["copy_text"]}),qbars("A_0"),3)')["cells"] == data("quantum:[3,1;0,1]")["cells"]
+
+# Two-argument probability calls keep ordered scalar inputs through Copy.
+prob = data("quantum:p(N,s)")
+assert prob["display_text"] == "p(N, s)" and not prob["cells"]
+assert data("quantum:"+prob["copy_text"])["copy_text"] == prob["copy_text"]
+assert data("quantum:p(1+1,4)=p(2,4)")["copy_text"] == "1"
+assert data("quantum:p(2,1)")["copy_text"] != data("quantum:p(1,2)")["copy_text"]
+bound = data(r"quantum:$p(N,s) \geq 1 - \frac{s}{N}$")["copy_text"]
+for probability, expected in [("3/4", "1"), ("2/3", "0")]:
+    predicate = f"replace(replace(replace(({bound}),p(N,s),{probability}),N,16),s,4)"
+    assert data("quantum:"+predicate)["copy_text"] == expected
+assert "qcostcall(" in data("quantum:cost(p(N,s))")["copy_text"]
+assert data("quantum:p(x)")["copy_text"] == data("quantum:p*x")["copy_text"]
+
+# Physical units must survive Copy without becoming quantum variables.
+for speed in ("c", "element([c;2*c],1,1)"):
+    text = data("quantum:"+speed)["copy_text"]
+    assert data("quantum:("+text+")/c")["copy_text"] == "1"
+    assert data("quantum:"+text)["copy_text"] == text
+frequency = data("quantum:MHz")["copy_text"]
+assert data("quantum:("+frequency+")/kHz")["copy_text"] == "1000"
+classical_speed = data("c")["copy_text"]
+assert data("("+classical_speed+")/c")["copy_text"] == "1"
+assert "qphysicalunit" not in classical_speed
+
+# A brace-delimited basis is a set in its stated dimension.
+basis_source = r"$\{\vert 0\rangle,\ldots,\vert N-1\rangle\}$"
+basis_copy = data("quantum:"+basis_source)["copy_text"]
+for dimension in (1, 3, 15, 128):
+    concrete = data(f'quantum:replace(({basis_copy}),"N",{dimension})')["copy_text"]
+    assert len(concrete) < 32768
+    assert data(f"quantum:cardinality({concrete})")["copy_text"] == str(dimension)
+    assert data(f"quantum:basis(0,{dimension}) ∈ {concrete}")["copy_text"] == "1"
+assert data("quantum:basis(0,16) ∈ basisset(15)")["copy_text"] == "0"
+assert data("quantum:qset(vector(basis(1,3),basis(0,3)))")["copy_text"] != "basisset(2)"
+
+# Re-entering the displayed bound must keep c bindable.
+display_bound = data(r"quantum:$b,c\geq 2$")["display_text"]
+for y, expected in [(1,"0"),(2,"1")]:
+    assert data(f'quantum:replace(replace(({display_bound}),"b",2),"c",{y})')["copy_text"] == expected
+
+# A leading list shares the ordering relation and keeps factor names bindable.
+for expr, expected in [(r"$b,c\geq 2$", (1,0,0)), (r"$s,j\geq 2$", (1,0,0))]:
+    first,second=expr[1],expr[3]
+    result=data("quantum:"+expr)["copy_text"]
+    for (x,y),value in zip(((2,3),(1,3),(2,1)),expected):
+        assert data(f'quantum:replace(replace(({result}),"{first}",{x}),"{second}",{y})')["copy_text"]==str(value)
+for bound in ("-2","N"):
+    shared=data("quantum:b,c>="+bound)["copy_text"]
+    predicate=f'replace(replace(({shared}),"b",3),"c",-3)'
+    if bound=="N":
+        predicate=f'replace(({predicate}),"N",2)'
+    assert data("quantum:"+predicate)["copy_text"]=="0"
+for expr,value in (("1,2,3<4",1),("1,2,3<3",0),("1,2<=2",1),("3,2>2",0),("max(1,2)",2)):
+    assert data("quantum:"+expr)["copy_text"]==str(value)
+
+# Compare the two full operands in the specified residue class.
+for formula, expected in (
+    (r"$3 \cdot 5 \equiv 1 \; (\textrm{mod } 7)$", "1"),
+    (r"$3+5\equiv5-4\pmod{7}$", "1"),
+    (r"$-2\equiv5\;(\mathrm{mod}\;7)$", "1"),
+    (r"$-2\equiv4\pmod{7}$", "0"),
+    (r"$(3\equiv1\pmod{2})+(4\equiv1\pmod{2})$", "1"),
+):
+    assert data("quantum:"+formula)["copy_text"] == expected
+for formula in (r"$3\equiv1$", r"$3\equiv1\pmod{}$", r"$3\equiv1\pmod{0}$"):
+    run("quantum:"+formula, "--json", success=False)
+
 # The computational-cost lesson expresses modular powers using a spaced text label.
 for gap in (r"\hspace{1mm} ", r"\hspace{1mm}"):
     source = "$N^K" + gap + r"(\text{mod }M)$"

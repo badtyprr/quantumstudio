@@ -1,0 +1,269 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "revision": "12ffa20372b678e8f383be9525b325ba355719f4",
+  "worker_sha256": "1d48d29632b8a702c8c19295f00a4aaeef38cd8d1ff51bed21d045cc7e25e95c",
+  "windows_records_sha256": "4ac2a8591f0b6479f55f2cc95c9bc6f38318361b18cca3951e2a873d78633e33",
+  "status_counts": {
+    "exact": 414,
+    "diagnostic": 24
+  },
+  "resolved": [
+    "IBM029-9ea5aee3-M067",
+    "IBM029-9ea5aee3-M070"
+  ],
+  "windows_inputs": [
+    [
+      "M67",
+      "$\\{\\vert 0\\rangle,\\ldots,\\vert 14\\rangle\\}$",
+      "0"
+    ],
+    [
+      "M70",
+      "$\\{\\vert 0\\rangle,\\ldots,\\vert N-1\\rangle\\}$",
+      "0"
+    ],
+    [
+      "binary_basis",
+      "$\\{\\vert 00\\rangle,\\ldots,\\vert 11\\rangle\\}$",
+      "0"
+    ],
+    [
+      "large_basis",
+      "basisset(128)",
+      "0"
+    ],
+    [
+      "subset",
+      "qset(vector(basis(1,3),basis(0,3)))",
+      "0"
+    ],
+    [
+      "M141-0",
+      "|00000>",
+      "0"
+    ],
+    [
+      "M141-1",
+      "|00001>",
+      "0"
+    ],
+    [
+      "M141-2",
+      "|00010>",
+      "0"
+    ],
+    [
+      "M141-3",
+      "|00011>",
+      "0"
+    ],
+    [
+      "M141-4",
+      "|00100>",
+      "0"
+    ],
+    [
+      "M141-5",
+      "|00101>",
+      "0"
+    ],
+    [
+      "M141-6",
+      "|00110>",
+      "0"
+    ],
+    [
+      "M141-7",
+      "|00111>",
+      "0"
+    ],
+    [
+      "M141-8",
+      "|01000>",
+      "0"
+    ],
+    [
+      "M141-9",
+      "|01001>",
+      "0"
+    ],
+    [
+      "M141-10",
+      "|01010>",
+      "0"
+    ],
+    [
+      "M141-11",
+      "|01011>",
+      "0"
+    ],
+    [
+      "M141-12",
+      "|01100>",
+      "0"
+    ],
+    [
+      "M141-13",
+      "|01101>",
+      "0"
+    ],
+    [
+      "M141-14",
+      "|01110>",
+      "0"
+    ],
+    [
+      "M141-15",
+      "|01111>",
+      "0"
+    ],
+    [
+      "M141-16",
+      "|10000>",
+      "0"
+    ],
+    [
+      "M141-17",
+      "|10001>",
+      "0"
+    ],
+    [
+      "M141-18",
+      "|10010>",
+      "0"
+    ],
+    [
+      "M141-19",
+      "|10011>",
+      "0"
+    ],
+    [
+      "M141-20",
+      "|10100>",
+      "0"
+    ]
+  ],
+  "remaining_diagnostics": [
+    {
+      "id": "IBM029-9ea5aee3-M022",
+      "message": "Unsupported TeX environment: array at byte 15",
+      "finite_example": "ibm029-tables.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M037",
+      "message": "Unsupported TeX command: \\text at byte 21",
+      "finite_example": "ibm029-tables.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M045",
+      "message": "Unsupported TeX environment: array at byte 15",
+      "finite_example": "ibm029-tables.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M068",
+      "message": "Unsupported TeX environment: array at byte 15",
+      "finite_example": "ibm029-tables.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M051",
+      "message": "A congruence requires an explicit modulus.",
+      "finite_example": "ibm029-congruences.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M052",
+      "message": "Unsupported TeX command: \\textrm at byte 9",
+      "finite_example": "ibm029-congruences.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M061",
+      "message": "Unsupported TeX command: \\text at byte 52",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M144",
+      "message": "Unsupported TeX command: \\textrm at byte 57",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M152",
+      "message": "A state mapping requires an input ket and an output ket.",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M153",
+      "message": "Unsupported TeX command: \\textrm at byte 48",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M157",
+      "message": "Scalar XOR requires nonnegative integer operands.\nA computational basis index must be a nonnegative integer.\nA state mapping requires an input ket and an output ket.",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M162",
+      "message": "Unsupported TeX command: \\stackrel at byte 45",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M424",
+      "message": "Unsupported TeX command: \\textrm at byte 24",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M427",
+      "message": "Unsupported TeX command: \\textrm at byte 16",
+      "finite_example": "ibm029-modular-registers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M092",
+      "message": "Unsupported TeX command: \\cdots at byte 73",
+      "finite_example": "ibm029-eigenstates.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M098",
+      "message": "Unsupported TeX command: \\cdots at byte 59",
+      "finite_example": "ibm029-eigenstates.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M107",
+      "message": "Unsupported TeX command: \\cdots at byte 87",
+      "finite_example": "ibm029-eigenstates.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M141",
+      "message": "A state mapping requires an input ket and an output ket.",
+      "finite_example": "ibm029-basis-sets.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M180",
+      "message": "Unsupported TeX command: \\ldots at byte 17",
+      "finite_example": "ibm029-controlled-powers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M357",
+      "message": "Expected an equation after the comma.",
+      "finite_example": "ibm029-controlled-powers.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M266",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i.",
+      "finite_example": "ibm029-denominators.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M362",
+      "message": "Expected a shared set membership relation after the comma-separated operands.",
+      "finite_example": "ibm029-factor-proof.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M374",
+      "message": "Expected a shared set membership relation after the comma-separated operands.",
+      "finite_example": "ibm029-factor-proof.json"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M425",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.",
+      "finite_example": "ibm029-factor-proof.json"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "revision": "01bc173c7b9481627f94943e5c13b2af9462f418",
+  "worker_sha256": "26d8387c56da6fdd3597a56091fa23eef3c2c3c714e32c2ca46c83f7b4e48e9d",
+  "windows_records_sha256": "a83a3c5b3be4909469602855cf2c63e1f6bed22e325140baa667a23a09b21ac2",
+  "inventory_summary": {
+    "exact": 412,
+    "diagnostic": 26
+  },
+  "status_changes": [
+    {
+      "id": "IBM029-9ea5aee3-M018",
+      "before": "diagnostic",
+      "after": "exact",
+      "value": "1"
+    }
+  ],
+  "windows_inputs": [
+    [
+      "M018",
+      "$$\n3 \\cdot 5 \\equiv 1 \\; (\\textrm{mod } 7)\n$$",
+      "0"
+    ],
+    [
+      "M019",
+      "$3 \\cdot 5 = 1$",
+      "0"
+    ],
+    [
+      "sum-difference",
+      "$3+5\\equiv5-4\\pmod{7}$",
+      "0"
+    ],
+    [
+      "negative",
+      "$-2\\equiv5\\;(\\mathrm{mod}\\;7)$",
+      "0"
+    ],
+    [
+      "negative-false",
+      "$-2\\equiv4\\pmod{7}$",
+      "0"
+    ],
+    [
+      "grouped",
+      "$(3\\equiv1\\pmod{2})+(4\\equiv1\\pmod{2})$",
+      "0"
+    ],
+    [
+      "both-sides",
+      "$2^8\\equiv3^4\\pmod{7}$",
+      "0"
+    ],
+    [
+      "modulus-expression",
+      "$19\\equiv4\\pmod{3+2}$",
+      "0"
+    ],
+    [
+      "M051-M052",
+      "$a^r \\equiv 1 (\\textrm{mod } N)$",
+      "0"
+    ]
+  ],
+  "joined_span_witnesses": [
+    {
+      "a": 2,
+      "r": 6,
+      "N": 21,
+      "expected": 1
+    },
+    {
+      "a": 2,
+      "r": 5,
+      "N": 21,
+      "expected": 0
+    },
+    {
+      "a": -2,
+      "r": 3,
+      "N": 9,
+      "expected": 1
+    },
+    {
+      "a": 0,
+      "r": 1,
+      "N": 7,
+      "expected": 0
+    },
+    {
+      "a": 7,
+      "r": 0,
+      "N": 5,
+      "expected": 1
+    },
+    {
+      "a": 3,
+      "r": 2,
+      "N": 1,
+      "expected": 1
+    },
+    {
+      "a": 3,
+      "r": 100003,
+      "N": 7,
+      "expected": 0
+    }
+  ],
+  "binding_orders": 6
+}

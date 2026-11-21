@@ -7,6 +7,7 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "BuiltinFunctions.h"
+#include "MathStructure-support.h"
 #include "Variable.h"
 #include <string>
 #include <utility>
@@ -553,11 +554,68 @@ bool stateActionOperand(const MathStructure &value,const EvaluationOptions &eo,u
          (value[1].representsScalar() && stateActionOperand(value[0],eo,depth+1));
  return false;
 }
+// Recover the unique reduced u/v with v < N and |phase - u/v| < 1/(2N²).
+int recoverPhaseFraction(MathStructure &out,const MathStructure &raw,const EvaluationOptions &options) {
+ EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
+ MathStructure phase=raw[0],bound=raw[1];phase.eval(exact);bound.eval(exact);
+ if(!bound.isInteger() || bound.isApproximate() || bound.number()<2) {
+  if(bound.containsUnknowns() && bound.representsScalar())return 0;
+  CALCULATOR->error(true,"Phase recovery requires an exact integer bound of at least two.",NULL);return 0;
+ }
+ if(phase.containsUnknowns() && phase.representsScalar())return 0;
+ if(phase.isApproximate() || !phase.representsReal()) {
+  CALCULATOR->error(true,"Phase recovery requires an exact real phase between zero and one.",NULL);return 0;
+ }
+ MathStructure positive=phase,belowOne=phase;
+ positive.transform(COMPARISON_GREATER,m_zero);positive.eval(exact);
+ belowOne.transform(COMPARISON_LESS,m_one);belowOne.eval(exact);
+ if(positive.isZero() || belowOne.isZero()) {
+  CALCULATOR->error(true,"Phase recovery requires a phase strictly between zero and one.",NULL);return 0;
+ }
+ if(!positive.isOne() || !belowOne.isOne())return 0;
+
+ const Number &n=bound.number();
+ Number tolerance=Number(1)/(n*n*2);
+ Number rationalPhase;
+ if(phase.isNumber() && phase.number().isRational())rationalPhase=phase.number();
+ else {
+  // Floor to a rational within 1/(4N³) of the exact phase. A qualifying
+  // u/v is then within 1/(2v²) of that rational (v <= N-1), hence is one
+  // of its continued-fraction convergents. Test acceptance on the original.
+  Number scale=n*n*n*4;
+  MathStructure scaled=phase;scaled*=MathStructure(scale);
+  MathStructure lower(CALCULATOR->getFunctionById(FUNCTION_ID_FLOOR),&scaled,NULL);
+  lower.eval(exact);
+  if(!lower.isInteger() || lower.isApproximate())return 0;
+  rationalPhase=lower.number()/scale;
+ }
+ Number dividend=rationalPhase.numerator(),divisor=rationalPhase.denominator();
+ Number previousU(0),u(1),previousV(1),v(0);
+ MathStructure entries;entries.clearVector();
+ while(!divisor.isZero()) {
+  if(CALCULATOR->aborted())return 0;
+  Number coefficient;
+  if(!dividend.irem(divisor,coefficient))return 0;
+  Number nextV=coefficient*v+previousV;
+  if(nextV>=n)break;
+  Number nextU=coefficient*u+previousU;
+  Number candidate=nextU/nextV;
+  MathStructure difference=phase;difference-=MathStructure(candidate);
+  MathStructure accepted(CALCULATOR->getFunctionById(FUNCTION_ID_ABS),&difference,NULL);
+  accepted.transform(COMPARISON_LESS,MathStructure(tolerance));accepted.eval(exact);
+  if(accepted.isOne()) {entries.addChild(MathStructure(candidate));break;}
+  if(!accepted.isZero())return 0;
+  previousU=u;u=nextU;previousV=v;v=nextV;
+  Number remainder=dividend;dividend=divisor;divisor=remainder;
+ }
+ out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+}
 class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
  QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
-  if(op=="qnamedket" || op=="qfrequency")setArgumentDefinition(1,new TextArgument());
+  if(op=="qnamedket" || op=="qfrequency" || op=="qphysicalunit")setArgumentDefinition(1,new TextArgument());
+  if(op=="qphysicalunit")setArgumentDefinition(2,new TextArgument());
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
@@ -611,6 +669,21 @@ class QuantumAlgebraFunction: public MathFunction {
     CALCULATOR->error(true,"Binary length requires a nonnegative integer.",NULL);return 0;
    }
    out=value.number().integerLength();return 1;
+  }
+  if(op=="qrecoverphase")return recoverPhaseFraction(out,raw,eo);
+  if(op=="qintegergcd") {
+   MathStructure args=raw;
+   for(size_t k=0;k<2;++k) {
+    args[k].eval(eo);
+    if(args[k].isInteger() && !args[k].isApproximate())continue;
+    if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar())continue;
+    CALCULATOR->error(true,"Integer GCD requires two exact integers.",NULL);return 0;
+   }
+   // Polynomial GCD would assume two unbound integer labels are coprime.
+   if(!args[0].isInteger() || !args[1].isInteger())return 0;
+   Number result=args[0].number();
+   if(!result.gcd(args[1].number()))return 0;
+   out=result;return 1;
   }
   if(op=="qresidue") {
    MathStructure modulus=raw[1];modulus.eval(eo);
@@ -743,6 +816,15 @@ class QuantumAlgebraFunction: public MathFunction {
     out.set(CALCULATOR->getFunction("qfourierdomain"),&expanded,&index,&dimension,NULL);out.eval(eo);return 1;
    }
   }
+  if(op=="qphysicalunit") {
+   Unit *unit=CALCULATOR->getActiveUnit(raw[0].symbol());
+   const std::string &name=raw[1].symbol();
+   Prefix *prefix=name.empty() ? NULL : CALCULATOR->getPrefix(name);
+   if(!unit || (!name.empty() && !prefix)) {
+    CALCULATOR->error(true,"Unknown physical unit or prefix.",NULL);return 0;
+   }
+   out.set(unit,prefix);return 1;
+  }
   if(op=="qfrequency") {
    const std::string name=raw[0].symbol();
    Unit *hertz=CALCULATOR->getActiveUnit("Hz");
@@ -768,7 +850,8 @@ class QuantumAlgebraFunction: public MathFunction {
    MathStructure argument=raw[0];argument.eval(exact);
    // Direct trigonometric AST calls bypass AngleArgument parsing; attach the
    // radian unit explicitly so exact evaluation sees an angle in every mode.
-   if(op=="qsin" || op=="qcos" || op=="qtan")argument.multiply(CALCULATOR->getRadUnit());
+   if((op=="qsin" || op=="qcos" || op=="qtan") && !contains_angle_unit(argument,radians.parse_options))
+    argument.multiply(CALCULATOR->getRadUnit());
    out.set(function,&argument,NULL);out.eval(exact);
    if(out.containsFunction(function) && eo.approximation!=APPROXIMATION_EXACT)out.eval(radians);
    // Direct functions retain the explicit radian unit in their symbolic argument.
@@ -1184,8 +1267,11 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qrecoverphase",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));

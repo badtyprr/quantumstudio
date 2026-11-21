@@ -1,0 +1,4389 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "e5187297192b13cb991e5755a34226b0d5a144b04eebaededdfdbf3a031fbf1c",
+  "revision": "77b133a111cc7ca5c2e8b11f34187f5d119a7bc4",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 411,
+    "diagnostic": 27
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM029-9ea5aee3-M001",
+      "cell": 0,
+      "start": 1553,
+      "end": 1556,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M002",
+      "cell": 0,
+      "start": 1573,
+      "end": 1587,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M003",
+      "cell": 0,
+      "start": 1600,
+      "end": 1639,
+      "literal": "$$\n\\mathbb{Z}_N = \\{0,1,\\ldots,N-1\\}\n$$",
+      "status": "exact",
+      "display": "residues(N) = indexrange(0, N − 1)",
+      "copy": "qcompare(qresidues('N'),qindexrange(0,qsub('N',1)),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M004",
+      "cell": 0,
+      "start": 1655,
+      "end": 1680,
+      "literal": "$\\mathbb{Z}_1 = \\{0\\},\\;$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M005",
+      "cell": 0,
+      "start": 1681,
+      "end": 1708,
+      "literal": "$\\mathbb{Z}_2 = \\{0,1\\},\\;$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M006",
+      "cell": 0,
+      "start": 1709,
+      "end": 1738,
+      "literal": "$\\mathbb{Z}_3 = \\{0,1,2\\},\\;$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M007",
+      "cell": 0,
+      "start": 1883,
+      "end": 1897,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M008",
+      "cell": 0,
+      "start": 1986,
+      "end": 1989,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M009",
+      "cell": 0,
+      "start": 2010,
+      "end": 2013,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M010",
+      "cell": 0,
+      "start": 2199,
+      "end": 2202,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M011",
+      "cell": 0,
+      "start": 2209,
+      "end": 2223,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M012",
+      "cell": 0,
+      "start": 2315,
+      "end": 2318,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M013",
+      "cell": 0,
+      "start": 2323,
+      "end": 2326,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M014",
+      "cell": 0,
+      "start": 2343,
+      "end": 2357,
+      "literal": "$\\mathbb{Z}_7$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4, 5, 6\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M015",
+      "cell": 0,
+      "start": 2399,
+      "end": 2414,
+      "literal": "$3\\cdot 5 = 15$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M016",
+      "cell": 0,
+      "start": 2444,
+      "end": 2447,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M017",
+      "cell": 0,
+      "start": 2464,
+      "end": 2467,
+      "literal": "$7$",
+      "status": "exact",
+      "display": "7",
+      "copy": "7"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M018",
+      "cell": 0,
+      "start": 2508,
+      "end": 2553,
+      "literal": "$$\n3 \\cdot 5 \\equiv 1 \\; (\\textrm{mod } 7)\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\equiv at byte 18"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M019",
+      "cell": 0,
+      "start": 2584,
+      "end": 2599,
+      "literal": "$3 \\cdot 5 = 1$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M020",
+      "cell": 0,
+      "start": 2658,
+      "end": 2672,
+      "literal": "$\\mathbb{Z}_7$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4, 5, 6\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M021",
+      "cell": 0,
+      "start": 2791,
+      "end": 2805,
+      "literal": "$\\mathbb{Z}_6$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4, 5\\}",
+      "copy": "qset(vector(0,1,2,3,4,5))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M022",
+      "cell": 0,
+      "start": 2808,
+      "end": 3366,
+      "literal": "$$\n\\begin{array}{c|cccccc}\n    + & 0 & 1 & 2 & 3 & 4 & 5 \\\\\\hline\n    0 & 0 & 1 & 2 & 3 & 4 & 5 \\\\\n    1 & 1 & 2 & 3 & 4 & 5 & 0 \\\\\n    2 & 2 & 3 & 4 & 5 & 0 & 1 \\\\\n    3 & 3 & 4 & 5 & 0 & 1 & 2 \\\\\n    4 & 4 & 5 & 0 & 1 & 2 & 3 \\\\\n    5 & 5 & 0 & 1 & 2 & 3 & 4 \\\\\n\\end{array}\n\\qquad\n\\begin{array}{c|cccccc}\n\\cdot & 0 & 1 & 2 & 3 & 4 & 5 \\\\\\hline\n    0 & 0 & 0 & 0 & 0 & 0 & 0 \\\\\n    1 & 0 & 1 & 2 & 3 & 4 & 5 \\\\\n    2 & 0 & 2 & 4 & 0 & 2 & 4 \\\\\n    3 & 0 & 3 & 0 & 3 & 0 & 3 \\\\\n    4 & 0 & 4 & 2 & 0 & 4 & 2 \\\\\n    5 & 0 & 5 & 4 & 3 & 2 & 1 \\\\\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M023",
+      "cell": 0,
+      "start": 3378,
+      "end": 3381,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M024",
+      "cell": 0,
+      "start": 3394,
+      "end": 3408,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M025",
+      "cell": 0,
+      "start": 3423,
+      "end": 3441,
+      "literal": "$a\\in\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "a ∈ residues(N)",
+      "copy": "qmember('a',qresidues('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M026",
+      "cell": 0,
+      "start": 3455,
+      "end": 3470,
+      "literal": "$\\gcd(a,N) = 1$",
+      "status": "exact",
+      "display": "integergcd(a, N) = 1",
+      "copy": "(qintegergcd('a','N'))==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M027",
+      "cell": 0,
+      "start": 3562,
+      "end": 3627,
+      "literal": "$$\n\\mathbb{Z}_N^{\\ast} = \\{a\\in \\mathbb{Z}_N : \\gcd(a,N) = 1\\}\n$$",
+      "status": "exact",
+      "display": "invertible_residues(N) = \\{k ∈ residues(N) : integergcd(k, N) = 1\\}",
+      "copy": "qcompare(qunitsmod('N'),qsetfilter(qcompare(qintegergcd(\"qboundindex_0\",'N'),1,4),qresidues('N'),\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M028",
+      "cell": 0,
+      "start": 3699,
+      "end": 3720,
+      "literal": "$\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M029",
+      "cell": 0,
+      "start": 3922,
+      "end": 3947,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M030",
+      "cell": 0,
+      "start": 3972,
+      "end": 3975,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M031",
+      "cell": 0,
+      "start": 4026,
+      "end": 4029,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M032",
+      "cell": 0,
+      "start": 4064,
+      "end": 4069,
+      "literal": "$N=6$",
+      "status": "exact",
+      "display": "N = 6",
+      "copy": "('N')==(6)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M033",
+      "cell": 0,
+      "start": 4084,
+      "end": 4109,
+      "literal": "$5\\in\\mathbb{Z}_6^{\\ast}$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M034",
+      "cell": 0,
+      "start": 4118,
+      "end": 4133,
+      "literal": "$\\gcd(5,6) = 1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M035",
+      "cell": 0,
+      "start": 4154,
+      "end": 4157,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M036",
+      "cell": 0,
+      "start": 4175,
+      "end": 4178,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M037",
+      "cell": 0,
+      "start": 4210,
+      "end": 4268,
+      "literal": "$$\n5^2 = 1 \\quad \\text{(working within $\\mathbb{Z}_6$)}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\text at byte 21"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M038",
+      "cell": 0,
+      "start": 4302,
+      "end": 4310,
+      "literal": "$N = 21$",
+      "status": "exact",
+      "display": "N = 21",
+      "copy": "('N')==(21)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M039",
+      "cell": 0,
+      "start": 4346,
+      "end": 4349,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M040",
+      "cell": 0,
+      "start": 4353,
+      "end": 4357,
+      "literal": "$20$",
+      "status": "exact",
+      "display": "20",
+      "copy": "20"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M041",
+      "cell": 0,
+      "start": 4388,
+      "end": 4391,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M042",
+      "cell": 0,
+      "start": 4397,
+      "end": 4401,
+      "literal": "$21$",
+      "status": "exact",
+      "display": "21",
+      "copy": "21"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M043",
+      "cell": 0,
+      "start": 4419,
+      "end": 4484,
+      "literal": "$$\n\\mathbb{Z}_{21}^{\\ast} = \\{1,2,4,5,8,10,11,13,16,17,19,20\\}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M044",
+      "cell": 0,
+      "start": 4585,
+      "end": 4588,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M045",
+      "cell": 0,
+      "start": 4642,
+      "end": 4893,
+      "literal": "$$\n\\begin{array}{ccc}\n1^{1} = 1 \\quad &\n8^{2} = 1 \\quad &\n16^{3} = 1 \\\\[1mm]\n2^{6} = 1 \\quad &\n10^{6} = 1 \\quad &\n17^{6} = 1 \\\\[1mm]\n4^{3} = 1 \\quad &\n11^{6} = 1 \\quad &\n19^{6} = 1 \\\\[1mm]\n5^{6} = 1 \\quad &\n13^{2} = 1 \\quad &\n20^{2} = 1\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M046",
+      "cell": 0,
+      "start": 4926,
+      "end": 4943,
+      "literal": "$\\mathbb{Z}_{21}$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M047",
+      "cell": 0,
+      "start": 5287,
+      "end": 5290,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M048",
+      "cell": 0,
+      "start": 5295,
+      "end": 5298,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M049",
+      "cell": 0,
+      "start": 5310,
+      "end": 5325,
+      "literal": "$\\gcd(N,a) = 1$",
+      "status": "exact",
+      "display": "integergcd(N, a) = 1",
+      "copy": "(qintegergcd('N','a'))==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M050",
+      "cell": 0,
+      "start": 5365,
+      "end": 5368,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M051",
+      "cell": 0,
+      "start": 5379,
+      "end": 5393,
+      "literal": "$a^r \\equiv 1$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\equiv at byte 11"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M052",
+      "cell": 0,
+      "start": 5394,
+      "end": 5413,
+      "literal": "$(\\textrm{mod } N)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textrm at byte 9"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M053",
+      "cell": 0,
+      "start": 5503,
+      "end": 5530,
+      "literal": "$a \\in \\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M054",
+      "cell": 0,
+      "start": 5584,
+      "end": 5587,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M055",
+      "cell": 0,
+      "start": 5598,
+      "end": 5607,
+      "literal": "$a^r = 1$",
+      "status": "exact",
+      "display": "a^r = 1",
+      "copy": "('a'^'r')==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M056",
+      "cell": 0,
+      "start": 5621,
+      "end": 5624,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M057",
+      "cell": 0,
+      "start": 5650,
+      "end": 5653,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M058",
+      "cell": 0,
+      "start": 5661,
+      "end": 5664,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M059",
+      "cell": 0,
+      "start": 5814,
+      "end": 5828,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M060",
+      "cell": 0,
+      "start": 5867,
+      "end": 5892,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M061",
+      "cell": 0,
+      "start": 5895,
+      "end": 5982,
+      "literal": "$$\nM_a \\vert x\\rangle = \\vert ax \\rangle \\qquad \\text{(for each $x\\in\\mathbb{Z}_N$)}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\text at byte 52"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M062",
+      "cell": 0,
+      "start": 6031,
+      "end": 6045,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M063",
+      "cell": 0,
+      "start": 6101,
+      "end": 6104,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M064",
+      "cell": 0,
+      "start": 6188,
+      "end": 6196,
+      "literal": "$N = 15$",
+      "status": "exact",
+      "display": "N = 15",
+      "copy": "('N')==(15)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M065",
+      "cell": 0,
+      "start": 6201,
+      "end": 6206,
+      "literal": "$a=2$",
+      "status": "exact",
+      "display": "a = 2",
+      "copy": "('a')==(2)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M066",
+      "cell": 0,
+      "start": 6227,
+      "end": 6232,
+      "literal": "$M_2$",
+      "status": "exact",
+      "display": "\"M_2\"",
+      "copy": "\"M_2\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M067",
+      "cell": 0,
+      "start": 6255,
+      "end": 6298,
+      "literal": "$\\{\\vert 0\\rangle,\\ldots,\\vert 14\\rangle\\}$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M068",
+      "cell": 0,
+      "start": 6315,
+      "end": 7058,
+      "literal": "$$\n\\begin{array}{ccc}\nM_{2} \\vert 0 \\rangle = \\vert 0\\rangle \\quad &\nM_{2} \\vert 5 \\rangle = \\vert 10\\rangle \\quad &\nM_{2} \\vert 10 \\rangle = \\vert 5\\rangle \\\\[1mm]\nM_{2} \\vert 1 \\rangle = \\vert 2\\rangle \\quad &\nM_{2} \\vert 6 \\rangle = \\vert 12\\rangle \\quad &\nM_{2} \\vert 11 \\rangle = \\vert 7\\rangle \\\\[1mm]\nM_{2} \\vert 2 \\rangle = \\vert 4\\rangle \\quad &\nM_{2} \\vert 7 \\rangle = \\vert 14\\rangle \\quad &\nM_{2} \\vert 12 \\rangle = \\vert 9\\rangle \\\\[1mm]\nM_{2} \\vert 3 \\rangle = \\vert 6\\rangle \\quad &\nM_{2} \\vert 8 \\rangle = \\vert 1\\rangle \\quad &\nM_{2} \\vert 13 \\rangle = \\vert 11\\rangle \\\\[1mm]\nM_{2} \\vert 4 \\rangle = \\vert 8\\rangle \\quad &\nM_{2} \\vert 9 \\rangle = \\vert 3\\rangle \\quad &\nM_{2} \\vert 14 \\rangle = \\vert 13\\rangle\n\\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: array at byte 15"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M069",
+      "cell": 0,
+      "start": 7102,
+      "end": 7115,
+      "literal": "$\\gcd(a,N)=1$",
+      "status": "exact",
+      "display": "integergcd(a, N) = 1",
+      "copy": "(qintegergcd('a','N'))==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M070",
+      "cell": 0,
+      "start": 7164,
+      "end": 7208,
+      "literal": "$\\{\\vert 0\\rangle,\\ldots,\\vert N-1\\rangle\\}$",
+      "status": "diagnostic",
+      "message": "Finite index ranges require integer endpoints."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M071",
+      "cell": 0,
+      "start": 7396,
+      "end": 7399,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M072",
+      "cell": 0,
+      "start": 7403,
+      "end": 7406,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M073",
+      "cell": 0,
+      "start": 7414,
+      "end": 7417,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M074",
+      "cell": 0,
+      "start": 7456,
+      "end": 7461,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M075",
+      "cell": 0,
+      "start": 7465,
+      "end": 7476,
+      "literal": "$M_a^{r-1}$",
+      "status": "exact",
+      "display": "\"M_a\"^(r − 1)",
+      "copy": "\"M_a\"^('r' − 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M076",
+      "cell": 0,
+      "start": 7479,
+      "end": 7535,
+      "literal": "$$\nM_a^{r-1} M_a = M_a^r = M_{a^r} = M_1 = \\mathbb{I}\n$$",
+      "status": "exact",
+      "display": "\"M_a\"^r = \"M_a\"^r = M_(a^r) = \"M_1\" = [1, 0; 0, 1]",
+      "copy": "qequalchain(vector(\"M_a\"^'r',\"M_a\"^'r',qindexedlabel(\"M_\",qpower('a','r'),\"\"),\"M_1\",matrix(2,2,[1,0,0,1])))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M077",
+      "cell": 0,
+      "start": 7621,
+      "end": 7624,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M078",
+      "cell": 0,
+      "start": 7696,
+      "end": 7721,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M079",
+      "cell": 0,
+      "start": 7754,
+      "end": 7779,
+      "literal": "$b\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "b ∈ invertible_residues(N)",
+      "copy": "qmember('b',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M080",
+      "cell": 0,
+      "start": 7795,
+      "end": 7801,
+      "literal": "$ab=1$",
+      "status": "exact",
+      "display": "a = 1 / b and b ≠ 0",
+      "copy": "(('a')==(1 ∕ 'b') and ('b')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M081",
+      "cell": 0,
+      "start": 7826,
+      "end": 7829,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M082",
+      "cell": 0,
+      "start": 7833,
+      "end": 7841,
+      "literal": "$a^{-1}$",
+      "status": "exact",
+      "display": "1 / a",
+      "copy": "1 ∕ 'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M083",
+      "cell": 0,
+      "start": 7949,
+      "end": 7971,
+      "literal": "$\\operatorname{lg}(N)$",
+      "status": "exact",
+      "display": "bitlength(N)",
+      "copy": "qbitlength('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M084",
+      "cell": 0,
+      "start": 7983,
+      "end": 8037,
+      "literal": "$$\nM_{a^{-1}} M_a = M_{a^{-1}a} = M_1 = \\mathbb{I}.\n$$",
+      "status": "exact",
+      "display": "M_(a^(−1)) · \"M_a\" = \"M_1\" = \"M_1\" = [1, 0; 0, 1]",
+      "copy": "qequalchain(vector(qadjacent(qindexedlabel(\"M_\",qpower('a',−1),\"\"),\"M_a\"),\"M_1\",\"M_1\",matrix(2,2,[1,0,0,1])))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M085",
+      "cell": 0,
+      "start": 8057,
+      "end": 8062,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M086",
+      "cell": 0,
+      "start": 8258,
+      "end": 8263,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M087",
+      "cell": 0,
+      "start": 8279,
+      "end": 8304,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M088",
+      "cell": 0,
+      "start": 8356,
+      "end": 8361,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M089",
+      "cell": 0,
+      "start": 8385,
+      "end": 8388,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M090",
+      "cell": 0,
+      "start": 8404,
+      "end": 8409,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M091",
+      "cell": 0,
+      "start": 8668,
+      "end": 8673,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M092",
+      "cell": 0,
+      "start": 8676,
+      "end": 8788,
+      "literal": "$$\n\\vert \\psi_0 \\rangle = \\frac{\\vert 1 \\rangle + \\vert a \\rangle + \\cdots + \\vert a^{r-1} \\rangle}{\\sqrt{r}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 73"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M093",
+      "cell": 0,
+      "start": 8801,
+      "end": 8804,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M094",
+      "cell": 0,
+      "start": 8821,
+      "end": 8824,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M095",
+      "cell": 0,
+      "start": 8832,
+      "end": 8835,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M096",
+      "cell": 0,
+      "start": 8937,
+      "end": 8940,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M097",
+      "cell": 0,
+      "start": 8986,
+      "end": 8989,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M098",
+      "cell": 0,
+      "start": 8992,
+      "end": 9219,
+      "literal": "$$\nM_a \\vert \\psi_0 \\rangle\n= \\frac{\\vert a \\rangle + \\cdots + \\vert a^{r-1} \\rangle + \\vert a^r \\rangle}{\\sqrt{r}}\n= \\frac{\\vert a \\rangle + \\cdots + \\vert a^{r-1} \\rangle + \\vert 1 \\rangle}{\\sqrt{r}}\n= \\vert \\psi_0 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 59"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M099",
+      "cell": 0,
+      "start": 9242,
+      "end": 9251,
+      "literal": "$a^r = 1$",
+      "status": "exact",
+      "display": "a^r = 1",
+      "copy": "('a'^'r')==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M100",
+      "cell": 0,
+      "start": 9282,
+      "end": 9301,
+      "literal": "$\\vert a^k \\rangle$",
+      "status": "exact",
+      "display": "|a^k⟩ (dimension unresolved)",
+      "copy": "qcomputationalket('a'^'k')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M101",
+      "cell": 0,
+      "start": 9318,
+      "end": 9341,
+      "literal": "$\\vert a^{k+1} \\rangle$",
+      "status": "exact",
+      "display": "|a · a^k⟩ (dimension unresolved)",
+      "copy": "qcomputationalket('a' ⋅ 'a'^'k')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M102",
+      "cell": 0,
+      "start": 9346,
+      "end": 9357,
+      "literal": "$k\\leq r-1$",
+      "status": "exact",
+      "display": "k ≤ r − 1",
+      "copy": "('k')<=('r' − 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M103",
+      "cell": 0,
+      "start": 9363,
+      "end": 9386,
+      "literal": "$\\vert a^{r-1} \\rangle$",
+      "status": "exact",
+      "display": "|a^(r − 1)⟩ (dimension unresolved)",
+      "copy": "qcomputationalket('a'^('r' − 1))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M104",
+      "cell": 0,
+      "start": 9408,
+      "end": 9424,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M105",
+      "cell": 0,
+      "start": 9479,
+      "end": 9501,
+      "literal": "$\\vert \\psi_0 \\rangle$",
+      "status": "exact",
+      "display": "|ψ_0⟩",
+      "copy": "qketstate(\"ψ_0\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M106",
+      "cell": 0,
+      "start": 9604,
+      "end": 9609,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M107",
+      "cell": 0,
+      "start": 9706,
+      "end": 9849,
+      "literal": "$$\n\\vert \\psi_1 \\rangle = \\frac{\\vert 1 \\rangle + \\omega_r^{-1} \\vert a \\rangle + \\cdots + \\omega_r^{-(r-1)}\\vert a^{r-1} \\rangle}{\\sqrt{r}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 87"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M108",
+      "cell": 0,
+      "start": 9922,
+      "end": 10020,
+      "literal": "$$\n\\vert \\psi_1 \\rangle = \\frac{1}{\\sqrt{r}}\n\\sum_{k = 0}^{r-1} \\omega_r^{-k} \\vert a^k \\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ_1⟩ = 1 / √(r) · (∑_{k=0}^{r − 1} (\"ω_r\"^(−k) · |a^k⟩ (dimension unresolved)))",
+      "copy": "qcompare(qketstate(\"ψ_1\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M109",
+      "cell": 0,
+      "start": 10059,
+      "end": 10084,
+      "literal": "$\\omega_r = e^{2\\pi i/r}$",
+      "status": "exact",
+      "display": "\"ω_r\" = e^(2iπ / r)",
+      "copy": "qcompare(\"ω_r\",e^((2 ⋅ i ⋅ π) ∕ 'r'),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M110",
+      "cell": 0,
+      "start": 10145,
+      "end": 10148,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M111",
+      "cell": 0,
+      "start": 10162,
+      "end": 10165,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M112",
+      "cell": 0,
+      "start": 10209,
+      "end": 10219,
+      "literal": "$\\omega_r$",
+      "status": "exact",
+      "display": "\"ω_r\"",
+      "copy": "\"ω_r\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M113",
+      "cell": 0,
+      "start": 10268,
+      "end": 10604,
+      "literal": "$$\nM_a \\vert \\psi_1 \\rangle\n= \\frac{1}{\\sqrt{r}}\\sum_{k = 0}^{r-1} \\omega_r^{-k} M_a\\vert a^k \\rangle\n= \\frac{1}{\\sqrt{r}}\\sum_{k = 0}^{r-1} \\omega_r^{-k} \\vert a^{k+1} \\rangle\n= \\frac{1}{\\sqrt{r}}\\sum_{k = 1}^{r} \\omega_r^{-(k - 1)} \\vert a^{k} \\rangle\n= \\frac{1}{\\sqrt{r}}\\omega_r \\sum_{k = 1}^{r} \\omega_r^{-k} \\vert a^{k} \\rangle\n$$",
+      "status": "exact",
+      "display": "\"M_a\" |ψ_1⟩ = 1 / √(r) · (∑_{k=0}^{r − 1} (\"ω_r\"^(−k) · \"M_a\" · |a^k⟩ (dimension unresolved))) = 1 / √(r) · (∑_{j=0}^{r − 1} (\"ω_r\"^(−j) · |a^(j + 1)⟩ (dimension unresolved))) = 1 / √(r) · (∑_{l=1}^{r} (\"ω_r\"^(−(l − 1)) · |a^l⟩ (dimension unresolved))) = 1 / √(r) · \"ω_r\" · (∑_{n=1}^{r} (\"ω_r\"^(−n) · |a^n⟩ (dimension unresolved)))",
+      "copy": "qequalchain(vector(qadjacent(\"M_a\",qnamedket(\"ψ_1\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),\"M_a\"),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_1\",−1)),qcomputationalket(qpower('a',qadd(\"qboundindex_1\",1)))),0,qsub('r',1),\"qboundindex_1\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qsub(\"qboundindex_2\",1))),qcomputationalket(qpower('a',\"qboundindex_2\"))),1,'r',\"qboundindex_2\")),qadjacent(qadjacent(1 ∕ qsqrt('r'),\"ω_r\"),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_3\",−1)),qcomputationalket(qpower('a',\"qboundindex_3\"))),1,'r',\"qboundindex_3\"))))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M114",
+      "cell": 0,
+      "start": 10620,
+      "end": 10652,
+      "literal": "$\\omega_r^{-r} = 1 = \\omega_r^0$",
+      "status": "exact",
+      "display": "1 / \"ω_r\"^r = 1 = 1",
+      "copy": "qequalchain(vector(1 ∕ \"ω_r\"^'r',1,1))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M115",
+      "cell": 0,
+      "start": 10657,
+      "end": 10712,
+      "literal": "$\\vert a^r \\rangle = \\vert 1\\rangle = \\vert a^0\\rangle$",
+      "status": "exact",
+      "display": "|a^r⟩_{2} = [0; 1] = [0; 1]",
+      "copy": "qequalchain(vector(qbasis('a'^'r',2),matrix(2,1,[0,1]),matrix(2,1,[0,1])))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M116",
+      "cell": 0,
+      "start": 10727,
+      "end": 10894,
+      "literal": "$$\n\\frac{1}{\\sqrt{r}}\\sum_{k = 1}^{r} \\omega_r^{-k} \\vert a^{k} \\rangle = \\frac{1}{\\sqrt{r}}\\sum_{k = 0}^{r-1} \\omega_r^{-k} \\vert a^k \\rangle\n= \\vert\\psi_1\\rangle,\n$$",
+      "status": "exact",
+      "display": "1 / √(r) · (∑_{k=1}^{r} (\"ω_r\"^(−k) · |a^k⟩ (dimension unresolved))) = 1 / √(r) · (∑_{j=0}^{r − 1} (\"ω_r\"^(−j) · |a^j⟩ (dimension unresolved))) = |ψ_1⟩",
+      "copy": "qequalchain(vector(qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_0\",−1)),qcomputationalket(qpower('a',\"qboundindex_0\"))),1,'r',\"qboundindex_0\")),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(\"qboundindex_1\",−1)),qcomputationalket(qpower('a',\"qboundindex_1\"))),0,qsub('r',1),\"qboundindex_1\")),qketstate(\"ψ_1\")))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M117",
+      "cell": 0,
+      "start": 10899,
+      "end": 10953,
+      "literal": "$M_a \\vert\\psi_1\\rangle = \\omega_r \\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "\"M_a\" |ψ_1⟩ = \"ω_r\" |ψ_1⟩",
+      "copy": "(qadjacent(\"M_a\",qnamedket(\"ψ_1\")))==(qadjacent(\"ω_r\",qnamedket(\"ψ_1\")))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M118",
+      "cell": 0,
+      "start": 11042,
+      "end": 11047,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M119",
+      "cell": 0,
+      "start": 11067,
+      "end": 11089,
+      "literal": "$j\\in\\{0,\\ldots,r-1\\}$",
+      "status": "exact",
+      "display": "j ∈ indexrange(0, r − 1)",
+      "copy": "qmember('j',qindexrange(0,qsub('r',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M120",
+      "cell": 0,
+      "start": 11104,
+      "end": 11203,
+      "literal": "$$\n\\vert \\psi_j \\rangle = \\frac{1}{\\sqrt{r}}\n\\sum_{k = 0}^{r-1} \\omega_r^{-jk} \\vert a^k \\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ_j⟩ = 1 / √(r) · (∑_{k=0}^{r − 1} (\"ω_r\"^(−(j · k)) · |a^k⟩ (dimension unresolved)))",
+      "copy": "qcompare(qketstate(\"ψ_j\"),qadjacent(1 ∕ qsqrt('r'),qsum(qadjacent(qpower(\"ω_r\",qmul(−1,qmul('j',\"qboundindex_0\"))),qcomputationalket(qpower('a',\"qboundindex_0\"))),0,qsub('r',1),\"qboundindex_0\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M121",
+      "cell": 0,
+      "start": 11226,
+      "end": 11231,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M122",
+      "cell": 0,
+      "start": 11266,
+      "end": 11278,
+      "literal": "$\\omega_r^j$",
+      "status": "exact",
+      "display": "\"ω_r\"^j",
+      "copy": "\"ω_r\"^'j'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M123",
+      "cell": 0,
+      "start": 11281,
+      "end": 11345,
+      "literal": "$$\nM_a \\vert \\psi_j \\rangle = \\omega_r^j \\vert \\psi_j \\rangle\n$$",
+      "status": "exact",
+      "display": "\"M_a\" |ψ_j⟩ = \"ω_r\"^j |ψ_j⟩",
+      "copy": "(qadjacent(\"M_a\",qnamedket(\"ψ_j\")))==(qadjacent(qpower(\"ω_r\",'j'),qnamedket(\"ψ_j\")))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M124",
+      "cell": 0,
+      "start": 11379,
+      "end": 11384,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M125",
+      "cell": 0,
+      "start": 11476,
+      "end": 11526,
+      "literal": "$\\vert\\psi_0\\rangle,\\ldots,\\vert\\psi_{r-1}\\rangle$",
+      "status": "exact",
+      "display": "qindexedketlist(\"ψ_\", 0, qsub('r', 1), [])",
+      "copy": "qindexedketlist(\"ψ_\",0,qsub('r',1),vector())"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M126",
+      "cell": 0,
+      "start": 11656,
+      "end": 11681,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M127",
+      "cell": 0,
+      "start": 11744,
+      "end": 11749,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M128",
+      "cell": 0,
+      "start": 11794,
+      "end": 11799,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M129",
+      "cell": 0,
+      "start": 11845,
+      "end": 11852,
+      "literal": "$M_a^2$",
+      "status": "exact",
+      "display": "\"M_a\"²",
+      "copy": "\"M_a\"²"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M130",
+      "cell": 0,
+      "start": 11854,
+      "end": 11861,
+      "literal": "$M_a^4$",
+      "status": "exact",
+      "display": "\"M_a\"⁴",
+      "copy": "\"M_a\"⁴"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M131",
+      "cell": 0,
+      "start": 11863,
+      "end": 11870,
+      "literal": "$M_a^8$",
+      "status": "exact",
+      "display": "\"M_a\"⁸",
+      "copy": "\"M_a\"⁸"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M132",
+      "cell": 0,
+      "start": 12117,
+      "end": 12122,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M133",
+      "cell": 0,
+      "start": 12255,
+      "end": 12258,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M134",
+      "cell": 0,
+      "start": 12263,
+      "end": 12268,
+      "literal": "$N-1$",
+      "status": "exact",
+      "display": "N − 1",
+      "copy": "'N' − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M135",
+      "cell": 0,
+      "start": 12310,
+      "end": 12315,
+      "literal": "$N-1$",
+      "status": "exact",
+      "display": "N − 1",
+      "copy": "'N' − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M136",
+      "cell": 0,
+      "start": 12351,
+      "end": 12416,
+      "literal": "$$\nn = \\operatorname{lg}(N-1) = \\lfloor \\log(N-1) \\rfloor + 1.\n$$",
+      "status": "exact",
+      "display": "n = bitlength(N − 1) = 1 + floor(ln('N' − 1))",
+      "copy": "qequalchain(vector(n,qbitlength(qsub('N',1)),1 + floor(ln('N' − 1))))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M137",
+      "cell": 0,
+      "start": 12434,
+      "end": 12442,
+      "literal": "$N = 21$",
+      "status": "exact",
+      "display": "N = 21",
+      "copy": "('N')==(21)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M138",
+      "cell": 0,
+      "start": 12451,
+      "end": 12483,
+      "literal": "$n = \\operatorname{lg}(N-1) = 5$",
+      "status": "exact",
+      "display": "n = bitlength(N − 1) = 5",
+      "copy": "qequalchain(vector(n,qbitlength(qsub('N',1)),5))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M139",
+      "cell": 0,
+      "start": 12525,
+      "end": 12542,
+      "literal": "$\\mathbb{Z}_{21}$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20\\}",
+      "copy": "qset(vector(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M140",
+      "cell": 0,
+      "start": 12571,
+      "end": 12574,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M141",
+      "cell": 0,
+      "start": 12588,
+      "end": 12704,
+      "literal": "$$\n\\begin{gathered}\n0  \\mapsto 00000\\\\[1mm]\n1  \\mapsto 00001\\\\[1mm]\n\\vdots\\\\[1mm]\n20 \\mapsto 10100\n\\end{gathered}\n$$",
+      "status": "diagnostic",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M142",
+      "cell": 0,
+      "start": 12750,
+      "end": 12755,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M143",
+      "cell": 0,
+      "start": 12773,
+      "end": 12776,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M144",
+      "cell": 0,
+      "start": 12795,
+      "end": 12936,
+      "literal": "$$\nM_a \\vert x\\rangle =\n\\begin{cases}\n\\vert ax \\; (\\textrm{mod}\\;N)\\rangle & 0\\leq x < N\\\\[1mm]\n\\vert x\\rangle & N\\leq x < 2^n\n\\end{cases}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textrm at byte 57"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M145",
+      "cell": 0,
+      "start": 12988,
+      "end": 12993,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M146",
+      "cell": 0,
+      "start": 13004,
+      "end": 13044,
+      "literal": "$\\vert 0\\rangle,\\ldots,\\vert N-1\\rangle$",
+      "status": "exact",
+      "display": "basislist(N)",
+      "copy": "qbasiskets('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M147",
+      "cell": 0,
+      "start": 13099,
+      "end": 13108,
+      "literal": "$2^n - N$",
+      "status": "exact",
+      "display": "2^n − N",
+      "copy": "2^n − 'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M148",
+      "cell": 0,
+      "start": 13215,
+      "end": 13220,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M149",
+      "cell": 0,
+      "start": 13528,
+      "end": 13533,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M150",
+      "cell": 0,
+      "start": 13553,
+      "end": 13578,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M151",
+      "cell": 0,
+      "start": 13588,
+      "end": 13596,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M152",
+      "cell": 0,
+      "start": 13685,
+      "end": 13781,
+      "literal": "$$\n   \\vert x \\rangle \\vert y \\rangle \\mapsto \\vert x \\rangle \\vert y \\oplus f_a(x)\\rangle\n   $$",
+      "status": "diagnostic",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M153",
+      "cell": 0,
+      "start": 13796,
+      "end": 13917,
+      "literal": "$$\n   f_a(x) =\n   \\begin{cases}\n   ax \\; (\\textrm{mod}\\;N) & 0\\leq x < N\\\\[1mm]\n   x & N\\leq x < 2^n\n   \\end{cases}\n   $$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textrm at byte 48"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M154",
+      "cell": 0,
+      "start": 14008,
+      "end": 14016,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M155",
+      "cell": 0,
+      "start": 14035,
+      "end": 14038,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M156",
+      "cell": 0,
+      "start": 14059,
+      "end": 14062,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M157",
+      "cell": 0,
+      "start": 14188,
+      "end": 14301,
+      "literal": "$$\n   \\vert x \\rangle \\vert y \\rangle \\mapsto \\vert x \\rangle \\bigl\\vert y \\oplus f_{a^{-1}}(x)\\bigr\\rangle\n   $$",
+      "status": "diagnostic",
+      "message": "Scalar XOR requires nonnegative integer operands.\nA computational basis index must be a nonnegative integer.\nA state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M158",
+      "cell": 0,
+      "start": 14312,
+      "end": 14320,
+      "literal": "$a^{-1}$",
+      "status": "exact",
+      "display": "1 / a",
+      "copy": "1 ∕ 'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M159",
+      "cell": 0,
+      "start": 14339,
+      "end": 14342,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M160",
+      "cell": 0,
+      "start": 14346,
+      "end": 14367,
+      "literal": "$\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M161",
+      "cell": 0,
+      "start": 14397,
+      "end": 14400,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M162",
+      "cell": 0,
+      "start": 14471,
+      "end": 14795,
+      "literal": "$$\n\\vert x \\rangle \\vert 0^n \\rangle\n\\stackrel{\\text{step 1}}{\\mapsto}\n\\vert x \\rangle \\vert f_a(x)\\rangle\n\\stackrel{\\text{step 2}}{\\mapsto}\n\\vert f_a(x)\\rangle \\vert x \\rangle\n\\stackrel{\\text{step 3}}{\\mapsto}\n\\vert f_a(x)\\rangle \\bigl\\vert x \\oplus f_{a^{-1}}(f_a(x)) \\bigr\\rangle\n= \\vert f_a(x)\\rangle\\vert 0^n \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\stackrel at byte 45"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M163",
+      "cell": 0,
+      "start": 14998,
+      "end": 15006,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M164",
+      "cell": 0,
+      "start": 15020,
+      "end": 15027,
+      "literal": "$M_a^2$",
+      "status": "exact",
+      "display": "\"M_a\"²",
+      "copy": "\"M_a\"²"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M165",
+      "cell": 0,
+      "start": 15029,
+      "end": 15036,
+      "literal": "$M_a^4$",
+      "status": "exact",
+      "display": "\"M_a\"⁴",
+      "copy": "\"M_a\"⁴"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M166",
+      "cell": 0,
+      "start": 15038,
+      "end": 15045,
+      "literal": "$M_a^8$",
+      "status": "exact",
+      "display": "\"M_a\"⁸",
+      "copy": "\"M_a\"⁸"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M167",
+      "cell": 0,
+      "start": 15117,
+      "end": 15120,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M168",
+      "cell": 0,
+      "start": 15126,
+      "end": 15131,
+      "literal": "$a^2$",
+      "status": "exact",
+      "display": "a^2",
+      "copy": "'a'²"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M169",
+      "cell": 0,
+      "start": 15133,
+      "end": 15138,
+      "literal": "$a^4$",
+      "status": "exact",
+      "display": "a^4",
+      "copy": "'a'⁴"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M170",
+      "cell": 0,
+      "start": 15140,
+      "end": 15145,
+      "literal": "$a^8$",
+      "status": "exact",
+      "display": "a^8",
+      "copy": "'a'⁸"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M171",
+      "cell": 0,
+      "start": 15173,
+      "end": 15194,
+      "literal": "$\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "invertible_residues(N)",
+      "copy": "qunitsmod('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M172",
+      "cell": 0,
+      "start": 15219,
+      "end": 15222,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M173",
+      "cell": 0,
+      "start": 15262,
+      "end": 15269,
+      "literal": "$M_a^k$",
+      "status": "exact",
+      "display": "\"M_a\"^k",
+      "copy": "\"M_a\"^'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M174",
+      "cell": 0,
+      "start": 15287,
+      "end": 15290,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M175",
+      "cell": 0,
+      "start": 15313,
+      "end": 15318,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M176",
+      "cell": 0,
+      "start": 15345,
+      "end": 15378,
+      "literal": "$b = a^k \\in \\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a^k ∈ invertible_residues(N) and a^k = b",
+      "copy": "(('a'^'k')==('b') and qmember(qpower('a','k'),qunitsmod('N')))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M177",
+      "cell": 0,
+      "start": 15410,
+      "end": 15415,
+      "literal": "$M_b$",
+      "status": "exact",
+      "display": "\"M_b\"",
+      "copy": "\"M_b\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M178",
+      "cell": 0,
+      "start": 15444,
+      "end": 15466,
+      "literal": "$a^k \\in \\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "a^k ∈ residues(N)",
+      "copy": "qmember(qpower('a','k'),qresidues('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M179",
+      "cell": 0,
+      "start": 15782,
+      "end": 15785,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M180",
+      "cell": 0,
+      "start": 15801,
+      "end": 15855,
+      "literal": "$a^2, a^4, \\ldots a^{2^{m-1}} \\in \\mathbb{Z}_N^{\\ast}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 17"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M181",
+      "cell": 0,
+      "start": 15912,
+      "end": 15917,
+      "literal": "$m-1$",
+      "status": "exact",
+      "display": "m − 1",
+      "copy": "'m' − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M182",
+      "cell": 0,
+      "start": 15985,
+      "end": 15993,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M183",
+      "cell": 0,
+      "start": 16081,
+      "end": 16086,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M184",
+      "cell": 0,
+      "start": 16098,
+      "end": 16107,
+      "literal": "$2^{m-1}$",
+      "status": "exact",
+      "display": "0.5 · 2^m",
+      "copy": "2^'m' ∕ 2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M185",
+      "cell": 0,
+      "start": 16423,
+      "end": 16426,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M186",
+      "cell": 0,
+      "start": 16640,
+      "end": 16645,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M187",
+      "cell": 0,
+      "start": 16668,
+      "end": 16688,
+      "literal": "$\\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M188",
+      "cell": 0,
+      "start": 16848,
+      "end": 16853,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M189",
+      "cell": 0,
+      "start": 16887,
+      "end": 16908,
+      "literal": "$\\vert \\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M190",
+      "cell": 0,
+      "start": 16913,
+      "end": 16953,
+      "literal": "$$\n\\omega_r = e^{2\\pi i \\frac{1}{r}}.\n$$",
+      "status": "exact",
+      "display": "\"ω_r\" = e^(2iπ / r)",
+      "copy": "qcompare(\"ω_r\",e^((2 ⋅ i ⋅ π) ∕ 'r'),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M191",
+      "cell": 0,
+      "start": 16964,
+      "end": 16994,
+      "literal": "$\\omega_r = e^{2\\pi i \\theta}$",
+      "status": "exact",
+      "display": "\"ω_r\" = e^(2iπ'θ')",
+      "copy": "qcompare(\"ω_r\",e^(2iπ'θ'),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M192",
+      "cell": 0,
+      "start": 16999,
+      "end": 17013,
+      "literal": "$\\theta = 1/r$",
+      "status": "exact",
+      "display": "r = 1 ∕ 'θ' and 'θ' ≠ 0",
+      "copy": "(('r')==(1 ∕ 'θ') and ('θ')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M193",
+      "cell": 0,
+      "start": 17063,
+      "end": 17068,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M194",
+      "cell": 0,
+      "start": 17091,
+      "end": 17111,
+      "literal": "$\\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M195",
+      "cell": 0,
+      "start": 17143,
+      "end": 17148,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M196",
+      "cell": 0,
+      "start": 17201,
+      "end": 17204,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M197",
+      "cell": 0,
+      "start": 17321,
+      "end": 17324,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M198",
+      "cell": 0,
+      "start": 17368,
+      "end": 17392,
+      "literal": "$y\\in\\{0,\\ldots,2^m-1\\}$",
+      "status": "exact",
+      "display": "y ∈ indexrange(0, 2^m − 1)",
+      "copy": "qmember(y,qindexrange(0,qsub(qpower(2,'m'),1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M199",
+      "cell": 0,
+      "start": 17407,
+      "end": 17414,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M200",
+      "cell": 0,
+      "start": 17430,
+      "end": 17438,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M201",
+      "cell": 0,
+      "start": 17449,
+      "end": 17454,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M202",
+      "cell": 0,
+      "start": 17495,
+      "end": 17498,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M203",
+      "cell": 0,
+      "start": 17636,
+      "end": 17696,
+      "literal": "$$\n\\left\\lfloor \\frac{2^m}{y} + \\frac{1}{2} \\right\\rfloor\n$$",
+      "status": "exact",
+      "display": "floor(0.5 + 2^'m' ∕ y)",
+      "copy": "floor(1 ∕ 2 + 2^'m' ∕ y)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M204",
+      "cell": 0,
+      "start": 17725,
+      "end": 17732,
+      "literal": "$r = 6$",
+      "status": "exact",
+      "display": "r = 6",
+      "copy": "('r')==(6)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M205",
+      "cell": 0,
+      "start": 17768,
+      "end": 17773,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M206",
+      "cell": 0,
+      "start": 17795,
+      "end": 17815,
+      "literal": "$\\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M207",
+      "cell": 0,
+      "start": 17822,
+      "end": 17829,
+      "literal": "$m = 5$",
+      "status": "exact",
+      "display": "m = 5",
+      "copy": "('m')==(5)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M208",
+      "cell": 0,
+      "start": 17853,
+      "end": 17856,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M209",
+      "cell": 0,
+      "start": 17878,
+      "end": 17889,
+      "literal": "$1/r = 1/6$",
+      "status": "exact",
+      "display": "r = 6",
+      "copy": "('r')==(6)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M210",
+      "cell": 0,
+      "start": 17893,
+      "end": 17899,
+      "literal": "$5/32$",
+      "status": "exact",
+      "display": "0.15625",
+      "copy": "5 ∕ 32"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M211",
+      "cell": 0,
+      "start": 17941,
+      "end": 17947,
+      "literal": "$68\\%$",
+      "status": "exact",
+      "display": "0.68",
+      "copy": "17 ∕ 25"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M212",
+      "cell": 0,
+      "start": 17984,
+      "end": 17989,
+      "literal": "$y=5$",
+      "status": "exact",
+      "display": "y = 5",
+      "copy": "(y)==(5)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M213",
+      "cell": 0,
+      "start": 18022,
+      "end": 18063,
+      "literal": "$$\n\\frac{2^m}{y} = \\frac{32}{5} = 6.4,\n$$",
+      "status": "exact",
+      "display": "2^m / y = 32 ∕ 5 = 32 ∕ 5",
+      "copy": "qequalchain(vector(2^'m' ∕ y,32 ∕ 5,32 ∕ 5))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M214",
+      "cell": 0,
+      "start": 18107,
+      "end": 18110,
+      "literal": "$6$",
+      "status": "exact",
+      "display": "6",
+      "copy": "6"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M215",
+      "cell": 0,
+      "start": 18255,
+      "end": 18262,
+      "literal": "$m = 4$",
+      "status": "exact",
+      "display": "m = 4",
+      "copy": "('m')==(4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M216",
+      "cell": 0,
+      "start": 18324,
+      "end": 18327,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M217",
+      "cell": 0,
+      "start": 18349,
+      "end": 18360,
+      "literal": "$1/r = 1/6$",
+      "status": "exact",
+      "display": "r = 6",
+      "copy": "('r')==(6)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M218",
+      "cell": 0,
+      "start": 18371,
+      "end": 18377,
+      "literal": "$3/16$",
+      "status": "exact",
+      "display": "0.1875",
+      "copy": "3 ∕ 16"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M219",
+      "cell": 0,
+      "start": 18409,
+      "end": 18458,
+      "literal": "$$\n\\frac{2^m}{y} = \\frac{16}{3} = 5.333 \\cdots\n$$",
+      "status": "exact",
+      "display": "2^m / y = 16 ∕ 3 = 16 ∕ 3",
+      "copy": "qequalchain(vector(2^'m' ∕ y,16 ∕ 3,16 ∕ 3))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M220",
+      "cell": 0,
+      "start": 18525,
+      "end": 18528,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M221",
+      "cell": 0,
+      "start": 18612,
+      "end": 18615,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M222",
+      "cell": 0,
+      "start": 18704,
+      "end": 18709,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M223",
+      "cell": 0,
+      "start": 18747,
+      "end": 18756,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M224",
+      "cell": 0,
+      "start": 18761,
+      "end": 18770,
+      "literal": "$1/(r-1)$",
+      "status": "exact",
+      "display": "1 / (r − 1)",
+      "copy": "1 ∕ ('r' − 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M225",
+      "cell": 0,
+      "start": 18794,
+      "end": 18799,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M226",
+      "cell": 0,
+      "start": 18837,
+      "end": 18846,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M227",
+      "cell": 0,
+      "start": 18895,
+      "end": 18948,
+      "literal": "$$\n\\frac{1}{r} - \\frac{1}{r+1} = \\frac{1}{r(r+1)}.\n$$",
+      "status": "exact",
+      "display": "r ≠ 0 and r ≠ −1",
+      "copy": "(('r')!=(0) and ('r')!=(−1))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M228",
+      "cell": 0,
+      "start": 19000,
+      "end": 19005,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M229",
+      "cell": 0,
+      "start": 19010,
+      "end": 19019,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M230",
+      "cell": 0,
+      "start": 19096,
+      "end": 19103,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M231",
+      "cell": 0,
+      "start": 19107,
+      "end": 19112,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M232",
+      "cell": 0,
+      "start": 19126,
+      "end": 19131,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M233",
+      "cell": 0,
+      "start": 19146,
+      "end": 19155,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M234",
+      "cell": 0,
+      "start": 19193,
+      "end": 19272,
+      "literal": "$$\n\\left\\vert\n\\frac{y}{2^m} - \\frac{1}{r}\n\\right\\vert\n< \\frac{1}{2 r (r+1)},\n$$",
+      "status": "exact",
+      "display": "|y / 2^m − 1 / r| < 1 / (2 · (r + 1) · r)",
+      "copy": "qcompare(qbars(qsub(y ∕ qpower(2, 'm'),1 ∕ 'r')),1 ∕ qadjacent(2, qadd('r', 1) ⋅ 'r'),0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M235",
+      "cell": 0,
+      "start": 19334,
+      "end": 19339,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M236",
+      "cell": 0,
+      "start": 19344,
+      "end": 19353,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M237",
+      "cell": 0,
+      "start": 19360,
+      "end": 19367,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M238",
+      "cell": 0,
+      "start": 19386,
+      "end": 19391,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M239",
+      "cell": 0,
+      "start": 19433,
+      "end": 19442,
+      "literal": "$1/(r+1)$",
+      "status": "exact",
+      "display": "1 / (r + 1)",
+      "copy": "1 ∕ ('r' + 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M240",
+      "cell": 0,
+      "start": 19447,
+      "end": 19456,
+      "literal": "$1/(r-1)$",
+      "status": "exact",
+      "display": "1 / (r − 1)",
+      "copy": "1 ∕ ('r' − 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M241",
+      "cell": 0,
+      "start": 19510,
+      "end": 19557,
+      "literal": "$$\n\\frac{y}{2^m} = \\frac{1}{r} + \\varepsilon\n$$",
+      "status": "exact",
+      "display": "y = 2^m · 'ε' + 2^m / r",
+      "copy": "(y)==(2^'m' ⋅ 'ε' + 2^'m' ∕ 'r')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M242",
+      "cell": 0,
+      "start": 19563,
+      "end": 19576,
+      "literal": "$\\varepsilon$",
+      "status": "exact",
+      "display": "'ε'",
+      "copy": "'ε'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M243",
+      "cell": 0,
+      "start": 19589,
+      "end": 19639,
+      "literal": "$$\n\\vert\\varepsilon\\vert < \\frac{1}{2 r (r+1)}.\n$$",
+      "status": "exact",
+      "display": "|'ε'| = 0 and r > 0 or |'ε'| = 0 and r < −1 or r > 0 and r^2 + r > 1 / (2 · |'ε'|) and |'ε'| < 0 or r > 0 and |'ε'| > 0 and r^2 + r < 1 / (2 · |'ε'|) or r > −1 and r^2 + r > 1 / (2 · |'ε'|) and |'ε'| > 0 and r < 0 or r > −1 and r < 0 and r^2 + r < 1 / (2 · |'ε'|) and |'ε'| < 0 or r^2 + r > 1 / (2 · |'ε'|) and r < −1 and |'ε'| < 0 or |'ε'| > 0 and r < −1 and r^2 + r < 1 / (2 · |'ε'|)",
+      "copy": "((('r')<(0) and ('r')>(−1) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(0) and ('r')>(−1) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')<(−1) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')<(−1) and (qbars('ε'))==(0)) or (('r')>(0) and ('r'² + 'r')<(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))>(0)) or (('r')>(0) and ('r'² + 'r')>(1 ∕ (2 ⋅ qbars('ε'))) and (qbars('ε'))<(0)) or (('r')>(0) and (qbars('ε'))==(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M244",
+      "cell": 0,
+      "start": 19680,
+      "end": 19812,
+      "literal": "$$\n\\frac{2^m}{y} = \\frac{1}{\\frac{1}{r} + \\varepsilon} = \\frac{r}{1+\\varepsilon r} = r - \\frac{\\varepsilon r^2}{1+\\varepsilon r}.\n$$",
+      "status": "exact",
+      "display": "2^m / y = r / (r · 'ε' + 1) = r / (r · 'ε' + 1) = r / (r · 'ε' + 1)",
+      "copy": "qequalchain(vector(2^'m' ∕ y,'r' ∕ ('r' ⋅ 'ε' + 1),'r' ∕ ('r' ⋅ 'ε' + 1),'r' ∕ ('r' ⋅ 'ε' + 1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M245",
+      "cell": 0,
+      "start": 19918,
+      "end": 19921,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M246",
+      "cell": 0,
+      "start": 19935,
+      "end": 20123,
+      "literal": "$$\n\\left\\vert\n\\frac{\\varepsilon r^2}{1+\\varepsilon r}\n\\right\\vert\n\\leq \\frac{ \\frac{r^2}{2 r(r+1)}}{1 - \\frac{r}{2r(r+1)}}\n%= \\frac{r^2}{2 r (r+1) - r}\n= \\frac{r}{2 r + 1}\n< \\frac{1}{2}\n$$",
+      "status": "exact",
+      "display": "'ε' = 0 and r ≥ 0 or r ≥ 0 and r > −1 ∕ 'ε' and 'ε' > 0 and (2 · r^2 + r) · |'ε'| − (r · 'ε') ≤ 1 or r ≥ 0 and r > −1 ∕ 'ε' and 'ε' < 0 and r · 'ε' + (2 · r^2 + r) · |'ε'| ≤ −1 or r ≥ 0 and 'ε' > 0 and r < −1 ∕ 'ε' and r · 'ε' + (2 · r^2 + r) · |'ε'| ≤ −1 or r ≥ 0 and r < −1 ∕ 'ε' and 'ε' < 0 and (2 · r^2 + r) · |'ε'| − (r · 'ε') ≤ 1 or r > −0.5 and r > −1 ∕ 'ε' and 'ε' > 0 and (2 · r^2 + r) · |'ε'| − (r · 'ε') ≥ 1 and r ≤ 0 or r > −0.5 and r > −1 ∕ 'ε' and r · 'ε' + (2 · r^2 + r) · |'ε'| ≥ −1 and r ≤ 0 and 'ε' < 0 or r > −0.5 and 'ε' > 0 and r · 'ε' + (2 · r^2 + r) · |'ε'| ≥ −1 and r ≤ 0 and r < −1 ∕ 'ε' or r > −0.5 and (2 · r^2 + r) · |'ε'| − (r · 'ε') ≥ 1 and r ≤ 0 and r < −1 ∕ 'ε' and 'ε' < 0",
+      "copy": "((('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)<=(−1) and ('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)<=(−1) and ('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)>=(−1) and ('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')>(0)) or (('r' ⋅ 'ε' + (2 ⋅ 'r'² + 'r') ⋅ |'ε'|)>=(−1) and ('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')<(0)) or (('r')<(−1 ∕ 'ε') and ('r')<=(0) and ('r')>(−1 ∕ 2) and ('ε')<(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')>=(1)) or (('r')<(−1 ∕ 'ε') and ('r')>=(0) and ('ε')<(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')<=(1)) or (('r')<=(0) and ('r')>(−1 ∕ 'ε') and ('r')>(−1 ∕ 2) and ('ε')>(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')>=(1)) or (('r')>(−1 ∕ 'ε') and ('r')>=(0) and ('ε')>(0) and ((2 ⋅ 'r'² + 'r') ⋅ |'ε'| − 'r' ⋅ 'ε')<=(1)) or (('r')>=(0) and ('ε')==(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M247",
+      "cell": 0,
+      "start": 20141,
+      "end": 20146,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M248",
+      "cell": 0,
+      "start": 20157,
+      "end": 20160,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M249",
+      "cell": 0,
+      "start": 20187,
+      "end": 20190,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M250",
+      "cell": 0,
+      "start": 20253,
+      "end": 20256,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M251",
+      "cell": 0,
+      "start": 20362,
+      "end": 20365,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M252",
+      "cell": 0,
+      "start": 20387,
+      "end": 20390,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M253",
+      "cell": 0,
+      "start": 20513,
+      "end": 20520,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M254",
+      "cell": 0,
+      "start": 20524,
+      "end": 20529,
+      "literal": "$1/r$",
+      "status": "exact",
+      "display": "1 / r",
+      "copy": "1 ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M255",
+      "cell": 0,
+      "start": 20541,
+      "end": 20618,
+      "literal": "$$\n\\left\\vert \\frac{y}{2^m} - \\frac{1}{r} \\right\\vert \\leq \\frac{1}{2N^2},\n$$",
+      "status": "exact",
+      "display": "|y / 2^m − 1 / r| ≤ 1 / (2 · N^2)",
+      "copy": "qcompare(qbars(qsub(y ∕ qpower(2, 'm'),1 ∕ 'r')),1 ∕ qadjacent(2, qpower('N', 2)),2)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M256",
+      "cell": 0,
+      "start": 20676,
+      "end": 20679,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M257",
+      "cell": 0,
+      "start": 20716,
+      "end": 20745,
+      "literal": "$m = 2\\operatorname{lg}(N)+1$",
+      "status": "exact",
+      "display": "bitlength(N) = 0.5 · m − 0.5",
+      "copy": "(qbitlength('N'))==('m' ∕ 2 − 1 ∕ 2)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M258",
+      "cell": 0,
+      "start": 20872,
+      "end": 20899,
+      "literal": "$m = 2\\operatorname{lg}(N)$",
+      "status": "exact",
+      "display": "bitlength(N) = 0.5 · m",
+      "copy": "(qbitlength('N'))==('m' ∕ 2)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M259",
+      "cell": 0,
+      "start": 21060,
+      "end": 21082,
+      "literal": "$\\vert \\psi_1 \\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M260",
+      "cell": 0,
+      "start": 21086,
+      "end": 21091,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M261",
+      "cell": 0,
+      "start": 21106,
+      "end": 21109,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M262",
+      "cell": 0,
+      "start": 21279,
+      "end": 21299,
+      "literal": "$\\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M263",
+      "cell": 0,
+      "start": 21430,
+      "end": 21450,
+      "literal": "$\\vert\\psi_k\\rangle$",
+      "status": "exact",
+      "display": "|ψ_k⟩",
+      "copy": "qketstate(\"ψ_k\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M264",
+      "cell": 0,
+      "start": 21463,
+      "end": 21483,
+      "literal": "$\\vert\\psi_1\\rangle$",
+      "status": "exact",
+      "display": "|ψ_1⟩",
+      "copy": "qketstate(\"ψ_1\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M265",
+      "cell": 0,
+      "start": 21503,
+      "end": 21525,
+      "literal": "$k\\in\\{0,\\ldots,r-1\\}$",
+      "status": "exact",
+      "display": "k ∈ indexrange(0, r − 1)",
+      "copy": "qmember('k',qindexrange(0,qsub('r',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M266",
+      "cell": 0,
+      "start": 21637,
+      "end": 21677,
+      "literal": "$$\n\\frac{y}{2^m} \\approx \\frac{k}{r}.\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M267",
+      "cell": 0,
+      "start": 21734,
+      "end": 21737,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M268",
+      "cell": 0,
+      "start": 21741,
+      "end": 21744,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M269",
+      "cell": 0,
+      "start": 21791,
+      "end": 21794,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M270",
+      "cell": 0,
+      "start": 21812,
+      "end": 21819,
+      "literal": "$k = 0$",
+      "status": "exact",
+      "display": "k = 0",
+      "copy": "('k')==(0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M271",
+      "cell": 0,
+      "start": 21847,
+      "end": 21854,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M272",
+      "cell": 0,
+      "start": 21858,
+      "end": 21861,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M273",
+      "cell": 0,
+      "start": 21956,
+      "end": 21959,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M274",
+      "cell": 0,
+      "start": 22009,
+      "end": 22012,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M275",
+      "cell": 0,
+      "start": 22109,
+      "end": 22116,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M276",
+      "cell": 0,
+      "start": 22151,
+      "end": 22156,
+      "literal": "$k/r$",
+      "status": "exact",
+      "display": "k / r",
+      "copy": "'k' ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M277",
+      "cell": 0,
+      "start": 22356,
+      "end": 22365,
+      "literal": "$N\\geq 2$",
+      "status": "exact",
+      "display": "N ≥ 2",
+      "copy": "('N')>=(2)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M278",
+      "cell": 0,
+      "start": 22384,
+      "end": 22400,
+      "literal": "$\\alpha\\in(0,1)$",
+      "status": "exact",
+      "display": "'α' ∈ (0, 1)",
+      "copy": "qmember('α',qrealinterval(0,1,0,0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M279",
+      "cell": 0,
+      "start": 22442,
+      "end": 22466,
+      "literal": "$u,v\\in\\{0,\\ldots,N-1\\}$",
+      "status": "exact",
+      "display": "u ∈ indexrange(0, N − 1) and v ∈ indexrange(0, N − 1)",
+      "copy": "(qmember('u',qindexrange(0,qsub('N',1))) and qmember('v',qindexrange(0,qsub('N',1))))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M280",
+      "cell": 0,
+      "start": 22472,
+      "end": 22481,
+      "literal": "$v\\neq 0$",
+      "status": "exact",
+      "display": "v ≠ 0",
+      "copy": "('v')!=(0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M281",
+      "cell": 0,
+      "start": 22486,
+      "end": 22499,
+      "literal": "$\\gcd(u,v)=1$",
+      "status": "exact",
+      "display": "integergcd(u, v) = 1",
+      "copy": "(qintegergcd('u','v'))==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M282",
+      "cell": 0,
+      "start": 22511,
+      "end": 22553,
+      "literal": "$\\vert \\alpha - u/v\\vert < \\frac{1}{2N^2}$",
+      "status": "exact",
+      "display": "u = v · 'α' and N ≠ 0 and v ≠ 0 or N ≠ 0 and N > −√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v''α'|)) and N < √(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v''α'|)) and v ≠ 0",
+      "copy": "((('N')!=(0) and ('N')<(√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('N')>(−√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('v')!=(0)) or (('N')!=(0) and ('u')==('v''α') and ('v')!=(0)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M283",
+      "cell": 0,
+      "start": 22561,
+      "end": 22569,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M284",
+      "cell": 0,
+      "start": 22574,
+      "end": 22577,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M285",
+      "cell": 0,
+      "start": 22620,
+      "end": 22623,
+      "literal": "$u$",
+      "status": "exact",
+      "display": "u",
+      "copy": "'u'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M286",
+      "cell": 0,
+      "start": 22628,
+      "end": 22631,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M287",
+      "cell": 0,
+      "start": 22734,
+      "end": 22763,
+      "literal": "$O((\\operatorname{lg}(N))^3)$",
+      "status": "exact",
+      "display": "O(bitlength(N)^3)",
+      "copy": "qbigorder(qpower(qbitlength('N'),3))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M288",
+      "cell": 0,
+      "start": 22814,
+      "end": 22821,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M289",
+      "cell": 0,
+      "start": 22825,
+      "end": 22830,
+      "literal": "$k/r$",
+      "status": "exact",
+      "display": "k / r",
+      "copy": "'k' ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M290",
+      "cell": 0,
+      "start": 22880,
+      "end": 22883,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M291",
+      "cell": 0,
+      "start": 22888,
+      "end": 22904,
+      "literal": "$\\alpha = y/2^m$",
+      "status": "exact",
+      "display": "y = 2^m · 'α'",
+      "copy": "(y)==(2^'m' ⋅ 'α')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M292",
+      "cell": 0,
+      "start": 22916,
+      "end": 22919,
+      "literal": "$u$",
+      "status": "exact",
+      "display": "u",
+      "copy": "'u'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M293",
+      "cell": 0,
+      "start": 22924,
+      "end": 22927,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M294",
+      "cell": 0,
+      "start": 23015,
+      "end": 23047,
+      "literal": "$$\n\\frac{u}{v} = \\frac{k}{r}.\n$$",
+      "status": "exact",
+      "display": "k = r · u / v and r ≠ 0",
+      "copy": "(('k')==(('r' ⋅ 'u') ∕ 'v') and ('r')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M295",
+      "cell": 0,
+      "start": 23102,
+      "end": 23105,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M296",
+      "cell": 0,
+      "start": 23110,
+      "end": 23113,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M297",
+      "cell": 0,
+      "start": 23129,
+      "end": 23134,
+      "literal": "$k/r$",
+      "status": "exact",
+      "display": "k / r",
+      "copy": "'k' ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M298",
+      "cell": 0,
+      "start": 23235,
+      "end": 23240,
+      "literal": "$k=0$",
+      "status": "exact",
+      "display": "k = 0",
+      "copy": "('k')==(0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M299",
+      "cell": 0,
+      "start": 23271,
+      "end": 23274,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M300",
+      "cell": 0,
+      "start": 23300,
+      "end": 23303,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M301",
+      "cell": 0,
+      "start": 23350,
+      "end": 23353,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M302",
+      "cell": 0,
+      "start": 23370,
+      "end": 23373,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M303",
+      "cell": 0,
+      "start": 23443,
+      "end": 23446,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M304",
+      "cell": 0,
+      "start": 23524,
+      "end": 23527,
+      "literal": "$u$",
+      "status": "exact",
+      "display": "u",
+      "copy": "'u'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M305",
+      "cell": 0,
+      "start": 23532,
+      "end": 23535,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M306",
+      "cell": 0,
+      "start": 23540,
+      "end": 23551,
+      "literal": "$u/v = k/r$",
+      "status": "exact",
+      "display": "k = r · u / v and r ≠ 0",
+      "copy": "(('k')==(('r' ⋅ 'u') ∕ 'v') and ('r')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M307",
+      "cell": 0,
+      "start": 23556,
+      "end": 23578,
+      "literal": "$k\\in\\{0,\\ldots,r-1\\}$",
+      "status": "exact",
+      "display": "k ∈ indexrange(0, r − 1)",
+      "copy": "qmember('k',qindexrange(0,qsub('r',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M308",
+      "cell": 0,
+      "start": 23654,
+      "end": 23657,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M309",
+      "cell": 0,
+      "start": 23716,
+      "end": 23719,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M310",
+      "cell": 0,
+      "start": 23789,
+      "end": 23792,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M311",
+      "cell": 0,
+      "start": 23885,
+      "end": 23888,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M312",
+      "cell": 0,
+      "start": 23940,
+      "end": 23943,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M313",
+      "cell": 0,
+      "start": 24003,
+      "end": 24006,
+      "literal": "$u$",
+      "status": "exact",
+      "display": "u",
+      "copy": "'u'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M314",
+      "cell": 0,
+      "start": 24011,
+      "end": 24014,
+      "literal": "$v$",
+      "status": "exact",
+      "display": "v",
+      "copy": "'v'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M315",
+      "cell": 0,
+      "start": 24040,
+      "end": 24043,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M316",
+      "cell": 0,
+      "start": 24077,
+      "end": 24080,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M317",
+      "cell": 0,
+      "start": 24131,
+      "end": 24134,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M318",
+      "cell": 0,
+      "start": 24333,
+      "end": 24353,
+      "literal": "$\\vert\\psi_k\\rangle$",
+      "status": "exact",
+      "display": "|ψ_k⟩",
+      "copy": "qketstate(\"ψ_k\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M319",
+      "cell": 0,
+      "start": 24357,
+      "end": 24362,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M320",
+      "cell": 0,
+      "start": 24546,
+      "end": 24562,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M321",
+      "cell": 0,
+      "start": 24585,
+      "end": 24588,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M322",
+      "cell": 0,
+      "start": 24623,
+      "end": 24626,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M323",
+      "cell": 0,
+      "start": 24655,
+      "end": 24673,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M324",
+      "cell": 0,
+      "start": 24677,
+      "end": 24682,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M325",
+      "cell": 0,
+      "start": 24882,
+      "end": 24887,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M326",
+      "cell": 0,
+      "start": 24937,
+      "end": 24953,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M327",
+      "cell": 0,
+      "start": 24985,
+      "end": 24990,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M328",
+      "cell": 0,
+      "start": 24998,
+      "end": 25003,
+      "literal": "$a=1$",
+      "status": "exact",
+      "display": "a = 1",
+      "copy": "('a')==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M329",
+      "cell": 0,
+      "start": 25089,
+      "end": 25105,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M330",
+      "cell": 0,
+      "start": 25136,
+      "end": 25141,
+      "literal": "$M_a$",
+      "status": "exact",
+      "display": "\"M_a\"",
+      "copy": "\"M_a\""
+    },
+    {
+      "id": "IBM029-9ea5aee3-M331",
+      "cell": 0,
+      "start": 25183,
+      "end": 25263,
+      "literal": "$$\n\\vert 1\\rangle = \\frac{1}{\\sqrt{r}} \\sum_{k = 0}^{r-1} \\vert \\psi_k\\rangle\n$$",
+      "status": "exact",
+      "display": "[0; −1] + 1 / √(r) · (∑_{k=0}^{r − 1} (|ψ_k⟩)) = 0",
+      "copy": "((matrix(2,1,[0,−1]))+ (qadjacent(1 ∕ qsqrt('r'),qsum(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),0,qsub('r',1),\"qboundindex_0\"))))==(0)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M332",
+      "cell": 0,
+      "start": 25578,
+      "end": 25600,
+      "literal": "$k\\in\\{0,\\ldots,r-1\\}$",
+      "status": "exact",
+      "display": "k ∈ indexrange(0, r − 1)",
+      "copy": "qmember('k',qindexrange(0,qsub('r',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M333",
+      "cell": 0,
+      "start": 25630,
+      "end": 25650,
+      "literal": "$\\vert\\psi_k\\rangle$",
+      "status": "exact",
+      "display": "|ψ_k⟩",
+      "copy": "qketstate(\"ψ_k\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M334",
+      "cell": 0,
+      "start": 25762,
+      "end": 25778,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M335",
+      "cell": 0,
+      "start": 25815,
+      "end": 25835,
+      "literal": "$\\vert\\psi_k\\rangle$",
+      "status": "exact",
+      "display": "|ψ_k⟩",
+      "copy": "qketstate(\"ψ_k\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M336",
+      "cell": 0,
+      "start": 25926,
+      "end": 26012,
+      "literal": "$$\n\\frac{1}{\\sqrt{r}} \\sum_{k = 0}^{r-1} \\vert \\psi_k\\rangle \\vert \\gamma_k\\rangle,\n$$",
+      "status": "exact",
+      "display": "1 / √(r) · (∑_{k=0}^{r − 1} (|ψ_k⟩ ⊗ |γ_k⟩))",
+      "copy": "qadjacent(1 ∕ qsqrt('r'),qsum(qtensor(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),qindexedket(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"))),0,qsub('r',1),\"qboundindex_0\"))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M337",
+      "cell": 0,
+      "start": 26021,
+      "end": 26146,
+      "literal": "$$\n\\vert\\gamma_k\\rangle =\n\\frac{1}{2^m} \\sum_{y=0}^{2^m - 1} \\sum_{x=0}^{2^m-1} e^{2\\pi i x (k/r - y/2^m)} \\vert y\\rangle.\n$$",
+      "status": "exact",
+      "display": "|γ_k⟩ = 1 / 2^m · (∑_{j=0}^{2^m − 1} (∑_{l=0}^{2^m − 1} (e^(2 · π · i · (k / r − j / 2^m) · l) |j⟩)))",
+      "copy": "qcompare(qketstate(\"γ_k\"),qadjacent(1 ∕ qpower(2, 'm'),qsum(qsum(qadjacent(qpower(e,qadjacent(qadjacent(qadjacent(2,π),i),qsub('k' ∕ 'r', \"qboundindex_1\" ∕ qpower(2, 'm')) ⋅ \"qboundindex_0\")),qketstate(\"qboundindex_1\")),0,qsub(qpower(2,'m'),1),\"qboundindex_0\"),0,qsub(qpower(2,'m'),1),\"qboundindex_1\")),4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M338",
+      "cell": 0,
+      "start": 26159,
+      "end": 26181,
+      "literal": "$\\vert\\gamma_k\\rangle$",
+      "status": "exact",
+      "display": "|γ_k⟩",
+      "copy": "qketstate(\"γ_k\")"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M339",
+      "cell": 0,
+      "start": 26214,
+      "end": 26217,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M340",
+      "cell": 0,
+      "start": 26336,
+      "end": 26390,
+      "literal": "$\\{\\vert\\psi_0\\rangle,\\ldots,\\vert\\psi_{r-1}\\rangle\\}$",
+      "status": "exact",
+      "display": "\\{|ψ_0⟩,\\ldots,|ψ_{r − 1}⟩\\}",
+      "copy": "qindexedketset(\"ψ_\",0,qsub('r',1),vector())"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M341",
+      "cell": 0,
+      "start": 26452,
+      "end": 26455,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M342",
+      "cell": 0,
+      "start": 26487,
+      "end": 26494,
+      "literal": "$y/2^m$",
+      "status": "exact",
+      "display": "0.5^m · y",
+      "copy": "(1 ∕ 2)^'m' ⋅ y"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M343",
+      "cell": 0,
+      "start": 26508,
+      "end": 26513,
+      "literal": "$k/r$",
+      "status": "exact",
+      "display": "k / r",
+      "copy": "'k' ∕ 'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M344",
+      "cell": 0,
+      "start": 26520,
+      "end": 26542,
+      "literal": "$k\\in\\{0,\\ldots,r-1\\}$",
+      "status": "exact",
+      "display": "k ∈ indexrange(0, r − 1)",
+      "copy": "qmember('k',qindexrange(0,qsub('r',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M345",
+      "cell": 0,
+      "start": 26626,
+      "end": 26629,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M346",
+      "cell": 0,
+      "start": 26778,
+      "end": 26785,
+      "literal": "$M_a^k$",
+      "status": "exact",
+      "display": "\"M_a\"^k",
+      "copy": "\"M_a\"^'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M347",
+      "cell": 0,
+      "start": 26789,
+      "end": 26797,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M348",
+      "cell": 0,
+      "start": 26809,
+      "end": 26812,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M349",
+      "cell": 0,
+      "start": 26856,
+      "end": 26866,
+      "literal": "$m = O(n)$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M350",
+      "cell": 0,
+      "start": 26927,
+      "end": 26935,
+      "literal": "$O(n^3)$",
+      "status": "exact",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M351",
+      "cell": 0,
+      "start": 26958,
+      "end": 26961,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M352",
+      "cell": 0,
+      "start": 26995,
+      "end": 27001,
+      "literal": "$O(n)$",
+      "status": "exact",
+      "display": "O(n)",
+      "copy": "qbigorder(n)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M353",
+      "cell": 0,
+      "start": 27070,
+      "end": 27078,
+      "literal": "$O(n^2)$",
+      "status": "exact",
+      "display": "O(n^2)",
+      "copy": "qbigorder(qpower(n,2))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M354",
+      "cell": 0,
+      "start": 27208,
+      "end": 27216,
+      "literal": "$O(n^3)$",
+      "status": "exact",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M355",
+      "cell": 0,
+      "start": 27377,
+      "end": 27382,
+      "literal": "$a^k$",
+      "status": "exact",
+      "display": "a^k",
+      "copy": "'a'^'k'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M356",
+      "cell": 0,
+      "start": 27386,
+      "end": 27400,
+      "literal": "$\\mathbb{Z}_N$",
+      "status": "exact",
+      "display": "residues(N)",
+      "copy": "qresidues('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M357",
+      "cell": 0,
+      "start": 27405,
+      "end": 27435,
+      "literal": "$k = 2, 4, 8, \\ldots, 2^{m-1}$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M358",
+      "cell": 0,
+      "start": 27570,
+      "end": 27578,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M359",
+      "cell": 0,
+      "start": 27672,
+      "end": 27680,
+      "literal": "$O(n^3)$",
+      "status": "exact",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M360",
+      "cell": 0,
+      "start": 28139,
+      "end": 28142,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M361",
+      "cell": 0,
+      "start": 28232,
+      "end": 28235,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M362",
+      "cell": 0,
+      "start": 28274,
+      "end": 28285,
+      "literal": "$b,c\\geq 2$",
+      "status": "diagnostic",
+      "message": "Expected a shared set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M363",
+      "cell": 0,
+      "start": 28296,
+      "end": 28304,
+      "literal": "$N = bc$",
+      "status": "exact",
+      "display": "N = 299.792458 · b · km ∕ ms",
+      "copy": "('N')==((149896229 ∕ 500000) ⋅ 'b' km ∕ ms)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M364",
+      "cell": 0,
+      "start": 28329,
+      "end": 28332,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M365",
+      "cell": 0,
+      "start": 28390,
+      "end": 28393,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M366",
+      "cell": 0,
+      "start": 28453,
+      "end": 28456,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M367",
+      "cell": 0,
+      "start": 28506,
+      "end": 28509,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M368",
+      "cell": 0,
+      "start": 28536,
+      "end": 28539,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M369",
+      "cell": 0,
+      "start": 28544,
+      "end": 28547,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "(149896229 ∕ 500000) km ∕ ms"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M370",
+      "cell": 0,
+      "start": 28624,
+      "end": 28627,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M371",
+      "cell": 0,
+      "start": 28678,
+      "end": 28681,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M372",
+      "cell": 0,
+      "start": 28686,
+      "end": 28691,
+      "literal": "$N/2$",
+      "status": "exact",
+      "display": "0.5 · N",
+      "copy": "'N' ∕ 2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M373",
+      "cell": 0,
+      "start": 28762,
+      "end": 28771,
+      "literal": "$N = s^j$",
+      "status": "exact",
+      "display": "N = s^j",
+      "copy": "('N')==('s'^'j')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M374",
+      "cell": 0,
+      "start": 28785,
+      "end": 28796,
+      "literal": "$s,j\\geq 2$",
+      "status": "diagnostic",
+      "message": "Expected a shared set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M375",
+      "cell": 0,
+      "start": 28830,
+      "end": 28839,
+      "literal": "$N^{1/2}$",
+      "status": "exact",
+      "display": "√('N')",
+      "copy": "√('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M376",
+      "cell": 0,
+      "start": 28841,
+      "end": 28850,
+      "literal": "$N^{1/3}$",
+      "status": "exact",
+      "display": "N^(1 ∕ 3)",
+      "copy": "'N'^(1 ∕ 3)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M377",
+      "cell": 0,
+      "start": 28852,
+      "end": 28861,
+      "literal": "$N^{1/4}$",
+      "status": "exact",
+      "display": "N^(1 ∕ 4)",
+      "copy": "'N'^(1 ∕ 4)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M378",
+      "cell": 0,
+      "start": 28919,
+      "end": 28922,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M379",
+      "cell": 0,
+      "start": 28957,
+      "end": 28966,
+      "literal": "$\\log(N)$",
+      "status": "exact",
+      "display": "ln('N')",
+      "copy": "ln('N')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M380",
+      "cell": 0,
+      "start": 29036,
+      "end": 29039,
+      "literal": "$2$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M381",
+      "cell": 0,
+      "start": 29226,
+      "end": 29229,
+      "literal": "$s$",
+      "status": "exact",
+      "display": "s",
+      "copy": "'s'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M382",
+      "cell": 0,
+      "start": 29254,
+      "end": 29257,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M383",
+      "cell": 0,
+      "start": 29330,
+      "end": 29333,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M384",
+      "cell": 0,
+      "start": 29459,
+      "end": 29481,
+      "literal": "$a\\in\\{2,\\ldots,N-1\\}$",
+      "status": "exact",
+      "display": "a ∈ indexrange(2, N − 1)",
+      "copy": "qmember('a',qindexrange(2,qsub('N',1)))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M385",
+      "cell": 0,
+      "start": 29494,
+      "end": 29507,
+      "literal": "$d=\\gcd(a,N)$",
+      "status": "exact",
+      "display": "integergcd(a, N) = d",
+      "copy": "(qintegergcd('a','N'))==('d')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M386",
+      "cell": 0,
+      "start": 29515,
+      "end": 29522,
+      "literal": "$d > 1$",
+      "status": "exact",
+      "display": "d > 1",
+      "copy": "('d')>(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M387",
+      "cell": 0,
+      "start": 29535,
+      "end": 29542,
+      "literal": "$b = d$",
+      "status": "exact",
+      "display": "b = d",
+      "copy": "('b')==('d')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M388",
+      "cell": 0,
+      "start": 29547,
+      "end": 29556,
+      "literal": "$c = N/d$",
+      "status": "exact",
+      "display": "N = 299.792458 · d · km ∕ ms and d ≠ 0",
+      "copy": "(('N')==((149896229 ∕ 500000) ⋅ 'd' km ∕ ms) and ('d')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M389",
+      "cell": 0,
+      "start": 29616,
+      "end": 29641,
+      "literal": "$a\\in\\mathbb{Z}_N^{\\ast}$",
+      "status": "exact",
+      "display": "a ∈ invertible_residues(N)",
+      "copy": "qmember('a',qunitsmod('N'))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M390",
+      "cell": 0,
+      "start": 29650,
+      "end": 29653,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M391",
+      "cell": 0,
+      "start": 29670,
+      "end": 29673,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M392",
+      "cell": 0,
+      "start": 29681,
+      "end": 29684,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M393",
+      "cell": 0,
+      "start": 29730,
+      "end": 29733,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M394",
+      "cell": 0,
+      "start": 29759,
+      "end": 29776,
+      "literal": "$x = a^{r/2} - 1$",
+      "status": "exact",
+      "display": "x = a^(0.5 · r) − 1",
+      "copy": "(x)==('a'^('r' ∕ 2) − 1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M395",
+      "cell": 0,
+      "start": 29784,
+      "end": 29787,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M396",
+      "cell": 0,
+      "start": 29805,
+      "end": 29820,
+      "literal": "$d = \\gcd(x,N)$",
+      "status": "exact",
+      "display": "integergcd(x, N) = d",
+      "copy": "(qintegergcd(x,'N'))==('d')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M397",
+      "cell": 0,
+      "start": 29834,
+      "end": 29839,
+      "literal": "$d>1$",
+      "status": "exact",
+      "display": "d > 1",
+      "copy": "('d')>(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M398",
+      "cell": 0,
+      "start": 29852,
+      "end": 29857,
+      "literal": "$b=d$",
+      "status": "exact",
+      "display": "b = d",
+      "copy": "('b')==('d')"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M399",
+      "cell": 0,
+      "start": 29862,
+      "end": 29871,
+      "literal": "$c = N/d$",
+      "status": "exact",
+      "display": "N = 299.792458 · d · km ∕ ms and d ≠ 0",
+      "copy": "(('N')==((149896229 ∕ 500000) ⋅ 'd' km ∕ ms) and ('d')!=(0))"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M400",
+      "cell": 0,
+      "start": 29957,
+      "end": 29960,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M401",
+      "cell": 0,
+      "start": 30026,
+      "end": 30029,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M402",
+      "cell": 0,
+      "start": 30092,
+      "end": 30095,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M403",
+      "cell": 0,
+      "start": 30103,
+      "end": 30106,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M404",
+      "cell": 0,
+      "start": 30130,
+      "end": 30133,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M405",
+      "cell": 0,
+      "start": 30141,
+      "end": 30144,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M406",
+      "cell": 0,
+      "start": 30157,
+      "end": 30193,
+      "literal": "$\\gcd\\bigl(a^{r/2} - 1, N\\bigr) = 1$",
+      "status": "exact",
+      "display": "integergcd(a^(0.5 · r) − 1, N) = 1",
+      "copy": "(qintegergcd(qsub(qpower('a',qmul('r',1 ∕ 2)),1),'N'))==(1)"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M407",
+      "cell": 0,
+      "start": 30268,
+      "end": 30271,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M408",
+      "cell": 0,
+      "start": 30299,
+      "end": 30304,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M409",
+      "cell": 0,
+      "start": 30399,
+      "end": 30411,
+      "literal": "$2^{-(m-1)}$",
+      "status": "exact",
+      "display": "2 · 0.5^m",
+      "copy": "2 ⋅ (1 ∕ 2)^'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M410",
+      "cell": 0,
+      "start": 30416,
+      "end": 30419,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M411",
+      "cell": 0,
+      "start": 30466,
+      "end": 30469,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M412",
+      "cell": 0,
+      "start": 30504,
+      "end": 30507,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M413",
+      "cell": 0,
+      "start": 30561,
+      "end": 30564,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M414",
+      "cell": 0,
+      "start": 30677,
+      "end": 30680,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M415",
+      "cell": 0,
+      "start": 30717,
+      "end": 30720,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M416",
+      "cell": 0,
+      "start": 30746,
+      "end": 30749,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M417",
+      "cell": 0,
+      "start": 30788,
+      "end": 30791,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M418",
+      "cell": 0,
+      "start": 30818,
+      "end": 30830,
+      "literal": "$1 - 2^{-t}$",
+      "status": "exact",
+      "display": "1 − 0.5^t",
+      "copy": "1 − (1 ∕ 2)^'t'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M419",
+      "cell": 0,
+      "start": 30907,
+      "end": 30910,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M420",
+      "cell": 0,
+      "start": 30931,
+      "end": 30934,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M421",
+      "cell": 0,
+      "start": 30938,
+      "end": 30941,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M422",
+      "cell": 0,
+      "start": 30949,
+      "end": 30952,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M423",
+      "cell": 0,
+      "start": 30967,
+      "end": 30972,
+      "literal": "$r/2$",
+      "status": "exact",
+      "display": "0.5 · r",
+      "copy": "'r' ∕ 2"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M424",
+      "cell": 0,
+      "start": 31020,
+      "end": 31115,
+      "literal": "$$\na^{r/2} - 1\\; (\\textrm{mod}\\; N) \\quad \\text{and} \\quad a^{r/2} + 1\\; (\\textrm{mod}\\; N).\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textrm at byte 24"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M425",
+      "cell": 0,
+      "start": 31135,
+      "end": 31157,
+      "literal": "$Z^2 - 1 = (Z+1)(Z-1)$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM029-9ea5aee3-M426",
+      "cell": 0,
+      "start": 31177,
+      "end": 31241,
+      "literal": "$$\n\\bigl(a^{r/2} - 1\\bigr) \\bigl(a^{r/2} + 1\\bigr) = a^r - 1.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M427",
+      "cell": 0,
+      "start": 31261,
+      "end": 31292,
+      "literal": "$a^r \\; (\\textrm{mod}\\; N) = 1$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textrm at byte 16"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M428",
+      "cell": 0,
+      "start": 31362,
+      "end": 31365,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M429",
+      "cell": 0,
+      "start": 31381,
+      "end": 31390,
+      "literal": "$a^r - 1$",
+      "status": "exact",
+      "display": "a^r − 1",
+      "copy": "'a'^'r' − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M430",
+      "cell": 0,
+      "start": 31408,
+      "end": 31411,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M431",
+      "cell": 0,
+      "start": 31440,
+      "end": 31494,
+      "literal": "$$\n\\bigl(a^{r/2} - 1\\bigr) \\bigl(a^{r/2} + 1\\bigr).\n$$",
+      "status": "exact",
+      "display": "a^r − 1",
+      "copy": "'a'^'r' − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M432",
+      "cell": 0,
+      "start": 31545,
+      "end": 31548,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M433",
+      "cell": 0,
+      "start": 31579,
+      "end": 31592,
+      "literal": "$a^{r/2} - 1$",
+      "status": "exact",
+      "display": "a^(0.5 · r) − 1",
+      "copy": "'a'^('r' ∕ 2) − 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M434",
+      "cell": 0,
+      "start": 31596,
+      "end": 31609,
+      "literal": "$a^{r/2} + 1$",
+      "status": "exact",
+      "display": "a^(0.5 · r) + 1",
+      "copy": "'a'^('r' ∕ 2) + 1"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M435",
+      "cell": 0,
+      "start": 31652,
+      "end": 31655,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M436",
+      "cell": 0,
+      "start": 31717,
+      "end": 31720,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M437",
+      "cell": 0,
+      "start": 31833,
+      "end": 31836,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM029-9ea5aee3-M438",
+      "cell": 0,
+      "start": 31938,
+      "end": 31941,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Order finding",
+      "cell": 0,
+      "start": 5231,
+      "end": 5423
+    },
+    {
+      "title": "Fact",
+      "cell": 0,
+      "start": 22317,
+      "end": 22774
+    },
+    {
+      "title": "Probabilistic algorithm to split an odd, composite integer N that is not a prime power",
+      "cell": 0,
+      "start": 29336,
+      "end": 29971
+    }
+  ]
+}

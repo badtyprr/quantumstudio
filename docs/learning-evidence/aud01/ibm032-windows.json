@@ -1,0 +1,39 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/grover-algorithm-description.ipynb",
+  "notebook_sha256": "d60b500f57ce51007665c53daae3a04cfc3fef6054af2e6abe27297d2d91151a",
+  "worker_sha256": "4d3f5c418c412eeb39f974acc76f39f59ba4e71f286741d674dc69d3272aff8e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "15db18e7d3600dc69aa4087c5c3ad1aa5b7abc307900a7f0fe695178bfb65d14",
+  "suite": {
+    "passed": true,
+    "checks": 649,
+    "calls": 59,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "counts": {
+    "source_exact": 59,
+    "restored_identically": 59,
+    "exact_after_reentry": 59,
+    "stable_copy_text": 56
+  },
+  "diagnostics": [],
+  "changed_copy": [
+    {
+      "id": "IBM032-d60b500f-M016",
+      "first": "qcompare(qadjacent(qadjacent(\"Z_\",'O''R'),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)",
+      "second": "qcompare(qadjacent(qadjacent(\"Z_\",qadjacent('O','R')),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)"
+    },
+    {
+      "id": "IBM032-d60b500f-M034",
+      "first": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)",
+      "second": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n)),\"Z_f\"))==(G)"
+    },
+    {
+      "id": "IBM032-d60b500f-M037",
+      "first": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)",
+      "second": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n)),\"Z_f\"))==(G)"
+    }
+  ],
+  "failures": []
+}

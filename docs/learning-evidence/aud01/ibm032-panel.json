@@ -1,0 +1,209 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/grover-algorithm-description.ipynb",
+  "source_sha256": "d60b500f57ce51007665c53daae3a04cfc3fef6054af2e6abe27297d2d91151a",
+  "worker_sha256": "ab0fc4d1a2460e654dc5346042022bd806c487ece784abde94a895bd012e5b78",
+  "cases": [
+    {
+      "qubits": 2,
+      "marked": [
+        3
+      ],
+      "iterations": 0,
+      "outcomes": 4,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 2,
+      "marked": [
+        3
+      ],
+      "iterations": 1,
+      "outcomes": 4,
+      "marked_probability": "1"
+    },
+    {
+      "qubits": 2,
+      "marked": [
+        3
+      ],
+      "iterations": 2,
+      "outcomes": 4,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 2,
+      "marked": [
+        3
+      ],
+      "iterations": 3,
+      "outcomes": 4,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        2
+      ],
+      "iterations": 0,
+      "outcomes": 8,
+      "marked_probability": "1/8"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        2
+      ],
+      "iterations": 1,
+      "outcomes": 8,
+      "marked_probability": "25/32"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        2
+      ],
+      "iterations": 2,
+      "outcomes": 8,
+      "marked_probability": "121/128"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        2
+      ],
+      "iterations": 3,
+      "outcomes": 8,
+      "marked_probability": "169/512"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        0,
+        7
+      ],
+      "iterations": 0,
+      "outcomes": 8,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        0,
+        7
+      ],
+      "iterations": 1,
+      "outcomes": 8,
+      "marked_probability": "1"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        0,
+        7
+      ],
+      "iterations": 2,
+      "outcomes": 8,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        0,
+        7
+      ],
+      "iterations": 3,
+      "outcomes": 8,
+      "marked_probability": "1/4"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        1,
+        3,
+        6
+      ],
+      "iterations": 0,
+      "outcomes": 8,
+      "marked_probability": "3/8"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        1,
+        3,
+        6
+      ],
+      "iterations": 1,
+      "outcomes": 8,
+      "marked_probability": "27/32"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        1,
+        3,
+        6
+      ],
+      "iterations": 2,
+      "outcomes": 8,
+      "marked_probability": "3/128"
+    },
+    {
+      "qubits": 3,
+      "marked": [
+        1,
+        3,
+        6
+      ],
+      "iterations": 3,
+      "outcomes": 8,
+      "marked_probability": "507/512"
+    },
+    {
+      "qubits": 7,
+      "marked": [
+        127
+      ],
+      "iterations": 1,
+      "outcomes": 128,
+      "marked_probability": "9025/131072"
+    },
+    {
+      "qubits": 7,
+      "marked": [
+        127
+      ],
+      "iterations": 3,
+      "outcomes": 128,
+      "marked_probability": "46338159169/137438953472"
+    }
+  ],
+  "kickback": [
+    {
+      "marked": [],
+      "outcomes": 8
+    },
+    {
+      "marked": [
+        1
+      ],
+      "outcomes": 8
+    },
+    {
+      "marked": [
+        0,
+        2
+      ],
+      "outcomes": 8
+    },
+    {
+      "marked": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "outcomes": 8
+    }
+  ]
+}

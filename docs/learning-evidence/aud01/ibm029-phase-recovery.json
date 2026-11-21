@@ -1,0 +1,613 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "worker_sha256": "518bfa1faf8cff17ada7da1a1f9e766846fbd3fd475696a7cfc63595a7021d0f",
+  "exhaustive_phase_counts": {
+    "2": 49,
+    "3": 51,
+    "5": 81,
+    "7": 117,
+    "11": 237
+  },
+  "examples": [
+    [
+      "coarse",
+      "3/16",
+      21,
+      "3/16"
+    ],
+    [
+      "fine",
+      "171/1024",
+      21,
+      "1/6"
+    ],
+    [
+      "exact",
+      "1/6",
+      21,
+      "1/6"
+    ],
+    [
+      "no-match",
+      "1/8",
+      2,
+      null
+    ],
+    [
+      "zero",
+      "1/9",
+      2,
+      "0"
+    ],
+    [
+      "one",
+      "8/9",
+      2,
+      "1"
+    ],
+    [
+      "irrational",
+      "sqrt(2)/2",
+      8,
+      "5/7"
+    ],
+    [
+      "pi",
+      "pi/4",
+      15,
+      "11/14"
+    ],
+    [
+      "irrational-no-match",
+      "sqrt(2)-1",
+      18,
+      null
+    ]
+  ],
+  "windows": {
+    "IBM029-9ea5aee3-M218": {
+      "display": "0.1875",
+      "copy": "3 ∕ 16",
+      "second_copy": "3 ∕ 16"
+    },
+    "IBM029-9ea5aee3-M277": {
+      "display": "N ≥ 2",
+      "copy": "('N')>=(2)",
+      "second_copy": "('N')>=(2)"
+    },
+    "IBM029-9ea5aee3-M278": {
+      "display": "'α' ∈ (0, 1)",
+      "copy": "qmember('α',qrealinterval(0,1,0,0))",
+      "second_copy": "qmember('α',qrealinterval(0,1,0,0))"
+    },
+    "IBM029-9ea5aee3-M279": {
+      "display": "u ∈ indexrange(0, N − 1) and v ∈ indexrange(0, N − 1)",
+      "copy": "(qmember('u',qindexrange(0,qsub('N',1))) and qmember('v',qindexrange(0,qsub('N',1))))",
+      "second_copy": "(qmember('u',qindexrange(0,qsub('N',1))) and qmember('v',qindexrange(0,qsub('N',1))))"
+    },
+    "IBM029-9ea5aee3-M280": {
+      "display": "v ≠ 0",
+      "copy": "('v')!=(0)",
+      "second_copy": "('v')!=(0)"
+    },
+    "IBM029-9ea5aee3-M281": {
+      "display": "integergcd(u, v) = 1",
+      "copy": "(qintegergcd('u','v'))==(1)",
+      "second_copy": "(qintegergcd('u','v'))==(1)"
+    },
+    "IBM029-9ea5aee3-M282": {
+      "display": "u = v · 'α' and N ≠ 0 and v ≠ 0 or N ≠ 0 and N > −√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v''α'|)) and N < √(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v''α'|)) and v ≠ 0",
+      "copy": "((('N')!=(0) and ('N')<(√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('N')>(−√(|'v'|) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('v')!=(0)) or (('N')!=(0) and ('u')==('v''α') and ('v')!=(0)))",
+      "second_copy": "((('N')!=(0) and ('N')<(√(qbars('v')) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('N')>(−√(qbars('v')) ∕ (√(2) ⋅ √(|'u' − 'v' ⋅ 'α'|))) and ('v')!=(0)) or (('N')!=(0) and ('u')==('v''α') and ('v')!=(0)))"
+    },
+    "fraction-coarse": {
+      "display": "\\{3 ∕ 16\\}",
+      "copy": "qset(vector(3 ∕ 16))",
+      "second_copy": "qset(vector(3 ∕ 16))"
+    },
+    "fraction-fine": {
+      "display": "\\{1 ∕ 6\\}",
+      "copy": "qset(vector(1 ∕ 6))",
+      "second_copy": "qset(vector(1 ∕ 6))"
+    },
+    "fraction-exact": {
+      "display": "\\{1 ∕ 6\\}",
+      "copy": "qset(vector(1 ∕ 6))",
+      "second_copy": "qset(vector(1 ∕ 6))"
+    },
+    "fraction-no-match": {
+      "display": "\\{\\}",
+      "copy": "qset(vector())",
+      "second_copy": "qset(vector())"
+    },
+    "fraction-zero": {
+      "display": "\\{0\\}",
+      "copy": "qset(vector(0))",
+      "second_copy": "qset(vector(0))"
+    },
+    "fraction-one": {
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))",
+      "second_copy": "qset(vector(1))"
+    },
+    "fraction-irrational": {
+      "display": "\\{5 ∕ 7\\}",
+      "copy": "qset(vector(5 ∕ 7))",
+      "second_copy": "qset(vector(5 ∕ 7))"
+    },
+    "fraction-pi": {
+      "display": "\\{11 ∕ 14\\}",
+      "copy": "qset(vector(11 ∕ 14))",
+      "second_copy": "qset(vector(11 ∕ 14))"
+    },
+    "fraction-irrational-no-match": {
+      "display": "\\{\\}",
+      "copy": "qset(vector())",
+      "second_copy": "qset(vector())"
+    },
+    "fraction-unbound": {
+      "display": "recoverphase('α', N)",
+      "copy": "qrecoverphase('α','N')",
+      "second_copy": "qrecoverphase('α','N')"
+    }
+  },
+  "source_cases": {
+    "277": [
+      {
+        "bindings": [
+          [
+            "N",
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            2
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "278": [
+      {
+        "bindings": [
+          [
+            "α",
+            "0"
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "1/2"
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "1"
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "-1/4"
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "279": [
+      {
+        "bindings": [
+          [
+            "u",
+            0
+          ],
+          [
+            "v",
+            1
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            2
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            0
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            7
+          ],
+          [
+            "v",
+            1
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            -1
+          ],
+          [
+            "v",
+            2
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "280": [
+      {
+        "bindings": [
+          [
+            "v",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "v",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "v",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "v",
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "v",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "v",
+            2
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "281": [
+      {
+        "bindings": [
+          [
+            "u",
+            0
+          ],
+          [
+            "v",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            2
+          ],
+          [
+            "v",
+            6
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            0
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            7
+          ],
+          [
+            "v",
+            1
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "u",
+            -1
+          ],
+          [
+            "v",
+            2
+          ]
+        ],
+        "expected": 1
+      }
+    ],
+    "282": [
+      {
+        "bindings": [
+          [
+            "α",
+            "1/6"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "171/1024"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "3/16"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "49/294"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            6
+          ],
+          [
+            "N",
+            21
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "10097/29400"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            3
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "101/294"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            3
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "bindings": [
+          [
+            "α",
+            "10103/29400"
+          ],
+          [
+            "u",
+            1
+          ],
+          [
+            "v",
+            3
+          ],
+          [
+            "N",
+            7
+          ]
+        ],
+        "expected": 0
+      }
+    ]
+  },
+  "large_recovered_denominator": "1237940039285380274899124231"
+}

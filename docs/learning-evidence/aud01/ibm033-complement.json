@@ -1,0 +1,41 @@
+{
+  "id": "IBM033-cf35c640-M036",
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "62a9a9ee25971e41418abe54d86c6b47d6e263e11142c894e6d730a340af2d64",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "467fbbbd3a87fc1f132776031f8829ad38747b3a5bddd241a760b5fff272bd6f",
+  "suite": {
+    "passed": true,
+    "checks": 11,
+    "calls": 1,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "truth_table": [
+    {
+      "f": 0,
+      "g": 0,
+      "equality": 0
+    },
+    {
+      "f": 0,
+      "g": 1,
+      "equality": 1
+    },
+    {
+      "f": 1,
+      "g": 0,
+      "equality": 1
+    },
+    {
+      "f": 1,
+      "g": 1,
+      "equality": 0
+    }
+  ],
+  "forms": {
+    "display": "g(x) = !qnamedapplication('f', x) = qoplus(1, qnamedapplication('f', x)) = 1 − f(x) = if(qcompare(qnamedapplication('f', x), 0, 4), 1, if(qcompare(qnamedapplication('f', x), 1, 4), 0, undefined))",
+    "copy": "qequalchain(vector(qnamedapplication('g',x),!qnamedapplication('f', x),qoplus(1,qnamedapplication('f',x)),qsub(1,qnamedapplication('f',x)),if(qcompare(qnamedapplication('f',x),0,4),1,if(qcompare(qnamedapplication('f',x),1,4),0,undefined,0),0)))",
+    "second_copy": "qequalchain(vector(qnamedapplication('g',x),!qnamedapplication('f', x),qoplus(1,qnamedapplication('f',x)),qsub(1,qnamedapplication('f',x)),if(qcompare(qnamedapplication('f',x),0,4),1,if(qcompare(qnamedapplication('f',x),1,4),0,undefined,0),0)))"
+  }
+}

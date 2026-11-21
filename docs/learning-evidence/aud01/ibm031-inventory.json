@@ -1,0 +1,479 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/unstructured-search.ipynb",
+  "source_sha256": "9bc1492a52076f45c99e20d10be00d847a3901be147f56caf2a1ba0849a981fc",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "revision": "bc3bb3f7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 45
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM031-9bc1492a-M001",
+      "cell": 0,
+      "start": 240,
+      "end": 258,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M002",
+      "cell": 0,
+      "start": 329,
+      "end": 364,
+      "literal": "$$\nf:\\Sigma^n \\rightarrow \\Sigma\n$$",
+      "status": "exact",
+      "display": "qfunctiontype('f', qpower('Σ', n), 'Σ')",
+      "copy": "qfunctiontype('f',qpower('Σ',n),'Σ')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M003",
+      "cell": 0,
+      "start": 410,
+      "end": 413,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM031-9bc1492a-M004",
+      "cell": 0,
+      "start": 668,
+      "end": 682,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M005",
+      "cell": 0,
+      "start": 693,
+      "end": 703,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M006",
+      "cell": 0,
+      "start": 1062,
+      "end": 1065,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M007",
+      "cell": 0,
+      "start": 1391,
+      "end": 1394,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M008",
+      "cell": 0,
+      "start": 1748,
+      "end": 1762,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M009",
+      "cell": 0,
+      "start": 1775,
+      "end": 1778,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M010",
+      "cell": 0,
+      "start": 1857,
+      "end": 1870,
+      "literal": "$$\nN = 2^n\n$$",
+      "status": "exact",
+      "display": "N = 2^n",
+      "copy": "('N')==(2^n)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M011",
+      "cell": 0,
+      "start": 1911,
+      "end": 1914,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M012",
+      "cell": 0,
+      "start": 1926,
+      "end": 1936,
+      "literal": "$\\Sigma^n$",
+      "status": "exact",
+      "display": "'Σ'^n",
+      "copy": "'Σ'^n"
+    },
+    {
+      "id": "IBM031-9bc1492a-M013",
+      "cell": 0,
+      "start": 1980,
+      "end": 1983,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M014",
+      "cell": 0,
+      "start": 1999,
+      "end": 2002,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M015",
+      "cell": 0,
+      "start": 2068,
+      "end": 2071,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M016",
+      "cell": 0,
+      "start": 2278,
+      "end": 2281,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M017",
+      "cell": 0,
+      "start": 2307,
+      "end": 2313,
+      "literal": "$O(N)$",
+      "status": "exact",
+      "display": "O(N)",
+      "copy": "qbigorder('N')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M018",
+      "cell": 0,
+      "start": 2329,
+      "end": 2332,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M019",
+      "cell": 0,
+      "start": 2469,
+      "end": 2482,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M020",
+      "cell": 0,
+      "start": 2498,
+      "end": 2501,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M021",
+      "cell": 0,
+      "start": 2828,
+      "end": 2831,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M022",
+      "cell": 0,
+      "start": 3046,
+      "end": 3059,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M023",
+      "cell": 0,
+      "start": 3257,
+      "end": 3286,
+      "literal": "$f:\\Sigma^n\\rightarrow\\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', qpower('Σ', n), 'Σ')",
+      "copy": "qfunctiontype('f',qpower('Σ',n),'Σ')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M024",
+      "cell": 0,
+      "start": 3335,
+      "end": 3434,
+      "literal": "$$\nU_f \\bigl( \\vert a\\rangle \\vert x\\rangle \\bigr) = \\vert a \\oplus f(x) \\rangle \\vert x \\rangle\n$$",
+      "status": "exact",
+      "display": "(qketstate('a') ⊗ |x⟩) · U · '_' · f = |a ⊕ f(x)⟩ ⊗ |x⟩",
+      "copy": "qcompare(qtensor(qketstate('a'), qketstate(x)) ⋅ 'U''_''f',qtensor(qcomputationalket(qoplus('a',qnamedapplication('f',x))),qketstate(x)),4)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M025",
+      "cell": 0,
+      "start": 3446,
+      "end": 3460,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M026",
+      "cell": 0,
+      "start": 3465,
+      "end": 3477,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M027",
+      "cell": 0,
+      "start": 3501,
+      "end": 3506,
+      "literal": "$U_f$",
+      "status": "exact",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\""
+    },
+    {
+      "id": "IBM031-9bc1492a-M028",
+      "cell": 0,
+      "start": 3697,
+      "end": 3700,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M029",
+      "cell": 0,
+      "start": 3788,
+      "end": 3793,
+      "literal": "$U_f$",
+      "status": "exact",
+      "display": "\"U_f\"",
+      "copy": "\"U_f\""
+    },
+    {
+      "id": "IBM031-9bc1492a-M030",
+      "cell": 0,
+      "start": 3875,
+      "end": 3891,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM031-9bc1492a-M031",
+      "cell": 0,
+      "start": 4077,
+      "end": 4080,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M032",
+      "cell": 0,
+      "start": 4243,
+      "end": 4246,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM031-9bc1492a-M033",
+      "cell": 0,
+      "start": 4259,
+      "end": 4262,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M034",
+      "cell": 0,
+      "start": 4278,
+      "end": 4281,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM031-9bc1492a-M035",
+      "cell": 0,
+      "start": 4326,
+      "end": 4355,
+      "literal": "$f:\\Sigma^n\\rightarrow\\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', qpower('Σ', n), 'Σ')",
+      "copy": "qfunctiontype('f',qpower('Σ',n),'Σ')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M036",
+      "cell": 0,
+      "start": 4374,
+      "end": 4388,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M037",
+      "cell": 0,
+      "start": 4400,
+      "end": 4410,
+      "literal": "$f(x) = 1$",
+      "status": "exact",
+      "display": "f(x) = 1",
+      "copy": "qcompare(qnamedapplication('f',x),1,4)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M038",
+      "cell": 0,
+      "start": 4447,
+      "end": 4450,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM031-9bc1492a-M039",
+      "cell": 0,
+      "start": 4528,
+      "end": 4531,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM031-9bc1492a-M040",
+      "cell": 0,
+      "start": 4852,
+      "end": 4883,
+      "literal": "$f:\\Sigma^n \\rightarrow \\Sigma$",
+      "status": "exact",
+      "display": "qfunctiontype('f', qpower('Σ', n), 'Σ')",
+      "copy": "qfunctiontype('f',qpower('Σ',n),'Σ')"
+    },
+    {
+      "id": "IBM031-9bc1492a-M041",
+      "cell": 0,
+      "start": 4922,
+      "end": 4936,
+      "literal": "$z\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "z ∈ 'Σ'^n",
+      "copy": "qmember(z,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM031-9bc1492a-M042",
+      "cell": 0,
+      "start": 4947,
+      "end": 4957,
+      "literal": "$f(z) = 1$",
+      "status": "exact",
+      "display": "f(z) = 1",
+      "copy": "qcompare(qnamedapplication('f',z),1,4)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M043",
+      "cell": 0,
+      "start": 4964,
+      "end": 4974,
+      "literal": "$f(x) = 0$",
+      "status": "exact",
+      "display": "f(x) = 0",
+      "copy": "qcompare(qnamedapplication('f',x),0,4)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M044",
+      "cell": 0,
+      "start": 4991,
+      "end": 5000,
+      "literal": "$x\\neq z$",
+      "status": "exact",
+      "display": "x ≠ z",
+      "copy": "(x)!=(z)"
+    },
+    {
+      "id": "IBM031-9bc1492a-M045",
+      "cell": 0,
+      "start": 5021,
+      "end": 5024,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Search",
+      "cell": 0,
+      "start": 4284,
+      "end": 4467
+    },
+    {
+      "title": "Unique search",
+      "cell": 0,
+      "start": 4791,
+      "end": 5034
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis.ipynb",
+  "notebook_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "4d3f5c418c412eeb39f974acc76f39f59ba4e71f286741d674dc69d3272aff8e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "29c3f95807bdda36ab5e7547413628aeffa0bb5edfdaf0883a5d54bf8192b44e",
+  "suite": {
+    "passed": true,
+    "checks": 1206,
+    "calls": 117,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "counts": {
+    "source_exact": 108,
+    "restored_identically": 108,
+    "exact_after_reentry": 108,
+    "stable_copy_text": 96,
+    "source_diagnostic": 9
+  },
+  "diagnostics": [
+    {
+      "id": "IBM033-cf35c640-M036",
+      "message": "Expected an operand; group a logical predicate when using it in arithmetic."
+    },
+    {
+      "id": "IBM033-cf35c640-M056",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M064",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M067",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M076",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M080",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M081",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M082",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M111",
+      "message": "Maximum recursive depth reached."
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM033-cf35c640-M002",
+      "first": "\\begin{gathered}(\"A_0\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_0\"),0,4),qpower('Σ',n),\"qboundindex_0\"))\\\\(\"A_1\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_1\"),1,4),qpower('Σ',n),\"qboundindex_1\"))\\end{gathered}",
+      "second": "\\begin{gathered}(\"A_0\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_2\"),0,4),qpower('Σ',n),\"qboundindex_2\"))\\\\(\"A_1\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_3\"),1,4),qpower('Σ',n),\"qboundindex_3\"))\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M008",
+      "first": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_0\"),\"A_0\",\"qboundindex_0\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_1\"),\"A_1\",\"qboundindex_1\")),4)\\end{gathered}",
+      "second": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_2\"),\"A_0\",\"qboundindex_2\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_3\"),\"A_1\",\"qboundindex_3\")),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M018",
+      "first": "qcompare(qketstate('u'),qadjacent(1 ∕ qsqrt('N'),qsumset(qketstate(\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_0\")),4)",
+      "second": "qcompare(qketstate('u'),qadjacent(1 ∕ qsqrt('N'),qsumset(qketstate(\"qboundindex_1\"),qpower('Σ',n),\"qboundindex_1\")),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M020",
+      "first": "qcompare(qketstate('u'),qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qtensorpow(matrix(2,1,vector(1,0)),n)),4)",
+      "second": "qcompare(qketstate('u'),qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),qtensorpow(matrix(2,1,vector(1,0)),n)),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M031",
+      "first": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)",
+      "second": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n)),\"Z_f\"))==(G)"
+    },
+    {
+      "id": "IBM033-cf35c640-M049",
+      "first": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))",
+      "second": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M051",
+      "first": "qcompare(qadjacent(qadjacent(\"Z_\",'O''R'),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)",
+      "second": "qcompare(qadjacent(qadjacent(\"Z_\",qadjacent('O','R')),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M053",
+      "first": "(((\"Z_\")!=(0) and ('O')==((1 ∕ 'R')*(1 ∕ \"Z_\")*(qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))) and ('R')!=(0)) or ((\"Z_\")==(0) and ('R')!=(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)) or (('R')==(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)))",
+      "second": "(((\"Z_\")!=(0) and ('O')==(qmul(qmul(1 ∕ 'R',1 ∕ \"Z_\"),qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))) and ('R')!=(0)) or ((\"Z_\")==(0) and ('R')!=(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)) or (('R')==(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)))"
+    },
+    {
+      "id": "IBM033-cf35c640-M055",
+      "first": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))",
+      "second": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M070",
+      "first": "\\begin{gathered}(qadjacent(G, qnamedket(\"A_0\")) − qadd(qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N', qnamedket(\"A_0\")), qadjacent(qadjacent(2, qsqrt(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\")))) ∕ 'N', qnamedket(\"A_1\"))))==(0)\\\\(qadd(qadjacent(−qadjacent(2, qsqrt(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\")))) ∕ 'N',qnamedket(\"A_0\")),qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N',qnamedket(\"A_1\"))))==(qadjacent(G,qnamedket(\"A_1\")))\\end{gathered}",
+      "second": "\\begin{gathered}(qsub(qadjacent(G,qnamedket(\"A_0\")),qadd(qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N',qnamedket(\"A_0\")),qadjacent(qadjacent(2, qsqrt(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\")))) ∕ 'N',qnamedket(\"A_1\")))))==(0)\\\\(qadd(qadjacent(−qadjacent(2, qsqrt(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\")))) ∕ 'N',qnamedket(\"A_0\")),qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N',qnamedket(\"A_1\"))))==(qadjacent(G,qnamedket(\"A_1\")))\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M100",
+      "first": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))",
+      "second": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M110",
+      "first": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))",
+      "second": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n),\"Z_\"),qadjacent('O','R')),qtensorpow(matrix(2,2,horzcat(1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),−1 ∕ qpower(2, 1 ∕ 2))),n))"
+    }
+  ],
+  "failures": []
+}

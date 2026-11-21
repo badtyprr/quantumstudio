@@ -1,0 +1,45 @@
+{
+  "source_id": "IBM033-cf35c640-M069",
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "4d3f5c418c412eeb39f974acc76f39f59ba4e71f286741d674dc69d3272aff8e",
+  "literal": "$$\n\\langle u \\vert A_0\\rangle = \\sqrt{\\frac{\\vert A_0 \\vert}{N}}\n\\qquad\\text{and}\\qquad\n\\langle u \\vert A_1\\rangle = \\sqrt{\\frac{\\vert A_1 \\vert}{N}}\n$$",
+  "display": "qketstate('u')† |A_0⟩ = √(qbars(\"A_0\") ∕ 'N') and qketstate('u')† |A_1⟩ = √(qbars(\"A_1\") ∕ 'N')",
+  "copy": "(qcompare(qmul(qdag(qketstate('u')),qnamedket(\"A_0\")),√(qbars(\"A_0\") ∕ 'N'),4) and qcompare(qmul(qdag(qketstate('u')),qnamedket(\"A_1\")),√(qbars(\"A_1\") ∕ 'N'),4))",
+  "partitions": [
+    {
+      "size": 2,
+      "marked": [
+        1
+      ],
+      "input_pairs": 4,
+      "forms": 2
+    },
+    {
+      "size": 4,
+      "marked": [
+        0
+      ],
+      "input_pairs": 4,
+      "forms": 2
+    },
+    {
+      "size": 4,
+      "marked": [
+        0,
+        2
+      ],
+      "input_pairs": 4,
+      "forms": 2
+    },
+    {
+      "size": 8,
+      "marked": [
+        1,
+        4,
+        7
+      ],
+      "input_pairs": 4,
+      "forms": 2
+    }
+  ]
+}

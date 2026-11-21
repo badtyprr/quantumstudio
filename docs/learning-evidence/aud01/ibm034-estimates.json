@@ -1,0 +1,659 @@
+{
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "8836ab0b5fe534209ff0a87ee64c9f5f800f123f2d00e821baa3b32c1447198a",
+  "source_ids": [
+    "IBM034-94ee62dd-M026",
+    "IBM034-94ee62dd-M028",
+    "IBM034-94ee62dd-M040",
+    "IBM034-94ee62dd-M137"
+  ],
+  "iteration_estimates": [
+    {
+      "size": 2,
+      "marked": 1,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 2,
+      "marked": 2,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 4,
+      "marked": 1,
+      "iterations": 1,
+      "phase_error": "0"
+    },
+    {
+      "size": 4,
+      "marked": 2,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 4,
+      "marked": 3,
+      "iterations": 0,
+      "phase_error": "0.523598775598298873077107230547"
+    },
+    {
+      "size": 4,
+      "marked": 4,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 8,
+      "marked": 1,
+      "iterations": 2,
+      "phase_error": "0.236039292738642408714621689964"
+    },
+    {
+      "size": 8,
+      "marked": 2,
+      "iterations": 1,
+      "phase_error": "0"
+    },
+    {
+      "size": 8,
+      "marked": 4,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 8,
+      "marked": 7,
+      "iterations": 0,
+      "phase_error": "0.361367123906707805589188676321"
+    },
+    {
+      "size": 8,
+      "marked": 8,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 16,
+      "marked": 1,
+      "iterations": 3,
+      "phase_error": "0.197965459199653955168280367316"
+    },
+    {
+      "size": 16,
+      "marked": 2,
+      "iterations": 2,
+      "phase_error": "0.236039292738642408714621689964"
+    },
+    {
+      "size": 16,
+      "marked": 8,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 16,
+      "marked": 15,
+      "iterations": 0,
+      "phase_error": "0.252680255142078653485657436994"
+    },
+    {
+      "size": 16,
+      "marked": 16,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 32,
+      "marked": 1,
+      "iterations": 4,
+      "phase_error": "0.0285990808111090980917243830891"
+    },
+    {
+      "size": 32,
+      "marked": 2,
+      "iterations": 3,
+      "phase_error": "0.197965459199653955168280367316"
+    },
+    {
+      "size": 32,
+      "marked": 16,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 32,
+      "marked": 31,
+      "iterations": 0,
+      "phase_error": "0.177710600845111746369227341637"
+    },
+    {
+      "size": 32,
+      "marked": 32,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 64,
+      "marked": 1,
+      "iterations": 6,
+      "phase_error": "0.0584654783899535401380491310023"
+    },
+    {
+      "size": 64,
+      "marked": 2,
+      "iterations": 4,
+      "phase_error": "0.0285990808111090980917243830891"
+    },
+    {
+      "size": 64,
+      "marked": 32,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 64,
+      "marked": 63,
+      "iterations": 0,
+      "phase_error": "0.125327831168065396874566986357"
+    },
+    {
+      "size": 64,
+      "marked": 64,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 128,
+      "marked": 1,
+      "iterations": 8,
+      "phase_error": "0.0662309933466337397724337352716"
+    },
+    {
+      "size": 128,
+      "marked": 2,
+      "iterations": 6,
+      "phase_error": "0.0584654783899535401380491310023"
+    },
+    {
+      "size": 128,
+      "marked": 64,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 128,
+      "marked": 127,
+      "iterations": 0,
+      "phase_error": "0.0885038431440154634975816444922"
+    },
+    {
+      "size": 128,
+      "marked": 128,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 256,
+      "marked": 1,
+      "iterations": 12,
+      "phase_error": "0.00727728188261184921628076923023"
+    },
+    {
+      "size": 256,
+      "marked": 2,
+      "iterations": 8,
+      "phase_error": "0.0662309933466337397724337352716"
+    },
+    {
+      "size": 256,
+      "marked": 128,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 256,
+      "marked": 255,
+      "iterations": 0,
+      "phase_error": "0.0625407617964913908006016368964"
+    },
+    {
+      "size": 256,
+      "marked": 256,
+      "iterations": 0,
+      "phase_error": "0"
+    },
+    {
+      "size": 512,
+      "marked": 1,
+      "iterations": 17,
+      "phase_error": "0.0234962855420316534657482397657"
+    },
+    {
+      "size": 512,
+      "marked": 2,
+      "iterations": 12,
+      "phase_error": "0.00727728188261184921628076923023"
+    },
+    {
+      "size": 512,
+      "marked": 256,
+      "iterations": 1,
+      "phase_error": "0.78539816339744830961566084582"
+    },
+    {
+      "size": 512,
+      "marked": 511,
+      "iterations": 0,
+      "phase_error": "0.0442085726072247133075878129107"
+    },
+    {
+      "size": 512,
+      "marked": 512,
+      "iterations": 0,
+      "phase_error": "0"
+    }
+  ],
+  "small_angle_estimates": [
+    {
+      "size": 2,
+      "error": "0.078291382210900785214816483715",
+      "upper_bound": "0.0976310729378174918663852126317169869050546859"
+    },
+    {
+      "size": 4,
+      "error": "0.0235987755982988730771072305466",
+      "upper_bound": "0.0257834230632085881697162601673191518825339170"
+    },
+    {
+      "size": 8,
+      "error": "0.00781373331343404338876649526824",
+      "upper_bound": "0.00813702747198448833803145172725184705777778102"
+    },
+    {
+      "size": 16,
+      "error": "0.00268025514207865348565743699371",
+      "upper_bound": "0.00273296324905370855953923110627554690739826011"
+    },
+    {
+      "size": 32,
+      "error": "0.000933905548474865269016251110328",
+      "upper_bound": "0.000942868910046006537773413898988918989450697418"
+    },
+    {
+      "size": 64,
+      "error": "0.000327831168065396874566986357085",
+      "upper_bound": "0.000329385889914136357168504026020006757305701319"
+    },
+    {
+      "size": 128,
+      "error": "0.000115495495697022947476099229137",
+      "upper_bound": "0.000115767764430978826736481478552070488447614417"
+    },
+    {
+      "size": 256,
+      "error": "0.0000407617964913908006016368963808",
+      "upper_bound": "0.0000408097028383163386539152640269461981272545155"
+    },
+    {
+      "size": 512,
+      "error": "0.0000143987830654930325350402791344",
+      "upper_bound": "0.0000144072320738870745504786545573246637070733456"
+    }
+  ],
+  "iteration_updates": [
+    {
+      "current": 1,
+      "updated": 2
+    },
+    {
+      "current": 2,
+      "updated": 3
+    },
+    {
+      "current": 3,
+      "updated": 4
+    },
+    {
+      "current": 4,
+      "updated": 5
+    },
+    {
+      "current": 5,
+      "updated": 7
+    },
+    {
+      "current": 6,
+      "updated": 8
+    },
+    {
+      "current": 7,
+      "updated": 9
+    },
+    {
+      "current": 8,
+      "updated": 10
+    },
+    {
+      "current": 9,
+      "updated": 12
+    },
+    {
+      "current": 10,
+      "updated": 13
+    },
+    {
+      "current": 11,
+      "updated": 14
+    },
+    {
+      "current": 12,
+      "updated": 15
+    },
+    {
+      "current": 13,
+      "updated": 17
+    },
+    {
+      "current": 14,
+      "updated": 18
+    },
+    {
+      "current": 15,
+      "updated": 19
+    },
+    {
+      "current": 16,
+      "updated": 20
+    },
+    {
+      "current": 17,
+      "updated": 22
+    },
+    {
+      "current": 18,
+      "updated": 23
+    },
+    {
+      "current": 19,
+      "updated": 24
+    },
+    {
+      "current": 20,
+      "updated": 25
+    },
+    {
+      "current": 21,
+      "updated": 27
+    },
+    {
+      "current": 22,
+      "updated": 28
+    },
+    {
+      "current": 23,
+      "updated": 29
+    },
+    {
+      "current": 24,
+      "updated": 30
+    },
+    {
+      "current": 25,
+      "updated": 32
+    },
+    {
+      "current": 26,
+      "updated": 33
+    },
+    {
+      "current": 27,
+      "updated": 34
+    },
+    {
+      "current": 28,
+      "updated": 35
+    },
+    {
+      "current": 29,
+      "updated": 37
+    },
+    {
+      "current": 30,
+      "updated": 38
+    },
+    {
+      "current": 31,
+      "updated": 39
+    },
+    {
+      "current": 32,
+      "updated": 40
+    },
+    {
+      "current": 9007199254740991,
+      "updated": 11258999068426239
+    },
+    {
+      "current": 9007199254740992,
+      "updated": 11258999068426240
+    },
+    {
+      "current": 9007199254740993,
+      "updated": 11258999068426242
+    }
+  ],
+  "constant_oracles": [
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 2,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 2,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 2,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 2,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 4,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 4,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 4,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 4,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 8,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 8,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 8,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M152",
+      "size": 8,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": 1,
+      "reversed_term": 2,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 2,
+      "oracle_sign": -1,
+      "reversed_term": 2,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": 1,
+      "reversed_term": 2,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 4,
+      "oracle_sign": -1,
+      "reversed_term": 2,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": 1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": 1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": 1,
+      "reversed_term": 2,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": -1,
+      "reversed_term": 0,
+      "equality": 1
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": -1,
+      "reversed_term": 1,
+      "equality": 0
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M153",
+      "size": 8,
+      "oracle_sign": -1,
+      "reversed_term": 2,
+      "equality": 0
+    }
+  ]
+}

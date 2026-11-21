@@ -1,0 +1,257 @@
+{
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "tables": [
+    {
+      "source_id": "IBM034-94ee62dd-M054",
+      "marked": 1,
+      "assumed_marked": 1,
+      "rows": [
+        {
+          "size": 2,
+          "iterations": 1,
+          "printed": "0.5000000000"
+        },
+        {
+          "size": 4,
+          "iterations": 1,
+          "printed": "1.0000000000"
+        },
+        {
+          "size": 8,
+          "iterations": 2,
+          "printed": "0.9453125000"
+        },
+        {
+          "size": 16,
+          "iterations": 3,
+          "printed": "0.9613189697"
+        },
+        {
+          "size": 32,
+          "iterations": 4,
+          "printed": "0.9991823155"
+        },
+        {
+          "size": 64,
+          "iterations": 6,
+          "printed": "0.9965856808"
+        },
+        {
+          "size": 128,
+          "iterations": 8,
+          "printed": "0.9956198657"
+        },
+        {
+          "size": 256,
+          "iterations": 12,
+          "printed": "0.9999470421"
+        },
+        {
+          "size": 512,
+          "iterations": 17,
+          "printed": "0.9994480262"
+        },
+        {
+          "size": 1024,
+          "iterations": 25,
+          "printed": "0.9994612447"
+        },
+        {
+          "size": 2048,
+          "iterations": 35,
+          "printed": "0.9999968478"
+        },
+        {
+          "size": 4096,
+          "iterations": 50,
+          "printed": "0.9999453461"
+        },
+        {
+          "size": 8192,
+          "iterations": 71,
+          "printed": "0.9999157752"
+        },
+        {
+          "size": 16384,
+          "iterations": 100,
+          "printed": "0.9999997811"
+        },
+        {
+          "size": 32768,
+          "iterations": 142,
+          "printed": "0.9999868295"
+        },
+        {
+          "size": 65536,
+          "iterations": 201,
+          "printed": "0.9999882596"
+        }
+      ]
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M087",
+      "marked": 4,
+      "assumed_marked": 1,
+      "rows": [
+        {
+          "size": 4,
+          "iterations": 1,
+          "printed": "1.0000000000"
+        },
+        {
+          "size": 8,
+          "iterations": 2,
+          "printed": "0.5000000000"
+        },
+        {
+          "size": 16,
+          "iterations": 3,
+          "printed": "0.2500000000"
+        },
+        {
+          "size": 32,
+          "iterations": 4,
+          "printed": "0.0122070313"
+        },
+        {
+          "size": 64,
+          "iterations": 6,
+          "printed": "0.0203807689"
+        },
+        {
+          "size": 128,
+          "iterations": 8,
+          "printed": "0.0144530758"
+        },
+        {
+          "size": 256,
+          "iterations": 12,
+          "printed": "0.0000705058"
+        },
+        {
+          "size": 512,
+          "iterations": 17,
+          "printed": "0.0019310741"
+        },
+        {
+          "size": 1024,
+          "iterations": 25,
+          "printed": "0.0023009083"
+        },
+        {
+          "size": 2048,
+          "iterations": 35,
+          "printed": "0.0000077506"
+        },
+        {
+          "size": 4096,
+          "iterations": 50,
+          "printed": "0.0002301502"
+        },
+        {
+          "size": 8192,
+          "iterations": 71,
+          "printed": "0.0003439882"
+        },
+        {
+          "size": 16384,
+          "iterations": 100,
+          "printed": "0.0000007053"
+        },
+        {
+          "size": 32768,
+          "iterations": 142,
+          "printed": "0.0000533810"
+        },
+        {
+          "size": 65536,
+          "iterations": 201,
+          "printed": "0.0000472907"
+        }
+      ]
+    },
+    {
+      "source_id": "IBM034-94ee62dd-M096",
+      "marked": 4,
+      "assumed_marked": 4,
+      "rows": [
+        {
+          "size": 4,
+          "iterations": 0,
+          "printed": "1.0000000000"
+        },
+        {
+          "size": 8,
+          "iterations": 1,
+          "printed": "0.5000000000"
+        },
+        {
+          "size": 16,
+          "iterations": 1,
+          "printed": "1.0000000000"
+        },
+        {
+          "size": 32,
+          "iterations": 2,
+          "printed": "0.9453125000"
+        },
+        {
+          "size": 64,
+          "iterations": 3,
+          "printed": "0.9613189697"
+        },
+        {
+          "size": 128,
+          "iterations": 4,
+          "printed": "0.9991823155"
+        },
+        {
+          "size": 256,
+          "iterations": 6,
+          "printed": "0.9965856808"
+        },
+        {
+          "size": 512,
+          "iterations": 8,
+          "printed": "0.9956198657"
+        },
+        {
+          "size": 1024,
+          "iterations": 12,
+          "printed": "0.9999470421"
+        },
+        {
+          "size": 2048,
+          "iterations": 17,
+          "printed": "0.9994480262"
+        },
+        {
+          "size": 4096,
+          "iterations": 25,
+          "printed": "0.9994612447"
+        },
+        {
+          "size": 8192,
+          "iterations": 35,
+          "printed": "0.9999968478"
+        },
+        {
+          "size": 16384,
+          "iterations": 50,
+          "printed": "0.9999453461"
+        },
+        {
+          "size": 32768,
+          "iterations": 71,
+          "printed": "0.9999157752"
+        },
+        {
+          "size": 65536,
+          "iterations": 100,
+          "printed": "0.9999997811"
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@
 #include <libqalculate/Function.h>
 #include <libqalculate/Variable.h>
 #include <libqalculate/Unit.h>
+#include <libqalculate/Prefix.h>
 #include <libqalculate/QuantumIndexed.h>
 #include <libqalculate/QuantumNotation.h>
 #include <libqalculate/QuantumTeX.h>
@@ -31,11 +32,11 @@ static void jsonString(const std::string &s) {
  }
  std::cout << '"';
 }
-static std::string copyText(const MathStructure &,const PrintOptions &);
-static std::string copyCollection(const MathStructure &value,const PrintOptions &po,unsigned depth) {
- if(!value.isVector())return copyText(value,po);
+static std::string copyText(const MathStructure &,const PrintOptions &,bool quantumMode=false);
+static std::string copyCollection(const MathStructure &value,const PrintOptions &po,unsigned depth,bool quantumMode) {
+ if(!value.isVector())return copyText(value,po,quantumMode);
  std::string text="vector(";
- for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1) : copyText(value[k],po);}
+ for(size_t k=0;k<value.size();++k) {if(k)text+=",";text+=depth>1 ? copyCollection(value[k],po,depth-1,quantumMode) : copyText(value[k],po,quantumMode);}
  return text+")";
 }
 // When formatting changes 2^(-m) into (1/2)^m, juxtaposition such as
@@ -52,7 +53,33 @@ static std::string copyScalar(MathStructure value,PrintOptions po) {
  if(needsProductSign(value))po.short_multiplication=false;
  value.format(po);return value.print(po);
 }
-static std::string copyText(const MathStructure &result, const PrintOptions &po) {
+// A complete basis has a short, dimension-preserving representation even
+// when writing out every zero would exceed the input limit on re-entry.
+static bool completeComputationalBasis(const MathStructure &states) {
+ if(!states.isVector() || !states.size() || states.isApproximate())return false;
+ const size_t dimension=states.size();
+ std::vector<bool> seen(dimension,false);
+ for(size_t k=0;k<dimension;++k) {
+  const MathStructure &ket=states[k];
+  if(!ket.isMatrix() || ket.rows()!=dimension || ket.columns()!=1)return false;
+  size_t label=dimension;
+  for(size_t r=0;r<dimension;++r) {
+   const MathStructure &cell=*ket.getElement(r+1,1);
+   if(cell.isZero())continue;
+   if(label!=dimension || !cell.isOne())return false;
+   label=r;
+  }
+  if(label==dimension || seen[label])return false;
+  seen[label]=true;
+ }
+ return true;
+}
+static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode) {
+ // Identify physical units and prefixes separately from quantum variables.
+ if(quantumMode && result.isUnit()) {
+  const std::string prefix=result.prefix() ? result.prefix()->referenceName() : "";
+  return "qphysicalunit(\""+result.unit()->referenceName()+"\",\""+prefix+"\")";
+ }
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
  bool scalarMatrix=result.isMatrix();
@@ -66,13 +93,15 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
   // copy/re-entry even when no typed binary label occurs in the expression.
   if(result.isFunction()) {
    const std::string name=result.function()->referenceName();
+   if(quantumMode && name=="qset" && result.size()==1 && completeComputationalBasis(result[0]))
+    return "basisset("+std::to_string(result[0].size())+")";
    // A deferred exponent can contain an already parsed scalar product.
    // Explicit multiplication preserves its factors on the first re-entry.
    if(name=="qpower" && result.size()==2 && result[1].isMultiplication() && result[1].size()>=2) {
     std::vector<std::string> factors;bool scalar=true;
     for(size_t k=0;k<result[1].size();++k) {
      scalar=scalar && result[1][k].representsScalar();
-     factors.push_back(copyText(result[1][k],po));
+     factors.push_back(copyText(result[1][k],po,quantumMode));
     }
     // Equal-status scalar variables can have different internal orders
     // in fresh worker processes. Preserve a reproducible clipboard spelling.
@@ -81,27 +110,27 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
     for(size_t k=1;k<factors.size();++k)exponent+="qmul(";
     exponent+=factors[0];
     for(size_t k=1;k<factors.size();++k)exponent+=","+factors[k]+")";
-    return "qpower("+copyText(result[0],po)+","+exponent+")";
+    return "qpower("+copyText(result[0],po,quantumMode)+","+exponent+")";
    }
    if((name=="qpovm" || name=="qinstrument") && result.size()==2)
-    return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1)+")";
+    return name+"("+copyCollection(result[0],po,1,quantumMode)+","+copyCollection(result[1],po,name=="qinstrument" ? 2 : 1,quantumMode)+")";
    if(name=="qensemble" && result.size()==3)
-    return name+"("+copyCollection(result[0],po,1)+","+copyCollection(result[1],po,1)+","+copyCollection(result[2],po,1)+")";
+    return name+"("+copyCollection(result[0],po,1,quantumMode)+","+copyCollection(result[1],po,1,quantumMode)+","+copyCollection(result[2],po,1,quantumMode)+")";
    // Quantum input resolves the public matrix constructor to qmatrix on re-entry.
    std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
-   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
+   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po,quantumMode);}
    return text+")";
   }
   if(result.isVector()) {
    std::string text="vector(";
-   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po);}
+   for(size_t k=0;k<result.size();++k) {if(k)text+=",";text+=copyText(result[k],po,quantumMode);}
    return text+")";
   }
   if(result.isLogicalAnd() || result.isLogicalOr()) {
    // Word operators also re-enter in Quantum mode, where || delimits a norm.
    const char *separator=result.isLogicalAnd() ? " and " : " or ";
    std::vector<std::string> terms;
-   for(size_t k=0;k<result.size();++k)terms.push_back(copyText(result[k],po));
+   for(size_t k=0;k<result.size();++k)terms.push_back(copyText(result[k],po,quantumMode));
    // Simplification may reorder these commutative terms between worker processes.
    std::sort(terms.begin(),terms.end());
    std::string text="(";
@@ -121,24 +150,33 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po)
     case COMPARISON_NOT_EQUALS:comparison="!=";break;
     case COMPARISON_EQUALS:break;
    }
-   return "("+copyText(result[0],po)+")"+comparison+"("+copyText(result[1],po)+")";
+   return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
   // Arithmetic can enclose unevaluated matrix-valued states. Formatting the
   // whole expression would lose explicit comma-separated matrix dimensions.
-  if((result.isAddition() || result.isMultiplication() || result.isPower()) && result.containsType(STRUCT_VECTOR)) {
+  if((result.isAddition() || result.isMultiplication() || result.isPower()) &&
+     (result.containsType(STRUCT_VECTOR) || (quantumMode && result.containsType(STRUCT_UNIT)))) {
    std::string text="(";
    const char *separator=result.isAddition() ? ")+ (" : result.isMultiplication() ? ")*(" : ")^(";
-   for(size_t k=0;k<result.size();++k) {if(k)text+=separator;text+=copyText(result[k],po);}
+   std::vector<std::string> terms;
+   bool scalarProduct=quantumMode && result.isMultiplication();
+   for(size_t k=0;k<result.size();++k) {
+    terms.push_back(copyText(result[k],po,quantumMode));
+    scalarProduct=scalarProduct && result[k].representsScalar();
+   }
+   if(scalarProduct)std::sort(terms.begin(),terms.end());
+   for(size_t k=0;k<terms.size();++k) {if(k)text+=separator;text+=terms[k];}
    return text+")";
   }
   return copyScalar(result,po);
  }
  if(result.rows()==1 && result.columns()==1)
-  return "qmul(("+copyText(*result.getElement(1,1),po)+"),qbasis(0,1))";
+  return "qmul(("+copyText(*result.getElement(1,1),po,quantumMode)+"),qbasis(0,1))";
  std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+",[";
  for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
   if(r!=1 || c!=1)text+=",";
-  text+=copyScalar(*result.getElement(r,c),po);
+  const MathStructure &cell=*result.getElement(r,c);
+  text+=quantumMode && cell.containsType(STRUCT_UNIT) ? copyText(cell,po,quantumMode) : copyScalar(cell,po);
  }
  return text+"])";
 }
@@ -328,6 +366,12 @@ int main(int argc,char **argv) {
   std::cerr << "The calculation did not preserve the independent expressions.";return 2;
  }
  PrintOptions po; po.use_unicode_signs=true;
+ // Exact set elements and chained equalities must retain rational operands
+ // when their decimal expansions would require rounding.
+ if(result.isFunction() && !result.isApproximate() && (result.function()->referenceName()=="qset" ||
+    result.function()->referenceName()=="qequalchain")) {
+  po.number_fraction_format=FRACTION_FRACTIONAL;po.restrict_fraction_length=false;
+ }
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
  MathStructure display=result; display.format(po);
  if(!json) std::cout << display.print(po) << std::endl;
@@ -351,9 +395,9 @@ int main(int argc,char **argv) {
   std::string copied;
   if(multipleLines) {
    copied="\\begin{gathered}";
-   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=copyText(result[i],copyOptions);}
+   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=copyText(result[i],copyOptions,true);}
    copied+="\\end{gathered}";
-  } else copied=copyText(result,copyOptions);
+  } else copied=copyText(result,copyOptions,quantumStart!=0);
   std::cout << ",\"copy_text\":"; jsonString(copied);
   std::cout << ",\"approximate\":" << (result.isApproximate() ? "true" : "false") << ",\"rows\":" << rows << ",\"columns\":" << cols << ",\"cells\":[";
   if(rows*cols<=128) for(size_t r=0;r<rows;++r) {

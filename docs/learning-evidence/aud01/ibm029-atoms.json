@@ -1,0 +1,217 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "5b9e2b2df183216a8113f1d5b0d172b1038d387c7d01fef58405af95ef0b52b8",
+  "windows_records_sha256": "bc2573b8992702d1acb7a5e6ce34fa07ff3bb28ba5188355f66876321c94e28c",
+  "checked": {
+    "N": [
+      "IBM029-9ea5aee3-M001",
+      "IBM029-9ea5aee3-M008",
+      "IBM029-9ea5aee3-M009",
+      "IBM029-9ea5aee3-M010",
+      "IBM029-9ea5aee3-M023",
+      "IBM029-9ea5aee3-M047",
+      "IBM029-9ea5aee3-M058",
+      "IBM029-9ea5aee3-M063",
+      "IBM029-9ea5aee3-M073",
+      "IBM029-9ea5aee3-M089",
+      "IBM029-9ea5aee3-M095",
+      "IBM029-9ea5aee3-M111",
+      "IBM029-9ea5aee3-M252",
+      "IBM029-9ea5aee3-M284",
+      "IBM029-9ea5aee3-M290",
+      "IBM029-9ea5aee3-M360",
+      "IBM029-9ea5aee3-M361",
+      "IBM029-9ea5aee3-M364",
+      "IBM029-9ea5aee3-M365",
+      "IBM029-9ea5aee3-M366",
+      "IBM029-9ea5aee3-M367",
+      "IBM029-9ea5aee3-M370",
+      "IBM029-9ea5aee3-M382",
+      "IBM029-9ea5aee3-M383",
+      "IBM029-9ea5aee3-M392",
+      "IBM029-9ea5aee3-M395",
+      "IBM029-9ea5aee3-M400",
+      "IBM029-9ea5aee3-M401",
+      "IBM029-9ea5aee3-M403",
+      "IBM029-9ea5aee3-M405",
+      "IBM029-9ea5aee3-M411",
+      "IBM029-9ea5aee3-M412",
+      "IBM029-9ea5aee3-M413",
+      "IBM029-9ea5aee3-M414",
+      "IBM029-9ea5aee3-M417",
+      "IBM029-9ea5aee3-M422",
+      "IBM029-9ea5aee3-M428",
+      "IBM029-9ea5aee3-M430",
+      "IBM029-9ea5aee3-M432",
+      "IBM029-9ea5aee3-M436",
+      "IBM029-9ea5aee3-M437",
+      "IBM029-9ea5aee3-M438"
+    ],
+    "3": [
+      "IBM029-9ea5aee3-M012"
+    ],
+    "5": [
+      "IBM029-9ea5aee3-M013",
+      "IBM029-9ea5aee3-M035",
+      "IBM029-9ea5aee3-M140",
+      "IBM029-9ea5aee3-M208",
+      "IBM029-9ea5aee3-M220"
+    ],
+    "1": [
+      "IBM029-9ea5aee3-M016",
+      "IBM029-9ea5aee3-M031",
+      "IBM029-9ea5aee3-M036",
+      "IBM029-9ea5aee3-M041",
+      "IBM029-9ea5aee3-M044",
+      "IBM029-9ea5aee3-M096",
+      "IBM029-9ea5aee3-M322"
+    ],
+    "7": [
+      "IBM029-9ea5aee3-M017"
+    ],
+    "a": [
+      "IBM029-9ea5aee3-M030",
+      "IBM029-9ea5aee3-M048",
+      "IBM029-9ea5aee3-M057",
+      "IBM029-9ea5aee3-M072",
+      "IBM029-9ea5aee3-M094",
+      "IBM029-9ea5aee3-M097",
+      "IBM029-9ea5aee3-M110",
+      "IBM029-9ea5aee3-M159",
+      "IBM029-9ea5aee3-M167",
+      "IBM029-9ea5aee3-M179",
+      "IBM029-9ea5aee3-M391",
+      "IBM029-9ea5aee3-M402",
+      "IBM029-9ea5aee3-M404",
+      "IBM029-9ea5aee3-M407",
+      "IBM029-9ea5aee3-M416",
+      "IBM029-9ea5aee3-M419",
+      "IBM029-9ea5aee3-M421",
+      "IBM029-9ea5aee3-M435"
+    ],
+    "0": [
+      "IBM029-9ea5aee3-M039",
+      "IBM029-9ea5aee3-M133",
+      "IBM029-9ea5aee3-M272"
+    ],
+    "20": [
+      "IBM029-9ea5aee3-M040"
+    ],
+    "21": [
+      "IBM029-9ea5aee3-M042"
+    ],
+    "r": [
+      "IBM029-9ea5aee3-M050",
+      "IBM029-9ea5aee3-M054",
+      "IBM029-9ea5aee3-M056",
+      "IBM029-9ea5aee3-M071",
+      "IBM029-9ea5aee3-M077",
+      "IBM029-9ea5aee3-M093",
+      "IBM029-9ea5aee3-M196",
+      "IBM029-9ea5aee3-M202",
+      "IBM029-9ea5aee3-M221",
+      "IBM029-9ea5aee3-M245",
+      "IBM029-9ea5aee3-M248",
+      "IBM029-9ea5aee3-M249",
+      "IBM029-9ea5aee3-M250",
+      "IBM029-9ea5aee3-M251",
+      "IBM029-9ea5aee3-M256",
+      "IBM029-9ea5aee3-M261",
+      "IBM029-9ea5aee3-M268",
+      "IBM029-9ea5aee3-M269",
+      "IBM029-9ea5aee3-M274",
+      "IBM029-9ea5aee3-M296",
+      "IBM029-9ea5aee3-M301",
+      "IBM029-9ea5aee3-M303",
+      "IBM029-9ea5aee3-M308",
+      "IBM029-9ea5aee3-M309",
+      "IBM029-9ea5aee3-M312",
+      "IBM029-9ea5aee3-M316",
+      "IBM029-9ea5aee3-M317",
+      "IBM029-9ea5aee3-M345",
+      "IBM029-9ea5aee3-M390",
+      "IBM029-9ea5aee3-M393",
+      "IBM029-9ea5aee3-M420"
+    ],
+    "b": [
+      "IBM029-9ea5aee3-M081",
+      "IBM029-9ea5aee3-M368"
+    ],
+    "n": [
+      "IBM029-9ea5aee3-M143",
+      "IBM029-9ea5aee3-M155",
+      "IBM029-9ea5aee3-M156",
+      "IBM029-9ea5aee3-M161",
+      "IBM029-9ea5aee3-M321"
+    ],
+    "k": [
+      "IBM029-9ea5aee3-M172",
+      "IBM029-9ea5aee3-M174",
+      "IBM029-9ea5aee3-M267",
+      "IBM029-9ea5aee3-M273",
+      "IBM029-9ea5aee3-M295",
+      "IBM029-9ea5aee3-M299",
+      "IBM029-9ea5aee3-M300",
+      "IBM029-9ea5aee3-M311",
+      "IBM029-9ea5aee3-M315"
+    ],
+    "m": [
+      "IBM029-9ea5aee3-M185",
+      "IBM029-9ea5aee3-M197",
+      "IBM029-9ea5aee3-M339",
+      "IBM029-9ea5aee3-M341",
+      "IBM029-9ea5aee3-M348",
+      "IBM029-9ea5aee3-M351",
+      "IBM029-9ea5aee3-M410"
+    ],
+    "\\theta": [
+      "IBM029-9ea5aee3-M200",
+      "IBM029-9ea5aee3-M358"
+    ],
+    "6": [
+      "IBM029-9ea5aee3-M214"
+    ],
+    "4": [
+      "IBM029-9ea5aee3-M216"
+    ],
+    "\\varepsilon": [
+      "IBM029-9ea5aee3-M242"
+    ],
+    "\\alpha": [
+      "IBM029-9ea5aee3-M283"
+    ],
+    "u": [
+      "IBM029-9ea5aee3-M285",
+      "IBM029-9ea5aee3-M292",
+      "IBM029-9ea5aee3-M304",
+      "IBM029-9ea5aee3-M313"
+    ],
+    "v": [
+      "IBM029-9ea5aee3-M286",
+      "IBM029-9ea5aee3-M293",
+      "IBM029-9ea5aee3-M302",
+      "IBM029-9ea5aee3-M305",
+      "IBM029-9ea5aee3-M310",
+      "IBM029-9ea5aee3-M314"
+    ],
+    "2": [
+      "IBM029-9ea5aee3-M371",
+      "IBM029-9ea5aee3-M380"
+    ],
+    "s": [
+      "IBM029-9ea5aee3-M378",
+      "IBM029-9ea5aee3-M381"
+    ],
+    "t": [
+      "IBM029-9ea5aee3-M415"
+    ]
+  },
+  "meaning_mismatches": [
+    {
+      "id": "IBM029-9ea5aee3-M369",
+      "expected": "integer cofactor c",
+      "actual": "299.792458 km ∕ ms"
+    }
+  ]
+}

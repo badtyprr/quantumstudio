@@ -1,0 +1,51 @@
+{
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "539b1580ca4e2198717ce5a6b99e54be32d615f1adb9f4547e97c1a3d67de27d",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "c45cfc88917a565c55a6938e10b680b016dd4aec4778714ce976bfb8ec7db5ba",
+  "suite": {
+    "passed": true,
+    "checks": 48,
+    "calls": 6,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "outcomes": [
+    {
+      "id": "IBM034-94ee62dd-M132",
+      "expression": "$\\{1,\\ldots,T\\}$",
+      "display": "{1, …, T} (integer endpoints)",
+      "copy": "qindexrange(1,'T')"
+    },
+    {
+      "id": "upper-0",
+      "expression": "replace(indexrange(1,T),\"T\",0)",
+      "display": "\\{\\}",
+      "copy": "qset(vector())"
+    },
+    {
+      "id": "upper-1",
+      "expression": "replace(indexrange(1,T),\"T\",1)",
+      "display": "\\{1\\}",
+      "copy": "qset(vector(1))"
+    },
+    {
+      "id": "upper-4",
+      "expression": "replace(indexrange(1,T),\"T\",4)",
+      "display": "\\{1, 2, 3, 4\\}",
+      "copy": "qset(vector(1,2,3,4))"
+    },
+    {
+      "id": "upper-5-2",
+      "expression": "replace(indexrange(1,T),\"T\",5/2)",
+      "display": "Finite index ranges require integer endpoints.",
+      "copy": null
+    },
+    {
+      "id": "upper-1025",
+      "expression": "replace(indexrange(1,T),\"T\",1025)",
+      "display": "Finite index ranges support at most 1024 entries.",
+      "copy": null
+    }
+  ]
+}

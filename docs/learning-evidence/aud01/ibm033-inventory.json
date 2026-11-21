@@ -1,0 +1,1198 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis.ipynb",
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "732898db8df02b440059f4c5040870f035081feceaaf9869328dddaf27866a5d",
+  "revision": "bc3bb3f7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 107,
+    "diagnostic": 10
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 12979,
+      "end": 13134,
+      "alt": "A figure depicting the action of a reflection on a vector.",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/reflection1.svg"
+    },
+    {
+      "cell": 0,
+      "start": 13550,
+      "end": 13712,
+      "alt": "A figure depicting the action of a second reflection on a vector.",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/reflection2.svg"
+    },
+    {
+      "cell": 0,
+      "start": 13858,
+      "end": 14025,
+      "alt": "A figure depicting the action of the Grover operation on a vector.",
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/grover-algorithm/Grover_rotation.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM033-cf35c640-M001",
+      "cell": 0,
+      "start": 284,
+      "end": 287,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M002",
+      "cell": 0,
+      "start": 514,
+      "end": 648,
+      "literal": "$$\n\\begin{aligned}\n  A_0 &= \\bigl\\{ x\\in\\Sigma^n : f(x) = 0\\bigr\\} \\\\\n  A_1 &= \\bigl\\{ x\\in\\Sigma^n : f(x) = 1\\bigr\\}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  \"A_0\" = \\{k ∈ 'Σ'^n : f(k) = 0\\}\n\n2.  \"A_1\" = \\{k ∈ 'Σ'^n : f(k) = 1\\}",
+      "copy": "\\begin{gathered}(\"A_0\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_0\"),0,4),qpower('Σ',n),\"qboundindex_0\"))\\\\(\"A_1\")==(qsetfilter(qcompare(qnamedapplication('f',\"qboundindex_1\"),1,4),qpower('Σ',n),\"qboundindex_1\"))\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M003",
+      "cell": 0,
+      "start": 658,
+      "end": 663,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM033-cf35c640-M004",
+      "cell": 0,
+      "start": 722,
+      "end": 727,
+      "literal": "$A_0$",
+      "status": "exact",
+      "display": "\"A_0\"",
+      "copy": "\"A_0\""
+    },
+    {
+      "id": "IBM033-cf35c640-M005",
+      "cell": 0,
+      "start": 859,
+      "end": 887,
+      "literal": "$A_0 \\cap A_1 = \\varnothing$",
+      "status": "exact",
+      "display": "qsetintersect(\"A_0\", \"A_1\") = []",
+      "copy": "(qsetintersect(\"A_0\",\"A_1\"))==(vector())"
+    },
+    {
+      "id": "IBM033-cf35c640-M006",
+      "cell": 0,
+      "start": 892,
+      "end": 917,
+      "literal": "$A_0 \\cup A_1 = \\Sigma^n$",
+      "status": "exact",
+      "display": "qsetunion(\"A_0\", \"A_1\") = 'Σ'^n",
+      "copy": "(qsetunion(\"A_0\",\"A_1\"))==('Σ'^n)"
+    },
+    {
+      "id": "IBM033-cf35c640-M007",
+      "cell": 0,
+      "start": 967,
+      "end": 977,
+      "literal": "$\\Sigma^n$",
+      "status": "exact",
+      "display": "'Σ'^n",
+      "copy": "'Σ'^n"
+    },
+    {
+      "id": "IBM033-cf35c640-M008",
+      "cell": 0,
+      "start": 1098,
+      "end": 1306,
+      "literal": "$$\n\\begin{aligned}\n  \\vert A_0\\rangle &= \\frac{1}{\\sqrt{\\vert A_0\\vert}} \\sum_{x\\in A_0} \\vert x\\rangle \\\\\n  \\vert A_1\\rangle &= \\frac{1}{\\sqrt{\\vert A_1\\vert}} \\sum_{x\\in A_1} \\vert x\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  |A_0⟩ = 1 / √(|\"A_0\"|) · (∑_{k ∈ \"A_0\"} (|k⟩))\n\n2.  |A_1⟩ = 1 / √(|\"A_1\"|) · (∑_{k ∈ \"A_1\"} (|k⟩))",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"A_0\"),qadjacent(1 ∕ qsqrt(qbars(\"A_0\")),qsumset(qketstate(\"qboundindex_0\"),\"A_0\",\"qboundindex_0\")),4)\\\\qcompare(qketstate(\"A_1\"),qadjacent(1 ∕ qsqrt(qbars(\"A_1\")),qsumset(qketstate(\"qboundindex_1\"),\"A_1\",\"qboundindex_1\")),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M009",
+      "cell": 0,
+      "start": 1465,
+      "end": 1470,
+      "literal": "$A_0$",
+      "status": "exact",
+      "display": "\"A_0\"",
+      "copy": "\"A_0\""
+    },
+    {
+      "id": "IBM033-cf35c640-M010",
+      "cell": 0,
+      "start": 1475,
+      "end": 1480,
+      "literal": "$A_1$",
+      "status": "exact",
+      "display": "\"A_1\"",
+      "copy": "\"A_1\""
+    },
+    {
+      "id": "IBM033-cf35c640-M011",
+      "cell": 0,
+      "start": 1506,
+      "end": 1525,
+      "literal": "$A_0 = \\varnothing$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM033-cf35c640-M012",
+      "cell": 0,
+      "start": 1530,
+      "end": 1549,
+      "literal": "$A_1 = \\varnothing$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM033-cf35c640-M013",
+      "cell": 0,
+      "start": 1703,
+      "end": 1706,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM033-cf35c640-M014",
+      "cell": 0,
+      "start": 1721,
+      "end": 1737,
+      "literal": "$\\vert S\\rangle$",
+      "status": "exact",
+      "display": "qketstate('S')",
+      "copy": "qketstate('S')"
+    },
+    {
+      "id": "IBM033-cf35c640-M015",
+      "cell": 0,
+      "start": 1809,
+      "end": 1812,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM033-cf35c640-M016",
+      "cell": 0,
+      "start": 1833,
+      "end": 1850,
+      "literal": "$\\vert u \\rangle$",
+      "status": "exact",
+      "display": "qketstate('u')",
+      "copy": "qketstate('u')"
+    },
+    {
+      "id": "IBM033-cf35c640-M017",
+      "cell": 0,
+      "start": 1892,
+      "end": 1895,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM033-cf35c640-M018",
+      "cell": 0,
+      "start": 1910,
+      "end": 1987,
+      "literal": "$$\n\\vert u\\rangle = \\frac{1}{\\sqrt{N}} \\sum_{x\\in\\Sigma^n} \\vert x\\rangle.\n$$",
+      "status": "exact",
+      "display": "qketstate('u') = 1 / √(N) · (∑_{k ∈ 'Σ'^n} (|k⟩))",
+      "copy": "qcompare(qketstate('u'),qadjacent(1 ∕ qsqrt('N'),qsumset(qketstate(\"qboundindex_0\"),qpower('Σ',n),\"qboundindex_0\")),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M019",
+      "cell": 0,
+      "start": 2002,
+      "end": 2127,
+      "literal": "$$\n\\vert u\\rangle\n= \\sqrt{\\frac{\\vert A_0 \\vert}{N}} \\vert A_0\\rangle\n+ \\sqrt{\\frac{\\vert A_1 \\vert}{N}} \\vert A_1\\rangle.\n$$",
+      "status": "exact",
+      "display": "qketstate('u') = √(|\"A_0\"| / N) |A_0⟩ + √(|\"A_1\"| / N) |A_1⟩",
+      "copy": "qcompare(qketstate('u'),qadd(qadjacent(qsqrt(qbars(\"A_0\") ∕ 'N'),qnamedket(\"A_0\")),qadjacent(qsqrt(qbars(\"A_1\") ∕ 'N'),qnamedket(\"A_1\"))),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M020",
+      "cell": 0,
+      "start": 2147,
+      "end": 2197,
+      "literal": "$\\vert u\\rangle = H^{\\otimes n} \\vert 0^n \\rangle$",
+      "status": "exact",
+      "display": "qketstate('u') = [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · [1; 0]^{⊗ n}",
+      "copy": "qcompare(qketstate('u'),qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qtensorpow(matrix(2,1,vector(1,0)),n)),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M021",
+      "cell": 0,
+      "start": 2202,
+      "end": 2218,
+      "literal": "$\\vert u\\rangle$",
+      "status": "exact",
+      "display": "qketstate('u')",
+      "copy": "qketstate('u')"
+    },
+    {
+      "id": "IBM033-cf35c640-M022",
+      "cell": 0,
+      "start": 2256,
+      "end": 2268,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM033-cf35c640-M023",
+      "cell": 0,
+      "start": 2376,
+      "end": 2379,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M024",
+      "cell": 0,
+      "start": 2411,
+      "end": 2423,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM033-cf35c640-M025",
+      "cell": 0,
+      "start": 2484,
+      "end": 2502,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M026",
+      "cell": 0,
+      "start": 2507,
+      "end": 2525,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M027",
+      "cell": 0,
+      "start": 2621,
+      "end": 2633,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM033-cf35c640-M028",
+      "cell": 0,
+      "start": 2725,
+      "end": 2743,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M029",
+      "cell": 0,
+      "start": 2748,
+      "end": 2766,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M030",
+      "cell": 0,
+      "start": 2817,
+      "end": 2820,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M031",
+      "cell": 0,
+      "start": 2933,
+      "end": 2991,
+      "literal": "$$\nG = H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} Z_f,\n$$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_f\" = G",
+      "copy": "(qadjacent(qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)),\"Z_f\"))==(G)"
+    },
+    {
+      "id": "IBM033-cf35c640-M032",
+      "cell": 0,
+      "start": 3097,
+      "end": 3100,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM033-cf35c640-M033",
+      "cell": 0,
+      "start": 3123,
+      "end": 3126,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM033-cf35c640-M034",
+      "cell": 0,
+      "start": 3221,
+      "end": 3224,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM033-cf35c640-M035",
+      "cell": 0,
+      "start": 3255,
+      "end": 3258,
+      "literal": "$g$",
+      "status": "exact",
+      "display": "g",
+      "copy": "'g'"
+    },
+    {
+      "id": "IBM033-cf35c640-M036",
+      "cell": 0,
+      "start": 3324,
+      "end": 3434,
+      "literal": "$$\ng(x) = \\neg f(x) = 1 \\oplus f(x) = 1 - f(x) =\n\\begin{cases}\n1 & f(x) = 0\\\\[1mm]\n0 & f(x) = 1\n\\end{cases}\n$$",
+      "status": "diagnostic",
+      "message": "Expected an operand; group a logical predicate when using it in arithmetic."
+    },
+    {
+      "id": "IBM033-cf35c640-M037",
+      "cell": 0,
+      "start": 3449,
+      "end": 3505,
+      "literal": "$$\n(-1)^{g(x)} = (-1)^{1 \\oplus f(x)} = - (-1)^{f(x)}\n$$",
+      "status": "exact",
+      "display": "(−1)^g(x) = (−1)^qoplus(1, qnamedapplication('f', x)) = −(−1)^f(x)",
+      "copy": "qequalchain(vector((−1)^qnamedapplication('g', x),(−1)^qoplus(1, qnamedapplication('f', x)),−(−1)^qnamedapplication('f', x)))"
+    },
+    {
+      "id": "IBM033-cf35c640-M038",
+      "cell": 0,
+      "start": 3524,
+      "end": 3538,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M039",
+      "cell": 0,
+      "start": 3555,
+      "end": 3573,
+      "literal": "$$\nZ_g = - Z_f.\n$$",
+      "status": "exact",
+      "display": "\"Z_f\" = −\"Z_g\"",
+      "copy": "(\"Z_f\")==(−\"Z_g\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M040",
+      "cell": 0,
+      "start": 3629,
+      "end": 3632,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM033-cf35c640-M041",
+      "cell": 0,
+      "start": 3651,
+      "end": 3654,
+      "literal": "$g$",
+      "status": "exact",
+      "display": "g",
+      "copy": "'g'"
+    },
+    {
+      "id": "IBM033-cf35c640-M042",
+      "cell": 0,
+      "start": 4116,
+      "end": 4119,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M043",
+      "cell": 0,
+      "start": 4149,
+      "end": 4167,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M044",
+      "cell": 0,
+      "start": 4172,
+      "end": 4190,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M045",
+      "cell": 0,
+      "start": 4233,
+      "end": 4238,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM033-cf35c640-M046",
+      "cell": 0,
+      "start": 4267,
+      "end": 4285,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M047",
+      "cell": 0,
+      "start": 4290,
+      "end": 4308,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M048",
+      "cell": 0,
+      "start": 4311,
+      "end": 4439,
+      "literal": "$$\n\\begin{aligned}\nZ_f \\vert A_0\\rangle & = \\vert A_0\\rangle \\\\[1mm]\nZ_f \\vert A_1\\rangle & = -\\vert A_1\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  \"Z_f\" |A_0⟩ = |A_0⟩\n\n2.  \"Z_f\" |A_1⟩ = −|A_1⟩",
+      "copy": "\\begin{gathered}qcompare(qadjacent(\"Z_f\",qnamedket(\"A_0\")),qketstate(\"A_0\"),4)\\\\qcompare(qadjacent(\"Z_f\",qnamedket(\"A_1\")),−qketstate(\"A_1\"),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M049",
+      "cell": 0,
+      "start": 4471,
+      "end": 4516,
+      "literal": "$H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}",
+      "copy": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M050",
+      "cell": 0,
+      "start": 4532,
+      "end": 4549,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM033-cf35c640-M051",
+      "cell": 0,
+      "start": 4565,
+      "end": 4692,
+      "literal": "$$\nZ_{\\mathrm{OR}} \\vert x\\rangle\n= \\begin{cases}\n\\vert x\\rangle & x = 0^n \\\\[2mm]\n-\\vert x\\rangle & x \\neq 0^n,\n\\end{cases}\n$$",
+      "status": "exact",
+      "display": "(\"Z_\" · O · R) (|x⟩) = if(qcompare(x, qcomparisonzero(x, n), 4), qketstate(x), if(qcompare(x, qcomparisonzero(x, n), 5), −qketstate(x), undefined))",
+      "copy": "qcompare(qadjacent(qadjacent(\"Z_\",'O''R'),qketstate(x)),if(qcompare(x,qcomparisonzero(x,n),4),qketstate(x),if(qcompare(x,qcomparisonzero(x,n),5),−qketstate(x),undefined,0),0),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M052",
+      "cell": 0,
+      "start": 4717,
+      "end": 4731,
+      "literal": "$x\\in\\Sigma^n$",
+      "status": "exact",
+      "display": "x ∈ 'Σ'^n",
+      "copy": "qmember(x,qpower('Σ',n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M053",
+      "cell": 0,
+      "start": 4807,
+      "end": 4882,
+      "literal": "$$\nZ_{\\mathrm{OR}} = 2 \\vert 0^n \\rangle \\langle 0^n \\vert - \\mathbb{I}.\n$$",
+      "status": "exact",
+      "display": "O = (2 · [1; 0]^{⊗ n} · ([1; 0]^{⊗ n})† − qimplicitidentity()) / (R · \"Z_\") and R ≠ 0 and \"Z_\" ≠ 0 or R = 0 and 2 · [1; 0]^{⊗ n} · ([1; 0]^{⊗ n})† − qimplicitidentity() = 0 or \"Z_\" = 0 and 2 · [1; 0]^{⊗ n} · ([1; 0]^{⊗ n})† − qimplicitidentity() = 0 and R ≠ 0",
+      "copy": "(((\"Z_\")!=(0) and ('O')==((1 ∕ 'R')*(1 ∕ \"Z_\")*(qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))) and ('R')!=(0)) or ((\"Z_\")==(0) and ('R')!=(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)) or (('R')==(0) and (qsub(qadjacent(qadjacent(2,qtensorpow(matrix(2,1,vector(1,0)),n)),qdag(qtensorpow(matrix(2,1,vector(1,0)),n))),qimplicitidentity()))==(0)))"
+    },
+    {
+      "id": "IBM033-cf35c640-M054",
+      "cell": 0,
+      "start": 4958,
+      "end": 4975,
+      "literal": "$Z_{\\mathrm{OR}}$",
+      "status": "exact",
+      "display": "O · R · \"Z_\"",
+      "copy": "'O''R' ⋅ \"Z_\""
+    },
+    {
+      "id": "IBM033-cf35c640-M055",
+      "cell": 0,
+      "start": 5043,
+      "end": 5088,
+      "literal": "$H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}",
+      "copy": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M056",
+      "cell": 0,
+      "start": 5126,
+      "end": 5306,
+      "literal": "$$\nH^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} = 2 H^{\\otimes n} \\vert 0^n \\rangle \\langle 0^n \\vert H^{\\otimes n} - \\mathbb{I} = 2 \\vert u \\rangle \\langle u \\vert - \\mathbb{I},\n$$",
+      "status": "diagnostic",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M057",
+      "cell": 0,
+      "start": 5333,
+      "end": 5350,
+      "literal": "$\\vert u \\rangle$",
+      "status": "exact",
+      "display": "qketstate('u')",
+      "copy": "qketstate('u')"
+    },
+    {
+      "id": "IBM033-cf35c640-M058",
+      "cell": 0,
+      "start": 5410,
+      "end": 5413,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM033-cf35c640-M059",
+      "cell": 0,
+      "start": 5482,
+      "end": 5485,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M060",
+      "cell": 0,
+      "start": 5489,
+      "end": 5507,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M061",
+      "cell": 0,
+      "start": 5512,
+      "end": 5530,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M062",
+      "cell": 0,
+      "start": 5566,
+      "end": 5569,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M063",
+      "cell": 0,
+      "start": 5573,
+      "end": 5591,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M064",
+      "cell": 0,
+      "start": 5594,
+      "end": 6374,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert A_0 \\rangle\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) Z_f \\vert A_0\\rangle \\\\\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) \\vert A_0\\rangle \\\\\n  & = 2 \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert u\\rangle -\\vert A_0 \\rangle\\\\\n  & = 2 \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\biggl(\n  \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert A_0\\rangle + \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert A_1\\rangle\\biggr)\n  -\\vert A_0 \\rangle \\\\\n  & = \\biggl( \\frac{2\\vert A_0\\vert}{N} - 1\\biggr) \\vert A_0 \\rangle\n  + \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} \\vert A_1 \\rangle \\\\\n  & = \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_0 \\rangle\n  + \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} \\vert A_1 \\rangle\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M065",
+      "cell": 0,
+      "start": 6416,
+      "end": 6419,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M066",
+      "cell": 0,
+      "start": 6423,
+      "end": 6441,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M067",
+      "cell": 0,
+      "start": 6444,
+      "end": 7249,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert A_1 \\rangle\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I} \\bigr) Z_f \\vert A_1\\rangle \\\\\n  & = - \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I} \\bigr) \\vert A_1\\rangle \\\\\n  & = - 2 \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert u\\rangle + \\vert A_1 \\rangle \\\\\n  & = - 2 \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\biggl(\\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert A_0\\rangle\n      + \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert A_1\\rangle\\biggr) + \\vert A_1 \\rangle \\\\\n  & = - \\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\vert A_0 \\rangle\n      + \\biggl( 1 - \\frac{2\\vert A_1\\vert}{N} \\biggr) \\vert A_1 \\rangle \\\\\n  & = - \\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\vert A_0 \\rangle\n      + \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_1 \\rangle\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M068",
+      "cell": 0,
+      "start": 7291,
+      "end": 7415,
+      "literal": "$$\n\\vert u\\rangle\n= \\sqrt{\\frac{\\vert A_0 \\vert}{N}} \\vert A_0\\rangle\n+ \\sqrt{\\frac{\\vert A_1 \\vert}{N}} \\vert A_1\\rangle\n$$",
+      "status": "exact",
+      "display": "qketstate('u') = √(|\"A_0\"| / N) |A_0⟩ + √(|\"A_1\"| / N) |A_1⟩",
+      "copy": "qcompare(qketstate('u'),qadd(qadjacent(qsqrt(qbars(\"A_0\") ∕ 'N'),qnamedket(\"A_0\")),qadjacent(qsqrt(qbars(\"A_1\") ∕ 'N'),qnamedket(\"A_1\"))),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M069",
+      "cell": 0,
+      "start": 7445,
+      "end": 7597,
+      "literal": "$$\n\\langle u \\vert A_0\\rangle = \\sqrt{\\frac{\\vert A_0 \\vert}{N}}\n\\qquad\\text{and}\\qquad\n\\langle u \\vert A_1\\rangle = \\sqrt{\\frac{\\vert A_1 \\vert}{N}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\text at byte 75"
+    },
+    {
+      "id": "IBM033-cf35c640-M070",
+      "cell": 0,
+      "start": 7634,
+      "end": 8013,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert A_0 \\rangle\n  & = \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_0 \\rangle\n  + \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} \\vert A_1 \\rangle\\\\[2mm]\n  G \\vert A_1 \\rangle\n  & = - \\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\vert A_0 \\rangle\n      + \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_1 \\rangle.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  G |A_0⟩ − (((|\"A_0\"| − |\"A_1\"|) / N) (|A_0⟩) + (2 · √(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\"))) / N) (|A_1⟩)) = 0\n\n2.  −(2 · √(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\"))) / N) |A_0⟩ + ((|\"A_0\"| − |\"A_1\"|) / N) (|A_1⟩) = G |A_1⟩",
+      "copy": "\\begin{gathered}(qadjacent(G, qnamedket(\"A_0\")) − qadd(qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N', qnamedket(\"A_0\")), qadjacent(qadjacent(2, qsqrt(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\")))) ∕ 'N', qnamedket(\"A_1\"))))==(0)\\\\(qadd(qadjacent(−qadjacent(2, qsqrt(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\")))) ∕ 'N',qnamedket(\"A_0\")),qadjacent(qsub(qbars(\"A_0\"), qbars(\"A_1\")) ∕ 'N',qnamedket(\"A_1\"))))==(qadjacent(G,qnamedket(\"A_1\")))\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M071",
+      "cell": 0,
+      "start": 8049,
+      "end": 8061,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM033-cf35c640-M072",
+      "cell": 0,
+      "start": 8136,
+      "end": 8154,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M073",
+      "cell": 0,
+      "start": 8159,
+      "end": 8177,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M074",
+      "cell": 0,
+      "start": 8213,
+      "end": 8216,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M075",
+      "cell": 0,
+      "start": 8490,
+      "end": 8493,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M076",
+      "cell": 0,
+      "start": 8522,
+      "end": 8773,
+      "literal": "$$\nM = \\begin{pmatrix}\n  \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} & -\\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\\\[2mm]\n  \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} & \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N}\n\\end{pmatrix},\n$$",
+      "status": "diagnostic",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M077",
+      "cell": 0,
+      "start": 8825,
+      "end": 8843,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M078",
+      "cell": 0,
+      "start": 8848,
+      "end": 8866,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M079",
+      "cell": 0,
+      "start": 9170,
+      "end": 9173,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM033-cf35c640-M080",
+      "cell": 0,
+      "start": 9233,
+      "end": 9663,
+      "literal": "$$\n\\begin{pmatrix}\n  \\sqrt{\\frac{\\vert A_0\\vert}{N}} & - \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\\\[2mm]\n  \\sqrt{\\frac{\\vert A_1\\vert}{N}} & \\sqrt{\\frac{\\vert A_0\\vert}{N}}\n\\end{pmatrix}^2\n=\n\\begin{pmatrix}\n  \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} & -\\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\\\[2mm]\n  \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} & \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N}\n\\end{pmatrix} = M\n$$",
+      "status": "diagnostic",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M081",
+      "cell": 0,
+      "start": 9677,
+      "end": 9858,
+      "literal": "$$\n\\begin{pmatrix}\n  \\sqrt{\\frac{\\vert A_0\\vert}{N}} & - \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\\\[2mm]\n  \\sqrt{\\frac{\\vert A_1\\vert}{N}} & \\sqrt{\\frac{\\vert A_0\\vert}{N}}\n\\end{pmatrix}\n$$",
+      "status": "diagnostic",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M082",
+      "cell": 0,
+      "start": 9923,
+      "end": 10205,
+      "literal": "$$\n\\begin{pmatrix}\n  \\sqrt{\\frac{\\vert A_0\\vert}{N}} & - \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\\\[2mm]\n  \\sqrt{\\frac{\\vert A_1\\vert}{N}} & \\sqrt{\\frac{\\vert A_0\\vert}{N}}\n\\end{pmatrix}\n=\n\\begin{pmatrix}\n  \\cos(\\theta) & -\\sin(\\theta) \\\\[2mm]\n  \\sin(\\theta) & \\cos(\\theta)\n\\end{pmatrix}\n$$",
+      "status": "diagnostic",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM033-cf35c640-M083",
+      "cell": 0,
+      "start": 10212,
+      "end": 10282,
+      "literal": "$$\n\\theta = \\sin^{-1}\\biggl(\\sqrt{\\frac{\\vert A_1\\vert}{N}}\\biggr).\n$$",
+      "status": "exact",
+      "display": "asin(√(|\"A_1\"| / N)) = 'θ'",
+      "copy": "(qasin(qsqrt(qbars(\"A_1\") ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM033-cf35c640-M084",
+      "cell": 0,
+      "start": 10295,
+      "end": 10303,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM033-cf35c640-M085",
+      "cell": 0,
+      "start": 10512,
+      "end": 10728,
+      "literal": "$$\nM = \\begin{pmatrix}\n  \\cos(\\theta) & -\\sin(\\theta) \\\\[2mm]\n  \\sin(\\theta) & \\cos(\\theta)\n\\end{pmatrix}^2\n= \\begin{pmatrix}\n  \\cos(2\\theta) & -\\sin(2\\theta) \\\\[2mm]\n  \\sin(2\\theta) & \\cos(2\\theta)\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "M = [1 − 2 ⋅ sin('θ' rad)², −sin(2'θ' rad); sin(2'θ' rad), 1 − 2 ⋅ sin('θ' rad)²] = [cos(2'θ' rad), −sin(2'θ' rad); sin(2'θ' rad), cos(2'θ' rad)]",
+      "copy": "qequalchain(vector('M',matrix(2,2,[(((sin(('θ')*(qphysicalunit(\"rad\",\"\"))))^(2))*(−2))+ (1),(sin(('θ')*(2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(2)*(qphysicalunit(\"rad\",\"\"))),(((sin(('θ')*(qphysicalunit(\"rad\",\"\"))))^(2))*(−2))+ (1)]),matrix(2,2,[cos(('θ')*(2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(2)*(qphysicalunit(\"rad\",\"\"))),cos(('θ')*(2)*(qphysicalunit(\"rad\",\"\")))])))"
+    },
+    {
+      "id": "IBM033-cf35c640-M086",
+      "cell": 0,
+      "start": 10768,
+      "end": 10776,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM033-cf35c640-M087",
+      "cell": 0,
+      "start": 10826,
+      "end": 10835,
+      "literal": "$2\\theta$",
+      "status": "exact",
+      "display": "2'θ'",
+      "copy": "2'θ'"
+    },
+    {
+      "id": "IBM033-cf35c640-M088",
+      "cell": 0,
+      "start": 10907,
+      "end": 10977,
+      "literal": "$$\n\\theta\n= \\cos^{-1}\\biggl(\\sqrt{\\frac{\\vert A_0\\vert}{N}}\\biggr),\n$$",
+      "status": "exact",
+      "display": "acos(√(|\"A_0\"| / N)) = 'θ'",
+      "copy": "(qacos(qsqrt(qbars(\"A_0\") ∕ 'N')))==('θ')"
+    },
+    {
+      "id": "IBM033-cf35c640-M089",
+      "cell": 0,
+      "start": 11041,
+      "end": 11179,
+      "literal": "$$\n\\begin{aligned}\n\\cos(2\\theta) & = \\cos^2(\\theta) - \\sin^2(\\theta)\\\\[1mm]\n\\sin(2\\theta) & = 2 \\sin(\\theta)\\cos(\\theta).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  cos(2'θ' rad) + 2 ⋅ sin('θ' rad)² = 1\n\n2.  1",
+      "copy": "\\begin{gathered}((((sin(('θ')*(qphysicalunit(\"rad\",\"\"))))^(2))*(2))+ (cos(('θ')*(2)*(qphysicalunit(\"rad\",\"\")))))==(1)\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M090",
+      "cell": 0,
+      "start": 11218,
+      "end": 11230,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM033-cf35c640-M091",
+      "cell": 0,
+      "start": 11258,
+      "end": 11445,
+      "literal": "$$\n\\vert u\\rangle\n= \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert A_0\\rangle\n+ \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert A_1\\rangle\n= \\cos(\\theta) \\vert A_0\\rangle + \\sin(\\theta) \\vert A_1\\rangle,\n$$",
+      "status": "exact",
+      "display": "qketstate('u') = √(|\"A_0\"| / N) |A_0⟩ + √(|\"A_1\"| / N) |A_1⟩ = cos('θ') |A_0⟩ + sin('θ') |A_1⟩",
+      "copy": "qequalchain(vector(qketstate('u'),qadd(qadjacent(qsqrt(qbars(\"A_0\") ∕ 'N'),qnamedket(\"A_0\")),qadjacent(qsqrt(qbars(\"A_1\") ∕ 'N'),qnamedket(\"A_1\"))),qadd(qadjacent(qcos('θ'),qnamedket(\"A_0\")),qadjacent(qsin('θ'),qnamedket(\"A_1\")))))"
+    },
+    {
+      "id": "IBM033-cf35c640-M092",
+      "cell": 0,
+      "start": 11474,
+      "end": 11477,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M093",
+      "cell": 0,
+      "start": 11520,
+      "end": 11529,
+      "literal": "$2\\theta$",
+      "status": "exact",
+      "display": "2'θ'",
+      "copy": "2'θ'"
+    },
+    {
+      "id": "IBM033-cf35c640-M094",
+      "cell": 0,
+      "start": 11558,
+      "end": 11576,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M095",
+      "cell": 0,
+      "start": 11581,
+      "end": 11599,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M096",
+      "cell": 0,
+      "start": 11627,
+      "end": 11935,
+      "literal": "$$\n\\begin{aligned}\nG \\vert u \\rangle &= \\cos(3\\theta) \\vert A_0\\rangle + \\sin(3\\theta) \\vert A_1\\rangle\\\\[1mm]\nG^2 \\vert u \\rangle &= \\cos(5\\theta) \\vert A_0\\rangle + \\sin(5\\theta) \\vert A_1\\rangle\\\\[1mm]\nG^3 \\vert u \\rangle &= \\cos(7\\theta) \\vert A_0\\rangle + \\sin(7\\theta) \\vert A_1\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  (G) (qketstate('u')) = cos(3 · 'θ') |A_0⟩ + sin(3 · 'θ') |A_1⟩\n\n2.  (G^2) (qketstate('u')) = cos(5 · 'θ') |A_0⟩ + sin(5 · 'θ') |A_1⟩\n\n3.  (G^3) (qketstate('u')) = cos(7 · 'θ') |A_0⟩ + sin(7 · 'θ') |A_1⟩",
+      "copy": "\\begin{gathered}qcompare(qadjacent(G,qketstate('u')),qadd(qadjacent(qcos(qadjacent(3,'θ')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(3,'θ')),qnamedket(\"A_1\"))),4)\\\\qcompare(qadjacent(qpower(G,2),qketstate('u')),qadd(qadjacent(qcos(qadjacent(5,'θ')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(5,'θ')),qnamedket(\"A_1\"))),4)\\\\qcompare(qadjacent(qpower(G,3),qketstate('u')),qadd(qadjacent(qcos(qadjacent(7,'θ')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(7,'θ')),qnamedket(\"A_1\"))),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M097",
+      "cell": 0,
+      "start": 11953,
+      "end": 12079,
+      "literal": "$$\nG^t \\vert u \\rangle\n= \\cos\\bigl((2t + 1)\\theta\\bigr) \\vert A_0\\rangle\n+ \\sin\\bigl((2t + 1)\\theta\\bigr) \\vert A_1\\rangle.\n$$",
+      "status": "exact",
+      "display": "(G^t) (qketstate('u')) = cos((2 · t + 1) · 'θ') |A_0⟩ + sin((2 · t + 1) · 'θ') |A_1⟩",
+      "copy": "qcompare(qadjacent(qpower(G,'t'),qketstate('u')),qadd(qadjacent(qcos(qadjacent(qadd(qadjacent(2,'t'),1),'θ')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(qadd(qadjacent(2,'t'),1),'θ')),qnamedket(\"A_1\"))),4)"
+    },
+    {
+      "id": "IBM033-cf35c640-M098",
+      "cell": 0,
+      "start": 12210,
+      "end": 12213,
+      "literal": "$G$",
+      "status": "exact",
+      "display": "G",
+      "copy": "G"
+    },
+    {
+      "id": "IBM033-cf35c640-M099",
+      "cell": 0,
+      "start": 12251,
+      "end": 12256,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM033-cf35c640-M100",
+      "cell": 0,
+      "start": 12261,
+      "end": 12306,
+      "literal": "$H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}",
+      "copy": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M101",
+      "cell": 0,
+      "start": 12403,
+      "end": 12408,
+      "literal": "$Z_f$",
+      "status": "exact",
+      "display": "\"Z_f\"",
+      "copy": "\"Z_f\""
+    },
+    {
+      "id": "IBM033-cf35c640-M102",
+      "cell": 0,
+      "start": 12454,
+      "end": 12583,
+      "literal": "$$\n\\begin{aligned}\nZ_f \\vert A_0\\rangle & = \\vert A_0\\rangle \\\\[1mm]\nZ_f \\vert A_1\\rangle & = -\\vert A_1\\rangle.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  \"Z_f\" |A_0⟩ = |A_0⟩\n\n2.  \"Z_f\" |A_1⟩ = −|A_1⟩",
+      "copy": "\\begin{gathered}qcompare(qadjacent(\"Z_f\",qnamedket(\"A_0\")),qketstate(\"A_0\"),4)\\\\qcompare(qadjacent(\"Z_f\",qnamedket(\"A_1\")),−qketstate(\"A_1\"),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM033-cf35c640-M103",
+      "cell": 0,
+      "start": 12636,
+      "end": 12654,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M104",
+      "cell": 0,
+      "start": 12659,
+      "end": 12677,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M105",
+      "cell": 0,
+      "start": 12729,
+      "end": 12747,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M106",
+      "cell": 0,
+      "start": 12766,
+      "end": 12771,
+      "literal": "$L_1$",
+      "status": "exact",
+      "display": "\"L_1\"",
+      "copy": "\"L_1\""
+    },
+    {
+      "id": "IBM033-cf35c640-M107",
+      "cell": 0,
+      "start": 12862,
+      "end": 12880,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM033-cf35c640-M108",
+      "cell": 0,
+      "start": 12935,
+      "end": 12953,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M109",
+      "cell": 0,
+      "start": 12958,
+      "end": 12976,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M110",
+      "cell": 0,
+      "start": 13165,
+      "end": 13210,
+      "literal": "$H^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · \"Z_\" · O · R · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}",
+      "copy": "qadjacent(qadjacent(qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),\"Z_\"),'O''R'),qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n))"
+    },
+    {
+      "id": "IBM033-cf35c640-M111",
+      "cell": 0,
+      "start": 13256,
+      "end": 13355,
+      "literal": "$$\nH^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} = 2 \\vert u \\rangle \\langle u \\vert - \\mathbb{I}.\n$$",
+      "status": "diagnostic",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM033-cf35c640-M112",
+      "cell": 0,
+      "start": 13409,
+      "end": 13414,
+      "literal": "$L_2$",
+      "status": "exact",
+      "display": "\"L_2\"",
+      "copy": "\"L_2\""
+    },
+    {
+      "id": "IBM033-cf35c640-M113",
+      "cell": 0,
+      "start": 13438,
+      "end": 13454,
+      "literal": "$\\vert u\\rangle$",
+      "status": "exact",
+      "display": "qketstate('u')",
+      "copy": "qketstate('u')"
+    },
+    {
+      "id": "IBM033-cf35c640-M114",
+      "cell": 0,
+      "start": 13529,
+      "end": 13547,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM033-cf35c640-M115",
+      "cell": 0,
+      "start": 14137,
+      "end": 14155,
+      "literal": "$\\vert A_0\\rangle$",
+      "status": "exact",
+      "display": "|A_0⟩",
+      "copy": "qketstate(\"A_0\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M116",
+      "cell": 0,
+      "start": 14160,
+      "end": 14178,
+      "literal": "$\\vert A_1\\rangle$",
+      "status": "exact",
+      "display": "|A_1⟩",
+      "copy": "qketstate(\"A_1\")"
+    },
+    {
+      "id": "IBM033-cf35c640-M117",
+      "cell": 0,
+      "start": 14194,
+      "end": 14203,
+      "literal": "$2\\theta$",
+      "status": "exact",
+      "display": "2'θ'",
+      "copy": "2'θ'"
+    }
+  ]
+}

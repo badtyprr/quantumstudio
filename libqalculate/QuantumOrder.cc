@@ -89,6 +89,18 @@ bool algebraicMatricesEqual(const MathStructure &a,const MathStructure &b,bool &
  equal=true;return true;
 }
 #endif
+// A probability function stays symbolic until the caller supplies its value.
+class QuantumProbabilityCall: public MathFunction {
+ public:
+ QuantumProbabilityCall():MathFunction("qprobabilitycall",2) {}
+ ExpressionItem *copy() const {return new QuantumProbabilityCall(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  MathStructure size=raw[0],marked=raw[1];
+  size.eval(eo);marked.eval(eo);
+  if(size.equals(raw[0]) && marked.equals(raw[1]))return 0;
+  out.set(this,&size,&marked,NULL);return 1;
+ }
+};
 // These descriptors retain symbolic costs (including their argument lists)
 // for Copy and substitution when an asymptotic comparison is undecidable.
 class QuantumCostDescriptor: public MathFunction {
@@ -405,7 +417,7 @@ class QuantumOrderFunction: public MathFunction {
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
     if(!args[k].isFunction())continue;
     const auto &name=args[k].function()->referenceName();
-    if(name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral" || name=="qcomparisonzero")return 0;
+    if(name=="qresidues" || name=="qunitsmod" || name=="qfunctionrange" || name=="qpreimage" || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qnamedapplication" || name=="qcomparisonliteral" || name=="qcomparisonzero")return 0;
    }
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.
@@ -576,6 +588,7 @@ class QuantumEqualityChain: public MathFunction {
 };
 }
 void registerQuantumOrder(Calculator &calculator) {
+ calculator.addFunction(new QuantumProbabilityCall());
  calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));

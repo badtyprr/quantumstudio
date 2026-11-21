@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/unstructured-search.ipynb",
+  "notebook_sha256": "9bc1492a52076f45c99e20d10be00d847a3901be147f56caf2a1ba0849a981fc",
+  "worker_sha256": "4d3f5c418c412eeb39f974acc76f39f59ba4e71f286741d674dc69d3272aff8e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "271fae3102af11793e76c9ad6782e7f3689bc7ad596c7fda8915e4d1ac0ad913",
+  "suite": {
+    "passed": true,
+    "checks": 495,
+    "calls": 45,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "counts": {
+    "source_exact": 45,
+    "restored_identically": 45,
+    "exact_after_reentry": 45,
+    "stable_copy_text": 44
+  },
+  "diagnostics": [],
+  "changed_copy": [
+    {
+      "id": "IBM031-9bc1492a-M024",
+      "first": "qcompare(qtensor(qketstate('a'), qketstate(x)) ⋅ 'U''_''f',qtensor(qcomputationalket(qoplus('a',qnamedapplication('f',x))),qketstate(x)),4)",
+      "second": "qcompare(qadjacent(qadjacent(qmul(qtensor(qketstate('a'),qketstate(x)),'U'),'_'),'f'),qtensor(qcomputationalket(qoplus('a',qnamedapplication('f',x))),qketstate(x)),4)"
+    }
+  ],
+  "failures": []
+}

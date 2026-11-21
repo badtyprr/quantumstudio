@@ -1,0 +1,287 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "worker_sha256": "518bfa1faf8cff17ada7da1a1f9e766846fbd3fd475696a7cfc63595a7021d0f",
+  "circuits": [
+    {
+      "a": 2,
+      "N": 15,
+      "control_qubits": 3,
+      "approximate": false,
+      "circuit": "probs(sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(modmul(4,15)),s_0,[1,3,4,5,6]),apply(controlled(modmul(2,15)),s_0,[2,3,4,5,6]),apply(fourier(8)~,s_0,[0,1,2])],basis(1,128),s_0),[0,1,2])",
+      "probabilities": [
+        "0.25",
+        "0",
+        "0.25",
+        "0",
+        "0.25",
+        "0",
+        "0.25",
+        "0"
+      ],
+      "outcomes": [
+        {
+          "y": 0,
+          "probability": "0.25"
+        },
+        {
+          "y": 2,
+          "probability": "0.25",
+          "denominator": 4,
+          "passes_modular_check": true,
+          "factors": [
+            3,
+            5
+          ]
+        },
+        {
+          "y": 4,
+          "probability": "0.25",
+          "denominator": 2,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 6,
+          "probability": "0.25",
+          "denominator": 4,
+          "passes_modular_check": true,
+          "factors": [
+            3,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "a": 4,
+      "N": 15,
+      "control_qubits": 3,
+      "approximate": false,
+      "circuit": "probs(sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(modmul(4,15)),s_0,[2,3,4,5,6]),apply(fourier(8)~,s_0,[0,1,2])],basis(1,128),s_0),[0,1,2])",
+      "probabilities": [
+        "0.5",
+        "0",
+        "0",
+        "0",
+        "0.5",
+        "0",
+        "0",
+        "0"
+      ],
+      "outcomes": [
+        {
+          "y": 0,
+          "probability": "0.5"
+        },
+        {
+          "y": 4,
+          "probability": "0.5",
+          "denominator": 2,
+          "passes_modular_check": true,
+          "factors": [
+            3,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "a": 14,
+      "N": 15,
+      "control_qubits": 3,
+      "approximate": false,
+      "circuit": "probs(sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(controlled(modmul(14,15)),s_0,[2,3,4,5,6]),apply(fourier(8)~,s_0,[0,1,2])],basis(1,128),s_0),[0,1,2])",
+      "probabilities": [
+        "0.5",
+        "0",
+        "0",
+        "0",
+        "0.5",
+        "0",
+        "0",
+        "0"
+      ],
+      "outcomes": [
+        {
+          "y": 0,
+          "probability": "0.5"
+        },
+        {
+          "y": 4,
+          "probability": "0.5",
+          "denominator": 2,
+          "passes_modular_check": true,
+          "factors": []
+        }
+      ]
+    },
+    {
+      "a": 2,
+      "N": 21,
+      "control_qubits": 4,
+      "approximate": true,
+      "circuit": "probs(sequence([apply(H,s_0,[0]),apply(H,s_0,[1]),apply(H,s_0,[2]),apply(H,s_0,[3]),apply(controlled(modmul(4,21)),s_0,[0,4,5,6,7,8]),apply(controlled(modmul(16,21)),s_0,[1,4,5,6,7,8]),apply(controlled(modmul(4,21)),s_0,[2,4,5,6,7,8]),apply(controlled(modmul(2,21)),s_0,[3,4,5,6,7,8]),apply(fourier(16)~,s_0,[0,1,2,3])],basis(1,512),s_0),[0,1,2,3])",
+      "probabilities": [
+        "0.171875000000000000000000000000",
+        "0.00725728271980097465618403421056",
+        "0.0312500000000000000000000000000",
+        "0.117742717280199025343815965789",
+        "0.0156250000000000000000000000000",
+        "0.117742717280199025343815965789",
+        "0.0312500000000000000000000000000",
+        "0.00725728271980097465618403421056",
+        "0.171875000000000000000000000000",
+        "0.00725728271980097465618403421056",
+        "0.0312500000000000000000000000000",
+        "0.117742717280199025343815965789",
+        "0.0156250000000000000000000000000",
+        "0.117742717280199025343815965789",
+        "0.0312500000000000000000000000000",
+        "0.00725728271980097465618403421056"
+      ],
+      "outcomes": [
+        {
+          "y": 0,
+          "probability": "0.171875000000000000000000000000"
+        },
+        {
+          "y": 1,
+          "probability": "0.00725728271980097465618403421056",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 2,
+          "probability": "0.0312500000000000000000000000000",
+          "denominator": 8,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 3,
+          "probability": "0.117742717280199025343815965789",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 4,
+          "probability": "0.0156250000000000000000000000000",
+          "denominator": 4,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 5,
+          "probability": "0.117742717280199025343815965789",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 6,
+          "probability": "0.0312500000000000000000000000000",
+          "denominator": 8,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 7,
+          "probability": "0.00725728271980097465618403421056",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 8,
+          "probability": "0.171875000000000000000000000000",
+          "denominator": 2,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 9,
+          "probability": "0.00725728271980097465618403421056",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 10,
+          "probability": "0.0312500000000000000000000000000",
+          "denominator": 8,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 11,
+          "probability": "0.117742717280199025343815965789",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 12,
+          "probability": "0.0156250000000000000000000000000",
+          "denominator": 4,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 13,
+          "probability": "0.117742717280199025343815965789",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 14,
+          "probability": "0.0312500000000000000000000000000",
+          "denominator": 8,
+          "passes_modular_check": false,
+          "factors": []
+        },
+        {
+          "y": 15,
+          "probability": "0.00725728271980097465618403421056",
+          "denominator": 16,
+          "passes_modular_check": false,
+          "factors": []
+        }
+      ]
+    }
+  ],
+  "semiclassical": {
+    "a": 2,
+    "N": 21,
+    "phase_bits": 10,
+    "seed": 29,
+    "shots": [
+      {
+        "y": 341,
+        "probability": 0.11398712783323171,
+        "denominator": 3,
+        "combined_candidate": 3,
+        "passes_modular_check": false
+      },
+      {
+        "y": 340,
+        "probability": 0.0071249465476573405,
+        "combined_candidate": 3,
+        "passes_modular_check": false
+      },
+      {
+        "y": 854,
+        "probability": 0.028497374646634096,
+        "denominator": 6,
+        "combined_candidate": 6,
+        "passes_modular_check": true
+      }
+    ],
+    "factors": [
+      7,
+      3
+    ]
+  }
+}

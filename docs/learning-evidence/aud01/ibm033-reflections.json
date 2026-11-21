@@ -1,0 +1,188 @@
+{
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "62a9a9ee25971e41418abe54d86c6b47d6e263e11142c894e6d730a340af2d64",
+  "finite_identities": [
+    {
+      "id": "IBM033-cf35c640-M056",
+      "cases": [
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        }
+      ]
+    },
+    {
+      "id": "IBM033-cf35c640-M064",
+      "cases": [
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        }
+      ]
+    },
+    {
+      "id": "IBM033-cf35c640-M067",
+      "cases": [
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": true,
+          "equality": 0
+        }
+      ]
+    },
+    {
+      "id": "IBM033-cf35c640-M111",
+      "cases": [
+        {
+          "qubits": 2,
+          "marked": [
+            1
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 2,
+          "marked": [
+            1,
+            3
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        },
+        {
+          "qubits": 3,
+          "marked": [
+            0,
+            3,
+            6
+          ],
+          "inverted_oracle": false,
+          "equality": 1
+        }
+      ]
+    }
+  ]
+}

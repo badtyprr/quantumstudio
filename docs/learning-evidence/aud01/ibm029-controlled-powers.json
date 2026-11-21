@@ -1,0 +1,507 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "notebook_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "26d8387c56da6fdd3597a56091fa23eef3c2c3c714e32c2ca46c83f7b4e48e9d",
+  "windows_records_sha256": "682c954ada90b94d0005c3a97e5f8cd4dc992d1da0235f31b4e72207241cb770",
+  "examples": [
+    {
+      "N": 6,
+      "a": 5,
+      "m": 1,
+      "squarings": 0,
+      "last_multiplier": 5
+    },
+    {
+      "N": 6,
+      "a": 5,
+      "m": 2,
+      "squarings": 1,
+      "last_multiplier": 1
+    },
+    {
+      "N": 6,
+      "a": 5,
+      "m": 5,
+      "squarings": 4,
+      "last_multiplier": 1
+    },
+    {
+      "N": 6,
+      "a": 5,
+      "m": 12,
+      "squarings": 11,
+      "last_multiplier": 1
+    },
+    {
+      "N": 6,
+      "a": 5,
+      "m": 64,
+      "squarings": 63,
+      "last_multiplier": 1
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "m": 1,
+      "squarings": 0,
+      "last_multiplier": 2
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "m": 2,
+      "squarings": 1,
+      "last_multiplier": 4
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "m": 5,
+      "squarings": 4,
+      "last_multiplier": 1
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "m": 12,
+      "squarings": 11,
+      "last_multiplier": 1
+    },
+    {
+      "N": 15,
+      "a": 2,
+      "m": 64,
+      "squarings": 63,
+      "last_multiplier": 1
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "m": 1,
+      "squarings": 0,
+      "last_multiplier": 5
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "m": 2,
+      "squarings": 1,
+      "last_multiplier": 4
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "m": 5,
+      "squarings": 4,
+      "last_multiplier": 16
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "m": 12,
+      "squarings": 11,
+      "last_multiplier": 4
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "m": 64,
+      "squarings": 63,
+      "last_multiplier": 4
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "m": 1,
+      "squarings": 0,
+      "last_multiplier": 3
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "m": 2,
+      "squarings": 1,
+      "last_multiplier": 9
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "m": 5,
+      "squarings": 4,
+      "last_multiplier": 11
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "m": 12,
+      "squarings": 11,
+      "last_multiplier": 16
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "m": 64,
+      "squarings": 63,
+      "last_multiplier": 16
+    }
+  ],
+  "windows_cases": [
+    [
+      "k-6-1",
+      "if(1<2,[],genvector(2^x,1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-6-1",
+      "if(1<2,[],genvector(5^(2^x) pmod (6),1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-6-2",
+      "if(2<2,[],genvector(2^x,1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-6-2",
+      "if(2<2,[],genvector(5^(2^x) pmod (6),1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-6-5",
+      "if(5<2,[],genvector(2^x,1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-6-5",
+      "if(5<2,[],genvector(5^(2^x) pmod (6),1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-6-12",
+      "if(12<2,[],genvector(2^x,1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-6-12",
+      "if(12<2,[],genvector(5^(2^x) pmod (6),1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-6-64",
+      "if(64<2,[],genvector(2^x,1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-6-64",
+      "if(64<2,[],genvector(5^(2^x) pmod (6),1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "operator-6-2",
+      "modmul(5,6)^2=modmul(1,6)",
+      "0"
+    ],
+    [
+      "controlled-6-2",
+      "controlled(modmul(5,6))^2=controlled(modmul(1,6))",
+      "0"
+    ],
+    [
+      "operator-6-4",
+      "modmul(5,6)^4=modmul(1,6)",
+      "0"
+    ],
+    [
+      "controlled-6-4",
+      "controlled(modmul(5,6))^4=controlled(modmul(1,6))",
+      "0"
+    ],
+    [
+      "operator-6-8",
+      "modmul(5,6)^8=modmul(1,6)",
+      "0"
+    ],
+    [
+      "controlled-6-8",
+      "controlled(modmul(5,6))^8=controlled(modmul(1,6))",
+      "0"
+    ],
+    [
+      "k-15-1",
+      "if(1<2,[],genvector(2^x,1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-15-1",
+      "if(1<2,[],genvector(2^(2^x) pmod (15),1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-15-2",
+      "if(2<2,[],genvector(2^x,1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-15-2",
+      "if(2<2,[],genvector(2^(2^x) pmod (15),1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-15-5",
+      "if(5<2,[],genvector(2^x,1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-15-5",
+      "if(5<2,[],genvector(2^(2^x) pmod (15),1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-15-12",
+      "if(12<2,[],genvector(2^x,1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-15-12",
+      "if(12<2,[],genvector(2^(2^x) pmod (15),1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-15-64",
+      "if(64<2,[],genvector(2^x,1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-15-64",
+      "if(64<2,[],genvector(2^(2^x) pmod (15),1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "operator-15-2",
+      "modmul(2,15)^2=modmul(4,15)",
+      "0"
+    ],
+    [
+      "controlled-15-2",
+      "controlled(modmul(2,15))^2=controlled(modmul(4,15))",
+      "0"
+    ],
+    [
+      "operator-15-4",
+      "modmul(2,15)^4=modmul(1,15)",
+      "0"
+    ],
+    [
+      "controlled-15-4",
+      "controlled(modmul(2,15))^4=controlled(modmul(1,15))",
+      "0"
+    ],
+    [
+      "operator-15-8",
+      "modmul(2,15)^8=modmul(1,15)",
+      "0"
+    ],
+    [
+      "controlled-15-8",
+      "controlled(modmul(2,15))^8=controlled(modmul(1,15))",
+      "0"
+    ],
+    [
+      "k-21-1",
+      "if(1<2,[],genvector(2^x,1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-21-1",
+      "if(1<2,[],genvector(5^(2^x) pmod (21),1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-21-2",
+      "if(2<2,[],genvector(2^x,1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-21-2",
+      "if(2<2,[],genvector(5^(2^x) pmod (21),1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-21-5",
+      "if(5<2,[],genvector(2^x,1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-21-5",
+      "if(5<2,[],genvector(5^(2^x) pmod (21),1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-21-12",
+      "if(12<2,[],genvector(2^x,1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-21-12",
+      "if(12<2,[],genvector(5^(2^x) pmod (21),1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-21-64",
+      "if(64<2,[],genvector(2^x,1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-21-64",
+      "if(64<2,[],genvector(5^(2^x) pmod (21),1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "operator-21-2",
+      "modmul(5,21)^2=modmul(4,21)",
+      "0"
+    ],
+    [
+      "controlled-21-2",
+      "controlled(modmul(5,21))^2=controlled(modmul(4,21))",
+      "0"
+    ],
+    [
+      "operator-21-4",
+      "modmul(5,21)^4=modmul(16,21)",
+      "0"
+    ],
+    [
+      "controlled-21-4",
+      "controlled(modmul(5,21))^4=controlled(modmul(16,21))",
+      "0"
+    ],
+    [
+      "operator-21-8",
+      "modmul(5,21)^8=modmul(4,21)",
+      "0"
+    ],
+    [
+      "controlled-21-8",
+      "controlled(modmul(5,21))^8=controlled(modmul(4,21))",
+      "0"
+    ],
+    [
+      "k-35-1",
+      "if(1<2,[],genvector(2^x,1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-35-1",
+      "if(1<2,[],genvector(3^(2^x) pmod (35),1,1-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-35-2",
+      "if(2<2,[],genvector(2^x,1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-35-2",
+      "if(2<2,[],genvector(3^(2^x) pmod (35),1,2-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-35-5",
+      "if(5<2,[],genvector(2^x,1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-35-5",
+      "if(5<2,[],genvector(3^(2^x) pmod (35),1,5-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-35-12",
+      "if(12<2,[],genvector(2^x,1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-35-12",
+      "if(12<2,[],genvector(3^(2^x) pmod (35),1,12-1,1,x,1))",
+      "0"
+    ],
+    [
+      "k-35-64",
+      "if(64<2,[],genvector(2^x,1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "residue-35-64",
+      "if(64<2,[],genvector(3^(2^x) pmod (35),1,64-1,1,x,1))",
+      "0"
+    ],
+    [
+      "operator-35-2",
+      "modmul(3,35)^2=modmul(9,35)",
+      "0"
+    ],
+    [
+      "controlled-35-2",
+      "controlled(modmul(3,35))^2=controlled(modmul(9,35))",
+      "0"
+    ],
+    [
+      "operator-35-4",
+      "modmul(3,35)^4=modmul(11,35)",
+      "0"
+    ],
+    [
+      "controlled-35-4",
+      "controlled(modmul(3,35))^4=controlled(modmul(11,35))",
+      "0"
+    ],
+    [
+      "operator-35-8",
+      "modmul(3,35)^8=modmul(16,35)",
+      "0"
+    ],
+    [
+      "controlled-35-8",
+      "controlled(modmul(3,35))^8=controlled(modmul(16,35))",
+      "0"
+    ],
+    [
+      "different-multiplier",
+      "controlled(modmul(5,21))^4=controlled(modmul(4,21))",
+      "0"
+    ],
+    [
+      "M349-original",
+      "$m = O(n)$",
+      "0"
+    ],
+    [
+      "linear-control-width",
+      "2*n+3=O(n)",
+      "0"
+    ],
+    [
+      "cubic-cost",
+      "(2*n+3)*n^2+(2*n+3)+(2*n+3)^2=O(n^3)",
+      "0"
+    ],
+    [
+      "quadratic-negative-control",
+      "(2*n+3)*n^2+(2*n+3)+(2*n+3)^2=O(n^2)",
+      "0"
+    ],
+    [
+      "M176-original",
+      "$b = a^k \\in \\mathbb{Z}_N^{\\ast}$",
+      "0"
+    ],
+    [
+      "M178-original",
+      "$a^k \\in \\mathbb{Z}_N$",
+      "0"
+    ]
+  ],
+  "successive_squarings": 252,
+  "control_width_checks": 511
+}

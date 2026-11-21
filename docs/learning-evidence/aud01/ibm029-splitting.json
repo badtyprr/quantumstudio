@@ -1,0 +1,636 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/phase-estimation-and-factoring/shor-algorithm.ipynb",
+  "worker_sha256": "518bfa1faf8cff17ada7da1a1f9e766846fbd3fd475696a7cfc63595a7021d0f",
+  "cases": [
+    {
+      "N": 15,
+      "a": 2,
+      "order": 4,
+      "x": 3,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 3,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 4,
+      "order": 2,
+      "x": 3,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 5,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        3
+      ]
+    },
+    {
+      "N": 15,
+      "a": 6,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 7,
+      "order": 4,
+      "x": 3,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 8,
+      "order": 4,
+      "x": 3,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 9,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 10,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        3
+      ]
+    },
+    {
+      "N": 15,
+      "a": 11,
+      "order": 2,
+      "x": 10,
+      "outcome": "even order factor",
+      "factors": [
+        5,
+        3
+      ]
+    },
+    {
+      "N": 15,
+      "a": 12,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 13,
+      "order": 4,
+      "x": 3,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        5
+      ]
+    },
+    {
+      "N": 15,
+      "a": 14,
+      "order": 2,
+      "x": 13,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 21,
+      "a": 2,
+      "order": 6,
+      "x": 7,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        3
+      ]
+    },
+    {
+      "N": 21,
+      "a": 3,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 4,
+      "order": 3,
+      "outcome": "odd order"
+    },
+    {
+      "N": 21,
+      "a": 5,
+      "order": 6,
+      "x": 19,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 21,
+      "a": 6,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 7,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        3
+      ]
+    },
+    {
+      "N": 21,
+      "a": 8,
+      "order": 2,
+      "x": 7,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        3
+      ]
+    },
+    {
+      "N": 21,
+      "a": 9,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 10,
+      "order": 6,
+      "x": 12,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 11,
+      "order": 6,
+      "x": 7,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        3
+      ]
+    },
+    {
+      "N": 21,
+      "a": 12,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 13,
+      "order": 2,
+      "x": 12,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 14,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        3
+      ]
+    },
+    {
+      "N": 21,
+      "a": 15,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 16,
+      "order": 3,
+      "outcome": "odd order"
+    },
+    {
+      "N": 21,
+      "a": 17,
+      "order": 6,
+      "x": 19,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 21,
+      "a": 18,
+      "outcome": "initial gcd",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 19,
+      "order": 6,
+      "x": 12,
+      "outcome": "even order factor",
+      "factors": [
+        3,
+        7
+      ]
+    },
+    {
+      "N": 21,
+      "a": 20,
+      "order": 2,
+      "x": 19,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 35,
+      "a": 2,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 3,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 4,
+      "order": 6,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 5,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 6,
+      "order": 2,
+      "x": 5,
+      "outcome": "even order factor",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 7,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 8,
+      "order": 4,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 9,
+      "order": 6,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 10,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 11,
+      "order": 3,
+      "outcome": "odd order"
+    },
+    {
+      "N": 35,
+      "a": 12,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 13,
+      "order": 4,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 14,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 15,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 16,
+      "order": 3,
+      "outcome": "odd order"
+    },
+    {
+      "N": 35,
+      "a": 17,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 18,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 19,
+      "order": 6,
+      "x": 33,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 35,
+      "a": 20,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 21,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 22,
+      "order": 4,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 23,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 24,
+      "order": 6,
+      "x": 33,
+      "outcome": "trivial gcd"
+    },
+    {
+      "N": 35,
+      "a": 25,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 26,
+      "order": 6,
+      "x": 5,
+      "outcome": "even order factor",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 27,
+      "order": 4,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 28,
+      "outcome": "initial gcd",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 29,
+      "order": 2,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 30,
+      "outcome": "initial gcd",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 31,
+      "order": 6,
+      "x": 5,
+      "outcome": "even order factor",
+      "factors": [
+        5,
+        7
+      ]
+    },
+    {
+      "N": 35,
+      "a": 32,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 33,
+      "order": 12,
+      "x": 28,
+      "outcome": "even order factor",
+      "factors": [
+        7,
+        5
+      ]
+    },
+    {
+      "N": 35,
+      "a": 34,
+      "order": 2,
+      "x": 33,
+      "outcome": "trivial gcd"
+    }
+  ],
+  "outcomes": {
+    "even order factor": 30,
+    "initial gcd": 24,
+    "trivial gcd": 7,
+    "odd order": 4
+  },
+  "adaptations": {
+    "M388": "\"c\" = N/d",
+    "M399": "\"c\" = N/d"
+  },
+  "order_method": "Finite enumeration of modular powers"
+}
