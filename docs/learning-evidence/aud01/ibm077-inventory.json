@@ -1,0 +1,71 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/applications-of-qc.ipynb",
+  "source_sha256": "eb362a21d29dbdd06382b9a572bdd9a0100aaa3707541b43a8df6a9856742d9f",
+  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
+  "revision": "73df7845",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 2
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 3691,
+      "end": 3841,
+      "alt": "Suspected relationships among complexity classes",
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/complexity_classes.avif"
+    },
+    {
+      "cell": 0,
+      "start": 15110,
+      "end": 15235,
+      "alt": "Results of hadron simulations",
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/hadron_paper.avif"
+    },
+    {
+      "cell": 0,
+      "start": 21353,
+      "end": 21485,
+      "alt": "Results from Ising spin-glass paper",
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/paper_results.avif"
+    },
+    {
+      "cell": 0,
+      "start": 22528,
+      "end": 22661,
+      "alt": "Diagram of mRNA secondary structure",
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/mrna_structure.avif"
+    },
+    {
+      "cell": 0,
+      "start": 23635,
+      "end": 23752,
+      "alt": "Results from mRNA paper",
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/mrna_paper.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM077-eb362a21-M001",
+      "cell": 0,
+      "start": 15764,
+      "end": 15769,
+      "literal": "$t=1$",
+      "status": "exact",
+      "display": "t = 1",
+      "copy": "('t')==(1)"
+    },
+    {
+      "id": "IBM077-eb362a21-M002",
+      "cell": 0,
+      "start": 15889,
+      "end": 15895,
+      "literal": "$t=14$",
+      "status": "exact",
+      "display": "t = 14",
+      "copy": "('t')==(14)"
+    }
+  ]
+}

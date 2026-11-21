@@ -18,6 +18,12 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "c6594e782df4c62b653d6e571b96f6fed6a9c2783991d6f998cc9db65baff427": ("IBM074", "introduction", 0, 0),
+    "7f001ec597b80e45be630d4d77f00c26607588bccb334712507f786f1a5392c1": ("IBM075", "running-quantum-circuits", 0, 2),
+    "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23": ("IBM076", "utility-scale-qaoa", 37, 6),
+    "eb362a21d29dbdd06382b9a572bdd9a0100aaa3707541b43a8df6a9856742d9f": ("IBM077", "applications-of-qc", 2, 5),
+    "c73c951ff00e85b24a28f6bb4ef9fe5237a5eba375ff174639a14918e1ce01a4": ("IBM078", "mapping", 76, 2),
+    "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a": ("IBM079", "simulating-nature", 61, 12),
     "e77ac6b0cce54e7f5264122591a9532a502a4a10e05d5fa5d3545275832e3155": ("IBM069", "build-and-run-your-first-quantum-program", 16, 0),
     "70686bafd5486949decd0166944c52ad02c55ea183f4e7ef4d6ded3ad5ef709d": ("IBM070", "quantum-mechanics-basics", 92, 0),
     "07ed4dc2bc61a2b36515bba6f8fb9b3ed0d2ad41b6265f1be17ad6b31bb6698c": ("IBM071", "your-first-quantum-experiment", 20, 0),
@@ -109,10 +115,15 @@ cells = json.loads(data)["cells"]
 types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
-expected_cells = {"IBM068":(2,0),"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
-if lesson in {"IBM049","IBM050","IBM051"}: expected_cells=(2,0)
-if lesson=="IBM052": expected_cells=(22,19)
-expected_cells = {'IBM069': (10, 7), 'IBM070': (5, 1), 'IBM071': (11, 13), 'IBM072': (11, 0), 'IBM073': (2, 0)}.get(lesson, expected_cells)
+# Most lessons consist of a single Markdown cell.
+expected_cells = {
+    "IBM037": (2,0), "IBM038": (2,0), "IBM039": (19,18),
+    "IBM041": (2,0), "IBM042": (2,0), "IBM043": (10,10),
+    "IBM046": (2,0), "IBM047": (2,0), "IBM049": (2,0), "IBM050": (2,0),
+    "IBM051": (2,0), "IBM052": (22,19), "IBM068": (2,0),
+    "IBM069": (10,7), "IBM070": (5,1), "IBM071": (11,13), "IBM072": (11,0),
+    "IBM073": (2,0), "IBM074": (10,0), "IBM078": (4,0), "IBM079": (12,0),
+}.get(lesson, (1,0))
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
@@ -167,11 +178,13 @@ if lesson in {"IBM061","IBM062","IBM063","IBM064"}:
     course,chapter = "foundations-of-quantum-error-correction","quantum-code-constructions"
 if lesson in {"IBM065","IBM066","IBM067","IBM068"}:
     course,chapter = "foundations-of-quantum-error-correction","fault-tolerant-quantum-computing"
+if "IBM069" <= lesson <= "IBM073":
+    course,chapter = "use-a-qc-today",""
+elif "IBM074" <= lesson <= "IBM079":
+    course,chapter = "quantum-computing-in-practice",""
+path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
-          f"learning/courses/{course}/{chapter}/"
-          f"{slug}.ipynb")
-if lesson in ('IBM069', 'IBM070', 'IBM071', 'IBM072', 'IBM073'):
-    source = f"https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/{slug}.ipynb"
+          f"learning/courses/{path}.ipynb")
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               revision=args.revision, mode="Quantum notation", markdown_cells=types["markdown"], code_cells=types["code"],

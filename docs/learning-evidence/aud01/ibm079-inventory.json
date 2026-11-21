@@ -1,0 +1,695 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/simulating-nature.ipynb",
+  "source_sha256": "7325643fd9a6a6b68e8c1c68c9acce43b064be2474dbffeb9d07920edd09742a",
+  "worker_sha256": "c813dc3f48e0d8f114e670631967f5eaa9b8f6bcd02cda7b6bb3203f92d26680",
+  "revision": "73df7845",
+  "mode": "Quantum notation",
+  "markdown_cells": 12,
+  "code_cells": 0,
+  "summary": {
+    "diagnostic": 16,
+    "exact": 45
+  },
+  "figures": [
+    {
+      "cell": 2,
+      "start": 2090,
+      "end": 2373,
+      "alt": "A diagram showing the spread of possible problems from easy to hard, needing no quantum computer to needing a fault-tolerant one, and indicating that we are focused on problems in the middle.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/prob-scale.svg"
+    },
+    {
+      "cell": 3,
+      "start": 2340,
+      "end": 2532,
+      "alt": "A lattice with spins and a molecule which is bonded together using electrons which are fermions.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/spins-fermions.svg"
+    },
+    {
+      "cell": 3,
+      "start": 3816,
+      "end": 4078,
+      "alt": "A flow chart showing different potential types of mappings for different system types including bosons, fermions, and distinguishable particles like spins on a lattice.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/ham-encoding.svg"
+    },
+    {
+      "cell": 4,
+      "start": 1385,
+      "end": 1572,
+      "alt": "A quantum circuit showing Trotterized time-evolution operators: operators split into small pieces.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/trotter.svg"
+    },
+    {
+      "cell": 6,
+      "start": 767,
+      "end": 944,
+      "alt": "The cover art of the article we call the utility paper, published in the journal Nature.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/utility.svg"
+    },
+    {
+      "cell": 6,
+      "start": 2644,
+      "end": 2787,
+      "alt": "Spins on a lattice that point either up or down.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/spins-lattice.svg"
+    },
+    {
+      "cell": 7,
+      "start": 533,
+      "end": 840,
+      "alt": "A color-coded map showing layers of couplings. The emphasizes that two-qubit gates can be executed across the entire quantum computer, even though only one two-qubit gate can be executed simultaneously on a given qubit.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/layers.svg"
+    },
+    {
+      "cell": 8,
+      "start": 1185,
+      "end": 1365,
+      "alt": "The layout of a quantum computer is shown with a low-performing qubit indicated in pink.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/bad-qubits.svg"
+    },
+    {
+      "cell": 9,
+      "start": 4698,
+      "end": 4937,
+      "alt": "Plots are shown of an expectation value, that same expectation value with noise amplified, and then the value extrapolated back to the case of zero noise.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/zne.svg"
+    },
+    {
+      "cell": 9,
+      "start": 5875,
+      "end": 6089,
+      "alt": "Three methods of amplifying noise for ZNE are shown: pulse stretching, gate folding, and probabilistic error amplification.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/noise-amp.svg"
+    },
+    {
+      "cell": 10,
+      "start": 613,
+      "end": 766,
+      "alt": "Steps are shown in learning a sparse Pauli-Lindblad noise model",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/lindblad.svg"
+    },
+    {
+      "cell": 10,
+      "start": 1726,
+      "end": 1929,
+      "alt": "A plot of exact solutions, unmitigated solutions, and mitigated solutions to the problem solved in the utility paper.",
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/data.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM079-7325643f-M001",
+      "cell": 3,
+      "start": 1568,
+      "end": 1590,
+      "literal": "$$\nH=\\sum_i^N {H_i}\n$$",
+      "status": "diagnostic",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 12"
+    },
+    {
+      "id": "IBM079-7325643f-M002",
+      "cell": 3,
+      "start": 1608,
+      "end": 1613,
+      "literal": "$H_i$",
+      "status": "exact",
+      "display": "\"H_i\"",
+      "copy": "\"H_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M003",
+      "cell": 3,
+      "start": 1633,
+      "end": 1636,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM079-7325643f-M004",
+      "cell": 3,
+      "start": 1734,
+      "end": 1737,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM079-7325643f-M005",
+      "cell": 3,
+      "start": 2802,
+      "end": 2869,
+      "literal": "$$\nH = \\sum_i^N {H_i} = J \\sum_{<i,j>}Z_iZ_j + h\\sum_{i=0}^N X_i\n$$",
+      "status": "diagnostic",
+      "message": "Use an index assignment such as k=0 in the lower bound at byte 14"
+    },
+    {
+      "id": "IBM079-7325643f-M006",
+      "cell": 3,
+      "start": 2962,
+      "end": 2969,
+      "literal": "$<i,j>$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM079-7325643f-M007",
+      "cell": 3,
+      "start": 3060,
+      "end": 3065,
+      "literal": "$Z_i$",
+      "status": "exact",
+      "display": "\"Z_i\"",
+      "copy": "\"Z_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M008",
+      "cell": 3,
+      "start": 3070,
+      "end": 3075,
+      "literal": "$Z_j$",
+      "status": "exact",
+      "display": "\"Z_j\"",
+      "copy": "\"Z_j\""
+    },
+    {
+      "id": "IBM079-7325643f-M009",
+      "cell": 3,
+      "start": 3153,
+      "end": 3156,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM079-7325643f-M010",
+      "cell": 3,
+      "start": 3161,
+      "end": 3164,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM079-7325643f-M011",
+      "cell": 3,
+      "start": 3170,
+      "end": 3173,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM079-7325643f-M012",
+      "cell": 3,
+      "start": 3358,
+      "end": 3363,
+      "literal": "$X_i$",
+      "status": "exact",
+      "display": "\"X_i\"",
+      "copy": "\"X_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M013",
+      "cell": 3,
+      "start": 3424,
+      "end": 3427,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM079-7325643f-M014",
+      "cell": 3,
+      "start": 3433,
+      "end": 3436,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM079-7325643f-M015",
+      "cell": 3,
+      "start": 4138,
+      "end": 4143,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM079-7325643f-M016",
+      "cell": 3,
+      "start": 4761,
+      "end": 4780,
+      "literal": "$\\hat{a}_i^\\dagger$",
+      "status": "exact",
+      "display": "\"a_i\"",
+      "copy": "\"a_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M017",
+      "cell": 3,
+      "start": 4808,
+      "end": 4811,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM079-7325643f-M018",
+      "cell": 3,
+      "start": 4844,
+      "end": 4855,
+      "literal": "$\\hat{a}_i$",
+      "status": "exact",
+      "display": "\"a_i\"",
+      "copy": "\"a_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M019",
+      "cell": 3,
+      "start": 4888,
+      "end": 4891,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM079-7325643f-M020",
+      "cell": 3,
+      "start": 5074,
+      "end": 5175,
+      "literal": "$\\hat{f}_j^\\dagger = \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j + i Y_j}{2} \\Bigr)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\lt at byte 47"
+    },
+    {
+      "id": "IBM079-7325643f-M021",
+      "cell": 3,
+      "start": 5191,
+      "end": 5194,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM079-7325643f-M022",
+      "cell": 3,
+      "start": 5263,
+      "end": 5355,
+      "literal": "$\\hat{f}_j= \\Bigl( \\prod\\limits_{k \\lt j}{(-Z_k)} \\Bigr)\\Bigl( \\frac{X_j - i Y_j}{2} \\Bigr)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\lt at byte 38"
+    },
+    {
+      "id": "IBM079-7325643f-M023",
+      "cell": 3,
+      "start": 5389,
+      "end": 5392,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM079-7325643f-M024",
+      "cell": 3,
+      "start": 6784,
+      "end": 6803,
+      "literal": "$|\\phi\\rangle_{HF}$",
+      "status": "exact",
+      "display": "|'φ'⟩_{F · H}",
+      "copy": "qbasis('φ','F''H')"
+    },
+    {
+      "id": "IBM079-7325643f-M025",
+      "cell": 3,
+      "start": 6848,
+      "end": 6867,
+      "literal": "$\\hat{a}_i^\\dagger$",
+      "status": "exact",
+      "display": "\"a_i\"",
+      "copy": "\"a_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M026",
+      "cell": 3,
+      "start": 6928,
+      "end": 6996,
+      "literal": "$|vac\\rangle = |0_1 ... 0_k ... 0_N\\rangle = |0\\rangle ^{\\otimes N}$",
+      "status": "diagnostic",
+      "message": "Use one ellipsis in an indexed qubit register without an overall dimension."
+    },
+    {
+      "id": "IBM079-7325643f-M027",
+      "cell": 3,
+      "start": 7026,
+      "end": 7183,
+      "literal": "$$\n|\\phi\\rangle_{HF} = \\prod\\limits_{i=1}^k \\hat{a}_i^\\dagger |0\\rangle ^{\\otimes N} = \\hat{a}_1^\\dagger ... \\hat{a}_k^\\dagger |0_1 ... 0_k ... 0_N\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 55"
+    },
+    {
+      "id": "IBM079-7325643f-M028",
+      "cell": 3,
+      "start": 7418,
+      "end": 7421,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM079-7325643f-M029",
+      "cell": 3,
+      "start": 7483,
+      "end": 7496,
+      "literal": "$∣c_i\\rangle$",
+      "status": "exact",
+      "display": "|c_i⟩",
+      "copy": "qketstate(\"c_i\")"
+    },
+    {
+      "id": "IBM079-7325643f-M030",
+      "cell": 3,
+      "start": 7515,
+      "end": 7520,
+      "literal": "$a_i$",
+      "status": "exact",
+      "display": "\"a_i\"",
+      "copy": "\"a_i\""
+    },
+    {
+      "id": "IBM079-7325643f-M031",
+      "cell": 3,
+      "start": 7642,
+      "end": 7651,
+      "literal": "$\\hat{O}$",
+      "status": "exact",
+      "display": "O",
+      "copy": "'O'"
+    },
+    {
+      "id": "IBM079-7325643f-M032",
+      "cell": 3,
+      "start": 7743,
+      "end": 7879,
+      "literal": "$$\n|\\psi\\rangle = \\sum_{i=0}^{2^n-1}{a_i |c_i\\rangle}=\\hat{O}|0\\rangle^{\\otimes n}\\\\\n\\text{with} \\qquad \\sum_{i=0}^{2^n-1}{|a_i^2|}=1\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 83"
+    },
+    {
+      "id": "IBM079-7325643f-M033",
+      "cell": 4,
+      "start": 147,
+      "end": 166,
+      "literal": "$|\\phi(t=0)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('φ', 't' = 0)",
+      "copy": "qstatecall('φ',('t')==(0))"
+    },
+    {
+      "id": "IBM079-7325643f-M034",
+      "cell": 4,
+      "start": 180,
+      "end": 197,
+      "literal": "$|\\phi(t)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('φ', 't')",
+      "copy": "qstatecall('φ','t')"
+    },
+    {
+      "id": "IBM079-7325643f-M035",
+      "cell": 4,
+      "start": 215,
+      "end": 218,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM079-7325643f-M036",
+      "cell": 4,
+      "start": 341,
+      "end": 362,
+      "literal": "$$\nU(t) = e^{-iHt}\n$$",
+      "status": "diagnostic",
+      "message": "Expected ',' at byte 5"
+    },
+    {
+      "id": "IBM079-7325643f-M037",
+      "cell": 4,
+      "start": 381,
+      "end": 390,
+      "literal": "$\\hbar=1$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\hbar at byte 6"
+    },
+    {
+      "id": "IBM079-7325643f-M038",
+      "cell": 4,
+      "start": 476,
+      "end": 521,
+      "literal": "$|\\phi(t)\\rangle = e^{-iHt}|\\phi(t=0)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('φ', 't') = e^(−(i · H · t)) · qstatecall('φ', qcompare('t', 0, 4))",
+      "copy": "qcompare(qstatecall('φ','t'),qadjacent(qpower(e,qmul(qmul('H','t'),−i)),qstatecall('φ',qcompare('t',0,4))),4)"
+    },
+    {
+      "id": "IBM079-7325643f-M039",
+      "cell": 4,
+      "start": 602,
+      "end": 612,
+      "literal": "$e^{-iHt}$",
+      "status": "exact",
+      "display": "1 / e^(i · H · t)",
+      "copy": "1 ∕ e^(i'H''t')"
+    },
+    {
+      "id": "IBM079-7325643f-M040",
+      "cell": 4,
+      "start": 842,
+      "end": 845,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM079-7325643f-M041",
+      "cell": 4,
+      "start": 911,
+      "end": 930,
+      "literal": "$[H_A, H_B] \\neq 0$",
+      "status": "exact",
+      "display": "[\"H_A\"  \"H_B\"] ≠ 0",
+      "copy": "(vector(\"H_A\",\"H_B\"))!=(0)"
+    },
+    {
+      "id": "IBM079-7325643f-M042",
+      "cell": 4,
+      "start": 955,
+      "end": 958,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM079-7325643f-M043",
+      "cell": 4,
+      "start": 1065,
+      "end": 1117,
+      "literal": "$$\ne^{-i(H_A + H_B)t} \\neq e^{-iH_A t}e^{-iH_B t}\n$$",
+      "status": "exact",
+      "display": "e^(−(i · \"H_A\" · t) − (i · \"H_B\" · t)) ≠ e^(−(\"iH_A\" · t) − (\"iH_B\" · t))",
+      "copy": "qcompare(e^(−i ⋅ \"H_A\" ⋅ 't' − i ⋅ \"H_B\" ⋅ 't'),e^(−\"iH_A\" ⋅ 't' − \"iH_B\" ⋅ 't'),5)"
+    },
+    {
+      "id": "IBM079-7325643f-M044",
+      "cell": 4,
+      "start": 1217,
+      "end": 1222,
+      "literal": "$t/n$",
+      "status": "exact",
+      "display": "t / n",
+      "copy": "'t' ∕ n"
+    },
+    {
+      "id": "IBM079-7325643f-M045",
+      "cell": 4,
+      "start": 1235,
+      "end": 1238,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM079-7325643f-M046",
+      "cell": 4,
+      "start": 1316,
+      "end": 1383,
+      "literal": "$$\ne^{−i H t}\\approx \\left(e^{−i H_A t/n}e^{−i H_B t/n}\\right)^n\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM079-7325643f-M047",
+      "cell": 4,
+      "start": 1685,
+      "end": 1688,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM079-7325643f-M048",
+      "cell": 4,
+      "start": 1911,
+      "end": 2166,
+      "literal": "$$\n\\begin{aligned}\n\\text{First order:} & \\qquad e^{-iHt}\\approx \\left(\\prod_j{e^{-iH_i t/n}}\\right)^n\\\\\n\\text{Second order:} & \\qquad e^{-iHt}\\approx \\left(\\prod_{j=1}^N{e^{-iH_j t/2n}}\\right)^n\\left(\\prod_{k=N}^1{e^{-iH_k t/2n}}\\right)^n\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 37"
+    },
+    {
+      "id": "IBM079-7325643f-M049",
+      "cell": 4,
+      "start": 2174,
+      "end": 2177,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM079-7325643f-M050",
+      "cell": 4,
+      "start": 2216,
+      "end": 2221,
+      "literal": "$H_j$",
+      "status": "exact",
+      "display": "\"H_j\"",
+      "copy": "\"H_j\""
+    },
+    {
+      "id": "IBM079-7325643f-M051",
+      "cell": 4,
+      "start": 2275,
+      "end": 2278,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM079-7325643f-M052",
+      "cell": 6,
+      "start": 2531,
+      "end": 2535,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM079-7325643f-M053",
+      "cell": 6,
+      "start": 2611,
+      "end": 2616,
+      "literal": "$B_x$",
+      "status": "exact",
+      "display": "\"B_x\"",
+      "copy": "\"B_x\""
+    },
+    {
+      "id": "IBM079-7325643f-M054",
+      "cell": 6,
+      "start": 2637,
+      "end": 2640,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM079-7325643f-M055",
+      "cell": 9,
+      "start": 4148,
+      "end": 4235,
+      "literal": "$$\n\\langle A(\\lambda)\\rangle = \\langle A(0)\\rangle + \\sum_{k=0}^m {a_k \\lambda^k}+R,\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM079-7325643f-M056",
+      "cell": 9,
+      "start": 4243,
+      "end": 4246,
+      "literal": "$λ$",
+      "status": "exact",
+      "display": "'λ'",
+      "copy": "'λ'"
+    },
+    {
+      "id": "IBM079-7325643f-M057",
+      "cell": 9,
+      "start": 4437,
+      "end": 4442,
+      "literal": "$λ_1$",
+      "status": "exact",
+      "display": "\"λ_1\"",
+      "copy": "\"λ_1\""
+    },
+    {
+      "id": "IBM079-7325643f-M058",
+      "cell": 9,
+      "start": 4444,
+      "end": 4449,
+      "literal": "$λ_2$",
+      "status": "exact",
+      "display": "\"λ_2\"",
+      "copy": "\"λ_2\""
+    },
+    {
+      "id": "IBM079-7325643f-M059",
+      "cell": 9,
+      "start": 4543,
+      "end": 4572,
+      "literal": "$\\langle A(\\lambda_1)\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM079-7325643f-M060",
+      "cell": 9,
+      "start": 4574,
+      "end": 4603,
+      "literal": "$\\langle A(\\lambda_2)\\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM079-7325643f-M061",
+      "cell": 9,
+      "start": 4674,
+      "end": 4695,
+      "literal": "$A(\\lambda_0)\\rangle$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 9"
+    }
+  ]
+}

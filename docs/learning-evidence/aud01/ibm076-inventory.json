@@ -1,0 +1,422 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
+  "source_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
+  "worker_sha256": "274e4af08780bfeb5fe271c17deab1e05cc1d893f0eb339592b685845b3bc3f8",
+  "revision": "472d50c3",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 30,
+    "diagnostic": 7
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 2719,
+      "end": 2855,
+      "alt": "Illustration of a max-cut problem",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/maxcut-illustration.avif"
+    },
+    {
+      "cell": 0,
+      "start": 4448,
+      "end": 4579,
+      "alt": "Output of Rustworkx max-cut graph",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/rustworxMaxCut.avif"
+    },
+    {
+      "cell": 0,
+      "start": 9981,
+      "end": 10111,
+      "alt": "Circuit diagram with QAOA layers",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/circuit-diagram.svg"
+    },
+    {
+      "cell": 0,
+      "start": 16684,
+      "end": 16799,
+      "alt": "COBYLA optimization graph",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/COBYLA.avif"
+    },
+    {
+      "cell": 0,
+      "start": 17748,
+      "end": 17873,
+      "alt": "Max-cut solution histogram",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/MaxcutHistogram.avif"
+    },
+    {
+      "cell": 0,
+      "start": 18467,
+      "end": 18581,
+      "alt": "Max-cut solution",
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/MaxCutsolution.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM076-b057ac80-M001",
+      "cell": 0,
+      "start": 4866,
+      "end": 4941,
+      "literal": "$$\n\\max\\limits_{x\\in\\{0,1\\}^n} \\sum\\limits_{(i,j)} {x_i + x_j - 2x_ix_j}\n$$",
+      "status": "exact",
+      "display": "qmaxcut('E', n)",
+      "copy": "qmaxcut('E',n)"
+    },
+    {
+      "id": "IBM076-b057ac80-M002",
+      "cell": 0,
+      "start": 4949,
+      "end": 4952,
+      "literal": "$i$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM076-b057ac80-M003",
+      "cell": 0,
+      "start": 4957,
+      "end": 4960,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM076-b057ac80-M004",
+      "cell": 0,
+      "start": 4989,
+      "end": 4994,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM076-b057ac80-M005",
+      "cell": 0,
+      "start": 4999,
+      "end": 5004,
+      "literal": "$x_j$",
+      "status": "exact",
+      "display": "\"x_j\"",
+      "copy": "\"x_j\""
+    },
+    {
+      "id": "IBM076-b057ac80-M006",
+      "cell": 0,
+      "start": 5139,
+      "end": 5144,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM076-b057ac80-M007",
+      "cell": 0,
+      "start": 5149,
+      "end": 5154,
+      "literal": "$x_j$",
+      "status": "exact",
+      "display": "\"x_j\"",
+      "copy": "\"x_j\""
+    },
+    {
+      "id": "IBM076-b057ac80-M008",
+      "cell": 0,
+      "start": 5502,
+      "end": 5577,
+      "literal": "$$\n\\min\\limits_{x\\in\\{0,1\\}^n} \\sum\\limits_{(i,j)} {2x_ix_j - x_i - x_j}\n$$",
+      "status": "exact",
+      "display": "−qmaxcut('E', n)",
+      "copy": "−qmaxcut('E', n)"
+    },
+    {
+      "id": "IBM076-b057ac80-M009",
+      "cell": 0,
+      "start": 6456,
+      "end": 6495,
+      "literal": "$$\n\\min\\limits_{x\\in\\{0,1\\}^n} x^TQx\n$$",
+      "status": "exact",
+      "display": "qbinaryminimum('Q', n)",
+      "copy": "qbinaryminimum('Q',n)"
+    },
+    {
+      "id": "IBM076-b057ac80-M010",
+      "cell": 0,
+      "start": 6503,
+      "end": 6506,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM076-b057ac80-M011",
+      "cell": 0,
+      "start": 6513,
+      "end": 6524,
+      "literal": "$n\\times n$",
+      "status": "exact",
+      "display": "n²",
+      "copy": "n²"
+    },
+    {
+      "id": "IBM076-b057ac80-M012",
+      "cell": 0,
+      "start": 6549,
+      "end": 6552,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM076-b057ac80-M013",
+      "cell": 0,
+      "start": 6988,
+      "end": 6991,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM076-b057ac80-M014",
+      "cell": 0,
+      "start": 7073,
+      "end": 7084,
+      "literal": "$\\min 𝑓(𝑥)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 5"
+    },
+    {
+      "id": "IBM076-b057ac80-M015",
+      "cell": 0,
+      "start": 7504,
+      "end": 7522,
+      "literal": "$x \\in \\{0, 1\\}^n$",
+      "status": "exact",
+      "display": "x ∈ {0,1}^(n) (nonnegative integer width)",
+      "copy": "qmember(x,qbitstrings(n))"
+    },
+    {
+      "id": "IBM076-b057ac80-M016",
+      "cell": 0,
+      "start": 7526,
+      "end": 7545,
+      "literal": "$z \\in \\{-1, 1\\}^n$",
+      "status": "exact",
+      "display": "z ∈ ([−1  1])^(n) (Cartesian power; nonnegative integer count)",
+      "copy": "qmember(z,qcartesianpower(vector(−1,1),n))"
+    },
+    {
+      "id": "IBM076-b057ac80-M017",
+      "cell": 0,
+      "start": 7548,
+      "end": 7576,
+      "literal": "$$\nx_i = \\frac{1-z_i}{2}.\n$$",
+      "status": "exact",
+      "display": "\"x_i\" = 0.5 − 0.5 \"z_i\"",
+      "copy": "(\"x_i\")==(1 ∕ 2 − \"z_i\" ∕ 2)"
+    },
+    {
+      "id": "IBM076-b057ac80-M018",
+      "cell": 0,
+      "start": 7704,
+      "end": 7739,
+      "literal": "$$\nx^TQx = \\sum_{ij}Q_{ij}x_ix_j\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 19"
+    },
+    {
+      "id": "IBM076-b057ac80-M019",
+      "cell": 0,
+      "start": 7782,
+      "end": 7889,
+      "literal": "$$\n\\sum_{ij}Q_{ij}(\\frac{1-z_i}{2})(\\frac{1-z_j}{2}) = \\sum_{ij}\\frac{Q_{ij}}{4}(1 - z_i - z_j + z_iz_j)\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+    },
+    {
+      "id": "IBM076-b057ac80-M020",
+      "cell": 0,
+      "start": 7928,
+      "end": 8028,
+      "literal": "$$\n\\sum_{ij}\\frac{Q_{ij}}{4}z_iz_j - \\frac{Q_{ij}}{4}z_i - \\frac{Q_{ij}}{4}z_j + \\frac{Q_{ij}}{4}\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+    },
+    {
+      "id": "IBM076-b057ac80-M021",
+      "cell": 0,
+      "start": 8093,
+      "end": 8096,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM076-b057ac80-M022",
+      "cell": 0,
+      "start": 8212,
+      "end": 8215,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM076-b057ac80-M023",
+      "cell": 0,
+      "start": 8270,
+      "end": 8273,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM076-b057ac80-M024",
+      "cell": 0,
+      "start": 8276,
+      "end": 8372,
+      "literal": "$$\n\\sum_{ij}Q_{ij}z_iz_j - Q_{ij}z_i - Q_{ij}z_j = z^TQz + (-\\sum_{ij} Q_{ij}z_i + Q_{ij}z_j)\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 11"
+    },
+    {
+      "id": "IBM076-b057ac80-M025",
+      "cell": 0,
+      "start": 8450,
+      "end": 8453,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM076-b057ac80-M026",
+      "cell": 0,
+      "start": 8474,
+      "end": 8511,
+      "literal": "$$\nb_i = -\\sum_{j} Q_{ij} + Q_{ji}\n$$",
+      "status": "exact",
+      "display": "−(∑_{k ∈ \"indexset_j\"} (\"Q_ij\")) + \"Q_ji\" = \"b_i\"",
+      "copy": "(qadd(−qsumset(\"Q_ij\", \"indexset_j\", \"qboundindex_0\"),\"Q_ji\"))==(\"b_i\")"
+    },
+    {
+      "id": "IBM076-b057ac80-M027",
+      "cell": 0,
+      "start": 8564,
+      "end": 8583,
+      "literal": "$z \\in \\{-1, 1\\}^n$",
+      "status": "exact",
+      "display": "z ∈ ([−1  1])^(n) (Cartesian power; nonnegative integer count)",
+      "copy": "qmember(z,qcartesianpower(vector(−1,1),n))"
+    },
+    {
+      "id": "IBM076-b057ac80-M028",
+      "cell": 0,
+      "start": 8632,
+      "end": 8650,
+      "literal": "$$\nz^TQz + b^Tz\n$$",
+      "status": "exact",
+      "display": "b^(T · z) + z^(Q · T · z)",
+      "copy": "'b'^('T'z) + z^('Q''T'z)"
+    },
+    {
+      "id": "IBM076-b057ac80-M029",
+      "cell": 0,
+      "start": 8793,
+      "end": 8796,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM076-b057ac80-M030",
+      "cell": 0,
+      "start": 8828,
+      "end": 8913,
+      "literal": "$$\n\\min_{x\\in\\{0,1\\}^n} x^TQx\\Longleftrightarrow \\min_{z\\in\\{-1,1\\}^n}z^TQz + b^Tz\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM076-b057ac80-M031",
+      "cell": 0,
+      "start": 9081,
+      "end": 9129,
+      "literal": "$$\nH_C=\\sum_{ij}Q_{ij}Z_iZ_j + \\sum_i b_i Z_i\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 15"
+    },
+    {
+      "id": "IBM076-b057ac80-M032",
+      "cell": 0,
+      "start": 11140,
+      "end": 11148,
+      "literal": "$\\gamma$",
+      "status": "exact",
+      "display": "'γ'",
+      "copy": "'γ'"
+    },
+    {
+      "id": "IBM076-b057ac80-M033",
+      "cell": 0,
+      "start": 11153,
+      "end": 11160,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM076-b057ac80-M034",
+      "cell": 0,
+      "start": 12858,
+      "end": 12866,
+      "literal": "$\\gamma$",
+      "status": "exact",
+      "display": "'γ'",
+      "copy": "'γ'"
+    },
+    {
+      "id": "IBM076-b057ac80-M035",
+      "cell": 0,
+      "start": 12871,
+      "end": 12878,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM076-b057ac80-M036",
+      "cell": 0,
+      "start": 15222,
+      "end": 15236,
+      "literal": "$\\gamma=\\pi/2$",
+      "status": "exact",
+      "display": "'γ' = 0.5π",
+      "copy": "('γ')==(π ∕ 2)"
+    },
+    {
+      "id": "IBM076-b057ac80-M037",
+      "cell": 0,
+      "start": 15241,
+      "end": 15252,
+      "literal": "$\\beta=\\pi$",
+      "status": "exact",
+      "display": "'β' = π",
+      "copy": "('β')==(π)"
+    }
+  ]
+}
