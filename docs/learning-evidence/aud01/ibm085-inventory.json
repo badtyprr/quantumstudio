@@ -1,0 +1,33 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/introduction.ipynb",
+  "source_sha256": "087d8957bccb098f16edc550940832756ffa40ad7f70530bb658766fd9b3a29c",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "mode": "Quantum notation",
+  "markdown_cells": 10,
+  "code_cells": 0,
+  "summary": {
+    "exact": 1
+  },
+  "figures": [
+    {
+      "cell": 6,
+      "start": 862,
+      "end": 1021,
+      "alt": "\"Image showing full quantum plus HPC architecture.\"",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/introduction/qcsc-arch.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM085-087d8957-M001",
+      "cell": 1,
+      "start": 2170,
+      "end": 2179,
+      "literal": "$10^{18}$",
+      "status": "exact",
+      "display": "1000000000000000000",
+      "copy": "1000000000000000000"
+    }
+  ]
+}

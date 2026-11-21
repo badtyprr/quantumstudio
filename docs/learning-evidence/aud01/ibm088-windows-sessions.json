@@ -1,0 +1,49 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/sqd-skqd.ipynb",
+  "notebook_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "e7c0671632e0373ff52eb125694f905ab22fd43bd76c6dee37597a42e64e8d28",
+  "suite": {
+    "passed": true,
+    "checks": 237,
+    "calls": 31,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 25,
+    "restored_identically": 25,
+    "stable_after_text_reentry": 25,
+    "source_diagnostic": 6
+  },
+  "diagnostics": [
+    {
+      "id": "IBM088-9d14af04-M004",
+      "message": "Unsupported TeX command: \\underset at byte 11"
+    },
+    {
+      "id": "IBM088-9d14af04-M012",
+      "message": "Expected ',' at byte 5"
+    },
+    {
+      "id": "IBM088-9d14af04-M019",
+      "message": "Unsupported TeX command: \\subset at byte 10"
+    },
+    {
+      "id": "IBM088-9d14af04-M021",
+      "message": "Unsupported TeX command: \\subset at byte 10"
+    },
+    {
+      "id": "IBM088-9d14af04-M026",
+      "message": "Unsupported text in a mathematical expression at byte 74"
+    },
+    {
+      "id": "IBM088-9d14af04-M028",
+      "message": "Invalid decimal number at byte 17"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

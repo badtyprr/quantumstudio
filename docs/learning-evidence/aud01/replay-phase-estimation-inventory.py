@@ -7,6 +7,30 @@ from pathlib import Path
 import re
 import subprocess
 
+def prose_ranges(body):
+    """Return offsets outside Markdown fences and matching inline code spans."""
+    fence = re.compile(r"(?m)^ {0,3}(`{3,}|~{3,})([^\n]*)(?:\n|$)")
+    inline = re.compile(r"(?<!`)(`+)(?!`)")
+    start = 0
+    while start < len(body):
+        opening = fence.search(body, start)
+        end = opening.start() if opening else len(body)
+        part = start
+        for marker in inline.finditer(body, start, end):
+            if marker.start() < part:
+                continue
+            close = re.compile(r"(?<!`)"+marker[1]+r"(?!`)").search(body, marker.end(), end)
+            if close:
+                yield part, marker.start()
+                part = close.end()
+        yield part, end
+        if not opening:
+            break
+        run = opening[1]
+        closing = re.compile(r"(?m)^ {0,3}"+run[0]+"{"+str(len(run))+r",}[ \t]*(?:\n|$)").search(body,opening.end())
+        start = closing.end() if closing else len(body)
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("notebook", type=Path)
 parser.add_argument("worker", type=Path)
@@ -18,6 +42,11 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "087d8957bccb098f16edc550940832756ffa40ad7f70530bb658766fd9b3a29c": ("IBM085", "introduction", 1, 1),
+    "e6d3174eb78d569bf79b58972fba0f29e3c6eeb12159a8eeb5f5426e41239760": ("IBM086", "compute-resources", 4, 6),
+    "ec12022d6f3dd5b2771dd43f7fb9e4e6c5c4045c27d99198b8dba0923c2c3dbe": ("IBM087", "programming-models", 3, 7),
+    "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481": ("IBM088", "sqd-skqd", 31, 4),
+    "85d22ff60e747ae7f25d4100e0556721ec291f81a88909d08bdb3a62d3c1c9f2": ("IBM089", "next-steps", 0, 2),
     "472a25ee24bf7f5929d968bb5eb91693207e707ebde0edd2dab3450783b74e7a": ("IBM080", "introduction", 0, 1),
     "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993": ("IBM081", "noise-and-errors", 309, 9),
     "a3fcfc9e0a84f18267115e9b1597efca99d08deb94a9c5b37b1c8a27eb44dfc5": ("IBM082", "error-suppression", 111, 9),
@@ -124,6 +153,11 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM085": (10,0),
+    "IBM086": (11,0),
+    "IBM087": (11,0),
+    "IBM088": (7,0),
+    "IBM089": (5,0),
     "IBM081": (26,18),
     "IBM082": (41,40),
     "IBM083": (70,74),
@@ -143,7 +177,7 @@ for index, cell in enumerate(cells):
     if cell["cell_type"] != "markdown":
         continue
     body = "".join(cell["source"])
-    for match in math.finditer(body):
+    for match in (m for start,end in prose_ranges(body) for m in math.finditer(body,start,end)):
         i = len(rows)+1
         literal = match.group()
         if literal not in cache:
@@ -195,6 +229,8 @@ elif "IBM074" <= lesson <= "IBM079":
     course,chapter = "quantum-computing-in-practice",""
 elif "IBM080" <= lesson <= "IBM084":
     course,chapter = "tools-for-quantum-advantage",""
+elif "IBM085" <= lesson <= "IBM089":
+    course,chapter = "integrating-quantum-and-high-performance-computing",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

@@ -1,0 +1,98 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/compute-resources.ipynb",
+  "source_sha256": "e6d3174eb78d569bf79b58972fba0f29e3c6eeb12159a8eeb5f5426e41239760",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 0,
+  "summary": {
+    "exact": 4
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 5707,
+      "end": 5900,
+      "alt": "An image showing that each computing node might include many types of resources.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resources.avif"
+    },
+    {
+      "cell": 0,
+      "start": 6642,
+      "end": 6983,
+      "alt": "An image showing vertical scaling of resources through placing more resources, like memory, within a single node, and horizontal scaling through increasing the number of connected nodes including different resource types.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resource-scaling.avif"
+    },
+    {
+      "cell": 1,
+      "start": 3381,
+      "end": 3607,
+      "alt": "Four-qubit quantum circuit with no barriers to force alignment of layers; gates appear somewhat randomly aligned.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/unaligned.avif"
+    },
+    {
+      "cell": 1,
+      "start": 3610,
+      "end": 3840,
+      "alt": "Four-qubit quantum circuit with barriers in place to force the alignment of layers. Counting layers is much easier now.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/aligned.avif"
+    },
+    {
+      "cell": 1,
+      "start": 11193,
+      "end": 11485,
+      "alt": "An image showing vertical scaling of quantum resources as more qubits on a chip, and horizontal scaling of quantum resources as connecting many chips together with couplers.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/quantum-scaling.avif"
+    },
+    {
+      "cell": 2,
+      "start": 5057,
+      "end": 5363,
+      "alt": "An image showing workloads (shown as boxes) being organized and arranged to fit optimally into a two dimensional grid with one axis representing time and the other representing resources.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resource-manage.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM086-e6d3174e-M001",
+      "cell": 1,
+      "start": 4029,
+      "end": 4036,
+      "literal": "$\\pi/5$",
+      "status": "exact",
+      "display": "0.2π",
+      "copy": "π ∕ 5"
+    },
+    {
+      "id": "IBM086-e6d3174e-M002",
+      "cell": 1,
+      "start": 4063,
+      "end": 4070,
+      "literal": "$\\pi/4$",
+      "status": "exact",
+      "display": "0.25π",
+      "copy": "π ∕ 4"
+    },
+    {
+      "id": "IBM086-e6d3174e-M003",
+      "cell": 1,
+      "start": 4299,
+      "end": 4306,
+      "literal": "$\\pi/3$",
+      "status": "exact",
+      "display": "0.333333333333333333333333333333π",
+      "copy": "π ∕ 3"
+    },
+    {
+      "id": "IBM086-e6d3174e-M004",
+      "cell": 1,
+      "start": 4333,
+      "end": 4340,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    }
+  ]
+}

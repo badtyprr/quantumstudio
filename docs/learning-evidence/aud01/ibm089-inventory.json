@@ -1,0 +1,27 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/next-steps.ipynb",
+  "source_sha256": "85d22ff60e747ae7f25d4100e0556721ec291f81a88909d08bdb3a62d3c1c9f2",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "mode": "Quantum notation",
+  "markdown_cells": 5,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 1,
+      "start": 1889,
+      "end": 2237,
+      "alt": "A diagram showing the cost of simulations as a function of increasing circuit complexity for both classical computers and quantum computers with error mitigation. Once the curves cross, the space between them corresponds to quantum advantage.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/next-steps/advantage.avif"
+    },
+    {
+      "cell": 3,
+      "start": 189,
+      "end": 328,
+      "alt": "The IBM Quantum Development Roadmap",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/next-steps/roadmap.avif"
+    }
+  ],
+  "rows": []
+}

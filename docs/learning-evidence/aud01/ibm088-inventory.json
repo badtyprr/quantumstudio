@@ -1,0 +1,349 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/sqd-skqd.ipynb",
+  "source_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "mode": "Quantum notation",
+  "markdown_cells": 7,
+  "code_cells": 0,
+  "summary": {
+    "exact": 25,
+    "diagnostic": 6
+  },
+  "figures": [
+    {
+      "cell": 1,
+      "start": 367,
+      "end": 756,
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-cycle.avif"
+    },
+    {
+      "cell": 1,
+      "start": 1366,
+      "end": 1700,
+      "alt": "A diagram showing the overlap of the computational basis states making up the ansatz and those making up the true ground state. Specifically, the image shows that the two regions will have some overlap, but might not perfectly match.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/ansatz.avif"
+    },
+    {
+      "cell": 3,
+      "start": 262,
+      "end": 654,
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-workflow.avif"
+    },
+    {
+      "cell": 3,
+      "start": 1320,
+      "end": 1650,
+      "alt": "A schematic of an SQD workload being split among several resources. It shows several processes running sequentially, using the results of one iteration to inform the next, but also performing many such processes in parallel.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-complex.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM088-9d14af04-M001",
+      "cell": 0,
+      "start": 1237,
+      "end": 1242,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM088-9d14af04-M002",
+      "cell": 0,
+      "start": 1249,
+      "end": 1252,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM088-9d14af04-M003",
+      "cell": 0,
+      "start": 1349,
+      "end": 1568,
+      "literal": "$$\nH = \\begin{pmatrix}\nH_{0,0} & H_{0,1} & \\cdots & H_{0,N-1} \\\\\nH_{1,0} & H_{1,1} & \\cdots & H_{1,N-1} \\\\\n\\vdots & \\vdots & \\ddots & \\vdots \\\\\nH_{N-1,0} & H_{N-1,1} & \\cdots & H_{N-1,N-1}\n\\end{pmatrix} \\quad (N=2^n)\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + [H_(0,0), H_(0,1), ⋯, H_(0,N − 1);\n H_(1,0), H_(1,1), ⋯, H_(1,N − 1);\n ⋮, ⋮, ⋱, ⋮;\n H_(N − 1,0), H_(N − 1,1), ⋯, H_(N − 1,N − 1)] · (N = 2^n) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qadjacent(qindexedmatrix(\"H_\",qsub('N',1),qsub('N',1),1,1),qcompare('N',qpower(2,n),4))))==(0)"
+    },
+    {
+      "id": "IBM088-9d14af04-M004",
+      "cell": 0,
+      "start": 1856,
+      "end": 2437,
+      "literal": "$$\n\\underset{\\text{Full Hamiltonian}}{\\begin{pmatrix}\n\\ddots & \\vdots \\\\\n\\cdots & H_{i,j} & \\cdots \\\\\n& \\vdots & \\ddots\n\\end{pmatrix}}\n\\quad \\xrightarrow{\\text{Project}} \\quad\n\\underset{\\text{Projected Hamiltonian}}{\\tilde{H}}\n= \\begin{pmatrix}\n\\langle b_1 | H | b_1 \\rangle & \\cdots & \\langle b_1 | H | b_L \\rangle \\\\\n\\vdots & \\ddots & \\vdots \\\\\n\\langle b_L | H | b_1 \\rangle & \\cdots & \\langle b_L | H | b_L \\rangle\n\\end{pmatrix}\n\\quad \\xrightarrow{\\text{Diagonalize}} \\quad\n\\underset{\\text{Eigenvalues}}{\\begin{pmatrix}\nE_0 & & 0 \\\\\n& \\ddots & \\\\\n0 & & E_{L-1}\n\\end{pmatrix}}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\underset at byte 11"
+    },
+    {
+      "id": "IBM088-9d14af04-M005",
+      "cell": 0,
+      "start": 2500,
+      "end": 2517,
+      "literal": "$\\{|b_i\\rangle\\}$",
+      "status": "exact",
+      "display": "\\{|b_i⟩\\}",
+      "copy": "qset(vector(qketstate(\"b_i\")))"
+    },
+    {
+      "id": "IBM088-9d14af04-M006",
+      "cell": 0,
+      "start": 2595,
+      "end": 2606,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM088-9d14af04-M007",
+      "cell": 0,
+      "start": 2716,
+      "end": 2747,
+      "literal": "$\\langle b_i | H | b_j \\rangle$",
+      "status": "exact",
+      "display": "⟨b_i| [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] |b_j⟩",
+      "copy": "qmul(qmul(qdag(qnamedket(\"b_i\")),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket(\"b_j\"))"
+    },
+    {
+      "id": "IBM088-9d14af04-M008",
+      "cell": 1,
+      "start": 865,
+      "end": 896,
+      "literal": "$H = \\sum_{j=1}^Q \\alpha_j P_j$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{Q} (α_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,'Q',\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM088-9d14af04-M009",
+      "cell": 1,
+      "start": 919,
+      "end": 922,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM088-9d14af04-M010",
+      "cell": 1,
+      "start": 983,
+      "end": 988,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM088-9d14af04-M011",
+      "cell": 1,
+      "start": 1207,
+      "end": 1223,
+      "literal": "$|\\phi_0\\rangle$",
+      "status": "exact",
+      "display": "|φ_0⟩",
+      "copy": "qketstate(\"φ_0\")"
+    },
+    {
+      "id": "IBM088-9d14af04-M012",
+      "cell": 1,
+      "start": 1322,
+      "end": 1333,
+      "literal": "$U(\\theta)$",
+      "status": "diagnostic",
+      "message": "Expected ',' at byte 5"
+    },
+    {
+      "id": "IBM088-9d14af04-M013",
+      "cell": 1,
+      "start": 2465,
+      "end": 2482,
+      "literal": "$\\{b_j\\}_{j=1}^L$",
+      "status": "exact",
+      "display": "\\{\"b_j\"\\} · _(j = 1)^L",
+      "copy": "qadjacent(qset(vector(\"b_j\")),qpower(qindexedlabel('_',qcompare('j',1,4),\"\"),'L'))"
+    },
+    {
+      "id": "IBM088-9d14af04-M014",
+      "cell": 1,
+      "start": 2816,
+      "end": 2824,
+      "literal": "$(j, k)$",
+      "status": "exact",
+      "display": "(j, k)",
+      "copy": "qtuple(vector('j','k'))"
+    },
+    {
+      "id": "IBM088-9d14af04-M015",
+      "cell": 1,
+      "start": 2868,
+      "end": 2916,
+      "literal": "$\\tilde{H}_{jk} = \\langle b_j | H | b_k \\rangle$",
+      "status": "exact",
+      "display": "\"H_tilde_jk\" = ⟨b_j| [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] |b_k⟩",
+      "copy": "qcompare(\"H_tilde_jk\",qmul(qmul(qdag(qnamedket(\"b_j\")),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket(\"b_k\")),4)"
+    },
+    {
+      "id": "IBM088-9d14af04-M016",
+      "cell": 1,
+      "start": 3043,
+      "end": 3054,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM088-9d14af04-M017",
+      "cell": 1,
+      "start": 3333,
+      "end": 3341,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM088-9d14af04-M018",
+      "cell": 1,
+      "start": 4335,
+      "end": 4339,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "IBM088-9d14af04-M019",
+      "cell": 1,
+      "start": 4937,
+      "end": 4950,
+      "literal": "$A \\subset G$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\subset at byte 10"
+    },
+    {
+      "id": "IBM088-9d14af04-M020",
+      "cell": 1,
+      "start": 4956,
+      "end": 4971,
+      "literal": "$A \\subseteq G$",
+      "status": "exact",
+      "display": "qsubset('A', G)",
+      "copy": "qsubset('A',G)"
+    },
+    {
+      "id": "IBM088-9d14af04-M021",
+      "cell": 1,
+      "start": 4977,
+      "end": 4990,
+      "literal": "$G \\subset A$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\subset at byte 10"
+    },
+    {
+      "id": "IBM088-9d14af04-M022",
+      "cell": 1,
+      "start": 4996,
+      "end": 5011,
+      "literal": "$G \\subseteq A$",
+      "status": "exact",
+      "display": "qsubset(G, 'A')",
+      "copy": "qsubset(G,'A')"
+    },
+    {
+      "id": "IBM088-9d14af04-M023",
+      "cell": 2,
+      "start": 813,
+      "end": 829,
+      "literal": "$|\\phi_0\\rangle$",
+      "status": "exact",
+      "display": "|φ_0⟩",
+      "copy": "qketstate(\"φ_0\")"
+    },
+    {
+      "id": "IBM088-9d14af04-M024",
+      "cell": 2,
+      "start": 1155,
+      "end": 1165,
+      "literal": "$e^{-iHt}$",
+      "status": "exact",
+      "display": "qpropagator('H', 't')",
+      "copy": "qpropagator('H','t')"
+    },
+    {
+      "id": "IBM088-9d14af04-M025",
+      "cell": 2,
+      "start": 1220,
+      "end": 1223,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM088-9d14af04-M026",
+      "cell": 2,
+      "start": 1263,
+      "end": 1376,
+      "literal": "$$\n|\\phi_j\\rangle = e^{-i \\,\\delta t j H}|\\phi_0\\rangle,  \\quad \\text{for } j = 0, 1, \\dots, d-1 \\quad \\text{}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 74"
+    },
+    {
+      "id": "IBM088-9d14af04-M027",
+      "cell": 2,
+      "start": 1799,
+      "end": 1802,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM088-9d14af04-M028",
+      "cell": 2,
+      "start": 1821,
+      "end": 1880,
+      "literal": "$|\\phi_0\\rangle, |\\phi_1\\rangle, \\dots, |\\phi_{d-1}\\rangle$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 17"
+    },
+    {
+      "id": "IBM088-9d14af04-M029",
+      "cell": 2,
+      "start": 2214,
+      "end": 2225,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM088-9d14af04-M030",
+      "cell": 4,
+      "start": 1861,
+      "end": 1907,
+      "literal": "$|\\phi_j\\rangle = (e^{-iHt})^j |\\phi_0\\rangle$",
+      "status": "exact",
+      "display": "|φ_j⟩ = qpropagator('H', 't')^j |φ_0⟩",
+      "copy": "qcompare(qketstate(\"φ_j\"),qadjacent(qpower(qpropagator('H','t'),'j'),qnamedket(\"φ_0\")),4)"
+    },
+    {
+      "id": "IBM088-9d14af04-M031",
+      "cell": 5,
+      "start": 3383,
+      "end": 3394,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    }
+  ]
+}

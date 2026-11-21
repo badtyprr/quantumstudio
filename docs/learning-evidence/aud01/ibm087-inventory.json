@@ -1,0 +1,95 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/programming-models.ipynb",
+  "source_sha256": "ec12022d6f3dd5b2771dd43f7fb9e4e6c5c4045c27d99198b8dba0923c2c3dbe",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 0,
+  "summary": {
+    "diagnostic": 1,
+    "exact": 2
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1792,
+      "end": 2022,
+      "alt": "A quantum circuit diagram showing qubits as horizontal lines and quantum gates as boxes or connections between qubits.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/circuit.avif"
+    },
+    {
+      "cell": 0,
+      "start": 2866,
+      "end": 3090,
+      "alt": "A model histogram of results from sampler. Some states are very likely to be measured, others are very unlikely.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/sampler.avif"
+    },
+    {
+      "cell": 0,
+      "start": 3676,
+      "end": 4005,
+      "alt": "A diagram of transpilation showing how an abstract circuit is mapped into an instruction set architecture circuit. That is, the circuit is rewritten using the native gates and connectivity of the target hardware.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/transpilation.svg"
+    },
+    {
+      "cell": 0,
+      "start": 4080,
+      "end": 4260,
+      "alt": "A circuit diagram with four horizontal lines and many gates.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/checkin-circuit.avif"
+    },
+    {
+      "cell": 1,
+      "start": 3213,
+      "end": 3384,
+      "alt": "A diagram of a task being divided between nodes.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/distributed-program.svg"
+    },
+    {
+      "cell": 2,
+      "start": 1412,
+      "end": 1652,
+      "alt": "A diagram of computing tasks organized into a workflow in which some processes are executed in parallel and others in sequence.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/workflow.avif"
+    },
+    {
+      "cell": 3,
+      "start": 836,
+      "end": 1238,
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/sqd-workflow.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM087-ec12022d-M001",
+      "cell": 5,
+      "start": 229,
+      "end": 246,
+      "literal": "$(n-1)^\\text{th}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 16"
+    },
+    {
+      "id": "IBM087-ec12022d-M002",
+      "cell": 5,
+      "start": 260,
+      "end": 263,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM087-ec12022d-M003",
+      "cell": 5,
+      "start": 280,
+      "end": 283,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    }
+  ]
+}
