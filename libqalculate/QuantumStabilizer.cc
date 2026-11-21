@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <set>
+#include <tuple>
 namespace {
 const MathStructure &element(const MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 MathStructure &element(MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
@@ -70,6 +72,37 @@ class QuantumStabilizerFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qpauligroup") {
+   if(!a.isVector() || !a.size() || a.size()>32)return 0;
+   std::vector<SignedPauli> generators;
+   for(size_t k=0;k<a.size();++k) {
+    if(!a[k].isMatrix())return 0;
+    SignedPauli g;
+    if(!readSignedPauli(a[k],g,false) || (!generators.empty() && g.d!=generators.front().d)) {
+     CALCULATOR->error(true,"A Pauli group requires equal-sized Pauli generators.",NULL);return 0;
+    }
+    generators.push_back(g);
+   }
+   const size_t d=generators.front().d;
+   SignedPauli identity;identity.d=d;
+   std::vector<SignedPauli> members(1,identity);
+   std::set<std::tuple<size_t,size_t,unsigned>> seen{{0,0,0}};
+   for(size_t k=0;k<members.size();++k)for(const auto &g:generators) {
+    if(CALCULATOR->aborted())return 0;
+    SignedPauli next=multiplyPauli(members[k],g);
+    if(seen.emplace(next.x,next.z,next.phase).second) {
+     if(members.size()>=1048576/(d*d))return 0;
+     members.push_back(next);
+    }
+   }
+   MathStructure entries;entries.clearVector();
+   for(const auto &g:members) {
+    MathStructure m;m.clearMatrix();m.resizeMatrix(d,d,m_zero);
+    for(size_t row=0;row<d;++row)element(m,row,row^g.x)=MathStructure(pauliPhase(g.phase+2*binaryParity(row&g.z)));
+    entries.addChild(m);
+   }
+   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
   if(op=="qpauliword") {
    for(size_t j=0;j<4;++j)if(!args[j].isNumber() || !args[j].number().isInteger() || args[j].number()<0 || args[j].number()>511) {
     CALCULATOR->error(true,"Invalid binary Pauli word parameters.",NULL);return 0;
@@ -169,5 +202,5 @@ class QuantumStabilizerFunction: public MathFunction {
 }
 void registerQuantumStabilizer(Calculator &calculator) {
  registerQuantumCompactPauli(calculator);
- for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));
+ for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qpauligroup",1},{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));
 }

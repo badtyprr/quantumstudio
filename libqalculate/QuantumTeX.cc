@@ -1099,6 +1099,37 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  // Each row of a stabilizer generator table is an ordered tensor word.
+  // Preserve it in the compact Pauli representation used by rank and distance.
+  if(alignment.size()>=2 && alignment.size()<=25) {
+   std::string generators;
+   bool matched=true;
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(row);
+    if(row.empty())continue;
+    if(row.front()=='[') {
+     static const std::regex spacing(R"(^\[\s*-?[0-9]+(?:\.[0-9]+)?\s*(?:mm|cm|pt|em|ex)\s*\])");
+     std::smatch match;if(!std::regex_search(row,match,spacing)) {matched=false;break;}
+     row=trim(row.substr(match.length()));
+     if(row.empty())continue;
+    }
+    auto entries=indexedParts(row,"&");
+    if(entries.size()!=alignment.size()) {matched=false;break;}
+    unsigned x=0,z=0,phase=0;
+    for(auto gate:entries) {
+     gate=trim(gate);
+     if(gate=="\\mathbb{I}")gate="I";
+     if(gate.size()!=1 || gate.find_first_not_of("IXYZ")!=std::string::npos) {matched=false;break;}
+     x=2*x+(gate=="X" || gate=="Y");
+     z=2*z+(gate=="Z" || gate=="Y");
+     if(gate=="Y")phase=(phase+3)%4;
+    }
+    if(!matched)break;
+    if(!generators.empty())generators+=",";
+    generators+="qcompactpauli("+std::to_string(entries.size())+","+std::to_string(x)+","+std::to_string(z)+","+std::to_string(phase)+")";
+   }
+   if(matched && !generators.empty()) {pos=end+endMarker.size();return "vector("+generators+")";}
+  }
   if(alignment.size()==3) {
    auto lines=indexedParts(input.substr(pos,end-pos),"\\\\");
    auto heading=indexedParts(lines.front(),"&");
@@ -2111,6 +2142,29 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     body="\\sum_"+term[1].str()+" "+op+"*"+argument+"*"+op+"^{\\dagger}";
    }
    s="qkrausapply(\""+name+"\","+argument+")="+body;
+  }
+ }
+ if(whole=="\\pm i" || whole=="\\pm 1") {
+  const std::string value=whole.substr(4);
+  return "qset(vector("+value+",-"+value+"))";
+ }
+ if(s.find("\\langle")!=std::string::npos) {
+  static const std::regex pauliProduct(R"(\s*(?:[IXYZ]|\\mathbb\{I\})(?:\s*\\otimes\s*(?:[IXYZ]|\\mathbb\{I\}))*\s*)");
+  static const std::regex family(R"(\s*([A-Z])_1\s*,\s*\\(?:ldots|cdots)\s*,\s*\1_([a-z])\s*)");
+  size_t at=0;
+  while((at=s.find("\\langle",at))!=std::string::npos) {
+   size_t close=s.find("\\rangle",at+7);if(close==std::string::npos)break;
+   std::string body=s.substr(at+7,close-at-7),group;
+   auto generators=indexedParts(body,",");
+   std::string prefix=trim(s.substr(0,at));
+   bool membership=prefix.size()>=6 && prefix.compare(prefix.size()-6,6,"\\notin")==0;
+   std::smatch match;
+   if(std::regex_match(body,match,family))
+    group="qpauligroup(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()))";
+   else if((generators.size()>1 || membership) && std::all_of(generators.begin(),generators.end(),[](const std::string &g){return std::regex_match(g,pauliProduct);}))
+    group="qpauligroup(vector("+body+"))";
+   if(group.empty()) {at+=7;continue;}
+   s.replace(at,close+7-at,group);at+=group.size();
   }
  }
  std::string systems=systemNames(s);
