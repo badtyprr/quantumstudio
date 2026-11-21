@@ -834,6 +834,25 @@ class Parser {
  std::string basisState(const std::string &label,const std::string &dimension="") {
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
+  // Top-level commas and tensor products separate registers. Commas inside
+  // a computed basis index, such as mod(k,3), remain function arguments.
+  std::vector<std::string> registers;size_t start=0;int nesting=0;
+  for(size_t k=0;k<label.size();++k) {
+   if(label[k]=='(' || label[k]=='[')++nesting;
+   else if(label[k]==')' || label[k]==']')--nesting;
+   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
+  }
+  if(!registers.empty()) {
+   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
+   registers.push_back(label.substr(start));std::string state;
+   for(const auto &part:registers) {
+    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
+    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
+    std::string factor=basisState(part);
+    state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
+   }
+   return state;
+  }
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
   // Inside a sum, an indexed binder denotes a basis value rather than an
   // independently declared named-state family. Outside that lexical scope,
@@ -853,25 +872,6 @@ class Parser {
    }
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
    if(dimension.empty())return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
-  }
-  // Top-level commas and tensor products separate registers. Commas inside
-  // a computed basis index, such as mod(k,3), remain function arguments.
-  std::vector<std::string> registers;size_t start=0;int nesting=0;
-  for(size_t k=0;k<label.size();++k) {
-   if(label[k]=='(' || label[k]=='[')++nesting;
-   else if(label[k]==')' || label[k]==']')--nesting;
-   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
-  }
-  if(!registers.empty()) {
-   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
-   registers.push_back(label.substr(start));std::string state;
-   for(const auto &part:registers) {
-    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
-    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
-    std::string factor=basisState(part);
-    state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
-   }
-   return state;
   }
   if(dimension.empty()) {
    // Space-separated subscripted bit indices denote a computational register.

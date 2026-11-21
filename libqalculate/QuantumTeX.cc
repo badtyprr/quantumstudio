@@ -1093,6 +1093,36 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(alignment.size()==3) {
+   auto lines=indexedParts(input.substr(pos,end-pos),"\\\\");
+   auto heading=indexedParts(lines.front(),"&");
+   if(heading==std::vector<std::string>{"(x,y)","\\text{win}","\\text{lose}"}) {
+    if(lines.size()!=5)throw std::runtime_error(error("A two-bit game table needs four input pairs"));
+    std::string entries="\"(x,y)\",\"win\",\"lose\"";bool seen[4]={};
+    static const std::regex pair(R"(\(\s*([01])\s*,\s*([01])\s*\))");
+    for(size_t row=1;row<lines.size();++row) {
+     std::string line=lines[row];
+     if(!line.empty() && line.front()=='[') {
+      size_t saved=pos;pos=input.find(line,pos);size_t at=pos;spacingDimension(']');
+      line=trim(line.substr(pos-at));pos=saved;
+     }
+     if(line.compare(0,6,"\\hline")==0)line=trim(line.substr(6));
+     static const std::regex strut(R"(^\\rule\{0(?:mm|pt)\}\{[0-9]+(?:mm|pt)\})");
+     line=std::regex_replace(line,strut,"");
+     auto cells=indexedParts(line,"&");std::smatch match;
+     if(cells.size()!=3 || !std::regex_match(cells[0],match,pair))throw std::runtime_error(error("Invalid game table input"));
+     int index=2*(match[1].str()[0]-'0')+match[2].str()[0]-'0';
+     if(seen[index])throw std::runtime_error(error("Repeated game table input"));seen[index]=true;
+     entries+=",qtuple(vector("+match[1].str()+","+match[2].str()+"))";
+     for(size_t col=1;col<=2;++col) {
+      if(cells[col]=="a = b")entries+=",qcompare(a,b,4)";
+      else if(cells[col]=="a \\neq b")entries+=",qcompare(a,b,5)";
+      else throw std::runtime_error(error("Expected a relation between the game outputs"));
+     }
+    }
+    pos=end+endMarker.size();return "matrix(5,3,vector("+entries+"))";
+   }
+  }
   if(alignment.size()==2) {
    auto lines=indexedParts(input.substr(pos,end-pos),"\\\\");
    auto heading=indexedParts(lines.front(),"&");
