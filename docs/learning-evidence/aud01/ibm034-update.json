@@ -81,5 +81,11 @@
       }
     ],
     "revision": "d94b20b4"
+  },
+  "independent_review": {
+    "initial_revision": "7c344513",
+    "finding": "Deferred states, operators, tuples and updates could pass scalar validation.",
+    "correction": "Use the existing scalar-expression classifier on the current value and evaluated result. Keep scalar symbols and scalar arithmetic valid.",
+    "regression_cases": "src/quantum-worker-test.py"
   }
 }

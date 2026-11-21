@@ -1862,6 +1862,10 @@ for function, expected in [("qasin", ("0", "1", "1", "1")), ("qacos", ("1", "1",
         assert data(f"quantum:replace(({copied}),'x',{value})")["copy_text"] == truth
 for tolerance in ("-1", "i", "infinity", "[1;2]"):
     run(f"quantum:qestimatewithin(1≈(3/2),{tolerance})", "--json", success=False)
-for invalid_update in ("x ← (y ← 1)", "qstepvalue(x ← x+1,[1;2])", "qstepvalue(3,5)"):
+for invalid_update in (
+    "x ← (y ← 1)", "qstepvalue(x ← x+1,[1;2])", "qstepvalue(3,5)",
+    "qstepvalue(x ← |u>,2)", "qstepvalue(x ← 3,|u>)", "qstepvalue(x ← {1,2},2)",
+    "qstepvalue(x ← x,qoperatorref('G'))", "qstepvalue(x ← x,qscalarupdate('y',2))",
+):
     run("quantum:"+invalid_update, "--json", success=False)
 print(f"PASS: {checks} worker process checks")
