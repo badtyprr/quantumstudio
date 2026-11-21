@@ -975,6 +975,11 @@ bool projectRegisterShape(MathStructure &value,const RegisterShapeProjection &co
 // The complete range 0..d-1 supplies a basis for bare kets/bras of its index.
 // Explicit basis dimensions and nested declarations retain their own meaning.
 // With no dimension, report whether a free bare basis reference needs one.
+void resolveIndexedNames(MathStructure &value,const EvaluationOptions &eo) {
+ if(value.isFunction() && value.function()->referenceName()=="qindexedlabel") {value.eval(eo);return;}
+ for(size_t k=0;k<value.size();++k)resolveIndexedNames(value[k],eo);
+ value.childrenUpdated();
+}
 bool inferSumBasis(MathStructure &value,const MathStructure &index,const MathStructure *dimension) {
  if(value.isFunction() && value.size()==1 && value[0].equals(index) &&
     (value.function()->referenceName()=="qketstate" || value.function()->referenceName()=="qnamedket")) {
@@ -2091,6 +2096,26 @@ class QuantumIndexedFunction: public MathFunction {
     Number dimension=last.number();dimension+=1;
     MathStructure basisDimension(dimension);
     inferSumBasis(parameters[0],raw[3],&basisDimension);
+    // A tensor sum can have unknown matrix entries when its bounds first
+    // become concrete. Expose the indexed operands for later substitution.
+    if(parameters[0].isFunction() && parameters[0].containsFunction(CALCULATOR->getFunction("qindexedlabel")) &&
+       dimension.isPositive() && dimension<=1024) {
+     std::vector<MathStructure> terms;
+     for(int k=0;k<dimension.intValue();++k) {
+      if(CALCULATOR->aborted())return 0;
+      MathStructure term=parameters[0],index(k,1);
+      replaceQuantumIndex(term,raw[3],index);resolveIndexedNames(term,eo);term.eval(eo);terms.push_back(term);
+     }
+     while(terms.size()>1) {
+      std::vector<MathStructure> next;
+      for(size_t k=0;k<terms.size();k+=2) {
+       if(k+1==terms.size())next.push_back(terms[k]);
+       else next.emplace_back(CALCULATOR->getFunction("qadd"),&terms[k],&terms[k+1],NULL);
+      }
+      terms.swap(next);
+     }
+     out=terms[0];out.eval(eo);return 1;
+    }
    }
    // The generic sum substitutes recursively. Give this binder a fresh name
    // first, so it cannot replace a nested sum's declaration or bound body.

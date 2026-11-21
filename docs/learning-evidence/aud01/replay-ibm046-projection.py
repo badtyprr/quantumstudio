@@ -167,3 +167,16 @@ for columns, candidate, split, expected in [
         equation = f'replace(({equation}),"ψ_{index}",{column})'
     assert evaluate(f"replace(({equation}),'U',{candidate})") == expected
 print("Verified the basis completion diagram in two and three dimensions and rejected swapped columns")
+
+projector_derivation = evaluate(rows[215]["literal"])
+for right_index, lifted_right, expected in [(0, "[1;0;0;0]", "1"), (1, "[0;0;0;1]", "1"),
+                                            (1, "[1;0;0;0]", "0")]:
+    equation = projector_derivation
+    bindings = [('qketstate("i")', "|0>"), ('qketstate("j")', f"|{right_index}>"),
+                ('"i"', "0"), ('"j"', str(right_index)), ('qnamedket("ψ_i")', "[1;0;0;0]"),
+                ('qnamedket("ψ_j")', lifted_right), ("m", "2"),
+                ('"Π_0"', "[1,0;0,0]"), ('"Π_1"', "[0,0;0,1]")]
+    for operand, value in bindings:
+        equation = f"replace(({equation}),{operand},{value})"
+    assert evaluate(equation) == expected
+print("Verified all seven steps of the projector derivation for equal and distinct basis indices and rejected an inconsistent lifted state")

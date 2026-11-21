@@ -1249,7 +1249,11 @@ class Parser {
       std::string nextState=take('>') ? operatorState(nextLabel) : basisState(nextLabel,dimensionSuffix());
       state="qtensor("+state+","+nextState+")";
      }
-     a="qmul(qmul("+a+","+op+"),"+state+")";kind=0;
+     // Between a bra and a ket the implicit identity acts in their shared
+     // space. Their ordinary inner product already checks the dimensions.
+     if(op=="qimplicitidentity()")a="qmul("+a+","+state+")";
+     else a="qmul(qmul("+a+","+op+"),"+state+")";
+     kind=0;
     }
    }
   }
@@ -2354,6 +2358,22 @@ class Parser {
    return result;
   }
   if(equalities && operands.size()>2) {
+   // An equality chain ending in the Kronecker delta of two ket labels
+   // identifies bare |i> as an index. Explicit |+i> remains a phase state.
+   std::string &last=operands.back();
+   const std::string typedI=std::string(1,constantMarkerBegin)+"i"+constantMarkerEnd;
+   for(char label='a';label<='z';++label) {
+    std::string pair=typedI+","+label;
+    if(last!="(if(qcompare("+pair+",4),1,if(qcompare("+pair+",5),0,undefined)))")continue;
+    bool indexed=false;
+    for(const auto &term:operands)if(term.find(phaseKetMarker)!=std::string::npos &&
+       term.find("qketstate("+std::string(1,label)+")")!=std::string::npos)indexed=true;
+    if(indexed) {
+     replaceAll(last,typedI,"\"i\"");
+     for(auto &term:operands)replaceAll(term,std::string(1,phaseKetMarker),"qketstate(\"i\")");
+    }
+    break;
+   }
    result="qequalchain(vector(";
    for(size_t k=0;k<operands.size();++k) {if(k)result+=",";result+=operands[k];checkSize(result);}
    return result+"))";

@@ -337,6 +337,7 @@ MathStructure multiply(MathStructure a, const MathStructure &b, const Evaluation
 bool indexedUppercaseFactor(const MathStructure &value) {
  if(!value.isSymbolic())return false;
  const std::string &label=value.symbol();
+ if(label.compare(0,3,"Π_")==0 && label.size()>3)return label.find_first_not_of("0123456789",3)==std::string::npos;
  return label.size()>2 && label[0]>='A' && label[0]<='Z' && label[1]=='_' &&
         label.find_first_not_of("0123456789",2)==std::string::npos;
 }
@@ -765,7 +766,13 @@ class QuantumAlgebraFunction: public MathFunction {
    while(right.representsScalar()) {
     // An unassigned scalar name may later be replaced by an operator. Keep
     // the original grouping decision available until its type is settled.
-    if(right.containsUnknowns())return 0;
+    if(right.containsUnknowns()) {
+     if(next==1 && !right.equals(factors[0])) {
+      MathStructure resolved=factors;resolved[0]=right;resolved.childrenUpdated();
+      out.set(this,&raw[0],&resolved,NULL);return 1;
+     }
+     return 0;
+    }
     if(next==factors.size())break;
     if(CALCULATOR->aborted())return 0;
     MathStructure scaled;
@@ -916,7 +923,9 @@ class QuantumAlgebraFunction: public MathFunction {
   for(size_t j=evaluatedArguments;j<args.size();++j)args[j].eval(eo);
   // Retain evaluated basis declarations even when the surrounding operation
   // must remain symbolic (for example, an overlap between distinct bases).
-  if(!args.equals(raw) && (args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0 ||
+  auto sum=CALCULATOR->getFunction("qsum");
+  if(!args.equals(raw) && ((sum && raw.containsFunction(sum)>0 && !args.containsFunction(sum)) ||
+     args.containsFunction(CALCULATOR->getFunction("qorthoket"))>0 ||
      args.containsFunction(CALCULATOR->getFunction("qorthofamilyket"))>0)) {
    out=MathStructure(this,static_cast<MathStructure*>(NULL));
    for(size_t j=0;j<args.size();++j)out.addChild(args[j]);
@@ -1108,7 +1117,10 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    // An indexed operator can later receive a matrix value. Reordering it
    // with an unknown factor here would change the result after substitution.
-   if((indexedUppercaseFactor(a) && !b.isNumber()) || (indexedUppercaseFactor(b) && !a.isNumber()))return 0;
+   if((indexedUppercaseFactor(a) && !b.isNumber()) || (indexedUppercaseFactor(b) && !a.isNumber())) {
+    if(!args.equals(raw)){out.set(this,&a,&b,NULL);return 1;}
+    return 0;
+   }
    // Retain operand order until symbolic operators and states have dimensions.
    if((!a.isVector() && !a.representsScalar()) || (!args[1].isVector() && !args[1].representsScalar()))return 0;
    if(a.isMatrix() && args[1].isMatrix() && a.columns()!=args[1].rows()) { CALCULATOR->error(true,"Quantum matrix dimensions do not match.",NULL); return 0; }
