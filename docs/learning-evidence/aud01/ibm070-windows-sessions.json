@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/quantum-mechanics-basics.ipynb",
+  "notebook_sha256": "70686bafd5486949decd0166944c52ad02c55ea183f4e7ef4d6ded3ad5ef709d",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "40adbe7b674b8d396f00a8943778702e162bfad12cecde604cb27c5fa6ec01c9",
+  "suite": {
+    "passed": true,
+    "checks": 828,
+    "calls": 92,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 92,
+    "restored_identically": 92,
+    "stable_after_text_reentry": 92
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

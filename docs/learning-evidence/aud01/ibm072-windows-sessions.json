@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/quantum-computing-context.ipynb",
+  "notebook_sha256": "96b3ab669c676704e53032e82d552263b315b3d35e881142ad9eaa668fe571e5",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "c09509946052f636e8d647fa9493c05448feee381ad1952fdebf02bcf103615f",
+  "suite": {
+    "passed": true,
+    "checks": 18,
+    "calls": 2,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 2,
+    "restored_identically": 2,
+    "stable_after_text_reentry": 2
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

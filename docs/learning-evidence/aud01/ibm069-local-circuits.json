@@ -1,0 +1,54 @@
+{
+  "build-and-run-your-first-quantum-program": {
+    "executed_cells": [
+      4,
+      7,
+      9,
+      14
+    ],
+    "shots": 1000,
+    "counts": {
+      "11": 512,
+      "00": 488
+    },
+    "backend": "AerSimulator"
+  },
+  "quantum-mechanics-basics": {
+    "executed_cells": [
+      2
+    ],
+    "probabilities": {
+      "00": 0.4999999999999999,
+      "11": 0.4999999999999999
+    }
+  },
+  "your-first-quantum-experiment": {
+    "executed_cells": [
+      2,
+      5,
+      7,
+      9,
+      10,
+      12,
+      14,
+      16,
+      18,
+      19,
+      20,
+      22
+    ],
+    "shots": 100,
+    "counts": {
+      "10": 47,
+      "01": 53
+    },
+    "estimator": -1.0,
+    "exact_energy": -0.9999999999999998,
+    "backend": "two-qubit local Aer simulator"
+  },
+  "versions": {
+    "qiskit": "2.6.2",
+    "qiskit-aer": "0.18.4",
+    "qiskit-ibm-runtime": "0.50.0"
+  }
+}

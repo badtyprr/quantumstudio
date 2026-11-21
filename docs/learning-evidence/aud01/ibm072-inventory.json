@@ -1,0 +1,43 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/quantum-computing-context.ipynb",
+  "source_sha256": "96b3ab669c676704e53032e82d552263b315b3d35e881142ad9eaa668fe571e5",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "revision": "77aa49dd",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 0,
+  "summary": {
+    "exact": 2
+  },
+  "figures": [
+    {
+      "cell": 2,
+      "start": 1889,
+      "end": 2067,
+      "alt": "Diagram showing the three key metrics for quantum computing progress: scale, quality, and speed",
+      "path": "/learning/images/courses/use-a-qc-today/quantum-computing-context/scaling.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM072-96b3ab66-M001",
+      "cell": 2,
+      "start": 1065,
+      "end": 1070,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "IBM072-96b3ab66-M002",
+      "cell": 2,
+      "start": 1075,
+      "end": 1080,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "source": "/learning/images/courses/use-a-qc-today/quantum-computing-context/scaling.avif",
+  "sha256": "bd3534af613a18f0742fcea46e568d920f8f37125e7e938bbe73fe5a832731a2",
+  "diagram_labels": {
+    "left_edge": "Speed",
+    "right_edge": "Quality",
+    "base": "Scale"
+  },
+  "text_topics": [
+    "software and hardware stack at utility scale",
+    "consistent quality across devices",
+    "execution speed and cost"
+  ]
+}

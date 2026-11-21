@@ -2209,7 +2209,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
- if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
+ if(mathWrapper) {
+  s=withoutTeXCommentLines(s);
+  // Some displayed equations end in a nonbreaking space before their
+  // sentence punctuation or a check mark that annotates the completed proof.
+  static const std::regex annotation(R"(\s*~\s*(?:\\checkmark|[.,])\s*$)");
+  s=withoutDisplayPunctuation(std::regex_replace(s,annotation,""));
+  static const std::regex bell(R"(^\s*(\\(?:Phi|Psi|phi|psi))\^\{?([+-])\}?\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,bell))return quantumTeX("\\vert"+m[1].str()+"^"+m[2].str()+"\\rangle");
+  // An explicitly typeset gate label introduces the displayed definition.
+  // Keep the matrix in the author's stated wire order.
+  static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
+  s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
+ }
  // An error syndrome names a basis state of the measurement register.
  // Preserve the operator and its wire in both ket and bra labels.
  if(s.find("syndrome")!=std::string::npos) {

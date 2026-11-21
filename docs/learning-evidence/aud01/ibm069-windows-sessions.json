@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/build-and-run-your-first-quantum-program.ipynb",
+  "notebook_sha256": "e77ac6b0cce54e7f5264122591a9532a502a4a10e05d5fa5d3545275832e3155",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "f0aa302d95ca76d522fe8c219882411c269d4a63a5ead54f5044805b9511cce1",
+  "suite": {
+    "passed": true,
+    "checks": 144,
+    "calls": 16,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 16,
+    "restored_identically": 16,
+    "stable_after_text_reentry": 16
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
