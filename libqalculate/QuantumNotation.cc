@@ -1944,6 +1944,7 @@ class Parser {
   std::string a;ws();unsigned root=radical();
   if(root) {p+=3;a="qpower("+unary(allowPercent)+",1/"+std::to_string(root)+")";diracKind=0;}
   else if(takeSetOperator("±"))throw std::runtime_error("A plus-minus sign requires an equality with two alternatives.");
+  else if(take('!')) {a="!("+unary(allowPercent)+")";diracKind=0;}
   else if(take('+'))a=unary(allowPercent);
   else if(take('-'))a="(-"+unary(allowPercent)+")";
   else a=power(allowPercent);
@@ -2266,7 +2267,10 @@ class Parser {
    else if((relation=="=" || relation=="==") && takeWord("qtexzerocolumn")) {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
-   } else right=comparisonOperand();
+   } else {
+    size_t negations=logicalNotCount();
+    right=applyLogicalNot(comparisonOperand(),negations);
+   }
    if(leadingSign || (equality && takeSetOperator("±"))) {
     if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
     std::string magnitude=product();
@@ -2327,12 +2331,18 @@ class Parser {
   }
   return result.empty() ? left : result;
  }
- std::string logicalNot(bool allowSharedOperands) {
+ size_t logicalNotCount() {
   size_t count=0;
   while(takeWord("not"))if(++count>128)throw std::runtime_error("Too many nested logical negations.");
-  std::string result=comparison(allowSharedOperands);
+  return count;
+ }
+ std::string applyLogicalNot(std::string result,size_t count) {
   for(size_t k=0;k<count;++k) {result="!("+result+")";checkSize(result);}
   return result;
+ }
+ std::string logicalNot(bool allowSharedOperands) {
+  size_t count=logicalNotCount();
+  return applyLogicalNot(comparison(allowSharedOperands),count);
  }
  std::string logicalAnd(bool allowSharedOperands) {
   std::string result=logicalNot(allowSharedOperands);

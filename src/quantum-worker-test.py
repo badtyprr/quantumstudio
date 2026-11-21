@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# Logical complements used as equation operands survive Copy and re-entry.
+for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
+    predicate = data("quantum:"+spelling)["copy_text"]
+    copied = data("quantum:"+predicate)["copy_text"]
+    for f in (0,1):
+        for g in (0,1):
+            bound = f"replace(replace(({copied}),f(x),{f}),g(x),{g})"
+            assert data("quantum:"+bound)["copy_text"] == str(int(g == 1-f))
+assert data("quantum:not 1=2")["copy_text"] == "1"
+assert data("quantum:1!=2")["copy_text"] == "1"
+
 # A bare gate letter in an integer range can be bound after Copy.
 held_range = data(r"quantum:$\{1,\ldots,T\}$")["copy_text"]
 assert data("quantum:"+held_range)["copy_text"] == held_range
