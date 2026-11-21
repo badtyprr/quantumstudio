@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
-  "revision": "9e033225",
+  "worker_sha256": "fb4537233418ed0e92a2caf99814bac3cdf9df8bfc87c3252ad817b378bf515e",
+  "revision": "c71c5be22e6b58086d7f376d53168a35f334f678",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 140,
-    "diagnostic": 10
+    "exact": 146,
+    "diagnostic": 4
   },
   "figures": [],
   "rows": [
@@ -528,8 +528,9 @@
       "start": 8924,
       "end": 9075,
       "literal": "$$\n\\begin{pmatrix}\n  \\frac{1}{2}\\\\[2mm]\n  \\frac{1}{2}\n\\end{pmatrix}\n= \\frac{1}{2}\\,\\vert\\text{heads}\\rangle + \\frac{1}{2}\\,\\vert\\text{tails}\\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 99"
+      "status": "exact",
+      "display": "[0.5; 0.5] − (0.5 |heads⟩ + 0.5 |tails⟩) = 0",
+      "copy": "((matrix(2,1,[1 ∕ 2,1 ∕ 2]))+ (−qadd(qadjacent(1 ∕ 2, qnamedket(\"heads\")), qadjacent(1 ∕ 2, qnamedket(\"tails\")))))==(0)"
     },
     {
       "id": "IBM037-bb350db4-M053",
@@ -537,8 +538,9 @@
       "start": 9122,
       "end": 9153,
       "literal": "$\\{\\text{heads},\\text{tails}\\}$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "\\{\"heads\", \"tails\"\\}",
+      "copy": "qset(vector(\"heads\",\"tails\"))"
     },
     {
       "id": "IBM037-bb350db4-M054",
@@ -546,8 +548,9 @@
       "start": 9221,
       "end": 9379,
       "literal": "$$\n\\vert\\text{heads}\\rangle = \\begin{pmatrix}1\\\\[1mm] 0\\end{pmatrix}\n\\quad\\text{and}\\quad\n\\vert\\text{tails}\\rangle = \\begin{pmatrix}0\\\\[1mm] 1\\end{pmatrix}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 19"
+      "status": "exact",
+      "display": "|heads⟩ = [1; 0] and |tails⟩ = [0; 1]",
+      "copy": "(qcompare(qketstate(\"heads\"),matrix(2,1,[1,0]),4) and qcompare(qketstate(\"tails\"),matrix(2,1,[0,1]),4))"
     },
     {
       "id": "IBM037-bb350db4-M055",
@@ -555,8 +558,9 @@
       "start": 9628,
       "end": 9650,
       "literal": "$|\\text{tails}\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
     },
     {
       "id": "IBM037-bb350db4-M056",
@@ -564,8 +568,9 @@
       "start": 9864,
       "end": 9886,
       "literal": "$|\\text{tails}\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
     },
     {
       "id": "IBM037-bb350db4-M057",
@@ -573,8 +578,9 @@
       "start": 10688,
       "end": 10710,
       "literal": "$|\\text{tails}\\rangle$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 14"
+      "status": "exact",
+      "display": "|tails⟩",
+      "copy": "qketstate(\"tails\")"
     },
     {
       "id": "IBM037-bb350db4-M058",
