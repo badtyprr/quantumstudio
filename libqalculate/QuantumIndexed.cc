@@ -180,6 +180,16 @@ SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(comparison==COMPARISON_RESULT_LESS || comparison==COMPARISON_RESULT_GREATER || comparison==COMPARISON_RESULT_NOT_EQUAL)return SetEquality::Different;
  return SetEquality::Unknown;
 }
+bool residueDomain(const MathStructure &value) {
+ return value.isFunction() && value.size()==1 &&
+  (value.function()->referenceName()=="qresidues" || value.function()->referenceName()=="qunitsmod");
+}
+bool positiveResidueModulus(MathStructure &modulus,const EvaluationOptions &eo) {
+ modulus.eval(eo);
+ if(!modulus.isNumber() && modulus.containsUnknowns() && modulus.representsScalar())return false;
+ if(modulus.isInteger() && !modulus.isApproximate() && modulus.number().isPositive())return true;
+ CALCULATOR->error(true,"A residue modulus must be a positive exact integer.",NULL);return false;
+}
 bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
  if(!predicate.isFunction() || predicate.function()->referenceName()!="qcompare" ||
     predicate.size()!=3 || !predicate[2].isInteger() || predicate[2].number()!=4)return false;
@@ -1621,6 +1631,10 @@ class QuantumIndexedFunction: public MathFunction {
    out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
   if(op=="qsubset") {
+   if(residueDomain(raw[1])) {
+    MathStructure modulus=raw[1][0];
+    if(!positiveResidueModulus(modulus,eo))return 0;
+   }
    if(raw[0].equals(raw[1])) {out=1;return 1;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure members;
@@ -2491,15 +2505,11 @@ class QuantumIndexedFunction: public MathFunction {
    }
    MathStructure entries=out;out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
   }
-  bool residueMembership=op=="qmember" && raw[1].isFunction() && raw[1].size()==1 &&
-   (raw[1].function()->referenceName()=="qresidues" || raw[1].function()->referenceName()=="qunitsmod");
+  bool residueMembership=op=="qmember" && residueDomain(raw[1]);
   if(op=="qresidues" || op=="qunitsmod" || residueMembership) {
    bool units=residueMembership ? raw[1].function()->referenceName()=="qunitsmod" : op=="qunitsmod";
-   MathStructure modulus=residueMembership ? raw[1][0] : raw[0];modulus.eval(eo);
-   if(!modulus.isNumber() && modulus.containsUnknowns() && modulus.representsScalar())return 0;
-   if(!modulus.isInteger() || modulus.isApproximate() || !modulus.number().isPositive()) {
-    CALCULATOR->error(true,"A residue modulus must be a positive exact integer.",NULL);return 0;
-   }
+   MathStructure modulus=residueMembership ? raw[1][0] : raw[0];
+   if(!positiveResidueModulus(modulus,eo))return 0;
    auto member=[&](const Number &value) {
     if(!value.isInteger() || value.isNegative() || value>=modulus.number())return false;
     if(!units)return true;

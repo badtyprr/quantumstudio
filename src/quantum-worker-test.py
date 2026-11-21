@@ -46,6 +46,12 @@ for formula, base, width, expected in [(power_list, 5, 4, 1), (power_list, 3, 4,
     assert data("quantum:" + copied)["copy_text"] == copied
     bound = f'replace(replace(replace(({copied}),"N",21),"a",{base}),"m",{width})'
     assert data("quantum:" + bound)["copy_text"] == str(expected)
+for formula in (power_list, power_list.replace(r"^{\ast}", "")):
+    copied = data("quantum:" + formula)["copy_text"]
+    empty = f'replace(replace(({copied}),"m",1),"a",2)'
+    for invalid in (0, -1):
+        result = run(f'quantum:replace(({empty}),"N",{invalid})', success=False)
+        assert b"positive exact integer" in result.stderr
 
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
