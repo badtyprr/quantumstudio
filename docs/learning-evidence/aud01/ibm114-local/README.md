@@ -1,0 +1,12 @@
+# Utility-scale quantum computing
+
+The inventory covers all 14 course sources at Qiskit documentation revision `f842259423a7adc9adeafd54153cdb5d3c5b680b`. Each sibling inventory records its source URL and SHA-256. Windows reopened 470 evaluated expressions from 560 inputs. Re-entering the copied expression preserved 468 text strings. The two changed strings appear in the IBM117 and IBM119 reports. The other 90 inputs produced diagnostics. Physical clipboard transfer and release acceptance remain open.
+
+The four local replay scripts read their named source notebooks from this directory. Download the original notebook from its inventory link using the raw file at that revision. The external Tokyo notebook and its pinned revision are listed in classical-source.json. Run the scripts with Python, Qiskit, NumPy, Qiskit Aer and Qiskit IBM Runtime installed. Each script checks the source digest before executing the selected cells. Results JSON files contain the independent comparisons.
+
+- Teleportation used three input states and 2,048 shots per state. The receiver recovered each input on every shot across all four classical measurement outcomes. All four dense-coding messages decoded exactly.
+- Grover search used four source circuits and 8,192 shots per circuit. Both the exact statevector and sampled marked-state frequencies were checked against amplitude amplification.
+- Three-bit phase estimation returned 001 on all 2,048 shots for phase 1/8. The 4,096-shot histogram for phase 1/3 matched its predicted distribution within 0.03 at every outcome.
+- The linked Tokyo lecture's Schmidt singular values agreed with Aer's matrix-product-state bond. Its stabilizer state gave XX = −1 and ZZ = +1. Three simultaneous Pauli estimates agreed with separate expectations, and an adapted 65,536-shot sample agreed within 0.018. The original sampling cell requests ten million shots. The scaling benchmarks and the full linked lecture remain open.
+
+The figure manifest records byte counts and hashes for eight Markdown images. The calculations used local simulators. Remaining notebooks, exercises, hardware workflows, diagrams, unsupported expressions and release checks still require verification.

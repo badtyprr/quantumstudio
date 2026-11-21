@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-iii.ipynb",
+  "notebook_sha256": "41e43b9b2a3c95b3faffdbea0bbff02d86872b7bc3c0fc446a7c2df174373727",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "0986429b34836bdc37f1afd0b48c8008920156cac1016bb2482f7dfd47e9e398",
+  "suite": {
+    "passed": true,
+    "checks": 36,
+    "calls": 4,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 4,
+    "restored_identically": 4,
+    "stable_after_text_reentry": 4
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

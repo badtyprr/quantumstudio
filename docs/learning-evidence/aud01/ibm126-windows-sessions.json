@@ -1,0 +1,69 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-ii.ipynb",
+  "notebook_sha256": "7ab7893c481092d1786270a4e7ca61dfce93ddddf4254b52955ef807db8b634d",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "de952d385b9dc49847518320098e44b5922dd251f792abd99f3fee01562d2efc",
+  "suite": {
+    "passed": true,
+    "checks": 382,
+    "calls": 51,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 40,
+    "restored_identically": 40,
+    "stable_after_text_reentry": 40,
+    "source_diagnostic": 11
+  },
+  "diagnostics": [
+    {
+      "id": "IBM126-7ab7893c-M002",
+      "message": "Unsupported text in a mathematical expression at byte 75"
+    },
+    {
+      "id": "IBM126-7ab7893c-M009",
+      "message": "Invalid decimal number at byte 45"
+    },
+    {
+      "id": "IBM126-7ab7893c-M012",
+      "message": "Invalid decimal number at byte 61"
+    },
+    {
+      "id": "IBM126-7ab7893c-M019",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM126-7ab7893c-M020",
+      "message": "A finite sum/product requires lower and upper bounds at byte 46"
+    },
+    {
+      "id": "IBM126-7ab7893c-M030",
+      "message": "Unsupported text in a mathematical expression at byte 73"
+    },
+    {
+      "id": "IBM126-7ab7893c-M034",
+      "message": "Unsupported text in a mathematical expression at byte 100"
+    },
+    {
+      "id": "IBM126-7ab7893c-M039",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM126-7ab7893c-M040",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM126-7ab7893c-M047",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM126-7ab7893c-M050",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

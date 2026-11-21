@@ -1,0 +1,69 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-i.ipynb",
+  "notebook_sha256": "7afe50add8fa8489327ef3972ec6743df853ef1610531a0bc7b9b26959364e22",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "5d13c680af1d13b0e952302f2c5f69b859c9f2fa7ccdf362b06a2125d556f56c",
+  "suite": {
+    "passed": true,
+    "checks": 184,
+    "calls": 29,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_diagnostic": 11,
+    "source_exact": 18,
+    "restored_identically": 18,
+    "stable_after_text_reentry": 18
+  },
+  "diagnostics": [
+    {
+      "id": "IBM125-7afe50ad-M001",
+      "message": "A finite sum/product requires lower and upper bounds at byte 38"
+    },
+    {
+      "id": "IBM125-7afe50ad-M005",
+      "message": "A finite sum/product requires lower and upper bounds at byte 61"
+    },
+    {
+      "id": "IBM125-7afe50ad-M016",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M017",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M018",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M019",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M025",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M026",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M027",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M028",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M029",
+      "message": "Unclosed bra."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

@@ -1,0 +1,89 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-simulation.ipynb",
+  "notebook_sha256": "90815385dbbbfe5e740fa75972cd8ba422cf0982ccd58517e282725598dd2e45",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "5e389a1975ff7a33eb0373faae781a2ddf44c10f241b36b820619dc55e715b34",
+  "suite": {
+    "passed": true,
+    "checks": 491,
+    "calls": 67,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 51,
+    "restored_identically": 51,
+    "stable_after_text_reentry": 51,
+    "source_diagnostic": 16
+  },
+  "diagnostics": [
+    {
+      "id": "IBM120-90815385-M002",
+      "message": "Unsupported text in a mathematical expression at byte 75"
+    },
+    {
+      "id": "IBM120-90815385-M009",
+      "message": "Invalid decimal number at byte 45"
+    },
+    {
+      "id": "IBM120-90815385-M012",
+      "message": "Invalid decimal number at byte 61"
+    },
+    {
+      "id": "IBM120-90815385-M019",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M020",
+      "message": "A finite sum/product requires lower and upper bounds at byte 46"
+    },
+    {
+      "id": "IBM120-90815385-M030",
+      "message": "Unsupported text in a mathematical expression at byte 73"
+    },
+    {
+      "id": "IBM120-90815385-M034",
+      "message": "Unsupported text in a mathematical expression at byte 100"
+    },
+    {
+      "id": "IBM120-90815385-M039",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM120-90815385-M040",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM120-90815385-M052",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M053",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM120-90815385-M054",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM120-90815385-M056",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M061",
+      "message": "Unsupported TeX command: \\circ at byte 15"
+    },
+    {
+      "id": "IBM120-90815385-M063",
+      "message": "Unsupported TeX command: \\circ at byte 19"
+    },
+    {
+      "id": "IBM120-90815385-M065",
+      "message": "Unsupported TeX command: \\circ at byte 19"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

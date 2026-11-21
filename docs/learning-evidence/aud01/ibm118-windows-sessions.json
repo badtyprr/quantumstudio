@@ -1,0 +1,69 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+  "notebook_sha256": "54e2989d3c1974521ce022669f5c8bd0753322df183073541b66b58170cd5f79",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "ad0b8c97eaa6fec86692fd3ba191b4c9d37cbe0d8770d49d69a595f168270574",
+  "suite": {
+    "passed": true,
+    "checks": 598,
+    "calls": 75,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 64,
+    "restored_identically": 64,
+    "stable_after_text_reentry": 64,
+    "source_diagnostic": 11
+  },
+  "diagnostics": [
+    {
+      "id": "IBM118-54e2989d-M006",
+      "message": "A function signature requires a domain and a codomain separated by an arrow."
+    },
+    {
+      "id": "IBM118-54e2989d-M017",
+      "message": "Unsupported text in a mathematical expression at byte 38"
+    },
+    {
+      "id": "IBM118-54e2989d-M018",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM118-54e2989d-M019",
+      "message": "A tilde requires a symbol name at byte 15"
+    },
+    {
+      "id": "IBM118-54e2989d-M021",
+      "message": "A tilde requires a symbol name at byte 15"
+    },
+    {
+      "id": "IBM118-54e2989d-M032",
+      "message": "Unsupported text in a mathematical expression at byte 201"
+    },
+    {
+      "id": "IBM118-54e2989d-M033",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM118-54e2989d-M039",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM118-54e2989d-M042",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 35"
+    },
+    {
+      "id": "IBM118-54e2989d-M056",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 31"
+    },
+    {
+      "id": "IBM118-54e2989d-M057",
+      "message": "Unsupported TeX command: \\cdots at byte 102"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

@@ -1,0 +1,65 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/bits-gates-and-circuits.ipynb",
+  "notebook_sha256": "0533f5bdd69d17a87ef66b56c5cdb722c0d11cb4416e0cbc5e3377818217c615",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "0f26bacbd371eee648196ae578b154927d38902e7a074b47c23bee5f5a11fc0c",
+  "suite": {
+    "passed": true,
+    "checks": 1073,
+    "calls": 127,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 117,
+    "restored_identically": 117,
+    "stable_after_text_reentry": 117,
+    "source_diagnostic": 10
+  },
+  "diagnostics": [
+    {
+      "id": "IBM115-0533f5bd-M035",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM115-0533f5bd-M042",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM115-0533f5bd-M044",
+      "message": "Unsupported TeX control symbol at byte 59"
+    },
+    {
+      "id": "IBM115-0533f5bd-M050",
+      "message": "Unclosed quoted label at byte 35"
+    },
+    {
+      "id": "IBM115-0533f5bd-M055",
+      "message": "Unexpected notation at byte 48"
+    },
+    {
+      "id": "IBM115-0533f5bd-M056",
+      "message": "Unexpected notation at byte 48"
+    },
+    {
+      "id": "IBM115-0533f5bd-M065",
+      "message": "Expected ')' at byte 17"
+    },
+    {
+      "id": "IBM115-0533f5bd-M084",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM115-0533f5bd-M085",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM115-0533f5bd-M090",
+      "message": "Expected a quantum expression at byte 2"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

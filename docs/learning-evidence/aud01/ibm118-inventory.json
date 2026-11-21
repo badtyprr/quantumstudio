@@ -1,0 +1,755 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+  "source_sha256": "54e2989d3c1974521ce022669f5c8bd0753322df183073541b66b58170cd5f79",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 42,
+  "code_cells": 38,
+  "summary": {
+    "exact": 64,
+    "diagnostic": 11
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM118-54e2989d-M001",
+      "cell": 1,
+      "start": 470,
+      "end": 478,
+      "literal": "$O(N^2)$",
+      "status": "exact",
+      "display": "O(N^2)",
+      "copy": "qbigorder(qpower('N',2))"
+    },
+    {
+      "id": "IBM118-54e2989d-M002",
+      "cell": 1,
+      "start": 560,
+      "end": 563,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM118-54e2989d-M003",
+      "cell": 4,
+      "start": 86,
+      "end": 141,
+      "literal": "$\\vert X\\rangle = \\sum_{j=0}^{N-1} x_j \\vert j \\rangle$",
+      "status": "exact",
+      "display": "qketstate('X') = ∑_{k=0}^{N − 1} (x_k |k⟩)",
+      "copy": "qcompare(qketstate('X'),qsum(qadjacent(qindexedlabel(\"x_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),0,qsub('N',1),\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M004",
+      "cell": 4,
+      "start": 146,
+      "end": 149,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM118-54e2989d-M005",
+      "cell": 4,
+      "start": 190,
+      "end": 245,
+      "literal": "$\\vert Y\\rangle = \\sum_{k=0}^{N-1} y_k \\vert k \\rangle$",
+      "status": "exact",
+      "display": "qketstate('Y') = ∑_{k=0}^{N − 1} (y_k |k⟩)",
+      "copy": "qcompare(qketstate('Y'),qsum(qadjacent(qindexedlabel(\"y_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),0,qsub('N',1),\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M006",
+      "cell": 4,
+      "start": 249,
+      "end": 351,
+      "literal": "$$\nQFT_{N}: \\vert j \\rangle \\mapsto \\frac{1}{\\sqrt{N}}\\sum_{k=0}^{N-1}\\omega_N^{jk} \\vert k \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "A function signature requires a domain and a codomain separated by an arrow."
+    },
+    {
+      "id": "IBM118-54e2989d-M007",
+      "cell": 4,
+      "start": 359,
+      "end": 400,
+      "literal": "$\\omega_N^{jk} = e^{2\\pi i \\frac{jk}{N}}$",
+      "status": "exact",
+      "display": "\"ω_N\"^(j · k) = e^(2i · π · j · k / N)",
+      "copy": "qcompare(\"ω_N\"^('j''k'),e^((2 ⋅ i ⋅ π ⋅ 'j' ⋅ 'k') ∕ 'N'),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M008",
+      "cell": 4,
+      "start": 444,
+      "end": 558,
+      "literal": "$$\nU_{QFT} = \\frac{1}{\\sqrt{N}} \\sum_{j=0}^{N-1} \\sum_{k=0}^{N-1} \\omega_N^{jk} \\vert k \\rangle \\langle j \\vert\n$$",
+      "status": "exact",
+      "display": "\"U_QFT\" = 1 / √(N) · (∑_{k=0}^{N − 1} (∑_{j=0}^{N − 1} (\"ω_N\"^(k · j) |j⟩ · ⟨k|)))",
+      "copy": "qcompare(\"U_QFT\",qadjacent(1 ∕ qsqrt('N'),qsum(qsum(qadjacent(qadjacent(qpower(\"ω_N\",qmul(\"qboundindex_1\",\"qboundindex_0\")),qketstate(\"qboundindex_0\")),qdag(qketstate(\"qboundindex_1\"))),0,qsub('N',1),\"qboundindex_0\"),0,qsub('N',1),\"qboundindex_1\")),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M009",
+      "cell": 5,
+      "start": 260,
+      "end": 271,
+      "literal": "$F(\\omega)$",
+      "status": "exact",
+      "display": "F · 'ω'",
+      "copy": "'F''ω'"
+    },
+    {
+      "id": "IBM118-54e2989d-M010",
+      "cell": 5,
+      "start": 286,
+      "end": 292,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM118-54e2989d-M011",
+      "cell": 5,
+      "start": 322,
+      "end": 328,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM118-54e2989d-M012",
+      "cell": 5,
+      "start": 371,
+      "end": 379,
+      "literal": "$\\omega$",
+      "status": "exact",
+      "display": "'ω'",
+      "copy": "'ω'"
+    },
+    {
+      "id": "IBM118-54e2989d-M013",
+      "cell": 5,
+      "start": 474,
+      "end": 482,
+      "literal": "$\\omega$",
+      "status": "exact",
+      "display": "'ω'",
+      "copy": "'ω'"
+    },
+    {
+      "id": "IBM118-54e2989d-M014",
+      "cell": 5,
+      "start": 520,
+      "end": 526,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM118-54e2989d-M015",
+      "cell": 5,
+      "start": 934,
+      "end": 945,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM118-54e2989d-M016",
+      "cell": 5,
+      "start": 950,
+      "end": 961,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM118-54e2989d-M017",
+      "cell": 5,
+      "start": 1229,
+      "end": 1355,
+      "literal": "$$\n|\\text{State in Computational Basis}\\rangle \\quad \\xrightarrow[]{\\text{QFT}} \\quad |\\text{State in Fourier Basis}\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 38"
+    },
+    {
+      "id": "IBM118-54e2989d-M018",
+      "cell": 5,
+      "start": 1357,
+      "end": 1406,
+      "literal": "$$\n\\text{QFT}|x\\rangle = |\\widetilde{x}\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM118-54e2989d-M019",
+      "cell": 5,
+      "start": 1679,
+      "end": 1702,
+      "literal": "$|\\widetilde{0}\\rangle$",
+      "status": "diagnostic",
+      "message": "A tilde requires a symbol name at byte 15"
+    },
+    {
+      "id": "IBM118-54e2989d-M020",
+      "cell": 5,
+      "start": 1732,
+      "end": 1745,
+      "literal": "$|{+}\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM118-54e2989d-M021",
+      "cell": 5,
+      "start": 1797,
+      "end": 1820,
+      "literal": "$|\\widetilde{5}\\rangle$",
+      "status": "diagnostic",
+      "message": "A tilde requires a symbol name at byte 15"
+    },
+    {
+      "id": "IBM118-54e2989d-M022",
+      "cell": 5,
+      "start": 1867,
+      "end": 1899,
+      "literal": "$\\tfrac{5}{2^n} = \\tfrac{5}{16}$",
+      "status": "exact",
+      "display": "n = 4",
+      "copy": "(n)==(4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M023",
+      "cell": 5,
+      "start": 1912,
+      "end": 1938,
+      "literal": "$\\tfrac{5}{16}\\times 2\\pi$",
+      "status": "exact",
+      "display": "0.625π",
+      "copy": "(5 ∕ 8) ⋅ π"
+    },
+    {
+      "id": "IBM118-54e2989d-M024",
+      "cell": 5,
+      "start": 1987,
+      "end": 2014,
+      "literal": "$\\tfrac{10}{16}\\times 2\\pi$",
+      "status": "exact",
+      "display": "1.25π",
+      "copy": "(5 ∕ 4) ⋅ π"
+    },
+    {
+      "id": "IBM118-54e2989d-M025",
+      "cell": 5,
+      "start": 2027,
+      "end": 2034,
+      "literal": "$10/16$",
+      "status": "exact",
+      "display": "0.625",
+      "copy": "5 ∕ 8"
+    },
+    {
+      "id": "IBM118-54e2989d-M026",
+      "cell": 7,
+      "start": 27,
+      "end": 40,
+      "literal": "$N = 2^1 = 2$",
+      "status": "exact",
+      "display": "N = 2 = 2",
+      "copy": "qequalchain(vector('N',2,2))"
+    },
+    {
+      "id": "IBM118-54e2989d-M027",
+      "cell": 7,
+      "start": 79,
+      "end": 606,
+      "literal": "$$\n\\begin{aligned}\nU_{QFT} & = \\frac{1}{\\sqrt{2}} \\sum_{j=0}^{1} \\sum_{k=0}^{1} \\omega_2^{jk} \\vert k \\rangle \\langle j \\vert\n\\\\\n& = \\frac{1}{\\sqrt{2}} (\\omega_2^{0} \\vert 0 \\rangle \\langle 0 \\vert + \\omega_2^{0} \\vert 0 \\rangle \\langle 1 \\vert + \\omega_2^{0} \\vert 1 \\rangle \\langle 0 \\vert + \\omega_2^{1} \\vert 1 \\rangle \\langle 1 \\vert)\n\\\\\n& = \\frac{1}{\\sqrt{2}} (\\vert 0 \\rangle \\langle 0 \\vert + \\vert 0 \\rangle \\langle 1 \\vert + \\vert 1 \\rangle \\langle 0 \\vert - \\vert 1 \\rangle \\langle 1 \\vert)\n\\\\\n& = H\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "\"U_QFT\" = [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), \"ω_2\" ∕ √(2)] = [0, 0; 0, 0] = [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] = [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "qequalchain(vector(\"U_QFT\",matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),\"ω_2\" ∕ √(2)]),matrix(2,2,[0,0,0,0]),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])))"
+    },
+    {
+      "id": "IBM118-54e2989d-M028",
+      "cell": 7,
+      "start": 668,
+      "end": 671,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM118-54e2989d-M029",
+      "cell": 9,
+      "start": 38,
+      "end": 47,
+      "literal": "$N = 2^n$",
+      "status": "exact",
+      "display": "N = 2^n",
+      "copy": "('N')==(2^n)"
+    },
+    {
+      "id": "IBM118-54e2989d-M030",
+      "cell": 9,
+      "start": 49,
+      "end": 58,
+      "literal": "$QFT_{N}$",
+      "status": "exact",
+      "display": "QFT_N",
+      "copy": "qfourier('N')"
+    },
+    {
+      "id": "IBM118-54e2989d-M031",
+      "cell": 9,
+      "start": 79,
+      "end": 126,
+      "literal": "$\\vert x \\rangle = \\vert x_1\\ldots x_n \\rangle$",
+      "status": "exact",
+      "display": "|x⟩ = |x_1 ⋯ x_n⟩",
+      "copy": "qcompare(qketstate(x),qregisterfamily(\"x_\",1,n,vector()),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M032",
+      "cell": 9,
+      "start": 128,
+      "end": 1402,
+      "literal": "$$\n\\begin{aligned}\nQFT_N\\vert x \\rangle & = \\frac{1}{\\sqrt{N}} \\sum_{y=0}^{N-1}\\omega_N^{xy} \\vert y \\rangle\n\\\\\n& = \\frac{1}{\\sqrt{N}} \\sum_{y=0}^{N-1} e^{2 \\pi i xy / 2^n} \\vert y \\rangle ~\\text{since}\\: \\omega_N^{xy} = e^{2\\pi i \\frac{xy}{N}} \\:\\text{and}\\: N = 2^n\n\\\\\n& = \\frac{1}{\\sqrt{N}} \\sum_{y=0}^{N-1} e^{2 \\pi i \\left(\\sum_{k=1}^n y_k/2^k\\right) x} \\vert y_1 \\ldots y_n \\rangle \\:\\text{rewriting in fractional binary notation}\\: y = y_1\\ldots y_n, y/2^n = \\sum_{k=1}^n y_k/2^k\n\\\\\n& = \\frac{1}{\\sqrt{N}} \\sum_{y=0}^{N-1} \\prod_{k=1}^n e^{2 \\pi i x y_k/2^k } \\vert y_1 \\ldots y_n \\rangle \\:\\text{after expanding the exponential of a sum to a product of exponentials,}\n\\\\\n& = \\frac{1}{\\sqrt{N}} \\bigotimes_{k=1}^n  \\left(\\vert0\\rangle + e^{2 \\pi i x /2^k } \\vert1\\rangle \\right) \\:\\text{after rearranging the sum and products, and expanding}\n\\sum_{y=0}^{N-1} = \\sum_{y_1=0}^{1}\\sum_{y_2=0}^{1}\\ldots\\sum_{y_n=0}^{1}\n\\\\\n& = \\frac{1}{\\sqrt{N}}\n\\left(\\vert0\\rangle + e^{\\frac{2\\pi i}{2}x} \\vert1\\rangle\\right)\n\\otimes\n\\left(\\vert0\\rangle + e^{\\frac{2\\pi i}{2^2}x} \\vert1\\rangle\\right)\n\\otimes\n\\ldots\n\\otimes\n\\left(\\vert0\\rangle + e^{\\frac{2\\pi i}{2^{n-1}}x} \\vert1\\rangle\\right)\n\\otimes\n\\left(\\vert0\\rangle + e^{\\frac{2\\pi i}{2^n}x} \\vert1\\rangle\\right)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 201"
+    },
+    {
+      "id": "IBM118-54e2989d-M033",
+      "cell": 16,
+      "start": 23,
+      "end": 34,
+      "literal": "$|5\\rangle$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM118-54e2989d-M034",
+      "cell": 24,
+      "start": 78,
+      "end": 92,
+      "literal": "$\\tfrac{5}{8}$",
+      "status": "exact",
+      "display": "0.625",
+      "copy": "5 ∕ 8"
+    },
+    {
+      "id": "IBM118-54e2989d-M035",
+      "cell": 24,
+      "start": 120,
+      "end": 135,
+      "literal": "$\\tfrac{10}{8}$",
+      "status": "exact",
+      "display": "1.25",
+      "copy": "5 ∕ 4"
+    },
+    {
+      "id": "IBM118-54e2989d-M036",
+      "cell": 24,
+      "start": 162,
+      "end": 176,
+      "literal": "$\\tfrac{1}{4}$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM118-54e2989d-M037",
+      "cell": 24,
+      "start": 209,
+      "end": 224,
+      "literal": "$\\tfrac{20}{8}$",
+      "status": "exact",
+      "display": "2.5",
+      "copy": "5 ∕ 2"
+    },
+    {
+      "id": "IBM118-54e2989d-M038",
+      "cell": 24,
+      "start": 251,
+      "end": 265,
+      "literal": "$\\tfrac{1}{2}$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM118-54e2989d-M039",
+      "cell": 28,
+      "start": 17,
+      "end": 29,
+      "literal": "$|14\\rangle$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM118-54e2989d-M040",
+      "cell": 39,
+      "start": 26,
+      "end": 29,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM118-54e2989d-M041",
+      "cell": 39,
+      "start": 49,
+      "end": 57,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM118-54e2989d-M042",
+      "cell": 39,
+      "start": 61,
+      "end": 127,
+      "literal": "$U\\vert\\psi \\rangle =e^{\\boldsymbol{2\\pi i} \\theta }|\\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 35"
+    },
+    {
+      "id": "IBM118-54e2989d-M043",
+      "cell": 39,
+      "start": 134,
+      "end": 137,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM118-54e2989d-M044",
+      "cell": 41,
+      "start": 14,
+      "end": 32,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM118-54e2989d-M045",
+      "cell": 41,
+      "start": 88,
+      "end": 91,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM118-54e2989d-M046",
+      "cell": 41,
+      "start": 159,
+      "end": 170,
+      "literal": "$2^n\\theta$",
+      "status": "exact",
+      "display": "2^(n'θ')",
+      "copy": "2^(n'θ')"
+    },
+    {
+      "id": "IBM118-54e2989d-M047",
+      "cell": 41,
+      "start": 173,
+      "end": 244,
+      "literal": "$$\n|\\psi_0\\rangle = \\lvert 0 \\rangle^{\\otimes n} \\lvert \\psi \\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ_0⟩ = [1; 0]^{⊗ n} |ψ⟩",
+      "copy": "qcompare(qketstate(\"ψ_0\"),qadjacent(qtensorpow(matrix(2,1,vector(1,0)),n),qnamedket('ψ')),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M048",
+      "cell": 42,
+      "start": 31,
+      "end": 34,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM118-54e2989d-M049",
+      "cell": 42,
+      "start": 63,
+      "end": 78,
+      "literal": "$H^{\\otimes n}$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}",
+      "copy": "qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n)"
+    },
+    {
+      "id": "IBM118-54e2989d-M050",
+      "cell": 42,
+      "start": 108,
+      "end": 226,
+      "literal": "$$\n|\\psi_1\\rangle = {\\frac {1}{2^{\\frac {n}{2}}}}\\left(|0\\rangle +|1\\rangle \\right)^{\\otimes n} \\lvert \\psi \\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ_1⟩ = (1 / 2^(0.5n) · ([1; 0] + [0; 1])^{⊗ n}) (|ψ⟩)",
+      "copy": "qcompare(qketstate(\"ψ_1\"),qadjacent(qadjacent(1 ∕ qpower(2, n ∕ 2),qtensorpow(qadd(matrix(2,1,vector(1,0)),matrix(2,1,vector(0,1))),n)),qnamedket('ψ')),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M051",
+      "cell": 43,
+      "start": 83,
+      "end": 87,
+      "literal": "$CU$",
+      "status": "exact",
+      "display": "C · U",
+      "copy": "'C''U'"
+    },
+    {
+      "id": "IBM118-54e2989d-M052",
+      "cell": 43,
+      "start": 122,
+      "end": 125,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM118-54e2989d-M053",
+      "cell": 43,
+      "start": 190,
+      "end": 201,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM118-54e2989d-M054",
+      "cell": 43,
+      "start": 209,
+      "end": 212,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM118-54e2989d-M055",
+      "cell": 43,
+      "start": 252,
+      "end": 266,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM118-54e2989d-M056",
+      "cell": 43,
+      "start": 277,
+      "end": 339,
+      "literal": "$U|\\psi \\rangle =e^{\\boldsymbol{2\\pi i} \\theta }|\\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 31"
+    },
+    {
+      "id": "IBM118-54e2989d-M057",
+      "cell": 43,
+      "start": 356,
+      "end": 499,
+      "literal": "$$\nU^{2^{j}}|\\psi \\rangle =U^{2^{j}-1}U|\\psi \\rangle =U^{2^{j}-1}e^{2\\pi i\\theta }|\\psi \\rangle =\\cdots =e^{2\\pi i2^{j}\\theta }|\\psi \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 102"
+    },
+    {
+      "id": "IBM118-54e2989d-M058",
+      "cell": 45,
+      "start": 10,
+      "end": 13,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM118-54e2989d-M059",
+      "cell": 45,
+      "start": 63,
+      "end": 71,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM118-54e2989d-M060",
+      "cell": 45,
+      "start": 74,
+      "end": 219,
+      "literal": "$$\nT|1\\rangle =\n\\begin{pmatrix}\n1 & 0\\\\\n0 & e^\\frac{i\\pi}{4}\\\\\n\\end{pmatrix}\n\\begin{pmatrix}\n0\\\\\n1\\\\\n\\end{pmatrix}\n= e^\\frac{i\\pi}{4}|1\\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM118-54e2989d-M061",
+      "cell": 45,
+      "start": 241,
+      "end": 267,
+      "literal": "$$\n\\theta = \\frac{1}{8}\n$$",
+      "status": "exact",
+      "display": "'θ' = 0.125",
+      "copy": "('θ')==(1 ∕ 8)"
+    },
+    {
+      "id": "IBM118-54e2989d-M062",
+      "cell": 45,
+      "start": 276,
+      "end": 319,
+      "literal": "$$\nT|1\\rangle = e^{2i\\pi\\theta}|1\\rangle\n$$",
+      "status": "exact",
+      "display": "[0; ((0.5 + 0.5i) ⋅ √(2) − e^(2iπ'θ'))] = [0; 0]",
+      "copy": "(matrix(2,1,[0,((1 + i) ⋅ √(2)) ∕ 2 − e^(2 ⋅ i ⋅ π ⋅ 'θ')]))==(matrix(2,1,[0,0]))"
+    },
+    {
+      "id": "IBM118-54e2989d-M063",
+      "cell": 46,
+      "start": 14,
+      "end": 48,
+      "literal": "$\\vert\\psi\\rangle = \\vert1\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩ = [0; 1]",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,[0,1]),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M064",
+      "cell": 46,
+      "start": 71,
+      "end": 74,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM118-54e2989d-M065",
+      "cell": 46,
+      "start": 95,
+      "end": 98,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM118-54e2989d-M066",
+      "cell": 58,
+      "start": 129,
+      "end": 134,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM118-54e2989d-M067",
+      "cell": 58,
+      "start": 142,
+      "end": 150,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM118-54e2989d-M068",
+      "cell": 58,
+      "start": 155,
+      "end": 197,
+      "literal": "$$\n\\theta = \\frac{1}{2^3} = \\frac{1}{8}\n$$",
+      "status": "exact",
+      "display": "'θ' = 1 ∕ 8 = 1 ∕ 8",
+      "copy": "qequalchain(vector('θ',1 ∕ 8,1 ∕ 8))"
+    },
+    {
+      "id": "IBM118-54e2989d-M069",
+      "cell": 59,
+      "start": 77,
+      "end": 85,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM118-54e2989d-M070",
+      "cell": 59,
+      "start": 108,
+      "end": 116,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM118-54e2989d-M071",
+      "cell": 60,
+      "start": 27,
+      "end": 41,
+      "literal": "$\\theta = 1/3$",
+      "status": "exact",
+      "display": "'θ' = 0.333333333333333333333333333333",
+      "copy": "('θ')==(1 ∕ 3)"
+    },
+    {
+      "id": "IBM118-54e2989d-M072",
+      "cell": 60,
+      "start": 103,
+      "end": 139,
+      "literal": "$P|1\\rangle = e^{i\\lambda}|1\\rangle$",
+      "status": "exact",
+      "display": "[0; ('P' − e^(i'λ'))] = [0; 0]",
+      "copy": "(matrix(2,1,[0,'P' − e^(i ⋅ 'λ')]))==(matrix(2,1,[0,0]))"
+    },
+    {
+      "id": "IBM118-54e2989d-M073",
+      "cell": 60,
+      "start": 168,
+      "end": 215,
+      "literal": "$U|1\\rangle = e^{2\\pi i \\tfrac{1}{3}}|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 'U'] = [0; (0.5i ⋅ √(3) − 0.5)]",
+      "copy": "qcompare(matrix(2,1,[0,'U']),matrix(2,1,[0,(i ⋅ √(3)) ∕ 2 − 1 ∕ 2]),4)"
+    },
+    {
+      "id": "IBM118-54e2989d-M074",
+      "cell": 60,
+      "start": 232,
+      "end": 260,
+      "literal": "$\\lambda = \\tfrac{2 \\pi}{3}$",
+      "status": "exact",
+      "display": "'λ' = 0.666666666666666666666666666667π",
+      "copy": "('λ')==((2 ∕ 3) ⋅ π)"
+    },
+    {
+      "id": "IBM118-54e2989d-M075",
+      "cell": 62,
+      "start": 31,
+      "end": 45,
+      "literal": "$\\theta = 1/3$",
+      "status": "exact",
+      "display": "'θ' = 0.333333333333333333333333333333",
+      "copy": "('θ')==(1 ∕ 3)"
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-i.ipynb",
+  "source_sha256": "7afe50add8fa8489327ef3972ec6743df853ef1610531a0bc7b9b26959364e22",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 31,
+  "code_cells": 26,
+  "summary": {
+    "diagnostic": 11,
+    "exact": 18
+  },
+  "figures": [
+    {
+      "cell": 4,
+      "start": 0,
+      "end": 94,
+      "alt": "image.png",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/utility-i/utility1.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM125-7afe50ad-M001",
+      "cell": 1,
+      "start": 390,
+      "end": 456,
+      "literal": "$$\nH = H_{ZZ} + H_X = - J \\sum_{(i,j)} Z_i Z_j + h \\sum_{i} X_i\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 38"
+    },
+    {
+      "id": "IBM125-7afe50ad-M002",
+      "cell": 1,
+      "start": 466,
+      "end": 473,
+      "literal": "$J > 0$",
+      "status": "exact",
+      "display": "J > 0",
+      "copy": "('J')>(0)"
+    },
+    {
+      "id": "IBM125-7afe50ad-M003",
+      "cell": 1,
+      "start": 521,
+      "end": 528,
+      "literal": "$i < j$",
+      "status": "exact",
+      "display": "j > i",
+      "copy": "('j')>(i)"
+    },
+    {
+      "id": "IBM125-7afe50ad-M004",
+      "cell": 1,
+      "start": 533,
+      "end": 536,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM125-7afe50ad-M005",
+      "cell": 2,
+      "start": 129,
+      "end": 402,
+      "literal": "$$\n\\begin{aligned}\n \\exp(-i H_{ZZ} \\delta t) &= \\prod_{(i,j)} \\exp (i J \\delta t Z_i Z_j)  = \\prod_{(i,j)} \\mathrm{R}_{Z_i Z_j} ( - 2 J \\delta t) \\\\\n \\exp(-i H_X \\delta t) &= \\prod_{i} \\exp (-i h \\delta t X_i )  = \\prod_{i} \\mathrm{R}_{X_i} ( 2 h \\delta t)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 61"
+    },
+    {
+      "id": "IBM125-7afe50ad-M006",
+      "cell": 2,
+      "start": 431,
+      "end": 434,
+      "literal": "$T$",
+      "status": "exact",
+      "display": "[1, 0; 0, (0.5 + 0.5i) ⋅ √(2)]",
+      "copy": "matrix(2,2,[1,0,0,((1 + i) ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M007",
+      "cell": 2,
+      "start": 455,
+      "end": 469,
+      "literal": "$T / \\delta t$",
+      "status": "exact",
+      "display": "[t / 'δ', 0; 0, (0.5 + 0.5i) · √(2) · t / 'δ']",
+      "copy": "matrix(2,2,['t' ∕ 'δ',0,0,((1 + i) ⋅ √(2) ⋅ 't') ∕ (2 ⋅ 'δ')])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M008",
+      "cell": 2,
+      "start": 488,
+      "end": 520,
+      "literal": "$\\mathrm{R}_{Z_i Z_j}(\\theta_J)$",
+      "status": "exact",
+      "display": "\"R_Z_i\" · Z · '_' · j · \"θ_J\"",
+      "copy": "\"R_Z_i\" ⋅ 'Z''_''j' ⋅ \"θ_J\""
+    },
+    {
+      "id": "IBM125-7afe50ad-M009",
+      "cell": 2,
+      "start": 525,
+      "end": 553,
+      "literal": "$\\mathrm{R}_{X_i}(\\theta_h)$",
+      "status": "exact",
+      "display": "i · R · X · '_'² · \"θ_h\"",
+      "copy": "i ⋅ 'R' ⋅ 'X' ⋅ '_'² ⋅ \"θ_h\""
+    },
+    {
+      "id": "IBM125-7afe50ad-M010",
+      "cell": 2,
+      "start": 558,
+      "end": 562,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M011",
+      "cell": 2,
+      "start": 567,
+      "end": 570,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M012",
+      "cell": 2,
+      "start": 729,
+      "end": 732,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M013",
+      "cell": 2,
+      "start": 768,
+      "end": 772,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M014",
+      "cell": 2,
+      "start": 844,
+      "end": 848,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M015",
+      "cell": 2,
+      "start": 1134,
+      "end": 1152,
+      "literal": "$\\theta_J=-\\pi /2$",
+      "status": "exact",
+      "display": "\"θ_J\" = −0.5π",
+      "copy": "(\"θ_J\")==(−π ∕ 2)"
+    },
+    {
+      "id": "IBM125-7afe50ad-M016",
+      "cell": 3,
+      "start": 514,
+      "end": 522,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M017",
+      "cell": 3,
+      "start": 568,
+      "end": 592,
+      "literal": "$\\langle Z_{62} \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M018",
+      "cell": 5,
+      "start": 218,
+      "end": 226,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M019",
+      "cell": 5,
+      "start": 270,
+      "end": 294,
+      "literal": "$\\langle Z_{13} \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M020",
+      "cell": 10,
+      "start": 41,
+      "end": 46,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "IBM125-7afe50ad-M021",
+      "cell": 10,
+      "start": 110,
+      "end": 114,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M022",
+      "cell": 12,
+      "start": 69,
+      "end": 74,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "IBM125-7afe50ad-M023",
+      "cell": 12,
+      "start": 158,
+      "end": 162,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M024",
+      "cell": 20,
+      "start": 114,
+      "end": 118,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM125-7afe50ad-M025",
+      "cell": 32,
+      "start": 70,
+      "end": 78,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M026",
+      "cell": 34,
+      "start": 140,
+      "end": 148,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M027",
+      "cell": 34,
+      "start": 188,
+      "end": 212,
+      "literal": "$\\langle Z_{13} \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM125-7afe50ad-M028",
+      "cell": 43,
+      "start": 287,
+      "end": 295,
+      "literal": "$\\times$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM125-7afe50ad-M029",
+      "cell": 47,
+      "start": 220,
+      "end": 244,
+      "literal": "$\\langle Z_{62} \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    }
+  ]
+}

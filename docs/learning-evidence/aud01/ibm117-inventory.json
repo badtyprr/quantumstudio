@@ -1,0 +1,205 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+  "source_sha256": "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 23,
+  "code_cells": 35,
+  "summary": {
+    "exact": 18,
+    "diagnostic": 1
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM117-2c47467f-M001",
+      "cell": 0,
+      "start": 933,
+      "end": 936,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM117-2c47467f-M002",
+      "cell": 0,
+      "start": 952,
+      "end": 958,
+      "literal": "$O(N)$",
+      "status": "exact",
+      "display": "O(N)",
+      "copy": "qbigorder('N')"
+    },
+    {
+      "id": "IBM117-2c47467f-M003",
+      "cell": 0,
+      "start": 1122,
+      "end": 1135,
+      "literal": "$O(\\sqrt{N})$",
+      "status": "exact",
+      "display": "O(√(N))",
+      "copy": "qbigorder(qsqrt('N'))"
+    },
+    {
+      "id": "IBM117-2c47467f-M004",
+      "cell": 4,
+      "start": 279,
+      "end": 291,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM117-2c47467f-M005",
+      "cell": 6,
+      "start": 231,
+      "end": 236,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM117-2c47467f-M006",
+      "cell": 6,
+      "start": 290,
+      "end": 341,
+      "literal": "$$\n\\frac{1}{\\sqrt{N}} \\sum_{x=0}^{N-1} |x\\rangle\n$$",
+      "status": "exact",
+      "display": "1 / √(N) · (∑_{k=0}^{N − 1} (|k⟩))",
+      "copy": "qadjacent(1 ∕ qsqrt('N'),qsum(qketstate(\"qboundindex_0\"),0,qsub('N',1),\"qboundindex_0\"))"
+    },
+    {
+      "id": "IBM117-2c47467f-M007",
+      "cell": 6,
+      "start": 349,
+      "end": 358,
+      "literal": "$N = 2^n$",
+      "status": "exact",
+      "display": "N = 2^n",
+      "copy": "('N')==(2^n)"
+    },
+    {
+      "id": "IBM117-2c47467f-M008",
+      "cell": 6,
+      "start": 446,
+      "end": 457,
+      "literal": "$|-\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM117-2c47467f-M009",
+      "cell": 9,
+      "start": 371,
+      "end": 470,
+      "literal": "$\nf(x) =\n\\begin{cases}\n1, & \\text{if } x = x_{\\text{target}} \\\\\n0, & \\text{otherwise}\n\\end{cases}\n$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 30"
+    },
+    {
+      "id": "IBM117-2c47467f-M010",
+      "cell": 12,
+      "start": 486,
+      "end": 523,
+      "literal": "$\nD = 2|\\psi\\rangle\\langle\\psi| - I\n$",
+      "status": "exact",
+      "display": "D = 2 |ψ⟩ · ⟨ψ| − [1, 0; 0, 1]",
+      "copy": "qcompare('D',qsub(qadjacent(qadjacent(2,qnamedket('ψ')),qdag(qnamedket('ψ'))),matrix(2,2,[1,0,0,1])),4)"
+    },
+    {
+      "id": "IBM117-2c47467f-M011",
+      "cell": 12,
+      "start": 531,
+      "end": 534,
+      "literal": "$D$",
+      "status": "exact",
+      "display": "D",
+      "copy": "'D'"
+    },
+    {
+      "id": "IBM117-2c47467f-M012",
+      "cell": 12,
+      "start": 562,
+      "end": 565,
+      "literal": "$I$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM117-2c47467f-M013",
+      "cell": 12,
+      "start": 594,
+      "end": 608,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM117-2c47467f-M014",
+      "cell": 12,
+      "start": 725,
+      "end": 735,
+      "literal": "$\\sqrt{N}$",
+      "status": "exact",
+      "display": "√('N')",
+      "copy": "√('N')"
+    },
+    {
+      "id": "IBM117-2c47467f-M015",
+      "cell": 23,
+      "start": 26,
+      "end": 38,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM117-2c47467f-M016",
+      "cell": 41,
+      "start": 11,
+      "end": 24,
+      "literal": "$|111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(8,1,[0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM117-2c47467f-M017",
+      "cell": 44,
+      "start": 0,
+      "end": 14,
+      "literal": "$|0111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM117-2c47467f-M018",
+      "cell": 50,
+      "start": 0,
+      "end": 14,
+      "literal": "$|0111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM117-2c47467f-M019",
+      "cell": 56,
+      "start": 0,
+      "end": 14,
+      "literal": "$|0111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0])"
+    }
+  ]
+}

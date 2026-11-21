@@ -1,0 +1,115 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-circuit-optimization.ipynb",
+  "source_sha256": "d1dea0447d1fc54d14649a78057483e5380b390a4483f3bf7394317c484398e3",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 35,
+  "code_cells": 71,
+  "summary": {
+    "exact": 10
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM123-d1dea044-M001",
+      "cell": 6,
+      "start": 95,
+      "end": 160,
+      "literal": "$\\frac{1}{\\sqrt{2}} \\left( |00000\\rangle + |11111\\rangle \\right)$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(32,1,[1 ∕ √(2),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM123-d1dea044-M002",
+      "cell": 21,
+      "start": 86,
+      "end": 151,
+      "literal": "$\\frac{1}{\\sqrt{2}} \\left( |00000\\rangle + |11111\\rangle \\right)$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(32,1,[1 ∕ √(2),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM123-d1dea044-M003",
+      "cell": 61,
+      "start": 97,
+      "end": 162,
+      "literal": "$\\frac{1}{\\sqrt{2}} \\left( |00000\\rangle + |11111\\rangle \\right)$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(32,1,[1 ∕ √(2),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM123-d1dea044-M004",
+      "cell": 74,
+      "start": 86,
+      "end": 151,
+      "literal": "$\\frac{1}{\\sqrt{2}} \\left( |00000\\rangle + |11111\\rangle \\right)$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(32,1,[1 ∕ √(2),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM123-d1dea044-M005",
+      "cell": 98,
+      "start": 59,
+      "end": 62,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM123-d1dea044-M006",
+      "cell": 98,
+      "start": 74,
+      "end": 77,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM123-d1dea044-M007",
+      "cell": 98,
+      "start": 78,
+      "end": 85,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "IBM123-d1dea044-M008",
+      "cell": 98,
+      "start": 99,
+      "end": 110,
+      "literal": "$S^\\dagger$",
+      "status": "exact",
+      "display": "[1, 0; 0, −i]",
+      "copy": "matrix(2,2,[1,0,0,−i])"
+    },
+    {
+      "id": "IBM123-d1dea044-M009",
+      "cell": 98,
+      "start": 111,
+      "end": 119,
+      "literal": "$-\\pi/2$",
+      "status": "exact",
+      "display": "−0.5π",
+      "copy": "−π ∕ 2"
+    },
+    {
+      "id": "IBM123-d1dea044-M010",
+      "cell": 98,
+      "start": 133,
+      "end": 136,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    }
+  ]
+}
