@@ -2247,6 +2247,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex plus(R"(\\sigma\^(?:\{\+\}|\+))"),minus(R"(\\sigma\^(?:\{-\}|-))");
   s=std::regex_replace(std::regex_replace(s,plus,raising),minus,lowering);
  }
+ if(s.find("\\limits")!=std::string::npos && (s.find("\\min")!=std::string::npos || s.find("\\max")!=std::string::npos)) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex optimization(R"(^\\(max|min)\\limits_\{([a-z])\\in\\\{0,1\\\}\^([a-z0-9])\}(.+)$)");
+  std::smatch m;
+  if(std::regex_match(compact,m,optimization)) {
+   const std::string x=m[2],width=m[3],objective=m[4];
+   if(m[1]=="min" && objective==x+"^TQ"+x)return "qbinaryminimum(\"Q\","+width+")";
+   const std::string edges="\\sum\\limits_{(i,j)}{",a=x+"_i",b=x+"_j";
+   if(m[1]=="max" && objective==edges+a+"+"+b+"-2"+a+b+"}")return "qmaxcut(\"E\","+width+")";
+   if(m[1]=="min" && objective==edges+"2"+a+b+"-"+a+"-"+b+"}")return "-qmaxcut(\"E\","+width+")";
+  }
+ }
  // An error syndrome names a basis state of the measurement register.
  // Preserve the operator and its wire in both ket and bra labels.
  if(s.find("syndrome")!=std::string::npos) {

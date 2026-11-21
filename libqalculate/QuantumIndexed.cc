@@ -1309,6 +1309,54 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qbinaryminimum" || op=="qmaxcut") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure width=raw[1],data=raw[0];width.eval(exact);data.eval(exact);
+   if(!width.isInteger() || width.isApproximate() || width.number()<0)return 0;
+   if(data.isVector() && !data.size() && (op=="qmaxcut" || width.isZero())) {out=0;return 1;}
+   if(width.isZero() || width.number()>12)return 0;
+   if(!data.isMatrix()) {
+    // A single edge or coefficient row can re-enter as a flat vector.
+    if(!data.isVector()) {
+     if(op!="qbinaryminimum" || !width.isOne() || !data.isNumber())return 0;
+     MathStructure scalar=data;data.clearVector();data.addChild(scalar);
+    }
+    MathStructure row=data;data.clearMatrix();data.resizeMatrix(1,row.size(),m_zero);
+    for(size_t j=0;j<row.size();++j)element(data,0,j)=row[j];
+   }
+   const unsigned n=width.number().intValue();
+   if(op=="qmaxcut") {
+    if(data.columns()!=2)return 0;
+    std::vector<std::pair<unsigned,unsigned>> edges;
+    for(size_t j=0;j<data.rows();++j) {
+     const auto &a=element(data,j,0),&b=element(data,j,1);
+     if(!a.isInteger() || !b.isInteger() || a.isApproximate() || b.isApproximate() ||
+        a.number()<0 || b.number()<0 || a.number()>=int(n) || b.number()>=int(n))return 0;
+     edges.emplace_back(a.number().intValue(),b.number().intValue());
+    }
+    unsigned best=0;
+    for(unsigned word=0;word<(1u<<n);++word) {
+     if(CALCULATOR->aborted())return 0;
+     unsigned cut=0;for(const auto &edge:edges)cut+=((word>>edge.first)^(word>>edge.second))&1u;
+     if(cut>best)best=cut;
+    }
+    out=(int)best;return 1;
+   }
+   if(data.rows()!=n || data.columns()!=n)return 0;
+   for(unsigned r=0;r<n;++r)for(unsigned c=0;c<n;++c) {
+    const auto &entry=element(data,r,c);
+    if(!entry.isNumber() || entry.isApproximate() || !entry.number().isRational())return 0;
+   }
+   Number best(0);
+   for(unsigned word=1;word<(1u<<n);++word) {
+    if(CALCULATOR->aborted())return 0;
+    Number value(0);
+    for(unsigned r=0;r<n;++r)if(word&(1u<<r))
+     for(unsigned c=0;c<n;++c)if(word&(1u<<c))value+=element(data,r,c).number();
+    if(value<best)best=value;
+   }
+   out=best;return 1;
+  }
   if(op=="qcosetket") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure representative=raw[0],words;representative.eval(exact);
@@ -2705,6 +2753,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));
  calculator.addFunction(new QuantumIndexedFunction("qcosetket",2));
  calculator.addFunction(new QuantumIndexedFunction("qwordspan",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordkernel",2));
