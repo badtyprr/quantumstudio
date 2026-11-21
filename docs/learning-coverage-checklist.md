@@ -312,6 +312,16 @@ those semantics when adding whole-program serialization.
 
 - [ ] **DEV-19 follow-up for binary logarithms in register-width formulas.** In IBM-029 M136, `lg(N-1)` counts binary digits while the pasted `floor(log(N-1))+1` uses a natural logarithm. At N = 21 the two sides give 5 and 3. M379 uses the binary logarithm as an exponent limit. The explicit base-two adaptations passed the Windows checks. Original-source interpretation remains open. [Register-width evidence](learning-evidence/aud01/ibm029-widths.json)
 
+- [ ] **DEV-10 classical outcomes and probability statements.** In IBM-037 M011 and repeated occurrences, the sans-serif X names the classical system. The worker returns a Pauli X matrix. M021 splits the names of the outcomes high, medium and low into factors. M034 returns false for the lesson's two stated probabilities. Verify a classical system with a two-outcome distribution and preserve all three names through set membership and Copy. IBM-038 M069, M070, M072, M073, M079 and M080 also require outcomes inside probability notation. [Classical inputs and results](learning-evidence/aud01/ibm037-inventory.json) and [quantum inputs and diagnostics](learning-evidence/aud01/ibm038-inventory.json).
+
+- [ ] **DEV-05 indexed classical function applications.** IBM-037 M068, M069, M072, M075 and M076 interpret the subscripted function applied to its argument as scalar factors. In particular M075 reports false for the bit flip taking zero to one. Bind each of the four functions to its truth table from M067 and check both inputs, including re-entry of Copy. [Source inventory](learning-evidence/aud01/ibm037-inventory.json).
+
+- [ ] **DEV-04 named classical matrices in products.** IBM-037 M140, M143 and M150 require ordered multiplication. M143's Copy text reorders the two names as commuting scalar factors. M148's indexed product now passes the slide 26 example in both orders. Verify those same orders with the explicit product and with a column vector for M140. [Worker inventory](learning-evidence/aud01/ibm037-inventory.json) and [slide checks](learning-evidence/aud01/ibm036-compositions.json).
+
+- [ ] **DEV-04 single-system dimensions.** IBM-038 M003 is a one-based indexed column, M004 requires its vector norm, M123 gives Hadamard identities in aligned equations and M155 uses a three-dimensional state. Replay the original expressions with the lesson's dimensions and verify that each identity distinguishes the stated map from a changed map. [Source inventory](learning-evidence/aud01/ibm038-inventory.json).
+
+- [ ] **DEV-10 decimal digit list.** IBM-038 M048 lists 0 through 9, beginning with two explicit digits. The current parser issues an invalid-decimal diagnostic. Verify the complete ordered list, its endpoints and Copy re-entry. [Source inventory](learning-evidence/aud01/ibm038-inventory.json).
+
 ### AUD-01
 
 - [ ] **Audit algorithms first** — P1; Pending; size M; dependencies: None.
