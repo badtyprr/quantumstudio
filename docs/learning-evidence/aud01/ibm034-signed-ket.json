@@ -1,9 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
   "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
-  "source_id": "IBM034-94ee62dd-M152",
-  "records_sha256": "b993ab333e61a8f6229e43efd669e650eb0af91ddc3c449f616486e30e1b4d5d",
-  "worker_sha256": "8e04b3ccd969556bbbcecfd90772f508baff6118aa8bb2fc17baa692b3c17745",
+  "records_sha256": "77f35c2a18c87c2e7a782bd25676789c1782f722f97de32e837398efd17fb788",
+  "worker_sha256": "2af0b124d6af0b4d3c8b2d4b540ad8c5a135e1ad0902410f5c4783192a2e9c24",
   "saved_reopened_reentered": {
     "source": "qsignedequal(qadjacent(\"Z_f\",qketstate('u')),qketstate('u'))",
     "identity-1": "1",
@@ -20,6 +19,30 @@
     "negative-identity-3": "1",
     "one-marked-3": "0",
     "one-unmarked-3": "0",
-    "wrong-magnitude-3": "0"
-  }
+    "wrong-magnitude-3": "0",
+    "original-chain": "(qequalchain(vector(qadjacent(qoperatorref('G'),qketstate('u')),qadjacent(qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qoperatorref(\"Z_f\")),qketstate('u')),qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qketstate('u')),qketstate('u'))) or qequalchain(vector(qadjacent(qoperatorref('G'),qketstate('u')),qadjacent(qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qoperatorref(\"Z_f\")),qketstate('u')),qmul(\u22121,qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qketstate('u'))),\u2212qketstate('u'))))",
+    "chain-valid-1-1": "1",
+    "chain-wrong-iterate-1-1": "0",
+    "chain-wrong-intermediate-1-1": "0",
+    "chain-valid--1-1": "1",
+    "chain-wrong-iterate--1-1": "0",
+    "chain-wrong-intermediate--1-1": "0",
+    "chain-valid-1-2": "1",
+    "chain-wrong-iterate-1-2": "0",
+    "chain-wrong-intermediate-1-2": "0",
+    "chain-valid--1-2": "1",
+    "chain-wrong-iterate--1-2": "0",
+    "chain-wrong-intermediate--1-2": "0",
+    "chain-valid-1-3": "1",
+    "chain-wrong-iterate-1-3": "0",
+    "chain-wrong-intermediate-1-3": "0",
+    "chain-valid--1-3": "1",
+    "chain-wrong-iterate--1-3": "0",
+    "chain-wrong-intermediate--1-3": "0"
+  },
+  "source_ids": [
+    "IBM034-94ee62dd-M152",
+    "IBM034-94ee62dd-M153"
+  ],
+  "scalar_shared_sign_controls": 175
 }

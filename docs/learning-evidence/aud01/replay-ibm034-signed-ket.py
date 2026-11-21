@@ -34,6 +34,39 @@ for width in range(1, 4):
         formula = f"""replace(({relation}),vector("Z_f",qketstate('u')),vector({matrix},{uniform}))"""
         assert evaluate(formula) == expected, (width, name)
         gui.append([f"{name}-{width}", formula, "0"])
+chain_row, = [r for r in source["rows"] if r["id"].endswith("-M153")]
+chain = evaluate(chain_row["literal"])
+assert evaluate(chain) == chain
+gui.append(["original-chain", chain_row["literal"], "0"])
+# Flip only the signed reflection in the middle. The endpoints are identical.
+wrong_literal = chain_row["literal"].replace(r"\pm \bigl", r"\pm (-1) \bigl")
+assert wrong_literal != chain_row["literal"]
+wrong_chain = evaluate(wrong_literal)
+for width in range(1, 4):
+    size = 2**width
+    uniform = "(" + "@".join(["|+>"] * width) + ")"
+    for sign in (1, -1):
+        phase = [str(sign if i == j else 0) for i in range(size) for j in range(size)]
+        # R=2|u><u|-I. Its entries are 2/size minus the Kronecker delta.
+        step = [f"{sign * (2 - size * int(i == j))}/{size}" for i in range(size) for j in range(size)]
+        phase_matrix = f"matrix({size},{size},[{','.join(phase)}])"
+        step_matrix = f"matrix({size},{size},[{','.join(step)}])"
+        symbols = """vector(qoperatorref('G'),qoperatorref("Z_f"),qketstate('u'))"""
+        for label, expression, gate, expected in [
+                ("valid", chain, step_matrix, "1"), ("wrong-iterate", chain, f"(-{step_matrix})", "0"),
+                ("wrong-intermediate", wrong_chain, step_matrix, "0")]:
+            bound = f"replace(({expression}),{symbols},vector({gate},{phase_matrix},{uniform}))"
+            assert evaluate(bound) == expected, (width, sign, label)
+            gui.append([f"chain-{label}-{sign}-{width}", bound, "0"])
+# Compare chains with independent enumeration of the two allowed signs.
+# Batch by the first operand to keep each worker invocation small.
+for left in range(-3, 4):
+    formulas, expected = [], []
+    for a in range(-2, 3):
+        for b in range(-2, 3):
+            formulas.append(f"({left}=1±({a})=±({b})+1)")
+            expected.append(str(int(any(left == 1+sign*a == sign*b+1 for sign in (1, -1)))))
+    assert evaluate("vector("+",".join(formulas)+")") == "vector("+",".join(expected)+")"
 if len(sys.argv) > 2:
     Path(sys.argv[2]).write_text(json.dumps(gui), encoding="utf8")
-print("Verified the original formula, Copy re-entry and 15 exact substitutions.")
+print("Verified both original formulas, Copy re-entry and 33 exact substitutions.")

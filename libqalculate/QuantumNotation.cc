@@ -2340,17 +2340,43 @@ class Parser {
     right=applyLogicalNot(comparisonOperand(),negations);
    }
    if(leadingSign || (equality && takeSetOperator("±"))) {
-    if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
-    std::string magnitude=product();
-    // In a ± b + c the trailing c belongs to both alternatives.
-    std::string center=additiveTail(right);
-    std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
-    if(center=="0" && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos ||
+    // The additive tail belongs to both branches in a ± b + c.
+    bool zeroCenter=false;
+    auto alternatives=[&](const std::string &start) {
+     std::string magnitude=product(),center=additiveTail(start);
+     zeroCenter=center=="0";
+     return std::make_pair(zeroCenter ? magnitude : "qadd("+center+","+magnitude+")",
+                           zeroCenter ? "(-"+magnitude+")" : "qsub("+center+","+magnitude+")");
+    };
+    auto branches=alternatives(right);
+    std::string next=takeComparisonRelation();
+    if(!result.empty() || !next.empty()) {
+     if(!equalities)throw std::runtime_error("A shared sign requires an equality chain.");
+     std::string plus="qequalchain(vector(",minus=plus;
+     for(const auto &operand:operands) {plus+=operand+",";minus+=operand+",";}
+     // Each branch tests every operand using the same choice of sign.
+     for(;;) {
+      plus+=branches.first;minus+=branches.second;
+      checkSize(plus);checkSize(minus);
+      if(next.empty())break;
+      if(next!="=" && next!="==")throw std::runtime_error("A shared sign requires an equality chain.");
+      if(takeSetOperator("±"))branches=alternatives("0");
+      else {
+       std::string value=comparisonOperand();
+       branches=takeSetOperator("±") ? alternatives(value) : std::make_pair(value,value);
+      }
+      next=takeComparisonRelation();
+      plus+=",";minus+=",";
+     }
+     result="("+plus+"))||"+minus+")))";
+     checkSize(result);return result;
+    }
+    const std::string &magnitude=branches.first;
+    if(zeroCenter && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos ||
                        magnitude.compare(0,10,"qketstate(")==0))
      result="qsignedequal("+left+","+magnitude+")";
-    else result="qmember("+left+",qset(vector("+pair+")))";
+    else result="qmember("+left+",qset(vector("+branches.first+","+branches.second+")))";
     checkSize(result);
-    if(!takeComparisonRelation().empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
     return result;
    }
    // In a quantified index declaration, j = 1,...,N lists the allowed
