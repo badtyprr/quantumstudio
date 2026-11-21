@@ -2078,6 +2078,22 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // As a standalone circuit gate label, the circled plus toggles one bit
  // by the other. Infix \oplus retains its operand-dependent interpretation.
  if(whole=="\\oplus")return booleanGraph("0110");
+ // Indexed Pauli expansions are operator equations, including at coefficients
+ // equal to zero. Keep the factors matrix-valued during partial substitutions.
+ if(s.find("\\mathbb{I}_")!=std::string::npos && s.find("X_")!=std::string::npos && s.find("Z_")!=std::string::npos &&
+    s.find("syndrome")==std::string::npos && s.find("qnamedket")==std::string::npos) {
+  static const std::regex pauliWire(R"((\\mathbb\{I\}|\b[UXYZ])_([a-z])\b)");
+  std::string marked;
+  size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),pauliWire),end;it!=end;++it) {
+   const auto &item=*it;
+   marked.append(s,start,item.position()-start);
+   std::string gate=item[1].str();if(gate=="\\mathbb{I}")gate="I";
+   marked+="qoperatorref(\""+gate+"_"+item[2].str()+"\")";
+   start=item.position()+item.length();
+  }
+  marked.append(s,start,std::string::npos);s=marked;
+ }
  // A channel defined by a Kraus sum acts on the entire density operator.
  if(s.find("\\Phi")!=std::string::npos && s.find("\\sum")!=std::string::npos) {
   static const std::regex channel(R"(^\s*\\Phi(?:_([a-z]))?\s*(?:\\bigl\s*)?\((.*?)\s*(?:\\bigr\s*)?\)\s*=)");

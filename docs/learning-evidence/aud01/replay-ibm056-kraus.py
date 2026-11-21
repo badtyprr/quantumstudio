@@ -35,3 +35,13 @@ for operators in (["X"], ["I/sqrt(2)", "S/sqrt(2)"]):
                 value = evaluate(f'replace(({value}),"{name}",{replacement})')
             assert value == expected, (operators,channel,value)
 print("Verified one- and two-operator channels in two binding orders, including wrong-channel rejection.")
+
+for gate in ("I","X","Y","Z"):
+    for target in (gate,"H"):
+        value = evaluate(rows[23]["literal"])
+        bindings = [("U_k",target)] + [(label+"_k",label) for label in "IXYZ"]
+        bindings += [(key,str(int(label==gate))) for label,key in zip("IXYZ","αβγδ")]
+        for name,replacement in bindings:
+            value = evaluate(f'replace(({value}),"{name}",{replacement})')
+        assert value == str(int(target==gate)), (gate,target,value)
+print("Verified all four local Pauli expansions, zero coefficients and mismatched operators.")
