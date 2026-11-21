@@ -23,6 +23,8 @@ tasks={
     "overview":"Audit the overview, navigation and linked lesson sequence.",
     "exam":"Verify the exam instructions and authorized assessment route.",
     "practice":"Review the question, its answer or rubric, and reproduce any calculation.",
+    "exercise-part":"Carry out the named part and verify its output against the exercise requirements.",
+    "exercise-solution":"Check the supplied solution against the original exercise.",
     "practice-panel":"Review the prompt preceding or naming the panel, and verify the answer, hint or rubric.",
     "reading-panel":"Read the expanded explanation and verify its worked examples.",
     "video":"Review the video or transcript and audit its worked examples.",
@@ -106,6 +108,7 @@ for path,meta in sorted(listed.items()):
         cells=[(i,"".join(c["source"])) for i,c in enumerate(notebook_cells) if c["cell_type"]=="markdown"]
     else:cells=[(0,raw.decode("utf8"))]
     seen={}
+    exercise_level=0
     for i,text in cells:
         # Markdown inside a JSX accordion is still lesson prose. Exclude fenced code.
         lines=text.splitlines();tokens=parser.parse(text)
@@ -117,6 +120,16 @@ for path,meta in sorted(listed.items()):
         Components(i,source_id).feed(clean)
         plain=re.sub(r"</?[A-Z][\w.]*\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>","",clean)
         parsed=parser.parse(plain)
+        for j,tok in enumerate(parsed):
+            if tok.type!="heading_open":continue
+            level=int(tok.tag[1:])
+            label=parsed[j+1].content.strip()
+            if level<=exercise_level:exercise_level=0
+            if re.match(r"^\d+(?:\.\d+)*\.?\s+Exercise\b",label,re.I):
+                exercise_level=level
+            elif exercise_level:
+                kind="exercise-solution" if re.match(r"^Solutions?\b",label,re.I) else "exercise-part"
+                add(kind,f"{path}#cell={source_id}&heading={label}",i)
         for tok in walk(parsed):
             if tok.type=="link_open":linked(tok.attrGet("href"),i)
             elif tok.type=="image":linked(tok.attrGet("src"),i,True)
