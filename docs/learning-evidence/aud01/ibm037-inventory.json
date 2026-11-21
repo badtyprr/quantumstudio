@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "63fa30ff33d3479f2fffeb1baebe219fe8dc16f165b2d769b4390645ee11991c",
-  "revision": "1154db663099eb74d255340c03c04edbec8e0e0e",
+  "worker_sha256": "0ed4a71567f53ce9e79e13c8f4f9d0cdddcbb06cdadea0aa990edaf817266869",
+  "revision": "7a560a4cbf7080ba7e6f037e42d390bd24244753",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -218,8 +218,8 @@
       "end": 4340,
       "literal": "$\\Sigma = \\{\\mathrm{high}, \\mathrm{medium}, \\mathrm{low}, \\mathrm{off}\\}$",
       "status": "exact",
-      "display": "\\{i · g · h^2, i · e · d · m^2 · u, l · o · w, f^2 · o\\} = 'Σ'",
-      "copy": "(qset(vector(i ⋅ 'g' ⋅ 'h'²,i ⋅ e ⋅ 'd' ⋅ 'm'² ⋅ 'u','l''o''w','f'² ⋅ 'o')))==('Σ')"
+      "display": "'Σ' = \\{qoutcome(\"high\"), qoutcome(\"medium\"), qoutcome(\"low\"), qoutcome(\"off\")\\}",
+      "copy": "('Σ')==(qset(vector(qoutcome(\"high\"),qoutcome(\"medium\"),qoutcome(\"low\"),qoutcome(\"off\"))))"
     },
     {
       "id": "IBM037-bb350db4-M022",
@@ -538,8 +538,8 @@
       "end": 9153,
       "literal": "$\\{\\text{heads},\\text{tails}\\}$",
       "status": "exact",
-      "display": "\\{\"heads\", \"tails\"\\}",
-      "copy": "qset(vector(\"heads\",\"tails\"))"
+      "display": "\\{qoutcome(\"heads\"), qoutcome(\"tails\")\\}",
+      "copy": "qset(vector(qoutcome(\"heads\"),qoutcome(\"tails\")))"
     },
     {
       "id": "IBM037-bb350db4-M054",
