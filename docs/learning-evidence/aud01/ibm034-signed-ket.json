@@ -1,0 +1,25 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "source_id": "IBM034-94ee62dd-M152",
+  "records_sha256": "b993ab333e61a8f6229e43efd669e650eb0af91ddc3c449f616486e30e1b4d5d",
+  "worker_sha256": "8e04b3ccd969556bbbcecfd90772f508baff6118aa8bb2fc17baa692b3c17745",
+  "saved_reopened_reentered": {
+    "source": "qsignedequal(qadjacent(\"Z_f\",qketstate('u')),qketstate('u'))",
+    "identity-1": "1",
+    "negative-identity-1": "1",
+    "one-marked-1": "0",
+    "one-unmarked-1": "0",
+    "wrong-magnitude-1": "0",
+    "identity-2": "1",
+    "negative-identity-2": "1",
+    "one-marked-2": "0",
+    "one-unmarked-2": "0",
+    "wrong-magnitude-2": "0",
+    "identity-3": "1",
+    "negative-identity-3": "1",
+    "one-marked-3": "0",
+    "one-unmarked-3": "0",
+    "wrong-magnitude-3": "0"
+  }
+}

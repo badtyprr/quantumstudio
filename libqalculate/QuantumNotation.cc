@@ -2345,7 +2345,8 @@ class Parser {
     // In a ± b + c the trailing c belongs to both alternatives.
     std::string center=additiveTail(right);
     std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
-    if(center=="0" && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos))
+    if(center=="0" && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos ||
+                       magnitude.compare(0,10,"qketstate(")==0))
      result="qsignedequal("+left+","+magnitude+")";
     else result="qmember("+left+",qset(vector("+pair+")))";
     checkSize(result);
