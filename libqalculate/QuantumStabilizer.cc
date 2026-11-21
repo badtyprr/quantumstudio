@@ -73,12 +73,14 @@ class QuantumStabilizerFunction: public MathFunction {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
   if(op=="qpauligroup") {
-   if(!a.isVector() || !a.size() || a.size()>32)return 0;
+   bool single=a.isMatrix() && a.rows() && a.columns() && element(a,0,0).isNumber();
+   if(!a.isVector() || !a.size() || (!single && a.size()>32))return 0;
    std::vector<SignedPauli> generators;
-   for(size_t k=0;k<a.size();++k) {
-    if(!a[k].isMatrix())return 0;
+   for(size_t k=0;k<(single ? 1 : a.size());++k) {
+    const MathStructure &matrix=single ? a : a[k];
+    if(!matrix.isMatrix())return 0;
     SignedPauli g;
-    if(!readSignedPauli(a[k],g,false) || (!generators.empty() && g.d!=generators.front().d)) {
+    if(!readSignedPauli(matrix,g,false) || (!generators.empty() && g.d!=generators.front().d)) {
      CALCULATOR->error(true,"A Pauli group requires equal-sized Pauli generators.",NULL);return 0;
     }
     generators.push_back(g);

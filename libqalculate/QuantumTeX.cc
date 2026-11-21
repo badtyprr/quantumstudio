@@ -1075,6 +1075,31 @@ class TeXReader {
    std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
    if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
+   auto domains=indexedParts(collection,",");
+   if(domains.size()==2) {
+    size_t second=domains[1].find("∈");
+    if(second!=std::string::npos) {
+     std::string other=trim(domains[1].substr(0,second)),product=body;
+     product.erase(std::remove_if(product.begin(),product.end(),asciiSpace),product.end());
+     auto values=[](std::string set) {
+      set=trim(set);const std::string prefix="qset(vector(";
+      if(set.size()<=prefix.size()+2 || set.compare(0,prefix.size(),prefix)!=0 || set.substr(set.size()-2)!="))")
+       return std::vector<std::string>{};
+      return indexedParts(set.substr(prefix.size(),set.size()-prefix.size()-2),",");
+     };
+     auto left=values(domains[0]),right=values(domains[1].substr(second+3));
+     if(product==index+other && !other.empty() && !left.empty() && !right.empty() && left.size()<=1024/right.size()) {
+      bool paulis=std::any_of(right.begin(),right.end(),[](const std::string &e){return trim(e)=="X";}) &&
+                  std::all_of(right.begin(),right.end(),[](const std::string &e){std::string p=trim(e);return p=="qimplicitidentity()" || p=="X" || p=="Y" || p=="Z";});
+      std::string terms;
+      for(const auto &x:left)for(const auto &y:right) {
+       if(!terms.empty())terms+=",";
+       terms+="("+x+")*("+((paulis && trim(y)=="qimplicitidentity()") ? "I" : y)+")";
+      }
+      return "qset(vector("+terms+"))";
+     }
+    }
+   }
    return "qsetimage("+body+","+collection+","+index+")";
   }
   if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
@@ -2206,6 +2231,12 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    expanded+=term;start=it->position()+it->length();
   }
   if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
+ }
+ if(s.find("\\cdots")!=std::string::npos) {
+  static const std::regex monotone(R"(^\s*(\\?[A-Za-z]+)_1\s*([<>])\s*\1_2\s*\2\s*\\cdots\s*\2\s*\1_([a-z])\s*$)");
+  std::smatch match;
+  if(std::regex_match(s,match,monotone))
+   return "qstrictorder(qindexedentries(\""+trim(quantumTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
  }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
