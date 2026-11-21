@@ -188,6 +188,14 @@ for source, modulus, expected in ((r"$3 \cdot 5 = 1$",7,"1"),(r"$3 \cdot 5 = 1$"
     bound=f'replace(replace(replace(({form}),"a",5),"b",17),"modulus",{modulus})'
     assert data("quantum:"+bound)["copy_text"]==expected
 assert data(r"quantum:$3 \cdot 5 = 1$")["copy_text"]=="0"
+for source in ("(3*5)=1","3*(5)=1","(3*5=1)",r"1=3\times 5","3·5=(1)"):
+    form=data("quantum:modpowers:"+source)["copy_text"]
+    assert data(f'quantum:replace(({form}),"modulus",7)')["copy_text"]=="1"
+for source in ("5^-1","(5)^(-1)",r"(5^{-1})"):
+    form=data("quantum:modpowers:"+source)["copy_text"]
+    assert data(f'quantum:replace(({form}),"modulus",7)')["copy_text"]=="3"
+for source in ("pi=1","π=1",r"\pi=1"):
+    assert data("quantum:modpowers:"+source)["copy_text"]=="0"
 for invalid in ("qmodpower(2,-1,4)", "qmodpower(1,2,0)", "qmodpower(1/2,2,7)"):
     run("quantum:"+invalid, success=False)
 
