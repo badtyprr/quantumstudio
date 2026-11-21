@@ -158,7 +158,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
-    const bool entries=explicitEntries || ((name=="qmatrix" || name=="matrix") && k==2);
+    const bool entries=explicitEntries || name=="qtensor" || ((name=="qmatrix" || name=="matrix") && k==2);
     text+=copyText(result[k],po,quantumMode,entries);
    }
    return text+")";

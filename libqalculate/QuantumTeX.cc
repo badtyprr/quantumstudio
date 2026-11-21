@@ -1099,6 +1099,33 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(input[pos]=='&' && input.find("\\otimes",pos)<end) {
+   std::string cells;unsigned count=0;
+   bool matched=true;
+   static const std::regex tensorWord(R"(\s*(?:[IXYZ]|\\mathbb\{I\})(?:\s*\\otimes\s*(?:[IXYZ]|\\mathbb\{I\}))*\s*)");
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(row);if(row.compare(0,6,"\\hline")==0)row=trim(row.substr(6));
+    if(row.empty())continue;
+    auto columns=indexedParts(row,"&");if(columns.size()!=alignment.size()) {matched=false;break;}
+    for(size_t j=0;j<columns.size();++j) {
+     std::string entry=trim(columns[j]);
+     if(!count && !j && entry.empty())entry="qoutcome(\"syndrome\")";
+     else if(!count || !j) {
+      if(!std::regex_match(entry,tensorWord)) {matched=false;break;}
+      size_t at=0;while((at=entry.find("\\mathbb{I}",at))!=std::string::npos)entry.replace(at,10," I ");
+      entry=quantumTeX(entry);
+     } else if(entry!="+1" && entry!="1" && entry!="-1") {matched=false;break;}
+     if(!cells.empty())cells+=",";
+     cells+=entry;
+    }
+    if(!matched)break;
+    ++count;
+   }
+   if(matched && count>1) {
+    pos=end+endMarker.size();
+    return "matrix("+std::to_string(count)+","+std::to_string(alignment.size())+",vector("+cells+"))";
+   }
+  }
   // Each row of a stabilizer generator table is an ordered tensor word.
   // Preserve it in the compact Pauli representation used by rank and distance.
   if(alignment.size()>=2 && alignment.size()<=25) {
@@ -2166,6 +2193,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(group.empty()) {at+=7;continue;}
    s.replace(at,close+7-at,group);at+=group.size();
   }
+ }
+ // Inside a Pauli tensor word every factor acts on a qubit.
+ if(s.find("\\otimes")!=std::string::npos && s.find("\\mathbb{I}")!=std::string::npos) {
+  static const std::regex word(R"((?:\b[XYZ]\b|\\mathbb\{I\})(?:\s*\\otimes\s*(?:\b[XYZ]\b|\\mathbb\{I\}))+)");
+  std::string expanded;size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),word),end;it!=end;++it) {
+   std::string term=it->str();
+   if(term.find_first_of("XYZ")==std::string::npos)continue;
+   expanded.append(s,start,it->position()-start);
+   for(size_t at=0;(at=term.find("\\mathbb{I}",at))!=std::string::npos;++at)term.replace(at,10," I ");
+   expanded+=term;start=it->position()+it->length();
+  }
+  if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
  }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
