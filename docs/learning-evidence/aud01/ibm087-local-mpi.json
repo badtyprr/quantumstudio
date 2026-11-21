@@ -1,0 +1,12 @@
+{
+  "source_sha256": "ec12022d6f3dd5b2771dd43f7fb9e4e6c5c4045c27d99198b8dba0923c2c3dbe",
+  "ranks": 2,
+  "launch": "local MPI",
+  "discarded_vim_markers": 2,
+  "output": [
+    "[Rank 0] Hello from process 0 of 2!",
+    "[Rank 0] Sending: {'answer': 42, 'pi': 3.14}",
+    "[Rank 1] Hello from process 1 of 2!",
+    "[Rank 1] Received: {'answer': 42, 'pi': 3.14}"
+  ]
+}

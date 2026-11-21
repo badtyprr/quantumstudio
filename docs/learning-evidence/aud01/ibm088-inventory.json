@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/sqd-skqd.ipynb",
   "source_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
-  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
-  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
+  "worker_sha256": "3da7514ef4ef11685bf7077ba4376707d05073ec197aa4580f24ded1e07705f4",
+  "revision": "74307d0e2030b05f5dfbe86eb210c896b8bcc1b4",
   "mode": "Quantum notation",
   "markdown_cells": 7,
   "code_cells": 0,
   "summary": {
-    "exact": 25,
-    "diagnostic": 6
+    "exact": 30,
+    "diagnostic": 1
   },
   "figures": [
     {
@@ -156,8 +156,9 @@
       "start": 1322,
       "end": 1333,
       "literal": "$U(\\theta)$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 5"
+      "status": "exact",
+      "display": "qoperatorref(qindexedlabel(\"U(\", 'θ', ')'))",
+      "copy": "qoperatorref(qindexedlabel(\"U(\",'θ',')'))"
     },
     {
       "id": "IBM088-9d14af04-M013",
@@ -166,8 +167,8 @@
       "end": 2482,
       "literal": "$\\{b_j\\}_{j=1}^L$",
       "status": "exact",
-      "display": "\\{\"b_j\"\\} · _(j = 1)^L",
-      "copy": "qadjacent(qset(vector(\"b_j\")),qpower(qindexedlabel('_',qcompare('j',1,4),\"\"),'L'))"
+      "display": "qindexedset(\"b_\", 1, 'L', [])",
+      "copy": "qindexedset(\"b_\",1,'L',vector())"
     },
     {
       "id": "IBM088-9d14af04-M014",
@@ -225,8 +226,9 @@
       "start": 4937,
       "end": 4950,
       "literal": "$A \\subset G$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\subset at byte 10"
+      "status": "exact",
+      "display": "qsubset('A', 'G') and !qsubset('G', 'A')",
+      "copy": "(!(qsubset('G','A')) and qsubset('A','G'))"
     },
     {
       "id": "IBM088-9d14af04-M020",
@@ -235,8 +237,8 @@
       "end": 4971,
       "literal": "$A \\subseteq G$",
       "status": "exact",
-      "display": "qsubset('A', G)",
-      "copy": "qsubset('A',G)"
+      "display": "qsubset('A', 'G')",
+      "copy": "qsubset('A','G')"
     },
     {
       "id": "IBM088-9d14af04-M021",
@@ -244,8 +246,9 @@
       "start": 4977,
       "end": 4990,
       "literal": "$G \\subset A$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\subset at byte 10"
+      "status": "exact",
+      "display": "qsubset('G', 'A') and !qsubset('A', 'G')",
+      "copy": "(!(qsubset('A','G')) and qsubset('G','A'))"
     },
     {
       "id": "IBM088-9d14af04-M022",
@@ -254,8 +257,8 @@
       "end": 5011,
       "literal": "$G \\subseteq A$",
       "status": "exact",
-      "display": "qsubset(G, 'A')",
-      "copy": "qsubset(G,'A')"
+      "display": "qsubset('G', 'A')",
+      "copy": "qsubset('G','A')"
     },
     {
       "id": "IBM088-9d14af04-M023",
@@ -293,8 +296,9 @@
       "start": 1263,
       "end": 1376,
       "literal": "$$\n|\\phi_j\\rangle = e^{-i \\,\\delta t j H}|\\phi_0\\rangle,  \\quad \\text{for } j = 0, 1, \\dots, d-1 \\quad \\text{}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 74"
+      "status": "exact",
+      "display": "qindexedketlist(\"φ_\", 0, qsub('d', 1), []) = qkrylovstates('H', qketstate(\"φ_0\"), \"δt\", 'd')",
+      "copy": "qcompare(qindexedketlist(\"φ_\",0,qsub('d',1),vector()),qkrylovstates('H',qketstate(\"φ_0\"),\"δt\",'d'),4)"
     },
     {
       "id": "IBM088-9d14af04-M027",
@@ -312,8 +316,9 @@
       "start": 1821,
       "end": 1880,
       "literal": "$|\\phi_0\\rangle, |\\phi_1\\rangle, \\dots, |\\phi_{d-1}\\rangle$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 17"
+      "status": "exact",
+      "display": "qindexedketlist(\"φ_\", 0, qsub('d', 1), [])",
+      "copy": "qindexedketlist(\"φ_\",0,qsub('d',1),vector())"
     },
     {
       "id": "IBM088-9d14af04-M029",
