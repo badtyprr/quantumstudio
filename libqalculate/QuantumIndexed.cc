@@ -1309,6 +1309,28 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qcosetket") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure representative=raw[0],words;representative.eval(exact);
+   if(!representative.isFunction() || representative.function()->referenceName()!="qbitlabel" ||
+      finiteDomain(raw[1],words,exact)!=DomainState::Finite || !words.size())return 0;
+   MathStructure value=representative[0],width=representative[1];
+   if(validateQuantumBitLabel(value,width,exact)!=QuantumBitLabelState::Concrete || width.number()>10)return 0;
+   unsigned mask=value.number().intValue(),dimension=1u<<width.number().intValue();
+   std::set<unsigned> indices;
+   for(size_t j=0;j<words.size();++j) {
+    if(CALCULATOR->aborted())return 0;
+    const auto &word=words[j];
+    if(!word.isFunction() || word.function()->referenceName()!="qbitlabel")return 0;
+    MathStructure index=word[0],bits=word[1];
+    if(validateQuantumBitLabel(index,bits,exact)!=QuantumBitLabelState::Concrete || !bits.equals(width))return 0;
+    indices.insert(mask^index.number().intValue());
+   }
+   MathStructure amplitude((int)indices.size());amplitude.raise(Number(-1,2));amplitude.eval(exact);
+   out.clearMatrix();out.resizeMatrix(dimension,1,m_zero);
+   for(unsigned index:indices)*out.getElement(index+1,1)=amplitude;
+   return 1;
+  }
   if(op=="qwordspan" || op=="qwordkernel") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure rows=raw[0];rows.eval(exact);
@@ -2683,6 +2705,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qcosetket",2));
  calculator.addFunction(new QuantumIndexedFunction("qwordspan",1));
  calculator.addFunction(new QuantumIndexedFunction("qwordkernel",2));
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));

@@ -40,7 +40,8 @@ if len(sys.argv) > 2:
     env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent / "data"))
     def evaluate(expression):
         result = subprocess.run([worker, "--json"], input=("quantum:" + expression).encode(),
-                                capture_output=True, env=env, check=True, timeout=30)
+                                capture_output=True, env=env, timeout=30)
+        assert result.returncode == 0, (expression, result.stderr.decode(), result.stdout.decode())
         return json.loads(result.stdout)["copy_text"]
     def labels(values, width=7):
         return "vector(" + ",".join(f"qbitlabel({v},{width})" for v in values) + ")"
@@ -57,3 +58,16 @@ if len(sys.argv) > 2:
         left = "qset(vector(" + ",".join(map(str, values)) + "))"
         assert evaluate(f"qsubset({left},qset(vector(1,2,3)))") == expected
     print("Verified binary spans, parity kernels, and positive, negative and empty subset cases.")
+    # Check both equations for every two-bit representative. A wrong dimension
+    # exponent changes the normalization and must falsify each identity.
+    for row, subspace, domain, exponent in [(209,"D_X","C_Z","t"), (249,"D_Z","C_X","s")]:
+        equation = rows[row-1]["copy"]
+        equation = equation.replace(f'"{subspace}"', "qwordspan(vector(qbitlabel(3,2)))")
+        equation = equation.replace(f'"{domain}"', "qbitstrings(2)")
+        equation = re.sub(r'\bn\b', '2', equation)
+        for power, wanted in [(1,"1"), (2,"0")]:
+            expression = equation.replace(f"'{exponent}'", str(power))
+            actual = evaluate(expression)
+            assert actual == wanted, (row, power, actual)
+    print("Verified both coset superposition identities and rejected incorrect normalization.")
+

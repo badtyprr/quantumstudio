@@ -2230,6 +2230,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
  }
+ // Apply the stated domain of the representative to the whole coset identity.
+ if(s.find("\\oplus")!=std::string::npos && s.find("\\text{(for")!=std::string::npos) {
+  std::string compact=s;
+  compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex identity(R"re(^(H\^\{\\otimes([a-z])\})?\\vert([a-z])\\oplus\\mathcal\{([A-Z])\}_([A-Z])\\rangle=\\frac\{1\}\{\\sqrt\{2\^([a-z])\}\}\\sum_\{([a-z])\\in\\mathcal\{\4\}_\5\}(H\^\{\\otimes([a-z])\})?\\vert\3\\oplus\7\\rangle\\qquad\\text\{\(for(?:all)?\$\3\\in\\mathcal\{([A-Z])\}_([A-Z])\$\)\}$)re");
+  std::smatch m;
+  if(std::regex_match(compact,m,identity) && m[1].str()==m[8].str()) {
+   std::string u=m[3],v=m[7],d="\""+m[4].str()+"_"+m[5].str()+"\"",c="\""+m[10].str()+"_"+m[11].str()+"\"";
+   std::string lhs="qcosetket("+u+","+d+")",term="qketstate(qoplus("+u+","+v+"))";
+   if(m[1].matched) {
+    std::string transform="qtensorpow(H,"+m[2].str()+")";
+    lhs="qmul("+transform+","+lhs+")";term="qmul("+transform+","+term+")";
+   }
+   std::string rhs="qmul(1/sqrt(2^"+m[6].str()+"),qsumset("+term+","+d+","+v+"))";
+   return "qsubset("+c+",qsetfilter(qcompare("+lhs+","+rhs+",4),"+c+","+u+"))";
+  }
+ }
  // A binary code is specified by generators or homogeneous parity checks.
  if(s.find("\\bigl\\{")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
   static const std::regex span(R"(\\bigl\\\{\s*\\alpha_1\s+([a-z])_1\s*\\oplus\s*\\cdots\s*\\oplus\s*\\alpha_([a-z])\s+\1_\2\s*\\,\s*:\s*\\,\s*\\alpha_1\s*,\s*\\ldots\s*,\s*\\alpha_\2\s*\\in\s*\\\{0,1\\\}\s*\\bigr\\\})");
