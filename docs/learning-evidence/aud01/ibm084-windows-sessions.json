@@ -1,0 +1,189 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-correction-i.ipynb",
+  "notebook_sha256": "d76bfe7cca292d48e3396c2c1b35c23849ce0e9a22c09b3611f843177811d672",
+  "worker_sha256": "4085df5c808fc69fc2c9d790dd1cebf28755af83a399c4179300a1f425951187",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "7d96c82298e08e37eaaa16cb69f7441ae879a251fc497f50ac26ec9da33d896c",
+  "suite": {
+    "passed": true,
+    "checks": 4105,
+    "calls": 488,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 447,
+    "restored_identically": 447,
+    "stable_after_text_reentry": 447,
+    "source_diagnostic": 41
+  },
+  "diagnostics": [
+    {
+      "id": "IBM084-d76bfe7c-M011",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M087",
+      "message": "Unexpected notation at byte 43"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M098",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M116",
+      "message": "Unsupported text in a mathematical expression at byte 24"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M119",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M121",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M123",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M128",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M129",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M130",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M131",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M133",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M139",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M142",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M143",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M234",
+      "message": "Unsupported TeX command: \\bar at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M241",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M265",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M269",
+      "message": "Expected a quantum expression at byte 5"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M278",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M279",
+      "message": "A reported decimal must be a single numeric literal."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M280",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M404",
+      "message": "Unsupported TeX command: \\cdots at byte 17"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M411",
+      "message": "Unsupported TeX command: \\xrightarrow at byte 17"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M418",
+      "message": "Unsupported TeX command: \\leftrightarrow at byte 18"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M421",
+      "message": "Unexpected notation at byte 18"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M424",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M426",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M428",
+      "message": "Unexpected notation at byte 8"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M429",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M431",
+      "message": "A state mapping requires an input ket and an output ket."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M435",
+      "message": "Unexpected notation at byte 18"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M445",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M453",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M462",
+      "message": "Unsupported text in a mathematical expression at byte 51"
+    },
+    {
+      "id": "IBM084-d76bfe7c-M471",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M472",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M473",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M476",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M477",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM084-d76bfe7c-M487",
+      "message": "Expected a quantum expression at byte 1"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

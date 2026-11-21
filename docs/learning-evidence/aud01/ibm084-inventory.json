@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-correction-i.ipynb",
   "source_sha256": "d76bfe7cca292d48e3396c2c1b35c23849ce0e9a22c09b3611f843177811d672",
-  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
-  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "worker_sha256": "4085df5c808fc69fc2c9d790dd1cebf28755af83a399c4179300a1f425951187",
+  "revision": "72c4018abc8e25292db9cbb99c7590f8b7e0e85d",
   "mode": "Quantum notation",
   "markdown_cells": 69,
   "code_cells": 39,
@@ -60,7 +60,7 @@
       "literal": "$S|\\psi\\rangle = |\\psi\\rangle$",
       "status": "exact",
       "display": "[1, 0; 0, i] |ψ⟩ = |ψ⟩",
-      "copy": "qcompare(qadjacent(matrix(2,2,[1,0,0,i]),qnamedket('ψ')),qketstate('ψ'),4)"
+      "copy": "qcompare(qadjacent(matrix(2,2,vector(1,0,0,i)),qnamedket('ψ')),qketstate('ψ'),4)"
     },
     {
       "id": "IBM084-d76bfe7c-M006",
@@ -178,8 +178,8 @@
       "end": 496,
       "literal": "$$F(p, q) = \\bigg(\\sum_i \\sqrt{p_i\\, q_i}\\,\\bigg)^2,$$",
       "status": "exact",
-      "display": "∑_{k ∈ \"indexset_i\"} (√(p_k · q_k)) = √(['F''p'  'F''q']) or ∑_{j ∈ \"indexset_i\"} (√(p_j · q_j)) = −√(['F''p'  'F''q'])",
-      "copy": "((qsumset(qsqrt(qadjacent(qindexedlabel(\"p_\",\"qboundindex_0\",\"\"),qindexedlabel(\"q_\",\"qboundindex_0\",\"\"))),\"indexset_i\",\"qboundindex_0\"))==((vector('F''p','F''q'))^(1 ∕ 2)) or (qsumset(qsqrt(qadjacent(qindexedlabel(\"p_\",\"qboundindex_0\",\"\"),qindexedlabel(\"q_\",\"qboundindex_0\",\"\"))),\"indexset_i\",\"qboundindex_0\"))==(qmul(−1,qpower(vector(qmul('F','p'),qmul('F','q')),1 ∕ 2))))"
+      "display": "qfiniteapply('F', qtuple(['p'  'q'])) = (∑_{k ∈ \"indexset_i\"} (√(p_k · q_k)))^2",
+      "copy": "qcompare(qfiniteapply('F',qtuple(vector('p','q'))),qpower(qsumset(qsqrt(qadjacent(qindexedlabel(\"p_\",\"qboundindex_0\",\"\"),qindexedlabel(\"q_\",\"qboundindex_0\",\"\"))),\"indexset_i\",\"qboundindex_0\"),2),4)"
     },
     {
       "id": "IBM084-d76bfe7c-M018",
@@ -1485,7 +1485,7 @@
       "literal": "$S|\\psi\\rangle = +|\\psi\\rangle$",
       "status": "exact",
       "display": "[1, 0; 0, i] |ψ⟩ = |ψ⟩",
-      "copy": "qcompare(qadjacent(matrix(2,2,[1,0,0,i]),qnamedket('ψ')),qketstate('ψ'),4)"
+      "copy": "qcompare(qadjacent(matrix(2,2,vector(1,0,0,i)),qnamedket('ψ')),qketstate('ψ'),4)"
     },
     {
       "id": "IBM084-d76bfe7c-M150",
@@ -1525,7 +1525,7 @@
       "literal": "$S(E|\\psi\\rangle) = -E S|\\psi\\rangle = -E|\\psi\\rangle$",
       "status": "exact",
       "display": "[1, 0; 0, i] · E |ψ⟩ = (−E · [1, 0; 0, i]) (|ψ⟩) = −E |ψ⟩",
-      "copy": "qequalchain(vector(qadjacent(matrix(2,2,[1,0,0,i]),qadjacent('E',qnamedket('ψ'))),qadjacent(qadjacent(−'E',matrix(2,2,[1,0,0,i])),qnamedket('ψ')),qadjacent(−'E',qnamedket('ψ'))))"
+      "copy": "qequalchain(vector(qadjacent(matrix(2,2,vector(1,0,0,i)),qadjacent('E',qnamedket('ψ'))),qadjacent(qadjacent(qmul(−1,'E'),matrix(2,2,vector(1,0,0,i))),qnamedket('ψ')),qadjacent(qmul(−1,'E'),qnamedket('ψ'))))"
     },
     {
       "id": "IBM084-d76bfe7c-M154",
@@ -2503,7 +2503,7 @@
       "literal": "$[[n,n-2,2]]$",
       "status": "exact",
       "display": "[n  (n − 2)  2]",
-      "copy": "matrix(1,3,[n,n − 2,2])"
+      "copy": "vector(n,n − 2,2)"
     },
     {
       "id": "IBM084-d76bfe7c-M252",
