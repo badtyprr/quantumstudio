@@ -24,6 +24,13 @@ def data(expression, *flags):
     return value
 
 
+for heading in (r"\cdot", "·", "*", "+"):
+    table = r"\begin{array}{c|c}" + heading + r" & 0\\\hline 0 & 0\end{array}"
+    copied = data("quantum:" + table)["copy_text"]
+    label = "+" if heading == "+" else "·"
+    assert copied == f"matrix(2,2,['{label}','0',0,0])"
+    assert data("quantum:" + copied)["copy_text"] == copied
+
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
     copied = data("quantum:"+expression)["copy_text"]
