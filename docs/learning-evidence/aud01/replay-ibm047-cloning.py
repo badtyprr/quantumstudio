@@ -60,3 +60,38 @@ for width in (1, 2, 3):
                         ('qnamedket("γ_1")', f"0*{zeros}")]
             check(index, bindings, truth)
 print("Verified the repeated-bit register and five distinguishability equations at three widths")
+
+factors = list(zip(["qketstate('u')", "qketstate('v')", "qketstate('w')", "qketstate(x)"],
+                   ["|0>", "|1>", "|0>", "|1>"]))
+check(124, factors, "1")
+swapped = rows[123]["literal"].replace(r"w \otimes x", r"x \otimes w")
+equation = evaluate(swapped)
+for name, value in factors:
+    equation = f"replace(({equation}),{name},{value})"
+assert evaluate(equation) == "0"
+for width in (1, 2):
+    for other, truth in [("|1>", "1"), ("|0>", "0")]:
+        check(135, [('"register width"', str(width)), ('qnamedket("ψ")', "|0>"),
+                    ('qnamedket("φ")', other)], truth)
+print("Verified tensor factor order and workspace overlaps for orthogonal and identical states")
+
+phase_states = [('qketstate("a")', "|0>"), ('qnamedket("ψ")', "|+>"),
+                ('qnamedket("φ")', "i*|+>")]
+for phase, truth in [("i", "1"), ("-i", "1"), ("2", "0")]:
+    bindings = [*phase_states, ('"α"', phase)]
+    check(18, bindings, truth)
+    check(18, list(reversed(bindings)), truth)
+print("Verified global-phase invariance with imaginary phases and a non-unit magnitude control")
+
+measurement = evaluate(rows[141]["literal"])
+assert measurement == rows[141]["copy"]
+for state, control, orthogonal in [("|0>", "|+>", "|1>"), ("[0;0;1]", "[1;0;0]", "[0;1;0]")]:
+    bound = f'replace(({measurement}),qnamedket("φ"),{state})'
+    assert evaluate(f"cardinality({bound})") == "2"
+    assert evaluate(f"(({state})*dagger({state})) ∈ ({bound})") == "1"
+    assert evaluate(f"(({control})*dagger({control})) ∈ ({bound})") == "0"
+    check(144, [('qnamedket("φ")', state)], "vector(1,1)")
+    check(144, [('qnamedket("φ")', f"2*({state})")], "vector(0,0)")
+    for psi, truth in [(orthogonal, "vector(1,1)"), (state, "vector(0,0)")]:
+        check(146, [('qnamedket("φ")', state), ('qnamedket("ψ")', psi)], truth)
+print("Verified the projector set and both measurement derivations in two and three dimensions")

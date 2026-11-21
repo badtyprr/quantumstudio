@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "a4b149f32940ab4964b8a1dff06a5dd335836bef6c2476cbb9fb37eccc9ca361",
-  "revision": "27d20a182219790122e6294e586d27020ec81ca7",
+  "worker_sha256": "71034dd97603ef8a90daa3db9253cc703946c9d5dfbd9a764acec4493387fe34",
+  "revision": "faa9465ad8ff07ecfd5f0d795759513385697166",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 140,
-    "diagnostic": 6
+    "exact": 146
   },
   "figures": [
     {
@@ -174,8 +173,8 @@
       "end": 1810,
       "literal": "$$\n\\bigl\\vert \\langle a \\vert \\psi \\rangle \\bigr\\vert^2.\n$$",
       "status": "exact",
-      "display": "|qmul(qdag(qketstate('a')), qnamedket('ψ'))|²",
-      "copy": "|qmul(qdag(qketstate('a')), qnamedket('ψ'))|²"
+      "display": "|qketstate('a')† |ψ⟩|^2",
+      "copy": "qbars(qmul(qdag(qketstate('a')), qnamedket('ψ')))²"
     },
     {
       "id": "IBM047-f4526623-M016",
@@ -203,8 +202,9 @@
       "start": 1945,
       "end": 2197,
       "literal": "$$\n\\bigl\\vert \\langle a \\vert \\phi \\rangle \\bigr\\vert^2\n= \\bigl\\vert \\alpha \\langle a \\vert \\psi \\rangle \\bigr\\vert^2\n= \\vert \\alpha \\vert^2 \\bigl\\vert \\langle a \\vert \\psi \\rangle \\bigr\\vert^2\n= \\bigl\\vert \\langle a \\vert \\psi \\rangle \\bigr\\vert^2,\n$$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 38"
+      "status": "exact",
+      "display": "|qketstate('a')† |φ⟩|^2 = |'α' · qketstate('a')† |ψ⟩|^2 = |qketstate('a')† |ψ⟩|^2 · |'α'|^2 = |qketstate('a')† |ψ⟩|^2",
+      "copy": "qequalchain(vector(qbars(qmul(qdag(qketstate('a')), qnamedket('φ')))²,qbars(qadjacent('α', qmul(qdag(qketstate('a')), qnamedket('ψ'))))²,qbars(qmul(qdag(qketstate('a')), qnamedket('ψ')))² ⋅ qbars('α')²,qbars(qmul(qdag(qketstate('a')), qnamedket('ψ')))²))"
     },
     {
       "id": "IBM047-f4526623-M019",
@@ -1214,7 +1214,7 @@
       "literal": "$$\n\\bigl(U^{\\dagger} \\bigl( \\vert \\gamma_0\\rangle\\vert 0 \\rangle \\bigr)\\bigr)^{\\dagger}\n= \\bigl( \\langle\\gamma_0\\vert\\langle 0\\vert \\bigr)U,\n$$",
       "status": "exact",
       "display": "(U† · (|γ_0⟩ ⊗ [1; 0]))† − ((|γ_0⟩ ⊗ [1; 0])† · U) = 0",
-      "copy": "(((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U')))+ (qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))))))==(0)"
+      "copy": "((qdag(qadjacent(qdag('U'),qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0))))))+ ((−1)*(qadjacent(qdag(qtensor(qnamedket(\"γ_0\"),matrix(2,1,vector(1,0)))),'U'))))==(0)"
     },
     {
       "id": "IBM047-f4526623-M120",
@@ -1262,8 +1262,9 @@
       "start": 15422,
       "end": 15524,
       "literal": "$$\n\\langle u \\otimes v \\vert w \\otimes x\\rangle = \\langle u \\vert w\\rangle \\langle v \\vert x\\rangle\n$$",
-      "status": "diagnostic",
-      "message": "Use a basis label or a named column vector inside a ket."
+      "status": "exact",
+      "display": "(qketstate('u') ⊗ qketstate('v'))† · (qketstate('w') ⊗ |x⟩) = qketstate('u')† · qketstate('w') · qketstate('v')† |x⟩",
+      "copy": "qcompare(qmul(qdag(qtensor(qketstate('u'),qketstate('v'))),qtensor(qketstate('w'),qketstate(x))),qadjacent(qmul(qdag(qketstate('u')),qketstate('w')),qmul(qdag(qketstate('v')),qketstate(x))),4)"
     },
     {
       "id": "IBM047-f4526623-M125",
@@ -1371,8 +1372,9 @@
       "start": 16158,
       "end": 16396,
       "literal": "$$\n0 = \\bigl(  \\vert 0\\cdots 0\\rangle \\vert \\psi\\rangle\\bigr)^{\\dagger}\n\\bigl(\\vert 0\\cdots 0\\rangle\\vert \\phi\\rangle\\bigr)\n=  \\langle 0\\cdots 0 \\vert 0\\cdots 0 \\rangle \\langle \\psi \\vert \\phi \\rangle = \\langle \\psi \\vert \\phi \\rangle.\n$$",
-      "status": "diagnostic",
-      "message": "Invalid decimal number at byte 58"
+      "status": "exact",
+      "display": "0 = (|0^register width⟩ ⊗ |ψ⟩)† · (|0^register width⟩ ⊗ |φ⟩) = |0^register width⟩† · |0^register width⟩ · ⟨ψ|φ⟩ = ⟨ψ|φ⟩",
+      "copy": "qequalchain(vector(0,qadjacent(qdag(qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('ψ'))),qtensor(qtensorpow(matrix(2,1,vector(1,0)),\"register width\"),qnamedket('φ'))),qadjacent(qmul(qdag(qtensorpow(matrix(2,1,vector(1,0)),\"register width\")),qtensorpow(matrix(2,1,vector(1,0)),\"register width\")),qmul(qdag(qnamedket('ψ')),qnamedket('φ'))),qmul(qdag(qnamedket('ψ')),qnamedket('φ'))))"
     },
     {
       "id": "IBM047-f4526623-M136",
@@ -1440,8 +1442,9 @@
       "start": 16972,
       "end": 17075,
       "literal": "$$\n\\bigl\\{\n\\vert\\phi\\rangle\\langle\\phi\\vert,\\,\\mathbb{I} - \\vert\\phi\\rangle\\langle\\phi\\vert\n\\bigr\\}.\n$$",
-      "status": "diagnostic",
-      "message": "Invalid set entry."
+      "status": "exact",
+      "display": "\\{|φ⟩ · ⟨φ|, qimplicitidentity() − |φ⟩ · ⟨φ|\\}",
+      "copy": "qset(vector(qadjacent(qnamedket('φ'),qdag(qnamedket('φ'))),qsub(qimplicitidentity(),qadjacent(qnamedket('φ'),qdag(qnamedket('φ'))))))"
     },
     {
       "id": "IBM047-f4526623-M143",
@@ -1459,8 +1462,9 @@
       "start": 17150,
       "end": 17597,
       "literal": "$$\n\\begin{aligned}\n& \\bigl\\| \\vert\\phi\\rangle\\langle\\phi\\vert \\vert\\phi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\phi\\rangle\\langle\\phi\\vert\\phi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\phi\\rangle \\bigr\\|^2 = 1,\\\\[1mm]\n& \\bigl\\| (\\mathbb{I} - \\vert\\phi\\rangle\\langle\\phi\\vert) \\vert\\phi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\phi\\rangle - \\vert\\phi\\rangle\\langle\\phi\\vert\\phi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\phi\\rangle - \\vert\\phi\\rangle \\bigr\\|^2 = 0.\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Maximum recursive depth reached."
+      "status": "exact",
+      "display": "1.  qnorm(qadjacent(qadjacent(qnamedket('φ'), qdag(qnamedket('φ'))), qnamedket('φ')))² = qnorm(qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('φ'))))² = qnorm(qnamedket('φ'))² = 1\n\n2.  qnorm(qadjacent(qsub(qimplicitidentity(), qadjacent(qnamedket('φ'), qdag(qnamedket('φ')))), qnamedket('φ')))^2 = qnorm(qsub(qnamedket('φ'), qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('φ')))))^2 = qnorm(qsub(qnamedket('φ'), qnamedket('φ')))^2 = 0",
+      "copy": "\\begin{gathered}qequalchain(vector(qnorm(qadjacent(qadjacent(qnamedket('φ'), qdag(qnamedket('φ'))), qnamedket('φ')))²,qnorm(qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('φ'))))²,qnorm(qnamedket('φ'))²,1))\\\\qequalchain(vector(qpower(qnorm(qadjacent(qsub(qimplicitidentity(),qadjacent(qnamedket('φ'),qdag(qnamedket('φ')))),qnamedket('φ'))),2),qpower(qnorm(qsub(qnamedket('φ'),qadjacent(qnamedket('φ'),qmul(qdag(qnamedket('φ')),qnamedket('φ'))))),2),qpower(qnorm(qsub(qnamedket('φ'),qnamedket('φ'))),2),0))\\end{gathered}"
     },
     {
       "id": "IBM047-f4526623-M145",
@@ -1478,8 +1482,9 @@
       "start": 17678,
       "end": 18091,
       "literal": "$$\n\\begin{aligned}\n& \\bigl\\| \\vert\\phi\\rangle\\langle\\phi\\vert \\vert\\psi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\phi\\rangle\\langle\\phi\\vert\\psi\\rangle \\bigr\\|^2 =\n\\bigl\\| 0 \\bigr\\|^2 = 0,\\\\[1mm]\n& \\bigl\\| (\\mathbb{I} - \\vert\\phi\\rangle\\langle\\phi\\vert) \\vert\\psi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\psi\\rangle - \\vert\\phi\\rangle\\langle\\phi\\vert\\psi\\rangle \\bigr\\|^2 =\n\\bigl\\| \\vert\\psi\\rangle \\bigr\\|^2 = 1.\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Quantum operation requires a matrix (kets are column matrices).\nMaximum recursive depth reached."
+      "status": "exact",
+      "display": "1.  qnorm(qadjacent(qadjacent(qnamedket('φ'), qdag(qnamedket('φ'))), qnamedket('ψ')))² = qnorm(qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('ψ'))))² = 0 = 0\n\n2.  qnorm(qadjacent(qsub(qimplicitidentity(), qadjacent(qnamedket('φ'), qdag(qnamedket('φ')))), qnamedket('ψ')))^2 = qnorm(qsub(qnamedket('ψ'), qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('ψ')))))^2 = qnorm(qnamedket('ψ'))^2 = 1",
+      "copy": "\\begin{gathered}qequalchain(vector(qnorm(qadjacent(qadjacent(qnamedket('φ'), qdag(qnamedket('φ'))), qnamedket('ψ')))²,qnorm(qadjacent(qnamedket('φ'), qmul(qdag(qnamedket('φ')), qnamedket('ψ'))))²,0,0))\\\\qequalchain(vector(qpower(qnorm(qadjacent(qsub(qimplicitidentity(),qadjacent(qnamedket('φ'),qdag(qnamedket('φ')))),qnamedket('ψ'))),2),qpower(qnorm(qsub(qnamedket('ψ'),qadjacent(qnamedket('φ'),qmul(qdag(qnamedket('φ')),qnamedket('ψ'))))),2),qpower(qnorm(qnamedket('ψ')),2),1))\\end{gathered}"
     }
   ],
   "panels": [
