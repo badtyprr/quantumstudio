@@ -676,3 +676,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-binary-logs.py docs/lea
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-residue-basis.py docs/learning-evidence/aud01/ibm029-residue-basis.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-register-definitions.py docs/learning-evidence/aud01/ibm029-register-definitions.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-adjacent-congruence.py docs/learning-evidence/aud01/ibm029-adjacent-congruence.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm029-current-clipboard.json

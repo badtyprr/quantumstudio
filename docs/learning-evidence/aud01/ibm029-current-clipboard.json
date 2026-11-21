@@ -1,0 +1,25 @@
+{
+  "profile": "current",
+  "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "3dac926bdb88d143b26c1b4b4cf6d64ea5bac2f5c04f50e5ec9af59844da5bfd",
+  "source_spans": 438,
+  "clipboard_sessions": 430,
+  "stable_copies": 430,
+  "mode_counts": {
+    "0": 420,
+    "7": 3,
+    "8": 2,
+    "6": 5
+  },
+  "diagnostics": [
+    "IBM029-9ea5aee3-M051",
+    "IBM029-9ea5aee3-M052",
+    "IBM029-9ea5aee3-M092",
+    "IBM029-9ea5aee3-M098",
+    "IBM029-9ea5aee3-M107",
+    "IBM029-9ea5aee3-M152",
+    "IBM029-9ea5aee3-M157",
+    "IBM029-9ea5aee3-M162"
+  ],
+  "M234_exact_rational_checks": 80
+}
