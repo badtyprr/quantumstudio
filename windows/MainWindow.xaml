@@ -65,6 +65,7 @@
           <ComboBoxItem Content="Binary word" ToolTip="Enter the bits in order, most significant first. For example, a_1 a_0 is a two-bit word."/>
           <ComboBoxItem Content="Scalar algebra" ToolTip="Use Latin letters as scalar variables. Adjacent letters multiply, as in bc. Use sqrt(x) for a named function." />
           <ComboBoxItem Content="Modular powers" ToolTip="Read a power in a residue ring as its reduced value. Paste a TeX expression such as a^k in the integers modulo N." />
+          <ComboBoxItem Content="Base-two logarithms" ToolTip="Read a pasted TeX log with no written base as a base-two logarithm. Explicit bases and natural logarithms keep their written meanings." />
          </ComboBox>
         </StackPanel>
         <StackPanel>

@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Web.Script.Serialization;
 
 class QuantumStudio {
- static readonly string[] requestPrefixes={"quantum:","","quantum:sets:","quantum:dimensions:","quantum:fractionbits:","quantum:bitword:","quantum:scalars:","quantum:modpowers:"};
+ static readonly string[] requestPrefixes={"quantum:","","quantum:sets:","quantum:dimensions:","quantum:fractionbits:","quantum:bitword:","quantum:scalars:","quantum:modpowers:","quantum:binarylogs:"};
  static Window window;
  static TextBox input, output;
  static string copyText;
@@ -996,7 +996,7 @@ class QuantumStudio {
    throw new Exception("Workspace differed before invalid-session attempts.");
   }
   int index=0;
-  foreach(string bad in new[]{"{", "null", "{\"Version\":2}", "{\"Version\":1,\"Expression\":\"x\",\"Mode\":7,\"Evaluation\":0,\"History\":[]}", "{\"Version\":1,\"Expression\":\"x\",\"History\":[null]}", new string('x',8*1024*1024+1)}) {
+  foreach(string bad in new[]{"{", "null", "{\"Version\":2}", "{\"Version\":1,\"Expression\":\"x\",\"Mode\":"+requestPrefixes.Length+",\"Evaluation\":0,\"History\":[]}", "{\"Version\":1,\"Expression\":\"x\",\"History\":[null]}", new string('x',8*1024*1024+1)}) {
    File.WriteAllText(path,bad);Exception rejected=null;
    try {OpenSession(path);}catch(Exception ex) {rejected=ex;}
    string after=serializer.Serialize(CaptureSession());
