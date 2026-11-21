@@ -84,6 +84,14 @@ if __name__ == '__main__':
     reflection = request("phase oracle reflection",
         r"$$Z_{\mathrm{OR}} = 2 \vert 0^n \rangle \langle 0^n \vert - \mathbb{I}.$$")["copy_text"]
     assert request("copied reflection", reflection)["copy_text"] == reflection
+    conjugations = []
+    for expression in (
+        r"$$ H^{\otimes n} Z_{\mathrm{OR}} H^{\otimes n} = 2 H^{\otimes n} \vert 0^n \rangle \langle 0^n \vert H^{\otimes n} - \mathbb{I} = 2 \vert u \rangle \langle u \vert - \mathbb{I}, $$",
+        r"$$ H^{\otimes n} Z_{\mathrm{OR}} H^{\otimes n} = 2 \vert u \rangle \langle u \vert - \mathbb{I}. $$",
+    ):
+        copied = request("conjugated oracle", expression)["copy_text"]
+        assert request("copied conjugation", copied)["copy_text"] == copied
+        conjugations.append(copied)
     for width in (1, 2, 3):
         dimension = 2**width
         for sign, expected in ((1, "1"), (-1, "0")):
@@ -92,5 +100,11 @@ if __name__ == '__main__':
             operator = f'matrix({dimension},{dimension},[{",".join(entries)}])'
             bound = f'replace({reflection},vector("Z_OR","n"),vector({operator},{width}))'
             assert request("bound oracle", bound)["copy_text"] == expected
+            uniform = f'matrix({dimension},1,[{",".join([f"1/sqrt({dimension})"]*dimension)}])'
+            for conjugation in conjugations:
+                values = f'vector({operator},{width},{uniform})'
+                bound = f'replace({conjugation},vector("Z_OR","n","u"),{values})'
+                assert request("bound conjugation", bound)["copy_text"] == expected
+
 
     print('Wide basis worker outcomes:', len(check_wide_copy(request, rejected)))
