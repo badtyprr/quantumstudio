@@ -1852,6 +1852,12 @@ for malformed in [
     "QSTATES1\n0\n1\x002",
 ]:
     assert run(malformed, "--states", success=False).stdout == b""
+for function, expected in [("qasin", ("0", "1", "1", "1")), ("qacos", ("1", "1", "1", "0")),
+                           ("qatan", ("1", "1", "0", "0"))]:
+    copied = data(f"quantum:{function}('x')>='x'")["copy_text"]
+    assert data("quantum:"+copied)["copy_text"] == copied
+    for value, truth in zip(("-1/2", "0", "1/2", "1"), expected):
+        assert data(f"quantum:replace(({copied}),'x',{value})")["copy_text"] == truth
 for invalid_update in ("x ← (y ← 1)", "qstepvalue(x ← x+1,[1;2])", "qstepvalue(3,5)"):
     run("quantum:"+invalid_update, "--json", success=False)
 print(f"PASS: {checks} worker process checks")

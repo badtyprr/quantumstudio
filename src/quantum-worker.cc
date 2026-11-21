@@ -188,12 +188,15 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
-  // These unevaluated scalar measurements can participate in sums before
+  // These unevaluated scalar functions can participate in sums before
   // their data are supplied. Preserve their arithmetic tree on text re-entry.
   if(quantumMode && (result.isAddition() || result.isMultiplication() || result.isPower()) &&
      (result.containsFunction(CALCULATOR->getFunction("qwalkdelta")) ||
       result.containsFunction(CALCULATOR->getFunction("qpairtotal")) ||
       result.containsFunction(CALCULATOR->getFunction("qprobabilitycall")) ||
+      result.containsFunction(CALCULATOR->getFunction("qasin")) ||
+      result.containsFunction(CALCULATOR->getFunction("qacos")) ||
+      result.containsFunction(CALCULATOR->getFunction("qatan")) ||
       result.containsFunction(CALCULATOR->getFunction("qmeanat")))) {
    explicitEntries=true;
    if(result.isAddition() && result.size()>1) {
