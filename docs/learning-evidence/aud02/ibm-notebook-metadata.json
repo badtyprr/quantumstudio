@@ -1,0 +1,302 @@
+{
+  "definitions": {
+    "LM-0b1f06df36616ebd": {
+      "cell": 0,
+      "cell_id": "54453454-26da-499f-b42f-ec9a911aa23f",
+      "definition_sha256": "65a1d4c07ce974253a972faf098b45c1ca4197e5b1e8e8c11ec072c3c5d1bd9b",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "advantage"
+    },
+    "LM-137a9958689aafc1": {
+      "cell": 0,
+      "cell_id": "7dc25056-2c3c-435a-a827-1930f8bb768f",
+      "definition_sha256": "83779ba39626fc0ae3a52c27dd40b3b50cf46ccbb04f772b8e3c0601972a6620",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
+      "term": "ansatz"
+    },
+    "LM-15ccc42f3a1f57ca": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "aebd8c4bc3b8491770a9958d0f87f3156f76347fc92222a782f3118b8865678b",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_ket-x"
+    },
+    "LM-1d60aebcecce7917": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "14b1c457a48fbd1e7dd29cd6e64c1d93f4d474a7f6893916461655b82942bf6e",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "in"
+    },
+    "LM-209519cccf6dd173": {
+      "cell": 0,
+      "cell_id": "0de576a4-9a1a-46e9-8d6b-e2c5178d6051",
+      "definition_sha256": "3e65154dcfb40db9238310e490f67c9e331744ce7c27ff70848c7d46834fbcbd",
+      "field": "gloss",
+      "path": "learning/courses/quantum-machine-learning/introduction.ipynb",
+      "term": "unitary"
+    },
+    "LM-2bb31e528822cff9": {
+      "cell": 5,
+      "cell_id": "f22bc219-954d-46bd-8bb8-53b87f795658",
+      "definition_sha256": "1d627cae71b49a7429a6057050db6acc9fdbf260a5515869f5d1b034cf6e9f59",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "expectation"
+    },
+    "LM-33d456f5dbdb4dd9": {
+      "cell": 13,
+      "cell_id": "6a3bea3d-a2f6-4033-85f9-9a10c5d5c64c",
+      "definition_sha256": "29b97b3c6bc6eb7d601798b116da0e49d0b5f4c95643c8a9d6d223aa7e73f77c",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "hermitian"
+    },
+    "LM-3a01d354d12ab523": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "6e36ef8cd50113040187edd7416e441620278a77e812ecd66c9d63a0df7ade37",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_sum-m"
+    },
+    "LM-4b98a640e92903b2": {
+      "cell": 47,
+      "cell_id": "2394d082-2278-48cf-95b0-3363ed723ec1",
+      "definition_sha256": "673fb4dab9b3490d154e5668bf3b623390db6e3d6e01a705dc4e442f251f30d1",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "bias"
+    },
+    "LM-4bb2b0b2dd77d234": {
+      "cell": 0,
+      "cell_id": "271bca1f-08dd-47ef-b659-8243070cb087",
+      "definition_sha256": "a2a1f322dadc18747aaa8456fa5f93f2753385de05a41c77160fd4b22e4c1ef5",
+      "field": "gloss",
+      "path": "learning/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+      "term": "features"
+    },
+    "LM-52602ff7b9777cdd": {
+      "cell": 0,
+      "cell_id": "07f4a5ad-7429-4478-91c8-d6143e3ed407",
+      "definition_sha256": "fdcfee3dd286ee5314f1a4f7989c235da82f6c18a1a87889fe278de12be43f7e",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/reference-states.ipynb",
+      "term": "reference"
+    },
+    "LM-55519b00754b52c2": {
+      "cell": 36,
+      "cell_id": "f23f0d82-d4f9-4485-aad3-cd2f8fd19b4f",
+      "definition_sha256": "80ef2868534d9ebea45c6a6afe87ef3549a2397b2357dd4030f2899cc5293461",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "overhead"
+    },
+    "LM-5910eef7a9606b5b": {
+      "cell": 10,
+      "cell_id": "4ef15d5f-4730-4ea8-95fd-75aff06487ff",
+      "definition_sha256": "024dced6630b5ce1d23b67324d4fcdca909b55dfe255e2ccdc7efd84e8b7a5ff",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_big-o-times-n"
+    },
+    "LM-5c7f99ba7127c147": {
+      "cell": 5,
+      "cell_id": "c47289a9-64f0-4541-b25c-41b2a51f86ad",
+      "definition_sha256": "9e770f503c6d99cfa7c288bd83306b4fb985c77034ba504aaa12166df0efbef1",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_a-norm"
+    },
+    "LM-5dd27b91a68fc5da": {
+      "cell": 9,
+      "cell_id": "07ba982e-9280-4e15-9d8c-4b6460b1deea",
+      "definition_sha256": "1d702c7cec5231fffea4546eff0229628d0ed1e5b3d472f6d0e5c2c6c0941422",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/optimization-loops.ipynb",
+      "term": "hyperparameter"
+    },
+    "LM-6ce2df577243f1b5": {
+      "cell": 4,
+      "cell_id": "3468473d-d97a-4332-8f66-8d74976361e5",
+      "definition_sha256": "f9a7774827cf21550c455887aa1e02052c2325a21aa5473dd227c6502b628482",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "decomposition"
+    },
+    "LM-6f4906b8b3c3e258": {
+      "cell": 0,
+      "cell_id": "0de576a4-9a1a-46e9-8d6b-e2c5178d6051",
+      "definition_sha256": "a2a1f322dadc18747aaa8456fa5f93f2753385de05a41c77160fd4b22e4c1ef5",
+      "field": "gloss",
+      "path": "learning/courses/quantum-machine-learning/introduction.ipynb",
+      "term": "features"
+    },
+    "LM-73e61fbed1207f9e": {
+      "cell": 0,
+      "cell_id": "7dc25056-2c3c-435a-a827-1930f8bb768f",
+      "definition_sha256": "a2a6cbbbecd2052beeb3b63a31129f5ad2e66892b23af12c3d9aafe0521c6a30",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/ansaetze-and-variational-forms.ipynb",
+      "term": "variational"
+    },
+    "LM-8a0dc582ef784a04": {
+      "cell": 0,
+      "cell_id": "271bca1f-08dd-47ef-b659-8243070cb087",
+      "definition_sha256": "743722d38f56b4c6aa5c123a1610897a36325168d739a936216fda6fa57c551a",
+      "field": "gloss",
+      "path": "learning/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+      "term": "unitary"
+    },
+    "LM-8f9fb4a45062dfe1": {
+      "cell": 14,
+      "cell_id": "396d0617-9f20-48cb-b57c-30dfa54293ff",
+      "definition_sha256": "061c352c804f947fd794149cb00f984dbb66165ad61d29b29ca6c77cf98f2915",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/optimization-loops.ipynb",
+      "term": "barren-plateaus"
+    },
+    "LM-9cce3b388392d9d1": {
+      "cell": 2,
+      "cell_id": "8ec24045-65fb-43c7-8ea5-ba6fa1061956",
+      "definition_sha256": "dc6939bc8cfea567764d5776f8f87ec5be4c9a1a9f43313ff0437b649ce2ebcc",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "cost_function"
+    },
+    "LM-a3a2e9424f3acbca": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "81075faab0e825e14d19fcc2c9e33d316521e9fe4207706801ae4e645e875d10",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "brace"
+    },
+    "LM-a468231ad6c3f1a6": {
+      "cell": 4,
+      "cell_id": "3468473d-d97a-4332-8f66-8d74976361e5",
+      "definition_sha256": "3847fbb423e9ffd8f7fef628faaa61959e9bc743dbf65c75f7dc2793aadb6a07",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "eigenstate"
+    },
+    "LM-a4edd12a4cd827b1": {
+      "cell": 5,
+      "cell_id": "dcffb899-ef2d-4dca-b2a7-11c197d45ed0",
+      "definition_sha256": "6ecd83253237df40cf0a6e8cd9eff0ffaa7b96dc493424122c73682e4c3a5486",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "sampling"
+    },
+    "LM-a743377e6a046412": {
+      "cell": 16,
+      "cell_id": "42f771a0-486d-4a5f-9df1-a1720d7bf252",
+      "definition_sha256": "8977a5de288350eb43d15129908046a36f63a98d1f3626e459345996eedf9d57",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "oracle"
+    },
+    "LM-b1d34d66b396c084": {
+      "cell": 3,
+      "cell_id": "96a74b2b-6aa0-4ef1-a8d1-448b591429e4",
+      "definition_sha256": "0e74d65eb6ddc519db82b7d4ea8e8ad606206bb69139d48b208a1763a24a0108",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "pauli"
+    },
+    "LM-c1739e7c60348aad": {
+      "cell": 1,
+      "cell_id": "4a9b79a9-c040-43d3-a4cf-314277e30eea",
+      "definition_sha256": "580b246a9bca353bb72b6ee598bd69fc043f66fcd10741176310e48e28ba1d7f",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "term": "primitives"
+    },
+    "LM-c4704bbac9d7bb4b": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "cf25356db6b0431e318175ffcf3a7c8d6d6cd7aeafbc2fb5151fe94f87d7900d",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "script-x"
+    },
+    "LM-d0dbc5adda88de80": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "084ef0c4e75f90720921e357dee2fe12594aca0a3ad878ba3e8cde2711c073ab",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_x-lil-m"
+    },
+    "LM-d1f403b943dbfc27": {
+      "cell": 0,
+      "cell_id": "54453454-26da-499f-b42f-ec9a911aa23f",
+      "definition_sha256": "96292f97c2ce23ac547915c648d96193185c6320e481d00423433287e8a0cd9b",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/variational-algorithms.ipynb",
+      "term": "converge"
+    },
+    "LM-da84f73b04d4f17c": {
+      "cell": 10,
+      "cell_id": "4ef15d5f-4730-4ea8-95fd-75aff06487ff",
+      "definition_sha256": "a25027919b611ec5ecef5d11a375baf9197a993ceacc259f379b54322485a3ae",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_big-o-times-n2"
+    },
+    "LM-db7c59d92e3786d8": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "1b928357cca8030ecee1c9daa0b6c13821db66115328fb38eb73f739a53b73fd",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "ellipsis"
+    },
+    "LM-e022b43abc0a2afe": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "a83c672a9a72beee77507bb0de4af5c0cab71a7ef867a2fd33e5cf1f6254f1a6",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_m"
+    },
+    "LM-e926b44c38ea1e49": {
+      "cell": 9,
+      "cell_id": "07ba982e-9280-4e15-9d8c-4b6460b1deea",
+      "definition_sha256": "0feffc721f2ddc885bdffde625a7021a6d0473c11875b0cbe50b19a025e90625",
+      "field": "gloss",
+      "path": "learning/courses/variational-algorithm-design/optimization-loops.ipynb",
+      "term": "local-minimum"
+    },
+    "LM-ef2d3ad52514bb4d": {
+      "cell": 1,
+      "cell_id": "930db404-47dc-4dfd-8ca0-cff02fb7cb90",
+      "definition_sha256": "b1051bb80f87656a937deb86d5d02202676f80c29d51fb6e81f2e488ae12fd7d",
+      "field": "formulas",
+      "path": "learning/courses/quantum-machine-learning/data-encoding.ipynb",
+      "term": "_ket-dataset"
+    },
+    "LM-f6d7a1613ac0d448": {
+      "cell": 0,
+      "cell_id": "0de576a4-9a1a-46e9-8d6b-e2c5178d6051",
+      "definition_sha256": "86cf0ae3db3d1f6589cfd127b07c267c94af6059af1bc5a9bc10ac044e8b561e",
+      "field": "gloss",
+      "path": "learning/courses/quantum-machine-learning/introduction.ipynb",
+      "term": "computational-basis-state"
+    },
+    "LM-f733020006e5c9d1": {
+      "cell": 0,
+      "cell_id": "271bca1f-08dd-47ef-b659-8243070cb087",
+      "definition_sha256": "86cf0ae3db3d1f6589cfd127b07c267c94af6059af1bc5a9bc10ac044e8b561e",
+      "field": "gloss",
+      "path": "learning/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+      "term": "computational-basis-state"
+    }
+  },
+  "notebooks_checked": 140,
+  "revision": "079769d205eb3b60e077820060274c7b0359c123"
+}
