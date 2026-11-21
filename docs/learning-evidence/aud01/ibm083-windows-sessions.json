@@ -1,0 +1,461 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
+  "notebook_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
+  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "516594aed0899a9f32a1d2f0046b7819e87501dabfa40ee1a56bef223f446165",
+  "suite": {
+    "passed": true,
+    "checks": 1793,
+    "calls": 284,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 175,
+    "restored_identically": 175,
+    "stable_after_text_reentry": 175,
+    "source_diagnostic": 109
+  },
+  "diagnostics": [
+    {
+      "id": "IBM083-0db143f4-M018",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M021",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M023",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M026",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M029",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M031",
+      "message": "Unsupported text in a mathematical expression at byte 32"
+    },
+    {
+      "id": "IBM083-0db143f4-M032",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M035",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M036",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M037",
+      "message": "Unexpected notation at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M039",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M044",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M045",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M046",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M047",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M048",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M057",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M058",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M059",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M060",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M061",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M062",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M063",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M064",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M065",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M066",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M067",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M068",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M069",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M070",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M071",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M072",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M073",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M074",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M075",
+      "message": "Unexpected notation at byte 4"
+    },
+    {
+      "id": "IBM083-0db143f4-M076",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M077",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM083-0db143f4-M078",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M083",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM083-0db143f4-M084",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM083-0db143f4-M085",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M086",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M088",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M097",
+      "message": "Unsupported text in a mathematical expression at byte 16"
+    },
+    {
+      "id": "IBM083-0db143f4-M107",
+      "message": "Unsupported TeX command: \\ell at byte 5"
+    },
+    {
+      "id": "IBM083-0db143f4-M108",
+      "message": "Unsupported TeX command: \\ell at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M109",
+      "message": "Unsupported TeX command: \\ell at byte 6"
+    },
+    {
+      "id": "IBM083-0db143f4-M111",
+      "message": "Unexpected notation at byte 5"
+    },
+    {
+      "id": "IBM083-0db143f4-M114",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M117",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M119",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M136",
+      "message": "Unsupported TeX command: \\circ at byte 24"
+    },
+    {
+      "id": "IBM083-0db143f4-M144",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM083-0db143f4-M151",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M153",
+      "message": "Unsupported TeX command: \\propto at byte 65"
+    },
+    {
+      "id": "IBM083-0db143f4-M154",
+      "message": "Unsupported TeX command: \\boxed at byte 8"
+    },
+    {
+      "id": "IBM083-0db143f4-M156",
+      "message": "Unsupported TeX command: \\sim at byte 30"
+    },
+    {
+      "id": "IBM083-0db143f4-M158",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M160",
+      "message": "Unsupported TeX command: \\cdots at byte 58"
+    },
+    {
+      "id": "IBM083-0db143f4-M163",
+      "message": "Unsupported text in a mathematical expression at byte 23"
+    },
+    {
+      "id": "IBM083-0db143f4-M165",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M167",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M169",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M173",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M174",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M175",
+      "message": "Unsupported text in a mathematical expression at byte 20"
+    },
+    {
+      "id": "IBM083-0db143f4-M176",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M178",
+      "message": "Unsupported text in a mathematical expression at byte 19"
+    },
+    {
+      "id": "IBM083-0db143f4-M179",
+      "message": "Unsupported text in a mathematical expression at byte 52"
+    },
+    {
+      "id": "IBM083-0db143f4-M183",
+      "message": "Unsupported text in a mathematical expression at byte 40"
+    },
+    {
+      "id": "IBM083-0db143f4-M191",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M192",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M193",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M194",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM083-0db143f4-M195",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M196",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M205",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M213",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix."
+    },
+    {
+      "id": "IBM083-0db143f4-M215",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM083-0db143f4-M217",
+      "message": "Unsupported text in a mathematical expression at byte 93"
+    },
+    {
+      "id": "IBM083-0db143f4-M219",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM083-0db143f4-M220",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM083-0db143f4-M224",
+      "message": "Unsupported TeX control symbol at byte 19"
+    },
+    {
+      "id": "IBM083-0db143f4-M226",
+      "message": "Unsupported TeX command: \\underbrace at byte 31"
+    },
+    {
+      "id": "IBM083-0db143f4-M227",
+      "message": "Unsupported TeX control symbol at byte 21"
+    },
+    {
+      "id": "IBM083-0db143f4-M232",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M235",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M240",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M243",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M246",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M249",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM083-0db143f4-M252",
+      "message": "Expected endpoints for an ascending integer range at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M253",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM083-0db143f4-M255",
+      "message": "Unsupported text in a mathematical expression at byte 15"
+    },
+    {
+      "id": "IBM083-0db143f4-M259",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M260",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM083-0db143f4-M262",
+      "message": "Unsupported text in a mathematical expression at byte 30"
+    },
+    {
+      "id": "IBM083-0db143f4-M265",
+      "message": "Unsupported text in a mathematical expression at byte 48"
+    },
+    {
+      "id": "IBM083-0db143f4-M266",
+      "message": "Unsupported text in a mathematical expression at byte 41"
+    },
+    {
+      "id": "IBM083-0db143f4-M267",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M269",
+      "message": "Unsupported text in a mathematical expression at byte 53"
+    },
+    {
+      "id": "IBM083-0db143f4-M270",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM083-0db143f4-M271",
+      "message": "Unsupported text in a mathematical expression at byte 54"
+    },
+    {
+      "id": "IBM083-0db143f4-M272",
+      "message": "Unsupported text in a mathematical expression at byte 54"
+    },
+    {
+      "id": "IBM083-0db143f4-M273",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM083-0db143f4-M276",
+      "message": "Unsupported text in a mathematical expression at byte 31"
+    },
+    {
+      "id": "IBM083-0db143f4-M277",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM083-0db143f4-M280",
+      "message": "Unsupported text in a mathematical expression at byte 17"
+    },
+    {
+      "id": "IBM083-0db143f4-M284",
+      "message": "Argument 2, Lower limit (i), in sum() must be an integer.\nArgument 3, Upper limit (n), in sum() must be an integer."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
