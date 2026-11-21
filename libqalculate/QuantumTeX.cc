@@ -694,6 +694,29 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
+std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation) {
+ size_t split=first.rfind('_');
+ if(split==std::string::npos || split==0)return "";
+ std::string prefix=first.substr(0,split+1);
+ if(last.compare(0,prefix.size(),prefix)!=0)return "";
+ for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
+ std::string from=first.substr(split+1),to=last.substr(split+1);
+ auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
+ // Grouped offsets belong to the index. Ungrouped arithmetic does not.
+ auto endpoint=[&](std::string &value) {
+  if(value.size()<3 || value.front()!='{' || value.back()!='}')
+   return integer(value) || (value.size()==1 && asciiLetter(value.front()));
+  std::string bound=trim(value.substr(1,value.size()-2));
+  if(bound.empty() || !asciiLetter(bound.front()))return false;
+  std::string offset=trim(bound.substr(1));
+  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return false;
+  std::string magnitude=trim(offset.substr(1));
+  if(!integer(magnitude))return false;
+  value=bound.substr(0,1)+offset.front()+magnitude;return true;
+ };
+ if(!endpoint(from) || !endpoint(to))return "";
+ return operation+"\""+prefix+"\","+from+","+to+",vector())";
+}
 // A finite family of kets uses the same prefix at both endpoints.
 std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  if(entries.size()!=3 || entries[1]!="...")return "";
@@ -715,27 +738,7 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
    if(!offset.empty() && offset[0]=='-' && trim(offset.substr(1))=="1")return basis+last.substr(0,1)+")";
   }
  }
- size_t split=first.rfind('_');
- if(split==std::string::npos || split==0)return "";
- std::string prefix=first.substr(0,split+1);
- if(last.compare(0,prefix.size(),prefix)!=0)return "";
- for(size_t k=0;k<split;++k)if((unsigned char)prefix[k]<128 && !asciiLetter(prefix[k]))return "";
- std::string from=first.substr(split+1),to=last.substr(split+1);
- auto integer=[](const std::string &s){return !s.empty() && s.find_first_not_of("0123456789")==std::string::npos && (s.size()==1 || s.front()!='0');};
- // Grouped offsets belong to the index. Ungrouped arithmetic does not.
- auto endpoint=[&](std::string &value) {
-  if(value.size()<3 || value.front()!='{' || value.back()!='}')
-   return integer(value) || (value.size()==1 && asciiLetter(value.front()));
-  std::string bound=trim(value.substr(1,value.size()-2));
-  if(bound.empty() || !asciiLetter(bound.front()))return false;
-  std::string offset=trim(bound.substr(1));
-  if(offset.empty() || (offset.front()!='+' && offset.front()!='-'))return false;
-  std::string magnitude=trim(offset.substr(1));
-  if(!integer(magnitude))return false;
-  value=bound.substr(0,1)+offset.front()+magnitude;return true;
- };
- if(!endpoint(from) || !endpoint(to))return "";
- return std::string(ordered ? "qindexedketlist(" : "qindexedketset(")+"\""+prefix+"\","+from+","+to+",vector())";
+ return indexedLabelRange(first,last,ordered ? "qindexedketlist(" : "qindexedketset(");
 }
 std::string orderedKetList(const std::string &text) {
  return text.find("...")==std::string::npos ? "" : indexedKets(indexedParts(text,","),true);
@@ -963,6 +966,7 @@ class TeXReader {
    if(ellipsis) {
     alphabet=openIndexedFamily(entries);
     if(alphabet.empty())alphabet=indexedKets(entries,false);
+    if(alphabet.empty() && entries.size()==3 && entries[1]=="...")alphabet=indexedLabelRange(entries.front(),entries.back(),"qindexedset(");
     if(alphabet.empty()) {
      if(entries.size()<3 || entries[entries.size()-2]!="..." || entries.front().empty() || entries.back().empty() ||
         entries.front()=="..." || entries.back()=="...")throw std::runtime_error(error("Expected endpoints for an ascending integer range"));
@@ -981,6 +985,9 @@ class TeXReader {
      }
      alphabet="qindexrange("+entries.front()+","+entries.back()+")";
     }
+   } else if(entries.size()==2 && entries[0].size()>3 && entries[0].compare(entries[0].size()-3,3,"...")==0) {
+    std::string range=indexedLabelRange(trim(entries[0].substr(0,entries[0].size()-3)),entries[1],"qindexedset(");
+    if(!range.empty()) {alphabet=range;ellipsis=true;}
    }
    size_t afterSet=pos;space();
    if(pos<input.size() && input[pos]=='^') {
@@ -1766,6 +1773,13 @@ class TeXReader {
   if(!integers.empty())return integers;
   std::string list=orderedKetList(result);
   if(!list.empty())return list;
+  if(result.find("...")!=std::string::npos && result.find("_{")!=std::string::npos) {
+   auto labels=indexedParts(result,",");
+   if(labels.size()==3 && labels[1]=="...") {
+    list=indexedLabelRange(labels[0],labels[2],"qindexedentries(");
+    if(!list.empty())return list;
+   }
+  }
   if(lines && !rootLines.empty() && trim(result)==rootAlignment)*lines=rootLines;
   return result;
  }

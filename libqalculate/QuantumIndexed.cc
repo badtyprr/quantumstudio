@@ -193,7 +193,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qindexedset" || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -333,7 +333,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -1921,10 +1921,11 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedlist" || op=="qindexedentries") {
+  if(op=="qindexedset" || op=="qindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
-   if(op=="qindexedentries")out=entries;else out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);
+   if(op=="qindexedentries")out=entries;
+   else out.set(CALCULATOR->getFunction(op=="qindexedset" ? "qset" : "qtuple"),&entries,NULL);
    return 1;
   }
   if(op=="qindexedfamily") {
@@ -2508,6 +2509,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
