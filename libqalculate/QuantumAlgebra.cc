@@ -809,6 +809,21 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=relation;return 1;
   }
+  if(op=="qvectorref") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(value.isSymbolic() || value.isUnknown() || (value.isFunction() && value.function()->referenceName()=="qindexedlabel"))return 0;
+   if(!value.isVector() || (value.isMatrix() && value.rows()!=1 && value.columns()!=1)) {
+    CALCULATOR->error(true,"A vector parameter requires a row or column vector.",NULL);return 0;
+   }
+   size_t count=value.isMatrix() ? value.rows()*value.columns() : value.size();
+   for(size_t k=0;k<count;++k) {
+    const MathStructure &part=value.isMatrix() ? *value.getElement(value.rows()==1 ? 1 : k+1,value.rows()==1 ? k+1 : 1) : value[k];
+    if(!part.representsScalar() || part.isUndefined() || (part.isNumber() && part.number().isInfinite(false))) {
+     CALCULATOR->error(true,"Vector parameters must contain finite scalar entries.",NULL);return 0;
+    }
+   }
+   out=value;return 1;
+  }
   if(op=="qoperatorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(!value.isMatrix()) {
@@ -1499,6 +1514,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));

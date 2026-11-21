@@ -1808,7 +1808,7 @@ class TeXReader {
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"hbar","ℏ"},{"ell","ℓ"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
-   {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
+   {"lambda","λ"},{"omega","ω"},{"mu","μ"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
    {"zeta","ζ"},{"eta","η"},{"iota","ι"},{"kappa","κ"},{"nu","ν"},{"xi","ξ"},
    {"clubsuit","♣"},{"diamondsuit","♢"},{"heartsuit","♡"},{"spadesuit","♠"},
    {"omicron","ο"},{"tau","τ"},{"upsilon","υ"},{"vartheta","θ"},{"varrho","ρ"},
@@ -2318,6 +2318,28 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(distinct.size()==2)return "qoperatorunequal("+quantumTeX(distinct[0])+","+quantumTeX(distinct[1])+")";
    static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
    s=std::regex_replace(s,initialState,"\\phi(0)");
+  }
+ }
+ if(s.find("U_{\\text{")!=std::string::npos) {
+  static const std::regex applied(R"(U_\{\\text\{([A-Za-z]+)\}\}\s*\()");
+  s=std::regex_replace(s,applied,"qoperatorat(\"U_$1\",");
+  static const std::regex named(R"(U_\{\\text\{([A-Za-z]+)\}\})");
+  s=std::regex_replace(s,named,"qoperatorref(\"U_$1\")");
+ }
+ if(s.find("\\vec{")!=std::string::npos) {
+  static const std::regex vectorLabel(R"(\\vec\{(\\[A-Za-z]+|[A-Za-z])(?:_([0-9a-zA-Z]))?\}(?:_(?:\\text\{([A-Za-z]+)\}|\{([A-Za-z](?:[+\-][0-9]+)?|[0-9]+)\}|([a-zA-Z0-9])))?)");
+  std::smatch m;
+  while(std::regex_search(s,m,vectorLabel)) {
+   if(m[2].matched && (m[3].matched || m[4].matched || m[5].matched))
+    throw std::runtime_error("A vector label has two subscripts.");
+   std::string base=quantumTeX(m[1].str()),label;
+   if(m[3].matched)label="\""+base+"_"+m[3].str()+"\"";
+   else {
+    std::string sub=m[2].str()+m[4].str()+m[5].str();
+    if(!sub.empty() && asciiLetter(sub[0]))sub="\""+sub.substr(0,1)+"\""+sub.substr(1);
+    label=sub.empty() ? "\""+base+"\"" : "qindexedlabel(\""+base+"_\",("+sub+"),\"\")";
+   }
+   s.replace(m.position(),m.length(),"qvectorref("+label+")");
   }
  }
  if(s.find("\\langle")!=std::string::npos) {

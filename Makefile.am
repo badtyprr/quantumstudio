@@ -526,3 +526,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm086-estimator.py docs/learn
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm090-inventory.json docs/learning-evidence/aud01/ibm091-inventory.json docs/learning-evidence/aud01/ibm092-inventory.json docs/learning-evidence/aud01/ibm093-inventory.json docs/learning-evidence/aud01/ibm094-inventory.json docs/learning-evidence/aud01/ibm095-inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm091-vqe.py docs/learning-evidence/aud01/ibm091-local-vqe.json docs/learning-evidence/aud01/ibm091-windows-sessions.json docs/learning-evidence/aud01/ibm092-windows-sessions.json docs/learning-evidence/aud01/ibm093-windows-sessions.json docs/learning-evidence/aud01/ibm094-windows-sessions.json docs/learning-evidence/aud01/ibm095-windows-sessions.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm091-parameters.py

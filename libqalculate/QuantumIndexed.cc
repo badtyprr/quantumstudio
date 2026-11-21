@@ -1021,7 +1021,12 @@ class QuantumStateFamilyFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(raw.size()!=parameters.size()) {CALCULATOR->error(true,"Wrong number of state-family arguments.",NULL);return 0;}
   MathStructure arguments=raw;arguments.eval(eo);std::vector<MathStructure> placeholders;
-  for(size_t k=0;k<arguments.size();++k)if(!arguments[k].representsScalar() || arguments[k].isUndefined() || (arguments[k].isNumber() && arguments[k].number().isInfinite(false))) {CALCULATOR->error(true,"State-family arguments must be finite scalars.",NULL);return 0;}
+  for(size_t k=0;k<arguments.size();++k) {
+   if(raw[k].isFunction() && raw[k].function()->referenceName()=="qvectorref" && arguments[k].isVector())continue;
+   if(!arguments[k].representsScalar() || arguments[k].isUndefined() || (arguments[k].isNumber() && arguments[k].number().isInfinite(false))) {
+    CALCULATOR->error(true,"State-family arguments must be finite scalars or explicitly declared vectors.",NULL);return 0;
+   }
+  }
   out=body;unsigned serial=0;
   // Substitute simultaneously: an argument may contain another parameter's
   // name. Fresh placeholders prevent later replacements from rewriting it.
@@ -1442,6 +1447,29 @@ class QuantumIndexedFunction: public MathFunction {
     total+=term;
    }
    out=total;out.eval(exact);return 1;
+  }
+  if(op=="qoperatorat") {
+   MathStructure table=raw[0],parameter=raw[1];
+   table.eval(eo);parameter.eval(eo);
+   if(table.isSymbolic() || table.isUnknown() || parameter.containsUnknowns())return 0;
+   if(!table.isVector()) {
+    CALCULATOR->error(true,"An operator family requires a table of parameter and matrix pairs.",NULL);return 0;
+   }
+   bool found=false;
+   for(size_t i=0;i<table.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &pair=table[i];
+    if(!pair.isVector() || pair.size()!=2 || !pair[1].isMatrix() || pair[1].rows()!=pair[1].columns()) {
+     CALCULATOR->error(true,"Each operator family entry needs a parameter and a square matrix.",NULL);return 0;
+    }
+    if(!pair[0].equals(parameter))continue;
+    if(found && !out.equals(pair[1])) {
+     CALCULATOR->error(true,"Conflicting operators for the same parameter.",NULL);return 0;
+    }
+    out=pair[1];found=true;
+   }
+   if(!found)CALCULATOR->error(true,"The operator family has no entry for this parameter.",NULL);
+   return found ? 1 : 0;
   }
   if(op=="qmeanat") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
@@ -2342,6 +2370,12 @@ class QuantumIndexedFunction: public MathFunction {
   }
   if(op=="qstatecall") {
    MathStructure argument=raw[1];argument.eval(eo);
+   if(raw[1].isFunction() && raw[1].function()->referenceName()=="qvectorref") {
+    MathFunction *family=CALCULATOR->getFunction("__qstate_family_"+raw[0].symbol());
+    if(!family || !argument.isVector())return 0;
+    if(family->args()!=1) {CALCULATOR->error(true,"The state family expects a different number of arguments.",NULL);return 0;}
+    out.set(family,&raw[1],NULL);out.eval(eo);return 1;
+   }
    if(!argument.representsScalar() || argument.isUndefined() || (argument.isNumber() && argument.number().isInfinite(false))) {CALCULATOR->error(true,"A state-family argument must be a finite scalar expression.",NULL);return 0;}
    MathFunction *family=CALCULATOR->getFunction("__qstate_family_"+raw[0].symbol());
    if(!family) {
@@ -2917,6 +2951,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qwalkdistance",3));
  calculator.addFunction(new QuantumIndexedFunction("qwalkindicator",3));
  calculator.addFunction(new QuantumIndexedFunction("qpairtotal",6));
+ calculator.addFunction(new QuantumIndexedFunction("qoperatorat",2));
  calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
  calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
  calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));
