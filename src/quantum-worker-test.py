@@ -1868,6 +1868,10 @@ for formula, expected in [
     ("replace(bc^2,vector('b','c'),vector(2,3))", "18"),
     ("replace(bc(b+1),vector('b','c'),vector(2,3))", "18"),
     ("sqrt(9)+cos(0)", "4"),
+    ("πb==bπ", "1"), ("2πT==2*pi*T", "1"), (r"$\pi{}b=\pi b$", "1"),
+    ("replace(bc_1,vector('b',\"c_1\"),vector(2,3))", "6"),
+    ("replace(bc_{1},vector('b',\"c_1\"),vector(2,3))", "6"),
+    ("replace(bc2,vector('b','c'),vector(2,3))", "12"),
 ]:
     copied = data("quantum:scalars:"+formula)["copy_text"]
     assert copied == expected and data("quantum:scalars:"+copied)["copy_text"] == copied

@@ -1796,6 +1796,8 @@ class TeXReader {
   if(name=="cdots" && matrix)return "⋯";
   if(name=="ddots" && matrix)return "⋱";
   if(name=="lVert") { ++norms; return "norm("; }
+  // An empty TeX group can terminate a control word before the next letter.
+  if(name=="pi" && input.compare(pos,2,"{}")==0) {pos+=2;return " pi ";}
   if(name=="rVert") { if(norms==0) throw std::runtime_error(error("Unmatched norm delimiter")); --norms; return closeNorm(); }
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
   static const std::map<std::string,std::string> aliases={

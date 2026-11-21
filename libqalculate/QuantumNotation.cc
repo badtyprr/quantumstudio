@@ -1312,11 +1312,22 @@ class Parser {
     a.find_first_not_of("0123456789",2)==std::string::npos && p>b+a.size();
    // Scalar mode reads juxtaposed Latin letters as a product. Return one
    // atom at a time so a power on the last letter keeps its usual precedence.
-   const bool letters=scalarNotation && a.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos;
-   const bool scalarLetter=letters && a!="pi" && a!="infinity" && a!="undefined" && a!="true" && a!="false" &&
-                           (a.size()==1 || p==s.size() || s[p]!='(' ||
-                            (CALCULATOR && !quantumSignatures.count(a) && !CALCULATOR->getActiveFunction(a)));
-   if(scalarLetter && a.size()>1) {p=b+1;a.resize(1);}
+   bool scalarLetter=false;
+   if(scalarNotation && !numericToken && a!="infinity" && a!="undefined" && a!="true" && a!="false") {
+    const size_t suffix=a.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    const bool indexed=suffix!=std::string::npos && suffix>1 && a[suffix]=='_';
+    const bool numbered=suffix!=std::string::npos && suffix>0 && std::isdigit(static_cast<unsigned char>(a[suffix]));
+    const bool namedCall=a.size()>1 && p<s.size() && s[p]=='(' &&
+                         (quantumSignatures.count(a) || !CALCULATOR || CALCULATOR->getActiveFunction(a));
+    if(!namedCall && (suffix==std::string::npos || indexed || numbered)) {
+     // Both Unicode pi and TeX pi reach this point as the reserved token pi.
+     // Keep it whole even when immediately followed by another factor.
+     const bool pi=a.compare(0,2,"pi")==0;
+     size_t length=pi ? 2 : 1;
+     if(a.size()>length) {p=b+length;a.resize(length);}
+     scalarLetter=!pi;
+    }
+   }
    bool indexedScalar=false;
    if(scalarLetter || (!updateVariable.empty() && a==updateVariable)) {
     a=indexableLabel(a);indexedScalar=true;

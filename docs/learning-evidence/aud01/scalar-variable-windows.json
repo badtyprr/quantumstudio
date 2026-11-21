@@ -10,14 +10,14 @@
     }
   },
   "mode": "Scalar algebra",
-  "windows_records_sha256": "2ac2154a7cb804be5c29af95e9ad07367d108af299c3754ec82b616a5cae5d18",
+  "windows_records_sha256": "15b10ea50783bd5b15d3da1680e0a10fe12759d7283aaa3810ccc543dd844287",
   "application_sha256": "2335cbbb65a216fcd8725775417f380337e8adf4cb6736afee9fff97e4efdc53",
-  "worker_sha256": "36b9c09d684a5adde2feeb0d2a8d64a69571f70511d2daf7fcaf8e6c30cd753b",
+  "worker_sha256": "e2173bd57f398e5ed859f335a1d43cf7be3e27b6308fb4a5cc03d283f1e7ada4",
   "session_store_checks": 72,
   "suite": {
     "passed": true,
-    "checks": 360,
-    "calls": 40,
+    "checks": 414,
+    "calls": 46,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
@@ -60,6 +60,12 @@
     "exponent": "18",
     "group": "18",
     "function": "5",
+    "pi-before": "1",
+    "pi-factor": "1",
+    "pi-tex": "1",
+    "trailing-digit": "12",
+    "indexed-0": "6",
+    "indexed-1": "6",
     "speed-default": "((qphysicalunit(\"s\",\"\"))^(\u22121))*(299792458)*(qphysicalunit(\"m\",\"\"))",
     "gate-default": "1",
     "pauli-default": "1"

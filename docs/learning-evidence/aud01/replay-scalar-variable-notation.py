@@ -47,6 +47,13 @@ for t in (1,2,4):
     check(f"limit-update-{t}", f"qstepvalue({sources[137]},{t})",str((5*t+3)//4))
 for name,expr,expected in [("exponent","bc^2",18),("group","bc(b+1)",18),("function","sqrt(b^2)+c",5)]:
     check(name,bind(evaluate(expr),b=2,c=3),str(expected))
+for name, expr, result in [
+        ("pi-before", "πb==bπ", "1"), ("pi-factor", "2πT==2*pi*T", "1"),
+        ("pi-tex", r"$\pi{}b=\pi b$", "1"), ("trailing-digit", bind(evaluate("bc2"),b=2,c=3), "12")]:
+    check(name, expr, result)
+for idx, original in enumerate(("bc_1", "bc_{1}")):
+    expression=evaluate(original)
+    check(f"indexed-{idx}", f"""replace(({expression}),vector('b',"c_1"),vector(2,3))""", "6")
 check("speed-default", "c", evaluate("c",""), "")
 assert outputs["speed-default"] != sources[369]
 check("gate-default", "T*|0>==|0>", "1", "")
