@@ -1,5 +1,6 @@
 """Check the named-outcome examples against the lesson's two explicit basis states."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -7,7 +8,11 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument("worker", type=Path)
+parser.add_argument("--windows",type=Path,help="Prepare indexed-function inputs for the Windows clipboard replay.")
+parser.add_argument("--report",type=Path,help="Verify the Windows records and write a report.")
 args = parser.parse_args()
+if not __debug__: raise RuntimeError("Assertions must be enabled.")
+if args.report and not args.windows: parser.error("--report requires --windows")
 worker = args.worker.resolve()
 environment = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent / "data"))
 
@@ -88,11 +93,13 @@ print("Verified all four named outcomes from M021, including Copy re-entry")
 # Bind the function names to the graphs printed in M067. Toggling both
 # outputs produces a counterexample on each input, including constant maps.
 functions = [(0,0), (0,1), (1,0), (1,1)]
+windows_cases = {"M067": (inventory["rows"][66]["literal"],tables)}
 for row_number, function_number, inputs in [(68,1,[0,1]), (69,4,[0,1]), (72,2,[0,1]),
                                            (75,3,[0]), (76,3,[1])]:
     row = inventory["rows"][row_number - 1]
     assert row["id"].endswith(f"M{row_number:03}")
     copied = evaluate("quantum:" + row["literal"])
+    windows_cases[row["id"]] = (row["literal"],copied)
     for bit in inputs:
         for toggle in (0,1):
             zero, one = (value ^ toggle for value in functions[function_number-1])
@@ -101,6 +108,7 @@ for row_number, function_number, inputs in [(68,1,[0,1]), (69,4,[0,1]), (72,2,[0
             if "(a)" in row["literal"]:
                 bound = f"replace({bound},a,{bit})"
             assert evaluate("quantum:" + bound) == str(1-toggle), (row["id"],bit,toggle)
+            windows_cases[f'M{row_number:03}-bit-{bit}-toggle-{toggle}'] = (bound,str(1-toggle))
 for pairs, key in [("tuple(0,0),tuple(0,1)",0), ("tuple(0,1),tuple(1,0)",2)]:
     expr = f"quantum:qfiniteapply(qset(vector({pairs})),{key})"
     process = subprocess.run([worker,"--json"],input=expr.encode(),env=environment,capture_output=True,timeout=30)
@@ -131,3 +139,24 @@ for number, normal, swapped in [(138, "matrix(2,1,[1,0])", "matrix(2,1,[2 ∕ 5,
         changed = evaluate("quantum:" + source.replace("M_2 M_1","M_1 M_2"))
         assert bind_maps(changed, forward + [column]) == "0"
 print("Verified four ordered matrix expressions with both map assignments")
+if args.windows:
+    inputs = [[key,expr,"0"] for key,(expr,_) in windows_cases.items()]
+    path = args.windows/"inputs.json"
+    if not args.report:
+        args.windows.mkdir(parents=True,exist_ok=True)
+        path.write_text(json.dumps(inputs),"utf8")
+    else:
+        assert json.loads(path.read_bytes())==inputs
+        records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
+        result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
+        assert result["passed"] and result["clipboardRestored"] and not result["sessionsOnly"]
+        assert len(records)==result["calls"]==len(inputs)==22
+        for (key,expr,_),record in zip(inputs,records):
+            session=json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
+            assert session["Expression"]==expr and session["Mode"]==0
+            assert record["id"]==key and record["restored_same"]
+            assert record["copy"]==record["second_copy"]==windows_cases[key][1],key
+        report=dict(worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),source_spans=[67,68,69,72,75,76],
+                    finite_inputs=8,changed_graph_controls=8,invalid_graph_controls=2,
+                    clipboard_sessions=len(inputs),windows_checks=result["checks"])
+        args.report.write_text(json.dumps(report,indent=2)+"\n","utf8")
