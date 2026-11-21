@@ -116,11 +116,15 @@ enum class SetEquality { Equal, Different, Unknown };
 bool namedKet(const MathStructure &value) {
  return value.isFunction() && value.function()->referenceName()=="qketstate" && value.size()==1;
 }
+bool namedOutcome(const MathStructure &value) {
+ return value.isFunction() && value.function()->referenceName()=="qoutcome";
+}
 bool stateColumn(const MathStructure &value) {
  return value.isMatrix() && value.columns()==1 && value.rows()>0;
 }
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
+ if(namedOutcome(left) && namedOutcome(right))return SetEquality::Different;
  if(namedKet(left) || namedKet(right))return SetEquality::Unknown;
  if(stateColumn(left) && stateColumn(right)) {
   if(left.rows()!=right.rows())return SetEquality::Different;
@@ -188,6 +192,7 @@ bool pendingDomain(const MathStructure &value) {
 // Keep tuples distinct from vectors/matrices, including the zero-length tuple.
 bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &pending,unsigned depth=0) {
  if(depth>32)return false;
+ if(namedOutcome(value))return value.size()==1 && value[0].isSymbolic() && !value[0].symbol().empty();
  if(value.isFunction() && value.function()->referenceName()=="qtuple") {
   if(value.size()==1 && value[0].isFunction() && value[0].function()->referenceName()=="vector") {
    MathStructure fields;fields.clearVector();
@@ -1155,12 +1160,16 @@ void prepareFreeEntry(MathStructure &term,const MathStructure &target) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(quantumHasIndexedNameArgument(op))setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
  bool representsNonMatrix(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qoutcome") {
+   if(!raw[0].isSymbolic() || raw[0].symbol().empty())CALCULATOR->error(true,"Expected a nonempty outcome name.",NULL);
+   return 0;
+  }
   if(op=="qscalarproductsum")return calculateScalarProduct(out,raw,this,eo);
   if(op=="qregistersum")return calculateRegisterSum(out,raw,eo);
   if(op=="qregisterelement") {
@@ -2426,6 +2435,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralaction",3));
  calculator.addFunction(new QuantumIndexedFunction("qspectralentry",2));
  calculator.addFunction(new QuantumIndexedFunction("qspectralket",2));
+ calculator.addFunction(new QuantumIndexedFunction("qoutcome",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));

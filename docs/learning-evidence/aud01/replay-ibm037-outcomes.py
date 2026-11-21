@@ -33,7 +33,7 @@ for number in range(52, 58):
                 bound = bound.replace(f'{name}("tails")', tails)
             assert evaluate(bound) == expected, row["id"]
     elif number == 53:
-        assert evaluate(copied) == 'qset(vector("heads","tails"))'
+        assert evaluate(copied) == 'qset(vector(qoutcome("heads"),qoutcome("tails")))'
     else:
         assert evaluate(copied) == 'qketstate("tails")'
 print("Verified six named-outcome examples and both negative controls")
@@ -74,8 +74,10 @@ assert outcome_definition["id"].endswith("M021")
 definition = evaluate("quantum:" + outcome_definition["literal"])
 domain_source = outcome_definition["literal"].strip("$").split("=")[1]
 domain = evaluate("quantum:$" + domain_source + "$")
-assert domain == 'qset(vector("high","medium","low","off"))' and domain in definition
+assert domain == 'qset(vector(qoutcome("high"),qoutcome("medium"),qoutcome("low"),qoutcome("off")))' and domain in definition
 assert evaluate(domain) == domain
 for name in ("high", "medium", "low", "off"):
-    assert evaluate(f'qmember("{name}",{domain})') == "1"
+    assert evaluate(fr"quantum:$\mathrm{{{name}}}\in {domain_source}$") == "1"
+assert evaluate(fr"quantum:$\mathrm{{other}}\in {domain_source}$") == "0"
+assert evaluate(f'quantum:cardinality({domain})') == "4"
 print("Verified all four named outcomes from M021, including Copy re-entry")

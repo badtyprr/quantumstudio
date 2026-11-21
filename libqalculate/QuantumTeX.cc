@@ -678,6 +678,16 @@ class TeXReader {
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setDepth=0;
+ bool beforeMembership() const {
+  size_t next=input.find_first_not_of(" \t\r\n",pos);
+  if(next==std::string::npos)return false;
+  for(const std::string op:{"\\in","\\notin","∈","∉"}) {
+   if(input.compare(next,op.size(),op)!=0)continue;
+   size_t end=next+op.size();
+   if(op[0]!='\\' || end==input.size() || !asciiLetter(input[end]))return true;
+  }
+  return false;
+ }
  bool wholeSetEntry(const std::string *preceding) const {
   if(!setDepth || depth!=setDepth || !preceding)return false;
   const size_t last=preceding->find_last_not_of(" \t\r\n");
@@ -1151,7 +1161,7 @@ class TeXReader {
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
    if(name=="mathrm" && a.size()>1 && a.find_first_not_of("abcdefghijklmnopqrstuvwxyz")==std::string::npos &&
-      a!="pi" && a!="inf" && a!="infinity" && wholeSetEntry(preceding))return "\""+a+"\"";
+      a!="pi" && a!="inf" && a!="infinity" && (wholeSetEntry(preceding) || beforeMembership()))return "qoutcome(\""+a+"\")";
    if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
    if(name=="mathbb" && a=="Z") {
     space();
@@ -1185,7 +1195,7 @@ class TeXReader {
      if(prefix.back()=='|' && (input[next]=='>' || input.compare(next,7,"\\rangle")==0))return text;
      if(prefix.back()=='<' && (input[next]=='|' || input.compare(next,5,"\\vert")==0))return text;
     }
-    if(wholeSetEntry(preceding))return "\""+text+"\"";
+    if(wholeSetEntry(preceding) || beforeMembership())return "qoutcome(\""+text+"\")";
    }
    if(text=="and" || text=="or")return " "+text+" ";
    if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
