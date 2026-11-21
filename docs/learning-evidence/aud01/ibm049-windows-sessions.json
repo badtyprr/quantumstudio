@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/quantum-teleportation.ipynb",
+  "notebook_sha256": "a126b0f66b405b79c3829c598cd7688075e91a80d002ab5dcb5d9194dacbf023",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "5a0101c4935e3218805a4da2c0e1d2e7e8bcb522646d868ed9cfc444e402047d",
+  "suite": {
+    "passed": true,
+    "checks": 1323,
+    "calls": 147,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 147,
+    "restored_identically": 147,
+    "stable_after_text_reentry": 147
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

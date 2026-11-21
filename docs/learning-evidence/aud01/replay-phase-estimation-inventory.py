@@ -58,6 +58,16 @@ lessons = {
         ("IBM046", "inner-products-and-projections", 239, 0),
     "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2":
         ("IBM047", "limitations-on-quantum-information", 146, 2),
+    "7a1e4999246cae78a4bae99822fcb4fae29e556a6b1358249d611ae102db7a57":
+        ("IBM048", "introduction", 17, 0),
+    "a126b0f66b405b79c3829c598cd7688075e91a80d002ab5dcb5d9194dacbf023":
+        ("IBM049", "quantum-teleportation", 147, 3),
+    "278c63dd661ff599c943d5fe0fb4303b12efe6c0067e33a39256f9189d9ddc1d":
+        ("IBM050", "superdense-coding", 57, 1),
+    "78add11029d2c92c9b1b48a163202b97d393dec9481320cd14b1938baa282ce6":
+        ("IBM051", "chsh-game", 225, 9),
+    "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30":
+        ("IBM052", "qiskit-implementation", 75, 1),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
@@ -67,6 +77,8 @@ types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 expected_cells = {"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
+if lesson in {"IBM049","IBM050","IBM051"}: expected_cells=(2,0)
+if lesson=="IBM052": expected_cells=(22,19)
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
@@ -111,6 +123,8 @@ if multiple_systems:
     course,chapter = "basics-of-quantum-information","multiple-systems"
 if lesson in {"IBM044","IBM045","IBM046","IBM047"}:
     course,chapter = "basics-of-quantum-information","quantum-circuits"
+if lesson in {"IBM048","IBM049","IBM050","IBM051","IBM052"}:
+    course,chapter = "basics-of-quantum-information","entanglement-in-action"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")

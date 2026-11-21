@@ -355,6 +355,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qptrace",2},
  {"qptraceselect",3},
  {"qsubsystems",3},
+ {"qregket",2},{"qorderedket",2},
  {"qptracedim",3},
  {"qptm",1},
  {"qpaulivec",1},
@@ -834,6 +835,25 @@ class Parser {
  std::string basisState(const std::string &label,const std::string &dimension="") {
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
+  // Top-level commas and tensor products separate registers. Commas inside
+  // a computed basis index, such as mod(k,3), remain function arguments.
+  std::vector<std::string> registers;size_t start=0;int nesting=0;
+  for(size_t k=0;k<label.size();++k) {
+   if(label[k]=='(' || label[k]=='[' || label[k]=='{')++nesting;
+   else if(label[k]==')' || label[k]==']' || label[k]=='}')--nesting;
+   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
+  }
+  if(!registers.empty()) {
+   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
+   registers.push_back(label.substr(start));std::string state;
+   for(const auto &part:registers) {
+    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
+    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
+    std::string factor=basisState(part);
+    state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
+   }
+   return state;
+  }
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
   // Inside a sum, an indexed binder denotes a basis value rather than an
   // independently declared named-state family. Outside that lexical scope,
@@ -853,25 +873,6 @@ class Parser {
    }
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
    if(dimension.empty())return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
-  }
-  // Top-level commas and tensor products separate registers. Commas inside
-  // a computed basis index, such as mod(k,3), remain function arguments.
-  std::vector<std::string> registers;size_t start=0;int nesting=0;
-  for(size_t k=0;k<label.size();++k) {
-   if(label[k]=='(' || label[k]=='[')++nesting;
-   else if(label[k]==')' || label[k]==']')--nesting;
-   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
-  }
-  if(!registers.empty()) {
-   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
-   registers.push_back(label.substr(start));std::string state;
-   for(const auto &part:registers) {
-    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
-    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
-    std::string factor=basisState(part);
-    state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
-   }
-   return state;
   }
   if(dimension.empty()) {
    // Space-separated subscripted bit indices denote a computational register.
@@ -1323,6 +1324,10 @@ class Parser {
    // iY^2 means i*(Y^2), while (iY)^2 squares the entire product.
    // Match complete gate names first, notably iSWAP.
    if(a.size()>1 && a[0]=='i' && gates.find(a)==gates.end() && gates.find(a.substr(1))!=gates.end()) {p=b+1;a="i";}
+   // With a suffix, the final letter is a separate powered/adjointed gate.
+   size_t suffix=s.find_first_not_of(" \t\r\n",p);
+   if(a.size()>1 && a.find_first_not_of("XYZ")==std::string::npos && suffix!=std::string::npos &&
+      std::string("^~?`").find(s[suffix])!=std::string::npos) {p=b+1;a.resize(1);}
    if(a.compare(0,4,"SUM_")==0) {
     std::string dimension=a.substr(4);
     if(dimension.empty() || dimension.find_first_not_of("0123456789")!=std::string::npos) throw std::runtime_error("SUM subscripts require an integer dimension; use SUM(d) for an expression.");
@@ -1860,6 +1865,14 @@ class Parser {
     const std::string indexProduct=texIndexProduct(a);
     auto it=gates.find(a); if(indexProduct!=a)a=indexProduct;
     else if(it!=gates.end()) a=it->second;
+    else if(a.size()>1 && a.find_first_not_of("XYZ")==std::string::npos) {
+     std::string word=gates.at(a.substr(0,1));
+     for(size_t k=1;k<a.size();++k) {
+      if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
+      word="qmul("+word+","+gates.at(a.substr(k,1))+")";checkSize(word);
+     }
+     a=word;
+    }
     // An unsized Fourier transform names the operator family. A subscript
     // supplies its dimension and a QFT(...) call supplies its qubit count.
     else if(a=="QFT")a=indexableLabel(a);

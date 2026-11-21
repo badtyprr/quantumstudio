@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/chsh-game.ipynb",
+  "notebook_sha256": "78add11029d2c92c9b1b48a163202b97d393dec9481320cd14b1938baa282ce6",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "16c15848adfedd809b02b7ba453eb8ecf0ac43da1b23b2525f34ee57c9f0b939",
+  "suite": {
+    "passed": true,
+    "checks": 2025,
+    "calls": 225,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 225,
+    "restored_identically": 225,
+    "stable_after_text_reentry": 225
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

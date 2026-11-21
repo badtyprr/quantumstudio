@@ -1,0 +1,2329 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/chsh-game.ipynb",
+  "source_sha256": "78add11029d2c92c9b1b48a163202b97d393dec9481320cd14b1938baa282ce6",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "revision": "56041589efb1aeafa7efb86c1ae03298be4b6594",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 225
+  },
+  "figures": [
+    {
+      "cell": 1,
+      "start": 3427,
+      "end": 3541,
+      "alt": "Nonlocal game",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/nonlocal-game.avif"
+    },
+    {
+      "cell": 1,
+      "start": 8709,
+      "end": 8854,
+      "alt": "Nonlocal game with entanglement",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/nonlocal-game-entanglement.avif"
+    },
+    {
+      "cell": 1,
+      "start": 14989,
+      "end": 15098,
+      "alt": "CHSH game circuit",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/CHSH.avif"
+    },
+    {
+      "cell": 1,
+      "start": 25605,
+      "end": 25719,
+      "alt": "Basis for Alice",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/alpha-basis.avif"
+    },
+    {
+      "cell": 1,
+      "start": 25775,
+      "end": 25886,
+      "alt": "Basis for Bob",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/beta-basis.avif"
+    },
+    {
+      "cell": 1,
+      "start": 28012,
+      "end": 28136,
+      "alt": "Alice and Bob bases case 1",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy00.avif"
+    },
+    {
+      "cell": 1,
+      "start": 28672,
+      "end": 28796,
+      "alt": "Alice and Bob bases case 1",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy01.avif"
+    },
+    {
+      "cell": 1,
+      "start": 29328,
+      "end": 29452,
+      "alt": "Alice and Bob bases case 1",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy10.avif"
+    },
+    {
+      "cell": 1,
+      "start": 29955,
+      "end": 30079,
+      "alt": "Alice and Bob bases case 1",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy11.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM051-78add110-M001",
+      "cell": 1,
+      "start": 2144,
+      "end": 2147,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M002",
+      "cell": 1,
+      "start": 2181,
+      "end": 2184,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M003",
+      "cell": 1,
+      "start": 2236,
+      "end": 2239,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M004",
+      "cell": 1,
+      "start": 2244,
+      "end": 2247,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M005",
+      "cell": 1,
+      "start": 2296,
+      "end": 2299,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M006",
+      "cell": 1,
+      "start": 2304,
+      "end": 2307,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M007",
+      "cell": 1,
+      "start": 2417,
+      "end": 2425,
+      "literal": "$p(x,y)$",
+      "status": "exact",
+      "display": "p(x, y)",
+      "copy": "qprobabilitycall(x,y)"
+    },
+    {
+      "id": "IBM051-78add110-M008",
+      "cell": 1,
+      "start": 2461,
+      "end": 2468,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M009",
+      "cell": 1,
+      "start": 2685,
+      "end": 2692,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M010",
+      "cell": 1,
+      "start": 2827,
+      "end": 2830,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M011",
+      "cell": 1,
+      "start": 2851,
+      "end": 2854,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM051-78add110-M012",
+      "cell": 1,
+      "start": 3059,
+      "end": 3066,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M013",
+      "cell": 1,
+      "start": 3111,
+      "end": 3118,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M014",
+      "cell": 1,
+      "start": 3959,
+      "end": 3967,
+      "literal": "$p(x,y)$",
+      "status": "exact",
+      "display": "p(x, y)",
+      "copy": "qprobabilitycall(x,y)"
+    },
+    {
+      "id": "IBM051-78add110-M015",
+      "cell": 1,
+      "start": 4056,
+      "end": 4063,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M016",
+      "cell": 1,
+      "start": 4110,
+      "end": 4117,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M017",
+      "cell": 1,
+      "start": 4750,
+      "end": 4753,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M018",
+      "cell": 1,
+      "start": 4775,
+      "end": 4778,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M019",
+      "cell": 1,
+      "start": 4798,
+      "end": 4801,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M020",
+      "cell": 1,
+      "start": 4825,
+      "end": 4828,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM051-78add110-M021",
+      "cell": 1,
+      "start": 4889,
+      "end": 4908,
+      "literal": "$x,y,a,b\\in\\{0,1\\}$",
+      "status": "exact",
+      "display": "a ∈ \\{0, 1\\} and b ∈ \\{0, 1\\} and x ∈ \\{0, 1\\} and y ∈ \\{0, 1\\}",
+      "copy": "(qmember('a',qset(vector(0,1))) and qmember('b',qset(vector(0,1))) and qmember(x,qset(vector(0,1))) and qmember(y,qset(vector(0,1))))"
+    },
+    {
+      "id": "IBM051-78add110-M022",
+      "cell": 1,
+      "start": 4947,
+      "end": 4954,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M023",
+      "cell": 1,
+      "start": 5019,
+      "end": 5026,
+      "literal": "$(0,0)$",
+      "status": "exact",
+      "display": "(0, 0)",
+      "copy": "qtuple(vector(0,0))"
+    },
+    {
+      "id": "IBM051-78add110-M024",
+      "cell": 1,
+      "start": 5028,
+      "end": 5035,
+      "literal": "$(0,1)$",
+      "status": "exact",
+      "display": "(0, 1)",
+      "copy": "qtuple(vector(0,1))"
+    },
+    {
+      "id": "IBM051-78add110-M025",
+      "cell": 1,
+      "start": 5037,
+      "end": 5044,
+      "literal": "$(1,0)$",
+      "status": "exact",
+      "display": "(1, 0)",
+      "copy": "qtuple(vector(1,0))"
+    },
+    {
+      "id": "IBM051-78add110-M026",
+      "cell": 1,
+      "start": 5050,
+      "end": 5057,
+      "literal": "$(1,1)$",
+      "status": "exact",
+      "display": "(1, 1)",
+      "copy": "qtuple(vector(1,1))"
+    },
+    {
+      "id": "IBM051-78add110-M027",
+      "cell": 1,
+      "start": 5088,
+      "end": 5093,
+      "literal": "$1/4$",
+      "status": "exact",
+      "display": "0.25",
+      "copy": "1 ∕ 4"
+    },
+    {
+      "id": "IBM051-78add110-M028",
+      "cell": 1,
+      "start": 5110,
+      "end": 5117,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M029",
+      "cell": 1,
+      "start": 5142,
+      "end": 5149,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M030",
+      "cell": 1,
+      "start": 5153,
+      "end": 5176,
+      "literal": "$a\\oplus b = x\\wedge y$",
+      "status": "exact",
+      "display": "x = qoplus('a', 'b') and y ≠ 0",
+      "copy": "((x)==(qoplus('a','b')) and (y)!=(0))"
+    },
+    {
+      "id": "IBM051-78add110-M031",
+      "cell": 1,
+      "start": 5299,
+      "end": 5306,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M032",
+      "cell": 1,
+      "start": 5334,
+      "end": 5341,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    },
+    {
+      "id": "IBM051-78add110-M033",
+      "cell": 1,
+      "start": 5344,
+      "end": 5566,
+      "literal": "$$\n\\begin{array}{ccc}\n(x,y) & \\text{win} & \\text{lose} \\\\[1mm]\\hline\n\\rule{0mm}{4mm}(0,0) & a = b & a \\neq b \\\\[1mm]\n(0,1) & a = b & a \\neq b \\\\[1mm]\n(1,0) & a = b & a \\neq b \\\\[1mm]\n(1,1) & a \\neq b & a = b\n\\end{array}\n$$",
+      "status": "exact",
+      "display": "[\"(x,y)\", \"win\", \"lose\"; (0, 0), a = b, a ≠ b; (0, 1), a = b, a ≠ b; (1, 0), a = b, a ≠ b; (1, 1), a ≠ b, a = b]",
+      "copy": "matrix(5,3,vector(\"(x,y)\",\"win\",\"lose\",qtuple(vector(0,0)),('a')==('b'),('a')!=('b'),qtuple(vector(0,1)),('a')==('b'),('a')!=('b'),qtuple(vector(1,0)),('a')==('b'),('a')!=('b'),qtuple(vector(1,1)),('a')!=('b'),('a')==('b')))"
+    },
+    {
+      "id": "IBM051-78add110-M034",
+      "cell": 1,
+      "start": 5809,
+      "end": 5812,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M035",
+      "cell": 1,
+      "start": 5843,
+      "end": 5846,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M036",
+      "cell": 1,
+      "start": 5892,
+      "end": 5895,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM051-78add110-M037",
+      "cell": 1,
+      "start": 5926,
+      "end": 5929,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M038",
+      "cell": 1,
+      "start": 5974,
+      "end": 5980,
+      "literal": "$a(0)$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM051-78add110-M039",
+      "cell": 1,
+      "start": 6030,
+      "end": 6033,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM051-78add110-M040",
+      "cell": 1,
+      "start": 6039,
+      "end": 6045,
+      "literal": "$a(1)$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M041",
+      "cell": 1,
+      "start": 6095,
+      "end": 6098,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M042",
+      "cell": 1,
+      "start": 6526,
+      "end": 6530,
+      "literal": "$16$",
+      "status": "exact",
+      "display": "16",
+      "copy": "16"
+    },
+    {
+      "id": "IBM051-78add110-M043",
+      "cell": 1,
+      "start": 6662,
+      "end": 6677,
+      "literal": "$(x,y) = (0,0)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M044",
+      "cell": 1,
+      "start": 6700,
+      "end": 6713,
+      "literal": "$a(0) = b(0)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M045",
+      "cell": 1,
+      "start": 6743,
+      "end": 6758,
+      "literal": "$(x,y) = (0,1)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M046",
+      "cell": 1,
+      "start": 6765,
+      "end": 6778,
+      "literal": "$a(0) = b(1)$",
+      "status": "exact",
+      "display": "b = 0",
+      "copy": "('b')==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M047",
+      "cell": 1,
+      "start": 6820,
+      "end": 6833,
+      "literal": "$(x,y)=(1,0)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M048",
+      "cell": 1,
+      "start": 6839,
+      "end": 6852,
+      "literal": "$a(1) = b(0)$",
+      "status": "exact",
+      "display": "a = 0",
+      "copy": "('a')==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M049",
+      "cell": 1,
+      "start": 6916,
+      "end": 6948,
+      "literal": "$$\nb(1) = a(0) = b(0) = a(1).\n$$",
+      "status": "exact",
+      "display": "b = 0 = 0 = a",
+      "copy": "qequalchain(vector('b',0,0,'a'))"
+    },
+    {
+      "id": "IBM051-78add110-M050",
+      "cell": 1,
+      "start": 7005,
+      "end": 7020,
+      "literal": "$(x,y) = (1,1)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M051",
+      "cell": 1,
+      "start": 7053,
+      "end": 7069,
+      "literal": "$a(1) \\neq b(1)$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M052",
+      "cell": 1,
+      "start": 7247,
+      "end": 7270,
+      "literal": "$a(0)=a(1)=b(0)=b(1)=0$",
+      "status": "exact",
+      "display": "0 = a = 0 = b = 0",
+      "copy": "qequalchain(vector(0,'a',0,'b',0))"
+    },
+    {
+      "id": "IBM051-78add110-M053",
+      "cell": 1,
+      "start": 7382,
+      "end": 7387,
+      "literal": "$3/4$",
+      "status": "exact",
+      "display": "0.75",
+      "copy": "3 ∕ 4"
+    },
+    {
+      "id": "IBM051-78add110-M054",
+      "cell": 1,
+      "start": 8266,
+      "end": 8271,
+      "literal": "$3/4$",
+      "status": "exact",
+      "display": "0.75",
+      "copy": "3 ∕ 4"
+    },
+    {
+      "id": "IBM051-78add110-M055",
+      "cell": 1,
+      "start": 9132,
+      "end": 9160,
+      "literal": "$\\vert \\psi_{\\theta}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_θ⟩",
+      "copy": "qketstate(\"ψ_θ\")"
+    },
+    {
+      "id": "IBM051-78add110-M056",
+      "cell": 1,
+      "start": 9183,
+      "end": 9191,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM051-78add110-M057",
+      "cell": 1,
+      "start": 9260,
+      "end": 9350,
+      "literal": "$$\n\\vert\\psi_{\\theta}\\rangle = \\cos(\\theta)\\vert 0\\rangle + \\sin(\\theta) \\vert 1\\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ_θ⟩ = [cos('θ' rad); sin('θ' rad)]",
+      "copy": "qcompare(qketstate(\"ψ_θ\"),matrix(2,1,[cos(('θ')*(qphysicalunit(\"rad\",\"\"))),sin(('θ')*(qphysicalunit(\"rad\",\"\")))]),4)"
+    },
+    {
+      "id": "IBM051-78add110-M058",
+      "cell": 1,
+      "start": 9384,
+      "end": 9611,
+      "literal": "$$\n\\begin{aligned}\n  \\vert\\psi_{0}\\rangle & = \\vert 0\\rangle \\\\\n  \\vert\\psi_{\\pi/2}\\rangle & = \\vert 1\\rangle \\\\\n  \\vert\\psi_{\\pi/4}\\rangle & = \\vert + \\rangle \\\\\n  \\vert\\psi_{-\\pi/4}\\rangle & = \\vert - \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  |ψ_0⟩ = [1; 0]\n\n2.  qstatecall('ψ', 0.5π) = [0; 1]\n\n3.  qstatecall('ψ', 0.25π) = [(1 ∕ √(2)); (1 ∕ √(2))]\n\n4.  qstatecall('ψ', −0.25π) = [(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"ψ_0\"),matrix(2,1,[1,0]),4)\\\\qcompare(qstatecall('ψ',π ∕ 2),matrix(2,1,[0,1]),4)\\\\qcompare(qstatecall('ψ',π ∕ 4),matrix(2,1,[1 ∕ √(2),1 ∕ √(2)]),4)\\\\qcompare(qstatecall('ψ',−π ∕ 4),matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)]),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M059",
+      "cell": 1,
+      "start": 9686,
+      "end": 10232,
+      "literal": "$$\n\\begin{aligned}\n  \\vert\\psi_{-\\pi/8}\\rangle & = \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 0\\rangle -\\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 1\\rangle \\\\[1mm]\n  \\vert\\psi_{\\pi/8}\\rangle & = \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 0\\rangle + \\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 1\\rangle \\\\[1mm]\n  \\vert\\psi_{3\\pi/8}\\rangle & = \\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 0\\rangle + \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 1\\rangle \\\\[1mm]\n  \\vert\\psi_{5\\pi/8}\\rangle & = -\\frac{\\sqrt{2 - \\sqrt{2}}}{2}\\vert 0\\rangle + \\frac{\\sqrt{2 + \\sqrt{2}}}{2}\\vert 1\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  qstatecall('ψ', −0.125π) = [(0.5 ⋅ √(2 + √(2))); (−0.5 ⋅ √(2 − √(2)))]\n\n2.  qstatecall('ψ', 0.125π) = [(0.5 ⋅ √(2 + √(2))); (0.5 ⋅ √(2 − √(2)))]\n\n3.  qstatecall('ψ', 0.375π) = [(0.5 ⋅ √(2 − √(2))); (0.5 ⋅ √(2 + √(2)))]\n\n4.  qstatecall('ψ', 0.625π) = [(−0.5 ⋅ √(2 − √(2))); (0.5 ⋅ √(2 + √(2)))]",
+      "copy": "\\begin{gathered}qcompare(qstatecall('ψ',−π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',π ∕ 8),matrix(2,1,[√(2 + √(2)) ∕ 2,√(2 − √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',(3 ∕ 8) ⋅ π),matrix(2,1,[√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),4)\\\\qcompare(qstatecall('ψ',(5 ∕ 8) ⋅ π),matrix(2,1,[−√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2]),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M060",
+      "cell": 1,
+      "start": 10345,
+      "end": 10481,
+      "literal": "$$\n\\langle \\psi_{\\alpha} \\vert \\psi_{\\beta} \\rangle\n= \\cos(\\alpha)\\cos(\\beta) + \\sin(\\alpha)\\sin(\\beta)\n= \\cos(\\alpha-\\beta).\n\\tag{1}\n$$",
+      "status": "exact",
+      "display": "⟨ψ_α|ψ_β⟩ = cos('α' rad) ⋅ cos('β' rad) + sin('α' rad) ⋅ sin('β' rad) = cos(('α' − 'β') rad)",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket(\"ψ_α\")),qnamedket(\"ψ_β\")),((sin(('α')*(qphysicalunit(\"rad\",\"\"))))*(sin(('β')*(qphysicalunit(\"rad\",\"\")))))+ ((cos(('α')*(qphysicalunit(\"rad\",\"\"))))*(cos(('β')*(qphysicalunit(\"rad\",\"\"))))),cos((('α')*(qphysicalunit(\"rad\",\"\")))+ (('β')*(qphysicalunit(\"rad\",\"\"))*(−1)))))"
+    },
+    {
+      "id": "IBM051-78add110-M061",
+      "cell": 1,
+      "start": 11005,
+      "end": 11026,
+      "literal": "$\\vert \\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM051-78add110-M062",
+      "cell": 1,
+      "start": 11087,
+      "end": 11097,
+      "literal": "$\\sqrt{2}$",
+      "status": "exact",
+      "display": "√(2)",
+      "copy": "√(2)"
+    },
+    {
+      "id": "IBM051-78add110-M063",
+      "cell": 1,
+      "start": 11119,
+      "end": 11304,
+      "literal": "$$\n\\langle \\psi_{\\alpha} \\otimes \\psi_{\\beta} \\vert \\phi^+ \\rangle\n= \\frac{\\cos(\\alpha)\\cos(\\beta) + \\sin(\\alpha)\\sin(\\beta)}{\\sqrt{2}}\n= \\frac{\\cos(\\alpha-\\beta)}{\\sqrt{2}}.\n\\tag{2}\n$$",
+      "status": "exact",
+      "display": "(|ψ_α⟩ ⊗ |ψ_β⟩)† · [1; 0; 0; 1] / √(2) = (cos('α' rad) ⋅ cos('β' rad) + sin('α' rad) ⋅ sin('β' rad)) ∕ √(2) = cos(('α' − 'β') rad) ∕ √(2)",
+      "copy": "qequalchain(vector(qmul(qdag(qtensor(qnamedket(\"ψ_α\"),qnamedket(\"ψ_β\"))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),(((sin(('α')*(qphysicalunit(\"rad\",\"\"))))*(sin(('β')*(qphysicalunit(\"rad\",\"\")))))+ ((cos(('α')*(qphysicalunit(\"rad\",\"\"))))*(cos(('β')*(qphysicalunit(\"rad\",\"\"))))))*(1 ∕ √(2)),(1 ∕ √(2))*(cos((('α')*(qphysicalunit(\"rad\",\"\")))+ (('β')*(qphysicalunit(\"rad\",\"\"))*(−1))))))"
+    },
+    {
+      "id": "IBM051-78add110-M064",
+      "cell": 1,
+      "start": 11464,
+      "end": 11476,
+      "literal": "$U_{\\theta}$",
+      "status": "exact",
+      "display": "\"U_θ\"",
+      "copy": "\"U_θ\""
+    },
+    {
+      "id": "IBM051-78add110-M065",
+      "cell": 1,
+      "start": 11492,
+      "end": 11500,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM051-78add110-M066",
+      "cell": 1,
+      "start": 11514,
+      "end": 11626,
+      "literal": "$$\nU_{\\theta} = \\vert 0 \\rangle \\langle \\psi_{\\theta} \\vert + \\vert 1\\rangle\\langle \\psi_{\\theta+\\pi/2} \\vert\n$$",
+      "status": "exact",
+      "display": "\"U_θ\" = [1; 0] · ⟨ψ_θ| + [0; 1] · qstatecall('ψ', qadd('θ', 0.5π))†",
+      "copy": "qcompare(\"U_θ\",qadd(qadjacent(matrix(2,1,vector(1,0)),qdag(qnamedket(\"ψ_θ\"))),qadjacent(matrix(2,1,vector(0,1)),qdag(qstatecall('ψ',qadd('θ',π ∕ 2))))),4)"
+    },
+    {
+      "id": "IBM051-78add110-M067",
+      "cell": 1,
+      "start": 11673,
+      "end": 11700,
+      "literal": "$\\vert\\psi_{\\theta}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_θ⟩",
+      "copy": "qketstate(\"ψ_θ\")"
+    },
+    {
+      "id": "IBM051-78add110-M068",
+      "cell": 1,
+      "start": 11706,
+      "end": 11722,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM051-78add110-M069",
+      "cell": 1,
+      "start": 11727,
+      "end": 11763,
+      "literal": "$\\vert \\psi_{\\theta + \\pi/2}\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 'θ' + 0.5π)",
+      "copy": "qstatecall('ψ','θ' + π ∕ 2)"
+    },
+    {
+      "id": "IBM051-78add110-M070",
+      "cell": 1,
+      "start": 11769,
+      "end": 11785,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM051-78add110-M071",
+      "cell": 1,
+      "start": 11865,
+      "end": 11892,
+      "literal": "$\\vert\\psi_{\\theta}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_θ⟩",
+      "copy": "qketstate(\"ψ_θ\")"
+    },
+    {
+      "id": "IBM051-78add110-M072",
+      "cell": 1,
+      "start": 11897,
+      "end": 11932,
+      "literal": "$\\vert\\psi_{\\theta + \\pi/2}\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 'θ' + 0.5π)",
+      "copy": "qstatecall('ψ','θ' + π ∕ 2)"
+    },
+    {
+      "id": "IBM051-78add110-M073",
+      "cell": 1,
+      "start": 11964,
+      "end": 11972,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM051-78add110-M074",
+      "cell": 1,
+      "start": 11975,
+      "end": 12057,
+      "literal": "$$\n\\langle \\psi_{\\theta} \\vert \\psi_{\\theta + \\pi/2} \\rangle = \\cos(\\pi/2) = 0.\n$$",
+      "status": "exact",
+      "display": "⟨ψ_θ| qstatecall('ψ', qadd('θ', π ∕ 2)) = 0 = 0",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket(\"ψ_θ\")),qstatecall('ψ',qadd('θ',π ∕ 2))),0,0))"
+    },
+    {
+      "id": "IBM051-78add110-M075",
+      "cell": 1,
+      "start": 12079,
+      "end": 12833,
+      "literal": "$$\n\\begin{aligned}\nU_{\\theta} U_{\\theta}^{\\dagger}\n& = \\bigl(\\vert 0 \\rangle \\langle \\psi_{\\theta} \\vert + \\vert 1\\rangle\\langle \\psi_{\\theta+\\pi/2} \\vert\\bigr)\n\\bigl(\\vert \\psi_{\\theta} \\rangle \\langle 0 \\vert + \\vert \\psi_{\\theta+\\pi/2}\\rangle\\langle 1 \\vert\\bigr) \\\\[1mm]\n& =\n\\vert 0 \\rangle \\langle \\psi_{\\theta} \\vert \\psi_{\\theta} \\rangle \\langle 0 \\vert\n+ \\vert 0 \\rangle \\langle \\psi_{\\theta} \\vert \\psi_{\\theta+\\pi/2} \\rangle \\langle 1 \\vert\n+ \\vert 1 \\rangle \\langle \\psi_{\\theta+\\pi/2} \\vert \\psi_{\\theta} \\rangle \\langle 0 \\vert\n+ \\vert 1 \\rangle \\langle \\psi_{\\theta+\\pi/2} \\vert \\psi_{\\theta+\\pi/2} \\rangle \\langle 1 \\vert \\\\[1mm]\n& =\n\\vert 0 \\rangle \\langle 0 \\vert + \\vert 1 \\rangle \\langle 1 \\vert\\\\[1mm]\n& = \\mathbb{I}.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "\"U_θ\"² = ([1; 0] · ⟨ψ_θ| + [0; 1] · qstatecall('ψ', qadd('θ', π ∕ 2))†) · (|ψ_θ⟩ · [1; 0]† + qstatecall('ψ', qadd('θ', π ∕ 2)) · [0; 1]†) = [1; 0] · ⟨ψ_θ|ψ_θ⟩ · [1; 0]† + [1; 0] · ⟨ψ_θ| qstatecall('ψ', qadd('θ', π ∕ 2)) · [0; 1]† + [0; 1] · qstatecall('ψ', qadd('θ', π ∕ 2))† |ψ_θ⟩ · [1; 0]† + [0; 1] · qstatecall('ψ', qadd('θ', π ∕ 2))† · qstatecall('ψ', qadd('θ', π ∕ 2)) · [0; 1]† = [1, 0; 0, 1] = [1, 0; 0, 1]",
+      "copy": "qequalchain(vector(\"U_θ\"²,qadjacent(qadd(qadjacent(matrix(2,1,vector(1,0)),qdag(qnamedket(\"ψ_θ\"))),qadjacent(matrix(2,1,vector(0,1)),qdag(qstatecall('ψ',qadd('θ',π ∕ 2))))),qadd(qadjacent(qnamedket(\"ψ_θ\"),qdag(matrix(2,1,vector(1,0)))),qadjacent(qstatecall('ψ',qadd('θ',π ∕ 2)),qdag(matrix(2,1,vector(0,1)))))),qadd(qadd(qadd(qadjacent(qadjacent(matrix(2,1,vector(1,0)),qmul(qdag(qnamedket(\"ψ_θ\")),qnamedket(\"ψ_θ\"))),qdag(matrix(2,1,vector(1,0)))),qadjacent(qadjacent(matrix(2,1,vector(1,0)),qmul(qdag(qnamedket(\"ψ_θ\")),qstatecall('ψ',qadd('θ',π ∕ 2)))),qdag(matrix(2,1,vector(0,1))))),qadjacent(qadjacent(matrix(2,1,vector(0,1)),qmul(qdag(qstatecall('ψ',qadd('θ',π ∕ 2))),qnamedket(\"ψ_θ\"))),qdag(matrix(2,1,vector(1,0))))),qadjacent(qadjacent(matrix(2,1,vector(0,1)),qmul(qdag(qstatecall('ψ',qadd('θ',π ∕ 2))),qstatecall('ψ',qadd('θ',π ∕ 2)))),qdag(matrix(2,1,vector(0,1))))),matrix(2,2,[1,0,0,1]),matrix(2,2,[1,0,0,1])))"
+    },
+    {
+      "id": "IBM051-78add110-M076",
+      "cell": 1,
+      "start": 12889,
+      "end": 13112,
+      "literal": "$$\nU_{\\theta}\n= \\begin{pmatrix}\n\\cos(\\theta) & \\sin(\\theta)\\\\[1mm]\n\\cos(\\theta+ \\pi/2) & \\sin(\\theta + \\pi/2)\n\\end{pmatrix}\n= \\begin{pmatrix}\n\\cos(\\theta) & \\sin(\\theta)\\\\[1mm]\n-\\sin(\\theta) & \\cos(\\theta)\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "\"U_θ\" = [cos('θ' rad), sin('θ' rad); cos(('θ' + π ∕ 2) rad), sin(('θ' + π ∕ 2) rad)] = [cos('θ' rad), sin('θ' rad); −sin('θ' rad), cos('θ' rad)]",
+      "copy": "qequalchain(vector(\"U_θ\",matrix(2,2,[cos(('θ')*(qphysicalunit(\"rad\",\"\"))),sin(('θ')*(qphysicalunit(\"rad\",\"\"))),cos(((1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))*(π))+ (('θ')*(qphysicalunit(\"rad\",\"\")))),sin(((1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))*(π))+ (('θ')*(qphysicalunit(\"rad\",\"\"))))]),matrix(2,2,[cos(('θ')*(qphysicalunit(\"rad\",\"\"))),sin(('θ')*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1),cos(('θ')*(qphysicalunit(\"rad\",\"\")))])))"
+    },
+    {
+      "id": "IBM051-78add110-M077",
+      "cell": 1,
+      "start": 13249,
+      "end": 13258,
+      "literal": "$-\\theta$",
+      "status": "exact",
+      "display": "−'θ'",
+      "copy": "−'θ'"
+    },
+    {
+      "id": "IBM051-78add110-M078",
+      "cell": 1,
+      "start": 13378,
+      "end": 13406,
+      "literal": "$U_{\\theta} = R_y(-2\\theta)$",
+      "status": "exact",
+      "display": "\"U_θ\" = [cos('θ' rad), sin('θ' rad); −sin('θ' rad), cos('θ' rad)]",
+      "copy": "qcompare(\"U_θ\",matrix(2,2,[cos(('θ')*(qphysicalunit(\"rad\",\"\"))),sin(('θ')*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1),cos(('θ')*(qphysicalunit(\"rad\",\"\")))]),4)"
+    },
+    {
+      "id": "IBM051-78add110-M079",
+      "cell": 1,
+      "start": 13414,
+      "end": 13536,
+      "literal": "$$\nR_y(\\theta) = \\begin{pmatrix}\n\\cos(\\theta/2) & -\\sin(\\theta/2)\\\\[1mm]\n\\sin(\\theta/2) & \\cos(\\theta/2)\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M080",
+      "cell": 1,
+      "start": 13688,
+      "end": 13700,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM051-78add110-M081",
+      "cell": 1,
+      "start": 13720,
+      "end": 13732,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM051-78add110-M082",
+      "cell": 1,
+      "start": 13762,
+      "end": 13787,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM051-78add110-M083",
+      "cell": 1,
+      "start": 13799,
+      "end": 13819,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM051-78add110-M084",
+      "cell": 1,
+      "start": 13886,
+      "end": 13891,
+      "literal": "$x=0$",
+      "status": "exact",
+      "display": "x = 0",
+      "copy": "(x)==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M085",
+      "cell": 1,
+      "start": 13905,
+      "end": 13912,
+      "literal": "$U_{0}$",
+      "status": "exact",
+      "display": "\"U_0\"",
+      "copy": "\"U_0\""
+    },
+    {
+      "id": "IBM051-78add110-M086",
+      "cell": 1,
+      "start": 13926,
+      "end": 13938,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM051-78add110-M087",
+      "cell": 1,
+      "start": 13976,
+      "end": 13981,
+      "literal": "$x=1$",
+      "status": "exact",
+      "display": "x = 1",
+      "copy": "(x)==(1)"
+    },
+    {
+      "id": "IBM051-78add110-M088",
+      "cell": 1,
+      "start": 13995,
+      "end": 14006,
+      "literal": "$U_{\\pi/4}$",
+      "status": "exact",
+      "display": "U_(0.25π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 4,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M089",
+      "cell": 1,
+      "start": 14020,
+      "end": 14032,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM051-78add110-M090",
+      "cell": 1,
+      "start": 14069,
+      "end": 14081,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM051-78add110-M091",
+      "cell": 1,
+      "start": 14126,
+      "end": 14223,
+      "literal": "$$\n  \\begin{cases}\n  U_0 & \\text{if $x = 0$}\\\\\n  U_{\\pi/4} & \\text{if $x = 1$}\n  \\end{cases}\n  $$",
+      "status": "exact",
+      "display": "if(x = 0, \"U_0\", if(qcompare(x, 1, 4), qindexedlabel(\"U_\", 0.25π, \"\"), undefined))",
+      "copy": "if((x)==(0),\"U_0\",if(qcompare(x,1,4),qindexedlabel(\"U_\",π ∕ 4,\"\"),undefined,0),0)"
+    },
+    {
+      "id": "IBM051-78add110-M092",
+      "cell": 1,
+      "start": 14276,
+      "end": 14288,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM051-78add110-M093",
+      "cell": 1,
+      "start": 14343,
+      "end": 14346,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M094",
+      "cell": 1,
+      "start": 14433,
+      "end": 14438,
+      "literal": "$y=0$",
+      "status": "exact",
+      "display": "y = 0",
+      "copy": "(y)==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M095",
+      "cell": 1,
+      "start": 14451,
+      "end": 14462,
+      "literal": "$U_{\\pi/8}$",
+      "status": "exact",
+      "display": "U_(0.125π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M096",
+      "cell": 1,
+      "start": 14476,
+      "end": 14488,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM051-78add110-M097",
+      "cell": 1,
+      "start": 14523,
+      "end": 14528,
+      "literal": "$y=1$",
+      "status": "exact",
+      "display": "y = 1",
+      "copy": "(y)==(1)"
+    },
+    {
+      "id": "IBM051-78add110-M098",
+      "cell": 1,
+      "start": 14541,
+      "end": 14553,
+      "literal": "$U_{-\\pi/8}$",
+      "status": "exact",
+      "display": "U_(−0.125π)",
+      "copy": "qindexedlabel(\"U_\",−π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M099",
+      "cell": 1,
+      "start": 14567,
+      "end": 14579,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM051-78add110-M100",
+      "cell": 1,
+      "start": 14641,
+      "end": 14653,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM051-78add110-M101",
+      "cell": 1,
+      "start": 14667,
+      "end": 14771,
+      "literal": "$$\n  \\begin{cases}\n  U_{\\pi/8} & \\text{if $y = 0$}\\\\\n  U_{-\\pi/8} & \\text{if $y = 1$}\n  \\end{cases}\n  $$",
+      "status": "exact",
+      "display": "if(y = 0, qindexedlabel(\"U_\", 0.125π, \"\"), if(qcompare(y, 1, 4), qindexedlabel(\"U_\", −0.125π, \"\"), undefined))",
+      "copy": "if((y)==(0),qindexedlabel(\"U_\",π ∕ 8,\"\"),if(qcompare(y,1,4),qindexedlabel(\"U_\",−π ∕ 8,\"\"),undefined,0),0)"
+    },
+    {
+      "id": "IBM051-78add110-M102",
+      "cell": 1,
+      "start": 14821,
+      "end": 14833,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM051-78add110-M103",
+      "cell": 1,
+      "start": 14888,
+      "end": 14891,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM051-78add110-M104",
+      "cell": 1,
+      "start": 15162,
+      "end": 15174,
+      "literal": "$U_{-\\pi/8}$",
+      "status": "exact",
+      "display": "U_(−0.125π)",
+      "copy": "qindexedlabel(\"U_\",−π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M105",
+      "cell": 1,
+      "start": 15198,
+      "end": 15209,
+      "literal": "$U_{\\pi/4}$",
+      "status": "exact",
+      "display": "U_(0.25π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 4,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M106",
+      "cell": 1,
+      "start": 15289,
+      "end": 15300,
+      "literal": "$U_{\\pi/8}$",
+      "status": "exact",
+      "display": "U_(0.125π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M107",
+      "cell": 1,
+      "start": 15324,
+      "end": 15331,
+      "literal": "$U_{0}$",
+      "status": "exact",
+      "display": "\"U_0\"",
+      "copy": "\"U_0\""
+    },
+    {
+      "id": "IBM051-78add110-M108",
+      "cell": 1,
+      "start": 15515,
+      "end": 15518,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM051-78add110-M109",
+      "cell": 1,
+      "start": 15532,
+      "end": 15535,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M110",
+      "cell": 1,
+      "start": 15601,
+      "end": 15612,
+      "literal": "$U_{\\pi/8}$",
+      "status": "exact",
+      "display": "U_(0.125π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M111",
+      "cell": 1,
+      "start": 15629,
+      "end": 15634,
+      "literal": "$y=0$",
+      "status": "exact",
+      "display": "y = 0",
+      "copy": "(y)==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M112",
+      "cell": 1,
+      "start": 15639,
+      "end": 15651,
+      "literal": "$U_{-\\pi/8}$",
+      "status": "exact",
+      "display": "U_(−0.125π)",
+      "copy": "qindexedlabel(\"U_\",−π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M113",
+      "cell": 1,
+      "start": 15655,
+      "end": 15660,
+      "literal": "$y=1$",
+      "status": "exact",
+      "display": "y = 1",
+      "copy": "(y)==(1)"
+    },
+    {
+      "id": "IBM051-78add110-M114",
+      "cell": 1,
+      "start": 15681,
+      "end": 15686,
+      "literal": "$U_0$",
+      "status": "exact",
+      "display": "\"U_0\"",
+      "copy": "\"U_0\""
+    },
+    {
+      "id": "IBM051-78add110-M115",
+      "cell": 1,
+      "start": 15703,
+      "end": 15708,
+      "literal": "$x=0$",
+      "status": "exact",
+      "display": "x = 0",
+      "copy": "(x)==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M116",
+      "cell": 1,
+      "start": 15713,
+      "end": 15724,
+      "literal": "$U_{\\pi/4}$",
+      "status": "exact",
+      "display": "U_(0.25π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 4,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M117",
+      "cell": 1,
+      "start": 15728,
+      "end": 15733,
+      "literal": "$x=1$",
+      "status": "exact",
+      "display": "x = 1",
+      "copy": "(x)==(1)"
+    },
+    {
+      "id": "IBM051-78add110-M118",
+      "cell": 1,
+      "start": 16000,
+      "end": 16015,
+      "literal": "$(x,y) = (0,0)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M119",
+      "cell": 1,
+      "start": 16049,
+      "end": 16056,
+      "literal": "$U_{0}$",
+      "status": "exact",
+      "display": "\"U_0\"",
+      "copy": "\"U_0\""
+    },
+    {
+      "id": "IBM051-78add110-M120",
+      "cell": 1,
+      "start": 16087,
+      "end": 16098,
+      "literal": "$U_{\\pi/8}$",
+      "status": "exact",
+      "display": "U_(0.125π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M121",
+      "cell": 1,
+      "start": 16138,
+      "end": 16163,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM051-78add110-M122",
+      "cell": 1,
+      "start": 16207,
+      "end": 16896,
+      "literal": "$$\n   \\begin{aligned}\n   \\bigl(U_0 \\otimes U_{\\pi/8}\\bigr) \\vert \\phi^+\\rangle\n   & =\n   \\vert 00 \\rangle \\langle \\psi_0 \\otimes \\psi_{\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 01 \\rangle \\langle \\psi_0 \\otimes\\psi_{5\\pi/8}\\vert \\phi^+\\rangle \\\\\n   & \\qquad + \\vert 10 \\rangle \\langle \\psi_{\\pi/2} \\otimes \\psi_{\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 11 \\rangle \\langle \\psi_{\\pi/2} \\otimes \\psi_{5\\pi/8}\\vert \\phi^+\\rangle\\\\[2mm]\n   & = \\frac{\n       \\cos\\bigl(-\\frac{\\pi}{8}\\bigr) \\vert 00\\rangle\n     + \\cos\\bigl(-\\frac{5\\pi}{8}\\bigr) \\vert 01\\rangle\n     + \\cos\\bigl(\\frac{3\\pi}{8}\\bigr) \\vert 10\\rangle\n     + \\cos\\bigl(-\\frac{\\pi}{8}\\bigr) \\vert 11\\rangle}{\\sqrt{2}}.\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "(\"U_0\" ⊗ U_(π ∕ 8)) · [1; 0; 0; 1] / √(2) = [1; 0; 0; 0] · (|ψ_0⟩ ⊗ qstatecall('ψ', π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 1; 0; 0] · (|ψ_0⟩ ⊗ qstatecall('ψ', qadjacent(5, π) ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 1; 0] · (qstatecall('ψ', π ∕ 2) ⊗ qstatecall('ψ', π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 0; 1] · (qstatecall('ψ', π ∕ 2) ⊗ qstatecall('ψ', qadjacent(5, π) ∕ 8))† · [1; 0; 0; 1] / √(2) = [(√(4 + 2 ⋅ √(2)) ∕ 4); (−√(4 − 2 ⋅ √(2)) ∕ 4); (√(4 − 2 ⋅ √(2)) ∕ 4); (√(4 + 2 ⋅ √(2)) ∕ 4)]",
+      "copy": "qequalchain(vector(qadjacent(qtensor(\"U_0\",qindexedlabel(\"U_\",π ∕ 8,\"\")),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadd(qadd(qadd(qadjacent(matrix(4,1,vector(1,0,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_0\"),qstatecall('ψ',π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))))),qadjacent(matrix(4,1,vector(0,1,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_0\"),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(5,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,1,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 2),qstatecall('ψ',π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,0,1)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 2),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(5,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),matrix(4,1,[√(4 + 2 ⋅ √(2)) ∕ 4,−√(4 − 2 ⋅ √(2)) ∕ 4,√(4 − 2 ⋅ √(2)) ∕ 4,√(4 + 2 ⋅ √(2)) ∕ 4])))"
+    },
+    {
+      "id": "IBM051-78add110-M123",
+      "cell": 1,
+      "start": 16954,
+      "end": 16961,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M124",
+      "cell": 1,
+      "start": 16992,
+      "end": 17519,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}\\bigl((a,b)=(0,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8} \\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(0,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{5\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{3\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  ((a, b) = (0, 0)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)\n\n2.  ((a, b) = (0, 1)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n3.  ((a, b) = (1, 0)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n4.  ((a, b) = (1, 1)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)",
+      "copy": "\\begin{gathered}qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,0)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,1)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,0)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,1)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M125",
+      "cell": 1,
+      "start": 17566,
+      "end": 17571,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M126",
+      "cell": 1,
+      "start": 17576,
+      "end": 17585,
+      "literal": "$a\\neq b$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M127",
+      "cell": 1,
+      "start": 17602,
+      "end": 17766,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}(a = b) & = \\frac{2 + \\sqrt{2}}{4}\\\\[2mm]\n   \\operatorname{Pr}(a \\neq b) & = \\frac{2 - \\sqrt{2}}{4}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  P = (1 + 2 ∕ (2 ⋅ √(2))) / (2 · r) and a = b and r ≠ 0\n\n2.  P = (1 − 1 ∕ √(2)) / (2 · (a ≠ b) · r) and a ≠ b and r ≠ 0",
+      "copy": "\\begin{gathered}(('P')==((1 + 2 ∕ (2 ⋅ √(2))) ∕ (2 ⋅ 'r')) and ('a')==('b') and ('r')!=(0))\\\\(('P')==((1 − 1 ∕ √(2)) ∕ (2 ⋅ ('a' ≠ 'b') ⋅ 'r')) and ('a')!=('b') and ('r')!=(0))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M128",
+      "cell": 1,
+      "start": 17793,
+      "end": 17800,
+      "literal": "$(0,0)$",
+      "status": "exact",
+      "display": "(0, 0)",
+      "copy": "qtuple(vector(0,0))"
+    },
+    {
+      "id": "IBM051-78add110-M129",
+      "cell": 1,
+      "start": 17823,
+      "end": 17828,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M130",
+      "cell": 1,
+      "start": 17887,
+      "end": 17922,
+      "literal": "$$\n   \\frac{2 + \\sqrt{2}}{4}.\n   $$",
+      "status": "exact",
+      "display": "1 ∕ (2 ⋅ √(2)) + 0.5",
+      "copy": "1 ∕ (2 ⋅ √(2)) + 1 ∕ 2"
+    },
+    {
+      "id": "IBM051-78add110-M131",
+      "cell": 1,
+      "start": 17936,
+      "end": 17951,
+      "literal": "$(x,y) = (0,1)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M132",
+      "cell": 1,
+      "start": 17985,
+      "end": 17992,
+      "literal": "$U_{0}$",
+      "status": "exact",
+      "display": "\"U_0\"",
+      "copy": "\"U_0\""
+    },
+    {
+      "id": "IBM051-78add110-M133",
+      "cell": 1,
+      "start": 18023,
+      "end": 18035,
+      "literal": "$U_{-\\pi/8}$",
+      "status": "exact",
+      "display": "U_(−0.125π)",
+      "copy": "qindexedlabel(\"U_\",−π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M134",
+      "cell": 1,
+      "start": 18075,
+      "end": 18100,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM051-78add110-M135",
+      "cell": 1,
+      "start": 18144,
+      "end": 18834,
+      "literal": "$$\n   \\begin{aligned}\n   \\bigl(U_0 \\otimes U_{-\\pi/8}\\bigr) \\vert \\phi^+\\rangle\n   & =\n   \\vert 00 \\rangle \\langle \\psi_0 \\otimes \\psi_{-\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 01 \\rangle \\langle \\psi_0 \\otimes\\psi_{3\\pi/8}\\vert \\phi^+\\rangle \\\\\n   & \\qquad + \\vert 10 \\rangle \\langle \\psi_{\\pi/2} \\otimes \\psi_{-\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 11 \\rangle \\langle \\psi_{\\pi/2} \\otimes \\psi_{3\\pi/8}\\vert \\phi^+\\rangle\\\\[2mm]\n   & = \\frac{\n       \\cos\\bigl(\\frac{\\pi}{8}\\bigr) \\vert 00\\rangle\n     + \\cos\\bigl(-\\frac{3\\pi}{8}\\bigr) \\vert 01\\rangle\n     + \\cos\\bigl(\\frac{5\\pi}{8}\\bigr) \\vert 10\\rangle\n     + \\cos\\bigl(\\frac{\\pi}{8}\\bigr) \\vert 11\\rangle}{\\sqrt{2}}.\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "(\"U_0\" ⊗ U_(−π ∕ 8)) · [1; 0; 0; 1] / √(2) = [1; 0; 0; 0] · (|ψ_0⟩ ⊗ qstatecall('ψ', −π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 1; 0; 0] · (|ψ_0⟩ ⊗ qstatecall('ψ', qadjacent(3, π) ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 1; 0] · (qstatecall('ψ', π ∕ 2) ⊗ qstatecall('ψ', −π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 0; 1] · (qstatecall('ψ', π ∕ 2) ⊗ qstatecall('ψ', qadjacent(3, π) ∕ 8))† · [1; 0; 0; 1] / √(2) = [(√(4 + 2 ⋅ √(2)) ∕ 4); (√(4 − 2 ⋅ √(2)) ∕ 4); (−√(4 − 2 ⋅ √(2)) ∕ 4); (√(4 + 2 ⋅ √(2)) ∕ 4)]",
+      "copy": "qequalchain(vector(qadjacent(qtensor(\"U_0\",qindexedlabel(\"U_\",−π ∕ 8,\"\")),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadd(qadd(qadd(qadjacent(matrix(4,1,vector(1,0,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_0\"),qstatecall('ψ',−π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))))),qadjacent(matrix(4,1,vector(0,1,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_0\"),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(3,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,1,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 2),qstatecall('ψ',−π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,0,1)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 2),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(3,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),matrix(4,1,[√(4 + 2 ⋅ √(2)) ∕ 4,√(4 − 2 ⋅ √(2)) ∕ 4,−√(4 − 2 ⋅ √(2)) ∕ 4,√(4 + 2 ⋅ √(2)) ∕ 4])))"
+    },
+    {
+      "id": "IBM051-78add110-M136",
+      "cell": 1,
+      "start": 18892,
+      "end": 18899,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M137",
+      "cell": 1,
+      "start": 18930,
+      "end": 19455,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}\\bigl((a,b)=(0,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8} \\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(0,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{3\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{5\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  ((a, b) = (0, 0)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)\n\n2.  ((a, b) = (0, 1)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n3.  ((a, b) = (1, 0)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n4.  ((a, b) = (1, 1)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)",
+      "copy": "\\begin{gathered}qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,0)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,1)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,0)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,1)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M138",
+      "cell": 1,
+      "start": 19504,
+      "end": 19509,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M139",
+      "cell": 1,
+      "start": 19514,
+      "end": 19523,
+      "literal": "$a\\neq b$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M140",
+      "cell": 1,
+      "start": 19540,
+      "end": 19704,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}(a = b) & = \\frac{2 + \\sqrt{2}}{4}\\\\[2mm]\n   \\operatorname{Pr}(a \\neq b) & = \\frac{2 - \\sqrt{2}}{4}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  P = (1 + 2 ∕ (2 ⋅ √(2))) / (2 · r) and a = b and r ≠ 0\n\n2.  P = (1 − 1 ∕ √(2)) / (2 · (a ≠ b) · r) and a ≠ b and r ≠ 0",
+      "copy": "\\begin{gathered}(('P')==((1 + 2 ∕ (2 ⋅ √(2))) ∕ (2 ⋅ 'r')) and ('a')==('b') and ('r')!=(0))\\\\(('P')==((1 − 1 ∕ √(2)) ∕ (2 ⋅ ('a' ≠ 'b') ⋅ 'r')) and ('a')!=('b') and ('r')!=(0))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M141",
+      "cell": 1,
+      "start": 19731,
+      "end": 19738,
+      "literal": "$(0,1)$",
+      "status": "exact",
+      "display": "(0, 1)",
+      "copy": "qtuple(vector(0,1))"
+    },
+    {
+      "id": "IBM051-78add110-M142",
+      "cell": 1,
+      "start": 19761,
+      "end": 19766,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M143",
+      "cell": 1,
+      "start": 19825,
+      "end": 19860,
+      "literal": "$$\n   \\frac{2 + \\sqrt{2}}{4}.\n   $$",
+      "status": "exact",
+      "display": "1 ∕ (2 ⋅ √(2)) + 0.5",
+      "copy": "1 ∕ (2 ⋅ √(2)) + 1 ∕ 2"
+    },
+    {
+      "id": "IBM051-78add110-M144",
+      "cell": 1,
+      "start": 19874,
+      "end": 19889,
+      "literal": "$(x,y) = (1,0)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M145",
+      "cell": 1,
+      "start": 19923,
+      "end": 19934,
+      "literal": "$U_{\\pi/4}$",
+      "status": "exact",
+      "display": "U_(0.25π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 4,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M146",
+      "cell": 1,
+      "start": 19965,
+      "end": 19976,
+      "literal": "$U_{\\pi/8}$",
+      "status": "exact",
+      "display": "U_(0.125π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M147",
+      "cell": 1,
+      "start": 20016,
+      "end": 20041,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM051-78add110-M148",
+      "cell": 1,
+      "start": 20085,
+      "end": 20792,
+      "literal": "$$\n   \\begin{aligned}\n   \\bigl(U_{\\pi/4} \\otimes U_{\\pi/8}\\bigr) \\vert \\phi^+\\rangle\n   & =\n   \\vert 00 \\rangle \\langle \\psi_{\\pi/4} \\otimes \\psi_{\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 01 \\rangle \\langle \\psi_{\\pi/4} \\otimes\\psi_{5\\pi/8}\\vert \\phi^+\\rangle \\\\\n   & \\qquad + \\vert 10 \\rangle \\langle \\psi_{3\\pi/4} \\otimes \\psi_{\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 11 \\rangle \\langle \\psi_{3\\pi/4} \\otimes \\psi_{5\\pi/8}\\vert \\phi^+\\rangle\\\\[2mm]\n   & = \\frac{\n       \\cos\\bigl(\\frac{\\pi}{8}\\bigr) \\vert 00\\rangle\n     + \\cos\\bigl(-\\frac{3\\pi}{8}\\bigr) \\vert 01\\rangle\n     + \\cos\\bigl(\\frac{5\\pi}{8}\\bigr) \\vert 10\\rangle\n     + \\cos\\bigl(\\frac{\\pi}{8}\\bigr) \\vert 11\\rangle}{\\sqrt{2}}.\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "(U_(π ∕ 4) ⊗ U_(π ∕ 8)) · [1; 0; 0; 1] / √(2) = [1; 0; 0; 0] · (qstatecall('ψ', π ∕ 4) ⊗ qstatecall('ψ', π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 1; 0; 0] · (qstatecall('ψ', π ∕ 4) ⊗ qstatecall('ψ', qadjacent(5, π) ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 1; 0] · (qstatecall('ψ', qadjacent(3, π) ∕ 4) ⊗ qstatecall('ψ', π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 0; 1] · (qstatecall('ψ', qadjacent(3, π) ∕ 4) ⊗ qstatecall('ψ', qadjacent(5, π) ∕ 8))† · [1; 0; 0; 1] / √(2) = [(√(4 + 2 ⋅ √(2)) ∕ 4); (√(4 − 2 ⋅ √(2)) ∕ 4); (−√(4 − 2 ⋅ √(2)) ∕ 4); (√(4 + 2 ⋅ √(2)) ∕ 4)]",
+      "copy": "qequalchain(vector(qadjacent(qtensor(qindexedlabel(\"U_\",π ∕ 4,\"\"),qindexedlabel(\"U_\",π ∕ 8,\"\")),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadd(qadd(qadd(qadjacent(matrix(4,1,vector(1,0,0,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 4),qstatecall('ψ',π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))))),qadjacent(matrix(4,1,vector(0,1,0,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 4),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(5,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,1,0)),qmul(qdag(qtensor(qstatecall('ψ',qmul(1 ∕ 4,qadjacent(3,π))),qstatecall('ψ',π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,0,1)),qmul(qdag(qtensor(qstatecall('ψ',qmul(1 ∕ 4,qadjacent(3,π))),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(5,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),matrix(4,1,[√(4 + 2 ⋅ √(2)) ∕ 4,√(4 − 2 ⋅ √(2)) ∕ 4,−√(4 − 2 ⋅ √(2)) ∕ 4,√(4 + 2 ⋅ √(2)) ∕ 4])))"
+    },
+    {
+      "id": "IBM051-78add110-M149",
+      "cell": 1,
+      "start": 20850,
+      "end": 20857,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M150",
+      "cell": 1,
+      "start": 20888,
+      "end": 21413,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}\\bigl((a,b)=(0,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8} \\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(0,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{3\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{5\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  ((a, b) = (0, 0)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)\n\n2.  ((a, b) = (0, 1)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n3.  ((a, b) = (1, 0)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n4.  ((a, b) = (1, 1)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)",
+      "copy": "\\begin{gathered}qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,0)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,1)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,0)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,1)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M151",
+      "cell": 1,
+      "start": 21463,
+      "end": 21468,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M152",
+      "cell": 1,
+      "start": 21473,
+      "end": 21482,
+      "literal": "$a\\neq b$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M153",
+      "cell": 1,
+      "start": 21503,
+      "end": 21667,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}(a = b) & = \\frac{2 + \\sqrt{2}}{4}\\\\[2mm]\n   \\operatorname{Pr}(a \\neq b) & = \\frac{2 - \\sqrt{2}}{4}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  P = (1 + 2 ∕ (2 ⋅ √(2))) / (2 · r) and a = b and r ≠ 0\n\n2.  P = (1 − 1 ∕ √(2)) / (2 · (a ≠ b) · r) and a ≠ b and r ≠ 0",
+      "copy": "\\begin{gathered}(('P')==((1 + 2 ∕ (2 ⋅ √(2))) ∕ (2 ⋅ 'r')) and ('a')==('b') and ('r')!=(0))\\\\(('P')==((1 − 1 ∕ √(2)) ∕ (2 ⋅ ('a' ≠ 'b') ⋅ 'r')) and ('a')!=('b') and ('r')!=(0))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M154",
+      "cell": 1,
+      "start": 21694,
+      "end": 21701,
+      "literal": "$(1,0)$",
+      "status": "exact",
+      "display": "(1, 0)",
+      "copy": "qtuple(vector(1,0))"
+    },
+    {
+      "id": "IBM051-78add110-M155",
+      "cell": 1,
+      "start": 21724,
+      "end": 21729,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M156",
+      "cell": 1,
+      "start": 21777,
+      "end": 21812,
+      "literal": "$$\n   \\frac{2 + \\sqrt{2}}{4}.\n   $$",
+      "status": "exact",
+      "display": "1 ∕ (2 ⋅ √(2)) + 0.5",
+      "copy": "1 ∕ (2 ⋅ √(2)) + 1 ∕ 2"
+    },
+    {
+      "id": "IBM051-78add110-M157",
+      "cell": 1,
+      "start": 21826,
+      "end": 21841,
+      "literal": "$(x,y) = (1,1)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M158",
+      "cell": 1,
+      "start": 21969,
+      "end": 21972,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M159",
+      "cell": 1,
+      "start": 21977,
+      "end": 21980,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M160",
+      "cell": 1,
+      "start": 21990,
+      "end": 21993,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M161",
+      "cell": 1,
+      "start": 22018,
+      "end": 22021,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM051-78add110-M162",
+      "cell": 1,
+      "start": 22026,
+      "end": 22029,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM051-78add110-M163",
+      "cell": 1,
+      "start": 22075,
+      "end": 22086,
+      "literal": "$U_{\\pi/4}$",
+      "status": "exact",
+      "display": "U_(0.25π)",
+      "copy": "qindexedlabel(\"U_\",π ∕ 4,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M164",
+      "cell": 1,
+      "start": 22117,
+      "end": 22129,
+      "literal": "$U_{-\\pi/8}$",
+      "status": "exact",
+      "display": "U_(−0.125π)",
+      "copy": "qindexedlabel(\"U_\",−π ∕ 8,\"\")"
+    },
+    {
+      "id": "IBM051-78add110-M165",
+      "cell": 1,
+      "start": 22169,
+      "end": 22194,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM051-78add110-M166",
+      "cell": 1,
+      "start": 22238,
+      "end": 22949,
+      "literal": "$$\n   \\begin{aligned}\n   \\bigl(U_{\\pi/4} \\otimes U_{-\\pi/8}\\bigr) \\vert \\phi^+\\rangle\n   & =\n   \\vert 00 \\rangle \\langle \\psi_{\\pi/4} \\otimes \\psi_{-\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 01 \\rangle \\langle \\psi_{\\pi/4} \\otimes\\psi_{3\\pi/8}\\vert \\phi^+\\rangle \\\\\n   & \\qquad + \\vert 10 \\rangle \\langle \\psi_{3\\pi/4} \\otimes \\psi_{-\\pi/8}\\vert \\phi^+\\rangle\n   + \\vert 11 \\rangle \\langle \\psi_{3\\pi/4} \\otimes \\psi_{3\\pi/8}\\vert \\phi^+\\rangle\\\\[2mm]\n   & = \\frac{\n       \\cos\\bigl(\\frac{3\\pi}{8}\\bigr) \\vert 00\\rangle\n     + \\cos\\bigl(-\\frac{\\pi}{8}\\bigr) \\vert 01\\rangle\n     + \\cos\\bigl(\\frac{7\\pi}{8}\\bigr) \\vert 10\\rangle\n     + \\cos\\bigl(\\frac{3\\pi}{8}\\bigr) \\vert 11\\rangle}{\\sqrt{2}}.\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "(U_(π ∕ 4) ⊗ U_(−π ∕ 8)) · [1; 0; 0; 1] / √(2) = [1; 0; 0; 0] · (qstatecall('ψ', π ∕ 4) ⊗ qstatecall('ψ', −π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 1; 0; 0] · (qstatecall('ψ', π ∕ 4) ⊗ qstatecall('ψ', qadjacent(3, π) ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 1; 0] · (qstatecall('ψ', qadjacent(3, π) ∕ 4) ⊗ qstatecall('ψ', −π ∕ 8))† · [1; 0; 0; 1] / √(2) + [0; 0; 0; 1] · (qstatecall('ψ', qadjacent(3, π) ∕ 4) ⊗ qstatecall('ψ', qadjacent(3, π) ∕ 8))† · [1; 0; 0; 1] / √(2) = [(√(4 − 2 ⋅ √(2)) ∕ 4); (√(4 + 2 ⋅ √(2)) ∕ 4); (−√(4 + 2 ⋅ √(2)) ∕ 4); (√(4 − 2 ⋅ √(2)) ∕ 4)]",
+      "copy": "qequalchain(vector(qadjacent(qtensor(qindexedlabel(\"U_\",π ∕ 4,\"\"),qindexedlabel(\"U_\",−π ∕ 8,\"\")),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadd(qadd(qadd(qadjacent(matrix(4,1,vector(1,0,0,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 4),qstatecall('ψ',−π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))))),qadjacent(matrix(4,1,vector(0,1,0,0)),qmul(qdag(qtensor(qstatecall('ψ',π ∕ 4),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(3,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,1,0)),qmul(qdag(qtensor(qstatecall('ψ',qmul(1 ∕ 4,qadjacent(3,π))),qstatecall('ψ',−π ∕ 8))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,0,1)),qmul(qdag(qtensor(qstatecall('ψ',qmul(1 ∕ 4,qadjacent(3,π))),qstatecall('ψ',qmul(1 ∕ 8,qadjacent(3,π))))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),matrix(4,1,[√(4 − 2 ⋅ √(2)) ∕ 4,√(4 + 2 ⋅ √(2)) ∕ 4,−√(4 + 2 ⋅ √(2)) ∕ 4,√(4 − 2 ⋅ √(2)) ∕ 4])))"
+    },
+    {
+      "id": "IBM051-78add110-M167",
+      "cell": 1,
+      "start": 23007,
+      "end": 23014,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM051-78add110-M168",
+      "cell": 1,
+      "start": 23045,
+      "end": 23571,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}\\bigl((a,b)=(0,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{3\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8} \\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(0,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(-\\frac{\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,0)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{7\\pi}{8}\\Bigr) = \\frac{2+\\sqrt{2}}{8}\\\\[2mm]\n   \\operatorname{Pr}\\bigl((a,b)=(1,1)\\bigr) & = \\frac{1}{2}\\cos^2\\Bigl(\\frac{3\\pi}{8}\\Bigr) = \\frac{2-\\sqrt{2}}{8}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  ((a, b) = (0, 0)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)\n\n2.  ((a, b) = (0, 1)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)\n\n3.  ((a, b) = (1, 0)) · P · r = 0.25 + 1 ∕ (√(2) ⋅ 4) = 0.25 + 1 ∕ (√(2) ⋅ 4)\n\n4.  ((a, b) = (1, 1)) · P · r = 0.25 − 1 ∕ (√(2) ⋅ 4) = 0.25 − 1 ∕ (√(2) ⋅ 4)",
+      "copy": "\\begin{gathered}qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,0)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(0,1)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,0)))),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4),1 ∕ 4 + 1 ∕ (√(2) ⋅ 4)))\\\\qequalchain(vector(qmul(qmul('P','r'),(qtuple(vector('a','b')))==(qtuple(vector(1,1)))),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4),1 ∕ 4 − 1 ∕ (√(2) ⋅ 4)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M169",
+      "cell": 1,
+      "start": 23693,
+      "end": 23698,
+      "literal": "$a=b$",
+      "status": "exact",
+      "display": "a = b",
+      "copy": "('a')==('b')"
+    },
+    {
+      "id": "IBM051-78add110-M170",
+      "cell": 1,
+      "start": 23703,
+      "end": 23712,
+      "literal": "$a\\neq b$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M171",
+      "cell": 1,
+      "start": 23729,
+      "end": 23893,
+      "literal": "$$\n   \\begin{aligned}\n   \\operatorname{Pr}(a = b) & = \\frac{2 - \\sqrt{2}}{4}\\\\[2mm]\n   \\operatorname{Pr}(a \\neq b) & = \\frac{2 + \\sqrt{2}}{4}\n   \\end{aligned}\n   $$",
+      "status": "exact",
+      "display": "1.  P = (1 − 1 ∕ √(2)) / (2 · r) and a = b and r ≠ 0\n\n2.  P = (1 + 2 ∕ (2 ⋅ √(2))) / (2 · (a ≠ b) · r) and a ≠ b and r ≠ 0",
+      "copy": "\\begin{gathered}(('P')==((1 − 1 ∕ √(2)) ∕ (2 ⋅ 'r')) and ('a')==('b') and ('r')!=(0))\\\\(('P')==((1 + 2 ∕ (2 ⋅ √(2))) ∕ (2 ⋅ ('a' ≠ 'b') ⋅ 'r')) and ('a')!=('b') and ('r')!=(0))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M172",
+      "cell": 1,
+      "start": 23920,
+      "end": 23927,
+      "literal": "$(1,1)$",
+      "status": "exact",
+      "display": "(1, 1)",
+      "copy": "qtuple(vector(1,1))"
+    },
+    {
+      "id": "IBM051-78add110-M173",
+      "cell": 1,
+      "start": 23950,
+      "end": 23959,
+      "literal": "$a\\neq b$",
+      "status": "exact",
+      "display": "a ≠ b",
+      "copy": "('a')!=('b')"
+    },
+    {
+      "id": "IBM051-78add110-M174",
+      "cell": 1,
+      "start": 24018,
+      "end": 24053,
+      "literal": "$$\n   \\frac{2 + \\sqrt{2}}{4}.\n   $$",
+      "status": "exact",
+      "display": "1 ∕ (2 ⋅ √(2)) + 0.5",
+      "copy": "1 ∕ (2 ⋅ √(2)) + 1 ∕ 2"
+    },
+    {
+      "id": "IBM051-78add110-M175",
+      "cell": 1,
+      "start": 24106,
+      "end": 24150,
+      "literal": "$$\n  \\frac{2 + \\sqrt{2}}{4} \\approx 0.85.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M176",
+      "cell": 1,
+      "start": 24344,
+      "end": 24349,
+      "literal": "$3/4$",
+      "status": "exact",
+      "display": "0.75",
+      "copy": "3 ∕ 4"
+    },
+    {
+      "id": "IBM051-78add110-M177",
+      "cell": 1,
+      "start": 24999,
+      "end": 25007,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M178",
+      "cell": 1,
+      "start": 25035,
+      "end": 25038,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM051-78add110-M179",
+      "cell": 1,
+      "start": 25058,
+      "end": 25070,
+      "literal": "$U_{\\alpha}$",
+      "status": "exact",
+      "display": "\"U_α\"",
+      "copy": "\"U_α\""
+    },
+    {
+      "id": "IBM051-78add110-M180",
+      "cell": 1,
+      "start": 25129,
+      "end": 25136,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M181",
+      "cell": 1,
+      "start": 25151,
+      "end": 25154,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "IBM051-78add110-M182",
+      "cell": 1,
+      "start": 25176,
+      "end": 25187,
+      "literal": "$U_{\\beta}$",
+      "status": "exact",
+      "display": "\"U_β\"",
+      "copy": "\"U_β\""
+    },
+    {
+      "id": "IBM051-78add110-M183",
+      "cell": 1,
+      "start": 25228,
+      "end": 25236,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M184",
+      "cell": 1,
+      "start": 25241,
+      "end": 25248,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M185",
+      "cell": 1,
+      "start": 25259,
+      "end": 25427,
+      "literal": "$$\n\\begin{aligned}\n\\alpha & = \\begin{cases}\n0 & x=0\\\\\n\\pi/4 & x=1\n\\end{cases}\\\\[4mm]\n\\beta & = \\begin{cases}\n\\pi/8 & y = 0\\\\\n-\\pi/8 & y = 1\n\\end{cases}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  x = 1 and 'α' = 0.25π or x = 0 and 'α' = 0\n\n2.  y = 1 and 'β' = −0.125π or y = 0 and 'β' = 0.125π",
+      "copy": "\\begin{gathered}((('α')==(0) and (x)==(0)) or (('α')==(π ∕ 4) and (x)==(1)))\\\\((('β')==(π ∕ 8) and (y)==(0)) or (('β')==(−π ∕ 8) and (y)==(1)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M186",
+      "cell": 1,
+      "start": 25464,
+      "end": 25472,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M187",
+      "cell": 1,
+      "start": 25477,
+      "end": 25484,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M188",
+      "cell": 1,
+      "start": 25514,
+      "end": 25522,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M189",
+      "cell": 1,
+      "start": 25765,
+      "end": 25772,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M190",
+      "cell": 1,
+      "start": 25962,
+      "end": 25965,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM051-78add110-M191",
+      "cell": 1,
+      "start": 25978,
+      "end": 25981,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M192",
+      "cell": 1,
+      "start": 26012,
+      "end": 26017,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M193",
+      "cell": 1,
+      "start": 26022,
+      "end": 26027,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM051-78add110-M194",
+      "cell": 1,
+      "start": 26048,
+      "end": 26187,
+      "literal": "$$\n\\langle \\psi_{\\alpha} \\otimes\\psi_{\\beta} \\vert \\phi^+ \\rangle\n= \\frac{1}{\\sqrt{2}} \\langle \\psi_{\\alpha} \\vert \\psi_{\\beta} \\rangle,\n$$",
+      "status": "exact",
+      "display": "(|ψ_α⟩ ⊗ |ψ_β⟩)† · [1; 0; 0; 1] / √(2) = 1 / √(2) · ⟨ψ_α|ψ_β⟩",
+      "copy": "qcompare(qmul(qdag(qtensor(qnamedket(\"ψ_α\"),qnamedket(\"ψ_β\"))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadjacent(1 ∕ qsqrt(2),qmul(qdag(qnamedket(\"ψ_α\")),qnamedket(\"ψ_β\"))),4)"
+    },
+    {
+      "id": "IBM051-78add110-M195",
+      "cell": 1,
+      "start": 26222,
+      "end": 26230,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M196",
+      "cell": 1,
+      "start": 26235,
+      "end": 26242,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M197",
+      "cell": 1,
+      "start": 26318,
+      "end": 26326,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM051-78add110-M198",
+      "cell": 1,
+      "start": 26331,
+      "end": 26338,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM051-78add110-M199",
+      "cell": 1,
+      "start": 26371,
+      "end": 27229,
+      "literal": "$$\n  \\begin{aligned}\n  & \\bigl(U_{\\alpha} \\otimes U_{\\beta}\\bigr) \\vert \\phi^+\\rangle\\\\[1mm]\n  & \\qquad =\n    \\vert 00 \\rangle \\langle \\psi_{\\alpha} \\otimes \\psi_{\\beta}\\vert \\phi^+\\rangle\n    + \\vert 01 \\rangle \\langle \\psi_{\\alpha} \\otimes\\psi_{\\beta + \\pi/2}\\vert \\phi^+\\rangle \\\\\n  & \\qquad \\qquad + \\vert 10 \\rangle \\langle \\psi_{\\alpha+\\pi/2} \\otimes \\psi_{\\beta}\\vert \\phi^+\\rangle\n    + \\vert 11 \\rangle \\langle \\psi_{\\alpha+\\pi/2} \\otimes \\psi_{\\beta+\\pi/2}\\vert \\phi^+\\rangle\\\\[2mm]\n  & \\qquad = \\frac{\n        \\langle \\psi_\\alpha \\vert \\psi_\\beta \\rangle \\vert 00\\rangle\n      + \\langle \\psi_\\alpha \\vert \\psi_{\\beta+\\pi/2} \\rangle \\vert 01\\rangle\n      + \\langle \\psi_{\\alpha+\\pi/2} \\vert \\psi_\\beta \\rangle \\vert 10\\rangle\n      + \\langle \\psi_{\\alpha+\\pi/2} \\vert \\psi_{\\beta+\\pi/2} \\rangle \\vert 11\\rangle\n      }{\\sqrt{2}}.\n  \\end{aligned}\n$$",
+      "status": "exact",
+      "display": "(\"U_α\" ⊗ \"U_β\") · [1; 0; 0; 1] / √(2) = [1; 0; 0; 0] · (|ψ_α⟩ ⊗ |ψ_β⟩)† · [1; 0; 0; 1] / √(2) + [0; 1; 0; 0] · (|ψ_α⟩ ⊗ qstatecall('ψ', qadd('β', π ∕ 2)))† · [1; 0; 0; 1] / √(2) + [0; 0; 1; 0] · (qstatecall('ψ', qadd('α', π ∕ 2)) ⊗ |ψ_β⟩)† · [1; 0; 0; 1] / √(2) + [0; 0; 0; 1] · (qstatecall('ψ', qadd('α', π ∕ 2)) ⊗ qstatecall('ψ', qadd('β', π ∕ 2)))† · [1; 0; 0; 1] / √(2) = ((⟨ψ_α|ψ_β⟩) ([1; 0; 0; 0]) + (⟨ψ_α| qstatecall('ψ', qadd('β', π ∕ 2))) ([0; 1; 0; 0]) + (qstatecall('ψ', qadd('α', π ∕ 2))† |ψ_β⟩) ([0; 0; 1; 0]) + (qstatecall('ψ', qadd('α', π ∕ 2))† · qstatecall('ψ', qadd('β', π ∕ 2))) ([0; 0; 0; 1])) / √(2)",
+      "copy": "qequalchain(vector(qadjacent(qtensor(\"U_α\",\"U_β\"),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))),qadd(qadd(qadd(qadjacent(matrix(4,1,vector(1,0,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_α\"),qnamedket(\"ψ_β\"))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))))),qadjacent(matrix(4,1,vector(0,1,0,0)),qmul(qdag(qtensor(qnamedket(\"ψ_α\"),qstatecall('ψ',qadd('β',π ∕ 2)))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,1,0)),qmul(qdag(qtensor(qstatecall('ψ',qadd('α',π ∕ 2)),qnamedket(\"ψ_β\"))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qadjacent(matrix(4,1,vector(0,0,0,1)),qmul(qdag(qtensor(qstatecall('ψ',qadd('α',π ∕ 2)),qstatecall('ψ',qadd('β',π ∕ 2)))),qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1)))))),qmul(qpower(2,−1 ∕ 2),qadd(qadd(qadd(qadjacent(qmul(qdag(qnamedket(\"ψ_α\")),qnamedket(\"ψ_β\")),matrix(4,1,vector(1,0,0,0))),qadjacent(qmul(qdag(qnamedket(\"ψ_α\")),qstatecall('ψ',qadd('β',qmul(1 ∕ 2,π)))),matrix(4,1,vector(0,1,0,0)))),qadjacent(qmul(qdag(qstatecall('ψ',qadd('α',qmul(1 ∕ 2,π)))),qnamedket(\"ψ_β\")),matrix(4,1,vector(0,0,1,0)))),qadjacent(qmul(qdag(qstatecall('ψ',qadd('α',qmul(1 ∕ 2,π)))),qstatecall('ψ',qadd('β',qmul(1 ∕ 2,π)))),matrix(4,1,vector(0,0,0,1)))))))"
+    },
+    {
+      "id": "IBM051-78add110-M200",
+      "cell": 1,
+      "start": 27264,
+      "end": 27739,
+      "literal": "$$\n\\begin{aligned}\n\\operatorname{Pr}(a = b)  & = \\frac{1}{2} \\vert \\langle \\psi_\\alpha \\vert \\psi_\\beta \\rangle \\vert^2\n+ \\frac{1}{2} \\vert \\langle \\psi_{\\alpha+\\pi/2} \\vert \\psi_{\\beta+\\pi/2} \\rangle \\vert^2\n= \\cos^2(\\alpha - \\beta)\\\\[2mm]\n\\operatorname{Pr}(a \\neq b) & = \\frac{1}{2} \\vert \\langle \\psi_\\alpha \\vert \\psi_{\\beta+\\pi/2} \\rangle \\vert^2\n+ \\frac{1}{2} \\vert \\langle \\psi_{\\alpha+\\pi/2} \\vert \\psi_\\beta \\rangle \\vert^2\n= \\sin^2(\\alpha - \\beta).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  (a = b) · P · r = 0.5 · |qmul(qdag(qnamedket(\"ψ_α\")), qnamedket(\"ψ_β\"))|^2 + 0.5 · |qmul(qdag(qstatecall('ψ', qadd('α', 0.5π))), qstatecall('ψ', qadd('β', 0.5π)))|^2 = cos(('α' − 'β') rad)²\n\n2.  (a ≠ b) · P · r = 0.5 · |qmul(qdag(qnamedket(\"ψ_α\")), qstatecall('ψ', qadd('β', 0.5π)))|^2 + 0.5 · |qmul(qdag(qstatecall('ψ', qadd('α', 0.5π))), qnamedket(\"ψ_β\"))|^2 = sin(('α' − 'β') rad)²",
+      "copy": "\\begin{gathered}qequalchain(vector(('a' = 'b')'P''r',qadd(qadjacent(1 ∕ 2,qpower(abs(qmul(qdag(qnamedket(\"ψ_α\")),qnamedket(\"ψ_β\"))),2)),qadjacent(1 ∕ 2,qpower(abs(qmul(qdag(qstatecall('ψ',qadd('α',π ∕ 2))),qstatecall('ψ',qadd('β',π ∕ 2)))),2))),(cos((('α')*(qphysicalunit(\"rad\",\"\")))+ (('β')*(qphysicalunit(\"rad\",\"\"))*(−1))))^(2)))\\\\qequalchain(vector(('a' ≠ 'b')'P''r',qadd(qadjacent(1 ∕ 2,qpower(abs(qmul(qdag(qnamedket(\"ψ_α\")),qstatecall('ψ',qadd('β',π ∕ 2)))),2)),qadjacent(1 ∕ 2,qpower(abs(qmul(qdag(qstatecall('ψ',qadd('α',π ∕ 2))),qnamedket(\"ψ_β\"))),2))),(sin((('α')*(qphysicalunit(\"rad\",\"\")))+ (('β')*(qphysicalunit(\"rad\",\"\"))*(−1))))^(2)))\\end{gathered}"
+    },
+    {
+      "id": "IBM051-78add110-M201",
+      "cell": 1,
+      "start": 27883,
+      "end": 27898,
+      "literal": "$(x,y) = (0,0)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M202",
+      "cell": 1,
+      "start": 27921,
+      "end": 27933,
+      "literal": "$\\alpha = 0$",
+      "status": "exact",
+      "display": "'α' = 0",
+      "copy": "('α')==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M203",
+      "cell": 1,
+      "start": 27938,
+      "end": 27953,
+      "literal": "$\\beta = \\pi/8$",
+      "status": "exact",
+      "display": "'β' = 0.125π",
+      "copy": "('β')==(π ∕ 8)"
+    },
+    {
+      "id": "IBM051-78add110-M204",
+      "cell": 1,
+      "start": 28175,
+      "end": 28182,
+      "literal": "$\\pi/8$",
+      "status": "exact",
+      "display": "0.125π",
+      "copy": "π ∕ 8"
+    },
+    {
+      "id": "IBM051-78add110-M205",
+      "cell": 1,
+      "start": 28335,
+      "end": 28398,
+      "literal": "$$\n\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 + \\sqrt{2}}{4},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M206",
+      "cell": 1,
+      "start": 28472,
+      "end": 28535,
+      "literal": "$$\n\\sin^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 - \\sqrt{2}}{4}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M207",
+      "cell": 1,
+      "start": 28542,
+      "end": 28557,
+      "literal": "$(x,y) = (0,1)$",
+      "status": "exact",
+      "display": "(x, y) = (0, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(0,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M208",
+      "cell": 1,
+      "start": 28580,
+      "end": 28592,
+      "literal": "$\\alpha = 0$",
+      "status": "exact",
+      "display": "'α' = 0",
+      "copy": "('α')==(0)"
+    },
+    {
+      "id": "IBM051-78add110-M209",
+      "cell": 1,
+      "start": 28597,
+      "end": 28613,
+      "literal": "$\\beta = -\\pi/8$",
+      "status": "exact",
+      "display": "'β' = −0.125π",
+      "copy": "('β')==(−π ∕ 8)"
+    },
+    {
+      "id": "IBM051-78add110-M210",
+      "cell": 1,
+      "start": 28841,
+      "end": 28848,
+      "literal": "$\\pi/8$",
+      "status": "exact",
+      "display": "0.125π",
+      "copy": "π ∕ 8"
+    },
+    {
+      "id": "IBM051-78add110-M211",
+      "cell": 1,
+      "start": 28988,
+      "end": 29051,
+      "literal": "$$\n\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 + \\sqrt{2}}{4},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M212",
+      "cell": 1,
+      "start": 29125,
+      "end": 29188,
+      "literal": "$$\n\\sin^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 - \\sqrt{2}}{4}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M213",
+      "cell": 1,
+      "start": 29195,
+      "end": 29210,
+      "literal": "$(x,y) = (1,0)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 0)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,0)))"
+    },
+    {
+      "id": "IBM051-78add110-M214",
+      "cell": 1,
+      "start": 29233,
+      "end": 29249,
+      "literal": "$\\alpha = \\pi/4$",
+      "status": "exact",
+      "display": "'α' = 0.25π",
+      "copy": "('α')==(π ∕ 4)"
+    },
+    {
+      "id": "IBM051-78add110-M215",
+      "cell": 1,
+      "start": 29254,
+      "end": 29269,
+      "literal": "$\\beta = \\pi/8$",
+      "status": "exact",
+      "display": "'β' = 0.125π",
+      "copy": "('β')==(π ∕ 8)"
+    },
+    {
+      "id": "IBM051-78add110-M216",
+      "cell": 1,
+      "start": 29560,
+      "end": 29567,
+      "literal": "$\\pi/8$",
+      "status": "exact",
+      "display": "0.125π",
+      "copy": "π ∕ 8"
+    },
+    {
+      "id": "IBM051-78add110-M217",
+      "cell": 1,
+      "start": 29625,
+      "end": 29688,
+      "literal": "$$\n\\cos^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 + \\sqrt{2}}{4},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M218",
+      "cell": 1,
+      "start": 29728,
+      "end": 29791,
+      "literal": "$$\n\\sin^2\\Bigl(\\frac{\\pi}{8}\\Bigr) = \\frac{2 - \\sqrt{2}}{4}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M219",
+      "cell": 1,
+      "start": 29798,
+      "end": 29813,
+      "literal": "$(x,y) = (1,1)$",
+      "status": "exact",
+      "display": "(x, y) = (1, 1)",
+      "copy": "(qtuple(vector(x,y)))==(qtuple(vector(1,1)))"
+    },
+    {
+      "id": "IBM051-78add110-M220",
+      "cell": 1,
+      "start": 29836,
+      "end": 29852,
+      "literal": "$\\alpha = \\pi/4$",
+      "status": "exact",
+      "display": "'α' = 0.25π",
+      "copy": "('α')==(π ∕ 4)"
+    },
+    {
+      "id": "IBM051-78add110-M221",
+      "cell": 1,
+      "start": 29857,
+      "end": 29873,
+      "literal": "$\\beta = -\\pi/8$",
+      "status": "exact",
+      "display": "'β' = −0.125π",
+      "copy": "('β')==(−π ∕ 8)"
+    },
+    {
+      "id": "IBM051-78add110-M222",
+      "cell": 1,
+      "start": 30177,
+      "end": 30185,
+      "literal": "$3\\pi/8$",
+      "status": "exact",
+      "display": "0.375π",
+      "copy": "(3 ∕ 8) ⋅ π"
+    },
+    {
+      "id": "IBM051-78add110-M223",
+      "cell": 1,
+      "start": 30198,
+      "end": 30205,
+      "literal": "$\\pi/8$",
+      "status": "exact",
+      "display": "0.125π",
+      "copy": "π ∕ 8"
+    },
+    {
+      "id": "IBM051-78add110-M224",
+      "cell": 1,
+      "start": 30330,
+      "end": 30394,
+      "literal": "$$\n\\cos^2\\Bigl(\\frac{3\\pi}{8}\\Bigr) = \\frac{2 - \\sqrt{2}}{4}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM051-78add110-M225",
+      "cell": 1,
+      "start": 30498,
+      "end": 30562,
+      "literal": "$$\n\\sin^2\\Bigl(\\frac{3\\pi}{8}\\Bigr) = \\frac{2 + \\sqrt{2}}{4}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    }
+  ]
+}

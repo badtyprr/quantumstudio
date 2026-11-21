@@ -1,0 +1,773 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation.ipynb",
+  "source_sha256": "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "revision": "56041589efb1aeafa7efb86c1ae03298be4b6594",
+  "mode": "Quantum notation",
+  "markdown_cells": 22,
+  "code_cells": 19,
+  "summary": {
+    "exact": 75
+  },
+  "figures": [
+    {
+      "cell": 15,
+      "start": 95,
+      "end": 247,
+      "alt": "Superdense coding circuit",
+      "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation/superdense-coding.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM052-4710386a-M001",
+      "cell": 6,
+      "start": 532,
+      "end": 557,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM052-4710386a-M002",
+      "cell": 6,
+      "start": 569,
+      "end": 590,
+      "literal": "$\\vert \\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM052-4710386a-M003",
+      "cell": 6,
+      "start": 839,
+      "end": 855,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M004",
+      "cell": 6,
+      "start": 865,
+      "end": 877,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM052-4710386a-M005",
+      "cell": 6,
+      "start": 1009,
+      "end": 1021,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M006",
+      "cell": 6,
+      "start": 1141,
+      "end": 1157,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M007",
+      "cell": 8,
+      "start": 77,
+      "end": 89,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM052-4710386a-M008",
+      "cell": 8,
+      "start": 192,
+      "end": 204,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M009",
+      "cell": 8,
+      "start": 241,
+      "end": 244,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM052-4710386a-M010",
+      "cell": 10,
+      "start": 186,
+      "end": 189,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM052-4710386a-M011",
+      "cell": 10,
+      "start": 217,
+      "end": 229,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM052-4710386a-M012",
+      "cell": 10,
+      "start": 263,
+      "end": 275,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M013",
+      "cell": 14,
+      "start": 602,
+      "end": 614,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M014",
+      "cell": 14,
+      "start": 634,
+      "end": 646,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M015",
+      "cell": 14,
+      "start": 670,
+      "end": 695,
+      "literal": "$(\\mathsf{A},\\mathsf{B})$",
+      "status": "exact",
+      "display": "(A, B)",
+      "copy": "qtuple(vector('A','B'))"
+    },
+    {
+      "id": "IBM052-4710386a-M016",
+      "cell": 14,
+      "start": 712,
+      "end": 732,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM052-4710386a-M017",
+      "cell": 14,
+      "start": 808,
+      "end": 811,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM052-4710386a-M018",
+      "cell": 14,
+      "start": 816,
+      "end": 819,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM052-4710386a-M019",
+      "cell": 15,
+      "start": 291,
+      "end": 296,
+      "literal": "$d=1$",
+      "status": "exact",
+      "display": "d = 1",
+      "copy": "('d')==(1)"
+    },
+    {
+      "id": "IBM052-4710386a-M020",
+      "cell": 15,
+      "start": 315,
+      "end": 318,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM052-4710386a-M021",
+      "cell": 15,
+      "start": 337,
+      "end": 349,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M022",
+      "cell": 15,
+      "start": 358,
+      "end": 363,
+      "literal": "$d=0$",
+      "status": "exact",
+      "display": "d = 0",
+      "copy": "('d')==(0)"
+    },
+    {
+      "id": "IBM052-4710386a-M023",
+      "cell": 15,
+      "start": 386,
+      "end": 391,
+      "literal": "$c=1$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM052-4710386a-M024",
+      "cell": 15,
+      "start": 411,
+      "end": 414,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M025",
+      "cell": 15,
+      "start": 433,
+      "end": 445,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M026",
+      "cell": 15,
+      "start": 454,
+      "end": 459,
+      "literal": "$c=0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM052-4710386a-M027",
+      "cell": 15,
+      "start": 503,
+      "end": 515,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M028",
+      "cell": 15,
+      "start": 566,
+      "end": 578,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M029",
+      "cell": 15,
+      "start": 627,
+      "end": 639,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M030",
+      "cell": 15,
+      "start": 662,
+      "end": 674,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M031",
+      "cell": 15,
+      "start": 732,
+      "end": 744,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M032",
+      "cell": 15,
+      "start": 763,
+      "end": 775,
+      "literal": "$\\mathsf{B}$",
+      "status": "exact",
+      "display": "B",
+      "copy": "'B'"
+    },
+    {
+      "id": "IBM052-4710386a-M033",
+      "cell": 15,
+      "start": 786,
+      "end": 789,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM052-4710386a-M034",
+      "cell": 15,
+      "start": 794,
+      "end": 806,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M035",
+      "cell": 15,
+      "start": 817,
+      "end": 820,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM052-4710386a-M036",
+      "cell": 15,
+      "start": 1124,
+      "end": 1144,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM052-4710386a-M037",
+      "cell": 15,
+      "start": 1174,
+      "end": 1177,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM052-4710386a-M038",
+      "cell": 15,
+      "start": 1182,
+      "end": 1185,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM052-4710386a-M039",
+      "cell": 15,
+      "start": 1281,
+      "end": 1293,
+      "literal": "$\\mathbb{I}$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM052-4710386a-M040",
+      "cell": 15,
+      "start": 1295,
+      "end": 1298,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M041",
+      "cell": 15,
+      "start": 1300,
+      "end": 1303,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM052-4710386a-M042",
+      "cell": 15,
+      "start": 1308,
+      "end": 1312,
+      "literal": "$XZ$",
+      "status": "exact",
+      "display": "[0, −1; 1, 0]",
+      "copy": "matrix(2,2,[0,−1,1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M043",
+      "cell": 15,
+      "start": 1326,
+      "end": 1338,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M044",
+      "cell": 15,
+      "start": 1341,
+      "end": 1667,
+      "literal": "$$\n\\begin{aligned}\n(\\mathbb{I} \\otimes \\mathbb{I}) \\vert \\phi^+ \\rangle & = \\vert \\phi^+\\rangle \\\\\n(\\mathbb{I} \\otimes Z) \\vert \\phi^+ \\rangle & = \\vert \\phi^-\\rangle \\\\\n(\\mathbb{I} \\otimes X) \\vert \\phi^+ \\rangle & = \\vert \\psi^+\\rangle \\\\\n(\\mathbb{I} \\otimes XZ) \\vert \\phi^+ \\rangle & = \\vert \\psi^-\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM052-4710386a-M045",
+      "cell": 15,
+      "start": 1736,
+      "end": 1964,
+      "literal": "$$\n\\begin{aligned}\n\\vert \\phi^+\\rangle & \\mapsto \\vert 00\\rangle\\\\\n\\vert \\phi^-\\rangle & \\mapsto \\vert 01\\rangle\\\\\n\\vert \\psi^+\\rangle & \\mapsto \\vert 10\\rangle\\\\\n\\vert \\psi^-\\rangle & \\mapsto -\\vert 11\\rangle\\\\\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))] ↦ [1; 0; 0; 0]\n\n2.  [(1 ∕ √(2)); 0; 0; (−1 ∕ √(2))] ↦ [0; 1; 0; 0]\n\n3.  [0; (1 ∕ √(2)); (1 ∕ √(2)); 0] ↦ [0; 0; 1; 0]\n\n4.  [0; (1 ∕ √(2)); (−1 ∕ √(2)); 0] ↦ [0; 0; 0; −1]",
+      "copy": "\\begin{gathered}qstateaction(matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),matrix(4,1,[1,0,0,0]))\\\\qstateaction(matrix(4,1,[1 ∕ √(2),0,0,−1 ∕ √(2)]),matrix(4,1,[0,1,0,0]))\\\\qstateaction(matrix(4,1,[0,1 ∕ √(2),1 ∕ √(2),0]),matrix(4,1,[0,0,1,0]))\\\\qstateaction(matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0]),matrix(4,1,[0,0,0,−1]))\\end{gathered}"
+    },
+    {
+      "id": "IBM052-4710386a-M046",
+      "cell": 15,
+      "start": 2253,
+      "end": 2262,
+      "literal": "$cd = 00$",
+      "status": "exact",
+      "display": "d = 0",
+      "copy": "('d')==(0)"
+    },
+    {
+      "id": "IBM052-4710386a-M047",
+      "cell": 15,
+      "start": 2282,
+      "end": 2307,
+      "literal": "$(\\mathsf{B},\\mathsf{A})$",
+      "status": "exact",
+      "display": "(B, A)",
+      "copy": "qtuple(vector('B','A'))"
+    },
+    {
+      "id": "IBM052-4710386a-M048",
+      "cell": 15,
+      "start": 2326,
+      "end": 2338,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M049",
+      "cell": 15,
+      "start": 2342,
+      "end": 2363,
+      "literal": "$\\vert \\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM052-4710386a-M050",
+      "cell": 15,
+      "start": 2395,
+      "end": 2412,
+      "literal": "$\\vert 00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M051",
+      "cell": 15,
+      "start": 2425,
+      "end": 2434,
+      "literal": "$cd = 00$",
+      "status": "exact",
+      "display": "d = 0",
+      "copy": "('d')==(0)"
+    },
+    {
+      "id": "IBM052-4710386a-M052",
+      "cell": 15,
+      "start": 2443,
+      "end": 2452,
+      "literal": "$cd = 01$",
+      "status": "exact",
+      "display": "d = 3.33564095198152049575576714475 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(1 ∕ 299792458)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M053",
+      "cell": 15,
+      "start": 2472,
+      "end": 2497,
+      "literal": "$(\\mathsf{B},\\mathsf{A})$",
+      "status": "exact",
+      "display": "(B, A)",
+      "copy": "qtuple(vector('B','A'))"
+    },
+    {
+      "id": "IBM052-4710386a-M054",
+      "cell": 15,
+      "start": 2516,
+      "end": 2528,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M055",
+      "cell": 15,
+      "start": 2532,
+      "end": 2553,
+      "literal": "$\\vert \\phi^-\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (−1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM052-4710386a-M056",
+      "cell": 15,
+      "start": 2585,
+      "end": 2602,
+      "literal": "$\\vert 01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M057",
+      "cell": 15,
+      "start": 2615,
+      "end": 2624,
+      "literal": "$cd = 01$",
+      "status": "exact",
+      "display": "d = 3.33564095198152049575576714475 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(1 ∕ 299792458)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M058",
+      "cell": 15,
+      "start": 2633,
+      "end": 2642,
+      "literal": "$cd = 10$",
+      "status": "exact",
+      "display": "d = 33.3564095198152049575576714475 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(5 ∕ 149896229)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M059",
+      "cell": 15,
+      "start": 2662,
+      "end": 2687,
+      "literal": "$(\\mathsf{B},\\mathsf{A})$",
+      "status": "exact",
+      "display": "(B, A)",
+      "copy": "qtuple(vector('B','A'))"
+    },
+    {
+      "id": "IBM052-4710386a-M060",
+      "cell": 15,
+      "start": 2706,
+      "end": 2718,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M061",
+      "cell": 15,
+      "start": 2722,
+      "end": 2743,
+      "literal": "$\\vert \\psi^+\\rangle$",
+      "status": "exact",
+      "display": "[0; (1 ∕ √(2)); (1 ∕ √(2)); 0]",
+      "copy": "matrix(4,1,[0,1 ∕ √(2),1 ∕ √(2),0])"
+    },
+    {
+      "id": "IBM052-4710386a-M062",
+      "cell": 15,
+      "start": 2775,
+      "end": 2792,
+      "literal": "$\\vert 10\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 1; 0]",
+      "copy": "matrix(4,1,[0,0,1,0])"
+    },
+    {
+      "id": "IBM052-4710386a-M063",
+      "cell": 15,
+      "start": 2805,
+      "end": 2814,
+      "literal": "$cd = 10$",
+      "status": "exact",
+      "display": "d = 33.3564095198152049575576714475 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(5 ∕ 149896229)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M064",
+      "cell": 15,
+      "start": 2823,
+      "end": 2832,
+      "literal": "$cd = 11$",
+      "status": "exact",
+      "display": "d = 36.6920504717967254533134385922 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(11 ∕ 299792458)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M065",
+      "cell": 15,
+      "start": 2852,
+      "end": 2877,
+      "literal": "$(\\mathsf{B},\\mathsf{A})$",
+      "status": "exact",
+      "display": "(B, A)",
+      "copy": "qtuple(vector('B','A'))"
+    },
+    {
+      "id": "IBM052-4710386a-M066",
+      "cell": 15,
+      "start": 2896,
+      "end": 2908,
+      "literal": "$\\mathsf{A}$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM052-4710386a-M067",
+      "cell": 15,
+      "start": 2912,
+      "end": 2933,
+      "literal": "$\\vert \\psi^-\\rangle$",
+      "status": "exact",
+      "display": "[0; (1 ∕ √(2)); (−1 ∕ √(2)); 0]",
+      "copy": "matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0])"
+    },
+    {
+      "id": "IBM052-4710386a-M068",
+      "cell": 15,
+      "start": 2965,
+      "end": 2983,
+      "literal": "$-\\vert 11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; −1]",
+      "copy": "matrix(4,1,[0,0,0,−1])"
+    },
+    {
+      "id": "IBM052-4710386a-M069",
+      "cell": 15,
+      "start": 2996,
+      "end": 3005,
+      "literal": "$cd = 11$",
+      "status": "exact",
+      "display": "d = 36.6920504717967254533134385922 μs ∕ km",
+      "copy": "('d')==(((qphysicalunit(\"m\",\"\"))^(−1))*(11 ∕ 299792458)*(qphysicalunit(\"s\",\"\")))"
+    },
+    {
+      "id": "IBM052-4710386a-M070",
+      "cell": 18,
+      "start": 106,
+      "end": 120,
+      "literal": "$\\mathsf{q}_0$",
+      "status": "exact",
+      "display": "\"q_0\"",
+      "copy": "\"q_0\""
+    },
+    {
+      "id": "IBM052-4710386a-M071",
+      "cell": 18,
+      "start": 143,
+      "end": 157,
+      "literal": "$\\mathsf{q}_1$",
+      "status": "exact",
+      "display": "\"q_1\"",
+      "copy": "\"q_1\""
+    },
+    {
+      "id": "IBM052-4710386a-M072",
+      "cell": 22,
+      "start": 126,
+      "end": 129,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM052-4710386a-M073",
+      "cell": 22,
+      "start": 134,
+      "end": 137,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM052-4710386a-M074",
+      "cell": 28,
+      "start": 186,
+      "end": 199,
+      "literal": "$R_y(\\theta)$",
+      "status": "exact",
+      "display": "[cos(0.5'θ' rad), −sin(0.5'θ' rad); sin(0.5'θ' rad), cos(0.5'θ' rad)]",
+      "copy": "matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])"
+    },
+    {
+      "id": "IBM052-4710386a-M075",
+      "cell": 32,
+      "start": 106,
+      "end": 113,
+      "literal": "$(x,y)$",
+      "status": "exact",
+      "display": "(x, y)",
+      "copy": "qtuple(vector(x,y))"
+    }
+  ]
+}

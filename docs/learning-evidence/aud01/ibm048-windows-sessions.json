@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/introduction.ipynb",
+  "notebook_sha256": "7a1e4999246cae78a4bae99822fcb4fae29e556a6b1358249d611ae102db7a57",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "cbaac441c34652b3b3578496ae51216cc01cb238ae0e9c51b1675dcdd4829d2e",
+  "suite": {
+    "passed": true,
+    "checks": 153,
+    "calls": 17,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 17,
+    "restored_identically": 17,
+    "stable_after_text_reentry": 17
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

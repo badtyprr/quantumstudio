@@ -1,0 +1,169 @@
+{
+  "notebook_sha256": "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30",
+  "qiskit": "2.6.2",
+  "aer": "0.18.4",
+  "python_random_seed": 52,
+  "code_cells": [
+    {
+      "cell": 2,
+      "source_sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80",
+      "displays": [],
+      "stdout": "2.6.2"
+    },
+    {
+      "cell": 3,
+      "source_sha256": "8b7ed07170b10495a08e0b2d3b344cd367fdc88f6c9ec6dcd7d1f52b3877a739",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 5,
+      "source_sha256": "faa182d7b9c933d3906ff1563e94ab6823b3aa73f734ec6dac3e1195e1821152",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 7,
+      "source_sha256": "28a454b368b28b143ccceaff10c7905a8f16370ee3c961ed4494085bae762d28",
+      "displays": [
+        "Latex"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 9,
+      "source_sha256": "f3f47c5a9b48459fb0f3bbeae500d178aaecafa98b8d6652434077741642177f",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 11,
+      "source_sha256": "716f6976259efca726390c7a6dd26222805ae92af413c40295225c4e1cd79a67",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 13,
+      "source_sha256": "87bcb66e0ae3294a65d7dab2d8fa30ff0f1d95a1c2d35e8e1d5d697dc02cdebf",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 17,
+      "source_sha256": "8f8cb084225011bf1b9bdf11191fcc051aaeae166456267a3b43b14f8a990059",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 19,
+      "source_sha256": "3cd79d0ecb87bbe8a179a018e06bc9201b4e6ca7c844e27a31dd3e45657e34f7",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 21,
+      "source_sha256": "51122405aa6f5979cedbb94b99269af3e41d4720af1cca7e9ed5802103003139",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": "Measured 10 with frequency 1024"
+    },
+    {
+      "cell": 23,
+      "source_sha256": "b76d9233da4607d9aa2b433190288f88a3f9aaf75743e6869b8413449ef41fa4",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 25,
+      "source_sha256": "716f6976259efca726390c7a6dd26222805ae92af413c40295225c4e1cd79a67",
+      "displays": [
+        "Figure"
+      ],
+      "stdout": ""
+    },
+    {
+      "cell": 27,
+      "source_sha256": "f17d5e115193f1c497365485a7596818fef73a8eacbaae204ec9e0b82ca49ee4",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 29,
+      "source_sha256": "be5f3c1f8c52466b556b06ea7c137c073b0a3ff56fb412e1179fa1ae3294c315",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 31,
+      "source_sha256": "12e2882646cc2f8126d0b22518ea70c3278dbf851c6947a128cc65a1325cd12c",
+      "displays": [
+        "Figure",
+        "Figure",
+        "Figure",
+        "Figure"
+      ],
+      "stdout": "(x,y) = (0,0)\n(x,y) = (0,1)\n(x,y) = (1,0)\n(x,y) = (1,1)"
+    },
+    {
+      "cell": 33,
+      "source_sha256": "b89e9bb46a5381a034058643f3967413d5315ad1198851c5a72bddb11020ccad",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 35,
+      "source_sha256": "0282e7198aaa333ed127ecfd6587665de76d99feef64ecd1bd3a911bd148f5b2",
+      "displays": [],
+      "stdout": "Fraction of games won: 0.864"
+    },
+    {
+      "cell": 37,
+      "source_sha256": "25b3520955dcbc8019e0b1f8a0636b561253ff5dba9c41abf1c50f35e096de65",
+      "displays": [],
+      "stdout": ""
+    },
+    {
+      "cell": 39,
+      "source_sha256": "1bbbbf284a0b3fdf741e6949d14f0b9b92cca814fb65d7ad880bed018f7224d9",
+      "displays": [],
+      "stdout": "Fraction of games won: 0.752"
+    }
+  ],
+  "results": {
+    "teleportation": {
+      "shots": 1024,
+      "inverse_gate_result_zero": 1024
+    },
+    "fixed_message": {
+      "10": 1024
+    },
+    "random_messages": {
+      "0 1 0 1": 249,
+      "1 0 1 0": 247,
+      "0 0 0 0": 265,
+      "1 1 1 1": 263
+    },
+    "quantum_wins": 864,
+    "classical_wins": 752,
+    "classical_exact": "3/4",
+    "quantum_per_input": [
+      0.8535533905932735,
+      0.8535533905932735,
+      0.8535533905932738,
+      0.8535533905932738
+    ]
+  }
+}

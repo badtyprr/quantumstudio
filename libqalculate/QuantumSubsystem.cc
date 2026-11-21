@@ -42,6 +42,75 @@ bool validSubsystems(const MathStructure &matrix,const MathStructure &labels,con
  if(product!=matrix.rows())return subsystemError("Subsystem dimension product must equal the matrix dimension.");
  return true;
 }
+struct RegisterColumn {
+ MathStructure value;
+ std::string labels;
+ std::vector<int> dimensions;
+};
+bool reorderColumn(RegisterColumn &state,const std::string &order,const EvaluationOptions &eo) {
+ if(state.labels==order)return true;
+ if(order.size()!=state.labels.size())return subsystemError("Register sets differ between state expressions.");
+ MathStructure axes,dims;axes.clearVector();dims.clearVector();std::vector<int> sorted;
+ for(char name:order) {
+  size_t axis=state.labels.find(name);
+  if(axis==std::string::npos)return subsystemError("Register sets differ between state expressions.");
+  axes.addChild(MathStructure(int(axis),1));sorted.push_back(state.dimensions[axis]);
+ }
+ for(int width:state.dimensions)dims.addChild(MathStructure(width,1));
+ MathStructure permuted(CALCULATOR->getFunction("qpermutedim"),&state.value,&axes,&dims,NULL);
+ permuted.eval(eo);if(!permuted.isMatrix())return false;
+ state.value=permuted;state.labels=order;state.dimensions.swap(sorted);return true;
+}
+bool registerColumn(RegisterColumn &state,const MathStructure &expr,const EvaluationOptions &eo) {
+ if(CALCULATOR->aborted())return false;
+ auto marker=CALCULATOR->getFunction("qregket");
+ if(expr.isFunction() && expr.function()==marker && expr.size()==2 && expr[1].isSymbolic()) {
+  state.labels=expr[1].symbol();
+  if(state.labels.empty() || state.labels.size()>32 || state.labels.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")!=std::string::npos)
+   return subsystemError("A labelled ket requires uppercase register names.");
+  for(size_t k=0;k<state.labels.size();++k)if(state.labels.find(state.labels[k])!=k)return subsystemError("Repeated register in a ket.");
+  state.value=expr[0];state.value.eval(eo);
+  if(!state.value.isMatrix())return state.value.containsUnknowns() ? false : subsystemError("A labelled state must be a column vector.");
+  if(state.value.columns()!=1 || !state.value.rows() || state.value.rows()>1024)return subsystemError("A labelled state must have 1 to 1024 rows and one column.");
+  if(state.labels.size()==1)state.dimensions.push_back(int(state.value.rows()));
+  else {
+   if(state.labels.size()>10 || state.value.rows()!=(size_t(1)<<state.labels.size()))
+    return subsystemError("A grouped qubit ket requires one named register per qubit.");
+   state.dimensions.assign(state.labels.size(),2);
+  }
+  return true;
+ }
+ if(!expr.containsFunction(marker)) {
+  state.value=expr;state.value.eval(eo);
+  return state.value.representsScalar() || subsystemError("A state factor requires register labels.");
+ }
+ std::string op=expr.isFunction() ? expr.function()->referenceName() :
+  expr.isMultiplication() ? "qmul" : expr.isAddition() ? "qadd" : "";
+ const bool add=op=="qadd" || op=="qsub";
+ if((!add && op!="qmul" && op!="qadjacent" && op!="qtensor") || expr.size()<2)
+  return subsystemError("Unsupported operation on a labelled ket.");
+ if(!registerColumn(state,expr[0],eo))return false;
+ for(size_t k=1;k<expr.size();++k) {
+  RegisterColumn right;if(!registerColumn(right,expr[k],eo))return false;
+  std::string operation=op;
+  if(add) {
+   if(!reorderColumn(right,state.labels,eo))return false;
+   if(state.dimensions!=right.dimensions)return subsystemError("Register dimensions differ between summands.");
+  } else if(!state.labels.empty() && !right.labels.empty()) {
+   if(state.labels.find_first_of(right.labels)!=std::string::npos)return subsystemError("Tensor factors must name distinct registers.");
+   if(!state.value.isMatrix() || !right.value.isMatrix() || !right.value.rows())return false;
+   if(state.value.rows()>1024/right.value.rows())return subsystemError("The labelled tensor product exceeds 1024 rows.");
+   state.labels+=right.labels;state.dimensions.insert(state.dimensions.end(),right.dimensions.begin(),right.dimensions.end());
+   operation="qtensor";
+  } else {
+   if(state.labels.empty()){state.labels=right.labels;state.dimensions=right.dimensions;}
+   operation="qmul";
+  }
+  MathStructure value(CALCULATOR->getFunction(operation),&state.value,&right.value,NULL);
+  value.eval(eo);state.value=value;
+ }
+ return true;
+}
 class QuantumSubsystemFunction: public MathFunction {
  std::string op;
  public:
@@ -50,6 +119,13 @@ class QuantumSubsystemFunction: public MathFunction {
  bool representsScalar(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsScalar(args);}
  bool representsNonMatrix(const MathStructure &args) const {return op=="qsubsystems" ? false : MathFunction::representsNonMatrix(args);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qregket")return 0;
+  if(op=="qorderedket") {
+   if(!raw[1].isSymbolic())return 0;
+   RegisterColumn state;
+   if(!registerColumn(state,raw[0],eo) || !reorderColumn(state,raw[1].symbol(),eo))return 0;
+   out=state.value;return 1;
+  }
   if(op=="qsubsystems") {
    // The notation parser quotes labels, so evaluating their vector constructor
    // never turns names into assigned variables, gates or scalar constants.
@@ -281,6 +357,8 @@ class QuantumSubsystemFunction: public MathFunction {
 };
 }
 void registerQuantumSubsystem(Calculator &calculator) {
+ calculator.addFunction(new QuantumSubsystemFunction("qregket",2));
+ calculator.addFunction(new QuantumSubsystemFunction("qorderedket",2));
  for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
   calculator.addFunction(new QuantumSubsystemFunction(entry.first,entry.second));
 }
