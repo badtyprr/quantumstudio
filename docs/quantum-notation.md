@@ -359,6 +359,10 @@ This convention supports IBM's finite index domains `\{0,\ldots,n-1\}` after sup
 
 This is an explicit step +1 convention, not arbitrary sequence inference. Descending or stepped sequences, multiple leading terms such as `\{0,1,\ldots,3\}`, tuples of ensemble entries, and infinite endpoints are not inferred by this form. Existing parser and collection limits still apply.
 
+A single gate letter used as an integer range endpoint denotes a variable. For example, `replace(indexrange(1,T),"T",3)` returns the set containing 1, 2 and 3.
+
+## Textual logical operators
+
 TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`.
 
 ## Two-argument probability functions
