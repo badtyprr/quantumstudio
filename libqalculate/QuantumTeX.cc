@@ -2344,6 +2344,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  static const std::regex probability(R"(^\s*P_([a-z0-9])\s*=\s*\|\\langle\s*\\phi_\1\s*\|\s*\\psi\s*\\rangle\|\^2\s*$)");
+  std::smatch prob;
+  if(std::regex_match(s,prob,probability)) {
+   std::string index=prob[1].str();
+   return "qcompare(\"P_"+index+"\",qpower(qbars(qmul(qdag(qketstate(\"φ_"+index+"\")),qketstate(\"ψ\"))),2),4)";
+  }
+  static const std::regex evolutionOperator(R"(^\s*\\exp\(i([a-z])\\mathcal\{H\}\)\s*$)");
+  if(std::regex_match(s,prob,evolutionOperator))return "qpropagator(\"H\",-\""+prob[1].str()+"\")";
+  if(s.find("\\rangle_{b")!=std::string::npos) {
+   static const std::regex circuitState(R"(\|\\psi\\rangle_\{b(\d+)\})");
+   s=std::regex_replace(s,circuitState,"qketstate(\"ψ_b$1\")");
+   static const std::regex azimuth(R"(e\^\{i\\theta_(\d)\})");
+   s=std::regex_replace(s,azimuth,"qexp(i*\"θ_$1\")");
+  }
   static const std::regex gap(R"(^\s*\\vert\s*(E)\s*-\s*E_(\d)\s*\\vert\s*>\s*\\delta\s*$)");
   std::smatch gapMatch;
   if(std::regex_match(s,gapMatch,gap))
@@ -2450,6 +2464,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   auto feature=[&](const std::string &arg) {
    return "qfeatureat(\"Φ\","+vectorArgument(arg)+")";
   };
+  static const std::regex featureKet("\\|\\\\Phi\\(("+vec+")\\)\\\\rangle");
+  static const std::regex indexedPhase("\\\\phi_([A-Za-z])\\(("+vec+")\\)");
+  while(std::regex_search(s,call,featureKet)) {
+   std::string value="qstatecall(\"Φ\","+vectorArgument(call[1].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
+  while(std::regex_search(s,call,indexedPhase)) {
+   std::string value="qscalarat(\"φ_"+call[1].str()+"\","+vectorArgument(call[2].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
   while(std::regex_search(s,call,featureDot)) {
    std::string value="qvectordot("+feature(call[1].str())+","+feature(call[2].str())+")";
    s.replace(call.position(),call.length(),value);

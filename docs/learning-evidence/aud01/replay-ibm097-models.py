@@ -56,3 +56,26 @@ neuron=neuron.replace("'σ'","vector(vector(-1,0),vector(1,1))")
 for value,expected in [(0,"1"),(1,"0")]:
     assert run(neuron.replace("'f'",f"vector(vector(vector(1,2),{value}))"))==expected
 print("Verified raw and feature-space dot products, kernel lookup, primal and dual models and a nonlinear perceptron.")
+
+def other_source(lesson,n):
+    path=Path(__file__).with_name(f"ibm{lesson:03}-inventory.json")
+    result=run(json.loads(path.read_bytes())["rows"][n-1]["literal"])
+    assert run(result)==result
+    return result
+
+born=other_source(96,19).replace('qketstate("φ_i")',"|0>").replace("qketstate('ψ')","(|0>+i*|1>)/sqrt(2)")
+assert run(born.replace('"P_i"',"0.5"))=="1"
+assert run(born.replace('"P_i"',"1"))=="0"
+assert source(31)=="qstatecall('Φ',qvectorref('x'))"
+for row,stage,expected in [(172,1,"01"),(174,2,"11")]:
+    state=other_source(98,row)
+    for index,value in enumerate(["pi","0","pi/2","0"]):
+        state=state.replace(f'"θ_{index}"',f"({value})")
+    label=f'qketstate("ψ_b{stage}")'
+    assert run(state.replace(label,f"(i*|{expected}>)"))=="1"
+    assert run(state.replace(label,f"(-i*|{expected}>)"))=="0"
+phase=other_source(98,268).replace("'x'","vector(2,4)")
+assert run(phase.replace('"φ_S"',"vector(vector(vector(2,4),8))"))=="8"
+evolution=other_source(98,272).replace("'H'","Z").replace("'t'","(pi/2)")
+assert run(f"qcompare({evolution},(i*Z),4)")=="1"
+print("Verified squared overlaps, labeled circuit states and signed encoding phases.")
