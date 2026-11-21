@@ -196,6 +196,11 @@ for source in ("5^-1","(5)^(-1)",r"(5^{-1})"):
     assert data(f'quantum:replace(({form}),"modulus",7)')["copy_text"]=="3"
 for source in ("pi=1","π=1",r"\pi=1"):
     assert data("quantum:modpowers:"+source)["copy_text"]=="0"
+for source,expected in (("5⁻¹","3"),("(2+3)^{-1}","3"),("3*5=8","1"),("2+3*5=3","1"),
+                        ("(a)b=1","1"),("a(b)=1","1"),("(a)(b)=1","1")):
+    form=data("quantum:modpowers:"+source)["copy_text"]
+    bound=f'replace(replace(replace(({form}),"modulus",7),"a",3),"b",5)'
+    assert data("quantum:"+bound)["copy_text"]==expected
 for invalid in ("qmodpower(2,-1,4)", "qmodpower(1,2,0)", "qmodpower(1/2,2,7)"):
     run("quantum:"+invalid, success=False)
 

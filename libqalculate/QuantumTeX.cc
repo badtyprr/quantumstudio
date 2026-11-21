@@ -2470,32 +2470,49 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
- if(modularPowers && (s.find('=')!=std::string::npos || s.find('^')!=std::string::npos)) {
+ if(modularPowers && (s.find('=')!=std::string::npos || s.find('^')!=std::string::npos || s.find("⁻¹")!=std::string::npos)) {
   // In a residue ring the prose may supply the modulus. Keep that
   // parameter editable when an isolated equation or inverse is pasted.
   auto operand=[](std::string token)->std::string {
    token=ungroupTeX(trim(token));
    if(!token.empty() && token.find_first_not_of("0123456789")==std::string::npos)return token;
    if(token.size()==1 && std::isalpha((unsigned char)token[0]))return "\""+token+"\"";
+   // Delegate grouped integer arithmetic to the existing expression parser.
+   // Quote individual variables while preserving reserved multi-letter names.
+   if(token.find_first_of("+-*")!=std::string::npos) {
+    std::string value;
+    for(size_t i=0;i<token.size();++i) {
+     unsigned char c=token[i];
+     if(std::isalpha(c)) {
+      if(i+1<token.size() && std::isalpha((unsigned char)token[i+1]))return "";
+      value+="\""+token.substr(i,1)+"\"";
+     } else if(std::isdigit(c) || asciiSpace(c) || c=='+' || c=='-' || c=='*' || c=='(' || c==')')value+=c;
+     else return "";
+    }
+    return "("+value+")";
+   }
    return "";
   };
   static const std::regex delimiters(R"(\\(?:left|right)(?=[()]))");
-  std::string expression=ungroupTeX(trim(std::regex_replace(s,delimiters,"")));
+  static const std::regex superscriptInverse("⁻¹");
+  std::string expression=ungroupTeX(trim(std::regex_replace(std::regex_replace(s,delimiters,""),superscriptInverse,"^{-1}")));
   auto sides=indexedParts(expression,"=");
   if(sides.size()==2) {
    for(auto &side:sides)side=ungroupTeX(side);
-   if(sides[0]=="1")std::swap(sides[0],sides[1]);
-   if(sides[1]=="1") {
+   for(int orientation=0;orientation<2;++orientation) {
+    if(orientation)std::swap(sides[0],sides[1]);
+    std::string rhs=operand(sides[1]);
+    if(rhs.empty())continue;
     static const std::regex times(R"(\\(?:cdot|times)(?![A-Za-z])|·|×)");
-    auto factors=indexedParts(std::regex_replace(sides[0],times,"*"),"*");
-    static const std::regex implicit(R"(^([A-Za-z])\s*([A-Za-z])$)");
-    std::smatch match;
-    if(factors.size()==1 && sides[0]!="pi" && std::regex_match(sides[0],match,implicit))
-     factors={match[1].str(),match[2].str()};
-    if(factors.size()==2) {
-     std::string left=operand(factors[0]),right=operand(factors[1]);
-     if(!left.empty() && !right.empty())return "qmodpowerequal(qmul("+left+","+right+"),1,\"modulus\",1)";
+    std::string product=std::regex_replace(sides[0],times,"*");
+    if(product.find('*')!=std::string::npos) {
+     std::string lhs=operand(product);
+     if(!lhs.empty())return "qmodpowerequal("+lhs+",1,\"modulus\","+rhs+")";
     }
+    static const std::regex implicit(R"(^(\(\s*[A-Za-z]\s*\)|[A-Za-z])\s*(\(\s*[A-Za-z]\s*\)|[A-Za-z])$)");
+    std::smatch match;
+    if(sides[0]!="pi" && std::regex_match(sides[0],match,implicit))
+     return "qmodpowerequal(qmul("+operand(match[1])+","+operand(match[2])+"),1,\"modulus\","+rhs+")";
    }
   } else if(sides.size()==1) {
    auto power=indexedParts(expression,"^");
