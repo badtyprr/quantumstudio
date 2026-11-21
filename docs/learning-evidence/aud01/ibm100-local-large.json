@@ -1,0 +1,24 @@
+{
+  "notebook_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+  "backend": "Aer matrix product state",
+  "qubits": 36,
+  "initial_weights": 72,
+  "train_images": 7,
+  "test_images": 3,
+  "requested_maxiter": 20,
+  "optimizer_evaluations": 74,
+  "initial_loss": 1.0000000000020737,
+  "best_loss": 0.999901170559341,
+  "test_expectations": [
+    -7.480494121103173e-09,
+    1.1770080063670346e-06,
+    1.1140934531278254e-09
+  ],
+  "test_labels": [
+    -1,
+    -1,
+    1
+  ],
+  "test_accuracy": 0.6666666666666666,
+  "independent_first_test_parity": -7.480494121103429e-09
+}
