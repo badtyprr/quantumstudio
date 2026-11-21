@@ -42,6 +42,7 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "057fe876a3ed23e7bea2c8cea8370c76631577b94141189d65149584c86be2f4": ("MOD013", "nmr-with-qiskit", 285, 1),
     "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25": ("IBM139", "modern-workflows", 14, 14),
     "4db046cc51517d9089ca660d5fb9916ebd6a054cbba3dee376918a4ff2d7f4bc": ("IBM138", "introduction", 0, 0),
     "b00cb51d7b1d9df90208e6d1a43ad43448ec910e0a8962fb307de253ae699d13": ("IBM128", "start-your-quantum-journey", 0, 1),
@@ -203,6 +204,7 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "MOD013": (35,17),
     "IBM139": (1,0),
     "IBM138": (11,0),
     "IBM128": (1,0),
@@ -349,9 +351,12 @@ elif lesson == "IBM138":
     course,chapter = "practical-near-term-qc",""
 elif lesson == "IBM139":
     course,chapter = "tools-for-quantum-advantage",""
+elif lesson == "MOD013":
+    course,chapter = "quantum-mechanics",""
+section = "modules" if lesson == "MOD013" else "courses"
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
-          f"learning/courses/{path}.{extension}")
+          f"learning/{section}/{path}.{extension}")
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               revision=args.revision, mode="Quantum notation", markdown_cells=types["markdown"], code_cells=types["code"],

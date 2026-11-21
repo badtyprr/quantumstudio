@@ -1,0 +1,2855 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/modules/quantum-mechanics/nmr-with-qiskit.ipynb",
+  "source_sha256": "057fe876a3ed23e7bea2c8cea8370c76631577b94141189d65149584c86be2f4",
+  "worker_sha256": "517843093469c88fc634a87807b69c555a76382c79d5997d3be7e3df34343531",
+  "revision": "baec9d4b",
+  "mode": "Quantum notation",
+  "markdown_cells": 35,
+  "code_cells": 17,
+  "summary": {
+    "exact": 266,
+    "diagnostic": 19
+  },
+  "figures": [
+    {
+      "cell": 44,
+      "start": 1371,
+      "end": 1540,
+      "alt": "1,1,2-trichloroethane: the CH proton is A, the two equivalent CH$_2$ protons are X",
+      "path": "/learning/images/modules/quantum-mechanics/nmr-with-qiskit/trichloroethane_ax.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "MOD013-057fe876-M001",
+      "cell": 2,
+      "start": 575,
+      "end": 580,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M002",
+      "cell": 2,
+      "start": 585,
+      "end": 590,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M003",
+      "cell": 2,
+      "start": 711,
+      "end": 722,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M004",
+      "cell": 2,
+      "start": 727,
+      "end": 738,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M005",
+      "cell": 2,
+      "start": 885,
+      "end": 890,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M006",
+      "cell": 2,
+      "start": 895,
+      "end": 900,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M007",
+      "cell": 2,
+      "start": 1312,
+      "end": 1317,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M008",
+      "cell": 2,
+      "start": 1321,
+      "end": 1328,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M009",
+      "cell": 2,
+      "start": 1343,
+      "end": 1348,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M010",
+      "cell": 2,
+      "start": 1432,
+      "end": 1437,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M011",
+      "cell": 2,
+      "start": 1583,
+      "end": 1586,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M012",
+      "cell": 2,
+      "start": 1718,
+      "end": 1723,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M013",
+      "cell": 3,
+      "start": 96,
+      "end": 140,
+      "literal": "$\\boldsymbol{\\mu} = \\gamma \\hbar \\mathbf{I}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\boldsymbol at byte 12"
+    },
+    {
+      "id": "MOD013-057fe876-M014",
+      "cell": 3,
+      "start": 148,
+      "end": 156,
+      "literal": "$\\gamma$",
+      "status": "exact",
+      "display": "'γ'",
+      "copy": "'γ'"
+    },
+    {
+      "id": "MOD013-057fe876-M015",
+      "cell": 3,
+      "start": 202,
+      "end": 207,
+      "literal": "$B_0$",
+      "status": "exact",
+      "display": "\"B_0\"",
+      "copy": "\"B_0\""
+    },
+    {
+      "id": "MOD013-057fe876-M016",
+      "cell": 3,
+      "start": 214,
+      "end": 217,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "MOD013-057fe876-M017",
+      "cell": 3,
+      "start": 281,
+      "end": 382,
+      "literal": "$$E_{\\pm} = \\mp \\tfrac{1}{2}\\gamma \\hbar B_0, \\qquad \\Delta E = \\gamma \\hbar B_0 = \\hbar \\omega_0 .$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\mp at byte 14"
+    },
+    {
+      "id": "MOD013-057fe876-M018",
+      "cell": 3,
+      "start": 444,
+      "end": 467,
+      "literal": "$\\omega_0 = \\gamma B_0$",
+      "status": "exact",
+      "display": "'γ' · \"B_0\" = \"ω_0\"",
+      "copy": "(qadjacent('γ',\"B_0\"))==(\"ω_0\")"
+    },
+    {
+      "id": "MOD013-057fe876-M019",
+      "cell": 3,
+      "start": 509,
+      "end": 514,
+      "literal": "$B_0$",
+      "status": "exact",
+      "display": "\"B_0\"",
+      "copy": "\"B_0\""
+    },
+    {
+      "id": "MOD013-057fe876-M020",
+      "cell": 3,
+      "start": 605,
+      "end": 615,
+      "literal": "$\\omega_0$",
+      "status": "exact",
+      "display": "\"ω_0\"",
+      "copy": "\"ω_0\""
+    },
+    {
+      "id": "MOD013-057fe876-M021",
+      "cell": 3,
+      "start": 751,
+      "end": 754,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "MOD013-057fe876-M022",
+      "cell": 3,
+      "start": 755,
+      "end": 758,
+      "literal": "$y$",
+      "status": "exact",
+      "display": "y",
+      "copy": "y"
+    },
+    {
+      "id": "MOD013-057fe876-M023",
+      "cell": 3,
+      "start": 878,
+      "end": 888,
+      "literal": "$90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M024",
+      "cell": 3,
+      "start": 902,
+      "end": 908,
+      "literal": "$+1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M025",
+      "cell": 3,
+      "start": 947,
+      "end": 958,
+      "literal": "$180^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M026",
+      "cell": 3,
+      "start": 985,
+      "end": 991,
+      "literal": "$-1/2$",
+      "status": "exact",
+      "display": "−0.5",
+      "copy": "−1 ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M027",
+      "cell": 3,
+      "start": 1471,
+      "end": 1480,
+      "literal": "$\\ket{0}$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M028",
+      "cell": 3,
+      "start": 1483,
+      "end": 1492,
+      "literal": "$\\ket{1}$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M029",
+      "cell": 3,
+      "start": 1508,
+      "end": 1534,
+      "literal": "$\\Delta E = \\hbar\\omega_0$",
+      "status": "exact",
+      "display": "E = \"ℏω_0\" ∕ 'Δ' and 'Δ' ≠ 0 or 'Δ' = 0 and \"ℏω_0\" = 0",
+      "copy": "(((\"ℏω_0\")==(0) and ('Δ')==(0)) or (('E')==(\"ℏω_0\" ∕ 'Δ') and ('Δ')!=(0)))"
+    },
+    {
+      "id": "MOD013-057fe876-M030",
+      "cell": 3,
+      "start": 1561,
+      "end": 1579,
+      "literal": "$\\hbar\\omega_{01}$",
+      "status": "exact",
+      "display": "\"ℏω_01\"",
+      "copy": "\"ℏω_01\""
+    },
+    {
+      "id": "MOD013-057fe876-M031",
+      "cell": 3,
+      "start": 1601,
+      "end": 1611,
+      "literal": "$\\omega_0$",
+      "status": "exact",
+      "display": "\"ω_0\"",
+      "copy": "\"ω_0\""
+    },
+    {
+      "id": "MOD013-057fe876-M032",
+      "cell": 3,
+      "start": 1630,
+      "end": 1643,
+      "literal": "$\\omega_{01}$",
+      "status": "exact",
+      "display": "\"ω_01\"",
+      "copy": "\"ω_01\""
+    },
+    {
+      "id": "MOD013-057fe876-M033",
+      "cell": 3,
+      "start": 1678,
+      "end": 1686,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M034",
+      "cell": 3,
+      "start": 1717,
+      "end": 1730,
+      "literal": "$R_X(\\theta)$",
+      "status": "exact",
+      "display": "[cos(0.5'θ' rad), −i ⋅ sin(0.5'θ' rad); −i ⋅ sin(0.5'θ' rad), cos(0.5'θ' rad)]",
+      "copy": "matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])"
+    },
+    {
+      "id": "MOD013-057fe876-M035",
+      "cell": 3,
+      "start": 1735,
+      "end": 1745,
+      "literal": "$90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M036",
+      "cell": 3,
+      "start": 1748,
+      "end": 1759,
+      "literal": "$180^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M037",
+      "cell": 3,
+      "start": 1768,
+      "end": 1780,
+      "literal": "$R_X(\\pi/2)$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), −0.5i ⋅ √(2); −0.5i ⋅ √(2), 1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),−(i ⋅ √(2)) ∕ 2,−(i ⋅ √(2)) ∕ 2,1 ∕ √(2)])"
+    },
+    {
+      "id": "MOD013-057fe876-M038",
+      "cell": 3,
+      "start": 1783,
+      "end": 1793,
+      "literal": "$R_X(\\pi)$",
+      "status": "exact",
+      "display": "[0, −i; −i, 0]",
+      "copy": "matrix(2,2,[0,−i,−i,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M039",
+      "cell": 3,
+      "start": 1822,
+      "end": 1827,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M040",
+      "cell": 3,
+      "start": 1859,
+      "end": 1864,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M041",
+      "cell": 3,
+      "start": 1890,
+      "end": 1895,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M042",
+      "cell": 3,
+      "start": 1919,
+      "end": 1924,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M043",
+      "cell": 7,
+      "start": 200,
+      "end": 208,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M044",
+      "cell": 7,
+      "start": 219,
+      "end": 222,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "MOD013-057fe876-M045",
+      "cell": 7,
+      "start": 251,
+      "end": 262,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M046",
+      "cell": 7,
+      "start": 297,
+      "end": 308,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M047",
+      "cell": 7,
+      "start": 314,
+      "end": 412,
+      "literal": "$$P_1(\\theta) = \\sin^2\\!\\left(\\tfrac{\\theta}{2}\\right) = \\tfrac{1}{2}\\bigl(1 - \\cos\\theta\\bigr).$$",
+      "status": "diagnostic",
+      "message": "A powered trigonometric function requires a parenthesized or braced argument at byte 21"
+    },
+    {
+      "id": "MOD013-057fe876-M048",
+      "cell": 7,
+      "start": 467,
+      "end": 472,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M049",
+      "cell": 7,
+      "start": 500,
+      "end": 511,
+      "literal": "$180^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M050",
+      "cell": 7,
+      "start": 522,
+      "end": 529,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M051",
+      "cell": 7,
+      "start": 559,
+      "end": 569,
+      "literal": "$90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M052",
+      "cell": 7,
+      "start": 919,
+      "end": 927,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M053",
+      "cell": 7,
+      "start": 934,
+      "end": 947,
+      "literal": "$R_X(\\theta)$",
+      "status": "exact",
+      "display": "[cos(0.5'θ' rad), −i ⋅ sin(0.5'θ' rad); −i ⋅ sin(0.5'θ' rad), cos(0.5'θ' rad)]",
+      "copy": "matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])"
+    },
+    {
+      "id": "MOD013-057fe876-M054",
+      "cell": 7,
+      "start": 972,
+      "end": 977,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M055",
+      "cell": 7,
+      "start": 978,
+      "end": 985,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M056",
+      "cell": 7,
+      "start": 1148,
+      "end": 1161,
+      "literal": "$R_X(\\theta)$",
+      "status": "exact",
+      "display": "[cos(0.5'θ' rad), −i ⋅ sin(0.5'θ' rad); −i ⋅ sin(0.5'θ' rad), cos(0.5'θ' rad)]",
+      "copy": "matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])"
+    },
+    {
+      "id": "MOD013-057fe876-M057",
+      "cell": 7,
+      "start": 1176,
+      "end": 1184,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M058",
+      "cell": 8,
+      "start": 131,
+      "end": 134,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "MOD013-057fe876-M059",
+      "cell": 8,
+      "start": 158,
+      "end": 169,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M060",
+      "cell": 8,
+      "start": 182,
+      "end": 193,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M061",
+      "cell": 9,
+      "start": 74,
+      "end": 87,
+      "literal": "$R_X(\\theta)$",
+      "status": "exact",
+      "display": "[cos(0.5'θ' rad), −i ⋅ sin(0.5'θ' rad); −i ⋅ sin(0.5'θ' rad), cos(0.5'θ' rad)]",
+      "copy": "matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])"
+    },
+    {
+      "id": "MOD013-057fe876-M062",
+      "cell": 13,
+      "start": 22,
+      "end": 30,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M063",
+      "cell": 13,
+      "start": 36,
+      "end": 39,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "MOD013-057fe876-M064",
+      "cell": 13,
+      "start": 43,
+      "end": 49,
+      "literal": "$4\\pi$",
+      "status": "exact",
+      "display": "4π",
+      "copy": "4π"
+    },
+    {
+      "id": "MOD013-057fe876-M065",
+      "cell": 15,
+      "start": 38,
+      "end": 43,
+      "literal": "$P_1$",
+      "status": "exact",
+      "display": "\"P_1\"",
+      "copy": "\"P_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M066",
+      "cell": 15,
+      "start": 73,
+      "end": 91,
+      "literal": "$\\sin^2(\\theta/2)$",
+      "status": "exact",
+      "display": "sin(0.5'θ' rad)²",
+      "copy": "(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))^(2)"
+    },
+    {
+      "id": "MOD013-057fe876-M067",
+      "cell": 17,
+      "start": 58,
+      "end": 63,
+      "literal": "$P_1$",
+      "status": "exact",
+      "display": "\"P_1\"",
+      "copy": "\"P_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M068",
+      "cell": 17,
+      "start": 97,
+      "end": 102,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M069",
+      "cell": 17,
+      "start": 110,
+      "end": 124,
+      "literal": "$\\theta = \\pi$",
+      "status": "exact",
+      "display": "'θ' = π",
+      "copy": "('θ')==(π)"
+    },
+    {
+      "id": "MOD013-057fe876-M070",
+      "cell": 17,
+      "start": 192,
+      "end": 200,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M071",
+      "cell": 17,
+      "start": 247,
+      "end": 261,
+      "literal": "$1.05\\,\\theta$",
+      "status": "exact",
+      "display": "1.05'θ'",
+      "copy": "(21 ∕ 20)'θ'"
+    },
+    {
+      "id": "MOD013-057fe876-M072",
+      "cell": 17,
+      "start": 321,
+      "end": 326,
+      "literal": "$P_1$",
+      "status": "exact",
+      "display": "\"P_1\"",
+      "copy": "\"P_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M073",
+      "cell": 17,
+      "start": 371,
+      "end": 376,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M074",
+      "cell": 17,
+      "start": 535,
+      "end": 540,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M075",
+      "cell": 17,
+      "start": 572,
+      "end": 607,
+      "literal": "$\\theta = \\pi/1.05 \\approx 0.95\\pi$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "MOD013-057fe876-M076",
+      "cell": 17,
+      "start": 675,
+      "end": 680,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M077",
+      "cell": 17,
+      "start": 718,
+      "end": 727,
+      "literal": "$1.05\\pi$",
+      "status": "exact",
+      "display": "1.05π",
+      "copy": "(21 ∕ 20) ⋅ π"
+    },
+    {
+      "id": "MOD013-057fe876-M078",
+      "cell": 17,
+      "start": 736,
+      "end": 775,
+      "literal": "$P_1 = \\sin^2(1.05\\pi/2) \\approx 0.994$",
+      "status": "exact",
+      "display": "\"P_1\" = sin(0.475π rad)²",
+      "copy": "(\"P_1\")==((sin((19 ∕ 40)*(qphysicalunit(\"rad\",\"\"))*(π)))^(2))"
+    },
+    {
+      "id": "MOD013-057fe876-M079",
+      "cell": 17,
+      "start": 787,
+      "end": 790,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "MOD013-057fe876-M080",
+      "cell": 17,
+      "start": 982,
+      "end": 993,
+      "literal": "$360^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 10"
+    },
+    {
+      "id": "MOD013-057fe876-M081",
+      "cell": 18,
+      "start": 15,
+      "end": 20,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M082",
+      "cell": 18,
+      "start": 277,
+      "end": 282,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M083",
+      "cell": 18,
+      "start": 285,
+      "end": 315,
+      "literal": "$$P_1(\\tau) = e^{-\\tau/T_1}.$$",
+      "status": "exact",
+      "display": "P = 1 ∕ (e^('τ' ∕ \"T_1\") ⋅ ('_''τ')) and '_' ≠ 0 and 'τ' ≠ 0",
+      "copy": "(('P')==(1 ∕ (e^('τ' ∕ \"T_1\") ⋅ ('_' ⋅ 'τ'))) and ('_')!=(0) and ('τ')!=(0))"
+    },
+    {
+      "id": "MOD013-057fe876-M084",
+      "cell": 18,
+      "start": 332,
+      "end": 337,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M085",
+      "cell": 18,
+      "start": 640,
+      "end": 651,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M086",
+      "cell": 18,
+      "start": 660,
+      "end": 663,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M087",
+      "cell": 18,
+      "start": 672,
+      "end": 677,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M088",
+      "cell": 18,
+      "start": 708,
+      "end": 714,
+      "literal": "$\\tau$",
+      "status": "exact",
+      "display": "'τ'",
+      "copy": "'τ'"
+    },
+    {
+      "id": "MOD013-057fe876-M089",
+      "cell": 18,
+      "start": 752,
+      "end": 763,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M090",
+      "cell": 19,
+      "start": 26,
+      "end": 31,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M091",
+      "cell": 19,
+      "start": 117,
+      "end": 128,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M092",
+      "cell": 19,
+      "start": 140,
+      "end": 151,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M093",
+      "cell": 19,
+      "start": 162,
+      "end": 165,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "MOD013-057fe876-M094",
+      "cell": 26,
+      "start": 10,
+      "end": 15,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M095",
+      "cell": 27,
+      "start": 78,
+      "end": 86,
+      "literal": "$5\\,T_1$",
+      "status": "exact",
+      "display": "5 \"T_1\"",
+      "copy": "5 \"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M096",
+      "cell": 27,
+      "start": 190,
+      "end": 198,
+      "literal": "$5\\,T_1$",
+      "status": "exact",
+      "display": "5 \"T_1\"",
+      "copy": "5 \"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M097",
+      "cell": 27,
+      "start": 251,
+      "end": 259,
+      "literal": "$5\\,T_1$",
+      "status": "exact",
+      "display": "5 \"T_1\"",
+      "copy": "5 \"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M098",
+      "cell": 27,
+      "start": 305,
+      "end": 327,
+      "literal": "$e^{-5}\\approx 0.0067$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "MOD013-057fe876-M099",
+      "cell": 28,
+      "start": 43,
+      "end": 48,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M100",
+      "cell": 28,
+      "start": 50,
+      "end": 57,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M101",
+      "cell": 28,
+      "start": 70,
+      "end": 75,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M102",
+      "cell": 28,
+      "start": 100,
+      "end": 105,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M103",
+      "cell": 28,
+      "start": 220,
+      "end": 227,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M104",
+      "cell": 28,
+      "start": 500,
+      "end": 507,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M105",
+      "cell": 28,
+      "start": 1198,
+      "end": 1203,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M106",
+      "cell": 28,
+      "start": 1561,
+      "end": 1566,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M107",
+      "cell": 28,
+      "start": 1614,
+      "end": 1621,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M108",
+      "cell": 28,
+      "start": 1686,
+      "end": 1691,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M109",
+      "cell": 28,
+      "start": 1735,
+      "end": 1742,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M110",
+      "cell": 28,
+      "start": 1849,
+      "end": 1854,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M111",
+      "cell": 28,
+      "start": 1906,
+      "end": 1913,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M112",
+      "cell": 28,
+      "start": 1971,
+      "end": 1977,
+      "literal": "$\\tau$",
+      "status": "exact",
+      "display": "'τ'",
+      "copy": "'τ'"
+    },
+    {
+      "id": "MOD013-057fe876-M113",
+      "cell": 28,
+      "start": 1981,
+      "end": 1986,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M114",
+      "cell": 28,
+      "start": 2147,
+      "end": 2153,
+      "literal": "$\\tau$",
+      "status": "exact",
+      "display": "'τ'",
+      "copy": "'τ'"
+    },
+    {
+      "id": "MOD013-057fe876-M115",
+      "cell": 28,
+      "start": 2156,
+      "end": 2163,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M116",
+      "cell": 28,
+      "start": 2168,
+      "end": 2173,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M117",
+      "cell": 28,
+      "start": 2300,
+      "end": 2307,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M118",
+      "cell": 28,
+      "start": 2428,
+      "end": 2433,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M119",
+      "cell": 28,
+      "start": 2517,
+      "end": 2522,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M120",
+      "cell": 28,
+      "start": 2638,
+      "end": 2643,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M121",
+      "cell": 28,
+      "start": 2648,
+      "end": 2655,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M122",
+      "cell": 28,
+      "start": 2925,
+      "end": 2930,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M123",
+      "cell": 28,
+      "start": 2936,
+      "end": 2943,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M124",
+      "cell": 28,
+      "start": 3329,
+      "end": 3332,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "MOD013-057fe876-M125",
+      "cell": 28,
+      "start": 3361,
+      "end": 3378,
+      "literal": "$\\vert 0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M126",
+      "cell": 28,
+      "start": 3382,
+      "end": 3399,
+      "literal": "$\\vert 1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M127",
+      "cell": 28,
+      "start": 3460,
+      "end": 3467,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M128",
+      "cell": 28,
+      "start": 3506,
+      "end": 3513,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M129",
+      "cell": 28,
+      "start": 3628,
+      "end": 3635,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M130",
+      "cell": 28,
+      "start": 3640,
+      "end": 3645,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M131",
+      "cell": 29,
+      "start": 12,
+      "end": 21,
+      "literal": "$T_2^{*}$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M132",
+      "cell": 29,
+      "start": 28,
+      "end": 35,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M133",
+      "cell": 29,
+      "start": 59,
+      "end": 65,
+      "literal": "$\\tau$",
+      "status": "exact",
+      "display": "'τ'",
+      "copy": "'τ'"
+    },
+    {
+      "id": "MOD013-057fe876-M134",
+      "cell": 29,
+      "start": 77,
+      "end": 84,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M135",
+      "cell": 29,
+      "start": 348,
+      "end": 354,
+      "literal": "$\\tau$",
+      "status": "exact",
+      "display": "'τ'",
+      "copy": "'τ'"
+    },
+    {
+      "id": "MOD013-057fe876-M136",
+      "cell": 29,
+      "start": 1662,
+      "end": 1669,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M137",
+      "cell": 30,
+      "start": 28,
+      "end": 35,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M138",
+      "cell": 30,
+      "start": 208,
+      "end": 215,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M139",
+      "cell": 32,
+      "start": 15,
+      "end": 20,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M140",
+      "cell": 32,
+      "start": 40,
+      "end": 45,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M141",
+      "cell": 33,
+      "start": 81,
+      "end": 86,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M142",
+      "cell": 37,
+      "start": 141,
+      "end": 148,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M143",
+      "cell": 37,
+      "start": 153,
+      "end": 158,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M144",
+      "cell": 38,
+      "start": 57,
+      "end": 78,
+      "literal": "$T_2 \\gtrsim T_2^{*}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\gtrsim at byte 12"
+    },
+    {
+      "id": "MOD013-057fe876-M145",
+      "cell": 38,
+      "start": 154,
+      "end": 159,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M146",
+      "cell": 38,
+      "start": 254,
+      "end": 263,
+      "literal": "$T_2^{*}$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M147",
+      "cell": 38,
+      "start": 365,
+      "end": 370,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M148",
+      "cell": 38,
+      "start": 546,
+      "end": 551,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M149",
+      "cell": 39,
+      "start": 90,
+      "end": 93,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M150",
+      "cell": 39,
+      "start": 480,
+      "end": 487,
+      "literal": "$\\nu_i$",
+      "status": "exact",
+      "display": "\"ν_i\"",
+      "copy": "\"ν_i\""
+    },
+    {
+      "id": "MOD013-057fe876-M151",
+      "cell": 39,
+      "start": 627,
+      "end": 631,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M152",
+      "cell": 39,
+      "start": 688,
+      "end": 691,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M153",
+      "cell": 39,
+      "start": 799,
+      "end": 802,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M154",
+      "cell": 39,
+      "start": 840,
+      "end": 845,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M155",
+      "cell": 39,
+      "start": 885,
+      "end": 890,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M156",
+      "cell": 39,
+      "start": 1012,
+      "end": 1015,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M157",
+      "cell": 39,
+      "start": 1199,
+      "end": 1204,
+      "literal": "$\\gg$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\gg at byte 4"
+    },
+    {
+      "id": "MOD013-057fe876-M158",
+      "cell": 39,
+      "start": 1221,
+      "end": 1225,
+      "literal": "$XX$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M159",
+      "cell": 39,
+      "start": 1230,
+      "end": 1234,
+      "literal": "$YY$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M160",
+      "cell": 39,
+      "start": 1283,
+      "end": 1287,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M161",
+      "cell": 39,
+      "start": 1337,
+      "end": 1346,
+      "literal": "$\\hbar=1$",
+      "status": "exact",
+      "display": "'ℏ' = 1",
+      "copy": "('ℏ')==(1)"
+    },
+    {
+      "id": "MOD013-057fe876-M162",
+      "cell": 39,
+      "start": 1350,
+      "end": 1501,
+      "literal": "$$H = \\underbrace{\\sum_i \\pi\\,\\nu_i\\, Z_i}_{\\text{chemical shift}} \\;+\\; \\underbrace{\\sum_{i<j} \\tfrac{\\pi}{2}\\,J_{ij}\\, Z_iZ_j}_{J\\text{-coupling}}.$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\underbrace at byte 16"
+    },
+    {
+      "id": "MOD013-057fe876-M163",
+      "cell": 39,
+      "start": 1571,
+      "end": 1574,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "MOD013-057fe876-M164",
+      "cell": 39,
+      "start": 1617,
+      "end": 1621,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M165",
+      "cell": 39,
+      "start": 1674,
+      "end": 1681,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M166",
+      "cell": 39,
+      "start": 1773,
+      "end": 1776,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M167",
+      "cell": 39,
+      "start": 1825,
+      "end": 1870,
+      "literal": "$s(t) = \\langle X\\rangle + i\\langle Y\\rangle$",
+      "status": "exact",
+      "display": "s · t = qexpect([0  1; 1  0], qoperatorref(\"measurement state\")) + i ⋅ qexpect([0  −i; i  0], qoperatorref(\"measurement state\"))",
+      "copy": "qcompare('s''t',qadd(qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\")),qmul(i,qexpect(matrix(2,2,vector(0,−i,i,0)),qoperatorref(\"measurement state\")))),4)"
+    },
+    {
+      "id": "MOD013-057fe876-M168",
+      "cell": 39,
+      "start": 2027,
+      "end": 2030,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M169",
+      "cell": 39,
+      "start": 2133,
+      "end": 2140,
+      "literal": "$\\nu_i$",
+      "status": "exact",
+      "display": "\"ν_i\"",
+      "copy": "\"ν_i\""
+    },
+    {
+      "id": "MOD013-057fe876-M170",
+      "cell": 39,
+      "start": 2170,
+      "end": 2178,
+      "literal": "$J_{ij}$",
+      "status": "exact",
+      "display": "\"J_ij\"",
+      "copy": "\"J_ij\""
+    },
+    {
+      "id": "MOD013-057fe876-M171",
+      "cell": 39,
+      "start": 2263,
+      "end": 2266,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M172",
+      "cell": 39,
+      "start": 2300,
+      "end": 2303,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M173",
+      "cell": 39,
+      "start": 2317,
+      "end": 2320,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "MOD013-057fe876-M174",
+      "cell": 39,
+      "start": 2325,
+      "end": 2329,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M175",
+      "cell": 39,
+      "start": 2420,
+      "end": 2423,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M176",
+      "cell": 39,
+      "start": 2543,
+      "end": 2546,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M177",
+      "cell": 39,
+      "start": 2844,
+      "end": 2851,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M178",
+      "cell": 39,
+      "start": 2903,
+      "end": 2919,
+      "literal": "$e^{-t/T_2^{*}}$",
+      "status": "exact",
+      "display": "1 / e^(t / \"T_2\")",
+      "copy": "1 ∕ e^('t' ∕ \"T_2\")"
+    },
+    {
+      "id": "MOD013-057fe876-M179",
+      "cell": 40,
+      "start": 406,
+      "end": 413,
+      "literal": "$\\nu_i$",
+      "status": "exact",
+      "display": "\"ν_i\"",
+      "copy": "\"ν_i\""
+    },
+    {
+      "id": "MOD013-057fe876-M180",
+      "cell": 40,
+      "start": 428,
+      "end": 436,
+      "literal": "$J_{ij}$",
+      "status": "exact",
+      "display": "\"J_ij\"",
+      "copy": "\"J_ij\""
+    },
+    {
+      "id": "MOD013-057fe876-M181",
+      "cell": 40,
+      "start": 497,
+      "end": 504,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M182",
+      "cell": 40,
+      "start": 551,
+      "end": 554,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "MOD013-057fe876-M183",
+      "cell": 40,
+      "start": 630,
+      "end": 633,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M184",
+      "cell": 40,
+      "start": 655,
+      "end": 662,
+      "literal": "$\\nu_i$",
+      "status": "exact",
+      "display": "\"ν_i\"",
+      "copy": "\"ν_i\""
+    },
+    {
+      "id": "MOD013-057fe876-M185",
+      "cell": 40,
+      "start": 956,
+      "end": 961,
+      "literal": "$R_Z$",
+      "status": "exact",
+      "display": "\"R_Z\"",
+      "copy": "\"R_Z\""
+    },
+    {
+      "id": "MOD013-057fe876-M186",
+      "cell": 40,
+      "start": 992,
+      "end": 999,
+      "literal": "$\\nu_i$",
+      "status": "exact",
+      "display": "\"ν_i\"",
+      "copy": "\"ν_i\""
+    },
+    {
+      "id": "MOD013-057fe876-M187",
+      "cell": 40,
+      "start": 1065,
+      "end": 1069,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M188",
+      "cell": 40,
+      "start": 1096,
+      "end": 1104,
+      "literal": "$J_{ij}$",
+      "status": "exact",
+      "display": "\"J_ij\"",
+      "copy": "\"J_ij\""
+    },
+    {
+      "id": "MOD013-057fe876-M189",
+      "cell": 42,
+      "start": 116,
+      "end": 134,
+      "literal": "$\\langle X\\rangle$",
+      "status": "exact",
+      "display": "qexpect([0  1; 1  0], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\"))"
+    },
+    {
+      "id": "MOD013-057fe876-M190",
+      "cell": 42,
+      "start": 139,
+      "end": 157,
+      "literal": "$\\langle Y\\rangle$",
+      "status": "exact",
+      "display": "qexpect([0  −i; i  0], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(0,−i,i,0)),qoperatorref(\"measurement state\"))"
+    },
+    {
+      "id": "MOD013-057fe876-M191",
+      "cell": 42,
+      "start": 205,
+      "end": 243,
+      "literal": "$\\langle X\\rangle + i\\langle Y\\rangle$",
+      "status": "exact",
+      "display": "qexpect([0  1; 1  0], qoperatorref(\"measurement state\")) + i ⋅ qexpect([0  −i; i  0], qoperatorref(\"measurement state\"))",
+      "copy": "qadd(qexpect(matrix(2,2,vector(0,1,1,0)),qoperatorref(\"measurement state\")),qmul(i,qexpect(matrix(2,2,vector(0,−i,i,0)),qoperatorref(\"measurement state\"))))"
+    },
+    {
+      "id": "MOD013-057fe876-M192",
+      "cell": 44,
+      "start": 20,
+      "end": 24,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M193",
+      "cell": 44,
+      "start": 40,
+      "end": 45,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M194",
+      "cell": 44,
+      "start": 100,
+      "end": 104,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M195",
+      "cell": 44,
+      "start": 152,
+      "end": 155,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M196",
+      "cell": 44,
+      "start": 283,
+      "end": 286,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M197",
+      "cell": 44,
+      "start": 328,
+      "end": 332,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M198",
+      "cell": 44,
+      "start": 381,
+      "end": 466,
+      "literal": "$(\\uparrow\\uparrow,\\ \\uparrow\\downarrow,\\ \\downarrow\\uparrow,\\ \\downarrow\\downarrow)$",
+      "status": "exact",
+      "display": "('↑'², '↑''↓', '↑''↓', '↓'²)",
+      "copy": "qtuple(vector('↑'²,'↑''↓','↑''↓','↓'²))"
+    },
+    {
+      "id": "MOD013-057fe876-M199",
+      "cell": 44,
+      "start": 537,
+      "end": 562,
+      "literal": "$n=2 \\Rightarrow n+1 = 3$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\Rightarrow at byte 16"
+    },
+    {
+      "id": "MOD013-057fe876-M200",
+      "cell": 44,
+      "start": 756,
+      "end": 760,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M201",
+      "cell": 44,
+      "start": 765,
+      "end": 769,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M202",
+      "cell": 44,
+      "start": 937,
+      "end": 941,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M203",
+      "cell": 44,
+      "start": 1044,
+      "end": 1048,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M204",
+      "cell": 44,
+      "start": 1103,
+      "end": 1108,
+      "literal": "$n=2$",
+      "status": "exact",
+      "display": "n = 2",
+      "copy": "(n)==(2)"
+    },
+    {
+      "id": "MOD013-057fe876-M205",
+      "cell": 44,
+      "start": 1118,
+      "end": 1122,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M206",
+      "cell": 44,
+      "start": 1173,
+      "end": 1177,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M207",
+      "cell": 44,
+      "start": 1207,
+      "end": 1212,
+      "literal": "$n=1$",
+      "status": "exact",
+      "display": "n = 1",
+      "copy": "(n)==(1)"
+    },
+    {
+      "id": "MOD013-057fe876-M208",
+      "cell": 44,
+      "start": 1437,
+      "end": 1441,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M209",
+      "cell": 44,
+      "start": 1566,
+      "end": 1570,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M210",
+      "cell": 46,
+      "start": 338,
+      "end": 341,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M211",
+      "cell": 46,
+      "start": 550,
+      "end": 563,
+      "literal": "$\\nu_1-\\nu_2$",
+      "status": "exact",
+      "display": "\"ν_1\" − \"ν_2\"",
+      "copy": "\"ν_1\" − \"ν_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M212",
+      "cell": 46,
+      "start": 615,
+      "end": 618,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M213",
+      "cell": 46,
+      "start": 661,
+      "end": 666,
+      "literal": "$B_0$",
+      "status": "exact",
+      "display": "\"B_0\"",
+      "copy": "\"B_0\""
+    },
+    {
+      "id": "MOD013-057fe876-M214",
+      "cell": 46,
+      "start": 763,
+      "end": 766,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M215",
+      "cell": 46,
+      "start": 972,
+      "end": 977,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M216",
+      "cell": 46,
+      "start": 1056,
+      "end": 1060,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M217",
+      "cell": 46,
+      "start": 1118,
+      "end": 1122,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M218",
+      "cell": 46,
+      "start": 1208,
+      "end": 1213,
+      "literal": "$n=3$",
+      "status": "exact",
+      "display": "n = 3",
+      "copy": "(n)==(3)"
+    },
+    {
+      "id": "MOD013-057fe876-M219",
+      "cell": 47,
+      "start": 571,
+      "end": 576,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M220",
+      "cell": 47,
+      "start": 578,
+      "end": 583,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M221",
+      "cell": 47,
+      "start": 589,
+      "end": 596,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M222",
+      "cell": 47,
+      "start": 757,
+      "end": 760,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "MOD013-057fe876-M223",
+      "cell": 47,
+      "start": 796,
+      "end": 799,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M224",
+      "cell": 47,
+      "start": 839,
+      "end": 843,
+      "literal": "$ZZ$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "MOD013-057fe876-M225",
+      "cell": 48,
+      "start": 121,
+      "end": 142,
+      "literal": "$|0\\rangle/|1\\rangle$",
+      "status": "exact",
+      "display": "[1; 0] ∕ [0; 1]",
+      "copy": "qmul(matrix(2,1,vector(1,0)),qpower(matrix(2,1,vector(0,1)),−1))"
+    },
+    {
+      "id": "MOD013-057fe876-M226",
+      "cell": 48,
+      "start": 162,
+      "end": 167,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M227",
+      "cell": 48,
+      "start": 173,
+      "end": 178,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M228",
+      "cell": 48,
+      "start": 328,
+      "end": 350,
+      "literal": "$P_1=\\sin^2(\\theta/2)$",
+      "status": "exact",
+      "display": "\"P_1\" = sin(0.5'θ' rad)²",
+      "copy": "(\"P_1\")==((sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))^(2))"
+    },
+    {
+      "id": "MOD013-057fe876-M229",
+      "cell": 48,
+      "start": 362,
+      "end": 367,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M230",
+      "cell": 48,
+      "start": 372,
+      "end": 379,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M231",
+      "cell": 48,
+      "start": 393,
+      "end": 398,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M232",
+      "cell": 48,
+      "start": 436,
+      "end": 441,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M233",
+      "cell": 48,
+      "start": 475,
+      "end": 484,
+      "literal": "$T_2^{*}$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M234",
+      "cell": 48,
+      "start": 649,
+      "end": 652,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M235",
+      "cell": 48,
+      "start": 705,
+      "end": 710,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M236",
+      "cell": 48,
+      "start": 881,
+      "end": 888,
+      "literal": "$\\hbar$",
+      "status": "exact",
+      "display": "(132521403 ∕ (4E41π)) J⋅s",
+      "copy": "(1 ∕ π)*(132521403 ∕ 4E41)*(qphysicalunit(\"J\",\"\"))*(qphysicalunit(\"s\",\"\"))"
+    },
+    {
+      "id": "MOD013-057fe876-M237",
+      "cell": 48,
+      "start": 899,
+      "end": 909,
+      "literal": "$90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M238",
+      "cell": 48,
+      "start": 911,
+      "end": 918,
+      "literal": "$\\pi/2$",
+      "status": "exact",
+      "display": "0.5π",
+      "copy": "π ∕ 2"
+    },
+    {
+      "id": "MOD013-057fe876-M239",
+      "cell": 48,
+      "start": 968,
+      "end": 977,
+      "literal": "$T_2^{*}$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M240",
+      "cell": 48,
+      "start": 1003,
+      "end": 1008,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M241",
+      "cell": 48,
+      "start": 1090,
+      "end": 1094,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M242",
+      "cell": 48,
+      "start": 1173,
+      "end": 1176,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M243",
+      "cell": 48,
+      "start": 1296,
+      "end": 1301,
+      "literal": "$T_1$",
+      "status": "exact",
+      "display": "\"T_1\"",
+      "copy": "\"T_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M244",
+      "cell": 48,
+      "start": 1382,
+      "end": 1387,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M245",
+      "cell": 48,
+      "start": 1420,
+      "end": 1425,
+      "literal": "$5\\%$",
+      "status": "exact",
+      "display": "0.05",
+      "copy": "1 ∕ 20"
+    },
+    {
+      "id": "MOD013-057fe876-M246",
+      "cell": 48,
+      "start": 1527,
+      "end": 1532,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M247",
+      "cell": 48,
+      "start": 1663,
+      "end": 1673,
+      "literal": "$90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 9"
+    },
+    {
+      "id": "MOD013-057fe876-M248",
+      "cell": 48,
+      "start": 1718,
+      "end": 1723,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M249",
+      "cell": 48,
+      "start": 1760,
+      "end": 1764,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M250",
+      "cell": 48,
+      "start": 1766,
+      "end": 1770,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M251",
+      "cell": 48,
+      "start": 1951,
+      "end": 1954,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M252",
+      "cell": 48,
+      "start": 1970,
+      "end": 1975,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "MOD013-057fe876-M253",
+      "cell": 48,
+      "start": 2016,
+      "end": 2021,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M254",
+      "cell": 48,
+      "start": 2039,
+      "end": 2042,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M255",
+      "cell": 48,
+      "start": 2105,
+      "end": 2110,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M256",
+      "cell": 48,
+      "start": 2175,
+      "end": 2185,
+      "literal": "$R_X(\\pi)$",
+      "status": "exact",
+      "display": "[0, −i; −i, 0]",
+      "copy": "matrix(2,2,[0,−i,−i,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M257",
+      "cell": 48,
+      "start": 2186,
+      "end": 2191,
+      "literal": "$\\,n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M258",
+      "cell": 48,
+      "start": 2201,
+      "end": 2212,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "MOD013-057fe876-M259",
+      "cell": 48,
+      "start": 2222,
+      "end": 2227,
+      "literal": "$P_1$",
+      "status": "exact",
+      "display": "\"P_1\"",
+      "copy": "\"P_1\""
+    },
+    {
+      "id": "MOD013-057fe876-M260",
+      "cell": 48,
+      "start": 2231,
+      "end": 2234,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M261",
+      "cell": 48,
+      "start": 2268,
+      "end": 2282,
+      "literal": "$R_X(1.05\\pi)$",
+      "status": "exact",
+      "display": "[−cos(0.475π rad), −i ⋅ sin(0.475π rad); −i ⋅ sin(0.475π rad), −cos(0.475π rad)]",
+      "copy": "matrix(2,2,[(cos((19 ∕ 40)*(qphysicalunit(\"rad\",\"\"))*(π)))*(−1),(sin((19 ∕ 40)*(qphysicalunit(\"rad\",\"\"))*(π)))*(−i),(sin((19 ∕ 40)*(qphysicalunit(\"rad\",\"\"))*(π)))*(−i),(cos((19 ∕ 40)*(qphysicalunit(\"rad\",\"\"))*(π)))*(−1)])"
+    },
+    {
+      "id": "MOD013-057fe876-M262",
+      "cell": 48,
+      "start": 2322,
+      "end": 2325,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "MOD013-057fe876-M263",
+      "cell": 48,
+      "start": 2561,
+      "end": 2565,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M264",
+      "cell": 48,
+      "start": 2568,
+      "end": 2572,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M265",
+      "cell": 48,
+      "start": 2605,
+      "end": 2609,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M266",
+      "cell": 48,
+      "start": 2659,
+      "end": 2663,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M267",
+      "cell": 48,
+      "start": 2693,
+      "end": 2697,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M268",
+      "cell": 48,
+      "start": 2700,
+      "end": 2704,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M269",
+      "cell": 48,
+      "start": 2730,
+      "end": 2733,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "MOD013-057fe876-M270",
+      "cell": 48,
+      "start": 2805,
+      "end": 2810,
+      "literal": "$n+1$",
+      "status": "exact",
+      "display": "n + 1",
+      "copy": "n + 1"
+    },
+    {
+      "id": "MOD013-057fe876-M271",
+      "cell": 48,
+      "start": 2875,
+      "end": 2879,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M272",
+      "cell": 48,
+      "start": 2904,
+      "end": 2908,
+      "literal": "$_3$",
+      "status": "exact",
+      "display": "\"_3\"",
+      "copy": "\"_3\""
+    },
+    {
+      "id": "MOD013-057fe876-M273",
+      "cell": 49,
+      "start": 165,
+      "end": 175,
+      "literal": "$e^{-iHt}$",
+      "status": "exact",
+      "display": "qpropagator('H', 't')",
+      "copy": "qpropagator('H','t')"
+    },
+    {
+      "id": "MOD013-057fe876-M274",
+      "cell": 49,
+      "start": 240,
+      "end": 243,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "MOD013-057fe876-M275",
+      "cell": 49,
+      "start": 319,
+      "end": 331,
+      "literal": "$e^{-t/T_2}$",
+      "status": "exact",
+      "display": "1 / e^(t / \"T_2\")",
+      "copy": "1 ∕ e^('t' ∕ \"T_2\")"
+    },
+    {
+      "id": "MOD013-057fe876-M276",
+      "cell": 49,
+      "start": 429,
+      "end": 432,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "MOD013-057fe876-M277",
+      "cell": 49,
+      "start": 560,
+      "end": 563,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "MOD013-057fe876-M278",
+      "cell": 49,
+      "start": 569,
+      "end": 572,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "MOD013-057fe876-M279",
+      "cell": 49,
+      "start": 641,
+      "end": 644,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "MOD013-057fe876-M280",
+      "cell": 49,
+      "start": 892,
+      "end": 912,
+      "literal": "$T_2\\leftrightarrow$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\leftrightarrow at byte 19"
+    },
+    {
+      "id": "MOD013-057fe876-M281",
+      "cell": 49,
+      "start": 935,
+      "end": 940,
+      "literal": "$T_2$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M282",
+      "cell": 49,
+      "start": 942,
+      "end": 949,
+      "literal": "$T_2^*$",
+      "status": "exact",
+      "display": "\"T_2\"",
+      "copy": "\"T_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M283",
+      "cell": 49,
+      "start": 1105,
+      "end": 1109,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    },
+    {
+      "id": "MOD013-057fe876-M284",
+      "cell": 49,
+      "start": 1250,
+      "end": 1260,
+      "literal": "$\\sim\\!47$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\sim at byte 5"
+    },
+    {
+      "id": "MOD013-057fe876-M285",
+      "cell": 49,
+      "start": 1287,
+      "end": 1291,
+      "literal": "$_2$",
+      "status": "exact",
+      "display": "\"_2\"",
+      "copy": "\"_2\""
+    }
+  ]
+}
