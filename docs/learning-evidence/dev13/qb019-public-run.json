@@ -1,0 +1,27 @@
+{
+  "source_sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+  "profile": "stim-win-py312",
+  "original_cells": [
+    0,
+    3,
+    6,
+    7,
+    8,
+    11,
+    18,
+    19
+  ],
+  "authored_sampling_after": 7,
+  "histogram_cell": 19,
+  "repeated_runs": 2,
+  "results": {
+    "accepted": true,
+    "secret": "110000",
+    "measured_word": "1000011",
+    "sampler": "Qiskit StatevectorSampler",
+    "counts": {
+      "1000011": 100
+    },
+    "state_residual": 1.1102230246251565e-15
+  }
+}

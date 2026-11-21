@@ -1,0 +1,172 @@
+{
+  "version": 2,
+  "id": "qb019",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "stim-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-Runtime/aws_sim_qiskit_bernstein_vazirani.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "e3298ae7f90f277b16742ecf227945e8a9c41c603711afb9f10eef820ecaa0cd",
+    "cells": [
+      {
+        "index": 0,
+        "type": "code",
+        "sha256": "caabc1ecc0e98727e064191ba1b8f32dbbad62f591ed964fced3c8ef243ef097"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "eeae7d0883d8c61b3088c9b40daf0de96bbc0321b2cd95db1ee503f749434663"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "113b1f8ee8724cc83144207c81c067d113a468e043b3588fe2717e547e23dc5a"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "c437665f7b23d399b52db60ad31cf65537ae9202c367c88616fe721415d92fd9"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "b5ea82bde3916fd4018d1cd9685347d6331a448477e3063fb5f9e7240292ef94"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "12823f2f99bcc4347c70c29946ee095ef13ae65c743316fd86b6430dba1bd161"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "2707a6da5ead68a599ed2967aa37c6411a155428b16e16a020dfbec8fc73213e"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "a546978766b904b9ae3ee76f38e275f4c705aad7bcecbf3336e7aead9bff6e96"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "b21fedd40dcb7fa31ad1b1f0a9d9913be4525df8f9eabfbf49d52f9eaa96459f"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "eedb5571a4b418150b116db16b672030a7baaf509b76889556123575e0837d8a"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "487a0286f4511173f3a4e62c0420c13ba15f2aa5a0a2fc7f246af19b7359d598"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "fe707897dd18ba415486651ef805d088f2e6f7a9a5111b7d4f8a04a670765d27"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "250158252381505ec35cf132b3beba85ba4ed8749fd744a6ef03ea00abc5d54e"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "c416648e6c42c757dcd963296b2dedd22424d6c79fd170b8a2a6dfc04e4cb3fe"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "0375b56c3819e3f0182b57c28eb1d52eee230e415f26f4ef329e496e6fd1cd06"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "b5c53ae94e894721bc37d44656e378a28c447e1000bc1a337ecb47d54331cdfd"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "ebfd56d62c2f26b28a9cfffe301f25a64394ef5d07937a2081ff0f3876c70acf"
+      },
+      {
+        "index": 17,
+        "type": "markdown",
+        "sha256": "5bcb4bf8a4a2b88ed005f9e4028db8b63e22035a577620659c26380f8b50ea4d"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "14d253f83f6f817d39d59f40182745a2824070a616165b89a8344ad2ec31abff"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "d1e5f8c35ed7b57accca1fb73f1bdfccc3216b5c5111c9d1ed6acfa5ee91f4f6"
+      },
+      {
+        "index": 20,
+        "type": "markdown",
+        "sha256": "376cf80ce70ec66fe245e160a6d210a82f297f76603399fc78ae89fe721c9cc8"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    0,
+    3,
+    6,
+    7,
+    8,
+    11,
+    18,
+    19
+  ],
+  "code_cells": [
+    0,
+    3,
+    6,
+    7,
+    8,
+    11,
+    18,
+    19
+  ],
+  "excluded_code_cells": {
+    "2": "The pinned external environment supplies dependencies.",
+    "12": "Lists devices through an authenticated provider.",
+    "14": "Looks up the remote AWS SV1 device.",
+    "15": "Submits to AWS SV1.",
+    "16": "Retrieves remote measurement counts. The last source plot uses explicitly recorded local sampling instead."
+  },
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb019.py",
+    "sha256": "4a9f950a58222df3f1ab205974a08ecba42a6d673243525ae6d0e4de1fecb85a"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 7,
+      "role": "local-sampling",
+      "path": "observers/qb019_local_sampling.py",
+      "sha256": "e2be0bd5c69ff4da9d1bbaf74e89e3bf92e0a61c8a9db97c37c6dccb15fa1495"
+    }
+  ],
+  "required_images": [
+    19
+  ],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "limits": [
+    "The circuit and plot cells run unchanged. Counts come from a separate authored local sampling cell. Cloud discovery, remote execution and cloud results remain open."
+  ]
+}

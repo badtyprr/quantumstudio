@@ -21,7 +21,7 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"qb026", "qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
+CONTRACTS = {"qb019", "qb026", "qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb030", "ibm-timing", "qb013"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
 PROFILES = {"grover-win-py312", "qsim-win-py312", "algorithms-win-py312", "autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
 
@@ -321,7 +321,7 @@ def _observer_sources(contract, cells):
         index = descriptor["after_original_index"]
         if (type(index) is not int or index <= previous or index not in indices
                 or cells[index]["cell_type"] != "code"
-                or descriptor["role"] not in ("postcell-observer", "timing-postcell")):
+                or descriptor["role"] not in ("postcell-observer", "timing-postcell", "local-sampling")):
             raise ValueError("INVALID_POST_CELL_OBSERVER")
         loaded[index] = dict(source=source(descriptor), role=descriptor["role"])
         previous = index
@@ -342,14 +342,14 @@ def _observer_sources(contract, cells):
 
 
 def _observation_progress(records):
-    observers = [r for r in records if r.get("authored_role") in ("postcell-observer", "timing-postcell")]
-    if not observers:
-        return {}
-    states = [r["state"] for r in observers]
-    outcome = ("failed" if "failed" in states else "interrupted" if "interrupted" in states
-               else "succeeded" if all(s == "succeeded" for s in states)
-               else "incomplete" if any(s != "not_run" for s in states) else "not_run")
-    result = dict(authored_observation=outcome)
+    result = {}
+    for key, roles in (("authored_observation", ("postcell-observer", "timing-postcell")),
+                       ("authored_local_sampling", ("local-sampling",))):
+        states = [r["state"] for r in records if r.get("authored_role") in roles]
+        if states:
+            result[key] = ("failed" if "failed" in states else "interrupted" if "interrupted" in states
+                           else "succeeded" if all(s == "succeeded" for s in states)
+                           else "incomplete" if any(s != "not_run" for s in states) else "not_run")
     for role, key in (("observer-bootstrap", "observer_bootstrap"), ("observer-cleanup", "observer_cleanup")):
         matches = [r for r in records if r.get("authored_role") == role]
         if matches:

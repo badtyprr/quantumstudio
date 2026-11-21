@@ -690,3 +690,4 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/qb036.json windows/dev13-noteboo
 EXTRA_DIST += windows/dev13-notebooks/test_qb_ghz.py docs/learning-evidence/dev13/qb036-qb038-ghz-routes.json
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb026.json windows/dev13-notebooks/witnesses/qb026.py windows/dev13-notebooks/fixtures/qb026/quobly_ghz_bench.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb026-cache-runs.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb019.json windows/dev13-notebooks/observers/qb019_local_sampling.py windows/dev13-notebooks/witnesses/qb019.py windows/dev13-notebooks/test_qb019.py docs/learning-evidence/dev13/qb019-public-run.json
