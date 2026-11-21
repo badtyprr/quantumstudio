@@ -179,6 +179,8 @@ for formula, expected in [
     ("17 n^3 - 257 n^2 + 65537 = O(n^3)", "1"), ("n^3=O(n^2)", "0"),
     ("n^3!=O(n^2)", "1"), ("123456 n=O(n^2)", "1"), ("(n+1)^2=O(n)", "0"),
     ("(n^3+n)-n^3=O(n)", "1"), ("0=O(0)", "1"), ("n=O(0)", "0"),
+    (r"qstepvalue(T \leftarrow \lceil \frac{5}{4}T\rceil,8)", "10"),
+    ("qstepvalue(T ← T(T+1),3)", "12"), ("qstepvalue(x ← 3,9)", "3"),
     ("1=±1=O(n)", "1"), ("1=±1=O(0)", "0"),
     ("1=±1=±1", "1"), ("-1=±1=±1", "1"), ("1=±1=±(-1)", "0"),
     ("-1=±2+1=±2+1", "1"), ("3=1±2=1±2", "1"),
@@ -1850,4 +1852,6 @@ for malformed in [
     "QSTATES1\n0\n1\x002",
 ]:
     assert run(malformed, "--states", success=False).stdout == b""
+for invalid_update in ("x ← (y ← 1)", "qstepvalue(x ← x+1,[1;2])", "qstepvalue(3,5)"):
+    run("quantum:"+invalid_update, "--json", success=False)
 print(f"PASS: {checks} worker process checks")

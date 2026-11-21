@@ -103,6 +103,32 @@ class QuantumProbabilityCall: public MathFunction {
 };
 // These descriptors retain symbolic costs (including their argument lists)
 // for Copy and substitution when an asymptotic comparison is undecidable.
+class QuantumScalarUpdate: public MathFunction {
+ public:
+ QuantumScalarUpdate(const char *name):MathFunction(name,2) {}
+ ExpressionItem *copy() const {return new QuantumScalarUpdate(*this);}
+ int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(referenceName()=="qscalarupdate") {
+   if(!raw[0].isSymbolic() || raw[0].symbol().size()!=1 ||
+      !std::isalpha(static_cast<unsigned char>(raw[0].symbol()[0]))) {
+    CALCULATOR->error(true,"A scalar update requires a single letter as its target.",NULL);
+   }
+   return 0;
+  }
+  MathStructure rule=raw[0],current=raw[1];
+  rule.eval(eo);current.eval(eo);
+  if(!rule.isFunction() || rule.function()->referenceName()!="qscalarupdate" ||
+     rule.size()!=2 || !rule[0].isSymbolic()) {
+   CALCULATOR->error(true,"Expected a scalar update rule.",NULL);return 0;
+  }
+  if(current.isVector()) {CALCULATOR->error(true,"A scalar update requires a scalar input.",NULL);return 0;}
+  if(rule[1].contains(rule[0]))out.set(CALCULATOR->getFunction("qreplace"),&rule[1],&rule[0],&current,NULL);
+  else out=rule[1];
+  out.eval(eo);
+  if(out.isVector()) {CALCULATOR->error(true,"A scalar update must produce a scalar.",NULL);return 0;}
+  return 1;
+ }
+};
 class QuantumCostDescriptor: public MathFunction {
  public:
  QuantumCostDescriptor(const char *name,int arity):MathFunction(name,arity) {}
@@ -617,6 +643,8 @@ class QuantumEqualityChain: public MathFunction {
 }
 void registerQuantumOrder(Calculator &calculator) {
  calculator.addFunction(new QuantumProbabilityCall());
+ calculator.addFunction(new QuantumScalarUpdate("qscalarupdate"));
+ calculator.addFunction(new QuantumScalarUpdate("qstepvalue"));
  calculator.addFunction(new QuantumCostDescriptor("qbigorder",1));
  calculator.addFunction(new QuantumCostDescriptor("qcostcall",2));
  calculator.addFunction(new QuantumCostDescriptor("qcostparam",1));
