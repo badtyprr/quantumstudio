@@ -54,6 +54,14 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         assert b"positive exact integer" in result.stderr
 
 # A written residue ring supplies the modulus in modular powers mode.
+printed_pair = data(r"quantum:$$a^{r/2}-1\;(\textrm{mod}\; N)\quad\text{and}\quad a^{r/2}+1\;(\textrm{mod}\; N).$$")["copy_text"]
+assert data("quantum:"+printed_pair)["copy_text"] == printed_pair
+for base, expected in [(14,"vector(13,0)"), (0,"vector(14,1)")]:
+    bound = f'replace(replace(replace(({printed_pair}),"r",2),"a",{base}),"N",15)'
+    assert data("quantum:"+bound)["copy_text"] == expected
+assert data(r"quantum:$2^4\;(\textrm{mod}\;15)=1$")["copy_text"] == "1"
+assert data(r"quantum:$2^4\;(\mathrm{mod}\;15)=16$")["copy_text"] == "0"
+
 for equation, modulus, expected in [(r"5^2=1", "6", 1), (r"5^2=1", "7", 0),
                                     (r"3+5=1", "7", 1), (r"2^8=4^4", "{21}", 1)]:
     annotated = equation + r"\quad\text{(working within $\mathbb{Z}_" + modulus + "$)}"

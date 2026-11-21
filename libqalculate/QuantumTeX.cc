@@ -2270,6 +2270,34 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return "qcompare(qringexpr("+modulus+","+quantumTeX(sides[0])+"),qringexpr("+modulus+","+quantumTeX(sides[1])+"),4)";
   }
  }
+ if(s.find("{mod")!=std::string::npos && s.find("\\equiv")==std::string::npos) {
+  // The lesson lists two numbers in prose. Each trailing modulus applies
+  // to the complete arithmetic expression before it, including its offset.
+  static const std::regex marker(R"(\(\s*\\(?:textrm|mathrm)\{\s*mod\s*\}(?:\s|\\[,;!])*([A-Za-z]|[0-9]+)\s*\)(?:\s|\\q?quad)*$)");
+  auto residueValue=[&](const std::string &text) -> std::string {
+   std::smatch m;
+   if(!std::regex_search(text,m,marker))return "";
+   std::string value=trim(text.substr(0,m.position()));
+   if(value.empty())return "";
+   std::string modulus=m[1];
+   if(asciiLetter(modulus[0]))modulus="\""+modulus+"\"";
+   return "qringexpr("+modulus+","+quantumTeX(value)+")";
+  };
+  std::string text=trim(s);
+  if(!text.empty() && text.back()=='.')text.pop_back();
+  auto listed=indexedParts(text,"\\text{and}");
+  if(listed.size()==2) {
+   auto left=residueValue(listed[0]),right=residueValue(listed[1]);
+   if(!left.empty() && !right.empty())return "vector("+left+","+right+")";
+  } else if(listed.size()==1) {
+   auto sides=indexedParts(text,"=");
+   if(sides.size()==1) {
+    auto value=residueValue(sides[0]);if(!value.empty())return value;
+   } else if(sides.size()==2 && !sides[1].empty()) {
+    auto left=residueValue(sides[0]);if(!left.empty())return "qcompare("+left+","+quantumTeX(sides[1])+",4)";
+   }
+  }
+ }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
   // Only the bare symbol S changes meaning in a declared scalar spin formula.
