@@ -648,3 +648,6 @@ EXTRA_DIST += docs/learning-evidence/aud02/ibm-catalog-delta.json
 EXTRA_DIST += docs/learning-evidence/aud02/ibm-resource-discovery.md
 EXTRA_DIST += docs/learning-evidence/aud01/ibm033-reflection-inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm033-reflection-windows.json
+EXTRA_DIST += docs/learning-evidence/aud02/replay-updated-runtime-examples.py
+EXTRA_DIST += docs/learning-evidence/aud02/updated-runtime-samples.json
+EXTRA_DIST += docs/learning-evidence/aud02/mod013-updated-manila-results.json
