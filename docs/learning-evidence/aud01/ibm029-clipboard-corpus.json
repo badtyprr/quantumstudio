@@ -1,0 +1,31 @@
+{
+  "source_sha256": "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681",
+  "worker_sha256": "c952b5671b27b2cc7963ec448e6110284f3055a3eaf46af2ea90065771d33743",
+  "source_spans": 438,
+  "clipboard_sessions": 422,
+  "stable_copies": 422,
+  "mode_counts": {
+    "0": 415,
+    "7": 2,
+    "6": 5
+  },
+  "diagnostics": [
+    "IBM029-9ea5aee3-M045",
+    "IBM029-9ea5aee3-M051",
+    "IBM029-9ea5aee3-M052",
+    "IBM029-9ea5aee3-M061",
+    "IBM029-9ea5aee3-M068",
+    "IBM029-9ea5aee3-M092",
+    "IBM029-9ea5aee3-M098",
+    "IBM029-9ea5aee3-M107",
+    "IBM029-9ea5aee3-M141",
+    "IBM029-9ea5aee3-M144",
+    "IBM029-9ea5aee3-M152",
+    "IBM029-9ea5aee3-M153",
+    "IBM029-9ea5aee3-M157",
+    "IBM029-9ea5aee3-M162",
+    "IBM029-9ea5aee3-M424",
+    "IBM029-9ea5aee3-M427"
+  ],
+  "M234_exact_rational_checks": 80
+}
