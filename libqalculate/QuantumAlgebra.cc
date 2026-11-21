@@ -15,6 +15,13 @@
 #include <vector>
 #include <cctype>
 namespace {
+// A ket can share a printed label (for example, phi) with a global
+// scalar constant. Local state definitions and global matrices still bind.
+Variable *ketVariable(const std::string &label) {
+ Variable *v=CALCULATOR->getActiveVariable(label);
+ if(!v || v->isBuiltin() || (!v->isLocal() && v->isKnown() && v->representsScalar()))return nullptr;
+ return v;
+}
 bool orthonormalList(const MathStructure &raw,MathStructure &list) {
  list.clearVector();
  if(raw.isMatrix()) {
@@ -155,8 +162,8 @@ class QuantumOrthonormalBasis: public MathFunction {
       (ket.function()->referenceName()!="qnamedket" && ket.function()->referenceName()!="qketstate"))break;
    std::string label=ket[0].isSymbolic() ? ket[0].symbol() :
     ket[0].isVariable() ? ket[0].variable()->referenceName() : "";
-   Variable *existing=CALCULATOR->getActiveVariable(label);
-   bool defined=existing && !existing->isBuiltin() && existing->isKnown();
+   Variable *existing=ketVariable(label);
+   bool defined=existing && existing->isKnown();
    size_t split=label.rfind('_');
    while(split!=std::string::npos && split>0) {
     if(split+1<label.size() && CALCULATOR->getFunction("__qstate_family_"+label.substr(0,split)))defined=true;
@@ -872,8 +879,8 @@ class QuantumAlgebraFunction: public MathFunction {
   // Text ket labels retain their full name; resolve explicitly registered
   // variables without routing the label through the ordinary expression parser.
   if(op=="qketstate" && args[0].isSymbolic()) {
-   Variable *state=CALCULATOR->getActiveVariable(args[0].symbol());
-   if(state && !state->isBuiltin())args[0].set(state);
+   Variable *state=ketVariable(args[0].symbol());
+   if(state)args[0].set(state);
    else {
     // A declared family gives a simple subscript its parameter meaning.
     // Explicit named states take precedence; undeclared labels stay opaque.

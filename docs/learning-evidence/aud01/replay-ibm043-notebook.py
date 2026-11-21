@@ -68,11 +68,21 @@ for idx,cell in enumerate(json.loads(raw)["cells"]):
 assert len(ledger)==10 and len(measurements)==2
 expressions = ["(|0>@|1>)=[0;1;0;0]", "(|+>@|-i>)=([1;-i;1;-i]/2)",
                "(H@I)*(|+>@|-i>)=([1;-i;0;0]/sqrt(2))","CX*(|+>@|0>)=([1;0;0;1]/sqrt(2))"]
-for expr in expressions:
+notation = json.loads(Path(__file__).with_name("ibm043-inventory.json").read_bytes())["rows"]
+def calculate(expr):
     run = subprocess.run([worker,"--json"],input=("quantum:"+expr).encode(),capture_output=True,timeout=30,
                          check=True,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
-    value = json.loads(run.stdout)
-    assert value["copy_text"]=="1" and not value["approximate"], expr
+    value=json.loads(run.stdout)
+    assert not value["approximate"]
+    return value["copy_text"]
+
+action = calculate(notation[8]["literal"])
+definition = calculate(notation[9]["literal"])
+for state,expected in [("(|+>@|-i>)","1"), ("|00>","0")]:
+    expressions.append(f'replace(({definition}),qketstate("φ"),{state})={expected}')
+    expressions.append(f'(replace(({action}),qnamedket("φ"),{state})=([1;-i;0;0]/sqrt(2)))={expected}')
+for expr in expressions:
+    assert calculate(expr)=="1", expr
 print(json.dumps(dict(source_sha256=digest,worker_sha256=sha256(worker.read_bytes()).hexdigest(),
                       qiskit=scope["__version__"],numpy=np.__version__,cells=ledger,
                       seed=4319,measurements=measurements,calculator_checks=expressions),indent=2))

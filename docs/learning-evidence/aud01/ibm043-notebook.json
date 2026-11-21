@@ -1,6 +1,6 @@
 {
   "source_sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
-  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "worker_sha256": "4ebc40e0e67cecb22225a7422d3748685cc3d829c6f11e64f60201fd4170427d",
   "qiskit": "2.6.2",
   "numpy": "2.5.5",
   "cells": [
@@ -101,6 +101,10 @@
     "(|0>@|1>)=[0;1;0;0]",
     "(|+>@|-i>)=([1;-i;1;-i]/2)",
     "(H@I)*(|+>@|-i>)=([1;-i;0;0]/sqrt(2))",
-    "CX*(|+>@|0>)=([1;0;0;1]/sqrt(2))"
+    "CX*(|+>@|0>)=([1;0;0;1]/sqrt(2))",
+    "replace((qcompare(qketstate('\u03c6'),matrix(4,1,[1 \u2215 2,\u2212i \u2215 2,1 \u2215 2,\u2212i \u2215 2]),4)),qketstate(\"\u03c6\"),(|+>@|-i>))=1",
+    "(replace((qadjacent(qtensor(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),matrix(2,2,[1,0,0,1])),qnamedket('\u03c6'))),qnamedket(\"\u03c6\"),(|+>@|-i>))=([1;-i;0;0]/sqrt(2)))=1",
+    "replace((qcompare(qketstate('\u03c6'),matrix(4,1,[1 \u2215 2,\u2212i \u2215 2,1 \u2215 2,\u2212i \u2215 2]),4)),qketstate(\"\u03c6\"),|00>)=0",
+    "(replace((qadjacent(qtensor(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),matrix(2,2,[1,0,0,1])),qnamedket('\u03c6'))),qnamedket(\"\u03c6\"),|00>)=([1;-i;0;0]/sqrt(2)))=0"
   ]
 }
