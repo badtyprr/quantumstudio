@@ -1,0 +1,123 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/quantum-computing-fundamentals.mdx",
+  "source_sha256": "f5333824102166257d5235aeff8e951f820ecb00ec69641df5e9c7faf8564235",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 10
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 2024,
+      "end": 2241,
+      "alt": "a black-and-white photograph of a field of tulips and a color photograph of red tulips and a yellow tulip in a field",
+      "path": "/learning/images/courses/quantum-business-foundations/quantum-computing-fundamentals/tulips.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM130-f5333824-M001",
+      "cell": 0,
+      "start": 4072,
+      "end": 4077,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM130-f5333824-M002",
+      "cell": 0,
+      "start": 8395,
+      "end": 8400,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM130-f5333824-M003",
+      "cell": 0,
+      "start": 9097,
+      "end": 9102,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM130-f5333824-M004",
+      "cell": 0,
+      "start": 9297,
+      "end": 9302,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM130-f5333824-M005",
+      "cell": 0,
+      "start": 9674,
+      "end": 9679,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM130-f5333824-M006",
+      "cell": 0,
+      "start": 9824,
+      "end": 9832,
+      "literal": "$C(x_i)$",
+      "status": "exact",
+      "display": "qscalarat('C', \"x_i\")",
+      "copy": "qscalarat('C',\"x_i\")"
+    },
+    {
+      "id": "IBM130-f5333824-M007",
+      "cell": 0,
+      "start": 9861,
+      "end": 9866,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM130-f5333824-M008",
+      "cell": 0,
+      "start": 11208,
+      "end": 11223,
+      "literal": "$P_i = |w_i|^2$",
+      "status": "exact",
+      "display": "\"P_i\" = |\"w_i\"|^2",
+      "copy": "(\"P_i\")==(qbars(\"w_i\")²)"
+    },
+    {
+      "id": "IBM130-f5333824-M009",
+      "cell": 0,
+      "start": 11548,
+      "end": 11553,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    },
+    {
+      "id": "IBM130-f5333824-M010",
+      "cell": 0,
+      "start": 11767,
+      "end": 11772,
+      "literal": "$2^n$",
+      "status": "exact",
+      "display": "2^n",
+      "copy": "2^n"
+    }
+  ]
+}

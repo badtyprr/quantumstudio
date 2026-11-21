@@ -1,0 +1,88 @@
+{
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "suite": {
+    "passed": true,
+    "checks": 135,
+    "calls": 15,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "cases": [
+    {
+      "name": "scalar-1",
+      "expression": "$1/\"X\"$",
+      "copy": "1 ∕ 'X'"
+    },
+    {
+      "name": "tenfold-1",
+      "expression": "replace(1 ∕ 'X',\"X\",10)",
+      "copy": "1 ∕ 10"
+    },
+    {
+      "name": "scalar-2",
+      "expression": "$\"X\"^2$",
+      "copy": "'X'²"
+    },
+    {
+      "name": "tenfold-2",
+      "expression": "replace('X'²,\"X\",10)",
+      "copy": "100"
+    },
+    {
+      "name": "scalar-3",
+      "expression": "$\"X\"$",
+      "copy": "'X'"
+    },
+    {
+      "name": "tenfold-3",
+      "expression": "replace('X',\"X\",10)",
+      "copy": "10"
+    },
+    {
+      "name": "bare-X",
+      "expression": "$X$",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "name": "default-pauli-x",
+      "expression": "qcompare(matrix(2,2,[0,1,1,0]),[0,1;1,0],4)",
+      "copy": "1"
+    },
+    {
+      "name": "source-cost",
+      "expression": "$C(x_i)$",
+      "copy": "qscalarat('C',\"x_i\")"
+    },
+    {
+      "name": "cost-0",
+      "expression": "replace(qscalarat('C',\"x_i\"),vector(\"C\",\"x_i\"),vector(vector(vector(0,5),vector(1,7)),0))",
+      "copy": "5"
+    },
+    {
+      "name": "cost-1",
+      "expression": "replace(qscalarat('C',\"x_i\"),vector(\"C\",\"x_i\"),vector(vector(vector(0,5),vector(1,7)),1))",
+      "copy": "7"
+    },
+    {
+      "name": "measurement-probability",
+      "expression": "$P_i = |w_i|^2$",
+      "copy": "(\"P_i\")==(qbars(\"w_i\")²)"
+    },
+    {
+      "name": "weight-1",
+      "expression": "replace((\"P_i\")==(qbars(\"w_i\")²),vector(\"P_i\",\"w_i\"),vector(1/4,i/2))",
+      "copy": "1"
+    },
+    {
+      "name": "weight-0",
+      "expression": "replace((\"P_i\")==(qbars(\"w_i\")²),vector(\"P_i\",\"w_i\"),vector(1/2,i/2))",
+      "copy": "0"
+    },
+    {
+      "name": "hundred-qubits",
+      "expression": "$2^{100}$",
+      "copy": "1267650600228229401496703205376"
+    }
+  ]
+}

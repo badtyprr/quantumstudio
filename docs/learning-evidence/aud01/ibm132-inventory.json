@@ -1,0 +1,74 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/business-impacts.mdx",
+  "source_sha256": "2fcf7369306089ae35f467595e9c9e81d3724b9d128d2e11303949fb320532ec",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 3
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1780,
+      "end": 1891,
+      "alt": "Use Cases",
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/use-cases-by-industry.avif"
+    },
+    {
+      "cell": 0,
+      "start": 3222,
+      "end": 3383,
+      "alt": "Quantum computing use cases for airlines",
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/quantum_computing_use_cases_for_airlines.avif"
+    },
+    {
+      "cell": 0,
+      "start": 7586,
+      "end": 7718,
+      "alt": "Quadratic speedup over Monte Carlo",
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/quadratic_speedup.avif"
+    },
+    {
+      "cell": 0,
+      "start": 12609,
+      "end": 12746,
+      "alt": "Potential quantum computing use cases",
+      "path": "/learning/images/courses/quantum-business-foundations/business-impacts/potential_use_cases.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM132-2fcf7369-M001",
+      "cell": 0,
+      "start": 7241,
+      "end": 7246,
+      "literal": "$1/X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM132-2fcf7369-M002",
+      "cell": 0,
+      "start": 7256,
+      "end": 7261,
+      "literal": "$X^2$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM132-2fcf7369-M003",
+      "cell": 0,
+      "start": 7297,
+      "end": 7300,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    }
+  ]
+}

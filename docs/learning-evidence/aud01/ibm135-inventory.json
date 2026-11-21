@@ -1,0 +1,34 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/designing-and-leading-quantum-projects/early-stages.mdx",
+  "source_sha256": "7ca49380056336259b09fb322ec3a62ff6a499ffc8726bfffc77c978438e1548",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [
+    {
+      "cell": 0,
+      "start": 5623,
+      "end": 5959,
+      "alt": "This is a diagram of priorities. There are four axes: business impact, eminence and industry leadership, scientific advancement, and education and workforce development. Business impact and scientific advancement are most heavily weighted.",
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities1.svg"
+    },
+    {
+      "cell": 0,
+      "start": 6388,
+      "end": 6710,
+      "alt": "This is a diagram of priorities. There are four axes: business impact, eminence and industry leadership, scientific advancement, and education and workforce development. Business impact and eminence are most heavily weighted.",
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/priorities2.svg"
+    },
+    {
+      "cell": 0,
+      "start": 7026,
+      "end": 7206,
+      "alt": "Priorities of an organization and what metrics of success they might use.",
+      "path": "/learning/images/courses/designing-and-leading-quantum-projects/early-stages/value-drivers-metrics.svg"
+    }
+  ],
+  "rows": []
+}

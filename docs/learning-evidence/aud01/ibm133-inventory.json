@@ -1,0 +1,53 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-business-foundations/how-to-become-quantum-ready.mdx",
+  "source_sha256": "9ae51c31e1a87239327bf1e22f0cefbd84cdbe9c9671c93373557de276759f65",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 3
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 5190,
+      "end": 5350,
+      "alt": "Image Talent transformation for the quantum age",
+      "path": "/learning/images/courses/quantum-business-foundations/how-to-become-quantum-ready/talent_transformation.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM133-9ae51c31-M001",
+      "cell": 0,
+      "start": 9601,
+      "end": 9610,
+      "literal": "$2^{100}$",
+      "status": "exact",
+      "display": "1267650600228229401496703205376",
+      "copy": "1267650600228229401496703205376"
+    },
+    {
+      "id": "IBM133-9ae51c31-M002",
+      "cell": 0,
+      "start": 9875,
+      "end": 9884,
+      "literal": "$10^{30}$",
+      "status": "exact",
+      "display": "1000000000000000000000000000000",
+      "copy": "1000000000000000000000000000000"
+    },
+    {
+      "id": "IBM133-9ae51c31-M003",
+      "cell": 0,
+      "start": 10549,
+      "end": 10558,
+      "literal": "$2^{100}$",
+      "status": "exact",
+      "display": "1267650600228229401496703205376",
+      "copy": "1267650600228229401496703205376"
+    }
+  ]
+}

@@ -42,6 +42,16 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "b00cb51d7b1d9df90208e6d1a43ad43448ec910e0a8962fb307de253ae699d13": ("IBM128", "start-your-quantum-journey", 0, 1),
+    "702a47b687349a172c8060747ec8ccd7791959b5b619f90684449864bdb7dbef": ("IBM129", "introduction-to-quantum-computing", 0, 7),
+    "f5333824102166257d5235aeff8e951f820ecb00ec69641df5e9c7faf8564235": ("IBM130", "quantum-computing-fundamentals", 10, 1),
+    "198502379def6aec2ccd1b543b019b83c5f1ffdec25246914eabef34d0563be9": ("IBM131", "quantum-technology", 0, 2),
+    "2fcf7369306089ae35f467595e9c9e81d3724b9d128d2e11303949fb320532ec": ("IBM132", "business-impacts", 3, 4),
+    "9ae51c31e1a87239327bf1e22f0cefbd84cdbe9c9671c93373557de276759f65": ("IBM133", "how-to-become-quantum-ready", 3, 1),
+    "9f3ef33fc71f2cd5ab0ecc60a01a2c5a3a7e92cbea8e185b76aae47594efa9ff": ("IBM134", "introduction", 0, 0),
+    "7ca49380056336259b09fb322ec3a62ff6a499ffc8726bfffc77c978438e1548": ("IBM135", "early-stages", 0, 3),
+    "b1e8609c0f576556d0213d1a869e34b9b3d65e3d5baf74fd945b3883d9255b7f": ("IBM136", "standing-up-team", 0, 1),
+    "3459d0b4507cb6d3af2e33c5a168c8a336480eb1aa3b2f0efa7f4989815ab8c8": ("IBM137", "grant-writing", 0, 0),
     "0e79f291609466eb1a03ec1c3d2a08f0454f127a7a1d65ae9b79c99025b53d6c": ("IBM114", "introduction", 0, 0),
     "0533f5bdd69d17a87ef66b56c5cdb722c0d11cb4416e0cbc5e3377818217c615": ("IBM115", "bits-gates-and-circuits", 127, 2),
     "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901": ("IBM116", "teleportation", 87, 0),
@@ -183,7 +193,7 @@ lessons = {
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
     parser.error(f"Expected {args.lesson}, got {lesson}")
-extension = "mdx" if lesson in ('IBM080', 'IBM121') else "ipynb"
+extension = "mdx" if (lesson in ('IBM080', 'IBM121') or 'IBM128' <= lesson <= 'IBM137') else "ipynb"
 cells = ([{"cell_type": "markdown", "source": data.decode()}] if extension == "mdx"
          else json.loads(data)["cells"])
 types = Counter(c["cell_type"] for c in cells)
@@ -191,6 +201,16 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM128": (1,0),
+    "IBM129": (1,0),
+    "IBM130": (1,0),
+    "IBM131": (1,0),
+    "IBM132": (1,0),
+    "IBM133": (1,0),
+    "IBM134": (1,0),
+    "IBM135": (1,0),
+    "IBM136": (1,0),
+    "IBM137": (1,0),
     "IBM114": (1,0),
     "IBM115": (44,44),
     "IBM116": (42,46),
@@ -317,6 +337,10 @@ elif "IBM108" <= lesson <= "IBM113":
     course,chapter = "quantum-chem-with-vqe",""
 elif "IBM114" <= lesson <= "IBM127":
     course,chapter = "utility-scale-quantum-computing",""
+elif "IBM128" <= lesson <= "IBM133":
+    course,chapter = "quantum-business-foundations",""
+elif "IBM134" <= lesson <= "IBM137":
+    course,chapter = "designing-and-leading-quantum-projects",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

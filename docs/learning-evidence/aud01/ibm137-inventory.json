@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/designing-and-leading-quantum-projects/grant-writing.mdx",
+  "source_sha256": "3459d0b4507cb6d3af2e33c5a168c8a336480eb1aa3b2f0efa7f4989815ab8c8",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/designing-and-leading-quantum-projects/introduction.mdx",
+  "source_sha256": "9f3ef33fc71f2cd5ab0ecc60a01a2c5a3a7e92cbea8e185b76aae47594efa9ff",
+  "worker_sha256": "cbfe726298ffb965cebce9fad98383bad6b3045cb479459c44ea2c2f07e39eac",
+  "revision": "eb15ff71",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}
