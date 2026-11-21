@@ -1,0 +1,126 @@
+[
+  {
+    "lesson": 106,
+    "revision": "0c0ec350",
+    "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/instances-and-extensions.ipynb",
+    "notebook_sha256": "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec",
+    "worker_sha256": "ba705ac3a9b316cb383c1f2f3cdc02d043b4e70fc8beafefcd58501c747a1f21",
+    "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+    "records_sha256": "4570392fa2b2185b017a27a97d626d9d8b81c98d7fc531c21bbce7d9cde0b8ad",
+    "counts": {
+      "source_exact": 110,
+      "restored_identically": 110,
+      "stable_after_text_reentry": 110,
+      "source_diagnostic": 39
+    },
+    "changed_status": [
+      {
+        "id": "IBM106-ab0d6f7e-M067",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M068",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M071",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M075",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M078",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M081",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M083",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M085",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M086",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M089",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M092",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M095",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M096",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M105",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM106-ab0d6f7e-M115",
+        "old": "diagnostic",
+        "new": "exact"
+      }
+    ]
+  },
+  {
+    "lesson": 107,
+    "revision": "0c0ec350",
+    "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/examples-and-applications.ipynb",
+    "notebook_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
+    "worker_sha256": "ba705ac3a9b316cb383c1f2f3cdc02d043b4e70fc8beafefcd58501c747a1f21",
+    "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+    "records_sha256": "8e1f77f56af1e0461215e3a2b4a5f12036d204c0cc702024c958409f7a09d69f",
+    "counts": {
+      "source_exact": 67,
+      "restored_identically": 67,
+      "stable_after_text_reentry": 67,
+      "source_diagnostic": 11
+    },
+    "changed_status": [
+      {
+        "id": "IBM107-0e377720-M018",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM107-0e377720-M020",
+        "old": "diagnostic",
+        "new": "exact"
+      },
+      {
+        "id": "IBM107-0e377720-M021",
+        "old": "diagnostic",
+        "new": "exact"
+      }
+    ]
+  }
+]

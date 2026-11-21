@@ -659,3 +659,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm033-grover-derivations.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm033-alphabets.json docs/learning-evidence/aud01/replay-ibm033-alphabets.py
 EXTRA_DIST += docs/learning-evidence/aud02/qbook-public-access.md
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm106-trial-states.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm106-trial-states.json
