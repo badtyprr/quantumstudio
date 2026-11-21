@@ -1,0 +1,37 @@
+{
+  "slides_sha256": "e3148ab53d2e0fc45a08230dd765e71df131d527f7782aec9ab9fe17120b4392",
+  "source": "https://ibm.box.com/public/static/95va6f5vqru3mpsv9p5ivwcyxino4rk7.pdf",
+  "worker_sha256": "d52a405cae608291cc0d8d210a69f79dd3543f637e4e7f9505dba12aeee35549",
+  "checks": [
+    {
+      "page": 25,
+      "expression": "[0,1;1,0]*([1,1;0,0]*[3/5;2/5])=([0,1;1,0]*[1,1;0,0])*[3/5;2/5]",
+      "result": "1"
+    },
+    {
+      "page": 26,
+      "expression": "[0,1;1,0]*[1,1;0,0]=[0,0;1,1]",
+      "result": "1"
+    },
+    {
+      "page": 26,
+      "expression": "[1,1;0,0]*[0,1;1,0]=[1,1;0,0]",
+      "result": "1"
+    },
+    {
+      "page": 26,
+      "expression": "[0,1;1,0]*[1,1;0,0]=[1,1;0,0]*[0,1;1,0]",
+      "result": "0"
+    },
+    {
+      "page": 47,
+      "expression": "H*S*H=[(1+i)/2,(1-i)/2;(1-i)/2,(1+i)/2]",
+      "result": "1"
+    },
+    {
+      "page": 47,
+      "expression": "([(1+i)/2,(1-i)/2;(1-i)/2,(1+i)/2])^2=X",
+      "result": "1"
+    }
+  ]
+}
