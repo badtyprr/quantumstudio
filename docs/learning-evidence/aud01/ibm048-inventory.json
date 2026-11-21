@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/introduction.ipynb",
   "source_sha256": "7a1e4999246cae78a4bae99822fcb4fae29e556a6b1358249d611ae102db7a57",
-  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
-  "revision": "1bebb83be6ce93f4330316cac9ddf09d1fdc4d0c",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "revision": "56041589efb1aeafa7efb86c1ae03298be4b6594",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,

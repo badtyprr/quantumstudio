@@ -1,9 +1,9 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation.ipynb",
   "notebook_sha256": "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30",
-  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "e6a26583210bcb25d822aa1f3990dbf5b761efa24c05c0c7bbe2b0d9e4d47ad8",
+  "records_sha256": "912e9fe45c0d021cb2b22e3a599ab5971d0ffbc21f666d938697ef5528eae67b",
   "suite": {
     "passed": true,
     "checks": 675,
@@ -15,15 +15,9 @@
   "counts": {
     "source_exact": 75,
     "restored_identically": 75,
-    "stable_after_text_reentry": 74
+    "stable_after_text_reentry": 75
   },
   "diagnostics": [],
-  "changed_copy": [
-    {
-      "id": "IBM052-4710386a-M044",
-      "first": "\\begin{gathered}1\\\\1\\\\1\\\\(qadd(matrix(4,1,vector(0,−1 ∕ √(2),1 ∕ √(2),0)),qadjacent(qtensor(qimplicitidentity(),'X''Z'),(1 ∕ √(2))*(matrix(4,1,vector(1,0,0,1))))))==(0)\\end{gathered}",
-      "second": "\\begin{gathered}1\\\\1\\\\1\\\\(qadd(matrix(4,1,vector(0,−1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),0)),qadjacent(qtensor(qimplicitidentity(),qadjacent('X','Z')),qmul(1 ∕ qpower(2, 1 ∕ 2),matrix(4,1,vector(1,0,0,1))))))==(0)\\end{gathered}"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

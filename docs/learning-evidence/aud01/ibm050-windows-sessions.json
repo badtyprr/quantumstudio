@@ -1,9 +1,9 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/superdense-coding.ipynb",
   "notebook_sha256": "278c63dd661ff599c943d5fe0fb4303b12efe6c0067e33a39256f9189d9ddc1d",
-  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "f13c57fb19b5505065aa70a1fdb20145fbc108e8d23ef24d3ab96a420f4ccebb",
+  "records_sha256": "8a94ab9d15123d8f18e8508627d5b3f55016a6710d4cdf3fe3a3c89da4d7cf81",
   "suite": {
     "passed": true,
     "checks": 513,
@@ -15,15 +15,9 @@
   "counts": {
     "source_exact": 57,
     "restored_identically": 57,
-    "stable_after_text_reentry": 56
+    "stable_after_text_reentry": 57
   },
   "diagnostics": [],
-  "changed_copy": [
-    {
-      "id": "IBM050-278c63dd-M032",
-      "first": "\\begin{gathered}1\\\\1\\\\1\\\\(qadd(matrix(4,1,vector(0,−1 ∕ √(2),1 ∕ √(2),0)),qadjacent(qtensor(qimplicitidentity(),'X''Z'),(1 ∕ √(2))*(matrix(4,1,vector(1,0,0,1))))))==(0)\\end{gathered}",
-      "second": "\\begin{gathered}1\\\\1\\\\1\\\\(qadd(matrix(4,1,vector(0,−1 ∕ qpower(2, 1 ∕ 2),1 ∕ qpower(2, 1 ∕ 2),0)),qadjacent(qtensor(qimplicitidentity(),qadjacent('X','Z')),qmul(1 ∕ qpower(2, 1 ∕ 2),matrix(4,1,vector(1,0,0,1))))))==(0)\\end{gathered}"
-    }
-  ],
+  "changed_copy": [],
   "failures": []
 }

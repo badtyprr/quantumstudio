@@ -1,0 +1,86 @@
+[
+  {
+    "lesson": 49,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/teleportation.svg",
+    "sha256": "d0e18823453a561acaf00c00038fbb51f7d5674db91a2e6d477b109f6d3765c9",
+    "check": "Q controls CNOT onto A, then H on Q. A controls Bob's X and Q controls his Z. Each branch has probability 1/4 and preserves the complex input including its reference."
+  },
+  {
+    "lesson": 49,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/teleportation-time-steps.svg",
+    "sha256": "3f9ccb0bb52598390d2a9614411c5f12cde372828fb749913f928ec4303e8c70",
+    "check": "Q controls CNOT onto A, then H on Q. A controls Bob's X and Q controls his Z. Each branch has probability 1/4 and preserves the complex input including its reference."
+  },
+  {
+    "lesson": 49,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/teleportation-with-entanglement.svg",
+    "sha256": "7a7ad90ae1049c25139b02425cdc4c4bd81b6ec8500f33e430da1505caa5dd13",
+    "check": "Q controls CNOT onto A, then H on Q. A controls Bob's X and Q controls his Z. Each branch has probability 1/4 and preserves the complex input including its reference."
+  },
+  {
+    "lesson": 50,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/superdense-coding.svg",
+    "sha256": "a1a4f22a7c0aa84c623a5948354ed582801d9df6b92ab0ec884ed0f32efa11fb",
+    "check": "d controls Z then c controls X. The transmitted wire controls CNOT and passes through H. Read d on that wire and c on the target. All four messages decode."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/nonlocal-game.avif",
+    "sha256": "6c3a0f5adc1d0f147ea2a4e7ee1d1a42c57369eabb8d85bc1e32c372c5de76e4",
+    "check": "Separate local response functions receive x and y. The best of 16 deterministic strategies wins three of four inputs."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/nonlocal-game-entanglement.avif",
+    "sha256": "16e91fcd871de33e0a249d33c732d2edd94f63c5d3e17d99ed44262351ee7d87",
+    "check": "The players receive a shared state before the referee sends separate inputs. The Bell-state strategy below beats 3/4."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/CHSH.avif",
+    "sha256": "f24d869b9e990d8782e2ce5dc7b2b58f090743fa670f84aaa06e0546c3c837f3",
+    "check": "Open and filled controls select Bob's angles +pi/8 and -pi/8 and Alice's angles 0 and pi/4."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/alpha-basis.avif",
+    "sha256": "dc24143e4905afc45c95cd9692eaf92becef360450d5f71bbafb1271e8f77a68",
+    "check": "The second vector is a positive quarter-turn from the first and their dot product is zero."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/beta-basis.avif",
+    "sha256": "d8f28b264af6b1b51c9a5e0f5a1e6ff3981423a69417b75e01333db2e4adf114",
+    "check": "The second vector is a positive quarter-turn from the first and their dot product is zero."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy00.avif",
+    "sha256": "bd2160ff1395511192771b57053f2ba48bbf25488fbb0dd07281057948e56471",
+    "check": "Alice angle 0*pi/4 and Bob angle 1*pi/8. The illustrated bases win with probability (2+sqrt(2))/4."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy01.avif",
+    "sha256": "6b8f2b095e3cc1a6c34c1c91632bc5a909e25e1b9125195f16a94463d119f89f",
+    "check": "Alice angle 0*pi/4 and Bob angle -1*pi/8. The illustrated bases win with probability (2+sqrt(2))/4."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy10.avif",
+    "sha256": "7516cfad1da60f6939690072838fa9bcb55cf8e8e52f33444ad95fc447b34ca4",
+    "check": "Alice angle 1*pi/4 and Bob angle 1*pi/8. The illustrated bases win with probability (2+sqrt(2))/4."
+  },
+  {
+    "lesson": 51,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/strategy11.avif",
+    "sha256": "9fd2f785e8a20af46d79990679b8ac7b832888e078283140674958616b0f2b24",
+    "check": "Alice angle 1*pi/4 and Bob angle -1*pi/8. The illustrated bases win with probability (2+sqrt(2))/4."
+  },
+  {
+    "lesson": 52,
+    "path": "/learning/images/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation/superdense-coding.avif",
+    "sha256": "ad32fc3751020028aecc0d7a01450a89edc24514d9f7dd16e560d45a3032f277",
+    "check": "d controls Z then c controls X. The transmitted wire controls CNOT and passes through H. Read d on that wire and c on the target. All four messages decode."
+  }
+]

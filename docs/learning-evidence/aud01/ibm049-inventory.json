@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/quantum-teleportation.ipynb",
   "source_sha256": "a126b0f66b405b79c3829c598cd7688075e91a80d002ab5dcb5d9194dacbf023",
-  "worker_sha256": "9a0e3f3f439ec233c4386619a03ec4f7c5acc4006811da3e04e2712fb26f54f8",
-  "revision": "669baae8f6dbe55adec83864ef21fce3681f274f",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "revision": "56041589efb1aeafa7efb86c1ae03298be4b6594",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -510,8 +510,8 @@
       "end": 5996,
       "literal": "$ZX$",
       "status": "exact",
-      "display": "X · Z",
-      "copy": "'X''Z'"
+      "display": "[0, 1; −1, 0]",
+      "copy": "matrix(2,2,[0,1,−1,0])"
     },
     {
       "id": "IBM049-a126b0f6-M049",
@@ -1050,8 +1050,8 @@
       "end": 12686,
       "literal": "$ZX$",
       "status": "exact",
-      "display": "X · Z",
-      "copy": "'X''Z'"
+      "display": "[0, 1; −1, 0]",
+      "copy": "matrix(2,2,[0,1,−1,0])"
     },
     {
       "id": "IBM049-a126b0f6-M103",
@@ -1421,7 +1421,7 @@
       "literal": "$$\n\\begin{aligned}\n\\vert \\pi_0\\rangle\n& = \\vert \\phi^+\\rangle_{\\mathsf{BA}} \\otimes \\bigl(\n  \\alpha \\vert 0\\rangle_{\\mathsf{Q}} \\vert\\gamma_0\\rangle_{\\mathsf{R}}\n+ \\beta \\vert 1\\rangle_{\\mathsf{Q}}\\vert\\gamma_1\\rangle_{\\mathsf{R}}\\bigr)\\\\[1mm]\n& = \\frac{\n  \\alpha \\vert 0\\rangle_{\\mathsf{B}} \\vert \\gamma_0 \\rangle_{\\mathsf{R}} \\vert 00 \\rangle_{\\mathsf{AQ}}\n+ \\alpha \\vert 1\\rangle_{\\mathsf{B}} \\vert \\gamma_0 \\rangle_{\\mathsf{R}} \\vert 10 \\rangle_{\\mathsf{AQ}}\n+ \\beta \\vert 0\\rangle_{\\mathsf{B}} \\vert \\gamma_1 \\rangle_{\\mathsf{R}} \\vert 01 \\rangle_{\\mathsf{AQ}}\n+ \\beta \\vert 1\\rangle_{\\mathsf{B}} \\vert \\gamma_1 \\rangle_{\\mathsf{R}} \\vert 11 \\rangle_{\\mathsf{AQ}}}{\\sqrt{2}}.\n\\end{aligned}\n$$",
       "status": "exact",
       "display": "|pi_0⟩ = qorderedket(qtensor(qregket(matrix(4, 1, [1  0  0  1]) ∕ √(2), \"BA\"), qadd(qadjacent(qadjacent('α', qregket(matrix(2, 1, [1  0]), 'Q')), qregket(qnamedket(\"γ_0\"), 'R')), qadjacent(qadjacent('β', qregket(matrix(2, 1, [0  1]), 'Q')), qregket(qnamedket(\"γ_1\"), 'R')))), \"BAQR\") = qorderedket(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α', qregket(matrix(2, 1, [1  0]), 'B')), qregket(qnamedket(\"γ_0\"), 'R')), qregket(matrix(4, 1, [1  0  0  0]), \"AQ\")), qadjacent(qadjacent(qadjacent('α', qregket(matrix(2, 1, [0  1]), 'B')), qregket(qnamedket(\"γ_0\"), 'R')), qregket(matrix(4, 1, [0  0  1  0]), \"AQ\"))), qadjacent(qadjacent(qadjacent('β', qregket(matrix(2, 1, [1  0]), 'B')), qregket(qnamedket(\"γ_1\"), 'R')), qregket(matrix(4, 1, [0  1  0  0]), \"AQ\"))), qadjacent(qadjacent(qadjacent('β', qregket(matrix(2, 1, [0  1]), 'B')), qregket(qnamedket(\"γ_1\"), 'R')), qregket(matrix(4, 1, [0  0  0  1]), \"AQ\"))) ∕ qsqrt(2), \"BAQR\")",
-      "copy": "qequalchain(vector(qketstate(\"pi_0\"),qorderedket(qtensor(qregket((1 ∕ √(2))*(matrix(4,1,vector(1,0,0,1))),\"BA\"),qadd(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'Q')),qregket(qnamedket(\"γ_0\"),'R')),qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'Q')),qregket(qnamedket(\"γ_1\"),'R')))),\"BAQR\"),qorderedket(qmul(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(1,0,0,0)),\"AQ\")),qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(0,0,1,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,1,0,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,0,0,1)),\"AQ\"))),1 ∕ qsqrt(2)),\"BAQR\")))"
+      "copy": "qequalchain(vector(qketstate(\"pi_0\"),qorderedket(qtensor(qregket(qmul(qpower(2,−1 ∕ 2),matrix(4,1,vector(1,0,0,1))),\"BA\"),qadd(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'Q')),qregket(qnamedket(\"γ_0\"),'R')),qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'Q')),qregket(qnamedket(\"γ_1\"),'R')))),\"BAQR\"),qorderedket(qmul(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(1,0,0,0)),\"AQ\")),qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(0,0,1,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,1,0,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,0,0,1)),\"AQ\"))),qpower(qsqrt(2),−1)),\"BAQR\")))"
     },
     {
       "id": "IBM049-a126b0f6-M140",
@@ -1431,7 +1431,7 @@
       "literal": "$$\n\\vert\\pi_1\\rangle =\n\\frac{\n  \\alpha \\vert 0\\rangle_{\\mathsf{B}} \\vert\\gamma_0 \\rangle_{\\mathsf{R}} \\vert 00\\rangle_{\\mathsf{AQ}}\n+ \\alpha \\vert 1\\rangle_{\\mathsf{B}} \\vert\\gamma_0 \\rangle_{\\mathsf{R}} \\vert 10\\rangle_{\\mathsf{AQ}}\n+ \\beta \\vert 0\\rangle_{\\mathsf{B}} \\vert\\gamma_1 \\rangle_{\\mathsf{R}} \\vert 11\\rangle_{\\mathsf{AQ}}\n+ \\beta \\vert 1\\rangle_{\\mathsf{B}} \\vert\\gamma_1 \\rangle_{\\mathsf{R}} \\vert 01\\rangle_{\\mathsf{AQ}}}{\\sqrt{2}}.\n$$",
       "status": "exact",
       "display": "|pi_1⟩ = qorderedket(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α', qregket(matrix(2, 1, [1  0]), 'B')), qregket(qnamedket(\"γ_0\"), 'R')), qregket(matrix(4, 1, [1  0  0  0]), \"AQ\")), qadjacent(qadjacent(qadjacent('α', qregket(matrix(2, 1, [0  1]), 'B')), qregket(qnamedket(\"γ_0\"), 'R')), qregket(matrix(4, 1, [0  0  1  0]), \"AQ\"))), qadjacent(qadjacent(qadjacent('β', qregket(matrix(2, 1, [1  0]), 'B')), qregket(qnamedket(\"γ_1\"), 'R')), qregket(matrix(4, 1, [0  0  0  1]), \"AQ\"))), qadjacent(qadjacent(qadjacent('β', qregket(matrix(2, 1, [0  1]), 'B')), qregket(qnamedket(\"γ_1\"), 'R')), qregket(matrix(4, 1, [0  1  0  0]), \"AQ\"))) ∕ qsqrt(2), \"BRAQ\")",
-      "copy": "qcompare(qketstate(\"pi_1\"),qorderedket(qmul(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(1,0,0,0)),\"AQ\")),qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(0,0,1,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,0,0,1)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,1,0,0)),\"AQ\"))),1 ∕ qsqrt(2)),\"BRAQ\"),4)"
+      "copy": "qcompare(qketstate(\"pi_1\"),qorderedket(qmul(qadd(qadd(qadd(qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(1,0,0,0)),\"AQ\")),qadjacent(qadjacent(qadjacent('α',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_0\"),'R')),qregket(matrix(4,1,vector(0,0,1,0)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(1,0)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,0,0,1)),\"AQ\"))),qadjacent(qadjacent(qadjacent('β',qregket(matrix(2,1,vector(0,1)),'B')),qregket(qnamedket(\"γ_1\"),'R')),qregket(matrix(4,1,vector(0,1,0,0)),\"AQ\"))),qpower(qsqrt(2),−1)),\"BRAQ\"),4)"
     },
     {
       "id": "IBM049-a126b0f6-M141",

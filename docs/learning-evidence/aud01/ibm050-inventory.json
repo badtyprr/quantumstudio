@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/entanglement-in-action/superdense-coding.ipynb",
   "source_sha256": "278c63dd661ff599c943d5fe0fb4303b12efe6c0067e33a39256f9189d9ddc1d",
-  "worker_sha256": "1b81664ed39ce406bca70767295805d1f93b3fe170eb923576510fa5ff67a643",
-  "revision": "1bebb83be6ce93f4330316cac9ddf09d1fdc4d0c",
+  "worker_sha256": "1a9733766476274fe913ee3048572f0e63e1ce2583f26c11b4711adbd2fe97e1",
+  "revision": "56041589efb1aeafa7efb86c1ae03298be4b6594",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -316,8 +316,8 @@
       "end": 3361,
       "literal": "$XZ$",
       "status": "exact",
-      "display": "X · Z",
-      "copy": "'X''Z'"
+      "display": "[0, −1; 1, 0]",
+      "copy": "matrix(2,2,[0,−1,1,0])"
     },
     {
       "id": "IBM050-278c63dd-M031",
@@ -336,8 +336,8 @@
       "end": 3716,
       "literal": "$$\n\\begin{aligned}\n(\\mathbb{I} \\otimes \\mathbb{I}) \\vert \\phi^+ \\rangle & = \\vert \\phi^+\\rangle \\\\\n(\\mathbb{I} \\otimes Z) \\vert \\phi^+ \\rangle & = \\vert \\phi^-\\rangle \\\\\n(\\mathbb{I} \\otimes X) \\vert \\phi^+ \\rangle & = \\vert \\psi^+\\rangle \\\\\n(\\mathbb{I} \\otimes XZ) \\vert \\phi^+ \\rangle & = \\vert \\psi^-\\rangle\n\\end{aligned}\n$$",
       "status": "exact",
-      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  [0; (−1 ∕ √(2)); (1 ∕ √(2)); 0] + (qimplicitidentity() ⊗ X · Z) · [1; 0; 0; 1] / √(2) = 0",
-      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\(qadd(matrix(4,1,vector(0,−1 ∕ √(2),1 ∕ √(2),0)),qadjacent(qtensor(qimplicitidentity(),'X''Z'),(1 ∕ √(2))*(matrix(4,1,vector(1,0,0,1))))))==(0)\\end{gathered}"
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
     },
     {
       "id": "IBM050-278c63dd-M033",
