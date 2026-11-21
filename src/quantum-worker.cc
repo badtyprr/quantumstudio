@@ -74,9 +74,13 @@ static bool completeComputationalBasis(const MathStructure &states) {
  }
  return true;
 }
-static bool containsDeferredQuantum(const MathStructure &value) {
- if(value.isFunction() && value.function()->referenceName().compare(0,1,"q")==0)return true;
- for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k]))return true;
+static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=false) {
+ if(value.isFunction()) {
+  const std::string &name=value.function()->referenceName();
+  if(orderedOnly ? (name=="qnamedket" || name=="qdag" || name=="qtensor" || name=="qadjacent")
+                 : name.compare(0,1,"q")==0)return true;
+ }
+ for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k],orderedOnly))return true;
  return false;
 }
 static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode,bool explicitEntries) {
@@ -158,7 +162,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
   if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&
-     (explicitEntries || containsDeferredQuantum(result))) {
+     (explicitEntries || containsDeferredQuantum(result,!result.containsType(STRUCT_VECTOR)))) {
    const std::string op=result.isAddition() ? "qadd(" : "qmul(";
    std::string text=copyText(result[0],po,true,true);
    for(size_t k=1;k<result.size();++k)text=op+text+","+copyText(result[k],po,true,true)+")";
