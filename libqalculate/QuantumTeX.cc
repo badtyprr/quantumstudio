@@ -1291,6 +1291,48 @@ class TeXReader {
    pos=end+endMarker.size();
    return "qbasiscolumns(qindexedentries(\""+quantumTeX(family)+"_\",1,"+indices[4]+",vector()),"+indices[2]+")";
   }
+  // Unlabelled codeword arrays present words of a common width in row order.
+  // Keep a Hadamard-basis state as a complete cell even when it is a vector.
+  {
+   static const std::regex gap(R"(^\[\s*-?[0-9]+(?:\.[0-9]+)?\s*(?:mm|cm|pt|em|ex)\s*\])");
+   static const std::regex hadamard(R"(\\vert\s*\{([+-]+)\}\s*\\rangle\s*(?:\\quad)?)");
+   std::string table;
+   size_t width=0;
+   bool valid=true,states=false;
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(std::regex_replace(trim(row),gap,""));
+    if(row.empty())continue;
+    const auto cells=indexedParts(row,"&");
+    if(cells.size()!=alignment.size()) {valid=false;break;}
+    std::string entries;
+    for(const auto &cell:cells) {
+     std::string word=trim(cell),entry;
+     std::smatch match;
+     bool state=std::regex_match(word,match,hadamard);
+     if(state)word=match[1].str();
+     else if(word.find_first_not_of("01")!=std::string::npos) {valid=false;break;}
+     if(word.size()<2 || word.size()> (state ? 10u : 30u)) {valid=false;break;}
+     if(!width) {width=word.size();states=state;}
+     if(width!=word.size() || states!=state) {valid=false;break;}
+     if(state) {
+      for(char sign:word) {
+       std::string factor=std::string("|")+sign+">";
+       entry=entry.empty() ? factor : "qtensor("+entry+","+factor+")";
+      }
+     } else {
+      unsigned mask=0;
+      for(char bit:word)mask=mask*2+(bit-'0');
+      entry="qbitlabel("+std::to_string(mask)+","+std::to_string(width)+")";
+     }
+     if(!entries.empty())entries+=",";
+     entries+=entry;
+    }
+    if(!valid)break;
+    if(!table.empty())table+=",";
+    table+=states ? "vector("+entries+")" : "qtuple(vector("+entries+"))";
+   }
+   if(valid && !table.empty()) {pos=end+endMarker.size();return states ? "vector("+table+")" : "qtuple(vector("+table+"))";}
+  }
   std::string values;
   size_t rows=0;
   while(pos<end) {
@@ -2187,6 +2229,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
+ }
+ if(s.find("\\Sigma^")!=std::string::npos) {
+  static const std::regex words(R"(\\Sigma\^([a-z]|[0-9]+))");
+  s=std::regex_replace(s,words,"qwordpower(\"Σ\",$1)");
+ }
+ if(s.find("\\subseteq")!=std::string::npos) {
+  auto sides=indexedParts(s,"\\subseteq");
+  if(sides.size()==2)return "qsubset("+quantumTeX(sides[0])+","+quantumTeX(sides[1])+")";
+ }
+ if(s.find("\\ldots")!=std::string::npos && s.find("qwordpower(")!=std::string::npos) {
+  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*(qwordpower\("[^"]+",[a-z0-9]+\))\s*$)");
+  std::smatch m;if(std::regex_match(s,m,membership))
+   return "qallmembers(qindexedentries(\""+m[1].str()+"_\",1,"+m[2].str()+",vector()),"+m[3].str()+")";
  }
  const std::string whole=trim(s);
  if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {

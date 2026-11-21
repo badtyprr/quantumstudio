@@ -1309,6 +1309,22 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qsubset") {
+   if(raw[0].equals(raw[1])) {out=1;return 1;}
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure members;
+   if(finiteDomain(raw[0],members,exact)!=DomainState::Finite)return 0;
+   bool pending=false;
+   for(size_t j=0;j<members.size();++j) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure member(CALCULATOR->getFunction("qmember"),&members[j],&raw[1],NULL);
+    member.eval(exact);
+    if(member.isZero()) {out=0;return 1;}
+    if(!member.isOne())pending=true;
+   }
+   if(pending)return 0;
+   out=1;return 1;
+  }
   if(op=="qsetunion" || op=="qsetintersect" || op=="qsetdiff") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure left,right;DomainState first=finiteDomain(raw[0],left,exact),second=finiteDomain(raw[1],right,exact);
@@ -2622,6 +2638,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
