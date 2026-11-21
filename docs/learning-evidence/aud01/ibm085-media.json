@@ -1,0 +1,158 @@
+{
+  "figures": [
+    {
+      "lesson": "085",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/introduction/qcsc-arch.avif",
+      "alt": "\"Image showing full quantum plus HPC architecture.\"",
+      "sha256": "47b1890850fac1fbdf5b986ea6b3b27ad336d445c9125b63465b453403ef45e7"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resources.avif",
+      "alt": "An image showing that each computing node might include many types of resources.",
+      "sha256": "a653a636ae821e74c930b25bf541daa98d5116dc88c8bff8f49da6add12d4737"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resource-scaling.avif",
+      "alt": "An image showing vertical scaling of resources through placing more resources, like memory, within a single node, and horizontal scaling through increasing the number of connected nodes including different resource types.",
+      "sha256": "066d35d53d56b6d17cce15b3250c9d80524e42c320e797017ac74ba2c0a95b98"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/unaligned.avif",
+      "alt": "Four-qubit quantum circuit with no barriers to force alignment of layers; gates appear somewhat randomly aligned.",
+      "sha256": "de39adff5bf62331d28156cf5e07b6db45168062f86a26177bbf39d04860862d"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/aligned.avif",
+      "alt": "Four-qubit quantum circuit with barriers in place to force the alignment of layers. Counting layers is much easier now.",
+      "sha256": "d586b6228c0aad356ba380916512d3e24e097483b691634759ac2c125ad2badd"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/quantum-scaling.avif",
+      "alt": "An image showing vertical scaling of quantum resources as more qubits on a chip, and horizontal scaling of quantum resources as connecting many chips together with couplers.",
+      "sha256": "66c9d091959e8ea4a009b7b2cfee1fdca6f02b6b787e0195441eb06641dfe510"
+    },
+    {
+      "lesson": "086",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/compute-resources/resource-manage.avif",
+      "alt": "An image showing workloads (shown as boxes) being organized and arranged to fit optimally into a two dimensional grid with one axis representing time and the other representing resources.",
+      "sha256": "869a3b763a0677ff05a8158340e16a58735148f6246cf96ef589ac3042d24b74"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/circuit.avif",
+      "alt": "A quantum circuit diagram showing qubits as horizontal lines and quantum gates as boxes or connections between qubits.",
+      "sha256": "0c9da0bce81a65b6c3e6a97e9bcf89662356caec9de6cd25b77e1526d8d58dca"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/sampler.avif",
+      "alt": "A model histogram of results from sampler. Some states are very likely to be measured, others are very unlikely.",
+      "sha256": "d47ccafbf2c1e9ccfa05037bdf8a5c57778b14fee1934f881683a54567fd8713"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/transpilation.svg",
+      "alt": "A diagram of transpilation showing how an abstract circuit is mapped into an instruction set architecture circuit. That is, the circuit is rewritten using the native gates and connectivity of the target hardware.",
+      "sha256": "49cf35dad42f37f12d9de527e100dee7c67074df53d6d63924b76e472d163ecd"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/checkin-circuit.avif",
+      "alt": "A circuit diagram with four horizontal lines and many gates.",
+      "sha256": "a038c7f476adc79e13cbf49e0c899e2e16a27b7fc9eb313d4bf44ede2d26b1f7"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/distributed-program.svg",
+      "alt": "A diagram of a task being divided between nodes.",
+      "sha256": "31d7f6e5192a8d61e83cd60ab0ab033470a9fdd921657907c61e39eba5920ba7"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/workflow.avif",
+      "alt": "A diagram of computing tasks organized into a workflow in which some processes are executed in parallel and others in sequence.",
+      "sha256": "a64412ebbd8fb57a357642f31e825b1160526effbe4dbc3081e5a3b371d3311f"
+    },
+    {
+      "lesson": "087",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/programming-models/sqd-workflow.avif",
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "sha256": "7515a31d2ba0682867e6d176d8e28d891ffa48fe9671a85378dc8df847131a33"
+    },
+    {
+      "lesson": "088",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-cycle.avif",
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "sha256": "7515a31d2ba0682867e6d176d8e28d891ffa48fe9671a85378dc8df847131a33"
+    },
+    {
+      "lesson": "088",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/ansatz.avif",
+      "alt": "A diagram showing the overlap of the computational basis states making up the ansatz and those making up the true ground state. Specifically, the image shows that the two regions will have some overlap, but might not perfectly match.",
+      "sha256": "c9241715453a0fba519e9cf533e5dccc132d73585c1ffb0a0b53c76fb2f049a9"
+    },
+    {
+      "lesson": "088",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-workflow.avif",
+      "alt": "A schematic of the workflow specific to sample-based quantum diagonalization. The steps include a variational quantum circuit, using measurements to project the Hamiltonian into a subspace, then using a classical optimizer to update variational parameters in the circuit and repeating.",
+      "sha256": "a40148b47a627bbab52312c5b12fc345600c476f0df7383d0f9c867d138f1f01"
+    },
+    {
+      "lesson": "088",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/sqd-skqd/sqd-complex.avif",
+      "alt": "A schematic of an SQD workload being split among several resources. It shows several processes running sequentially, using the results of one iteration to inform the next, but also performing many such processes in parallel.",
+      "sha256": "a826b332337d7507beef41041b7ddb7b4e5d439618e8a02e3a0cd390d50cfb4e"
+    },
+    {
+      "lesson": "089",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/next-steps/advantage.avif",
+      "alt": "A diagram showing the cost of simulations as a function of increasing circuit complexity for both classical computers and quantum computers with error mitigation. Once the curves cross, the space between them corresponds to quantum advantage.",
+      "sha256": "63147d41130786d62a2fc553027d68509a4b7bd86d5ae0b7365f84fe5bdba289"
+    },
+    {
+      "lesson": "089",
+      "path": "/learning/images/courses/integrating-quantum-and-high-performance-computing/next-steps/roadmap.avif",
+      "alt": "The IBM Quantum Development Roadmap",
+      "sha256": "de5f8ad0a9307d9bc6a44e8e9ca685b41b9eba45cc7b8d7e7cc2324860a46f90"
+    }
+  ],
+  "video_references": [
+    {
+      "lesson": "085",
+      "cell": 0,
+      "attributes": {
+        "id": "134680662",
+        "title": "In this video, Iskandar Sitdikov introduces HPC and quantum computing, including a few promising application areas."
+      }
+    },
+    {
+      "lesson": "086",
+      "cell": 0,
+      "attributes": {
+        "id": "134680652",
+        "title": "In this video, Iskandar Sitdikov describes important measures of computing resources that apply to simple systems like a laptop all the way up to heterogeneous HPC environments"
+      }
+    },
+    {
+      "lesson": "087",
+      "cell": 0,
+      "attributes": {
+        "id": "134680643",
+        "title": "In this video, Iskandar Sitdikov reviews quantum and classical programming models and examines how we can combine them to operate algorithms in heterogeneous environments."
+      }
+    },
+    {
+      "lesson": "088",
+      "cell": 0,
+      "attributes": {
+        "id": "134680646",
+        "title": "In this video, Iskandar Sitdikov implements a hybrid classical quantum calculation using a simulated HPC environment."
+      }
+    }
+  ]
+}

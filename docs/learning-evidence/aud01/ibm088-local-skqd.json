@@ -1,0 +1,36 @@
+{
+  "source_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
+  "backend": "local Aer statevector simulator",
+  "supplied_example_parameters": {
+    "t": 1.0,
+    "V": 0.6,
+    "eps": -1.0,
+    "U": 2.0,
+    "dt": 0.12,
+    "impurity_index": 0,
+    "n_modes": 8
+  },
+  "shots_per_circuit": 500,
+  "distinct_strings_per_circuit": [
+    90,
+    111,
+    114,
+    126,
+    128,
+    118,
+    128,
+    128
+  ],
+  "samples_in_four_up_four_down_sector": 4000,
+  "selected_ci_energy": -8.625345724720168,
+  "full_ci_ground_energy": -9.497671374771208,
+  "variational_gap": 0.8723256500510406,
+  "iterations": 2,
+  "packages": {
+    "qiskit": "2.6.2",
+    "qiskit-aer": "0.18.4",
+    "ffsim": "0.0.86",
+    "pyscf": "2.15.1",
+    "qiskit-addon-sqd": "0.14.1"
+  }
+}

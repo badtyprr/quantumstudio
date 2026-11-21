@@ -1,0 +1,21 @@
+{
+  "source_sha256": "e6d3174eb78d569bf79b58972fba0f29e3c6eeb12159a8eeb5f5426e41239760",
+  "backend": "local Aer via Runtime EstimatorV2",
+  "requested_shots": 5000,
+  "expectations": {
+    "IZ": 0.0104,
+    "IX": -0.0088,
+    "ZI": 0.0104,
+    "XI": -0.0088,
+    "ZZ": 1.0,
+    "XX": 1.0
+  },
+  "reference": {
+    "IZ": 0.0,
+    "IX": 0.0,
+    "ZI": 0.0,
+    "XI": 0.0,
+    "ZZ": 0.9999999999999998,
+    "XX": 0.9999999999999998
+  }
+}

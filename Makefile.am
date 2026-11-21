@@ -518,3 +518,8 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm081-coherent-noise.py docs/
 EXTRA_DIST += docs/learning-evidence/aud01/ibm084-windows-sessions.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm083-readout-table.py docs/learning-evidence/aud01/ibm083-readout-table.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm084-stabilizer-context.py docs/learning-evidence/aud01/ibm084-stabilizer-context.json
+
+EXTRA_DIST += docs/learning-evidence/aud01/ibm085-media.json docs/learning-evidence/aud01/ibm085-inventory.json docs/learning-evidence/aud01/ibm085-windows-sessions.json docs/learning-evidence/aud01/ibm086-inventory.json docs/learning-evidence/aud01/ibm086-windows-sessions.json docs/learning-evidence/aud01/ibm087-inventory.json docs/learning-evidence/aud01/ibm087-windows-sessions.json docs/learning-evidence/aud01/ibm088-inventory.json docs/learning-evidence/aud01/ibm088-windows-sessions.json docs/learning-evidence/aud01/ibm089-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm088-families.py docs/learning-evidence/aud01/replay-ibm088-skqd.py docs/learning-evidence/aud01/ibm088-local-skqd.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm087-mpi.py docs/learning-evidence/aud01/ibm087-local-mpi.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm086-estimator.py docs/learning-evidence/aud01/ibm086-local-estimator.json

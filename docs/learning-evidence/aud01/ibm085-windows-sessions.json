@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/introduction.ipynb",
+  "notebook_sha256": "087d8957bccb098f16edc550940832756ffa40ad7f70530bb658766fd9b3a29c",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "4459ab03785c84f28a585cd14d3d9d9cd10de370cdd738826303764b0ada3181",
+  "suite": {
+    "passed": true,
+    "checks": 9,
+    "calls": 1,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 1,
+    "restored_identically": 1,
+    "stable_after_text_reentry": 1
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

@@ -1,0 +1,29 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/sqd-skqd.ipynb",
+  "notebook_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "8df6fc9f1617cf54fac7d201607408d8f272628af48b72b0af29d227da63a4c5",
+  "suite": {
+    "passed": true,
+    "checks": 272,
+    "calls": 31,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 30,
+    "restored_identically": 30,
+    "stable_after_text_reentry": 30,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM088-9d14af04-M004",
+      "message": "Unsupported TeX command: \\underset at byte 11"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

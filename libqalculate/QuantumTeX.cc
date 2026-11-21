@@ -810,10 +810,20 @@ std::string indexedLabelRange(const std::string &first,const std::string &last,c
 }
 // A finite family of kets uses the same prefix at both endpoints.
 std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
- if(entries.size()!=3 || entries[1]!="...")return "";
  auto label=[](const std::string &entry) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
+ if(entries.size()==4 && entries[2]=="...") {
+  std::string first=label(entries[0]),second=label(entries[1]);
+  size_t split=first.rfind('_');
+  if(split==std::string::npos)return "";
+  std::string index=first.substr(split+1);
+  if(index.empty() || index.find_first_not_of("0123456789")!=std::string::npos)return "";
+  nextDecimalIndex(index);
+  if(second!=first.substr(0,split+1)+index)return "";
+  return indexedKets({entries[0],entries[2],entries[3]},ordered);
+ }
+ if(entries.size()!=3 || entries[1]!="...")return "";
  std::string first=label(entries.front()),last=label(entries.back());
  const std::string basis=ordered ? "qbasiskets(" : "qbasisketset(";
  if(first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
@@ -2192,6 +2202,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  // Session declarations surround the translated expression. Keep the lesson's
  // math delimiters and punctuation available to the ordinary TeX reader.
+ const size_t contextStart=first;
  std::vector<std::string> contexts;
  while(input.compare(first,14,"matrixcontext(")==0) {
   size_t end=input.find("):",first+14);
@@ -2199,6 +2210,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   contexts.push_back(input.substr(first,end-first));
   first=input.find_first_not_of(" \t\r\n",end+2);
   if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
+ }
+ if(!contexts.empty()) {
+  std::string result=quantumTeX(input.substr(0,contextStart)+input.substr(first),lines,setNotation);
+  for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
+  return result;
  }
  std::string s=input.substr(first,last-first+1);
  // Inline Markdown can leave the radix point immediately outside the
@@ -2236,6 +2252,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(s.find("\\sum_")!=std::string::npos) {
+  static const std::regex weightedPaulis(R"(^\s*H\s*=\s*(\\sum_\{([a-z])=\d+\}\^[A-Za-z0-9]+\s*\\alpha_\2\s*P_\2)\s*$)");
+  std::smatch paulis;
+  if(std::regex_match(s,paulis,weightedPaulis))
+   return "qcompare(qoperatorref(\"H\"),"+quantumTeX(paulis[1].str())+",4)";
   // A sum of N local contributions with no printed starting index.
   static const std::regex localTerms(R"(^\s*([A-Z])\s*=\s*\\sum_([a-z])\^([A-Z])\s*\{\s*\1_\2\s*\}\s*$)");
   std::smatch m;
@@ -2248,6 +2268,24 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // The digit labels a repeated state and the subscript labels its wire.
   static const std::regex uniformKet(R"(\|([01])_1\s*\.\.\.\s*\1_[a-z]\s*\.\.\.\s*\1_([A-Z])\s*\\rangle)");
   s=std::regex_replace(s,uniformKet,"qtensorpow(|$1>,\"$2\")");
+ }
+ if(s.find("\\delta")!=std::string::npos && s.find("\\text{for")!=std::string::npos) {
+  static const std::regex orbit(R"(^\s*\|\\phi_([a-z])\\rangle\s*=\s*e\^\{-i\s*\\,\s*\\delta\s*t\s*\1\s*H\}\s*\|\\phi_0\\rangle,\s*\\quad\s*\\text\{for\s*\}\s*\1\s*=\s*0,\s*1,\s*\\(?:dots|ldots),\s*([a-z])-1\s*(?:\\quad\s*\\text\{\})?\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,orbit)) {
+   std::string count=m[2].str();
+   return "qcompare(qindexedketlist(\"φ_\",0,("+count+"-1),vector()),qkrylovstates(\"H\",qketstate(\"φ_0\"),\"δt\","+count+"),4)";
+  }
+ }
+ if(s.find("\\begin{pmatrix}")!=std::string::npos && s.find("\\quad")!=std::string::npos) {
+  // A parenthesized dimension after an indexed matrix constrains its
+  // definition. It is not a factor multiplying the matrix.
+  static const std::regex dimension(R"(^\s*([A-Z])\s*=\s*(\\begin\{pmatrix\}[\s\S]*?\\end\{pmatrix\})\s*\\quad\s*\(([A-Z])\s*=\s*(\d+)\^([a-z])\)\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,dimension) && m[2].str().find(m[1].str()+"_{")!=std::string::npos) {
+   std::string entries=quantumTeX(m[2].str());
+   return "(qcompare(qoperatorref(\""+m[1].str()+"\"),"+entries+",4) and qcompare(\""+m[3].str()+"\","+m[4].str()+"^"+m[5].str()+",4))";
+  }
  }
  // A subscript belongs to the angular frequency. Preserve the imaginary
  // unit and optional Pauli generator as separate factors in a phase.
@@ -2557,13 +2595,30 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  // Sigma is an alphabet in these set relations. Elsewhere its power
  // may be ordinary exponentiation or part of an existing register binder.
- if(s.find("\\subseteq")!=std::string::npos) {
-  auto sides=indexedParts(s,"\\subseteq");
+ if(mathWrapper) {
+  std::smatch m;
+  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\))\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
+  if(std::regex_match(s,m,ordinal))return quantumTeX(m[1].str());
+  static const std::regex sampledSet(R"(^\s*\\\{([a-z])_([a-z])\\\}_\{\2=(\d+)\}\^([A-Za-z0-9]+)\s*$)");
+  if(std::regex_match(s,m,sampledSet))return "qindexedset(\""+m[1].str()+"_\","+m[3].str()+","+m[4].str()+",vector())";
+  static const std::regex unitary(R"(^\s*U\((\\theta)\)\s*$)");
+  if(std::regex_match(s,m,unitary))return "qoperatorref(qindexedlabel(\"U(\","+quantumTeX(m[1].str())+",\")\"))";
+ }
+ if(s.find("\\subset")!=std::string::npos) {
+  bool strict=s.find("\\subseteq")==std::string::npos;
+  auto sides=indexedParts(s,strict ? "\\subset" : "\\subseteq");
   if(sides.size()==2) {
-   static const std::regex words(R"(\s*\\Sigma\^([a-z]|[0-9]+)\s*)");
-   std::smatch m;
-   std::string domain=std::regex_match(sides[1],m,words) ? "qwordpower(\"Σ\","+m[1].str()+")" : quantumTeX(sides[1]);
-   return "qsubset("+quantumTeX(sides[0])+","+domain+")";
+   auto domain=[](const std::string &side) {
+    static const std::regex words(R"(\s*\\Sigma\^([a-z]|[0-9]+)\s*)");
+    std::smatch m;
+    if(std::regex_match(side,m,words))return "qwordpower(\"Σ\","+m[1].str()+")";
+    std::string label=trim(side);
+    if(label.size()==1 && label[0]>='A' && label[0]<='Z')return "\""+label+"\"";
+    return quantumTeX(side);
+   };
+   std::string left=domain(sides[0]),right=domain(sides[1]);
+   std::string subset="qsubset("+left+","+right+")";
+   return strict ? "("+subset+" and !(qsubset("+right+","+left+")))" : subset;
   }
  }
  if(s.find("\\ldots")!=std::string::npos && s.find("\\Sigma^")!=std::string::npos) {
@@ -2817,6 +2872,6 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(bitWord)result=orderedBitWord(result);
- for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
+
  return result;
 }
