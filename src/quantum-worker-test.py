@@ -31,6 +31,15 @@ for heading in (r"\cdot", "·", "*", "+"):
     assert copied == f"matrix(2,2,['{label}','0',0,0])"
     assert data("quantum:" + copied)["copy_text"] == copied
 
+exponent_domain = data(r"quantum:$k = 2, 4, 8, \ldots, 2^{m-1}$")["copy_text"]
+assert data("quantum:" + exponent_domain)["copy_text"] == exponent_domain
+for width, exponent, expected in [(1, 2, 0), (2, 2, 1), (4, 3, 0), (4, 8, 1), (4, 16, 0)]:
+    bound = f'replace(replace(({exponent_domain}),"m",{width}),"k",{exponent})'
+    assert data("quantum:" + bound)["copy_text"] == str(expected)
+named_bound = data(r"quantum:$j=2,4,8,\cdots,2^e$")["copy_text"]
+assert data(f'quantum:replace(replace(({named_bound}),"e",4),"j",16)')["copy_text"] == "1"
+run(r"quantum:$k=2,4,9,\ldots,2^{m-1}$", success=False)
+
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
     copied = data("quantum:"+expression)["copy_text"]
