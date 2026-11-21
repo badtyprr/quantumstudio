@@ -1,0 +1,35 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/classical-optimizers.ipynb",
+  "source_sha256": "3b4383b5c4827f5f5052a807ce896654aa1d899d0306a11dde48662e4e259bcc",
+  "worker_sha256": "b83d9271a9ea00e36bd51638e780eda018edd224f7e5db9e68ce0280136ebb4c",
+  "revision": "e353c09ec46672f0f7c326053ea1dd2b1326fa97",
+  "mode": "Quantum notation",
+  "markdown_cells": 4,
+  "code_cells": 0,
+  "summary": {
+    "exact": 2
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM111-3b4383b5-M001",
+      "cell": 3,
+      "start": 1738,
+      "end": 1741,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM111-3b4383b5-M002",
+      "cell": 3,
+      "start": 1849,
+      "end": 1855,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    }
+  ]
+}

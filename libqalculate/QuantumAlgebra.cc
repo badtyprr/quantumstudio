@@ -809,6 +809,15 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=relation;return 1;
   }
+  if(op=="qspinnumber") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(value.isUnknown() || value.isSymbolic())return 0;
+   if(value.isNumber() && value.number().isReal() && !value.number().isNegative()) {
+    Number twice=value.number();
+    if(twice.multiply(2) && twice.isInteger()) {out=value;return 1;}
+   }
+   CALCULATOR->error(true,"A total-spin quantum number must be a nonnegative integer or half-integer.",NULL);return 0;
+  }
   if(op=="qchebyshev") {
    MathStructure degree=raw[0],argument=raw[1];degree.eval(eo);argument.eval(eo);
    if(!degree.isNumber() || !argument.isNumber())return 0;
@@ -1683,6 +1692,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
  calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qspinnumber",1));
  calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
  calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
  calculator.addFunction(new QuantumAlgebraFunction("qrealvectormember",2));

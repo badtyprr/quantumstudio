@@ -42,6 +42,12 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "ecd16e47b567dcd279cb87bc39377be0faa0e64bb863263654e55e720a7d44e8": ("IBM108", "introduction", 0, 0),
+    "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d": ("IBM109", "hamiltonian-construction", 3, 0),
+    "3222364ec09800b5b71ca4116ce9a687a17af726ae3bf26f933953bbd7e8485a": ("IBM110", "ansatz", 3, 0),
+    "3b4383b5c4827f5f5052a807ce896654aa1d899d0306a11dde48662e4e259bcc": ("IBM111", "classical-optimizers", 2, 0),
+    "2047e9348a25dc9b11296a0d4638090409b68f629ffa06b3336256a00641c1bc": ("IBM112", "ground-state", 0, 0),
+    "dd8d2e4d69b27a513b2459334485069c212f9070db34992b2fe333ca92cb0510": ("IBM113", "geometry", 2, 0),
     "ee2bde2c607539ab5c8486d074ab30c6f554246452d78a5de08ff1c88a76aa4a": ("IBM101", "variational-algorithms", 52, 1),
     "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9": ("IBM102", "reference-states", 24, 2),
     "19874a793666d2b129bb79b9250695273e7f921e6f6f958bb90adc126e131238": ("IBM103", "ansaetze-and-variational-forms", 29, 2),
@@ -171,6 +177,12 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM108": (1,0),
+    "IBM109": (23,19),
+    "IBM110": (11,10),
+    "IBM111": (4,0),
+    "IBM112": (13,12),
+    "IBM113": (12,14),
     "IBM101": (7,0),
     "IBM102": (8,4),
     "IBM103": (14,9),
@@ -273,6 +285,8 @@ elif "IBM096" <= lesson <= "IBM100":
     course,chapter = "quantum-machine-learning",""
 elif "IBM101" <= lesson <= "IBM107":
     course,chapter = "variational-algorithm-design",""
+elif "IBM108" <= lesson <= "IBM113":
+    course,chapter = "quantum-chem-with-vqe",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

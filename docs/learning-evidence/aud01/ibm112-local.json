@@ -1,0 +1,20 @@
+{
+  "notebook_sha256": "2047e9348a25dc9b11296a0d4638090409b68f629ffa06b3336256a00641c1bc",
+  "seed": 24,
+  "code_cells": [
+    2,
+    4,
+    6,
+    10,
+    12,
+    14,
+    16
+  ],
+  "backend": "AerSimulator calibrated from synthetic GenericBackendV2(seed=24)",
+  "qubits": 4,
+  "evaluations": 10,
+  "sampled_total_energy": -0.3656707045605469,
+  "ideal_total_energy": -0.3729233686114149,
+  "exact_ground_energy": -1.145977844762731,
+  "nuclear_repulsion": 0.7199689944489797
+}

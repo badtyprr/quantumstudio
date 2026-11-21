@@ -1,0 +1,95 @@
+{
+  "notebook_sha256": "dd8d2e4d69b27a513b2459334485069c212f9070db34992b2fe333ca92cb0510",
+  "seed": 24,
+  "code_cells": [
+    1,
+    3,
+    5,
+    7,
+    9,
+    16
+  ],
+  "backend": "StatevectorEstimator with a four-qubit synthetic transpilation target",
+  "geometry": [
+    {
+      "angstrom": 0.3,
+      "ground_energy": -0.6130309679389031,
+      "variational_energy": 0.3057853284700966,
+      "initial_energy": 0.9180480481572686,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.458138707929903
+    },
+    {
+      "angstrom": 0.4,
+      "ground_energy": -0.9251782194741849,
+      "variational_energy": 0.43089300473422487,
+      "initial_energy": 0.8248966926297214,
+      "evaluations": 34,
+      "variational_electronic_energy": -0.8920500225657754
+    },
+    {
+      "angstrom": 0.5,
+      "ground_energy": -1.0653851727714772,
+      "variational_energy": -0.6503092099208354,
+      "initial_energy": 0.025843751777122323,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.7086636317608348
+    },
+    {
+      "angstrom": 0.6000000000000001,
+      "ground_energy": -1.1255968661617173,
+      "variational_energy": -0.6463331506579822,
+      "initial_energy": 0.23047164556472866,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.5282951688579813
+    },
+    {
+      "angstrom": 0.7000000000000002,
+      "ground_energy": -1.144979079498293,
+      "variational_energy": -0.4502709003662339,
+      "initial_energy": 0.0437417612543555,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.2062383445376619
+    },
+    {
+      "angstrom": 0.8000000000000003,
+      "ground_energy": -1.1426131623046165,
+      "variational_energy": -0.6387637459006634,
+      "initial_energy": -0.23388069217680765,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.3002352595506643
+    },
+    {
+      "angstrom": 0.9000000000000001,
+      "ground_energy": -1.1286542685216125,
+      "variational_energy": -0.6609730142260214,
+      "initial_energy": -0.21635481038041765,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.2489476930260213
+    },
+    {
+      "angstrom": 1.0000000000000002,
+      "ground_energy": -1.10887306016844,
+      "variational_energy": -0.6128055063970382,
+      "initial_energy": -0.33429628434816766,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.1419827173170376
+    },
+    {
+      "angstrom": 1.1000000000000003,
+      "ground_energy": -1.086711000912867,
+      "variational_energy": -0.8142146418242874,
+      "initial_energy": -0.5620477818850057,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.2952848335697411
+    },
+    {
+      "angstrom": 1.2000000000000004,
+      "ground_energy": -1.0642957383194702,
+      "variational_energy": -0.7608198753152744,
+      "initial_energy": -0.3439829776765938,
+      "evaluations": 34,
+      "variational_electronic_energy": -1.2018008844152737
+    }
+  ]
+}

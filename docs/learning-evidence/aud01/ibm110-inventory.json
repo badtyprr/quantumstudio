@@ -1,0 +1,45 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/ansatz.ipynb",
+  "source_sha256": "3222364ec09800b5b71ca4116ce9a687a17af726ae3bf26f933953bbd7e8485a",
+  "worker_sha256": "b83d9271a9ea00e36bd51638e780eda018edd224f7e5db9e68ce0280136ebb4c",
+  "revision": "e353c09ec46672f0f7c326053ea1dd2b1326fa97",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 10,
+  "summary": {
+    "exact": 3
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM110-3222364e-M001",
+      "cell": 5,
+      "start": 337,
+      "end": 347,
+      "literal": "$N(N-1)/2$",
+      "status": "exact",
+      "display": "0.5 · N^2 − (0.5 · N)",
+      "copy": "'N'² ∕ 2 − 'N' ∕ 2"
+    },
+    {
+      "id": "IBM110-3222364e-M002",
+      "cell": 5,
+      "start": 349,
+      "end": 353,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM110-3222364e-M003",
+      "cell": 12,
+      "start": 110,
+      "end": 120,
+      "literal": "$RY(pi/4)$",
+      "status": "exact",
+      "display": "[0.5 ⋅ √(2 + √(2)), −0.5 ⋅ √(2 − √(2)); 0.5 ⋅ √(2 − √(2)), 0.5 ⋅ √(2 + √(2))]",
+      "copy": "matrix(2,2,[√(2 + √(2)) ∕ 2,−√(2 − √(2)) ∕ 2,√(2 − √(2)) ∕ 2,√(2 + √(2)) ∕ 2])"
+    }
+  ]
+}

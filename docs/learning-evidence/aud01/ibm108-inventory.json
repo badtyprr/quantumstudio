@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-chem-with-vqe/introduction.ipynb",
+  "source_sha256": "ecd16e47b567dcd279cb87bc39377be0faa0e64bb863263654e55e720a7d44e8",
+  "worker_sha256": "c2e933e617372a56573e07d0baea8dcbd6150d49542babad9b44786db44fabfd",
+  "revision": "e13f4ecc5c4f74f0793e75adf23d8107c70e6bd1",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}
