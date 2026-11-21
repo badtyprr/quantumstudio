@@ -52,6 +52,13 @@ for value, truth in (("1/4", "1"), ("1/2", "0")):
         concrete = concrete.replace('"'+label+'"',"("+weight+")")
     assert data("quantum:"+concrete)["copy_text"] == truth
 
+for observable,state,expected in (("Z","|0>","1"),("X","|0>","0"),("Y","|1>","0"),
+                                  ("Z","matrix(2,2,[1/4,0,0,3/4])","-1/2")):
+    average = data(r"quantum:$\langle "+observable+r"\rangle_\text{ideal}$")["copy_text"]
+    assert data("quantum:"+average)["copy_text"] == average
+    bound = average.replace('qoperatorref("ideal state")', state)
+    assert data(f"quantum:qcompare({bound},{expected},4)")["copy_text"] == "1"
+
 # Logical complements used as equation operands survive Copy and re-entry.
 for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
     predicate = data("quantum:"+spelling)["copy_text"]

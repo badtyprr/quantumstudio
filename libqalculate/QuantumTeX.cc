@@ -2280,6 +2280,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
  }
+ if(s.find("\\langle")!=std::string::npos) {
+  // An observable in angle brackets needs a state. Carry the label so
+  // ideal and measured expectations can later receive different states.
+  static const std::regex average(R"(\\langle\s*([A-Z])\s*\\rangle(?:_\\text\{([A-Za-z]+)\})?(?![_A-Za-z]))");
+  std::smatch m;
+  while(std::regex_search(s,m,average)) {
+   std::string observable=m[1].str();
+   if(observable.find_first_not_of("IXYZ")!=std::string::npos)observable="qoperatorref(\""+observable+"\")";
+   std::string state=m[2].matched ? m[2].str()+" state" : "measurement state";
+   s.replace(m.position(),m.length(),"qexpect("+observable+",qoperatorref(\""+state+"\"))");
+  }
+ }
  if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
  if(s.find("\\neq")!=std::string::npos) {
   static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");

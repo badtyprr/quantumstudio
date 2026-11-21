@@ -35,6 +35,9 @@ class QuantumMeasurementFunction: public MathFunction {
   if(!CALCULATOR->getFunction("conj")) {CALCULATOR->error(true,"Load global functions before quantum measurements.",NULL);return 0;}
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qexpect")for(size_t k=0;k<2;++k) {
+   if(args[k].isFunction() && args[k].function()->referenceName()=="qoperatorref")return 0;
+  }
   if(!a.isMatrix()){CALCULATOR->error(true,"Quantum measurement requires a matrix (kets are column matrices).",NULL);return 0;}
   if(op=="qprobsub") {
    size_t n=a.rows(), bits=0, mask=0;
