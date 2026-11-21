@@ -1,0 +1,34 @@
+{
+  "candidate": "615084cb",
+  "formulas": [
+    "IBM034-94ee62dd-M009",
+    "IBM034-94ee62dd-M011"
+  ],
+  "finite_checks": 120,
+  "method": "Iterate the oracle phase flip and reflection about the arithmetic mean on each amplitude. Compare the full result and its projection onto the marked subspace with the source sine and cosine expressions. Also use an opposite iterate sign and flip just one oracle entry.",
+  "records_sha256": "73c9e7b9175f5c79ee496319284fc7efbdc4c70c5039381f3b79dc7d9a207643",
+  "suite": {
+    "passed": true,
+    "checks": 126,
+    "calls": 14,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "windows_results": {
+    "original-9": "qcompare(qadjacent(qpower(G,'t'),qketstate('u')),qadd(qadjacent(qcos(qadjacent(qadd(qadjacent(2,'t'),1),'\u03b8')),qnamedket(\"A_0\")),qadjacent(qsin(qadjacent(qadd(qadjacent(2,'t'),1),'\u03b8')),qnamedket(\"A_1\"))),4)",
+    "original-11": "qcompare(qmul(qmul(qdag(qnamedket(\"A_1\")),qpower(G,'t')),qketstate('u')),sin((('t')*('\u03b8')*(2)*(qphysicalunit(\"rad\",\"\")))+ (('\u03b8')*(qphysicalunit(\"rad\",\"\")))),4)",
+    "9-source-1": "1",
+    "11-source-1": "1",
+    "9-source-3": "1",
+    "11-source-3": "1",
+    "9-opposite-sign-1": "0",
+    "11-opposite-sign-1": "1",
+    "9-opposite-sign-3": "0",
+    "11-opposite-sign-3": "0",
+    "9-one-wrong-phase-1": "0",
+    "11-one-wrong-phase-1": "0",
+    "9-one-wrong-phase-3": "0",
+    "11-one-wrong-phase-3": "0"
+  }
+}
