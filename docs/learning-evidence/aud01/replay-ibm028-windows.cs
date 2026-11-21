@@ -52,7 +52,8 @@ class PhaseEstimationGuiReplay {
   return saved;
  }
  [STAThread] static int Main(string[] args) {
-  if(args.Length!=2)return 2;
+  bool sessionsOnly=args.Length==3 && args[2]=="--sessions-only";
+  if(args.Length!=2 && !sessionsOnly)return 2;
   string output=Path.GetFullPath(args[1]);if(!Directory.Exists(output))return 2;
   var serializer=new JavaScriptSerializer();var records=new System.Collections.Generic.List<object>();
   DataObject previousClipboard=null;bool clipboardCaptured=false,clipboardRestored=false;int code=1;
@@ -60,7 +61,7 @@ class PhaseEstimationGuiReplay {
   app.GetField("root",flags).SetValue(null,Path.GetDirectoryName(Path.GetFullPath(args[0])));
   Dispatcher.CurrentDispatcher.BeginInvoke(new Action(async delegate {
    try {
-    previousClipboard=PreserveClipboard();clipboardCaptured=true;
+    if(!sessionsOnly){previousClipboard=PreserveClipboard();clipboardCaptured=true;}
     ((ComboBox)Field("evaluation")).SelectedIndex=0;
     ((ComboBox)Field("timeAllowance")).SelectedIndex=0;
     var entries=serializer.Deserialize<string[][]>(File.ReadAllText(Path.Combine(output,"inputs.json")));
@@ -81,7 +82,7 @@ class PhaseEstimationGuiReplay {
      var row=new System.Collections.Generic.Dictionary<string,object>();
      row["id"]=entry[0];row["label"]=label;row["display"]=((TextBox)Field("output")).Text;
      if(label=="EXACT RESULT") {
-      string copied=await Copy();row["copy"]=copied;
+      string copied=null;if(!sessionsOnly){copied=await Copy();row["copy"]=copied;}
       object snap=Call("CaptureSession");string saved=serializer.Serialize(snap);
       string path=Path.Combine(output,entry[0]+".qsession");
       assembly.GetType("SessionStore").GetMethod("Save").Invoke(null,new object[]{path,snap});
@@ -92,6 +93,10 @@ class PhaseEstimationGuiReplay {
       string restored=((TextBox)Field("input")).Text;
       Require(restored==entry[1] && ((ComboBox)Field("mode")).SelectedIndex==requestedMode,"Restored input/mode mismatch");
       await Calculate(restored);
+      if(sessionsOnly) {
+       row["restored_same"]=((TextBlock)Field("resultLabel")).Text==label && ((TextBox)Field("output")).Text==(string)row["display"];
+       Require((bool)row["restored_same"],"Restored display mismatch for "+entry[0]);
+      } else {
       string restoredCopy=await Copy();
       row["restored_same"]=((TextBlock)Field("resultLabel")).Text==label && restoredCopy==copied;
       if(restoredCopy!=copied)row["restored_copy"]=restoredCopy;
@@ -100,6 +105,7 @@ class PhaseEstimationGuiReplay {
       row["reentry_label"]=reentryLabel;
       if(reentryLabel!="CHECK YOUR EXPRESSION")row["second_copy"]=await Copy();
       else row["reentry_diagnostic"]=((TextBox)Field("output")).Text;
+      }
      }
      records.Add(row);
      File.WriteAllText(Path.Combine(output,"records.json"),serializer.Serialize(records));
@@ -108,7 +114,7 @@ class PhaseEstimationGuiReplay {
    }catch(Exception ex){File.WriteAllText(Path.Combine(output,"failure.txt"),ex.ToString());}
    finally{
     if(clipboardCaptured)try {if(previousClipboard.GetFormats(false).Length==0)Clipboard.Clear();else Clipboard.SetDataObject(previousClipboard,true);clipboardRestored=true;}catch(Exception ex){code=1;File.WriteAllText(Path.Combine(output,"clipboard-restore-failure.txt"),ex.ToString());}
-    File.WriteAllText(Path.Combine(output,"result.json"),serializer.Serialize(new {passed=code==0,checks=checks,calls=records.Count,clipboardRetries=clipboardRetries,clipboardRestored=clipboardRestored}));
+    File.WriteAllText(Path.Combine(output,"result.json"),serializer.Serialize(new {passed=code==0,checks=checks,calls=records.Count,sessionsOnly=sessionsOnly,clipboardRetries=clipboardRetries,clipboardRestored=clipboardRestored}));
     Application.Current.Shutdown();
    }
   }),DispatcherPriority.ApplicationIdle);

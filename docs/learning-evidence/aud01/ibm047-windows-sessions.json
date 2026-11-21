@@ -1,0 +1,22 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
+  "notebook_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
+  "worker_sha256": "71034dd97603ef8a90daa3db9253cc703946c9d5dfbd9a764acec4493387fe34",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "c1d53b8e6322f7f9438c6ae4b547ee64c7b8fa6b5148b3a7afa716382d5f587e",
+  "suite": {
+    "passed": true,
+    "checks": 1022,
+    "calls": 146,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 146,
+    "restored_identically": 146
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
