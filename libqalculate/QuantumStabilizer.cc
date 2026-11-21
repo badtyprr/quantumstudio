@@ -202,6 +202,21 @@ class QuantumStabilizerFunction: public MathFunction {
  }
 };
 }
+std::string quantumPauliTensorNotation(const MathStructure &matrix) {
+ if(matrix.rows()<64 || matrix.isApproximate())return "";
+ SignedPauli word;
+ if(!readSignedPauli(matrix,word,false))return "";
+ std::string factors;
+ unsigned phase=word.phase;
+ for(size_t bit=word.d/2;bit;bit/=2) {
+  if(!factors.empty())factors+="@";
+  bool x=word.x&bit,z=word.z&bit;
+  if(x && z) {factors+="Y";++phase;}
+  else factors+=x ? "X" : z ? "Z" : "I";
+ }
+ const char *prefix[]={"","i*","-","-i*"};
+ return std::string(prefix[phase%4])+"("+factors+")";
+}
 void registerQuantumStabilizer(Calculator &calculator) {
  registerQuantumCompactPauli(calculator);
  for(const auto &entry:{std::pair<const char *,int>("qpauliword",4),{"qpauligroup",1},{"qstabilizerprojector",1},{"qstabilizerdimension",1},{"qstabilizersyndrome",2},{"qstabilizerdistance",1},{"qstabilizerparameters",1},{"qstabilizercorrection",2}})calculator.addFunction(new QuantumStabilizerFunction(entry.first,entry.second));

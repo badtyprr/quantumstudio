@@ -1,3 +1,4 @@
+#include "QuantumStabilizer.h"
 // GPL-2.0-or-later; see COPYING. One request per process, UTF-8 stdin/stdout.
 #include <libqalculate/Calculator.h>
 #include <libqalculate/MathStructure.h>
@@ -83,31 +84,6 @@ static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=
  for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k],orderedOnly))return true;
  return false;
 }
-// Recognize large real Pauli tensor products from their exact matrix entries.
-static std::string compactPauliMatrix(const MathStructure &matrix) {
- unsigned n=matrix.rows();
- if(n<64 || n!=matrix.columns() || (n&(n-1)) || matrix.isApproximate())return "";
- unsigned flip=0,phase=0;
- while(flip<n && matrix.getElement(1,flip+1)->isZero())++flip;
- if(flip==n || !matrix.getElement(1,flip+1)->isOne())return "";
- for(unsigned bit=1;bit<n;bit*=2)
-  if(matrix.getElement(bit+1,(bit^flip)+1)->isMinusOne())phase|=bit;
- if(flip&phase)return "";
- for(unsigned row=0;row<n;++row) {
-  bool negative=false;
-  for(unsigned bits=row&phase;bits;bits&=bits-1)negative=!negative;
-  for(unsigned col=0;col<n;++col) {
-   const MathStructure &entry=*matrix.getElement(row+1,col+1);
-   if(col!=(row^flip) ? !entry.isZero() : negative ? !entry.isMinusOne() : !entry.isOne())return "";
-  }
- }
- std::string factors;
- for(unsigned bit=n/2;bit;bit/=2) {
-  if(!factors.empty())factors+="@";
-  factors+=flip&bit ? "X" : phase&bit ? "Z" : "I";
- }
- return "("+factors+")";
-}
 static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode,bool explicitEntries) {
  // Identify physical units and prefixes separately from quantum variables.
  if(quantumMode && result.isUnit()) {
@@ -118,7 +94,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  // for implicit multiplication by the quantum parser.
  bool scalarMatrix=result.isMatrix();
  if(quantumMode && scalarMatrix) {
-  std::string compact=compactPauliMatrix(result);
+  std::string compact=quantumPauliTensorNotation(result);
   if(!compact.empty())return compact;
  }
  if(scalarMatrix)for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c)
@@ -430,7 +406,7 @@ int main(int argc,char **argv) {
  if(!json) std::cout << display.print(po) << std::endl;
  else {
   size_t rows=!multipleLines && result.isMatrix() ? result.rows() : 0, cols=!multipleLines && result.isMatrix() ? result.columns() : 0;
-  std::cout << "{\"text\":"; jsonString(display.print(po));
+  std::string plain=display.print(po);
   std::string shown;
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
    MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
@@ -444,6 +420,8 @@ int main(int argc,char **argv) {
    shown+=std::to_string(i+1)+".  "+lineDisplay;
   } else if(displayKetCollection(result,po,shown))rows=cols=0;
   else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
+  if(multipleLines && plain.size()>32768 && shown.size()<32768)plain=shown;
+  std::cout << "{\"text\":"; jsonString(plain);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long
