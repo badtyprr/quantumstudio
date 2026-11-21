@@ -83,3 +83,15 @@ for index in range(16):
     assert run(f"qexpect({diagonal},|{bits}>)")==run(str(expected))
 run("$XX + XYZ$","equal register width")
 print("Verified four eigenpairs and all 16 diagonal Max-Cut energies.")
+
+indexed_cost=source(106,110)
+indexed_cost=indexed_cost.replace('qindexedlabel("C_",\'k\',"")',"vector(vector(vector(1,2),7))")
+assert run(indexed_cost.replace("'θ'","vector(1,2)"))=="7"
+coefficients=source(106,123).replace("'S'","2")
+assert run(coefficients)=='qset(vector("a_0","a_1","a_2","b_1","b_2"))'
+# The least-squares residual (-1,-1,1) is nonzero but orthogonal to both columns.
+normal=source(106,132).replace("'F'","matrix(3,2,[1,0,0,1,1,1])")
+normal=normal.replace("'c'","matrix(3,1,[1,3,7])")
+assert run(normal.replace("'a'","matrix(2,1,[2,4])"))=="1"
+assert run(normal.replace("'a'","matrix(2,1,[2,3])"))=="0"
+print("Verified indexed costs, Fourier coefficients and the rectangular least-squares system.")

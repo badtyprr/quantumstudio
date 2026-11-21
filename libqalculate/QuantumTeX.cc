@@ -2439,6 +2439,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,unitaryReference,"qoperatorref(\"U_R\")");
   static const std::regex layer(R"(U_(?:V|\{V\})\s*\()");
   s=std::regex_replace(s,layer,"qoperatorat(\"U_V\",");
+  static const std::regex seriesCoefficients(R"(^\s*\\\{([a-z])_0,\s*\1_([a-z]),\s*([a-z])_\2\\\}_\{\2=1\}\^([A-Z])\s*$)");
+  std::smatch coefficients;
+  if(std::regex_match(s,coefficients,seriesCoefficients)) {
+   std::string order="\""+coefficients[4].str()+"\"";
+   return "qsetunion(qindexedset(\""+coefficients[1].str()+"_\",0,"+order+",vector()),qindexedset(\""+
+        coefficients[3].str()+"_\",1,"+order+",vector()))";
+  }
+  static const std::regex normalEquations(R"(^\s*([A-Z])\^\\dagger\s*\1([a-z])\s*=\s*\1\^\\dagger\s*([a-z])\s*$)");
+  if(std::regex_match(s,coefficients,normalEquations)) {
+   std::string matrix="qoperatorref(\""+coefficients[1].str()+"\")",adjoint="qdag("+matrix+")";
+   return "qcompare(qmul("+adjoint+",qmul("+matrix+",qvectorref(\""+coefficients[2].str()+
+       "\"))),qmul("+adjoint+",qvectorref(\""+coefficients[3].str()+"\")),4)";
+  }
+  static const std::regex indexedCost(R"(\bC_([a-z0-9])\(\s*(?=\\vec))");
+  s=std::regex_replace(s,indexedCost,"qscalarat(qindexedlabel(\"C_\",\"$1\",\"\"),");
   static const std::regex gradient(R"(\\vec\{\\nabla\}\s*C\s*\()");
   s=std::regex_replace(s,gradient,"qfeatureat(\"∇C\",");
   static const std::regex costOnVector(R"(\bC\(\s*(?=\{?(?:\\vec|qvectorref)))");
