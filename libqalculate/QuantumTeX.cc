@@ -2307,6 +2307,22 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  // A Krylov matrix element has the same Hamiltonian in both time
+  // evolutions and in the operator between them. dt is one time step.
+  if(s.find("H\\,dt}")!=std::string::npos) {
+   static const std::regex step(R"(e\^\{(-?)i(?:\\,)?(\([a-z]-[a-z]\)|[a-z])?(?:\\,)?H\\,dt\})");
+   const std::string original=s;
+   std::smatch stepMatch;
+   while(std::regex_search(s,stepMatch,step)) {
+    std::string factor=stepMatch[2].matched ? stepMatch[2].str() : "1";
+    std::string time=(stepMatch[1].matched && !stepMatch[1].str().empty() ? "" : "-")+factor+"*\"dt\"";
+    s.replace(stepMatch.position(),stepMatch.length(),"qpropagator(\"H\","+time+")");
+   }
+   if(s!=original) {
+    static const std::regex insertion(R"((\)|\|)H(?=qpropagator\())");
+    s=std::regex_replace(s,insertion,"$1qoperatorref(\"H\")*");
+   }
+  }
   static const std::regex dimensioned(R"(e\^\{\s*(?:-|−)\s*i\s*H\s*([a-z])\s*/\s*\\hbar\s*\})");
   s=std::regex_replace(s,dimensioned,"qpropagator(\"H\",($1/ℏ))");
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
@@ -2328,6 +2344,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  static const std::regex projectedEigenproblem(R"(^\s*\\tilde\{H\}\s*\\vec\{([a-z])\}\s*=\s*([a-z])\s+S\s*\\vec\{\1\}\s*$)");
+  std::smatch eigenproblem;
+  if(std::regex_match(s,eigenproblem,projectedEigenproblem)) {
+   std::string state="qvectorref(\"vector_"+eigenproblem[1].str()+"\")";
+   return "qcompare(qmul(qoperatorref(\"H_tilde\"),"+state+"),qmul(\""+eigenproblem[2].str()+
+      "\",qmul(qoperatorref(\"S\"),"+state+")),4)";
+  }
   // A cost on a ket and a filter on an energy have scalar function values.
   static const std::regex scalarInput(R"((^|[^A-Za-z])f\(\s*(?=\||E_(?:[A-Za-z0-9]|\{)))");
   s=std::regex_replace(s,scalarInput,"$1qscalarat(\"f\",");

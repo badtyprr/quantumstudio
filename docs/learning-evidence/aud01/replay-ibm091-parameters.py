@@ -98,3 +98,18 @@ normalization=course_source(92,386).replace('"E_0"',"2").replace("'f'","vector(v
 for value,expected in [(1,"1"),(2,"0")]:
     assert run(normalization.replace("'p'",f"vector(vector(0,{value}))"))==expected
 print("Verified scalar objective and energy filter values at distinct vector and scalar inputs.")
+
+# The projected Hamiltonian and overlap metric may be nontrivial matrices.
+problem=course_source(92,296).replace('"H_tilde"','matrix(2,2,[6,0,0,5])')
+problem=problem.replace("'S'","matrix(2,2,[2,0,0,1])").replace('"vector_c"','matrix(2,1,[1,0])')
+for eigenvalue,expected in [(3,"1"),(6,"0")]:
+    assert run(problem.replace("'c'",str(eigenvalue)))==expected
+
+# <0|exp(+ij Z dt) Z exp(-ik Z dt)|0> equals exp(i(j-k)dt).
+entry=course_source(92,313).replace("'H'","Z").replace("qnamedket('ψ')","|0>")
+entry=entry.replace('"dt"',"pi/2").replace('''qindexedcoefficient("H_tilde_",'j','k')''','"entry"')
+for j,k,expected in [(1,0,"i"),(0,1,"(-i)"),(1,1,"1")]:
+    sample=entry.replace("'j'",str(j)).replace("'k'",str(k))
+    assert run(sample.replace('"entry"',expected))=="1"
+    assert run(sample.replace('"entry"',"0"))=="0"
+print("Verified the generalized eigenproblem and both signs of Krylov time evolution.")
