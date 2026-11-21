@@ -1,0 +1,101 @@
+{
+  "released": {
+    "suite": {
+      "passed": true,
+      "checks": 36,
+      "calls": 4,
+      "sessionsOnly": true,
+      "clipboardRetries": 0,
+      "clipboardRestored": false
+    },
+    "records": [
+      {
+        "id": "IBM035-original",
+        "label": "EXACT RESULT",
+        "display": "√('N') · O",
+        "restored_same": true,
+        "copy_text": "√('N') ⋅ 'O'",
+        "reentry_label": "EXACT RESULT",
+        "reentry_text": "√('N') ⋅ 'O'"
+      },
+      {
+        "id": "sqrt-bound",
+        "label": "EXACT RESULT",
+        "display": "'N' = 0 || 'O' = 1",
+        "restored_same": true,
+        "copy_text": "'N' = 0 || 'O' = 1",
+        "reentry_label": "CHECK YOUR EXPRESSION",
+        "reentry_text": "Unclosed ASCII norm; use ||expression||."
+      },
+      {
+        "id": "linear-bound",
+        "label": "EXACT RESULT",
+        "display": "'N' = 0 || ('N' = 'O'² && 'O' ≥ 0)",
+        "restored_same": true,
+        "copy_text": "'N' = 0 || ('N' = 'O'² && 'O' ≥ 0)",
+        "reentry_label": "CHECK YOUR EXPRESSION",
+        "reentry_text": "Alignment separator outside a matrix at byte 25"
+      },
+      {
+        "id": "fractional-bound",
+        "label": "EXACT RESULT",
+        "display": "'N' = 0 || ('N' = 1 ∕ 'O'⁶ && 'O' > 0)",
+        "restored_same": true,
+        "copy_text": "'N' = 0 || ('N' = 1 ∕ 'O'⁶ && 'O' > 0)",
+        "reentry_label": "CHECK YOUR EXPRESSION",
+        "reentry_text": "Alignment separator outside a matrix at byte 30"
+      }
+    ]
+  },
+  "candidate": {
+    "suite": {
+      "passed": true,
+      "checks": 36,
+      "calls": 4,
+      "sessionsOnly": true,
+      "clipboardRetries": 0,
+      "clipboardRestored": false
+    },
+    "records": [
+      {
+        "id": "IBM035-original",
+        "label": "EXACT RESULT",
+        "display": "O(√(N))",
+        "restored_same": true,
+        "copy_text": "qbigorder(qsqrt('N'))",
+        "reentry_label": "EXACT RESULT",
+        "reentry_text": "qbigorder(qsqrt('N'))"
+      },
+      {
+        "id": "sqrt-bound",
+        "label": "EXACT RESULT",
+        "display": "1",
+        "restored_same": true,
+        "copy_text": "1",
+        "reentry_label": "EXACT RESULT",
+        "reentry_text": "1"
+      },
+      {
+        "id": "linear-bound",
+        "label": "EXACT RESULT",
+        "display": "0",
+        "restored_same": true,
+        "copy_text": "0",
+        "reentry_label": "EXACT RESULT",
+        "reentry_text": "0"
+      },
+      {
+        "id": "fractional-bound",
+        "label": "EXACT RESULT",
+        "display": "1",
+        "restored_same": true,
+        "copy_text": "1",
+        "reentry_label": "EXACT RESULT",
+        "reentry_text": "1"
+      }
+    ]
+  },
+  "released_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "verified_package_files": 361,
+  "candidate_revision": "53178141"
+}

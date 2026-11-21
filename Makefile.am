@@ -660,3 +660,5 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm033-alphabets.json docs/learning-e
 EXTRA_DIST += docs/learning-evidence/aud02/qbook-public-access.md
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm106-trial-states.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm106-trial-states.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm035-growth.py
+EXTRA_DIST += docs/learning-evidence/IBM-035.md docs/learning-evidence/aud01/ibm035-growth.json

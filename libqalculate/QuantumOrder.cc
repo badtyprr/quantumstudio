@@ -127,40 +127,45 @@ bool polynomialSymbols(const MathStructure &term,const MathStructure *&variable)
  for(size_t i=0;i<term.size();++i)if(!polynomialSymbols(term[i],variable))return false;
  return true;
 }
-// Positive-coefficient polynomials on the positive integer input sizes n,m,k.
-// A constant factor in a monomial has no effect on its growth class.
+// Positive-coefficient monomials in up to three independent input sizes.
+// On positive input sizes, roots and rational powers have exact growth exponents.
 using CostPowers = std::array<Number,3>;
-bool costPowers(const MathStructure &factor,CostPowers &powers) {
- if(factor.isMultiplication()) {
-  for(size_t i=0;i<factor.size();++i)if(!costPowers(factor[i],powers))return false;
+bool costPowers(const MathStructure &factor,CostPowers &powers,std::vector<std::string> &axes,const Number &scale) {
+ const std::string operation=factor.isFunction() ? factor.function()->referenceName() : "";
+ if(factor.isMultiplication() || operation=="qmul") {
+  for(size_t i=0;i<factor.size();++i)if(!costPowers(factor[i],powers,axes,scale))return false;
   return true;
  }
  if(factor.isNumber())
   return factor.number().isRational() && !factor.number().isApproximate() && factor.number().isPositive();
- const MathStructure &base=factor.isPower() ? factor[0] : factor;
- if(!base.isUnknown())return false;
- const std::string &name=base.isSymbolic() ? base.symbol() : base.variable()->referenceName();
- size_t axis=std::string("nmk").find(name);
- if(name.size()!=1 || axis==std::string::npos)return false;
- if(factor.isPower()) {
+ if(operation=="qsqrt")return costPowers(factor[0],powers,axes,scale/Number(2));
+ if(factor.isPower() || operation=="qpower") {
   if(!factor[1].isNumber())return false;
-  const Number &power=factor[1].number();
-  if(!power.isInteger() || power.isNegative() || power.isApproximate())return false;
-  powers[axis]+=power;
- } else powers[axis]+=1;
+  const Number &exponent=factor[1].number();
+  if(!exponent.isRational() || exponent.isNegative() || exponent.isApproximate())return false;
+  return costPowers(factor[0],powers,axes,scale*exponent);
+ }
+ if(!factor.isUnknown())return false;
+ const std::string &name=factor.isSymbolic() ? factor.symbol() : factor.variable()->referenceName();
+ if(name.size()!=1 || std::string("nmkN").find(name)==std::string::npos)return false;
+ size_t axis=0;
+ while(axis<axes.size() && axes[axis]!=name)++axis;
+ if(axis==powers.size())return false;
+ if(axis==axes.size())axes.push_back(name);
+ powers[axis]+=scale;
  return true;
 }
-bool costSupport(const MathStructure &polynomial,std::vector<CostPowers> &terms) {
+bool costSupport(const MathStructure &polynomial,std::vector<CostPowers> &terms,std::vector<std::string> &axes) {
  if(polynomial.isZero())return true;
  for(size_t i=0;i<(polynomial.isAddition() ? polynomial.size() : 1);++i) {
   CostPowers powers{};
-  if(!costPowers(polynomial.isAddition() ? polynomial[i] : polynomial,powers))return false;
+  if(!costPowers(polynomial.isAddition() ? polynomial[i] : polynomial,powers,axes,Number(1)))return false;
   terms.push_back(powers);
  }
  return true;
 }
-// Set the weight of m to one. A remaining inequality has the form
-// x * weight(n) + y > 0. Intersect it with the open interval (low,high).
+// Set the second axis weight to one. A remaining inequality has the form
+// x * first_axis_weight + y > 0. Intersect it with the open interval (low,high).
 bool restrictCostWeights(const Number &x,const Number &y,Number &low,Number &high,bool &bounded) {
  if(x.isZero())return y.isPositive();
  Number cutoff=(Number(0)-y)/x;
@@ -173,7 +178,8 @@ bool restrictCostWeights(const Number &x,const Number &y,Number &low,Number &hig
 }
 bool multivariateCostBound(MathStructure &out,const MathStructure &cost,const MathStructure &bound) {
  std::vector<CostPowers> numerator,denominator;
- if(!costSupport(cost,numerator) || !costSupport(bound,denominator))return false;
+ std::vector<std::string> axes;
+ if(!costSupport(cost,numerator,axes) || !costSupport(bound,denominator,axes))return false;
  for(const auto &a:numerator) {
   // A separating weight makes this monomial grow faster than every
   // denominator monomial along (floor(t^x),floor(t),floor(t^z)).
@@ -207,7 +213,7 @@ bool polynomialCostBound(MathStructure &out,MathStructure cost,MathStructure bou
  cost.eval(exact);bound.eval(exact);
  const MathStructure *variable=NULL;
  if(!polynomialSymbols(cost,variable) || !polynomialSymbols(bound,variable))return multivariateCostBound(out,cost,bound);
- if((!cost.isZero() && !cost.isRationalPolynomial()) || (!bound.isZero() && !bound.isRationalPolynomial()))return false;
+ if((!cost.isZero() && !cost.isRationalPolynomial()) || (!bound.isZero() && !bound.isRationalPolynomial()))return multivariateCostBound(out,cost,bound);
  MathStructure a=cost,b=bound;
  if(variable) {
   cost.coefficient(*variable,cost.degree(*variable),a);
