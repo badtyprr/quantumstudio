@@ -9,6 +9,9 @@ import os
 from pathlib import Path
 import subprocess
 
+if not __debug__:
+    raise SystemExit("Run this evidence verifier without Python optimization.")
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("directory", type=Path)
@@ -19,6 +22,19 @@ args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
 inventory = json.loads(Path(__file__).with_name("ibm029-inventory.json").read_bytes())
+row_ids = [row["id"] for row in inventory["rows"]]
+assert len(row_ids) == len(set(row_ids)) == 438
+if args.profile == "original":
+    historical = json.loads(Path(__file__).with_name("ibm029-clipboard-corpus.json").read_bytes())
+    rejected = set(historical["diagnostics"])
+else:
+    rejected = {key for key in row_ids if int(key[-3:]) in (51,52,92,98,107,152,157,162)}
+assert len(rejected) == (16 if args.profile=="original" else 8) and rejected <= set(row_ids)
+required = set(row_ids) - rejected
+
+def check_expected(expected):
+    assert set(expected)==required, (sorted(required-set(expected)),sorted(set(expected)-required))
+
 def notation(key):
     span = int(key[-3:])
     if args.profile == "current":
@@ -42,6 +58,7 @@ if args.prepare:
     with ThreadPoolExecutor(6) as pool:
         values = list(pool.map(lambda row:evaluate(row["literal"],notation(row["id"])),rows))
     expected = {row["id"]:value for row,value in zip(rows,values) if value is not None}
+    check_expected(expected)
     args.directory.mkdir(parents=True,exist_ok=True)
     (args.directory/"expected.json").write_text(json.dumps(expected),"utf8")
     inputs = [[row["id"],row["literal"],notation(row["id"])] for row in rows if row["id"] in expected]
@@ -53,6 +70,7 @@ if args.prepare:
     raise SystemExit
 
 expected = json.loads((args.directory/"expected.json").read_bytes())
+check_expected(expected)
 sessions = {}
 modes = Counter()
 for result in sorted(args.directory.glob("*/result.json")):
@@ -91,7 +109,7 @@ for m in (1,2,3,6):
             truth = abs(Fraction(y,2**m)-Fraction(1,r)) < Fraction(1,2*r*(r+1))
             assert evaluate(bound) == str(int(truth)), (m,r,y)
             finite += 1
-report = dict(source_sha256=inventory["source_sha256"],worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
+report = dict(profile=args.profile,source_sha256=inventory["source_sha256"],worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               source_spans=len(inventory["rows"]),clipboard_sessions=len(sessions),stable_copies=len(sessions),
               mode_counts=dict(modes),diagnostics=diagnostics,M234_exact_rational_checks=finite)
 args.report.write_text(json.dumps(report,indent=2)+"\n",encoding="utf8")
