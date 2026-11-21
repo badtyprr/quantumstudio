@@ -2431,6 +2431,55 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,named,"qoperatorref(\"U_$1\")");
  }
  if(s.find("\\vec{")!=std::string::npos) {
+  const std::string vec=R"(\\vec\{[A-Za-z]\}(?:_(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]))?)";
+  static const std::regex kernel("(^|[^A-Za-z])k\\(\\s*("+vec+"),\\s*("+vec+")\\s*\\)");
+  static const std::regex dot("("+vec+")\\s*\\^(?:T|\\{T\\})\\s*(?:\\\\cdot\\s*)?("+vec+")");
+  std::smatch call;
+  const std::string phi=R"((?:\\vec\{\\Phi\}|\\Phi))";
+  static const std::regex featureDot(phi+"\\^T\\(("+vec+")\\)\\s*(?:\\\\cdot\\s*)?"+phi+"\\(("+vec+")\\)");
+  static const std::regex weightDot("\\\\Theta\\^T\\s*"+phi+"\\(("+vec+")\\)");
+  static const std::regex featureCall(phi+"\\(("+vec+")\\)");
+  static const std::regex modelCall("f_([0-9]+)\\(("+vec+")\\)");
+  auto vectorArgument=[&](const std::string &arg) {
+   static const std::regex subscript(R"(^\\vec\{([a-zA-Z])\}_\{?([a-z])\}?$)");
+   std::smatch parts;
+   if(std::regex_match(arg,parts,subscript) && s.find("\\sum_{"+parts[2].str()+"=")!=std::string::npos)
+    return "qvectorref("+parts[1].str()+"_"+parts[2].str()+")";
+   return quantumTeX("$"+arg+"$");
+  };
+  auto feature=[&](const std::string &arg) {
+   return "qfeatureat(\"Φ\","+vectorArgument(arg)+")";
+  };
+  while(std::regex_search(s,call,featureDot)) {
+   std::string value="qvectordot("+feature(call[1].str())+","+feature(call[2].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
+  while(std::regex_search(s,call,weightDot)) {
+   std::string value="qvectordot(qvectorref(\"Θ\"),"+feature(call[1].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
+  while(std::regex_search(s,call,featureCall)) {
+   std::string value=feature(call[1].str());
+   s.replace(call.position(),call.length(),value);
+  }
+  while(std::regex_search(s,call,modelCall)) {
+   std::string value="qscalarat(\"f_"+call[1].str()+"\","+vectorArgument(call[2].str())+")";
+   s.replace(call.position(),call.length(),value);
+  }
+  while(std::regex_search(s,call,kernel)) {
+   std::string args="vector("+vectorArgument(call[2].str())+","+vectorArgument(call[3].str())+")";
+   s.replace(call.position(),call.length(),call[1].str()+"qscalarat(\"k\","+args+")");
+  }
+  while(std::regex_search(s,call,dot)) {
+   std::string args=vectorArgument(call[1].str())+","+vectorArgument(call[2].str());
+   s.replace(call.position(),call.length(),"qvectordot("+args+")");
+  }
+  static const std::regex neuron(R"(^\s*f\(\\vec\{([a-z])\}\)\s*=\s*\\sigma\s*\(\\vec\{([a-z])\}\\cdot\s*\\vec\{\1\}\s*\+\s*\\vec\{([a-z])\}\)\s*$)");
+  if(std::regex_match(s,call,neuron)) {
+   std::string input="qvectorref(\""+call[1].str()+"\")",weights="qvectorref(\""+call[2].str()+"\")";
+   // The displayed perceptron has one output, hence one bias component.
+   return "qcompare(qscalarat(\"f\","+input+"),qscalarat(\"σ\",qadd(qvectordot("+weights+","+input+"),\""+call[3].str()+"\")),4)";
+  }
   static const std::regex vectorLabel(R"(\\vec\{(\\[A-Za-z]+|[A-Za-z])(?:_([0-9a-zA-Z]))?\}(?:_(?:\\text\{([A-Za-z]+)\}|\{([A-Za-z](?:[+\-][0-9]+)?|[0-9]+)\}|([a-zA-Z0-9])))?)");
   std::smatch m;
   while(std::regex_search(s,m,vectorLabel)) {

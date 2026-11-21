@@ -1,0 +1,25 @@
+{
+  "seed": 24,
+  "shots_per_pair": 10000,
+  "training_pairs": 4005,
+  "test_pairs": 2700,
+  "small_pair_overlap": 0.6761,
+  "max_absolute_kernel_error": 0.017629358687414554,
+  "sampled_test_accuracy": 1.0,
+  "exact_test_accuracy": 1.0,
+  "dataset_sha256": "357b4356a558c5b8387e9765a955327fc2786b4d231483f57b7504ca0e3788ba",
+  "notebook_sha256": "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b",
+  "executed_code_cells": [
+    3,
+    5,
+    7,
+    17,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36
+  ],
+  "qiskit": "2.6.2"
+}

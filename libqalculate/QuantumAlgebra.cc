@@ -877,6 +877,26 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qvectordot") {
+   MathStructure vectors[2]={raw[0],raw[1]};
+   for(auto &v:vectors) {
+    v.eval(eo);
+    if(v.isFunction() || v.isSymbolic() || v.isUnknown())return 0;
+    if(!v.isVector() || (v.isMatrix() && v.rows()!=1 && v.columns()!=1)) {
+     CALCULATOR->error(true,"A vector dot product needs two rows or columns.",NULL);return 0;
+    }
+    if(v.isMatrix()) {
+     MathStructure flat;flat.clearVector();
+     for(size_t j=0;j<v.rows()*v.columns();++j)
+      flat.addChild(*v.getElement(v.rows()==1 ? 1 : j+1,v.rows()==1 ? j+1 : 1));
+     v=flat;
+    }
+   }
+   if(vectors[0].size()!=vectors[1].size()) {
+    CALCULATOR->error(true,"A vector dot product needs equal lengths.",NULL);return 0;
+   }
+   out.set(CALCULATOR->getFunction("dot"),&vectors[0],&vectors[1],NULL);out.eval(eo);return 1;
+  }
   if(op=="qvectorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(value.isSymbolic() || value.isUnknown() || (value.isFunction() && value.function()->referenceName()=="qindexedlabel"))return 0;
@@ -1585,6 +1605,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
  calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
  calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
