@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "f07f625b0c8e520b2013e1f307146d3b1c71d972096a747e1996e81c176fecf6",
-  "revision": "9b8863e636bff0e17438a42d3001084cb67522a7",
+  "worker_sha256": "36dd1c2ce3ef2dfe7dbc093923b2f0a2c7f7c0686c471cab0d7895767cd76da4",
+  "revision": "dc3fc59de5c6c09314b064c839e4ba6e5419f136",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 238,
-    "diagnostic": 1
+    "exact": 239
   },
   "figures": [],
   "rows": [
@@ -2168,8 +2167,9 @@
       "start": 25640,
       "end": 26231,
       "literal": "$$\n\\begin{aligned}\n\\langle \\psi_i \\vert \\psi_j \\rangle\n& =\n\\biggl(\\sum_{k = 0}^{m-1} \\vert k \\rangle \\otimes \\Pi_k \\vert i\\rangle\\biggr)^{\\dagger}\n\\biggl(\\sum_{l = 0}^{m-1} \\vert l \\rangle \\otimes \\Pi_l \\vert j\\rangle\\biggr) \\\\\n& =\n\\sum_{k = 0}^{m-1} \\sum_{l = 0}^{m-1}\n\\langle k \\vert l \\rangle \\langle i \\vert \\Pi_k \\Pi_l \\vert j\\rangle\\\\\n& =\n\\sum_{k = 0}^{m-1}\n\\langle i \\vert \\Pi_k \\Pi_k \\vert j\\rangle\\\\\n& =\n\\sum_{k = 0}^{m-1}\n\\langle i \\vert \\Pi_k \\vert j\\rangle\\\\\n& = \\langle i \\vert \\mathbb{I} \\vert j \\rangle\\\\\n& = \\begin{cases}\n1 & i = j\\\\\n0 & i\\neq j,\n\\end{cases}\n\\end{aligned}\n$$",
-      "status": "diagnostic",
-      "message": "Maximum recursive depth reached."
+      "status": "exact",
+      "display": "⟨ψ_i|ψ_j⟩ = (∑_{k=0}^{m − 1} (|k⟩ ⊗ Π_k qketstate('i')))† · (∑_{l=0}^{m − 1} (|l⟩ ⊗ Π_l qketstate('j'))) = (∑_{n=0}^{m − 1} (∑_{t=0}^{m − 1} (⟨n|t⟩ · qketstate('i')† · Π_n · Π_t · qketstate('j')))) = (∑_{k1=0}^{m − 1} (qketstate('i')† · Π_k1 · Π_k1 · qketstate('j'))) = (∑_{k2=0}^{m − 1} (qketstate('i')† · Π_k2 · qketstate('j'))) = qketstate('i')† · qketstate('j') = if('i' = 'j', 1, if(qcompare('i', 'j', 5), 0, undefined))",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket(\"ψ_i\")),qnamedket(\"ψ_j\")),qadjacent(qdag(qsum(qtensorchain(qketstate(\"qboundindex_0\"),vector(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),qketstate('i'))),0,qsub('m',1),\"qboundindex_0\")),qsum(qtensorchain(qketstate(\"qboundindex_1\"),vector(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),qketstate('j'))),0,qsub('m',1),\"qboundindex_1\")),qsum(qsum(qadjacent(qmul(qdag(qketstate(\"qboundindex_3\")),qketstate(\"qboundindex_2\")),qmul(qmul(qdag(qketstate('i')),qadjacent(qindexedlabel(\"Π_\",\"qboundindex_3\",\"\"),qindexedlabel(\"Π_\",\"qboundindex_2\",\"\"))),qketstate('j'))),0,qsub('m',1),\"qboundindex_2\"),0,qsub('m',1),\"qboundindex_3\"),qsum(qmul(qmul(qdag(qketstate('i')),qadjacent(qindexedlabel(\"Π_\",\"qboundindex_4\",\"\"),qindexedlabel(\"Π_\",\"qboundindex_4\",\"\"))),qketstate('j')),0,qsub('m',1),\"qboundindex_4\"),qsum(qmul(qmul(qdag(qketstate('i')),qindexedlabel(\"Π_\",\"qboundindex_5\",\"\")),qketstate('j')),0,qsub('m',1),\"qboundindex_5\"),qmul(qdag(qketstate('i')),qketstate('j')),if(('i')==('j'),1,if(qcompare('i','j',5),0,undefined,0),0)))"
     },
     {
       "id": "IBM046-3c1262a5-M217",
