@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-codes.ipynb",
   "source_sha256": "3d9008806bedf42d297a5206c86df441a937583cbe8336d8c1e41728928b6d07",
-  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
-  "revision": "7167e450241b03fc70575305b6e776e60638f890",
+  "worker_sha256": "130714c626915c5b8f5f342f6c8abe80d009afc36590952d1cde90e9d7e2ba95",
+  "revision": "076863db919a154f2af555b56db38f1e139f7cee",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 268,
-    "diagnostic": 18
+    "exact": 275,
+    "diagnostic": 11
   },
   "figures": [
     {
@@ -739,8 +739,9 @@
       "start": 15246,
       "end": 15279,
       "literal": "$$\nP_1^{a_1} \\cdots P_r^{a_r},\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 18"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), qindexedentries(\"a_\", 1, 'r', []))",
+      "copy": "qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),qindexedentries(\"a_\",1,'r',vector()))"
     },
     {
       "id": "IBM060-3d900880-M073",
@@ -877,8 +878,9 @@
       "start": 16439,
       "end": 16457,
       "literal": "$\\Pi_1\\cdots\\Pi_r$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 12"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"Π_\", 1, 'r', []), 1)",
+      "copy": "qorderedpowers(qindexedentries(\"Π_\",1,'r',vector()),1)"
     },
     {
       "id": "IBM060-3d900880-M087",
@@ -896,8 +898,9 @@
       "start": 16546,
       "end": 16564,
       "literal": "$\\Pi_1\\cdots\\Pi_r$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 12"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"Π_\", 1, 'r', []), 1)",
+      "copy": "qorderedpowers(qindexedentries(\"Π_\",1,'r',vector()),1)"
     },
     {
       "id": "IBM060-3d900880-M089",
@@ -906,7 +909,7 @@
       "end": 16853,
       "literal": "$$\n\\Pi_1\\cdots\\Pi_r\n= \\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_1}{2}\\biggr)\\cdots\\biggl(\\frac{\\mathbb{I}^{\\otimes n} + P_r}{2}\\biggr)\n= \\frac{1}{2^r}\\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} P_1^{a_1}\\cdots P_r^{a_r}\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 13"
+      "message": "Unsupported TeX command: \\cdots at byte 116"
     },
     {
       "id": "IBM060-3d900880-M090",
@@ -925,7 +928,7 @@
       "end": 17446,
       "literal": "$$\n\\operatorname{dim}(\\mathcal{C}) =\n\\operatorname{Tr}(\\Pi_1\\cdots\\Pi_r) =\n\\frac{1}{2^r} \\sum_{a_1,\\ldots,a_r \\in \\{0,1\\}} \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r})\n$$",
       "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 65"
+      "message": "A register sum requires matching indexed endpoints and an explicit alphabet power at byte 158"
     },
     {
       "id": "IBM060-3d900880-M092",
@@ -933,8 +936,9 @@
       "start": 17533,
       "end": 17578,
       "literal": "$P_1^0 \\cdots P_r^0 = \\mathbb{I}^{\\otimes n}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 13"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), 0) = [1, 0; 0, 1]^{⊗ n}",
+      "copy": "(qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),0))==(qtensorpow(matrix(2,2,[1,0,0,1]),n))"
     },
     {
       "id": "IBM060-3d900880-M093",
@@ -942,8 +946,9 @@
       "start": 17596,
       "end": 17653,
       "literal": "$$\n  \\operatorname{Tr}(P_1^{0}\\cdots P_r^{0}) = 2^n.\n  $$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 35"
+      "status": "exact",
+      "display": "Tr(qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), 0)) = 2^n",
+      "copy": "(qtrace(qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),0)))==(2^n)"
     },
     {
       "id": "IBM060-3d900880-M094",
@@ -961,8 +966,9 @@
       "start": 17711,
       "end": 17738,
       "literal": "$P_1^{a_1}\\cdots P_r^{a_r}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 16"
+      "status": "exact",
+      "display": "qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), qindexedentries(\"a_\", 1, 'r', []))",
+      "copy": "qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),qindexedentries(\"a_\",1,'r',vector()))"
     },
     {
       "id": "IBM060-3d900880-M096",
@@ -1010,8 +1016,9 @@
       "start": 18110,
       "end": 18169,
       "literal": "$$\n  \\operatorname{Tr}(P_1^{a_1}\\cdots P_r^{a_r}) = 0.\n  $$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 37"
+      "status": "exact",
+      "display": "Tr(qorderedpowers(qindexedentries(\"P_\", 1, 'r', []), qindexedentries(\"a_\", 1, 'r', []))) = 0",
+      "copy": "(qtrace(qorderedpowers(qindexedentries(\"P_\",1,'r',vector()),qindexedentries(\"a_\",1,'r',vector()))))==(0)"
     },
     {
       "id": "IBM060-3d900880-M101",
