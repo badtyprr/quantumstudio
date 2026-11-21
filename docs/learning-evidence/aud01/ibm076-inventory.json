@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-computing-in-practice/utility-scale-qaoa.ipynb",
   "source_sha256": "b057ac805e3f1d9be6c25dac689b9eff8435046fa77bd0c02258c63560a30b23",
-  "worker_sha256": "0a7b3bea5278eaf3fa2739f88925c9778f7763a6fc4f4f06999d779b0d1bb183",
-  "revision": "88544e4f",
+  "worker_sha256": "dfd2b342f2a858048590d287c077a25924eb5350bc03f32a591e6da1464e9754",
+  "revision": "db02294c",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 33,
-    "diagnostic": 4
+    "exact": 35,
+    "diagnostic": 2
   },
   "figures": [
     {
@@ -330,8 +330,8 @@
       "end": 8650,
       "literal": "$$\nz^TQz + b^Tz\n$$",
       "status": "exact",
-      "display": "b^(T · z) + z^(Q · T · z)",
-      "copy": "'b'^('T'z) + z^('Q''T'z)"
+      "display": "qisingenergy('Q', 'b', 'z')",
+      "copy": "qisingenergy('Q','b','z')"
     },
     {
       "id": "IBM076-b057ac80-M029",
@@ -349,8 +349,9 @@
       "start": 8828,
       "end": 8913,
       "literal": "$$\n\\min_{x\\in\\{0,1\\}^n} x^TQx\\Longleftrightarrow \\min_{z\\in\\{-1,1\\}^n}z^TQz + b^Tz\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\min at byte 6"
+      "status": "exact",
+      "display": "qisingequivalent('Q', 'b', n)",
+      "copy": "qisingequivalent('Q','b',n)"
     },
     {
       "id": "IBM076-b057ac80-M031",
@@ -358,8 +359,9 @@
       "start": 9081,
       "end": 9129,
       "literal": "$$\nH_C=\\sum_{ij}Q_{ij}Z_iZ_j + \\sum_i b_i Z_i\n$$",
-      "status": "diagnostic",
-      "message": "A finite sum/product requires lower and upper bounds at byte 15"
+      "status": "exact",
+      "display": "qoperatorref(\"H_C\") = qisinghamiltonian('Q', 'b')",
+      "copy": "qcompare(qoperatorref(\"H_C\"),qisinghamiltonian('Q','b'),4)"
     },
     {
       "id": "IBM076-b057ac80-M032",
