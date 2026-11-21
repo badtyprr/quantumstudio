@@ -2471,6 +2471,24 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(modularPowers && s.find("\\mapsto")!=std::string::npos && s.find("\\oplus")!=std::string::npos) {
+  if(s.find("\\stackrel")!=std::string::npos && s.find('@')==std::string::npos) {
+   static const std::regex step(R"(\\stackrel\{\s*\\text\{step\s+([123])\}\s*\}\{\s*\\mapsto\s*\})");
+   std::string chain=std::regex_replace(s,step,"@$1@");
+   static const std::regex openKet(R"((?:\\bigl\s*)?(?:\\vert(?![A-Za-z])|\|))"),closeKet(R"((?:\\bigr\s*)?\\rangle(?![A-Za-z]))");
+   chain=std::regex_replace(std::regex_replace(chain,openKet,"|"),closeKet,">");
+   auto parts=indexedParts(chain,"@");
+   for(auto &part:parts)part.erase(std::remove_if(part.begin(),part.end(),asciiSpace),part.end());
+   static const std::regex initial(R"(^\|([a-z])>\|0\^([a-z])>$)"),computed(R"(^\|([a-z])>\|f_([a-z])\(([a-z])\)>$)");
+   std::smatch start,image;
+   if(parts.size()==7 && parts[1]=="1" && parts[3]=="2" && parts[5]=="3" &&
+      std::regex_match(parts[0],start,initial) && std::regex_match(parts[2],image,computed)) {
+    std::string x=start[1],width=start[2],a=image[2];
+    std::string fx="f_"+a+"("+x+")",inverse="f_{"+a+"^{-1}}("+fx+")";
+    if(image[1].str()==x && image[3].str()==x && parts[4]=="|"+fx+">|"+x+">" &&
+       parts[6]=="|"+fx+">|"+x+"\\oplus"+inverse+">=|"+fx+">|0^"+width+">")
+     return "qregisteruncompute(qregistermultipliergraph(\""+a+"\",\"N\",\""+width+"\"),\""+x+"\")";
+   }
+  }
   static const std::regex update(
    R"(^\s*(?:\\vert(?![A-Za-z])|\|)\s*([a-z])\s*\\rangle\s*(?:\\vert(?![A-Za-z])|\|)\s*([a-z])\s*\\rangle\s*\\mapsto\s*)"
    R"((?:\\vert(?![A-Za-z])|\|)\s*\1\s*\\rangle\s*(?:\\bigl\s*)?(?:\\vert(?![A-Za-z])|\|)\s*\2\s*\\oplus\s*)"

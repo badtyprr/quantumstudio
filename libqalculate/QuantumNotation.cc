@@ -333,7 +333,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qfrobeniusnorm",1},
  {"qnormalize",1},
  {"qnumberop",1},
- {"qoracle",2},{"qregisterxoraction",3},{"qregisterinversexoraction",3},
+ {"qoracle",2},{"qregisterxoraction",3},{"qregisterinversexoraction",3},{"qregisteruncompute",2},
  {"qoraclefunction",4},
  {"qpermute",2},
  {"qpermutedim",3},

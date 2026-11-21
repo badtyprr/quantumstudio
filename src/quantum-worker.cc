@@ -165,6 +165,23 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    std::string text=(name=="qmatrix" ? "matrix" : quantumMode && name=="exp" ? "qexp" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
+    // Six dense basis columns in a five-bit compute/swap/uncompute trace
+    // exceed the parser's matrix-entry budget. Preserve their exact labels.
+    const MathStructure &operand=result[k];
+    if(quantumMode && name=="qstateaction" && operand.isMatrix() &&
+       operand.columns()==1 && operand.rows()>=1024 && !operand.isApproximate()) {
+     size_t label=0;
+     bool basis=true;
+     for(size_t r=1;r<=operand.rows();++r) {
+      const MathStructure &entry=*operand.getElement(r,1);
+      if(entry.isZero())continue;
+      if(label || !entry.isOne()) {basis=false;break;}
+      label=r;
+     }
+     if(basis && label) {
+      text+="qbasis("+std::to_string(label-1)+","+std::to_string(operand.rows())+")";continue;
+     }
+    }
     // A matrix nested in an unevaluated operator must keep its explicit
     // entry vector when the enclosing expression is parsed again.
     const bool matrixOperand=result[k].isMatrix() &&

@@ -103,6 +103,17 @@ for op,image in (("qregisterxoraction",2),("qregisterinversexoraction",3)):
     assert actual==expected and data("quantum:"+actual)["copy_text"]==expected
 run("quantum:qregisterinversexoraction(qregistermultipliergraph(2,6,3),0,0)",success=False)
 run("quantum:qregisterxoraction(qregistermultipliergraph(a,N,2),4,y)",success=False)
+for op in ("qregisterinversexoraction","qregisteruncompute"):
+    labels = "x,y" if op.endswith("action") else "x"
+    for graph in ("2,6,n","0,N,n"):
+        run(f"quantum:{op}(qregistermultipliergraph({graph}),{labels})",success=False)
+for width in (3,5,6):
+    dim=1<<width
+    labels=(3*dim,3*dim+1,dim+3,dim)
+    edges=[f"qstateaction(qbasis({u},{dim*dim}),qbasis({v},{dim*dim}))" for u,v in zip(labels,labels[1:])]
+    trace=data(f"quantum:qregisteruncompute(qregistermultipliergraph(2,5,{width}),3)")["copy_text"]
+    assert trace==data("quantum:vector("+",".join(edges)+",1)")["copy_text"]
+    assert trace==data("quantum:"+trace)["copy_text"]
 
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]
