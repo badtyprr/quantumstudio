@@ -83,6 +83,10 @@ for modulus in (2, 7, 11, 21, 22):
     assert data(f'quantum:replace(({order_copy}),"modulus",{modulus})')["copy_text"] == "matrix(2,2,["+",".join(results)+"])"
 run(f'quantum:replace(({order_copy}),"modulus",0)', success=False)
 run("quantum:"+order_grid, success=False)
+identity_grid = r"\begin{array}{cc}2^2=4&5^2=25\\2^1=2&3^1=3\end{array}"
+identity_copy = data("quantum:modpowers:"+identity_grid)["copy_text"]
+assert data(f'quantum:replace(({identity_copy}),"modulus",7)')["copy_text"] == "matrix(2,2,[1,1,1,1])"
+run(f'quantum:replace(({identity_copy}),"modulus",0)', success=False)
 assert data("quantum:"+printed_pair)["copy_text"] == printed_pair
 for base, expected in [(14,"vector(13,0)"), (0,"vector(14,1)")]:
     bound = f'replace(replace(replace(({printed_pair}),"r",2),"a",{base}),"N",15)'

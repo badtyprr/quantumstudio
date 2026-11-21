@@ -1,0 +1,18 @@
+{
+  "source": "IBM029-9ea5aee3-M045",
+  "rows": 4,
+  "columns": 3,
+  "finite_equations": 288,
+  "verified_orders": 12,
+  "context_modulus": 21,
+  "clipboard_sessions": 6,
+  "compatibility": {
+    "originals": 438,
+    "recorded_modes_before": 426,
+    "recorded_modes_after": 427,
+    "changed": [
+      "IBM029-9ea5aee3-M045"
+    ],
+    "timeouts": 0
+  }
+}
