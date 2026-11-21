@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "71034dd97603ef8a90daa3db9253cc703946c9d5dfbd9a764acec4493387fe34",
-  "revision": "faa9465ad8ff07ecfd5f0d795759513385697166",
+  "worker_sha256": "628aa8b6a06e04f125adf5ceece6dd85c4cf3697215fc8e7e64af70c10d5f408",
+  "revision": "e658a1beed782047e0020a1e08d6f84aa3860d64",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
