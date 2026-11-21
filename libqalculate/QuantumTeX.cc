@@ -1560,6 +1560,7 @@ class TeXReader {
     std::string base="2";
     if(pos<input.size() && input[pos]=='_') {++pos;base=trim(argument());space();}
     if(input.compare(pos,5,"\\left")==0) {pos+=5;space();}
+    bool ungrouped=pos<input.size() && input[pos]!='(' && input[pos]!='{';
     std::string operand;
     if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
     else if(pos<input.size() && (std::isdigit((unsigned char)input[pos]) ||
@@ -1570,8 +1571,15 @@ class TeXReader {
      }
      operand=input.substr(start,pos-start);
     } else operand=argument();
+    if(ungrouped) {
+     size_t afterOperand=pos;space();
+     if(pos<input.size() && input[pos]=='^') {
+      ++pos;operand="("+operand+")^("+argument()+")";
+     } else pos=afterOperand;
+    }
     if(base.empty() || trim(operand).empty())throw std::runtime_error(error("A logarithm needs a base and an operand"));
-    return base=="2" ? "log2("+operand+")" : "log("+operand+","+base+")";
+    if(base=="2")return (binaryLogs ? "qbinarylog(" : "log2(")+operand+")";
+    return "log("+operand+","+base+")";
    }
    pos=afterName;
   }

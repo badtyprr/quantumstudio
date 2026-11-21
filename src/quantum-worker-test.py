@@ -54,7 +54,8 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         assert b"positive exact integer" in result.stderr
 
 for formula, expected in [(r"\log(8)", "3"), (r"\log_{3}(27)", "3"), (r"\ln(1)", "0"),
-                          (r"\lfloor\log(7/8)\rfloor", "-1")]:
+                          (r"\lfloor\log(7/8)\rfloor", "−1"), (r"\log 2^3", "3"),
+                          (r"\log_3 3^4", "4"), (r"(\log 8)^2", "9")]:
     assert data("quantum:binarylogs:"+formula)["copy_text"] == expected
 assert data(r"quantum:\lfloor\log(8)\rfloor")["copy_text"] == "2"
 
