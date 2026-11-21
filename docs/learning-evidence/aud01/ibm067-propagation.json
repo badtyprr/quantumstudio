@@ -1,0 +1,27 @@
+{
+  "CNOT-error-propagation": {
+    "sha256": "ef4760bc1d91e9f4cdf9d500fce86de1f1d54c07ced00b28a76cbf05c7a0394d",
+    "propagated_x_weight": 2,
+    "propagated_z_weight": 2
+  },
+  "multiple-CNOT-error-propagation": {
+    "sha256": "c72ba93e9619833906c26eca6e301587794545f481463263288adea2b8a58f32",
+    "propagated_x_weight": 4,
+    "propagated_z_weight": 4
+  },
+  "transversal-CNOT": {
+    "sha256": "fde5a171b671f6fa188b470e02b94275b9d39710035d690cafe8bf6d8bc7e46f",
+    "pairs": 5,
+    "single_pauli_errors_checked": 30
+  },
+  "Shor-error-detection": {
+    "sha256": "74dddf40e5b46df9e93bc0e00ce949f3dff498f6b0b1b997b878f56c1a2f1639",
+    "ancillas": 3,
+    "sign_patterns": 8
+  },
+  "Steane-error-detection": {
+    "sha256": "fa3e635644b2310f60280caf2998528697bc614483de8a242aa601dbb834fe67",
+    "qubits_per_block": 7,
+    "ancilla_error_pairs": 1024
+  }
+}

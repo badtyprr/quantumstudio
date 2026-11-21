@@ -1,0 +1,14 @@
+{
+  "source": "https://ibm.box.com/public/static/82vefvfnneiea47ypcis0aj5gal78qka.pdf",
+  "slides": 21,
+  "sha256": "55213ccd0dedba5dd25279044d14758f8c1fc8dade53de7b7a547fb7b2a64521",
+  "topics": {
+    "1": "Title",
+    "2-4": "Noise model and encoded teleportation",
+    "5-6": "CNOT error propagation",
+    "7-10": "Transversal gates and Eastin-Knill theorem",
+    "11-15": "Magic states, injection and distillation",
+    "16-17": "Shor and Steane syndrome extraction",
+    "18-21": "Threshold model and concatenated logical error rate"
+  }
+}
