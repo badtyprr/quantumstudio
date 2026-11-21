@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/noise-and-errors.ipynb",
   "source_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
-  "worker_sha256": "2ec68e1a5d5efbed06d866b1a8d6a80f2ebb41515d0adc4885cb2f0113f570a7",
-  "revision": "0c7673981c1079d5d8085065e68c3a42b833ab91",
+  "worker_sha256": "0a498f87efd8690b4c161abdfb1feef79af727fbf5f9d072889aaf56c48002ff",
+  "revision": "4bd12264ffcf1f436cc2fd701eabb236b1633690",
   "mode": "Quantum notation",
   "markdown_cells": 26,
   "code_cells": 18,
   "summary": {
-    "exact": 274,
-    "diagnostic": 35
+    "exact": 278,
+    "diagnostic": 31
   },
   "figures": [
     {
@@ -710,7 +710,7 @@
       "literal": "$$\n\\begin{aligned}\nX|\\psi\\rangle & = R_X(\\pi) |\\psi\\rangle\\\\\n& = \\begin{pmatrix} \\cos{(\\theta/2)} & -i \\sin{(\\theta/2)} \\\\ -i \\sin{(\\theta/2)} & \\cos{(\\theta/2)} \\end{pmatrix}\\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}\\\\\n& = \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}\\begin{pmatrix} \\alpha \\\\ \\beta \\end{pmatrix}\\\\\n& =\\begin{pmatrix} \\beta \\\\ \\alpha \\end{pmatrix}\\\\\n\\end{aligned}\n$$",
       "status": "exact",
       "display": "[0, 1; 1, 0] |ψ⟩ = [0, −i; −i, 0] |ψ⟩ = [(cos(('θ' rad) ∕ 2) ⋅ 'α' − i ⋅ sin(('θ' rad) ∕ 2) ⋅ 'β'); (cos(('θ' rad) ∕ 2) ⋅ 'β' − i ⋅ sin(('θ' rad) ∕ 2) ⋅ 'α')] = ['β'; 'α'] = ['β'; 'α']",
-      "copy": "qequalchain(vector(qadjacent(matrix(2,2,[0,1,1,0]),qnamedket('ψ')),qadjacent(matrix(2,2,[0,−i,−i,0]),qnamedket('ψ')),matrix(2,1,[(('α')*(cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))))+ (('β')*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i)),(('α')*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i))+ (('β')*(cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))))]),matrix(2,1,['β','α']),matrix(2,1,['β','α'])))"
+      "copy": "qequalchain(vector(qadjacent(matrix(2,2,vector(0,1,1,0)),qnamedket('ψ')),qadjacent(matrix(2,2,vector(0,−i,−i,0)),qnamedket('ψ')),matrix(2,1,[(('α')*(cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))))+ (('β')*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i)),(('α')*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i))+ (('β')*(cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))))]),matrix(2,1,['β','α']),matrix(2,1,['β','α'])))"
     },
     {
       "id": "IBM081-7b09f95f-M065",
@@ -1608,8 +1608,9 @@
       "start": 8664,
       "end": 8731,
       "literal": "$|\\Phi_\\text{+}\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle+|11\\rangle)$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM081-7b09f95f-M156",
@@ -1617,8 +1618,9 @@
       "start": 8767,
       "end": 8834,
       "literal": "$|\\Psi_\\text{-}\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle-|10\\rangle)$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM081-7b09f95f-M157",
@@ -1676,8 +1678,9 @@
       "start": 9753,
       "end": 9820,
       "literal": "$|\\Phi_\\text{+}\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle+|11\\rangle)$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM081-7b09f95f-M163",
@@ -1685,8 +1688,9 @@
       "start": 9856,
       "end": 9923,
       "literal": "$|\\Psi_\\text{-}\\rangle = \\frac{1}{\\sqrt{2}}(|01\\rangle-|10\\rangle)$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 15"
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
     },
     {
       "id": "IBM081-7b09f95f-M164",
@@ -1855,7 +1859,7 @@
       "literal": "$\\Phi(\\rho) = U\\rho U^\\dagger$",
       "status": "exact",
       "display": "U · 'ρ' · U† = 'Φ''ρ'",
-      "copy": "(qadjacent('U''ρ',qdag('U')))==('Φ''ρ')"
+      "copy": "(qadjacent(qmul('U','ρ'),qdag('U')))==('Φ''ρ')"
     },
     {
       "id": "IBM081-7b09f95f-M181",
