@@ -28,10 +28,10 @@ class QuantumGateFunction: public MathFunction {
       CALCULATOR->error(true,"A residue-basis multiplier requires exact integers, 1 <= a < N and 2 <= N <= 64.",NULL);return 0;
      }
     }
-    if(deferred)return 0;
-    if(a.number()>=modulus.number()) {
+    if(a.equals(modulus) || (!deferred && a.number()>=modulus.number())) {
      CALCULATOR->error(true,"A residue-basis multiplier must be smaller than the modulus.",NULL);return 0;
     }
+    if(deferred)return 0;
    } else if(!a.isNumber() || !a.number().isInteger() || !modulus.isNumber() || !modulus.number().isInteger() || modulus.number()<2 || modulus.number()>512 || a.number()<1 || a.number()>=modulus.number()) {
     CALCULATOR->error(true,"modmul(a,N) requires integer N from 2 to 512 and an integer multiplier 1 <= a < N.",NULL);return 0;
    }

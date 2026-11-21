@@ -70,6 +70,7 @@ for a,n in ((2,3),(2,5),(4,15)):
     assert matrix == f"matrix({n},{n},["+",".join(cells)+"])"
 run("quantum:qresiduemultiplier(3,15)",success=False)
 run("quantum:qresiduemultiplier(a,65)",success=False)
+run("quantum:qresiduemultiplier(a,a)",success=False)
 
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]
