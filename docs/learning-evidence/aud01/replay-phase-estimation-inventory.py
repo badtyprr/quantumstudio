@@ -1,4 +1,4 @@
-"""Replay literal formulas from pinned, single-cell IBM quantum algorithm lessons."""
+"""Replay literal formulas from pinned, IBM quantum lessons."""
 import argparse
 from collections import Counter
 import hashlib
@@ -34,44 +34,65 @@ lessons = {
         ("IBM034", "number-of-iterations", 155, 0),
     "fb35d58b14dfd991da94ea11ef5e72bcd384287217182ddfebe1a2129b3e254a":
         ("IBM035", "concluding-remarks", 1, 0),
+    "ae48ca76386dbd5c315cd993a18f2480ab0480d05a1f1c9f5642b20399e6e3c6":
+        ("IBM036", "introduction", 0, 0),
+    "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa":
+        ("IBM037", "classical-information", 150, 0),
+    "9193becddf7f8f9943aa24057a5666195b2f70d946ccd104033164ed6125e79b":
+        ("IBM038", "quantum-information", 161, 0),
+    "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a":
+        ("IBM039", "qiskit-implementation", 20, 0),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
     parser.error(f"Expected {args.lesson}, got {lesson}")
 cells = json.loads(data)["cells"]
-assert [c["cell_type"] for c in cells] == ["markdown"]
-body = "".join(cells[0]["source"])
+types = Counter(c["cell_type"] for c in cells)
+single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
+expected_cells = {"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
+assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
-for i, match in enumerate(math.finditer(body), 1):
-    literal = match.group()
-    if literal not in cache:
-        result = subprocess.run([worker, "--json"], input=("quantum:" + literal).encode(),
-                                capture_output=True, timeout=60)
-        if result.returncode == 0:
-            value = json.loads(result.stdout)
-            cache[literal] = dict(status="approximate" if value["approximate"] else "exact",
-                                  display=value["display_text"], copy=value["copy_text"])
-        elif result.returncode == 2 and result.stderr.strip():
-            cache[literal] = dict(status="diagnostic", message=result.stderr.decode().strip())
-        else:
-            raise RuntimeError((literal, result.returncode, result.stderr))
-    rows.append(dict(id=f"{lesson}-{digest[:8]}-M{i:03d}", cell=0, start=match.start(),
-                     end=match.end(), literal=literal, **cache[literal]))
-for match in re.finditer(r"!\[([^\]]*)\]\(([^)]+)\)", body):
-    figures.append(dict(cell=0, start=match.start(), end=match.end(), alt=match[1], path=match[2]))
+panels = []
+for index, cell in enumerate(cells):
+    if cell["cell_type"] != "markdown":
+        continue
+    body = "".join(cell["source"])
+    for match in math.finditer(body):
+        i = len(rows)+1
+        literal = match.group()
+        if literal not in cache:
+            result = subprocess.run([worker, "--json"], input=("quantum:" + literal).encode(),
+                                    capture_output=True, timeout=60)
+            if result.returncode == 0:
+                value = json.loads(result.stdout)
+                cache[literal] = dict(status="approximate" if value["approximate"] else "exact",
+                                      display=value["display_text"], copy=value["copy_text"])
+            elif result.returncode == 2 and result.stderr.strip():
+                cache[literal] = dict(status="diagnostic", message=result.stderr.decode().strip())
+            else:
+                raise RuntimeError((literal, result.returncode, result.stderr))
+        rows.append(dict(id=f"{lesson}-{digest[:8]}-M{i:03d}", cell=index, start=match.start(),
+                         end=match.end(), literal=literal, **cache[literal]))
+    for match in re.finditer(r"!\[([^\]]*)\]\(([^)]+)\)", body):
+        figures.append(dict(cell=index, start=match.start(), end=match.end(), alt=match[1], path=match[2]))
+    cell_panels = [dict(title=m[1],cell=index,start=m.start(),end=m.end())
+                   for m in re.finditer(r'<Figure title="([^"]+)">(.*?)</Figure>', body, re.DOTALL)]
+    assert len(cell_panels) == body.count("<Figure")
+    panels.extend(cell_panels)
 assert len(rows) == math_count and len(figures) == image_count
 chapter = "phase-estimation-and-factoring" if lesson in ("IBM028", "IBM029") else "grover-algorithm"
+course = "fundamentals-of-quantum-algorithms"
+if single_systems:
+    course,chapter = "basics-of-quantum-information","single-systems"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
-          f"learning/courses/fundamentals-of-quantum-algorithms/{chapter}/"
+          f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-              revision=args.revision, mode="Quantum notation", markdown_cells=1, code_cells=0,
+              revision=args.revision, mode="Quantum notation", markdown_cells=types["markdown"], code_cells=types["code"],
               summary=counts, figures=figures, rows=rows)
-if "<Figure" in body:
-    report["panels"] = [dict(title=m[1], cell=0, start=m.start(), end=m.end())
-                        for m in re.finditer(r'<Figure title="([^"]+)">(.*?)</Figure>', body, re.DOTALL)]
-    assert len(report["panels"]) == body.count("<Figure")
+if panels:
+    report["panels"] = panels
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode())
 print(dict(counts))

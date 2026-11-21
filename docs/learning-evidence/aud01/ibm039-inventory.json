@@ -1,0 +1,215 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/qiskit-implementation.ipynb",
+  "source_sha256": "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a",
+  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
+  "revision": "9e033225",
+  "mode": "Quantum notation",
+  "markdown_cells": 19,
+  "code_cells": 18,
+  "summary": {
+    "exact": 20
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM039-071bde2b-M001",
+      "cell": 4,
+      "start": 520,
+      "end": 536,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM039-071bde2b-M002",
+      "cell": 4,
+      "start": 541,
+      "end": 557,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM039-071bde2b-M003",
+      "cell": 22,
+      "start": 264,
+      "end": 322,
+      "literal": "$$\n\\biggl(\\frac{1 + 2i}{\\sqrt{5}}\\biggr) \\vert 0\\rangle\n$$",
+      "status": "exact",
+      "display": "[((0.2 + 0.4i) ⋅ √(5)); 0]",
+      "copy": "matrix(2,1,[(1 ∕ 5 + (2 ∕ 5) ⋅ i) ⋅ √(5),0])"
+    },
+    {
+      "id": "IBM039-071bde2b-M004",
+      "cell": 22,
+      "start": 337,
+      "end": 353,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM039-071bde2b-M005",
+      "cell": 22,
+      "start": 359,
+      "end": 381,
+      "literal": "$$\n- \\vert 1\\rangle\n$$",
+      "status": "exact",
+      "display": "[0; −1]",
+      "copy": "matrix(2,1,[0,−1])"
+    },
+    {
+      "id": "IBM039-071bde2b-M006",
+      "cell": 22,
+      "start": 396,
+      "end": 412,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM039-071bde2b-M007",
+      "cell": 22,
+      "start": 488,
+      "end": 504,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM039-071bde2b-M008",
+      "cell": 22,
+      "start": 509,
+      "end": 525,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM039-071bde2b-M009",
+      "cell": 22,
+      "start": 1271,
+      "end": 1277,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    },
+    {
+      "id": "IBM039-071bde2b-M010",
+      "cell": 22,
+      "start": 1338,
+      "end": 1341,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM039-071bde2b-M011",
+      "cell": 22,
+      "start": 1356,
+      "end": 1359,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM039-071bde2b-M012",
+      "cell": 22,
+      "start": 1373,
+      "end": 1376,
+      "literal": "$9$",
+      "status": "exact",
+      "display": "9",
+      "copy": "9"
+    },
+    {
+      "id": "IBM039-071bde2b-M013",
+      "cell": 22,
+      "start": 1393,
+      "end": 1398,
+      "literal": "$556$",
+      "status": "exact",
+      "display": "556",
+      "copy": "556"
+    },
+    {
+      "id": "IBM039-071bde2b-M014",
+      "cell": 22,
+      "start": 1406,
+      "end": 1412,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    },
+    {
+      "id": "IBM039-071bde2b-M015",
+      "cell": 22,
+      "start": 1437,
+      "end": 1440,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM039-071bde2b-M016",
+      "cell": 22,
+      "start": 1455,
+      "end": 1458,
+      "literal": "$4$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM039-071bde2b-M017",
+      "cell": 22,
+      "start": 1472,
+      "end": 1475,
+      "literal": "$9$",
+      "status": "exact",
+      "display": "9",
+      "copy": "9"
+    },
+    {
+      "id": "IBM039-071bde2b-M018",
+      "cell": 22,
+      "start": 1492,
+      "end": 1497,
+      "literal": "$444$",
+      "status": "exact",
+      "display": "444",
+      "copy": "444"
+    },
+    {
+      "id": "IBM039-071bde2b-M019",
+      "cell": 22,
+      "start": 1509,
+      "end": 1515,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    },
+    {
+      "id": "IBM039-071bde2b-M020",
+      "cell": 24,
+      "start": 92,
+      "end": 98,
+      "literal": "$1000$",
+      "status": "exact",
+      "display": "1000",
+      "copy": "1000"
+    }
+  ]
+}
