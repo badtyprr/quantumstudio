@@ -3120,6 +3120,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return strict ? "("+subset+" and !(qsubset("+right+","+left+")))" : subset;
   }
  }
+ // In "for k = 2, 4, 8, ..., 2^p" the equality enumerates allowed indices.
+ if(s.find(',')!=std::string::npos && s.find("dots")!=std::string::npos) {
+  static const std::regex powersOfTwo(R"(^\s*([a-z])\s*=\s*2\s*,\s*4\s*,\s*8\s*,\s*\\(?:ldots|cdots|dots)\s*,\s*2\s*\^\s*(?:\{\s*([a-z]|[0-9]+)(\s*[+-]\s*[0-9]+)?\s*\}|([a-z0-9]))\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,powersOfTwo)) {
+   std::string limit=m[2].matched ? m[2].str() : m[4].str();
+   if(asciiLetter(limit[0]))limit="\""+limit+"\"";
+   return "qmember(\""+m[1].str()+"\",qsetimage(2^j,qindexrange(1,"+limit+m[3].str()+"),j))";
+  }
+ }
  if(s.find("\\ldots")!=std::string::npos && s.find("\\Sigma^")!=std::string::npos) {
   static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\Sigma\^([a-z]|[0-9]+)\s*$)");
   std::smatch m;if(std::regex_match(s,m,membership))
