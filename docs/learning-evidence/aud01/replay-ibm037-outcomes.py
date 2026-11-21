@@ -1,6 +1,6 @@
 """Check the named-outcome examples against the lesson's two explicit basis states."""
 import argparse
-import hashlib
+from learning_clipboard_checks import clipboard_checks
 import json
 import os
 from pathlib import Path
@@ -8,7 +8,8 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument("worker", type=Path)
-parser.add_argument("--windows",type=Path,help="Prepare indexed-function inputs for the Windows clipboard replay.")
+parser.add_argument("--windows",type=Path,help="Prepare inputs for the Windows clipboard replay.")
+parser.add_argument("--group",choices=("functions","matrices"),default="functions")
 parser.add_argument("--report",type=Path,help="Verify the Windows records and write a report.")
 args = parser.parse_args()
 if not __debug__: raise RuntimeError("Assertions must be enabled.")
@@ -63,6 +64,7 @@ for number, (at_zero, at_one) in enumerate([(0,0), (0,1), (1,0), (1,1)], 1):
 assert tables == "vector(" + ",".join(expected_tables) + ")"
 print("Verified all eight function values and their table headings")
 composition = evaluate("quantum:" + inventory["rows"][147]["literal"])
+matrix_cases = {"M148":(inventory["rows"][147]["literal"],composition)}
 assert evaluate("quantum:" + composition) == composition
 reset = "matrix(2,2,[1,1,0,0])"
 flip = "matrix(2,2,[0,1,1,0])"
@@ -70,6 +72,9 @@ for first, second, expected in [(reset,flip,"matrix(2,2,[0,0,1,1])"), (flip,rese
     assigned = f'replace(replace({composition},"M_1",{first}),"M_2",{second})'
     assert evaluate(f"quantum:replace({assigned},n,2)") == expected
     assert evaluate(f"quantum:replace({assigned},n,1)") == first
+    label = "reset-first" if first==reset else "flip-first"
+    for n,value in ((1,first),(2,expected)):
+        matrix_cases[f"M148-{label}-{n}"]=(f"replace({assigned},n,{n})",value)
 print("Verified ordered matrix composition, reversed order and single-map bounds")
 
 # M021 defines the classical system's four possible outcomes. Keep each
@@ -120,7 +125,7 @@ print("Verified the five indexed function equations on all eight inputs, includi
 def bind_maps(value, bindings):
     for name, replacement in bindings:
         value = f'replace(({value}),{name},{replacement})'
-    return evaluate("quantum:" + value)
+    return value
 
 column = ("u","[3/5;2/5]")
 forward = [('"M_1"',reset),('"M_2"',flip)]
@@ -131,32 +136,24 @@ for number, normal, swapped in [(138, "matrix(2,1,[1,0])", "matrix(2,1,[2 ∕ 5,
                                 (150, "1", "0")]:
     source = inventory["rows"][number-1]["literal"]
     result = evaluate("quantum:" + source)
+    matrix_cases[f"M{number}"]=(source,result)
     for maps,expected in [(forward,normal),(reverse,swapped)]:
         bindings = maps[:1] + [column] if number==138 else maps + [column] if number==140 else maps
-        assert bind_maps(result, bindings) == expected, number
-        assert bind_maps(result, reversed(bindings)) == expected, number
+        for direction,order in (("direct",bindings),("reversed",reversed(bindings))):
+            expr=bind_maps(result,order)
+            assert evaluate("quantum:"+expr)==expected,number
+            label="reset-first" if maps==forward else "flip-first"
+            matrix_cases[f"M{number}-{label}-{direction}"]=(expr,expected)
     if number==140:
         changed = evaluate("quantum:" + source.replace("M_2 M_1","M_1 M_2"))
-        assert bind_maps(changed, forward + [column]) == "0"
+        expr=bind_maps(changed,forward+[column])
+        assert evaluate("quantum:"+expr)=="0"
+        matrix_cases["M140-reversed-product"]=(expr,"0")
 print("Verified four ordered matrix expressions with both map assignments")
 if args.windows:
-    inputs = [[key,expr,"0"] for key,(expr,_) in windows_cases.items()]
-    path = args.windows/"inputs.json"
-    if not args.report:
-        args.windows.mkdir(parents=True,exist_ok=True)
-        path.write_text(json.dumps(inputs),"utf8")
+    if args.group=="matrices":
+        windows_cases=matrix_cases
+        details=dict(source_spans=[138,140,143,148,150],bound_expressions=21)
     else:
-        assert json.loads(path.read_bytes())==inputs
-        records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
-        result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
-        assert result["passed"] and result["clipboardRestored"] and not result["sessionsOnly"]
-        assert len(records)==result["calls"]==len(inputs)==22
-        for (key,expr,_),record in zip(inputs,records):
-            session=json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
-            assert session["Expression"]==expr and session["Mode"]==0
-            assert record["id"]==key and record["restored_same"]
-            assert record["copy"]==record["second_copy"]==windows_cases[key][1],key
-        report=dict(worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),source_spans=[67,68,69,72,75,76],
-                    finite_inputs=8,changed_graph_controls=8,invalid_graph_controls=2,
-                    clipboard_sessions=len(inputs),windows_checks=result["checks"])
-        args.report.write_text(json.dumps(report,indent=2)+"\n","utf8")
+        details=dict(source_spans=[67,68,69,72,75,76],finite_inputs=8,changed_graph_controls=8,invalid_graph_controls=2)
+    clipboard_checks(worker,args.windows,args.report,windows_cases,26 if args.group=="matrices" else 22,details)

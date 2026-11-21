@@ -436,7 +436,7 @@ class Parser {
  bool basisXorContext=false;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
- unsigned matrixEntryNodes=0;
+ unsigned literalEntryNodes=0;
  bool parsingMatrixEntries=false, nextMatrixEntries=false;
  unsigned scalarProductDepth=0;
  unsigned nextBoundIndex=0,indexedReferences=0;
@@ -1060,8 +1060,8 @@ class Parser {
     const unsigned outerNodes=nodes,outerLimit=nodeLimit;
     nodes=0;nodeLimit=512;
     std::string value=expression();
-    matrixEntryNodes+=nodes;
-    if(matrixEntryNodes>4096)throw std::runtime_error("Quantum matrix entries exceed the complexity limit.");
+    literalEntryNodes+=nodes;
+    if(literalEntryNodes>4096)throw std::runtime_error("Quantum matrix entries exceed the complexity limit.");
     nodes=outerNodes;nodeLimit=outerLimit;
     return value;
    };
@@ -1379,6 +1379,30 @@ class Parser {
    // function call. Let product() bind it after any power of that token.
    else if(!numericToken && !indexedScalar && !groupedFactor && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
+    // A copied integer list can have 1,024 entries. Read flat literal data
+    // directly and retain the normal expression budget for computed entries.
+    if(name=="vector") {
+     size_t pos=p,count=0;
+     while(pos<s.size() && count<1024) {
+      while(pos<s.size() && std::isspace((unsigned char)s[pos]))++pos;
+      if(pos<s.size() && s[pos]=='-')++pos;
+      size_t begin=pos;
+      while(pos<s.size() && s[pos]>='0' && s[pos]<='9')++pos;
+      if(pos==begin || (s[begin]=='0' && pos>begin+1))break;
+      ++count;
+      while(pos<s.size() && std::isspace((unsigned char)s[pos]))++pos;
+      if(pos<s.size() && s[pos]==')') {
+       if(count>=256) {
+        literalEntryNodes+=count;
+        if(literalEntryNodes>4096)throw std::runtime_error("Quantum literal entries exceed the complexity limit.");
+        a="vector("+s.substr(p,pos-p)+")";p=pos+1;
+        --depth;diracKind=0;checkSize(a);return a;
+       }
+       break;
+      }
+      if(pos==s.size() || s[pos++]!=',')break;
+     }
+    }
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";
     if(name=="J_z") name="Jz";
