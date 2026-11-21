@@ -97,6 +97,27 @@ std::string booleanGraph(const std::string &outputs) {
  }
  return result+"))";
 }
+std::string quantifiedPaulis(const std::string &clause) {
+ // Match the quantifier as well as the algebra: removing a sign or changing
+ // an index can change whether the statement is universally true.
+ static const std::regex pair(R"re(([A-Z])_([a-z])\1_([a-z])=\1_\3\1_\2\\text\{\(forall\$\2,\3\\in\\\{1,\\ldots,([a-z])\\\}\$\)\})re");
+ static const std::regex independent(R"re(([A-Z])_([a-z])\\notin\\langle\1_1,\\ldots,\1_\{\2-1\},\1_\{\2\+1\},\\ldots,\1_([a-z])\\rangle\\text\{\(forall\$\2\\in\\\{1,\\ldots,\3\\\}\$\)\})re");
+ static const std::regex someAnti(R"re(([A-Z])_([a-z])([A-Z])=-\3\1_\2\\text\{foratleastone\}\2\\in\\\{1,\\ldots,([a-z])\\\})re");
+ static const std::regex allCommute(R"re(([A-Z])([A-Z])_([a-z])=\2_\3\1\\text\{forevery\}\3\\in\\\{1,\\ldots,([a-z])\\\})re");
+ static const std::regex signedMember(R"re(([A-Z])(=|\\neq)\\pm([A-Z])\\text\{(forsome|for)\}\3\\in\\langle([A-Z])_1,\\ldots,\5_([a-z])\\rangle)re");
+ std::smatch m;
+ auto family=[](const std::string &name,const std::string &bound) {return "qindexedentries(\""+name+"_\",1,"+bound+",vector())";};
+ if(std::regex_match(clause,m,pair))return "qpairwisecommute("+family(m[1],m[4])+")";
+ if(std::regex_match(clause,m,independent))return "qindependentpaulis("+family(m[1],m[3])+")";
+ if(std::regex_match(clause,m,someAnti))return "qsomeanticommute("+family(m[1],m[4])+",\""+m[3].str()+"\")";
+ if(std::regex_match(clause,m,allCommute))return "!(qsomeanticommute("+family(m[2],m[4])+",\""+m[1].str()+"\"))";
+ if(std::regex_match(clause,m,signedMember)) {
+  std::string member="qsignedpaulimember("+family(m[5],m[6])+",\""+m[1].str()+"\")";
+  if(m[2]=="=" && m[4]=="forsome")return member;
+  if(m[2]=="\\neq" && m[4]=="for")return "!("+member+")";
+ }
+ return "";
+}
 // In a standalone register declaration, sans-serif capital letters name
 // systems. Preserve their names even when the same letters are Pauli gates.
 std::string systemNames(const std::string &input) {
@@ -1075,6 +1096,31 @@ class TeXReader {
    std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
    if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
+   auto domains=indexedParts(collection,",");
+   if(domains.size()==2) {
+    size_t second=domains[1].find("∈");
+    if(second!=std::string::npos) {
+     std::string other=trim(domains[1].substr(0,second)),product=body;
+     product.erase(std::remove_if(product.begin(),product.end(),asciiSpace),product.end());
+     auto values=[](std::string set) {
+      set=trim(set);const std::string prefix="qset(vector(";
+      if(set.size()<=prefix.size()+2 || set.compare(0,prefix.size(),prefix)!=0 || set.substr(set.size()-2)!="))")
+       return std::vector<std::string>{};
+      return indexedParts(set.substr(prefix.size(),set.size()-prefix.size()-2),",");
+     };
+     auto left=values(domains[0]),right=values(domains[1].substr(second+3));
+     if(product==index+other && !other.empty() && !left.empty() && !right.empty() && left.size()<=1024/right.size()) {
+      bool paulis=std::any_of(right.begin(),right.end(),[](const std::string &e){return trim(e)=="X";}) &&
+                  std::all_of(right.begin(),right.end(),[](const std::string &e){std::string p=trim(e);return p=="qimplicitidentity()" || p=="X" || p=="Y" || p=="Z";});
+      std::string terms;
+      for(const auto &x:left)for(const auto &y:right) {
+       if(!terms.empty())terms+=",";
+       terms+="("+x+")*("+((paulis && trim(y)=="qimplicitidentity()") ? "I" : y)+")";
+      }
+      return "qset(vector("+terms+"))";
+     }
+    }
+   }
    return "qsetimage("+body+","+collection+","+index+")";
   }
   if(membership==std::string::npos || separator==std::string::npos)throw std::runtime_error(error("Use an index, finite collection and predicate in a set builder"));
@@ -1099,6 +1145,65 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(input[pos]=='&' && input.find("\\otimes",pos)<end) {
+   std::string cells;unsigned count=0;
+   bool matched=true;
+   static const std::regex tensorWord(R"(\s*(?:[IXYZ]|\\mathbb\{I\})(?:\s*\\otimes\s*(?:[IXYZ]|\\mathbb\{I\}))*\s*)");
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(row);if(row.compare(0,6,"\\hline")==0)row=trim(row.substr(6));
+    if(row.empty())continue;
+    auto columns=indexedParts(row,"&");if(columns.size()!=alignment.size()) {matched=false;break;}
+    for(size_t j=0;j<columns.size();++j) {
+     std::string entry=trim(columns[j]);
+     if(!count && !j && entry.empty())entry="qoutcome(\"syndrome\")";
+     else if(!count || !j) {
+      if(!std::regex_match(entry,tensorWord)) {matched=false;break;}
+      size_t at=0;while((at=entry.find("\\mathbb{I}",at))!=std::string::npos)entry.replace(at,10," I ");
+      entry=quantumTeX(entry);
+     } else if(entry!="+1" && entry!="1" && entry!="-1") {matched=false;break;}
+     if(!cells.empty())cells+=",";
+     cells+=entry;
+    }
+    if(!matched)break;
+    ++count;
+   }
+   if(matched && count>1) {
+    pos=end+endMarker.size();
+    return "matrix("+std::to_string(count)+","+std::to_string(alignment.size())+",vector("+cells+"))";
+   }
+  }
+  // Each row of a stabilizer generator table is an ordered tensor word.
+  // Preserve it in the compact Pauli representation used by rank and distance.
+  if(alignment.size()>=2 && alignment.size()<=25) {
+   std::string generators;size_t width=0;
+   bool matched=true;
+   for(auto row:indexedParts(input.substr(pos,end-pos),"\\\\")) {
+    row=trim(row);
+    if(row.empty())continue;
+    if(row.front()=='[') {
+     static const std::regex spacing(R"(^\[\s*-?[0-9]+(?:\.[0-9]+)?\s*(?:mm|cm|pt|em|ex)\s*\])");
+     std::smatch match;if(!std::regex_search(row,match,spacing)) {matched=false;break;}
+     row=trim(row.substr(match.length()));
+     if(row.empty())continue;
+    }
+    auto entries=indexedParts(row,"&");
+    if(!width)width=entries.size();
+    if(entries.size()!=width || width<2 || width>25) {matched=false;break;}
+    unsigned x=0,z=0,phase=0;
+    for(auto gate:entries) {
+     gate=trim(gate);
+     if(gate=="\\mathbb{I}")gate="I";
+     if(gate.size()!=1 || gate.find_first_not_of("IXYZ")!=std::string::npos) {matched=false;break;}
+     x=2*x+(gate=="X" || gate=="Y");
+     z=2*z+(gate=="Z" || gate=="Y");
+     if(gate=="Y")phase=(phase+3)%4;
+    }
+    if(!matched)break;
+    if(!generators.empty())generators+=",";
+    generators+="qcompactpauli("+std::to_string(entries.size())+","+std::to_string(x)+","+std::to_string(z)+","+std::to_string(phase)+")";
+   }
+   if(matched && !generators.empty()) {pos=end+endMarker.size();return "vector("+generators+")";}
+  }
   if(alignment.size()==3) {
    auto lines=indexedParts(input.substr(pos,end-pos),"\\\\");
    auto heading=indexedParts(lines.front(),"&");
@@ -2071,7 +2176,34 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,identity,"syndromeI");
   s=std::regex_replace(s,pauli,"syndrome$1$3_$2");
  }
+ if(s.find("\\operatorname{dim}")!=std::string::npos) {
+  static const std::regex subspace(R"(\\operatorname\{dim\}\s*\(\s*\\mathcal\{([A-Z])\}\s*\))");
+  s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
+ }
+ if(mathWrapper && s.find("[[")!=std::string::npos) {
+  static const std::regex parameters(R"(^\s*\[\[\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*\]\]\s*$)");
+  std::smatch m;if(std::regex_match(s,m,parameters))return "vector("+m[1].str()+","+m[2].str()+","+m[3].str()+")";
+ }
+ if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
+  static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
+  s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
+ }
  const std::string whole=trim(s);
+ if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {
+  std::string clause=s;
+  clause.erase(std::remove_if(clause.begin(),clause.end(),asciiSpace),clause.end());
+  static const std::regex space(R"(\\(?:qquad|quad|;|,))");
+  clause=std::regex_replace(clause,space,"");
+  const std::string conjunction=",\\text{but}";
+  size_t at=clause.find(conjunction);
+  std::string first=quantifiedPaulis(clause.substr(0,at));
+  if(!first.empty()) {
+   if(at==std::string::npos)return first;
+   std::string second=quantifiedPaulis(clause.substr(at+conjunction.size()));
+   if(!second.empty())return "("+first+") and ("+second+")";
+  }
+ }
+
  if(whole=="\\wedge" || whole=="\\land")return booleanGraph("0001");
  if(whole=="\\vee" || whole=="\\lor")return booleanGraph("0111");
  if(whole=="\\neg" || whole=="\\lnot")return booleanGraph("10");
@@ -2111,6 +2243,98 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     body="\\sum_"+term[1].str()+" "+op+"*"+argument+"*"+op+"^{\\dagger}";
    }
    s="qkrausapply(\""+name+"\","+argument+")="+body;
+  }
+ }
+ if(whole=="\\pm i" || whole=="\\pm 1") {
+  const std::string value=whole.substr(4);
+  return "qset(vector("+value+",-"+value+"))";
+ }
+ if(s.find("\\langle")!=std::string::npos) {
+  static const std::regex pauliProduct(R"(\s*(?:[IXYZ]|\\mathbb\{I\})(?:\s*\\otimes\s*(?:[IXYZ]|\\mathbb\{I\}))*\s*)");
+  static const std::regex family(R"(\s*([A-Z])_1\s*,\s*\\(?:ldots|cdots)\s*,\s*\1_([a-z])\s*)");
+  size_t at=0;
+  while((at=s.find("\\langle",at))!=std::string::npos) {
+   size_t close=s.find("\\rangle",at+7);if(close==std::string::npos)break;
+   std::string body=s.substr(at+7,close-at-7),group;
+   auto generators=indexedParts(body,",");
+   std::string prefix=trim(s.substr(0,at));
+   bool membership=prefix.size()>=6 && prefix.compare(prefix.size()-6,6,"\\notin")==0;
+   std::smatch match;
+   if(std::regex_match(body,match,family))
+    group="qpauligroup(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()))";
+   else if((generators.size()>1 || membership) && std::all_of(generators.begin(),generators.end(),[](const std::string &g){return std::regex_match(g,pauliProduct);}))
+    group="qpauligroup(vector("+body+"))";
+   if(group.empty()) {at+=7;continue;}
+   s.replace(at,close+7-at,group);at+=group.size();
+  }
+ }
+ // Inside a Pauli tensor word every factor acts on a qubit.
+ if(s.find("\\otimes")!=std::string::npos && s.find("\\mathbb{I}")!=std::string::npos) {
+  static const std::regex word(R"((?:\b[XYZ]\b|\\mathbb\{I\})(?:\s*\\otimes\s*(?:\b[XYZ]\b|\\mathbb\{I\}))+)");
+  std::string expanded;size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),word),end;it!=end;++it) {
+   std::string term=it->str();
+   if(term.find_first_of("XYZ")==std::string::npos)continue;
+   expanded.append(s,start,it->position()-start);
+   for(size_t at=0;(at=term.find("\\mathbb{I}",at))!=std::string::npos;++at)term.replace(at,10," I ");
+   expanded+=term;start=it->position()+it->length();
+  }
+  if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
+ }
+ if(s.find("\\cdots")!=std::string::npos) {
+  static const std::regex monotone(R"(^\s*(\\?[A-Za-z]+)_1\s*([<>])\s*\1_2\s*\2\s*\\cdots\s*\2\s*\1_([a-z])\s*$)");
+  std::smatch match;
+  if(std::regex_match(s,match,monotone))
+   return "qstrictorder(qindexedentries(\""+trim(quantumTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
+ }
+ if(s.find("\\sum_")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  const std::string bounds=R"(\\sum_\{\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\\{0,1\\\}\s*\}\s*)";
+  const std::string terms=R"(([A-Z])_1\^\{\1_1\}\s*\\cdots\s*\3_\2\^\{\1_\2\})";
+  static const std::regex traced(bounds+R"(\\operatorname\{Tr\}\s*\(\s*)"+terms+R"(\s*\))");
+  static const std::regex untraced(bounds+terms);
+  const std::string product="qbinarypowersum(qindexedentries(\"$3_\",1,$2,vector()))";
+  s=std::regex_replace(s,traced,"qtrace("+product+")");
+  s=std::regex_replace(s,untraced,product);
+ }
+ if(s.find("\\biggl")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  static const std::regex projectors(R"(\\biggl\(\\frac\{\\mathbb\{I\}\^\{\\otimes\s+([a-z])\}\s*\+\s*([A-Z])_1\}\{2\}\\biggr\)\s*\\cdots\s*\\biggl\(\\frac\{\\mathbb\{I\}\^\{\\otimes\s+\1\}\s*\+\s*\2_([a-z])\}\{2\}\\biggr\))");
+  s=std::regex_replace(s,projectors,"qprojectorproduct(qindexedentries(\"$2_\",1,$3,vector()),2^($1))");
+ }
+ if(s.find("\\cdots")!=std::string::npos) {
+  static const std::regex products(R"(((?:[A-Z]|\\Pi))_1(?:\^\{?([01]|[a-z]_1)\}?)?\s*\\cdots\s*\1_([a-z])(?:\^\{?([01]|[a-z]_[a-z])\}?)?)");
+  std::string expanded;size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),products),end;it!=end;++it) {
+   const auto &m=*it;
+   std::string first=m[2].str(),last=m[4].str(),upper=m[3].str();
+   std::string power=first.empty() ? "1" : first;
+   if(first!=last) {
+    if(first.size()!=3 || last!=first.substr(0,2)+upper)continue;
+    power="qindexedentries(\""+first.substr(0,2)+"\",1,"+upper+",vector())";
+   }
+   expanded.append(s,start,m.position()-start);
+   expanded+="qorderedpowers(qindexedentries(\""+trim(quantumTeX(m[1].str()))+"_\",1,"+upper+",vector()),"+power+")";
+   start=m.position()+m.length();
+  }
+  if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
+ }
+ if(s.find("\\in")!=std::string::npos && s.find("\\ldots")!=std::string::npos) {
+  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z]|[0-9]+)\s*\\in\s*(\\\{[^{}]+\\\})\s*$)");
+  std::smatch match;
+  if(std::regex_match(s,match,membership))
+   return "qallmembers(qindexedentries(\""+match[1].str()+"_\",1,"+match[2].str()+",vector()),"+quantumTeX(match[3].str())+")";
+ }
+ if(s.find("\\cdots")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  static const std::regex fixed(R"(([A-Z])_1\s*(\\vert\s*\\[A-Za-z]+\s*\\rangle)\s*=\s*\\cdots\s*=\s*\1_([a-z])\s*\2\s*=\s*\2)");
+  std::smatch match;
+  if(std::regex_search(s,match,fixed)) {
+   std::string operators="qindexedentries(\""+match[1].str()+"_\",1,"+match[3].str()+",vector())";
+   std::string before=trim(match.prefix().str()),after=trim(match.suffix().str());
+   if(before.empty() && after.empty())return "qfixedby("+operators+","+quantumTeX(match[2].str())+")";
+   const size_t brace=before.find("\\bigl\\{");
+   if(brace!=std::string::npos && after=="\\bigr\\}") {
+    std::string binder=trim(before.substr(brace+7));
+    if(binder==match[2].str()+" \\,:\\,")s=before.substr(0,brace)+"qfixedspace("+operators+")";
+   }
   }
  }
  std::string systems=systemNames(s);

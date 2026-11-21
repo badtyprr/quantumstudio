@@ -1,3 +1,4 @@
+#include "QuantumStabilizer.h"
 // GPL-2.0-or-later; see COPYING. One request per process, UTF-8 stdin/stdout.
 #include <libqalculate/Calculator.h>
 #include <libqalculate/MathStructure.h>
@@ -83,31 +84,6 @@ static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=
  for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k],orderedOnly))return true;
  return false;
 }
-// Recognize large real Pauli tensor products from their exact matrix entries.
-static std::string compactPauliMatrix(const MathStructure &matrix) {
- unsigned n=matrix.rows();
- if(n<64 || n!=matrix.columns() || (n&(n-1)) || matrix.isApproximate())return "";
- unsigned flip=0,phase=0;
- while(flip<n && matrix.getElement(1,flip+1)->isZero())++flip;
- if(flip==n || !matrix.getElement(1,flip+1)->isOne())return "";
- for(unsigned bit=1;bit<n;bit*=2)
-  if(matrix.getElement(bit+1,(bit^flip)+1)->isMinusOne())phase|=bit;
- if(flip&phase)return "";
- for(unsigned row=0;row<n;++row) {
-  bool negative=false;
-  for(unsigned bits=row&phase;bits;bits&=bits-1)negative=!negative;
-  for(unsigned col=0;col<n;++col) {
-   const MathStructure &entry=*matrix.getElement(row+1,col+1);
-   if(col!=(row^flip) ? !entry.isZero() : negative ? !entry.isMinusOne() : !entry.isOne())return "";
-  }
- }
- std::string factors;
- for(unsigned bit=n/2;bit;bit/=2) {
-  if(!factors.empty())factors+="@";
-  factors+=flip&bit ? "X" : phase&bit ? "Z" : "I";
- }
- return "("+factors+")";
-}
 static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode,bool explicitEntries) {
  // Identify physical units and prefixes separately from quantum variables.
  if(quantumMode && result.isUnit()) {
@@ -118,7 +94,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  // for implicit multiplication by the quantum parser.
  bool scalarMatrix=result.isMatrix();
  if(quantumMode && scalarMatrix) {
-  std::string compact=compactPauliMatrix(result);
+  std::string compact=quantumPauliTensorNotation(result);
   if(!compact.empty())return compact;
  }
  if(scalarMatrix)for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c)
@@ -158,7 +134,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    std::string text=(name=="qmatrix" ? "matrix" : name)+"(";
    for(size_t k=0;k<result.size();++k) {
     if(k)text+=",";
-    const bool entries=explicitEntries || ((name=="qmatrix" || name=="matrix") && k==2);
+    const bool entries=explicitEntries || name=="qtensor" || name=="qmember" || ((name=="qmatrix" || name=="matrix") && k==2);
     text+=copyText(result[k],po,quantumMode,entries);
    }
    return text+")";
@@ -182,6 +158,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return text+")";
   }
+  if(quantumMode && result.type()==STRUCT_LOGICAL_NOT && result.size()==1)
+   return "!("+copyText(result[0],po,true)+")";
   if(result.isComparison() && result.size()==2) {
    const char *comparison="==";
    switch(result.comparisonType()) {
@@ -407,6 +385,35 @@ int main(int argc,char **argv) {
  if(quantumStart && input.find("\\begin")!=std::string::npos)try {
   quantumTeX(input.substr(quantumStart),&independentLines);
  } catch(const std::exception &error) {std::cerr << error.what() << '\n';return 2;}
+ // A whole alignment of wide Pauli words can be evaluated in the exact
+ // binary symplectic representation. Other uses still receive dense matrices.
+ std::vector<std::string> pauliLines;
+ if(json && !approximate && independentLines.size()>1 && input.find("context(")==std::string::npos) {
+  std::string packed="quantum:vector(";
+  for(const auto &line:independentLines) {
+   std::string word,shown;
+   std::string literal;
+   for(unsigned char c:line)if(!std::isspace(c))literal+=c;
+   if(literal.size()>1 && literal.front()=='(' && literal.back()==')')literal=literal.substr(1,literal.size()-2);
+   size_t pos=0;
+   while(pos<literal.size()) {
+    char gate=literal[pos];
+    if(literal.compare(pos,19,"qimplicitidentity()")==0) {gate='I';pos+=19;}
+    else if(gate=='I' || gate=='X' || gate=='Y' || gate=='Z')++pos;
+    else {word.clear();break;}
+    word+=gate;
+    if(!shown.empty())shown+="@";
+    shown+=gate;
+    if(pos==literal.size())break;
+    if(literal[pos++]!='@' || pos==literal.size()) {word.clear();break;}
+   }
+   if(word.size()<6 || word.size()>9) {pauliLines.clear();break;}
+   if(!pauliLines.empty())packed+=",";
+   packed+="compact_pauli(\""+word+"\")";
+   pauliLines.push_back("("+shown+")");
+  }
+  if(!pauliLines.empty())input=packed+")";
+ }
  MathStructure result=calculator.calculate(input,eo);
  bool failed=false;
  while(calculator.message()) {
@@ -426,15 +433,25 @@ int main(int argc,char **argv) {
   po.number_fraction_format=FRACTION_FRACTIONAL;po.restrict_fraction_length=false;
  }
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
- MathStructure display=result; display.format(po);
+ // Wide Pauli tables have compact exact forms. Formatting each dense zero
+ // before replacing the text can exhaust the interactive calculation deadline.
+ if(pauliLines.empty() && json && multipleLines)for(size_t i=0;i<result.size();++i) {
+  if(!result[i].isMatrix()) {pauliLines.clear();break;}
+  std::string word=quantumPauliTensorNotation(result[i]);
+  if(word.empty()) {pauliLines.clear();break;}
+  pauliLines.push_back(word);
+ }
+ MathStructure display;
+ if(pauliLines.empty()) {display=result;display.format(po);}
  if(!json) std::cout << display.print(po) << std::endl;
  else {
   size_t rows=!multipleLines && result.isMatrix() ? result.rows() : 0, cols=!multipleLines && result.isMatrix() ? result.columns() : 0;
-  std::cout << "{\"text\":"; jsonString(display.print(po));
+  std::string plain=pauliLines.empty() ? display.print(po) : "";
   std::string shown;
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
-   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    if(i)shown+="\n\n";
+   if(!pauliLines.empty()) {shown+=std::to_string(i+1)+".  "+pauliLines[i];continue;}
+   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    std::string lineDisplay=QuantumDisplay::print(line,po);
    if(lineDisplay.size()>32768 && !result[i].isApproximate()) {
     PrintOptions exact=po;exact.number_fraction_format=FRACTION_FRACTIONAL;exact.restrict_fraction_length=false;
@@ -444,6 +461,8 @@ int main(int argc,char **argv) {
    shown+=std::to_string(i+1)+".  "+lineDisplay;
   } else if(displayKetCollection(result,po,shown))rows=cols=0;
   else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
+  if(!pauliLines.empty() || (multipleLines && plain.size()>32768 && shown.size()<32768))plain=shown;
+  std::cout << "{\"text\":"; jsonString(plain);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
   // display is a rounded decimal. Decimal-exact mode still limits long
@@ -454,7 +473,7 @@ int main(int argc,char **argv) {
   std::string copied;
   if(multipleLines) {
    copied="\\begin{gathered}";
-   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=copyText(result[i],copyOptions,true);}
+   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=pauliLines.empty() ? copyText(result[i],copyOptions,true) : pauliLines[i];}
    copied+="\\end{gathered}";
   } else copied=copyText(result,copyOptions,quantumStart!=0);
   std::cout << ",\"copy_text\":"; jsonString(copied);

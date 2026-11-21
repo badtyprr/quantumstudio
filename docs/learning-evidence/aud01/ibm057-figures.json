@@ -1,0 +1,50 @@
+[
+  {
+    "lesson": 58,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-Pauli.svg",
+    "sha256": "3e1d6a41e08b15064c73f2e1a1bbb41a5746500ca0fcb48515dc1abf2ec5011d",
+    "check": "Both ancilla outcomes project into the appropriate X, Y or Z eigenspace."
+  },
+  {
+    "lesson": 58,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-3-qubit-Pauli.svg",
+    "sha256": "20de27ff64837de5b37accd8e312ddc82889c1b0f928005c3bca5d67ed83422d",
+    "check": "Three controlled factors share one ancilla. Verified both outcome eigenspaces for each of 27 tensor words."
+  },
+  {
+    "lesson": 58,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-ZZ.svg",
+    "sha256": "d8a03d63c7d109a11791905490ac0ccd68cb4b038f2d4ed1ed657e4fd8474be2",
+    "check": "Both controlled Z gates imprint the parity phase before the ancilla Hadamard."
+  },
+  {
+    "lesson": 58,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/simplified-ZZ.svg",
+    "sha256": "5320efa75e83b717c1ea6dd5a6172261b79d15bb9b3f8dc9adc53e9f698ca47a",
+    "check": "Two data-controlled CNOTs measure the same parity for every two-bit word."
+  },
+  {
+    "lesson": 59,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/3-bit-repetition-parity-checks.svg",
+    "sha256": "38ca740348f80d9f7c0458d00af904d700405016133838074cb5f791ab6876ac",
+    "check": "The two ancillas read the first and second adjacent pair parities. Both read zero on the entire code space."
+  },
+  {
+    "lesson": 59,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-generator-table.svg",
+    "sha256": "07f1c48a9678258751fa4488968eaf97539b988f8f47989c82042343ed9da561",
+    "check": "Verified both basis states in each of the four joint eigenspaces."
+  },
+  {
+    "lesson": 60,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/Steane-encoder.svg",
+    "sha256": "321a18a3d76c391d35f62f1d4ebd3bfd14fe592440b08a10847945a6f1298db4",
+    "check": "The eleven CNOTs and three Hadamards produce normalized, disjoint logical columns stabilized by all six Steane checks. Logical X exchanges the columns."
+  },
+  {
+    "lesson": 60,
+    "path": "/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/lowest-weight-correction.svg",
+    "sha256": "ae37b73b30ed4dd301c1792a32efa71ba1a1163798ca43ba51fdc3fc63d06f79",
+    "check": "For the distance-three Steane code, all 21 weight-one errors have distinct nonzero syndromes. Each minimum-weight correction returns the state to its logical input."
+  }
+]

@@ -1189,6 +1189,11 @@ class QuantumIndexedFunction: public MathFunction {
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
  bool representsNonMatrix(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qfixedspace") {
+   MathStructure operators=raw[0];operators.eval(eo);
+   if(operators.equals(raw[0]))return 0;
+   out.set(this,&operators,NULL);return 1;
+  }
   if(op=="qeventprob") {
    MathStructure distribution=raw[0], index=raw[1];
    distribution.eval(eo);index.eval(eo);
@@ -2296,6 +2301,11 @@ class QuantumIndexedFunction: public MathFunction {
     }
     return 0;
    }
+   if(op=="qmember" && members.isFunction() && members.function()->referenceName()=="qfixedspace") {
+    out.set(CALCULATOR->getFunction("qfixedby"),&members[0],&raw[0],NULL);return 1;
+   }
+   // The generator family can remain symbolic until its operators are supplied.
+   if(op=="qmember" && members.isFunction() && members.function()->referenceName()=="qpauligroup")return 0;
    bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
    if(explicitSet) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
@@ -2612,6 +2622,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));

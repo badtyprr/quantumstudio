@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/stabilizer-formalism/pauli-operations-and-observables.ipynb",
+  "notebook_sha256": "0433727528907ded030073bbbf7ee5a0660767aa7be20eccaf62fd6607f59f7b",
+  "worker_sha256": "c0f881671d83f34f96ff5e205ab18d1022b36fd2ee35e7d26829abc7b272c0df",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "3b399f1cadde9f85ec0f17c611317f05dbaad7d517787ebd7d282c54f022a00e",
+  "suite": {
+    "passed": true,
+    "checks": 945,
+    "calls": 105,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 105,
+    "restored_identically": 105,
+    "stable_after_text_reentry": 105
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

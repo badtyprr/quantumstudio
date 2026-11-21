@@ -265,7 +265,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpoststate",3},
  {"qnaimark",2},
  {"qborn",2},
- {"qchannel",2},{"qkrausapply",2},{"qoperatorref",1},
+ {"qchannel",2},{"qorderedpowers",2},{"qsignedequal",2},{"qstrictorder",2},{"qallmembers",2},{"qfixedby",2},{"qbinarypowersum",1},{"qprojectorproduct",2},{"qfixedspace",1},{"qspacedimension",1},{"qpauligroup",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qkrausapply",2},{"qoperatorref",1},
  {"qchoi",1},
  {"qchi",1},
  {"qspre",1},
@@ -2342,7 +2342,10 @@ class Parser {
     // In a ± b + c the trailing c belongs to both alternatives.
     std::string center=additiveTail(right);
     std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
-    result="qmember("+left+",qset(vector("+pair+")))";checkSize(result);
+    if(center=="0" && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos))
+     result="qsignedequal("+left+","+magnitude+")";
+    else result="qmember("+left+",qset(vector("+pair+")))";
+    checkSize(result);
     if(!takeComparisonRelation().empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
     return result;
    }
