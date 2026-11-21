@@ -837,6 +837,8 @@ class Parser {
   return "";
  }
  std::string basisState(const std::string &label,const std::string &dimension="") {
+  if(label.find(" qpostmod ")!=std::string::npos)
+   throw std::runtime_error("A modular basis label requires an explicit register encoding.");
   // TeX groups each sign in a product of Hadamard-basis states.
   const std::string signs=labelText(label);
   if(dimension.empty() && !signs.empty() && signs.size()%3==0) {

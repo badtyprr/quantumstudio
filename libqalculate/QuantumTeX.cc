@@ -1733,7 +1733,14 @@ class TeXReader {
        *preceding="(qbitvalue(qbitlabel("+lhs.substr(2)+",1))/2)=";
      }
     }
-    return read(0,true,env);
+    std::string branches=read(0,true,env);
+    if(preceding && branches.find(" qpostmod ")!=std::string::npos) {
+     std::string lhs=trim(*preceding);
+     static const std::regex indexedCall(R"(^[A-Za-z]+_[A-Za-z0-9]+\s*\([A-Za-z]+\)\s*=$)");
+     if(std::regex_match(lhs,indexedCall))
+      throw std::runtime_error(error("An indexed modular map requires an explicit function or operator binding"));
+    }
+    return branches;
    }
    if(env=="aligned" || env=="align" || env=="align*" || env=="gathered" || env=="gather" || env=="gather*" || env=="split") {
     space();
