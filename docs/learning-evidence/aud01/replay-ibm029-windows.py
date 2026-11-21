@@ -17,7 +17,7 @@ args = parser.parse_args()
 inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
 lesson = rows[0]["id"].split("-")[0].lower()
-assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035","ibm046","ibm047"}
+assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035","ibm045","ibm046","ibm047"}
 pinned = json.loads(Path(__file__).with_name(lesson+"-inventory.json").read_bytes())
 assert inventory["source_sha256"] == pinned["source_sha256"]
 assert [(r["id"],r["literal"]) for r in rows] == [(r["id"],r["literal"]) for r in pinned["rows"]]

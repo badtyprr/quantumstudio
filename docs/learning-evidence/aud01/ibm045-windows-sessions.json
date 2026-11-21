@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/circuits.ipynb",
+  "notebook_sha256": "6b5989521e76ced735050fe1780acaa60c01452629fedc6612867673b409df7b",
+  "worker_sha256": "95019ebd43c441a5320a76e31ba883ee5626b47f3fd05e62ef7f2fbcce8299f2",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "be7a65985fe6aaf4687ac1b526c12facab3c31262d41ae4eb47ebfb2800abedf",
+  "suite": {
+    "passed": true,
+    "checks": 684,
+    "calls": 76,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 76,
+    "restored_identically": 76,
+    "stable_after_text_reentry": 76
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

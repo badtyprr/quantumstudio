@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/circuits.ipynb",
   "source_sha256": "6b5989521e76ced735050fe1780acaa60c01452629fedc6612867673b409df7b",
-  "worker_sha256": "6c63fcfd11fd4dd965800a99732dbd04df6acae06c97033528239f0fba320fe9",
-  "revision": "415eddddd9c1aef00c628c92be15f138b3becffc",
+  "worker_sha256": "95019ebd43c441a5320a76e31ba883ee5626b47f3fd05e62ef7f2fbcce8299f2",
+  "revision": "ac2034e085d5a4efc5bc598081360d5a0fe6d47e",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 65,
-    "diagnostic": 11
+    "exact": 76
   },
   "figures": [
     {
@@ -158,8 +157,9 @@
       "start": 1529,
       "end": 1537,
       "literal": "$\\wedge$",
-      "status": "diagnostic",
-      "message": "Expected an operand; group a logical predicate when using it in arithmetic."
+      "status": "exact",
+      "display": "\\{(bitstring(0, 2), 0), (bitstring(1, 2), 0), (bitstring(2, 2), 0), (bitstring(3, 2), 1)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1))))"
     },
     {
       "id": "IBM045-6b598952-M004",
@@ -167,8 +167,9 @@
       "start": 1558,
       "end": 1564,
       "literal": "$\\vee$",
-      "status": "diagnostic",
-      "message": "Expected an operand; group a logical predicate when using it in arithmetic."
+      "status": "exact",
+      "display": "\\{(bitstring(0, 2), 0), (bitstring(1, 2), 1), (bitstring(2, 2), 1), (bitstring(3, 2), 1)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(2,2),1)),qtuple(vector(qbitlabel(3,2),1))))"
     },
     {
       "id": "IBM045-6b598952-M005",
@@ -176,8 +177,9 @@
       "start": 1590,
       "end": 1596,
       "literal": "$\\neg$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 6"
+      "status": "exact",
+      "display": "\\{(bitstring(0, 1), 1), (bitstring(1, 1), 0)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,1),1)),qtuple(vector(qbitlabel(1,1),0))))"
     },
     {
       "id": "IBM045-6b598952-M006",
@@ -185,8 +187,9 @@
       "start": 1730,
       "end": 2073,
       "literal": "$$\n\\begin{array}{c}\n\\begin{array}{c|c}\n  a & \\neg a\\\\\n  \\hline\n  0 & 1\\\\\n  1 & 0\\\\\n\\end{array}\\\\\n\\\\\n\\\\\n\\end{array}\n\\qquad\\quad\n\\begin{array}{c|c}\n  ab & a \\wedge b\\\\\n  \\hline\n  00 & 0\\\\\n  01 & 0\\\\\n  10 & 0\\\\\n  11 & 1\n\\end{array}\n\\qquad\\quad\n\\begin{array}{c|c}\n  ab & a \\vee b\\\\\n  \\hline\n  00 & 0\\\\\n  01 & 1\\\\\n  10 & 1\\\\\n  11 & 1\n\\end{array}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 52"
+      "status": "exact",
+      "display": "[qset([qtuple([qbitlabel(0, 1)  1])  qtuple([qbitlabel(1, 1)  0])])  qset([qtuple([qbitlabel(0, 2)  0])  qtuple([qbitlabel(1, 2)  0])  qtuple([qbitlabel(2, 2)  0])  qtuple([qbitlabel(3, 2)  1])])  qset([qtuple([qbitlabel(0, 2)  0])  qtuple([qbitlabel(1, 2)  1])  qtuple([qbitlabel(2, 2)  1])  qtuple([qbitlabel(3, 2)  1])])]",
+      "copy": "vector(qset(vector(qtuple(vector(qbitlabel(0,1),1)),qtuple(vector(qbitlabel(1,1),0)))),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),0)),qtuple(vector(qbitlabel(2,2),0)),qtuple(vector(qbitlabel(3,2),1)))),qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(2,2),1)),qtuple(vector(qbitlabel(3,2),1)))))"
     },
     {
       "id": "IBM045-6b598952-M007",
@@ -214,8 +217,9 @@
       "start": 3274,
       "end": 3282,
       "literal": "$\\oplus$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 1"
+      "status": "exact",
+      "display": "\\{(bitstring(0, 2), 0), (bitstring(1, 2), 1), (bitstring(2, 2), 1), (bitstring(3, 2), 0)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(2,2),1)),qtuple(vector(qbitlabel(3,2),0))))"
     },
     {
       "id": "IBM045-6b598952-M010",
@@ -223,8 +227,9 @@
       "start": 3285,
       "end": 3392,
       "literal": "$$\n\\begin{array}{c|c}\n  ab & a \\oplus b\\\\\n  \\hline\n  00 & 0\\\\\n  01 & 1\\\\\n  10 & 1\\\\\n  11 & 0\n\\end{array}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 40"
+      "status": "exact",
+      "display": "\\{(bitstring(0, 2), 0), (bitstring(1, 2), 1), (bitstring(2, 2), 1), (bitstring(3, 2), 0)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(2,2),1)),qtuple(vector(qbitlabel(3,2),0))))"
     },
     {
       "id": "IBM045-6b598952-M011",
@@ -442,8 +447,9 @@
       "start": 6921,
       "end": 6929,
       "literal": "$\\oplus$",
-      "status": "diagnostic",
-      "message": "Expected a quantum expression at byte 1"
+      "status": "exact",
+      "display": "\\{(bitstring(0, 2), 0), (bitstring(1, 2), 1), (bitstring(2, 2), 1), (bitstring(3, 2), 0)\\}",
+      "copy": "qset(vector(qtuple(vector(qbitlabel(0,2),0)),qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(2,2),1)),qtuple(vector(qbitlabel(3,2),0))))"
     },
     {
       "id": "IBM045-6b598952-M033",
@@ -491,8 +497,9 @@
       "start": 7892,
       "end": 7934,
       "literal": "$(\\mathsf{q_{n-1}},\\ldots,\\mathsf{q_{0}})$",
-      "status": "diagnostic",
-      "message": "Invalid TeX name at byte 11"
+      "status": "exact",
+      "display": "qreverseindexedlist(\"q_\", 0, qsub(n, 1), [])",
+      "copy": "qreverseindexedlist(\"q_\",0,qsub(n,1),vector())"
     },
     {
       "id": "IBM045-6b598952-M038",
@@ -500,8 +507,9 @@
       "start": 7941,
       "end": 7957,
       "literal": "$\\mathsf{q_{0}}$",
-      "status": "diagnostic",
-      "message": "Invalid TeX name at byte 10"
+      "status": "exact",
+      "display": "\"q_0\"",
+      "copy": "\"q_0\""
     },
     {
       "id": "IBM045-6b598952-M039",
@@ -509,8 +517,9 @@
       "start": 7989,
       "end": 8007,
       "literal": "$\\mathsf{q_{n-1}}$",
-      "status": "diagnostic",
-      "message": "Invalid TeX name at byte 10"
+      "status": "exact",
+      "display": "q_(n − 1)",
+      "copy": "qindexedlabel(\"q_\",qsub(n,1),\"\")"
     },
     {
       "id": "IBM045-6b598952-M040",
@@ -518,8 +527,9 @@
       "start": 8398,
       "end": 8438,
       "literal": "$\\mathsf{q_{0}},\\ldots,\\mathsf{q_{n-1}}$",
-      "status": "diagnostic",
-      "message": "Invalid TeX name at byte 10"
+      "status": "exact",
+      "display": "qindexedlist(\"q_\", 0, qsub(n, 1), [])",
+      "copy": "qindexedlist(\"q_\",0,qsub(n,1),vector())"
     },
     {
       "id": "IBM045-6b598952-M041",
