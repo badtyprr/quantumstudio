@@ -929,6 +929,55 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=value;return 1;
   }
+  if(op=="qwireoperatorlike") {
+   MathStructure gate=raw[0],wire=raw[1],reference=raw[2];
+   gate.eval(eo);wire.eval(eo);reference.eval(eo);
+   if(gate.isMatrix() && !reference.isMatrix() && !gate.equals(raw[0])) {
+    out.set(this,&gate,&wire,&raw[2],NULL);return 1;
+   }
+   if(!gate.isMatrix() || !wire.isNumber() || !reference.isMatrix())return 0;
+   size_t n=reference.rows(),width=0;
+   for(size_t size=n;size>1;size>>=1)++width;
+   if(!n || n!=reference.columns() || (n&(n-1)) || gate.rows()!=2 || gate.columns()!=2 ||
+      !wire.number().isInteger() || wire.number().isNegative() || wire.number()>=Number((long int)width)) {
+    CALCULATOR->error(true,"A gate embedding needs a qubit register, a two-by-two gate and an in-range wire.",NULL);return 0;
+   }
+   size_t flip=size_t(1)<<wire.number().intValue();
+   out.clearMatrix();out.resizeMatrix(n,n,m_zero);
+   for(size_t c=0;c<n;++c) {
+    if(CALCULATOR->aborted())return 0;
+    size_t bit=(c & flip) ? 1 : 0;
+    *out.getElement((c & ~flip)+1,c+1)=*gate.getElement(1,bit+1);
+    *out.getElement((c | flip)+1,c+1)=*gate.getElement(2,bit+1);
+   }
+   return 1;
+  }
+  if(op=="qwireapply") {
+   MathStructure gate=raw[0],target=raw[1],control=raw[2],state=raw[3];
+   gate.eval(eo);target.eval(eo);control.eval(eo);state.eval(eo);
+   if(!gate.isMatrix() || !state.isMatrix() || !target.isNumber() || !control.isNumber())return 0;
+   size_t dimension=state.rows(),width=0;
+   for(size_t n=dimension;n>1;n>>=1)++width;
+   if(!dimension || (dimension & (dimension-1)) || state.columns()!=1 || gate.rows()!=2 || gate.columns()!=2 ||
+      !target.number().isInteger() || target.number().isNegative() || target.number()>=Number((long int)width) ||
+      !control.number().isInteger() || control.number()<Number(-1) || control.number()>=Number((long int)width) || control==target) {
+    CALCULATOR->error(true,"Indexed gates require a two-by-two gate, a qubit ket and distinct in-range wires.",NULL);return 0;
+   }
+   size_t flip=size_t(1)<<target.number().intValue();
+   size_t enable=control.number().isNegative() ? 0 : size_t(1)<<control.number().intValue();
+   out=state;
+   for(size_t low=0;low<dimension;++low) {
+    if((low & flip) || (enable && !(low & enable)))continue;
+    if(CALCULATOR->aborted())return 0;
+    for(size_t bit=0;bit<2;++bit) {
+     MathStructure value=*gate.getElement(bit+1,1),other=*gate.getElement(bit+1,2);
+     value.multiply(*state.getElement(low+1,1));other.multiply(*state.getElement((low|flip)+1,1));
+     value.add(other);value.eval(eo);
+     *out.getElement((bit ? low|flip : low)+1,1)=value;
+    }
+   }
+   return 1;
+  }
   if(op=="qzeroimage") {
    MathStructure opMatrix=raw[0];opMatrix.eval(eo);
    if(!opMatrix.isMatrix()) {
@@ -1640,6 +1689,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qzeroimage",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qwireapply",4));
+ calculator.addFunction(new QuantumAlgebraFunction("qwireoperatorlike",3));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));

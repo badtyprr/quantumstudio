@@ -2366,11 +2366,71 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "qrealvectormember("+quantumTeX("$"+dimensions[1].str()+"$")+","+dimension+")";
    }
   }
+  // In variational notation rho inside a ket names a state, including
+  // when rho elsewhere in the same document denotes a density operator.
+  static const std::regex rhoKet(R"(\|\s*\\rho\s*\\rangle)");
+  s=std::regex_replace(s,rhoKet,"qketstate(\"ρ_ref\")");
+  static const std::regex unbracedTheta(R"(\\vec\s*\\theta(?![A-Za-z]))");
+  s=std::regex_replace(s,unbracedTheta,"\\vec{\\theta}");
+  static const std::regex optimum(R"(\\vec\{\\theta\}\^(?:\*|\{\*\}))");
+  s=std::regex_replace(s,optimum,"qvectorref(\"θ_star\")");
+  if(s.find("\\pmod")==std::string::npos && s.find("\\bmod")==std::string::npos &&
+     (s.find("qketstate(\"ρ_ref\")")!=std::string::npos || s.find("U_R")!=std::string::npos ||
+      s.find("U_{R}")!=std::string::npos || s.find("U_V")!=std::string::npos)) {
+   static const std::regex definition(R"(\\equiv\b)");
+   s=std::regex_replace(s,definition,"=");
+  }
+  if(s.find("\\rangle")!=std::string::npos && s.find('_')!=std::string::npos) {
+   static const std::string local=R"((?:[XYZH]_(?:[0-9]|\{[0-9]+\})|CNOT_\{[0-9]{2}\}))";
+   static const std::regex action("((?:"+local+"\\s*)+)\\|([01]+)\\\\rangle");
+   static const std::regex gate(R"(([XYZH])_\{?([0-9]+)\}?|CNOT_\{([0-9])([0-9])\})");
+   std::smatch match;
+   while(std::regex_search(s,match,action)) {
+    std::string gates=match[1].str(),state="|"+match[2].str()+">";
+    if(std::regex_match(s.substr(0,match.position()),std::regex(R"(^\s*U_(?:R|\{R\})\s*=\s*$)")))
+     throw std::runtime_error("A reference operator cannot equal a prepared ket. Apply the operator to the all-zero input to compare the two states.");
+    std::vector<std::string> applications;
+    for(std::sregex_iterator it(gates.begin(),gates.end(),gate),end;it!=end;++it) {
+     auto &g=*it;
+     applications.push_back(g[1].matched ? "qwireapply("+g[1].str()+","+g[2].str()+",-1," :
+          "qwireapply(X,"+g[4].str()+","+g[3].str()+",");
+    }
+    for(auto it=applications.rbegin();it!=applications.rend();++it)state=*it+state+")";
+    s.replace(match.position(),match.length(),state);
+   }
+  }
+  static const std::regex referenceGate(R"(^\s*U_(?:R|\{R\})\s*=\s*(I|([XYZH])_\{?([0-9]+)\}?)\s*$)");
+  std::smatch refGate;
+  if(std::regex_match(s,refGate,referenceGate)) {
+   const std::string ref="qoperatorref(\"U_R\")";
+   std::string gate=refGate[1].str()=="I" ? "qidentitylike("+ref+")" :
+      "qwireoperatorlike("+refGate[2].str()+","+refGate[3].str()+","+ref+")";
+   return "qcompare("+ref+","+gate+",4)";
+  }
+  static const std::regex referenceZero(R"(U_(?:R|\{R\})\s*\|0\\rangle)");
+  s=std::regex_replace(s,referenceZero,"qzeroimage(qoperatorref(\"U_R\"))");
+  static const std::regex unitaryReference(R"(U_(?:R|\{R\})(?![A-Za-z0-9_\"']))");
+  s=std::regex_replace(s,unitaryReference,"qoperatorref(\"U_R\")");
+  static const std::regex layer(R"(U_(?:V|\{V\})\s*\()");
+  s=std::regex_replace(s,layer,"qoperatorat(\"U_V\",");
+  static const std::regex gradient(R"(\\vec\{\\nabla\}\s*C\s*\()");
+  s=std::regex_replace(s,gradient,"qfeatureat(\"∇C\",");
+  static const std::regex costOnVector(R"(\bC\(\s*(?=\{?(?:\\vec|qvectorref)))");
+  s=std::regex_replace(s,costOnVector,"qscalarat(\"C\",");
   static const std::regex probability(R"(^\s*P_([a-z0-9])\s*=\s*\|\\langle\s*\\phi_\1\s*\|\s*\\psi\s*\\rangle\|\^2\s*$)");
   std::smatch prob;
   if(std::regex_match(s,prob,probability)) {
    std::string index=prob[1].str();
    return "qcompare(\"P_"+index+"\",qpower(qbars(qmul(qdag(qketstate(\"φ_"+index+"\")),qketstate(\"ψ\"))),2),4)";
+  }
+  static const std::regex overlapProbability(R"(^\s*([pP]_(?:[A-Za-z0-9]|\\[a-zA-Z]+))\s*=\s*\|\s*(\\langle[^|]+\|[^|]+\\rangle)\s*\|\^\{?2\}?\s*$)");
+  if(std::regex_match(s,prob,overlapProbability))
+   return "qcompare("+quantumTeX(prob[1].str())+",qpower(qbars("+quantumTeX(prob[2].str())+"),2),4)";
+  if(s.find("C_\\text{")!=std::string::npos && s.find("\\vec")!=std::string::npos) {
+   static const std::regex costLabel(R"(C_\\text\{([A-Za-z]+)\}\s*\()");
+   static const std::regex hamiltonian(R"(\\hat\{H\})");
+   s=std::regex_replace(s,costLabel,"qscalarat(\"C_$1\",");
+   s=std::regex_replace(s,hamiltonian,"qoperatorref(\"H\")");
   }
   static const std::regex evolutionOperator(R"(^\s*\\exp\(i([a-z])\\mathcal\{H\}\)\s*$)");
   if(std::regex_match(s,prob,evolutionOperator))return "qpropagator(\"H\",-\""+prob[1].str()+"\")";

@@ -553,3 +553,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm107-local.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm102-105-local.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm104-106-local.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm107-local.py
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm101-variational.py
