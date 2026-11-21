@@ -220,7 +220,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
       result.containsFunction(CALCULATOR->getFunction("qasin")) ||
       result.containsFunction(CALCULATOR->getFunction("qacos")) ||
       result.containsFunction(CALCULATOR->getFunction("qatan")) ||
-      result.containsFunction(CALCULATOR->getFunction("qmeanat")))) {
+      result.containsFunction(CALCULATOR->getFunction("qmeanat")) ||
+      result.containsFunction(CALCULATOR->getFunction("qresidue")))) {
    explicitEntries=true;
    if(result.isAddition() && result.size()>1) {
     std::vector<std::string> terms;
