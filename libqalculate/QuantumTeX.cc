@@ -2201,10 +2201,11 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool fractionBits=input.compare(first,13,"fractionbits:")==0;
  const bool bitWord=input.compare(first,8,"bitword:")==0;
  const bool spinNumber=input.compare(first,5,"spin:")==0;
+ const bool sets=input.compare(first,5,"sets:")==0;
  if(dimensions || fractionBits || bitWord || spinNumber) {
   first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : 8));
   if(first==std::string::npos)return "";
- } else if(input.compare(first,5,"sets:")==0) {
+ } else if(sets) {
   if(setNotation)*setNotation=true;
   first=input.find_first_not_of(" \t\r\n",first+5);
   if(first==std::string::npos)return "";
@@ -2234,6 +2235,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
   // Only the bare symbol S changes meaning in a declared scalar spin formula.
   // Keep named operators, quoted labels and other TeX commands independent.
