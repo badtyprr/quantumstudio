@@ -1,0 +1,66 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/analysis.ipynb",
+  "notebook_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "7330b827c7d6afd9b32cba6fd7a4cc2a5df5ae6001081f9af6e7829e573ff242",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "1f4d905b3080c270a645cbbc7499d843268046fd3d21b27e04d457b00c3ccaa7",
+  "suite": {
+    "passed": true,
+    "checks": 1053,
+    "calls": 117,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 117,
+    "restored_identically": 117,
+    "stable_after_text_reentry": 117
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": [],
+  "revision": "36447bab",
+  "newly_evaluated": [
+    {
+      "id": "IBM033-cf35c640-M056",
+      "cell": 0,
+      "start": 5126,
+      "end": 5306,
+      "literal": "$$\nH^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} = 2 H^{\\otimes n} \\vert 0^n \\rangle \\langle 0^n \\vert H^{\\otimes n} - \\mathbb{I} = 2 \\vert u \\rangle \\langle u \\vert - \\mathbb{I},\n$$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · qoperatorref(\"Z_OR\") · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} = 2 · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · |0^n⟩ · |0^n⟩† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} − [1, 0; 0, 1]^{⊗ n} = (2) (qketstate('u')) · qketstate('u')† − [1, 0; 0, 1]^{⊗ n}",
+      "copy": "qequalchain(vector(qadjacent(qadjacent(qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n'),qoperatorref(\"Z_OR\")),qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n')),qsub(qadjacent(qadjacent(qadjacent(2,qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n')),qmul(qtensorpow(matrix(2,1,vector(1,0)),'n'),qdag(qtensorpow(matrix(2,1,vector(1,0)),'n')))),qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n')),qtensorpow(matrix(2,2,vector(1,0,0,1)),'n')),qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qtensorpow(matrix(2,2,vector(1,0,0,1)),'n'))))"
+    },
+    {
+      "id": "IBM033-cf35c640-M064",
+      "cell": 0,
+      "start": 5594,
+      "end": 6374,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert A_0 \\rangle\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) Z_f \\vert A_0\\rangle \\\\\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I}\\bigr) \\vert A_0\\rangle \\\\\n  & = 2 \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert u\\rangle -\\vert A_0 \\rangle\\\\\n  & = 2 \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\biggl(\n  \\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert A_0\\rangle + \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert A_1\\rangle\\biggr)\n  -\\vert A_0 \\rangle \\\\\n  & = \\biggl( \\frac{2\\vert A_0\\vert}{N} - 1\\biggr) \\vert A_0 \\rangle\n  + \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} \\vert A_1 \\rangle \\\\\n  & = \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_0 \\rangle\n  + \\frac{2 \\sqrt{\\vert A_0\\vert \\cdot \\vert A_1\\vert}}{N} \\vert A_1 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "qoperatorref('G') |A_0⟩ = (((2) (qketstate('u')) · qketstate('u')† − qidentitylike(qoperatorref('G'))) · qoperatorref(\"Z_f\")) (|A_0⟩) = ((2) (qketstate('u')) · qketstate('u')† − qidentitylike(qoperatorref('G'))) |A_0⟩ = (2 · √(|\"A_0\"| / N)) (qketstate('u')) − |A_0⟩ = 2 · √(|\"A_0\"| / N) · (√(|\"A_0\"| / N) |A_0⟩ + √(|\"A_1\"| / N) |A_1⟩) − |A_0⟩ = (2 · |\"A_0\"| / N − 1) |A_0⟩ + (2 · √(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\"))) / N) (|A_1⟩) = ((|\"A_0\"| − |\"A_1\"|) / N) (|A_0⟩) + (2 · √(qcenterdot(qbars(\"A_0\"), qbars(\"A_1\"))) / N) (|A_1⟩)",
+      "copy": "qequalchain(vector(qadjacent(qoperatorref('G'),qnamedket(\"A_0\")),qadjacent(qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qoperatorref(\"Z_f\")),qnamedket(\"A_0\")),qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qnamedket(\"A_0\")),qsub(qadjacent(qadjacent(2,qsqrt(qbars(\"A_0\") ∕ 'N')),qketstate('u')),qnamedket(\"A_0\")),qsub(qadjacent(qadjacent(2,qsqrt(qbars(\"A_0\") ∕ 'N')),qadd(qadjacent(qsqrt(qbars(\"A_0\") ∕ 'N'),qnamedket(\"A_0\")),qadjacent(qsqrt(qbars(\"A_1\") ∕ 'N'),qnamedket(\"A_1\")))),qnamedket(\"A_0\")),qadd(qadjacent(qsub(qmul(qpower('N',−1),qadjacent(2,qbars(\"A_0\"))),1),qnamedket(\"A_0\")),qadjacent(qmul(qpower('N',−1),qadjacent(2,qsqrt(qcenterdot(qbars(\"A_0\"),qbars(\"A_1\"))))),qnamedket(\"A_1\"))),qadd(qadjacent(qmul(qpower('N',−1),qsub(qbars(\"A_0\"),qbars(\"A_1\"))),qnamedket(\"A_0\")),qadjacent(qmul(qpower('N',−1),qadjacent(2,qsqrt(qcenterdot(qbars(\"A_0\"),qbars(\"A_1\"))))),qnamedket(\"A_1\")))))"
+    },
+    {
+      "id": "IBM033-cf35c640-M067",
+      "cell": 0,
+      "start": 6444,
+      "end": 7249,
+      "literal": "$$\n\\begin{aligned}\n  G \\vert A_1 \\rangle\n  & = \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I} \\bigr) Z_f \\vert A_1\\rangle \\\\\n  & = - \\bigl( 2 \\vert u\\rangle \\langle u \\vert - \\mathbb{I} \\bigr) \\vert A_1\\rangle \\\\\n  & = - 2 \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert u\\rangle + \\vert A_1 \\rangle \\\\\n  & = - 2 \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\biggl(\\sqrt{\\frac{\\vert A_0\\vert}{N}} \\vert A_0\\rangle\n      + \\sqrt{\\frac{\\vert A_1\\vert}{N}} \\vert A_1\\rangle\\biggr) + \\vert A_1 \\rangle \\\\\n  & = - \\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\vert A_0 \\rangle\n      + \\biggl( 1 - \\frac{2\\vert A_1\\vert}{N} \\biggr) \\vert A_1 \\rangle \\\\\n  & = - \\frac{2 \\sqrt{\\vert A_1\\vert \\cdot \\vert A_0\\vert}}{N} \\vert A_0 \\rangle\n      + \\frac{\\vert A_0\\vert - \\vert A_1\\vert}{N} \\vert A_1 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "qoperatorref('G') |A_1⟩ = (((2) (qketstate('u')) · qketstate('u')† − qidentitylike(qoperatorref('G'))) · qoperatorref(\"Z_f\")) (|A_1⟩) = −((2) (qketstate('u')) · qketstate('u')† − qidentitylike(qoperatorref('G'))) |A_1⟩ = (−2 · √(|\"A_1\"| / N)) (qketstate('u')) + |A_1⟩ = −2 · √(|\"A_1\"| / N) · (√(|\"A_0\"| / N) |A_0⟩ + √(|\"A_1\"| / N) |A_1⟩) + |A_1⟩ = −(2 · √(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\"))) / N) |A_0⟩ + (1 − 2 · |\"A_1\"| / N) |A_1⟩ = −(2 · √(qcenterdot(qbars(\"A_1\"), qbars(\"A_0\"))) / N) |A_0⟩ + ((|\"A_0\"| − |\"A_1\"|) / N) (|A_1⟩)",
+      "copy": "qequalchain(vector(qadjacent(qoperatorref('G'),qnamedket(\"A_1\")),qadjacent(qadjacent(qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G'))),qoperatorref(\"Z_f\")),qnamedket(\"A_1\")),qadjacent(qmul(−1,qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qidentitylike(qoperatorref('G')))),qnamedket(\"A_1\")),qadd(qadjacent(qadjacent(−2,qsqrt(qbars(\"A_1\") ∕ 'N')),qketstate('u')),qnamedket(\"A_1\")),qadd(qadjacent(qadjacent(−2,qsqrt(qbars(\"A_1\") ∕ 'N')),qadd(qadjacent(qsqrt(qbars(\"A_0\") ∕ 'N'),qnamedket(\"A_0\")),qadjacent(qsqrt(qbars(\"A_1\") ∕ 'N'),qnamedket(\"A_1\")))),qnamedket(\"A_1\")),qadd(qadjacent(qmul(qmul(−1,qpower('N',−1)),qadjacent(2,qsqrt(qcenterdot(qbars(\"A_1\"),qbars(\"A_0\"))))),qnamedket(\"A_0\")),qadjacent(qsub(1,qmul(qpower('N',−1),qadjacent(2,qbars(\"A_1\")))),qnamedket(\"A_1\"))),qadd(qadjacent(qmul(qmul(−1,qpower('N',−1)),qadjacent(2,qsqrt(qcenterdot(qbars(\"A_1\"),qbars(\"A_0\"))))),qnamedket(\"A_0\")),qadjacent(qmul(qpower('N',−1),qsub(qbars(\"A_0\"),qbars(\"A_1\"))),qnamedket(\"A_1\")))))"
+    },
+    {
+      "id": "IBM033-cf35c640-M111",
+      "cell": 0,
+      "start": 13256,
+      "end": 13355,
+      "literal": "$$\nH^{\\otimes n} Z_{\\mathrm{OR}} H^{\\otimes n} = 2 \\vert u \\rangle \\langle u \\vert - \\mathbb{I}.\n$$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} · qoperatorref(\"Z_OR\") · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n} = (2) (qketstate('u')) · qketstate('u')† − [1, 0; 0, 1]^{⊗ n}",
+      "copy": "qcompare(qadjacent(qadjacent(qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n'),qoperatorref(\"Z_OR\")),qtensorpow(matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2)))),'n')),qsub(qadjacent(qadjacent(2,qketstate('u')),qdag(qketstate('u'))),qtensorpow(matrix(2,2,vector(1,0,0,1)),'n')),4)"
+    }
+  ]
+}
