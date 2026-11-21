@@ -68,6 +68,14 @@ lessons = {
         ("IBM051", "chsh-game", 225, 9),
     "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30":
         ("IBM052", "qiskit-implementation", 75, 1),
+    "bff12f864adf9f56a0e17f5cdacf3087a19336a12c51db1f5e4d34126fa04ff1":
+        ("IBM053", "introduction", 0, 0),
+    "1338b8f7c27667ecf3b15be528e9903a9972752a2fb4586f954300243f15361b":
+        ("IBM054", "repetition-codes", 82, 14),
+    "8b549b58df4680202abea8df49626546f181312d295097193be00c2ef34c8cbe":
+        ("IBM055", "shor-code", 109, 11),
+    "d76193c45a2764e34600f9339932793c49bf9aef6c2fcc504f34b11e56c6b8dc":
+        ("IBM056", "discretization-of-errors", 50, 0),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
@@ -125,6 +133,8 @@ if lesson in {"IBM044","IBM045","IBM046","IBM047"}:
     course,chapter = "basics-of-quantum-information","quantum-circuits"
 if lesson in {"IBM048","IBM049","IBM050","IBM051","IBM052"}:
     course,chapter = "basics-of-quantum-information","entanglement-in-action"
+if lesson in {"IBM053","IBM054","IBM055","IBM056"}:
+    course,chapter = "foundations-of-quantum-error-correction","correcting-quantum-errors"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")
