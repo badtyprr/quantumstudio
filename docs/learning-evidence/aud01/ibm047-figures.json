@@ -1,0 +1,57 @@
+{
+  "figures": {
+    "cNOT-copy.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/cNOT-copy.svg",
+      "sha256": "64cbaadca4bd7890f41c59b9c86e2125cce4de60e735ac263a685448f7e4b66b"
+    },
+    "discriminate.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/discriminate.svg",
+      "sha256": "7918c79e74161b3fdd8b6fc21a40fea5c8e3145863c0a375d65a4f22e57c2d83"
+    }
+  },
+  "worker_sha256": "71034dd97603ef8a90daa3db9253cc703946c9d5dfbd9a764acec4493387fe34",
+  "checks": [
+    {
+      "figure": "cNOT-copy.svg",
+      "expression": "CNOT*(|0>@|0>)",
+      "expected": "|00>",
+      "result": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "figure": "cNOT-copy.svg",
+      "expression": "CNOT*(|1>@|0>)",
+      "expected": "|11>",
+      "result": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "figure": "cNOT-copy.svg",
+      "expression": "SWAP*CNOT*SWAP*|10>",
+      "expected": "|10>",
+      "result": "matrix(4,1,[0,0,1,0])"
+    },
+    {
+      "figure": "discriminate.svg",
+      "expression": "probs((I@H)*(|0>@|+>))",
+      "expected": "[1;0;0;0]",
+      "result": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "figure": "discriminate.svg",
+      "expression": "probs(|0>@|+>)",
+      "expected": "[1/2;1/2;0;0]",
+      "result": "matrix(4,1,[1 ∕ 2,1 ∕ 2,0,0])"
+    },
+    {
+      "figure": "discriminate.svg",
+      "expression": "probs((I@H)*(|0>@|->))",
+      "expected": "[0;1;0;0]",
+      "result": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "figure": "discriminate.svg",
+      "expression": "probs(|0>@|->)",
+      "expected": "[1/2;1/2;0;0]",
+      "result": "matrix(4,1,[1 ∕ 2,1 ∕ 2,0,0])"
+    }
+  ]
+}
