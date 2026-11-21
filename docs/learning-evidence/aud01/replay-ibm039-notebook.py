@@ -61,7 +61,11 @@ for index,cell in enumerate(cells):
         assert scope["u"].is_valid() and not scope["w"].is_valid()
     if index == 21:
         probabilities = scope["state"].probabilities()
-        assert np.isclose(probabilities[int(scope["outcome"])],1)
+        outcome = int(scope["outcome"])
+        assert np.isclose(probabilities[outcome],1)
+        projected = np.zeros(2, dtype=complex)
+        projected[outcome] = scope["v"].data[outcome] / abs(scope["v"].data[outcome])
+        assert np.allclose(scope["state"].data, projected)
     if index in (28,34):
         assert np.allclose(scope["v"].data,reference)
     if index in (23,36):
@@ -73,10 +77,23 @@ for index,cell in enumerate(cells):
     plt.close("all")
 
 expr = "quantum:(Y*S*H*T*H*basis(0,2))=([(1-exp(i*pi/4))/2;i*(1+exp(i*pi/4))/2])"
-r = subprocess.run([worker,"--json"],input=expr.encode(),capture_output=True,check=True,timeout=30,
-                   env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
-assert json.loads(r.stdout)["copy_text"]=="1"
+def evaluate(expression):
+    result = subprocess.run([worker,"--json"],input=expression.encode(),capture_output=True,
+                            check=True,timeout=30,env=dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data")))
+    value = json.loads(result.stdout)
+    assert not value["approximate"], expression
+    return value["copy_text"]
+
+assert evaluate(expr)=="1"
+zero, one = "matrix(2,1,[1,0])", "matrix(2,1,[0,1])"
+expected = [zero, one, "matrix(2,1,[(1+2*i)/sqrt(5),0])", zero,
+            "matrix(2,1,[0,-1])", one, zero, one, 1000, 0, 5, 9,
+            round(1000*5/9), 1000, 1, 4, 9, round(1000*4/9), 1000, 1000]
+assert len(expected) == len(source["rows"])
+for row, reference_value in zip(source["rows"], expected):
+    copied = evaluate("quantum:" + row["literal"])
+    assert evaluate(f"qcompare({copied},{reference_value},4)") == "1", row["id"]
 assert len(ledger)==18 and sum(row["displays"].count("figure") for row in ledger)==3
 print(json.dumps(dict(source_sha256=source["source_sha256"],worker_sha256=sha256(worker.read_bytes()).hexdigest(),
                       versions={p:version(p) for p in ("qiskit","numpy","matplotlib","IPython","pylatexenc","sympy")},
-                      calculator_check=expr,cells=ledger,samples=samples),indent=2))
+                      calculator_check=expr,verified_formula_ids=[row["id"] for row in source["rows"]],cells=ledger,samples=samples),indent=2))

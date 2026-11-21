@@ -1,6 +1,6 @@
 {
   "source_sha256": "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a",
-  "worker_sha256": "c01c95460cab62cf6e69a9f141766fcc5c656c694eb30d82fb149555dafddbc9",
+  "worker_sha256": "bdad563ebcbe5c8040a81a2a85790ea2448633cdc6630f6a8a23f3ab7b6e7438",
   "versions": {
     "qiskit": "2.6.2",
     "numpy": "2.5.5",
@@ -10,6 +10,28 @@
     "sympy": "1.14.0"
   },
   "calculator_check": "quantum:(Y*S*H*T*H*basis(0,2))=([(1-exp(i*pi/4))/2;i*(1+exp(i*pi/4))/2])",
+  "verified_formula_ids": [
+    "IBM039-071bde2b-M001",
+    "IBM039-071bde2b-M002",
+    "IBM039-071bde2b-M003",
+    "IBM039-071bde2b-M004",
+    "IBM039-071bde2b-M005",
+    "IBM039-071bde2b-M006",
+    "IBM039-071bde2b-M007",
+    "IBM039-071bde2b-M008",
+    "IBM039-071bde2b-M009",
+    "IBM039-071bde2b-M010",
+    "IBM039-071bde2b-M011",
+    "IBM039-071bde2b-M012",
+    "IBM039-071bde2b-M013",
+    "IBM039-071bde2b-M014",
+    "IBM039-071bde2b-M015",
+    "IBM039-071bde2b-M016",
+    "IBM039-071bde2b-M017",
+    "IBM039-071bde2b-M018",
+    "IBM039-071bde2b-M019",
+    "IBM039-071bde2b-M020"
+  ],
   "cells": [
     {
       "cell": 1,
