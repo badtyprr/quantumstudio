@@ -2190,6 +2190,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  return quantumTeX(input,lines,nullptr);
 }
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation) {
+ return quantumTeX(input,lines,setNotation,nullptr);
+}
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation, bool *scalarNotation) {
  if(lines)lines->clear();
  if(setNotation)*setNotation=false;
  // Strip only a complete paired math wrapper. A dollar inside an expression
@@ -2202,7 +2205,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool bitWord=input.compare(first,8,"bitword:")==0;
  const bool spinNumber=input.compare(first,5,"spin:")==0;
  const bool sets=input.compare(first,5,"sets:")==0;
- if(dimensions || fractionBits || bitWord || spinNumber) {
+ const bool scalars=input.compare(first,8,"scalars:")==0;
+ if(scalarNotation)*scalarNotation=scalars;
+ if(dimensions || fractionBits || bitWord || spinNumber || scalars) {
   first=input.find_first_not_of(" \t\r\n",first+(dimensions ? 11 : fractionBits ? 13 : spinNumber ? 5 : 8));
   if(first==std::string::npos)return "";
  } else if(sets) {
@@ -2222,7 +2227,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(first==std::string::npos)throw std::runtime_error("Expected an expression after the matrix declaration.");
  }
  if(!contexts.empty()) {
-  std::string result=quantumTeX(input.substr(0,contextStart)+input.substr(first),lines,setNotation);
+  std::string result=quantumTeX(input.substr(0,contextStart)+input.substr(first),lines,setNotation,scalarNotation);
   for(auto context=contexts.rbegin();context!=contexts.rend();++context)result=*context+",("+result+"))";
   return result;
  }

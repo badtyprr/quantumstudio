@@ -1863,6 +1863,14 @@ for function, expected in [("qasin", ("0", "1", "1", "1")), ("qacos", ("1", "1",
         assert data(f"quantum:replace(({copied}),'x',{value})")["copy_text"] == truth
 for estimate in ("|u>≈|u>", "1≈qtuple(vector(1,2))"):
     run(f"quantum:qestimatewithin({estimate},0)", "--json", success=False)
+for formula, expected in [
+    ("$c$", "'c'"), ("$T$", "'T'"), ("$Z^2-1=(Z+1)(Z-1)$", "1"),
+    ("replace(bc^2,vector('b','c'),vector(2,3))", "18"),
+    ("replace(bc(b+1),vector('b','c'),vector(2,3))", "18"),
+    ("sqrt(9)+cos(0)", "4"),
+]:
+    copied = data("quantum:scalars:"+formula)["copy_text"]
+    assert copied == expected and data("quantum:scalars:"+copied)["copy_text"] == copied
 for tolerance in ("-1", "i", "infinity", "[1;2]", "|u>", "qoperatorref('G')", "qtuple(vector(1,2))", "(x ← x+1)"):
     run(f"quantum:qestimatewithin(1≈(3/2),{tolerance})", "--json", success=False)
 for invalid_update in (

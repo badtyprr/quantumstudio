@@ -1,5 +1,6 @@
 // Quantum notation extension. GPL-2.0-or-later; see COPYING.
 #include "QuantumIndexed.h"
+#include "Calculator.h"
 #include "QuantumNotation.h"
 #include "QuantumTeX.h"
 #include <stdexcept>
@@ -426,6 +427,7 @@ class Parser {
  }
  bool spinContext=false;
  bool setNotation=false;
+ bool scalarNotation=false;
  std::string updateVariable;
  std::vector<std::string> declaredGates;
  bool costContext=false;
@@ -1308,8 +1310,15 @@ class Parser {
    // operand of a matrix product. Keep adjacent call syntax for named gates.
    const bool groupedFactor=a!="U_1" && a!="U_2" && a!="U_3" && a.size()>2 && a[0]>='A' && a[0]<='Z' && a[1]=='_' &&
     a.find_first_not_of("0123456789",2)==std::string::npos && p>b+a.size();
+   // Scalar mode reads juxtaposed Latin letters as a product. Return one
+   // atom at a time so a power on the last letter keeps its usual precedence.
+   const bool letters=scalarNotation && a.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos;
+   const bool scalarLetter=letters && a!="pi" && a!="infinity" && a!="undefined" && a!="true" && a!="false" &&
+                           (a.size()==1 || p==s.size() || s[p]!='(' ||
+                            (CALCULATOR && !quantumSignatures.count(a) && !CALCULATOR->getActiveFunction(a)));
+   if(scalarLetter && a.size()>1) {p=b+1;a.resize(1);}
    bool indexedScalar=false;
-   if(!updateVariable.empty() && a==updateVariable) {
+   if(scalarLetter || (!updateVariable.empty() && a==updateVariable)) {
     a=indexableLabel(a);indexedScalar=true;
    }
    else if(!numericToken && a.back()=='_' && take('{')) {
@@ -2598,7 +2607,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false):spinContext(spin),setNotation(sets),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -2663,11 +2672,11 @@ std::string translateQuantum(const std::string &expression) {
  std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
- bool sets=false;
- s=quantumTeX(s,nullptr,&sets);
+ bool sets=false,scalars=false;
+ s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets).run();
+ return Parser(s,spin,sets,scalars).run();
 }

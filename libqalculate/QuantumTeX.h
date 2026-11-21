@@ -11,4 +11,5 @@ std::string quantumTeX(const std::string &input);
 // Embedded alignments remain ordinary mathematical operands.
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines);
 std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation);
+std::string quantumTeX(const std::string &input, std::vector<std::string> *lines, bool *setNotation, bool *scalarNotation);
 #endif
