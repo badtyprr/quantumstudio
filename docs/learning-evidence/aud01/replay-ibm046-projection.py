@@ -79,3 +79,18 @@ for index in (127, 167, 176, 207, 220, 238):
             assert evaluate(f"({second}) ∈ ({bound})") == "1"
             assert evaluate(f"(|+><+|) ∈ ({bound})") == "0"
 print("Verified five projector sets and the ordered operator list in both binding orders")
+
+completeness = evaluate(rows[127]["literal"])
+assert completeness == rows[127]["copy"]
+for dimension in (2, 3):
+    for complete in (True, False):
+        bindings = [("m", str(dimension))]
+        for index in range(dimension):
+            ket = f"basis({index if complete else 0},{dimension})"
+            bindings.append((f'"Π_{index}"', f"{ket}*dagger({ket})"))
+        for sequence in (bindings, list(reversed(bindings))):
+            bound = completeness
+            for name, value in sequence:
+                bound = f"replace(({bound}),{name},{value})"
+            assert evaluate(bound) == ("1" if complete else "0")
+print("Verified projector completeness in two and three dimensions and rejected repeated projectors")
