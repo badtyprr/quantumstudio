@@ -1,0 +1,15 @@
+{
+  "source": "IBM029-9ea5aee3-M022",
+  "worker_sha256": "68884969406cd4fbb271bf4da9011127629be4a30cb84948d34b5ac2e6e033bb",
+  "original_tables": 2,
+  "original_data_cells": 72,
+  "windows_sessions": 4,
+  "source_and_copy_worker_checks": 8,
+  "lesson_comparison": {
+    "rows": 438,
+    "accepted_before": 417,
+    "accepted_after": 418,
+    "only_changed": "IBM029-9ea5aee3-M022",
+    "worker_sha256_before": "e2173bd57f398e5ed859f335a1d43cf7be3e27b6308fb4a5cc03d283f1e7ada4"
+  }
+}

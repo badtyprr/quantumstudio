@@ -1362,7 +1362,9 @@ class TeXReader {
     std::string cell=trim(row.substr(start,separator==std::string::npos ? std::string::npos : separator-start));
     if(!rows) {
      if(cell.compare(0,6,"\\text{")==0 && cell.back()=='}')cell=trim(cell.substr(6,cell.size()-7));
-     if(cell.empty() || cell.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ (),-")!=std::string::npos)
+     if(!column && (cell=="\\cdot" || cell=="*"))cell="·";
+     const bool operation=!column && (cell=="+" || cell=="·");
+     if(!operation && (cell.empty() || cell.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ (),-")!=std::string::npos))
       throw std::runtime_error(error("Unsupported column label in numeric table"));
      cell="\""+cell+"\"";
     } else {
