@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "3b10d276b5a00fe82d03202b43662fb5256d2d98c11555edbdcbfa3a077e30f9",
-  "revision": "a5198eb6f138f0bbe9053dc0f4472005542aae7d",
+  "worker_sha256": "15fb3e765e3a51dccd42a29cbaabff6a1e12ca31e4d9f239a1760a1bc41537c8",
+  "revision": "124f422dd70d5c8bee4fec49ee59df1ac9729b53",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 235,
-    "diagnostic": 4
+    "exact": 236,
+    "diagnostic": 3
   },
   "figures": [],
   "rows": [
@@ -907,8 +907,9 @@
       "start": 13121,
       "end": 13505,
       "literal": "$$\nU^{\\dagger} U =\n\\begin{pmatrix}\n\\langle \\psi_1\\vert \\psi_1 \\rangle & \\langle \\psi_1\\vert \\psi_2 \\rangle & \\langle \\psi_1\\vert \\psi_3 \\rangle \\\\\n\\langle \\psi_2\\vert \\psi_1 \\rangle & \\langle \\psi_2\\vert \\psi_2 \\rangle & \\langle \\psi_2\\vert \\psi_3 \\rangle \\\\\n\\langle \\psi_3\\vert \\psi_1 \\rangle & \\langle \\psi_3\\vert \\psi_2 \\rangle & \\langle \\psi_3\\vert \\psi_3 \\rangle\n\\end{pmatrix}\n$$",
-      "status": "diagnostic",
-      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 3, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix.\nArgument 3, Matrix 2, in vertcat() must be a matrix."
+      "status": "exact",
+      "display": "U† · U = [⟨ψ_1|ψ_1⟩, ⟨ψ_1|ψ_2⟩, ⟨ψ_1|ψ_3⟩; ⟨ψ_2|ψ_1⟩, ⟨ψ_2|ψ_2⟩, ⟨ψ_2|ψ_3⟩; ⟨ψ_3|ψ_1⟩, ⟨ψ_3|ψ_2⟩, ⟨ψ_3|ψ_3⟩]",
+      "copy": "qcompare(qadjacent(qdag('U'),'U'),matrix(3,3,[qmul(qdag(qnamedket(\"ψ_1\")), qnamedket(\"ψ_1\")),qmul(qdag(qnamedket(\"ψ_1\")), qnamedket(\"ψ_2\")),qmul(qdag(qnamedket(\"ψ_1\")), qnamedket(\"ψ_3\")),qmul(qdag(qnamedket(\"ψ_2\")), qnamedket(\"ψ_1\")),qmul(qdag(qnamedket(\"ψ_2\")), qnamedket(\"ψ_2\")),qmul(qdag(qnamedket(\"ψ_2\")), qnamedket(\"ψ_3\")),qmul(qdag(qnamedket(\"ψ_3\")), qnamedket(\"ψ_1\")),qmul(qdag(qnamedket(\"ψ_3\")), qnamedket(\"ψ_2\")),qmul(qdag(qnamedket(\"ψ_3\")), qnamedket(\"ψ_3\"))]),4)"
     },
     {
       "id": "IBM046-3c1262a5-M091",
