@@ -28,3 +28,15 @@ for row,selector in [(20,0),(22,1)]:
     assert f"qjwimage('N','j',{selector})" in equation
 mapping=source(78,29).split(r"\\qcompare")
 assert len(mapping)==2 and "qjwimage('N','j',1)" in mapping[0] and "qjwimage('N','j',0)" in mapping[1]
+
+steps=[0,1,0,2,3]
+for start,end in ((1,5),(2,4),(3,3)):
+    delta=source(78,14).replace('"steps"',"vector(0,1,0,2,3)").replace("'i'",str(start)).replace("'j'",str(end))
+    counts=[sum((-1)**k for k in range(start,end+1) if steps[k-1]==axis) for axis in range(4)]
+    for axis,count in enumerate(counts):
+        assert run(delta.replace("'a'",str(axis)))=="1"
+        assert run(f"qwalkdelta(vector(0,1,0,2,3),{axis},{start},{end})==({count})")=="1"
+    distance=source(78,21).replace('"steps"',"vector(0,1,0,2,3)").replace("'i'",str(start)).replace("'j'",str(end))
+    assert run(distance)=="1"
+    assert run(f"qwalkdistance(vector(0,1,0,2,3),{start},{end})")==str(sum(c*c for c in counts))
+print("Verified all four signed coordinate counts and squared distances for three segments.")

@@ -2236,6 +2236,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(s.find("qpropagator(")!=std::string::npos) {
    static const std::regex definition(R"(^\s*U\(([a-z])\)\s*=)");
    s=std::regex_replace(s,definition,"qoperatorref(qindexedlabel(\"U(\",$1,\")\"))=");
+   auto distinct=indexedParts(s,"\\neq");
+   if(distinct.size()==2)return "qoperatorunequal("+quantumTeX(distinct[0])+","+quantumTeX(distinct[1])+")";
    static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
    s=std::regex_replace(s,initialState,"\\phi(0)");
   }
@@ -2245,7 +2247,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
   std::smatch m;if(std::regex_match(s,m,commutator)) {
    const std::string a="qoperatorref(\"H_"+m[1].str()+"\")",b="qoperatorref(\"H_"+m[2].str()+"\")";
-   return "qcompare(qmul("+a+","+b+"),qmul("+b+","+a+"),5)";
+   return "qoperatorunequal(qmul("+a+","+b+"),qmul("+b+","+a+"))";
   }
  }
  if(s.find("\\langle")!=std::string::npos && s.find("\\rangle")!=std::string::npos && s.find("\\lambda")!=std::string::npos) {
@@ -2292,6 +2294,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(eq==std::string::npos)return left;
    std::string right=side(compact.substr(eq+1));
    if(!right.empty())return "qcompare("+left+","+right+",4)";
+  }
+ }
+ if(s.find("\\Delta n_")!=std::string::npos) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  static const std::regex delta(R"re(^\\begin\{aligned\}\\Deltan_([a-z])\(([a-z]),([a-z])\)&=\\sum\\limits_\{([a-z])=\2\}\^\{\3\}\{\(-1\)\^\4f_\1\(\4\)\}\\end\{aligned\}$)re");
+  std::smatch m;
+  if(std::regex_match(compact,m,delta)) {
+   const std::string a="\""+m[1].str()+"\"",from="\""+m[2].str()+"\"",to="\""+m[3].str()+"\"";
+   return "qcompare(qwalkdelta(\"steps\","+a+","+from+","+to+"),qsum((-1)^k*qwalkindicator(\"steps\","+a+",k),"+from+","+to+",k),4)";
+  }
+  const std::string start="\\begin{aligned}d(i,j)&=\\sum\\limits_{a}{||\\Deltan_a(i,j)||^2}\\\\&=";
+  if(compact.compare(0,start.size(),start)==0) {
+   std::string tail,terms;
+   for(int k=0;k<4;++k) {
+    if(k) {tail+="+";terms+="+";}
+    tail+="(\\Deltan_"+std::to_string(k)+"(i,j))^2";
+    terms+="qwalkdelta(\"steps\","+std::to_string(k)+",\"i\",\"j\")^2";
+   }
+   if(compact.substr(start.size())==tail+"\\end{aligned}")
+    return "qequalchain(vector(qwalkdistance(\"steps\",\"i\",\"j\"),qsum(qwalkdelta(\"steps\",a,\"i\",\"j\")^2,0,3,a),"+terms+"))";
   }
  }
  // Both occupation conventions occur in the lessons. The sign on iY,

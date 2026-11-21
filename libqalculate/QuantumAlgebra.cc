@@ -640,6 +640,12 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qoperatorunequal") {
+   MathStructure left=raw[0],right=raw[1];left.eval(eo);right.eval(eo);
+   if(!left.isMatrix() || !right.isMatrix())return 0;
+   MathStructure unequal(5);
+   out.set(CALCULATOR->getFunction("qcompare"),&left,&right,&unequal,NULL);out.eval(eo);return 1;
+  }
   if(op=="qpropagator") {
    MathStructure h=raw[0],time=raw[1];h.eval(eo);time.eval(eo);
    if(!h.isMatrix() || !time.representsReal())return 0;
@@ -1462,6 +1468,6 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  calculator.addFunction(new QuantumAlgebraFunction("qcomputationalket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qpropagator",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qpropagator",2},{"qoperatorunequal",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }

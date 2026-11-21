@@ -180,6 +180,22 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
+  // These unevaluated scalar measurements can participate in sums before
+  // their data are supplied. Preserve their arithmetic tree on text re-entry.
+  if(quantumMode && (result.isAddition() || result.isMultiplication() || result.isPower()) &&
+     (result.containsFunction(CALCULATOR->getFunction("qwalkdelta")) ||
+      result.containsFunction(CALCULATOR->getFunction("qpairtotal")) ||
+      result.containsFunction(CALCULATOR->getFunction("qmeanat")))) {
+   explicitEntries=true;
+   if(result.isAddition() && result.size()>1) {
+    std::vector<std::string> terms;
+    for(size_t k=0;k<result.size();++k)terms.push_back(copyText(result[k],po,true,true));
+    std::sort(terms.begin(),terms.end());
+    std::string sum=terms[0];
+    for(size_t k=1;k<terms.size();++k)sum="qadd("+sum+","+terms[k]+")";
+    return sum;
+   }
+  }
   if(quantumMode && explicitEntries && result.isPower() && result.size()==2)
    return "qpower("+copyText(result[0],po,true,true)+","+copyText(result[1],po,true,true)+")";
   if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&

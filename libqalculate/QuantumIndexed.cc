@@ -1309,6 +1309,28 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qwalkdelta" || op=="qwalkdistance" || op=="qwalkindicator") {
+   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
+   const bool distance=op=="qwalkdistance",indicator=op=="qwalkindicator";
+   if(!args[0].isVector() || args[0].isMatrix())return 0;
+   for(size_t k=1;k<args.size();++k)if(!args[k].isInteger() || args[k].isApproximate())return 0;
+   const size_t first=distance ? 1 : 2,last=indicator ? first : first+1;
+   if(args[first].number()<1 || args[last].number()<args[first].number() || args[last].number()>int(args[0].size()))return 0;
+   if(!distance && (args[1].number()<0 || args[1].number()>3))return 0;
+   int counts[4]={};
+   for(int k=args[first].number().intValue();k<=args[last].number().intValue();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const auto &direction=args[0][k-1];
+    if(!direction.isInteger() || direction.isApproximate() || direction.number()<0 || direction.number()>3)return 0;
+    const int axis=direction.number().intValue();
+    if(indicator) {out=(axis==args[1].number().intValue()) ? 1 : 0;return 1;}
+    counts[axis]+=k%2 ? -1 : 1;
+   }
+   if(!distance) {out=counts[args[1].number().intValue()];return 1;}
+   out=0;
+   for(int count:counts) {MathStructure term(count);term*=count;out+=term;}
+   out.eval(eo);return 1;
+  }
   if(op=="qpairtotal") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure weights=raw[0],values=raw[1];weights.eval(exact);values.eval(exact);
@@ -2805,6 +2827,9 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkdelta",4));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkdistance",3));
+ calculator.addFunction(new QuantumIndexedFunction("qwalkindicator",3));
  calculator.addFunction(new QuantumIndexedFunction("qpairtotal",6));
  calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
  calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
