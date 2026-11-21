@@ -1,0 +1,28 @@
+{
+  "source": "https://ibm.box.com/public/static/umposbds8d27cv8rnpsayyaj1k2aw88o.pdf",
+  "slides": 34,
+  "sha256": "a7506659bdd146f68123ceaae6a7667921614b40690f93ea34da135f0703d0e5",
+  "topics": {
+    "1": "Title",
+    "2\u20137": "Pauli operations, finite groups and projective measurement",
+    "8\u201313": "Repetition parity circuits, bit flips and syndrome eigenspaces",
+    "14\u201320": "Stabilizer conditions, code examples and dimensions",
+    "21\u201323": "Projection products and the dimension proof",
+    "24\u201326": "Clifford operations and the Steane encoder",
+    "27\u201334": "Three error classes, Steane distance and minimum-weight correction"
+  },
+  "dimensions": {
+    "bit repetition": 2,
+    "phase repetition": 2,
+    "Bell": 1,
+    "GHZ": 1,
+    "Shor": 2,
+    "Steane": 2,
+    "five qubit": 2
+  },
+  "steane_paulis": 16384,
+  "steane_syndromes": 64,
+  "steane_paulis_per_syndrome": 256,
+  "steane_classes_per_syndrome": 4,
+  "steane_distance": 3
+}

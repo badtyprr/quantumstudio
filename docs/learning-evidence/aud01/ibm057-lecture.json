@@ -1,0 +1,73 @@
+{
+  "url": "https://www.youtube.com/watch?v=3ib2JP_LeIU",
+  "duration_seconds": 3150,
+  "title": "The Stabilizer Formalism | Understanding Quantum Information & Computation | Lesson 14",
+  "chapters": [
+    [
+      "0:00",
+      "Introduction"
+    ],
+    [
+      "1:28",
+      "Overview"
+    ],
+    [
+      "2:08",
+      "Pauli operations"
+    ],
+    [
+      "5:15",
+      "Pauli operations as generators"
+    ],
+    [
+      "7:46",
+      "Pauli observables"
+    ],
+    [
+      "12:36",
+      "Repetition code revisited"
+    ],
+    [
+      "15:23",
+      "Bit-flip detection"
+    ],
+    [
+      "19:39",
+      "Syndromes"
+    ],
+    [
+      "22:49",
+      "Stabilizer codes"
+    ],
+    [
+      "26:26",
+      "Examples"
+    ],
+    [
+      "30:50",
+      "Code space dimension"
+    ],
+    [
+      "35:26",
+      "Clifford operations and encodings"
+    ],
+    [
+      "39:55",
+      "Detecting errors"
+    ],
+    [
+      "43:34",
+      "7-qubit Steane code"
+    ],
+    [
+      "45:55",
+      "Correcting errors"
+    ],
+    [
+      "52:06",
+      "Conclusion"
+    ]
+  ],
+  "english_caption_bytes": 0,
+  "verification": "Publisher chapter markers were read from the video description. The English caption endpoint returned no transcript."
+}
