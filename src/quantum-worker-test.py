@@ -58,6 +58,9 @@ for formula, expected in [(r"\log(8)", "3"), (r"\log_{3}(27)", "3"), (r"\ln(1)",
                           (r"\log_3 3^4", "4"), (r"(\log 8)^2", "9")]:
     assert data("quantum:binarylogs:"+formula)["copy_text"] == expected
 assert data(r"quantum:\lfloor\log(8)\rfloor")["copy_text"] == "2"
+assert data(r"quantum:$2^4\equiv1$ $(\textrm{mod } 5)$")["copy_text"] == "1"
+assert data(r"quantum:$2^4\equiv1$ $\pmod{7}$")["copy_text"] == "0"
+run(r"quantum:$2^4\equiv1$ and $\pmod{5}$",success=False)
 run("quantum:qstepvalue(y ← 3,qbinarylog(vector(x,2)))", success=False)
 assert data("quantum:qstepvalue(y ← 3,qbinarylog(x))")["copy_text"] == "3"
 

@@ -2451,7 +2451,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(fractionBits && s.compare(0,2,".$")==0)s.erase(0,1);
  bool mathWrapper=true;
  if(s.size()>=4 && s.substr(0,2)=="$$" && s.substr(s.size()-2)=="$$") s=s.substr(2,s.size()-4);
- else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
+ else if(s.size()>=2 && s.front()=='$' && s.back()=='$') {
+  s=s.substr(1,s.size()-2);
+  // Markdown can put a congruence and its trailing modulus in adjacent
+  // inline math spans. Consume only that boundary and retain the TeX.
+  size_t close=s.find('$');
+  if(close!=std::string::npos && s.find("\\equiv")<close) {
+   size_t open=s.find_first_not_of(" \t\r\n",close+1);
+   if(open!=std::string::npos && s[open]=='$' && s.find('$',open+1)==std::string::npos) {
+    static const std::regex modulus(R"(^\s*(?:\\pmod\s*\{\s*(?:[A-Za-z]|[0-9]+)\s*\}|\(\s*\\(?:textrm|mathrm)\{\s*mod\s*\}(?:\s|\\[,;!])*(?:[A-Za-z]|[0-9]+)\s*\))\s*$)");
+    if(std::regex_match(s.substr(open+1),modulus))s.replace(close,open-close+1," ");
+   }
+  }
+ }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(s.find("\\begin{cases}")!=std::string::npos) {
