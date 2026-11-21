@@ -2223,6 +2223,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
+ if(s.find("\\sum_")!=std::string::npos) {
+  // A sum of N local contributions with no printed starting index.
+  static const std::regex localTerms(R"(^\s*([A-Z])\s*=\s*\\sum_([a-z])\^([A-Z])\s*\{\s*\1_\2\s*\}\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,localTerms)) {
+   const std::string name=m[1].str();
+   return "qcompare(qoperatorref(\""+name+"\"),qindexedsum(\""+name+"_\",1,"+m[3].str()+",vector()),4)";
+  }
+ }
+ if(s.find("...")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  // The digit labels a repeated state and the subscript labels its wire.
+  static const std::regex uniformKet(R"(\|([01])_1\s*\.\.\.\s*\1_[a-z]\s*\.\.\.\s*\1_([A-Z])\s*\\rangle)");
+  s=std::regex_replace(s,uniformKet,"qtensorpow(|$1>,\"$2\")");
+ }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
   static const std::regex combined(R"(e\^\{\s*-i\(H_([A-Z])\s*\+\s*H_([A-Z])\)([a-z])\})");

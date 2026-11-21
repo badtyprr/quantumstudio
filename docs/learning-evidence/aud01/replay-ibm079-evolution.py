@@ -35,3 +35,13 @@ corrected=r"$\langle "+rows[60]["literal"][1:]
 mean=run(corrected)
 assert run(mean.replace("'A'",samples).replace('"λ_0"',"0"))=="1"
 print("Verified two noisy samples, their zero-noise value and the expansion at two slopes.")
+
+local_sum=run(rows[0]["literal"]).replace("'N'","2").replace("vector()","vector(1,X,2,Z)")
+for matrix,wanted in (("(X+Z)","1"),("X","0")):
+    assert run(local_sum.replace("qoperatorref('H')",matrix))==wanted
+vacuum=run(rows[25]["literal"])
+for width in (1,2,3):
+    concrete=vacuum.replace("'N'",str(width))
+    for bit,wanted in (("0","1"),("1","0")):
+        assert run(concrete.replace('qketstate("vac")',"|"+bit*width+">"))==wanted
+print("Verified the local Hamiltonian sum and vacuum labels on one to three wires.")
