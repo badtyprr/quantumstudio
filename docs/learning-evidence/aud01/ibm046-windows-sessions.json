@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "notebook_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "5cc9c28d956e8fab917fb0598eb886e53e30572f72b44d65d8d625718fd26bf0",
+  "worker_sha256": "15fb3e765e3a51dccd42a29cbaabff6a1e12ca31e4d9f239a1760a1bc41537c8",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "e292da3fa3e9fdce7259b759c1a5b28b506d9d679e29b091b185efa5eca042e0",
+  "records_sha256": "075d94410248895e4b8c387b6240f378445863a83c4b89edbf524d1d24b2d97c",
   "suite": {
     "passed": true,
-    "checks": 2102,
+    "checks": 2130,
     "calls": 239,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 232,
-    "restored_identically": 232,
-    "stable_after_text_reentry": 207,
-    "source_diagnostic": 7
+    "source_exact": 236,
+    "restored_identically": 236,
+    "stable_after_text_reentry": 210,
+    "source_diagnostic": 3
   },
   "diagnostics": [
     {
@@ -24,28 +24,12 @@
       "message": "Unsupported TeX command: \\cdots at byte 284"
     },
     {
-      "id": "IBM046-3c1262a5-M090",
-      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 3, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix.\nArgument 3, Matrix 2, in vertcat() must be a matrix."
-    },
-    {
       "id": "IBM046-3c1262a5-M098",
       "message": "Unsupported column label in numeric table at byte 150"
     },
     {
-      "id": "IBM046-3c1262a5-M195",
-      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
-    },
-    {
       "id": "IBM046-3c1262a5-M216",
       "message": "Maximum recursive depth reached."
-    },
-    {
-      "id": "IBM046-3c1262a5-M219",
-      "message": "Unsupported TeX command: \\fbox at byte 35"
-    },
-    {
-      "id": "IBM046-3c1262a5-M221",
-      "message": "Unsupported TeX command: \\fbox at byte 6"
     }
   ],
   "changed_copy": [
@@ -175,5 +159,11 @@
       "second": "qequalchain(vector(qmul('U',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qmul('M',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qsum(qtensorchain(qketstate(\"qboundindex_1\"),vector(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),qnamedket('φ'))),0,qsub('m',1),\"qboundindex_1\")))"
     }
   ],
-  "failures": []
+  "failures": [
+    {
+      "id": "IBM046-3c1262a5-M090",
+      "stage": "text re-entry",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 3, Matrix 2, in horzcat() must be a matrix.\nArgument 4, Matrix 2, in horzcat() must be a matrix.\nArgument 5, Matrix 2, in horzcat() must be a matrix.\nArgument 6, Matrix 2, in horzcat() must be a matrix.\nArgument 7, Matrix 2, in horzcat() must be a matrix.\nArgument 8, Matrix 2, in horzcat() must be a matrix.\nArgument 9, Matrix 2, in horzcat() must be a matrix.\nArgument 3 in qmatrix() must be a vector."
+    }
+  ]
 }
