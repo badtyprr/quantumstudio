@@ -1,0 +1,670 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-simulation.ipynb",
+  "source_sha256": "90815385dbbbfe5e740fa75972cd8ba422cf0982ccd58517e282725598dd2e45",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 31,
+  "code_cells": 27,
+  "summary": {
+    "exact": 51,
+    "diagnostic": 16
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM120-90815385-M001",
+      "cell": 1,
+      "start": 304,
+      "end": 325,
+      "literal": "$\\vert\\psi(0)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 0)",
+      "copy": "qstatecall('ψ',0)"
+    },
+    {
+      "id": "IBM120-90815385-M002",
+      "cell": 1,
+      "start": 343,
+      "end": 414,
+      "literal": "$$\n\\vert \\psi(t) \\rangle = e^{-i H t} \\vert \\psi(0) \\rangle \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 75"
+    },
+    {
+      "id": "IBM120-90815385-M003",
+      "cell": 1,
+      "start": 422,
+      "end": 425,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM120-90815385-M004",
+      "cell": 1,
+      "start": 563,
+      "end": 581,
+      "literal": "$H=\\sum_j a_j P_j$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k ∈ \"indexset_j\"} (a_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsumset(qadjacent(qindexedlabel(\"a_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),\"indexset_j\",\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM120-90815385-M005",
+      "cell": 1,
+      "start": 588,
+      "end": 593,
+      "literal": "$P_j$",
+      "status": "exact",
+      "display": "\"P_j\"",
+      "copy": "\"P_j\""
+    },
+    {
+      "id": "IBM120-90815385-M006",
+      "cell": 1,
+      "start": 649,
+      "end": 652,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM120-90815385-M007",
+      "cell": 1,
+      "start": 767,
+      "end": 772,
+      "literal": "$t=0$",
+      "status": "exact",
+      "display": "t = 0",
+      "copy": "('t')==(0)"
+    },
+    {
+      "id": "IBM120-90815385-M008",
+      "cell": 1,
+      "start": 826,
+      "end": 843,
+      "literal": "$|\\psi(t)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 't')",
+      "copy": "qstatecall('ψ','t')"
+    },
+    {
+      "id": "IBM120-90815385-M009",
+      "cell": 1,
+      "start": 959,
+      "end": 1005,
+      "literal": "$$\ne^{-i H t} = 1-iHt-\\frac{1}{2}H^2t^2+...\n$$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 45"
+    },
+    {
+      "id": "IBM120-90815385-M010",
+      "cell": 1,
+      "start": 1042,
+      "end": 1050,
+      "literal": "$e^{iZ}$",
+      "status": "exact",
+      "display": "e^[i, 0; 0, −i]",
+      "copy": "(e)^(matrix(2,2,[i,0,0,−i]))"
+    },
+    {
+      "id": "IBM120-90815385-M011",
+      "cell": 1,
+      "start": 1255,
+      "end": 1268,
+      "literal": "$H = H_1+H_2$",
+      "status": "exact",
+      "display": "qoperatorref('H') = qoperatorref(\"H_1\") + qoperatorref(\"H_2\")",
+      "copy": "qcompare(qoperatorref('H'),qadd(qoperatorref(\"H_1\"),qoperatorref(\"H_2\")),4)"
+    },
+    {
+      "id": "IBM120-90815385-M012",
+      "cell": 1,
+      "start": 1271,
+      "end": 1333,
+      "literal": "$$\ne^{-i H t} = 1-i(H_1+H_2)t-\\frac{1}{2}(H_1+H_2)^2t^2+...\n$$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 61"
+    },
+    {
+      "id": "IBM120-90815385-M013",
+      "cell": 1,
+      "start": 1340,
+      "end": 1345,
+      "literal": "$H_1$",
+      "status": "exact",
+      "display": "\"H_1\"",
+      "copy": "\"H_1\""
+    },
+    {
+      "id": "IBM120-90815385-M014",
+      "cell": 1,
+      "start": 1350,
+      "end": 1355,
+      "literal": "$H_2$",
+      "status": "exact",
+      "display": "\"H_2\"",
+      "copy": "\"H_2\""
+    },
+    {
+      "id": "IBM120-90815385-M015",
+      "cell": 1,
+      "start": 1438,
+      "end": 1441,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM120-90815385-M016",
+      "cell": 1,
+      "start": 1446,
+      "end": 1449,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM120-90815385-M017",
+      "cell": 1,
+      "start": 1459,
+      "end": 1502,
+      "literal": "$$\ne^{-i (a+b) t} = e^{-i a t}e^{-i b t}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM120-90815385-M018",
+      "cell": 1,
+      "start": 1732,
+      "end": 1735,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM120-90815385-M019",
+      "cell": 1,
+      "start": 1827,
+      "end": 1937,
+      "literal": "$$\ne^{-i (H_1+H_2) t} \\approx 1-i(H_1+H_2)t \\approx (1-i H_1 t)(1-i H_2 t) \\approx e^{-i H_1 t}e^{-i H_2 t}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M020",
+      "cell": 1,
+      "start": 2104,
+      "end": 2212,
+      "literal": "$$\n\\vert \\psi(t) \\rangle \\approx \\left(\\prod_j e^{-i a_j P_j t/r} \\right)^r \\vert\\psi(0) \\rangle \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 46"
+    },
+    {
+      "id": "IBM120-90815385-M021",
+      "cell": 1,
+      "start": 2219,
+      "end": 2224,
+      "literal": "$t/r$",
+      "status": "exact",
+      "display": "t / r",
+      "copy": "'t' ∕ 'r'"
+    },
+    {
+      "id": "IBM120-90815385-M022",
+      "cell": 1,
+      "start": 2316,
+      "end": 2319,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM120-90815385-M023",
+      "cell": 1,
+      "start": 2678,
+      "end": 2683,
+      "literal": "$N=2$",
+      "status": "exact",
+      "display": "N = 2",
+      "copy": "('N')==(2)"
+    },
+    {
+      "id": "IBM120-90815385-M024",
+      "cell": 1,
+      "start": 2688,
+      "end": 2693,
+      "literal": "$N=6$",
+      "status": "exact",
+      "display": "N = 6",
+      "copy": "('N')==(6)"
+    },
+    {
+      "id": "IBM120-90815385-M025",
+      "cell": 1,
+      "start": 2745,
+      "end": 2755,
+      "literal": "$\\sigma_i$",
+      "status": "exact",
+      "display": "\"σ_i\"",
+      "copy": "\"σ_i\""
+    },
+    {
+      "id": "IBM120-90815385-M026",
+      "cell": 1,
+      "start": 2844,
+      "end": 2854,
+      "literal": "$\\uparrow$",
+      "status": "exact",
+      "display": "'↑'",
+      "copy": "'↑'"
+    },
+    {
+      "id": "IBM120-90815385-M027",
+      "cell": 1,
+      "start": 2859,
+      "end": 2871,
+      "literal": "$\\downarrow$",
+      "status": "exact",
+      "display": "'↓'",
+      "copy": "'↓'"
+    },
+    {
+      "id": "IBM120-90815385-M028",
+      "cell": 1,
+      "start": 2912,
+      "end": 2916,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM120-90815385-M029",
+      "cell": 1,
+      "start": 2921,
+      "end": 2925,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM120-90815385-M030",
+      "cell": 1,
+      "start": 2941,
+      "end": 3018,
+      "literal": "$$\nH = - J \\sum_{i=0}^{N-2} Z_i Z_{i+1} - h \\sum_{i=0}^{N-1} X_i  \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 73"
+    },
+    {
+      "id": "IBM120-90815385-M031",
+      "cell": 1,
+      "start": 3026,
+      "end": 3029,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM120-90815385-M032",
+      "cell": 1,
+      "start": 3068,
+      "end": 3071,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM120-90815385-M033",
+      "cell": 1,
+      "start": 3264,
+      "end": 3272,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM120-90815385-M034",
+      "cell": 1,
+      "start": 3317,
+      "end": 3421,
+      "literal": "$$\nH = -J \\sum_{i=0}^{N-2} Z_i Z_{i+1} -h \\sum_{i=0}^{N-1} (\\sin\\alpha Z_i + \\cos\\alpha X_i) \\text{.}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 100"
+    },
+    {
+      "id": "IBM120-90815385-M035",
+      "cell": 1,
+      "start": 3739,
+      "end": 3763,
+      "literal": "$\\lvert 0 0 0 0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM120-90815385-M036",
+      "cell": 1,
+      "start": 3766,
+      "end": 3800,
+      "literal": "$\\uparrow\\uparrow\\uparrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑'⁴",
+      "copy": "'↑'⁴"
+    },
+    {
+      "id": "IBM120-90815385-M037",
+      "cell": 1,
+      "start": 3813,
+      "end": 3837,
+      "literal": "$\\lvert 1 0 0 0 \\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM120-90815385-M038",
+      "cell": 1,
+      "start": 3840,
+      "end": 3876,
+      "literal": "$\\downarrow\\uparrow\\uparrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑'³'↓'",
+      "copy": "'↑'³ ⋅ '↓'"
+    },
+    {
+      "id": "IBM120-90815385-M039",
+      "cell": 1,
+      "start": 3887,
+      "end": 3895,
+      "literal": "$\\ldots$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM120-90815385-M040",
+      "cell": 1,
+      "start": 3914,
+      "end": 3922,
+      "literal": "$\\ldots$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM120-90815385-M041",
+      "cell": 1,
+      "start": 3961,
+      "end": 3985,
+      "literal": "$\\lvert 1 1 1 1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM120-90815385-M042",
+      "cell": 1,
+      "start": 3988,
+      "end": 4030,
+      "literal": "$\\downarrow\\downarrow\\downarrow\\downarrow$",
+      "status": "exact",
+      "display": "'↓'⁴",
+      "copy": "'↓'⁴"
+    },
+    {
+      "id": "IBM120-90815385-M043",
+      "cell": 6,
+      "start": 210,
+      "end": 213,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM120-90815385-M044",
+      "cell": 6,
+      "start": 215,
+      "end": 218,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM120-90815385-M045",
+      "cell": 6,
+      "start": 220,
+      "end": 223,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM120-90815385-M046",
+      "cell": 6,
+      "start": 228,
+      "end": 236,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM120-90815385-M047",
+      "cell": 8,
+      "start": 74,
+      "end": 79,
+      "literal": "$N=6$",
+      "status": "exact",
+      "display": "N = 6",
+      "copy": "('N')==(6)"
+    },
+    {
+      "id": "IBM120-90815385-M048",
+      "cell": 8,
+      "start": 81,
+      "end": 88,
+      "literal": "$J=0.2$",
+      "status": "exact",
+      "display": "J = 0.2",
+      "copy": "('J')==(1 ∕ 5)"
+    },
+    {
+      "id": "IBM120-90815385-M049",
+      "cell": 8,
+      "start": 90,
+      "end": 97,
+      "literal": "$h=1.2$",
+      "status": "exact",
+      "display": "h = 1.2",
+      "copy": "('h')==(6 ∕ 5)"
+    },
+    {
+      "id": "IBM120-90815385-M050",
+      "cell": 8,
+      "start": 102,
+      "end": 126,
+      "literal": "$\\alpha=\\frac{\\pi}{8.0}$",
+      "status": "exact",
+      "display": "'α' = 0.125π",
+      "copy": "('α')==(π ∕ 8)"
+    },
+    {
+      "id": "IBM120-90815385-M051",
+      "cell": 12,
+      "start": 127,
+      "end": 181,
+      "literal": "$\\uparrow\\uparrow\\downarrow\\downarrow\\uparrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑'⁴'↓'²",
+      "copy": "'↑'⁴ ⋅ '↓'²"
+    },
+    {
+      "id": "IBM120-90815385-M052",
+      "cell": 14,
+      "start": 443,
+      "end": 484,
+      "literal": "$$\ne^{H_1+H_2} \\approx e^{H_1} e^{H_2}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M053",
+      "cell": 16,
+      "start": 78,
+      "end": 110,
+      "literal": "$\\sum_i \\langle Z_i \\rangle / N$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM120-90815385-M054",
+      "cell": 16,
+      "start": 151,
+      "end": 196,
+      "literal": "$\\sum_i \\langle Z_i Z_{i+1} \\rangle/ (N - 1)$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM120-90815385-M055",
+      "cell": 18,
+      "start": 360,
+      "end": 401,
+      "literal": "$\\langle\\psi\\vert\\hat{O}\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "⟨ψ| O |ψ⟩",
+      "copy": "qmul(qmul(qdag(qnamedket('ψ')),'O'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM120-90815385-M056",
+      "cell": 22,
+      "start": 387,
+      "end": 438,
+      "literal": "$$\ne^{H_1+H_2} \\approx e^{H_1/2}e^{H_2}e^{H_1/2}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM120-90815385-M057",
+      "cell": 32,
+      "start": 172,
+      "end": 180,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM120-90815385-M058",
+      "cell": 39,
+      "start": 61,
+      "end": 81,
+      "literal": "$\\downarrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑''↓'",
+      "copy": "'↑''↓'"
+    },
+    {
+      "id": "IBM120-90815385-M059",
+      "cell": 39,
+      "start": 104,
+      "end": 142,
+      "literal": "$\\vert\\psi(0)\\rangle = \\vert10\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 0) = [0; 0; 1; 0]",
+      "copy": "qcompare(qstatecall('ψ',0),matrix(4,1,[0,0,1,0]),4)"
+    },
+    {
+      "id": "IBM120-90815385-M060",
+      "cell": 39,
+      "start": 172,
+      "end": 179,
+      "literal": "$t=1.6$",
+      "status": "exact",
+      "display": "t = 1.6",
+      "copy": "('t')==(8 ∕ 5)"
+    },
+    {
+      "id": "IBM120-90815385-M061",
+      "cell": 39,
+      "start": 207,
+      "end": 223,
+      "literal": "$\\alpha=0^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 15"
+    },
+    {
+      "id": "IBM120-90815385-M062",
+      "cell": 39,
+      "start": 262,
+      "end": 282,
+      "literal": "$\\uparrow\\downarrow$",
+      "status": "exact",
+      "display": "'↑''↓'",
+      "copy": "'↑''↓'"
+    },
+    {
+      "id": "IBM120-90815385-M063",
+      "cell": 39,
+      "start": 400,
+      "end": 420,
+      "literal": "$\\alpha=\\pm90^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 19"
+    },
+    {
+      "id": "IBM120-90815385-M064",
+      "cell": 39,
+      "start": 517,
+      "end": 537,
+      "literal": "$\\downarrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑''↓'",
+      "copy": "'↑''↓'"
+    },
+    {
+      "id": "IBM120-90815385-M065",
+      "cell": 39,
+      "start": 568,
+      "end": 588,
+      "literal": "$\\alpha=\\pm45^\\circ$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\circ at byte 19"
+    },
+    {
+      "id": "IBM120-90815385-M066",
+      "cell": 54,
+      "start": 521,
+      "end": 711,
+      "literal": "$$\n\\hat{U}_{ST(2k)}\\left(t\\right) = \\left[ \\hat{U}_{ST(2k-2)}\\left(p_k t\\right) \\right]^2 \\hat{U}_{ST(2k-2)}\\left( (1- 4 p_k) t\\right)\\left[ \\hat{U}_{ST(2k-2)}\\left(p_k t\\right) \\right]^2\n$$",
+      "status": "exact",
+      "display": "U_(2 · k · S · T) · t − ((U_((2 · k − 2) · S · T) · \"p_k\" · t)^2 · U_((2 · k − 2) · S · T) · (1 − 4 · \"p_k\") · t · (U_((2 · k − 2) · S · T) · \"p_k\" · t)^2) = 0",
+      "copy": "(qadd(qmul(−1,qadjacent(qadjacent(qadjacent(qpower(vector(qadjacent(qindexedlabel(\"U_\",qmul(qmul('S','T'),qsub(qadjacent(2,'k'),2)),\"\"),qadjacent(\"p_k\",'t'))),2),qindexedlabel(\"U_\",qmul(qmul('S','T'),qsub(qadjacent(2,'k'),2)),\"\")),qadjacent(qsub(1,qadjacent(4,\"p_k\")),'t')),qpower(vector(qadjacent(qindexedlabel(\"U_\",qmul(qmul('S','T'),qsub(qadjacent(2,'k'),2)),\"\"),qadjacent(\"p_k\",'t'))),2))),qadjacent(qindexedlabel(\"U_\",qmul(qmul('S','T'),qadjacent(2,'k')),\"\"),'t')))==(0)"
+    },
+    {
+      "id": "IBM120-90815385-M067",
+      "cell": 54,
+      "start": 712,
+      "end": 761,
+      "literal": "$$\np_k = 1 / \\left(4-4^{\\frac{1}{2k-1}}\\right)\n$$",
+      "status": "exact",
+      "display": "k = 0.5 + ln(2) ∕ ln((4 \"p_k\" − 1) ∕ \"p_k\") and \"p_k\" ≠ 0.333333333333333333333333333333 and \"p_k\" ≠ 0.25 and \"p_k\" ≠ 0",
+      "copy": "((\"p_k\")!=(0) and (\"p_k\")!=(1 ∕ 3) and (\"p_k\")!=(1 ∕ 4) and ('k')==(1 ∕ 2 + ln(2) ∕ ln((4 ⋅ \"p_k\" − 1) ∕ \"p_k\")))"
+    }
+  ]
+}

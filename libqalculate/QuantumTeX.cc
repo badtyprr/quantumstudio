@@ -2553,6 +2553,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // A named shot count is a single variable in sampling-error formulas.
   static const std::regex shotRoot(R"(\\sqrt\{\s*shots\s*\})");
   s=std::regex_replace(s,shotRoot,"qsqrt(\"shots\")");
+  // Adjacent coefficient letters inside a squared modulus denote a product.
+  // Quote both factors so physical constants cannot replace state amplitudes.
+  if(s.find('|')!=std::string::npos) {
+   static const std::regex productProbability(R"(\|([ab])([cd])\|\s*\^\s*(?:\{2\}|2)(?![0-9]))");
+   s=std::regex_replace(s,productProbability,"qpower(qbars(qmul(\"$1\",\"$2\")),2)");
+  }
+  if(s.find("\\rangle")!=std::string::npos) {
+   static const std::regex ketCoefficient(R"((^|[=(+\-]\s*)([a-d])\s*(?=\|[01]\\rangle))");
+   s=std::regex_replace(s,ketCoefficient,"$1\"$2\"*");
+  }
   // A proportionality coefficient between two named kets is a scalar.
   static const std::regex scaledKet(R"((\\rangle\s*=\s*)c\s*(?=\|))");
   s=std::regex_replace(s,scaledKet,"$1\"c\"*");
@@ -2693,6 +2703,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(mathWrapper && (trim(s)=="\\mu s" || trim(s)=="\\mu\\mathrm{s}"))
   return "qphysicalunit(\"s\",\"micro\")";
  if(s.find("\\hbar")!=std::string::npos && trim(s)=="\\hbar=1")return "qcompare(\"ℏ\",1,4)";
+ if(mathWrapper && s.find("H_")!=std::string::npos) {
+  // A sum of indexed Hamiltonian terms declares H as an operator.
+  static const std::regex decomposition(R"(^\s*H\s*=\s*(H_(?:\{[0-9]+\}|[0-9]+)\s*(?:\+\s*H_(?:\{[0-9]+\}|[0-9]+)\s*)+)\s*$)");
+  std::smatch sum;
+  if(std::regex_match(s,sum,decomposition)) {
+   static const std::regex term(R"(H_(?:\{([0-9]+)\}|([0-9]+)))");
+   const std::string rhs=sum[1].str();
+   std::string result;
+   for(std::sregex_iterator it(rhs.begin(),rhs.end(),term),end;it!=end;++it) {
+    const std::string op="qoperatorref(\"H_"+((*it)[1].matched ? (*it)[1].str() : (*it)[2].str())+"\")";
+    result=result.empty() ? op : "qadd("+result+","+op+")";
+   }
+   return "qcompare(qoperatorref(\"H\"),"+result+",4)";
+  }
+ }
  if(s.find("\\neq")!=std::string::npos) {
   static const std::regex commutator(R"(^\s*\[H_([A-Z]),\s*H_([A-Z])\]\s*\\neq\s*0\s*$)");
   std::smatch m;if(std::regex_match(s,m,commutator)) {

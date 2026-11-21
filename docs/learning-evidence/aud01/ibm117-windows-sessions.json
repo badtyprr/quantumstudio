@@ -1,0 +1,35 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+  "notebook_sha256": "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "2440e0e3b828788a8b677df5bd17e27311de1b2fcc384524610df73d98abc14d",
+  "suite": {
+    "passed": true,
+    "checks": 164,
+    "calls": 19,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 18,
+    "restored_identically": 18,
+    "stable_after_text_reentry": 17,
+    "source_diagnostic": 1
+  },
+  "diagnostics": [
+    {
+      "id": "IBM117-2c47467f-M009",
+      "message": "Expected a quantum expression at byte 30"
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM117-2c47467f-M010",
+      "first": "qcompare('D',qsub(qadjacent(qadjacent(2,qnamedket('ψ')),qdag(qnamedket('ψ'))),matrix(2,2,[1,0,0,1])),4)",
+      "second": "qcompare('D',qsub(qadjacent(qadjacent(2,qnamedket('ψ')),qdag(qnamedket('ψ'))),matrix(2,2,vector(1,0,0,1))),4)"
+    }
+  ],
+  "failures": []
+}

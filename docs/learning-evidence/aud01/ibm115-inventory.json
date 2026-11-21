@@ -1,0 +1,1291 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/bits-gates-and-circuits.ipynb",
+  "source_sha256": "0533f5bdd69d17a87ef66b56c5cdb722c0d11cb4416e0cbc5e3377818217c615",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 44,
+  "code_cells": 44,
+  "summary": {
+    "exact": 117,
+    "diagnostic": 10
+  },
+  "figures": [
+    {
+      "cell": 2,
+      "start": 615,
+      "end": 763,
+      "alt": "\"classical logic and quantum circuit\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/classical-vs-quantum.avif"
+    },
+    {
+      "cell": 3,
+      "start": 1511,
+      "end": 1619,
+      "alt": "Bloch sphere",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/bloch.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM115-0533f5bd-M001",
+      "cell": 3,
+      "start": 126,
+      "end": 137,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M002",
+      "cell": 3,
+      "start": 142,
+      "end": 153,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M003",
+      "cell": 3,
+      "start": 201,
+      "end": 252,
+      "literal": "$$\n|\\psi\\rangle =\\alpha|0\\rangle+ \\beta|1\\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 'β']",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,['α','β']),4)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M004",
+      "cell": 3,
+      "start": 260,
+      "end": 268,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M005",
+      "cell": 3,
+      "start": 273,
+      "end": 280,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M006",
+      "cell": 3,
+      "start": 311,
+      "end": 335,
+      "literal": "$|\\alpha|^2+|\\beta|^2=1$",
+      "status": "exact",
+      "display": "|'α'| = −√(1 − qbars('β')²) or |'α'| = √(1 − qbars('β')²)",
+      "copy": "((qbars('α'))==(−√(1 − qbars('β')²)) or (qbars('α'))==(√(1 − qbars('β')²)))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M007",
+      "cell": 3,
+      "start": 338,
+      "end": 349,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M008",
+      "cell": 3,
+      "start": 354,
+      "end": 365,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M009",
+      "cell": 3,
+      "start": 424,
+      "end": 525,
+      "literal": "$$\n|0\\rangle = \\begin{pmatrix}\n1 \\\\0\n\\end{pmatrix},\n|1\\rangle = \\begin{pmatrix}\n0\\\\1\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M010",
+      "cell": 3,
+      "start": 589,
+      "end": 742,
+      "literal": "$$\n|\\psi\\rangle = \\alpha\\begin{pmatrix}\n1 \\\\ 0\n\\end{pmatrix} + \\beta\\begin{pmatrix}0\\\\\n1\n\\end{pmatrix} = \\begin{pmatrix}\n\\alpha \\\\ \\beta\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 'β'] = ['α'; 'β']",
+      "copy": "qequalchain(vector(qketstate('ψ'),matrix(2,1,['α','β']),matrix(2,1,['α','β'])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M011",
+      "cell": 3,
+      "start": 893,
+      "end": 904,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M012",
+      "cell": 3,
+      "start": 909,
+      "end": 920,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M013",
+      "cell": 3,
+      "start": 946,
+      "end": 1076,
+      "literal": "$$\n\\langle\\psi|\\psi\\rangle = \\begin{pmatrix}\n\\alpha^* & \\beta^*\n\\end{pmatrix}\n\\begin{pmatrix}\n\\alpha \\\\\n\\beta\n\\end{pmatrix} = 1\n$$",
+      "status": "exact",
+      "display": "⟨ψ|ψ⟩ = 'α'² + 'β'² = 1",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')),'α'² + 'β'²,1))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M014",
+      "cell": 3,
+      "start": 1078,
+      "end": 1140,
+      "literal": "$ |\\psi\\rangle =\\begin{pmatrix}\n\\alpha \\\\ \\beta\n\\end{pmatrix}$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 'β']",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,['α','β']),4)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M015",
+      "cell": 3,
+      "start": 1227,
+      "end": 1419,
+      "literal": "$$\n|\\psi\\rangle\n=\\cos\\frac{\\theta}{2}|0\\rangle+e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle\n=\\left( \\begin{pmatrix} \\cos\\frac{\\theta}{2}\\\\ e^{i\\varphi}\\sin\\frac{\\theta}{2}\n\\end{pmatrix}\\right)\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [cos(('θ' ∕ 2) rad); (e^(i'φ') ⋅ sin(('θ' rad) ∕ 2))] = [cos(('θ' ∕ 2) rad); (e^(i'φ') ⋅ sin(('θ' rad) ∕ 2))]",
+      "copy": "qequalchain(vector(qketstate('ψ'),matrix(2,1,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(e^(i'φ'))*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))]),matrix(2,1,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(e^(i'φ'))*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M016",
+      "cell": 3,
+      "start": 1427,
+      "end": 1435,
+      "literal": "$\\theta$",
+      "status": "exact",
+      "display": "'θ'",
+      "copy": "'θ'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M017",
+      "cell": 3,
+      "start": 1440,
+      "end": 1449,
+      "literal": "$\\varphi$",
+      "status": "exact",
+      "display": "'φ'",
+      "copy": "'φ'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M018",
+      "cell": 8,
+      "start": 29,
+      "end": 34,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "IBM115-0533f5bd-M019",
+      "cell": 8,
+      "start": 55,
+      "end": 58,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM115-0533f5bd-M020",
+      "cell": 8,
+      "start": 108,
+      "end": 119,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M021",
+      "cell": 8,
+      "start": 131,
+      "end": 142,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M022",
+      "cell": 8,
+      "start": 171,
+      "end": 182,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M023",
+      "cell": 8,
+      "start": 194,
+      "end": 205,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M024",
+      "cell": 8,
+      "start": 346,
+      "end": 403,
+      "literal": "$$\nX = \\begin{pmatrix}\n0 & 1 \\\\\n1 & 0 \\\\\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M025",
+      "cell": 10,
+      "start": 49,
+      "end": 60,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M026",
+      "cell": 10,
+      "start": 120,
+      "end": 271,
+      "literal": "$$\nX|0\\rangle=  \\begin{pmatrix}\n0 & 1 \\\\\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n1 \\\\ 0\n\\end{pmatrix}\n =\\begin{pmatrix}\n0 \\\\ 1\n\\end{pmatrix} = |1\\rangle\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M027",
+      "cell": 12,
+      "start": 99,
+      "end": 102,
+      "literal": "$j$",
+      "status": "exact",
+      "display": "j",
+      "copy": "'j'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M028",
+      "cell": 12,
+      "start": 142,
+      "end": 147,
+      "literal": "$\\pi$",
+      "status": "exact",
+      "display": "π",
+      "copy": "π"
+    },
+    {
+      "id": "IBM115-0533f5bd-M029",
+      "cell": 12,
+      "start": 192,
+      "end": 195,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM115-0533f5bd-M030",
+      "cell": 12,
+      "start": 200,
+      "end": 203,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM115-0533f5bd-M031",
+      "cell": 12,
+      "start": 253,
+      "end": 264,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M032",
+      "cell": 12,
+      "start": 303,
+      "end": 343,
+      "literal": "$\\frac{|0\\rangle + |1\\rangle}{\\sqrt{2}}$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M033",
+      "cell": 12,
+      "start": 396,
+      "end": 472,
+      "literal": "$$\nH = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}\n1 & 1 \\\\\n1 & -1 \\\\\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M034",
+      "cell": 15,
+      "start": 8,
+      "end": 270,
+      "literal": "$$\nH|0\\rangle= \\frac{1}{\\sqrt{2}} \\begin{pmatrix}\n1 & 1 \\\\\n1 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n1 \\\\0\n\\end{pmatrix}\n =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}\n1 \\\\\n1\n\\end{pmatrix}\n=\\begin{pmatrix}\n0.707 \\\\\n0.707\n\\end{pmatrix}\n=\\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle)\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM115-0533f5bd-M035",
+      "cell": 15,
+      "start": 359,
+      "end": 422,
+      "literal": "$$\n|+\\rangle \\equiv \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle).\n$$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM115-0533f5bd-M036",
+      "cell": 15,
+      "start": 440,
+      "end": 443,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M037",
+      "cell": 15,
+      "start": 456,
+      "end": 467,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M038",
+      "cell": 15,
+      "start": 499,
+      "end": 510,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M039",
+      "cell": 15,
+      "start": 515,
+      "end": 526,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M040",
+      "cell": 16,
+      "start": 5,
+      "end": 16,
+      "literal": "$|-\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M041",
+      "cell": 16,
+      "start": 78,
+      "end": 89,
+      "literal": "$|-\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M042",
+      "cell": 16,
+      "start": 97,
+      "end": 158,
+      "literal": "$$\n|-\\rangle \\equiv \\frac{|0\\rangle -|1\\rangle}{\\sqrt{2}}.\n$$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM115-0533f5bd-M043",
+      "cell": 16,
+      "start": 211,
+      "end": 222,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M044",
+      "cell": 19,
+      "start": 9,
+      "end": 290,
+      "literal": "$$\nH|1\\rangle= \\frac{1}{\\sqrt{2}} \\begin{pmatrix}\n1 & 1 \\\\\\\n1 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0 \\\\\\\n1\n\\end{pmatrix}\n =\\frac{1}{\\sqrt{2}}\\begin{pmatrix}\n1 \\\\\\\n-1\n\\end{pmatrix}\n=\\begin{pmatrix}\n0.707 \\\\\\\n-0.707\n\\end{pmatrix}\n=\\frac{1}{\\sqrt{2}}(|0\\rangle-|1\\rangle) = |-\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 59"
+    },
+    {
+      "id": "IBM115-0533f5bd-M045",
+      "cell": 19,
+      "start": 307,
+      "end": 310,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M046",
+      "cell": 19,
+      "start": 319,
+      "end": 330,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M047",
+      "cell": 19,
+      "start": 368,
+      "end": 379,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M048",
+      "cell": 19,
+      "start": 384,
+      "end": 395,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M049",
+      "cell": 19,
+      "start": 413,
+      "end": 424,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M050",
+      "cell": 20,
+      "start": 291,
+      "end": 329,
+      "literal": "$$\n|\\psi^{'}\\rangle = U|\\psi\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed quoted label at byte 35"
+    },
+    {
+      "id": "IBM115-0533f5bd-M051",
+      "cell": 20,
+      "start": 372,
+      "end": 410,
+      "literal": "$$\nU^{\\dagger}U =U U^{\\dagger} = I.\n$$",
+      "status": "exact",
+      "display": "U† · U = U · U† = [1, 0; 0, 1]",
+      "copy": "qequalchain(vector(qadjacent(qdag('U'),'U'),qadjacent('U',qdag('U')),matrix(2,2,[1,0,0,1])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M052",
+      "cell": 20,
+      "start": 598,
+      "end": 699,
+      "literal": "$$\nX = \\begin{pmatrix}\n0 & 1 \\\\\n1 & 0 \\\\\n\\end{pmatrix}\n= |0\\rangle \\langle 1|+|1\\rangle \\langle 0|\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M053",
+      "cell": 20,
+      "start": 701,
+      "end": 806,
+      "literal": "$$\nY = \\begin{pmatrix}\n0 & -i \\\\\ni & 0 \\\\\n\\end{pmatrix}\n= -i|0\\rangle \\langle 1|+i|1\\rangle \\langle 0|\n$$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM115-0533f5bd-M054",
+      "cell": 20,
+      "start": 808,
+      "end": 910,
+      "literal": "$$\nZ = \\begin{pmatrix}\n1 & 0 \\\\\n0 & -1 \\\\\n\\end{pmatrix}\n= |0\\rangle \\langle 0|-|1\\rangle \\langle 1|\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M055",
+      "cell": 20,
+      "start": 963,
+      "end": 1270,
+      "literal": "$$\n|0\\rangle \\langle 0|=\n\\begin{bmatrix}\n1 \\\\\n0\n\\end{bmatrix}\n\\begin{bmatrix}\n1 & 0\n\\end{bmatrix}\n=\\begin{bmatrix}\n1 & 0 \\\\\n0 & 0 \\\\\n\\end{bmatrix}, \\quad\n|1\\rangle \\langle 0|=\n\\begin{bmatrix}\n0 \\\\\n1\n\\end{bmatrix}\n\\begin{bmatrix}\n1 & 0\n\\end{bmatrix}\n=\\begin{bmatrix}\n0 & 0 \\\\\n1 & 0 \\\\\n\\end{bmatrix}, \\quad\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 48"
+    },
+    {
+      "id": "IBM115-0533f5bd-M056",
+      "cell": 20,
+      "start": 1272,
+      "end": 1579,
+      "literal": "$$\n|0\\rangle \\langle 1|=\n\\begin{bmatrix}\n1 \\\\\n0\n\\end{bmatrix}\n\\begin{bmatrix}\n0 & 1\n\\end{bmatrix}\n=\\begin{bmatrix}\n0 & 1 \\\\\n0 & 0 \\\\\n\\end{bmatrix}, \\quad\n|1\\rangle \\langle 1|=\n\\begin{bmatrix}\n0 \\\\\n1\n\\end{bmatrix}\n\\begin{bmatrix}\n0 & 1\n\\end{bmatrix}\n=\\begin{bmatrix}\n0 & 0 \\\\\n0 & 1 \\\\\n\\end{bmatrix}, \\quad\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 48"
+    },
+    {
+      "id": "IBM115-0533f5bd-M057",
+      "cell": 20,
+      "start": 1615,
+      "end": 1817,
+      "literal": "$$\nH= \\frac{1}{\\sqrt{2}}\\begin{bmatrix}\n1 & 1 \\\\\n1 & -1 \\\\\n\\end{bmatrix},\\quad\nS = \\begin{bmatrix}\n1 & 0 \\\\\n0 & i \\\\\n\\end{bmatrix}, \\quad\nT = \\begin{bmatrix}\n1 & 0 \\\\\n0 & exp(i\\pi/4) \\\\\n\\end{bmatrix}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M058",
+      "cell": 20,
+      "start": 1819,
+      "end": 2035,
+      "literal": "$$\nR_x(\\theta) = e^{-i\\theta X/2} = cos\\frac{\\theta}{2}I - i sin \\frac{\\theta}{2}X = \\begin{bmatrix}\ncos\\frac{\\theta}{2} &  -i sin \\frac{\\theta}{2} \\\\\n-i sin \\frac{\\theta}{2} & cos\\frac{\\theta}{2} \\\\\n\\end{bmatrix}\n$$",
+      "status": "exact",
+      "display": "[cos(('θ' ∕ 2) rad), −i ⋅ sin(('θ' rad) ∕ 2); −i ⋅ sin(('θ' rad) ∕ 2), cos(('θ' ∕ 2) rad)] = e^[0, −(i'θ') ∕ 2; −(i'θ') ∕ 2, 0] = [cos(('θ' ∕ 2) rad), −i ⋅ sin(('θ' rad) ∕ 2); −i ⋅ sin(('θ' rad) ∕ 2), cos(('θ' ∕ 2) rad)] = [cos(('θ' ∕ 2) rad), −i ⋅ sin(('θ' rad) ∕ 2); −i ⋅ sin(('θ' rad) ∕ 2), cos(('θ' ∕ 2) rad)]",
+      "copy": "qequalchain(vector(matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))]),(e)^(matrix(2,2,[0,−(i'θ') ∕ 2,−(i'θ') ∕ 2,0])),matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))]),matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M059",
+      "cell": 20,
+      "start": 2037,
+      "end": 2249,
+      "literal": "$$\nR_y(\\theta) = e^{-i\\theta Y/2} = cos\\frac{\\theta}{2}I - i sin \\frac{\\theta}{2}Y = \\begin{bmatrix}\ncos\\frac{\\theta}{2} &  - sin \\frac{\\theta}{2} \\\\\nsin \\frac{\\theta}{2} & cos\\frac{\\theta}{2} \\\\\n\\end{bmatrix}\n$$",
+      "status": "exact",
+      "display": "[cos(('θ' ∕ 2) rad), −sin(('θ' ∕ 2) rad); sin(('θ' ∕ 2) rad), cos(('θ' ∕ 2) rad)] = e^[0, −'θ' ∕ 2; 'θ' ∕ 2, 0] = [cos(('θ' ∕ 2) rad), −sin(('θ' ∕ 2) rad); sin(('θ' ∕ 2) rad), cos(('θ' ∕ 2) rad)] = [cos(('θ' ∕ 2) rad), −sin(('θ' ∕ 2) rad); sin(('θ' ∕ 2) rad), cos(('θ' ∕ 2) rad)]",
+      "copy": "qequalchain(vector(matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))]),(e)^(matrix(2,2,[0,−'θ' ∕ 2,'θ' ∕ 2,0])),matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))]),matrix(2,2,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−1),sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M060",
+      "cell": 20,
+      "start": 2251,
+      "end": 2414,
+      "literal": "$$\nR_z(\\theta) = e^{-i\\theta Z/2} = cos\\frac{\\theta}{2}I - i sin \\frac{\\theta}{2}Z = \\begin{bmatrix}\ne^{-i\\theta /2} &  0 \\\\\n0 & e^{i\\theta /2} \\\\\n\\end{bmatrix}\n$$",
+      "status": "exact",
+      "display": "[1 ∕ e^((i'θ') ∕ 2), 0; 0, e^((i'θ') ∕ 2)] = e^[−(i'θ') ∕ 2, 0; 0, (i'θ') ∕ 2] = [cos(('θ' ∕ 2) rad) − i ⋅ sin(('θ' rad) ∕ 2), 0; 0, cos(('θ' ∕ 2) rad) + i ⋅ sin(('θ' rad) ∕ 2)] = [1 ∕ e^((i'θ') ∕ 2), 0; 0, e^((i'θ') ∕ 2)]",
+      "copy": "qequalchain(vector(matrix(2,2,[1 ∕ e^((i'θ') ∕ 2),0,0,e^((i'θ') ∕ 2)]),(e)^(matrix(2,2,[−(i'θ') ∕ 2,0,0,(i'θ') ∕ 2])),matrix(2,2,[((sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))*(−i))+ (cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))),0,0,((i)*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\")))))+ (cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))]),matrix(2,2,[1 ∕ e^((i'θ') ∕ 2),0,0,e^((i'θ') ∕ 2)])))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M061",
+      "cell": 21,
+      "start": 346,
+      "end": 359,
+      "literal": "$XX|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M062",
+      "cell": 21,
+      "start": 365,
+      "end": 378,
+      "literal": "$HH|0\\rangle$",
+      "status": "exact",
+      "display": "['H'²; 0]",
+      "copy": "matrix(2,1,['H'²,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M063",
+      "cell": 21,
+      "start": 384,
+      "end": 398,
+      "literal": "$HZH|0\\rangle$",
+      "status": "exact",
+      "display": "['H'²'Z'; 0]",
+      "copy": "matrix(2,1,['H'² ⋅ 'Z',0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M064",
+      "cell": 28,
+      "start": 127,
+      "end": 130,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM115-0533f5bd-M065",
+      "cell": 28,
+      "start": 202,
+      "end": 269,
+      "literal": "$\\alpha|0\\rangle+\\beta|1\\rangle \\quad (s.t.|\\alpha|^2+|\\beta|^2=1)$",
+      "status": "diagnostic",
+      "message": "Expected ')' at byte 17"
+    },
+    {
+      "id": "IBM115-0533f5bd-M066",
+      "cell": 28,
+      "start": 280,
+      "end": 291,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M067",
+      "cell": 28,
+      "start": 298,
+      "end": 309,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M068",
+      "cell": 28,
+      "start": 341,
+      "end": 353,
+      "literal": "$|\\alpha|^2$",
+      "status": "exact",
+      "display": "|'α'|^2",
+      "copy": "qbars('α')²"
+    },
+    {
+      "id": "IBM115-0533f5bd-M069",
+      "cell": 28,
+      "start": 385,
+      "end": 396,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M070",
+      "cell": 28,
+      "start": 416,
+      "end": 427,
+      "literal": "$|\\beta|^2$",
+      "status": "exact",
+      "display": "|'β'|^2",
+      "copy": "qbars('β')²"
+    },
+    {
+      "id": "IBM115-0533f5bd-M071",
+      "cell": 28,
+      "start": 459,
+      "end": 470,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M072",
+      "cell": 28,
+      "start": 493,
+      "end": 501,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M073",
+      "cell": 28,
+      "start": 506,
+      "end": 513,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM115-0533f5bd-M074",
+      "cell": 28,
+      "start": 581,
+      "end": 638,
+      "literal": "$\\frac{\\sqrt{2}}{2}|0\\rangle+\\frac{\\sqrt{2}}{2}|1\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M075",
+      "cell": 28,
+      "start": 676,
+      "end": 687,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M076",
+      "cell": 28,
+      "start": 691,
+      "end": 702,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M077",
+      "cell": 28,
+      "start": 721,
+      "end": 772,
+      "literal": "$\\frac{\\sqrt{3}}{2}|0\\rangle-\\frac{1}{2}i|1\\rangle$",
+      "status": "exact",
+      "display": "[(0.5 ⋅ √(3)); −0.5i]",
+      "copy": "matrix(2,1,[√(3) ∕ 2,−i ∕ 2])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M078",
+      "cell": 28,
+      "start": 802,
+      "end": 813,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M079",
+      "cell": 37,
+      "start": 171,
+      "end": 183,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M080",
+      "cell": 37,
+      "start": 196,
+      "end": 207,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M081",
+      "cell": 37,
+      "start": 218,
+      "end": 229,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M082",
+      "cell": 37,
+      "start": 475,
+      "end": 488,
+      "literal": "$|q_0\\rangle$",
+      "status": "exact",
+      "display": "|q_0⟩",
+      "copy": "qketstate(\"q_0\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M083",
+      "cell": 38,
+      "start": 125,
+      "end": 215,
+      "literal": "$\n|q1\\rangle \\otimes|q0\\rangle = (a|0\\rangle+b|1\\rangle) \\otimes (c|0\\rangle+d|1\\rangle)\n$",
+      "status": "exact",
+      "display": "|q1⟩ ⊗ |q0⟩ = ['a''c'; 'a''d'; 'b''c'; 'b''d']",
+      "copy": "qcompare(qtensor(qnamedket(\"q1\"),qnamedket(\"q0\")),matrix(4,1,['a''c','a''d','b''c','b''d']),4)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M084",
+      "cell": 38,
+      "start": 217,
+      "end": 306,
+      "literal": "$\n= ac|0\\rangle|0\\rangle+ad|0\\rangle|1\\rangle+bc|1\\rangle|0\\rangle+bd|1\\rangle|1\\rangle\n$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM115-0533f5bd-M085",
+      "cell": 38,
+      "start": 308,
+      "end": 365,
+      "literal": "$\n= ac|00\\rangle+ad|01\\rangle+bc|10\\rangle+bd|11\\rangle\n$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM115-0533f5bd-M086",
+      "cell": 38,
+      "start": 369,
+      "end": 403,
+      "literal": "$|ac|^2+ |ad|^2+ |bc|^2+ |bd|^2=1$",
+      "status": "exact",
+      "display": "|a · 'c'|^2 + |a · d|^2 = 1 − |b · 'c'|^2 − |b · d|^2",
+      "copy": "(qbars(qmul('a', 'c'))² + qbars(qmul('a', 'd'))²)==(1 − qbars(qmul('b', 'c'))² − qbars(qmul('b', 'd'))²)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M087",
+      "cell": 38,
+      "start": 439,
+      "end": 470,
+      "literal": "$|0\\rangle|0\\rangle=|00\\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M088",
+      "cell": 38,
+      "start": 487,
+      "end": 490,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M089",
+      "cell": 38,
+      "start": 553,
+      "end": 731,
+      "literal": "$H|0\\rangle \\otimes H|0\\rangle=\\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle) \\otimes \\frac{1}{\\sqrt{2}}(|0\\rangle+|1\\rangle) = \\frac{1}{2}(|00\\rangle+|01\\rangle+|10\\rangle+|11\\rangle)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM115-0533f5bd-M090",
+      "cell": 38,
+      "start": 733,
+      "end": 1118,
+      "literal": "$$\n=\\frac{1}{2}\\left( \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix} \\otimes \\begin{pmatrix} 1 \\\\ 1 \\end{pmatrix}\\right) = \\frac{1}{2}\\begin{pmatrix} 1 \\\\ 1 \\\\ 1 \\\\ 1 \\end{pmatrix}=\\frac{1}{2}\\left(\\begin{pmatrix} 1 \\\\ 0 \\\\ 0 \\\\ 0 \\end{pmatrix}+\\begin{pmatrix} 0 \\\\ 1 \\\\ 0 \\\\ 0 \\end{pmatrix}+\\begin{pmatrix} 0 \\\\ 0 \\\\ 1 \\\\ 0 \\end{pmatrix}+\\begin{pmatrix} 0 \\\\ 0 \\\\ 0 \\\\ 1 \\end{pmatrix}\\right)\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM115-0533f5bd-M091",
+      "cell": 38,
+      "start": 1207,
+      "end": 1219,
+      "literal": "$|00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M092",
+      "cell": 38,
+      "start": 1223,
+      "end": 1231,
+      "literal": "$|ac|^2$",
+      "status": "exact",
+      "display": "|a · 'c'|^2",
+      "copy": "qbars(qmul('a', 'c'))²"
+    },
+    {
+      "id": "IBM115-0533f5bd-M093",
+      "cell": 44,
+      "start": 24,
+      "end": 36,
+      "literal": "$|00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M094",
+      "cell": 44,
+      "start": 38,
+      "end": 50,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M095",
+      "cell": 44,
+      "start": 52,
+      "end": 64,
+      "literal": "$|10\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 1; 0]",
+      "copy": "matrix(4,1,[0,0,1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M096",
+      "cell": 44,
+      "start": 66,
+      "end": 78,
+      "literal": "$|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M097",
+      "cell": 45,
+      "start": 256,
+      "end": 267,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M098",
+      "cell": 45,
+      "start": 559,
+      "end": 570,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M099",
+      "cell": 48,
+      "start": 37,
+      "end": 49,
+      "literal": "$|00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M100",
+      "cell": 48,
+      "start": 111,
+      "end": 122,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M101",
+      "cell": 49,
+      "start": 77,
+      "end": 89,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M102",
+      "cell": 52,
+      "start": 29,
+      "end": 41,
+      "literal": "$|01\\rangle$",
+      "status": "exact",
+      "display": "[0; 1; 0; 0]",
+      "copy": "matrix(4,1,[0,1,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M103",
+      "cell": 52,
+      "start": 63,
+      "end": 75,
+      "literal": "$|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M104",
+      "cell": 55,
+      "start": 33,
+      "end": 45,
+      "literal": "$|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M105",
+      "cell": 55,
+      "start": 308,
+      "end": 373,
+      "literal": "$$\n\\frac{1}{\\sqrt{2}}|00\\rangle + \\frac{1}{\\sqrt{2}}|11\\rangle\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M106",
+      "cell": 55,
+      "start": 448,
+      "end": 467,
+      "literal": "$|\\psi_{AB}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_AB⟩",
+      "copy": "qketstate(\"ψ_AB\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M107",
+      "cell": 55,
+      "start": 497,
+      "end": 513,
+      "literal": "$|\\psi_A\\rangle$",
+      "status": "exact",
+      "display": "|ψ_A⟩",
+      "copy": "qketstate(\"ψ_A\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M108",
+      "cell": 55,
+      "start": 518,
+      "end": 534,
+      "literal": "$|\\psi_B\\rangle$",
+      "status": "exact",
+      "display": "|ψ_B⟩",
+      "copy": "qketstate(\"ψ_B\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M109",
+      "cell": 55,
+      "start": 616,
+      "end": 635,
+      "literal": "$|\\psi_{AB}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_AB⟩",
+      "copy": "qketstate(\"ψ_AB\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M110",
+      "cell": 55,
+      "start": 657,
+      "end": 673,
+      "literal": "$|\\psi\\rangle_A$",
+      "status": "exact",
+      "display": "|'ψ'⟩_{A}",
+      "copy": "qbasis('ψ','A')"
+    },
+    {
+      "id": "IBM115-0533f5bd-M111",
+      "cell": 55,
+      "start": 678,
+      "end": 694,
+      "literal": "$|\\psi\\rangle_B$",
+      "status": "exact",
+      "display": "|'ψ'⟩_{B}",
+      "copy": "qbasis('ψ','B')"
+    },
+    {
+      "id": "IBM115-0533f5bd-M112",
+      "cell": 55,
+      "start": 697,
+      "end": 834,
+      "literal": "$$\n|\\psi_{AB}\\rangle = \\frac{1}{\\sqrt{2}}(|00\\rangle +|11\\rangle) = \\frac{1}{\\sqrt{2}}(|0\\rangle_A|0\\rangle_B +|1\\rangle_A|1\\rangle_B)\n$$",
+      "status": "exact",
+      "display": "|ψ_AB⟩ = [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))] = 1 / √(2) · (|0⟩_{A} ⊗ |0⟩_{B} + |1⟩_{A} ⊗ |1⟩_{B})",
+      "copy": "qequalchain(vector(qketstate(\"ψ_AB\"),matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),qadjacent(1 ∕ qsqrt(2),qadd(qtensor(qbasis(0,'A'),qbasis(0,'B')),qtensor(qbasis(1,'A'),qbasis(1,'B'))))))"
+    },
+    {
+      "id": "IBM115-0533f5bd-M113",
+      "cell": 55,
+      "start": 836,
+      "end": 884,
+      "literal": "$$\n|\\psi\\rangle_A = a_0|0\\rangle+a_1|1\\rangle\n$$",
+      "status": "exact",
+      "display": "[−\"a_0\"; −\"a_1\"] + |'ψ'⟩_{A} = 0",
+      "copy": "(qadd(matrix(2,1,vector(qmul(−1,\"a_0\"),qmul(−1,\"a_1\"))),qbasis('ψ','A')))==(0)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M114",
+      "cell": 55,
+      "start": 885,
+      "end": 933,
+      "literal": "$$\n|\\psi\\rangle_B = b_0|0\\rangle+b_1|1\\rangle\n$$",
+      "status": "exact",
+      "display": "[−\"b_0\"; −\"b_1\"] + |'ψ'⟩_{B} = 0",
+      "copy": "(qadd(matrix(2,1,vector(qmul(−1,\"b_0\"),qmul(−1,\"b_1\"))),qbasis('ψ','B')))==(0)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M115",
+      "cell": 55,
+      "start": 992,
+      "end": 1110,
+      "literal": "$$\n|\\psi\\rangle _A\\otimes |\\psi\\rangle _B = a_0 b_0|00\\rangle+a_0 b_1|01\\rangle+a_1 b_0|10\\rangle+a_1 b_1|11\\rangle\n$$",
+      "status": "exact",
+      "display": "[(−\"a_0\" ⋅ \"b_0\"); (−\"a_0\" ⋅ \"b_1\"); (−\"a_1\" ⋅ \"b_0\"); (−\"a_1\" ⋅ \"b_1\")] + |'ψ'⟩_{A} ⊗ |'ψ'⟩_{B} = 0",
+      "copy": "(qadd(matrix(4,1,vector(qmul(qmul(−1,\"a_0\"),\"b_0\"),qmul(qmul(−1,\"a_0\"),\"b_1\"),qmul(qmul(−1,\"a_1\"),\"b_0\"),qmul(qmul(−1,\"a_1\"),\"b_1\"))),qtensor(qbasis('ψ','A'),qbasis('ψ','B'))))==(0)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M116",
+      "cell": 55,
+      "start": 1142,
+      "end": 1147,
+      "literal": "$a_0$",
+      "status": "exact",
+      "display": "\"a_0\"",
+      "copy": "\"a_0\""
+    },
+    {
+      "id": "IBM115-0533f5bd-M117",
+      "cell": 55,
+      "start": 1149,
+      "end": 1154,
+      "literal": "$a_1$",
+      "status": "exact",
+      "display": "\"a_1\"",
+      "copy": "\"a_1\""
+    },
+    {
+      "id": "IBM115-0533f5bd-M118",
+      "cell": 55,
+      "start": 1156,
+      "end": 1161,
+      "literal": "$b_0$",
+      "status": "exact",
+      "display": "\"b_0\"",
+      "copy": "\"b_0\""
+    },
+    {
+      "id": "IBM115-0533f5bd-M119",
+      "cell": 55,
+      "start": 1167,
+      "end": 1172,
+      "literal": "$b_1$",
+      "status": "exact",
+      "display": "\"b_1\"",
+      "copy": "\"b_1\""
+    },
+    {
+      "id": "IBM115-0533f5bd-M120",
+      "cell": 55,
+      "start": 1216,
+      "end": 1235,
+      "literal": "$|\\psi_{AB}\\rangle$",
+      "status": "exact",
+      "display": "|ψ_AB⟩",
+      "copy": "qketstate(\"ψ_AB\")"
+    },
+    {
+      "id": "IBM115-0533f5bd-M121",
+      "cell": 55,
+      "start": 1304,
+      "end": 1320,
+      "literal": "$|\\psi\\rangle_A$",
+      "status": "exact",
+      "display": "|'ψ'⟩_{A}",
+      "copy": "qbasis('ψ','A')"
+    },
+    {
+      "id": "IBM115-0533f5bd-M122",
+      "cell": 55,
+      "start": 1325,
+      "end": 1341,
+      "literal": "$|\\psi\\rangle_B$",
+      "status": "exact",
+      "display": "|'ψ'⟩_{B}",
+      "copy": "qbasis('ψ','B')"
+    },
+    {
+      "id": "IBM115-0533f5bd-M123",
+      "cell": 55,
+      "start": 1363,
+      "end": 1428,
+      "literal": "$|\\psi_{AB}\\rangle =  \\frac{1}{\\sqrt{2}}(|00\\rangle +|11\\rangle)$",
+      "status": "exact",
+      "display": "|ψ_AB⟩ = [(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "qcompare(qketstate(\"ψ_AB\"),matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),4)"
+    },
+    {
+      "id": "IBM115-0533f5bd-M124",
+      "cell": 77,
+      "start": 16,
+      "end": 28,
+      "literal": "$|00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M125",
+      "cell": 77,
+      "start": 33,
+      "end": 45,
+      "literal": "$|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M126",
+      "cell": 78,
+      "start": 251,
+      "end": 301,
+      "literal": "$$\n\\frac{1}{\\sqrt 2}(|000\\rangle + |111\\rangle)\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(8,1,[1 ∕ √(2),0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM115-0533f5bd-M127",
+      "cell": 82,
+      "start": 55,
+      "end": 115,
+      "literal": "$$\n\\frac{1}{\\sqrt 2}(|00000000\\rangle + |11111111\\rangle)\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(256,1,[1 ∕ √(2),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ √(2)])"
+    }
+  ]
+}

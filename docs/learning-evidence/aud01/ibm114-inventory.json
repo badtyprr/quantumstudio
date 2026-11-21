@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/introduction.ipynb",
+  "source_sha256": "0e79f291609466eb1a03ec1c3d2a08f0454f127a7a1d65ae9b79c99025b53d6c",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

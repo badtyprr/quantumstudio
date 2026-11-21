@@ -42,6 +42,20 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "0e79f291609466eb1a03ec1c3d2a08f0454f127a7a1d65ae9b79c99025b53d6c": ("IBM114", "introduction", 0, 0),
+    "0533f5bdd69d17a87ef66b56c5cdb722c0d11cb4416e0cbc5e3377818217c615": ("IBM115", "bits-gates-and-circuits", 127, 2),
+    "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901": ("IBM116", "teleportation", 87, 0),
+    "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e": ("IBM117", "grovers-algorithm", 19, 0),
+    "54e2989d3c1974521ce022669f5c8bd0753322df183073541b66b58170cd5f79": ("IBM118", "quantum-phase-estimation", 75, 0),
+    "2de3fbcf7eaa75852ac3859bedcfa4cf17afbc13dacc88ca1a75a0f06912706e": ("IBM119", "variational-quantum-algorithms", 85, 4),
+    "90815385dbbbfe5e740fa75972cd8ba422cf0982ccd58517e282725598dd2e45": ("IBM120", "quantum-simulation", 67, 0),
+    "c193532df42e1b3ece0a1f10e6b5aee887a4c181a13a13b88cdf229f8589aa32": ("IBM121", "classical-simulation", 0, 0),
+    "8b7fe23b420ee951639f3f0f07bd213235dbfd74ac5f26a91e516044f60c416f": ("IBM122", "hardware", 0, 0),
+    "d1dea0447d1fc54d14649a78057483e5380b390a4483f3bf7394317c484398e3": ("IBM123", "quantum-circuit-optimization", 10, 0),
+    "d4662436f973fd2550f5efa6a6ae4441eba9a13f25ef8763f555c37e013ffad8": ("IBM124", "error-mitigation", 6, 1),
+    "7afe50add8fa8489327ef3972ec6743df853ef1610531a0bc7b9b26959364e22": ("IBM125", "utility-i", 29, 1),
+    "7ab7893c481092d1786270a4e7ca61dfce93ddddf4254b52955ef807db8b634d": ("IBM126", "utility-ii", 51, 0),
+    "41e43b9b2a3c95b3faffdbea0bbff02d86872b7bc3c0fc446a7c2df174373727": ("IBM127", "utility-iii", 4, 0),
     "ecd16e47b567dcd279cb87bc39377be0faa0e64bb863263654e55e720a7d44e8": ("IBM108", "introduction", 0, 0),
     "0f3a767995ca2b9d4d161107d64bdaf12500687e611b5f16d22292dd67456c6d": ("IBM109", "hamiltonian-construction", 3, 0),
     "3222364ec09800b5b71ca4116ce9a687a17af726ae3bf26f933953bbd7e8485a": ("IBM110", "ansatz", 3, 0),
@@ -169,7 +183,7 @@ lessons = {
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
     parser.error(f"Expected {args.lesson}, got {lesson}")
-extension = "mdx" if lesson == "IBM080" else "ipynb"
+extension = "mdx" if lesson in ('IBM080', 'IBM121') else "ipynb"
 cells = ([{"cell_type": "markdown", "source": data.decode()}] if extension == "mdx"
          else json.loads(data)["cells"])
 types = Counter(c["cell_type"] for c in cells)
@@ -177,6 +191,20 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM114": (1,0),
+    "IBM115": (44,44),
+    "IBM116": (42,46),
+    "IBM117": (23,35),
+    "IBM118": (42,38),
+    "IBM119": (52,50),
+    "IBM120": (31,27),
+    "IBM121": (1,0),
+    "IBM122": (15,17),
+    "IBM123": (35,71),
+    "IBM124": (23,29),
+    "IBM125": (31,26),
+    "IBM126": (31,31),
+    "IBM127": (41,87),
     "IBM108": (1,0),
     "IBM109": (23,19),
     "IBM110": (11,10),
@@ -287,6 +315,8 @@ elif "IBM101" <= lesson <= "IBM107":
     course,chapter = "variational-algorithm-design",""
 elif "IBM108" <= lesson <= "IBM113":
     course,chapter = "quantum-chem-with-vqe",""
+elif "IBM114" <= lesson <= "IBM127":
+    course,chapter = "utility-scale-quantum-computing",""
 path = "/".join(part for part in (course,chapter,slug) if part)
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{path}.{extension}")

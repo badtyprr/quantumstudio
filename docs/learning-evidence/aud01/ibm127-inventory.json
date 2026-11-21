@@ -1,0 +1,55 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-iii.ipynb",
+  "source_sha256": "41e43b9b2a3c95b3faffdbea0bbff02d86872b7bc3c0fc446a7c2df174373727",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 41,
+  "code_cells": 87,
+  "summary": {
+    "exact": 4
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM127-41e43b9b-M001",
+      "cell": 4,
+      "start": 270,
+      "end": 273,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM127-41e43b9b-M002",
+      "cell": 4,
+      "start": 296,
+      "end": 368,
+      "literal": "$$\n\\frac{1}{\\sqrt 2}(|0\\rangle ^ {\\otimes n}+ |1\\rangle^ {\\otimes n})\n$$",
+      "status": "exact",
+      "display": "1 / √(2) · ([1; 0]^{⊗ n} + [0; 1]^{⊗ n})",
+      "copy": "qadjacent(1 ∕ qsqrt(2),qadd(qtensorpow(matrix(2,1,vector(1,0)),n),qtensorpow(matrix(2,1,vector(0,1)),n)))"
+    },
+    {
+      "id": "IBM127-41e43b9b-M003",
+      "cell": 15,
+      "start": 81,
+      "end": 92,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM127-41e43b9b-M004",
+      "cell": 15,
+      "start": 103,
+      "end": 114,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    }
+  ]
+}

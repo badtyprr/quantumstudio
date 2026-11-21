@@ -1,0 +1,869 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/teleportation.ipynb",
+  "source_sha256": "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 42,
+  "code_cells": 46,
+  "summary": {
+    "exact": 70,
+    "diagnostic": 17
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM116-2621d5ef-M001",
+      "cell": 1,
+      "start": 1296,
+      "end": 1346,
+      "literal": "$$\n|\\psi\\rangle =\\alpha|0\\rangle+\\beta|1\\rangle\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 'β']",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,['α','β']),4)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M002",
+      "cell": 1,
+      "start": 1353,
+      "end": 1361,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M003",
+      "cell": 1,
+      "start": 1366,
+      "end": 1373,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M004",
+      "cell": 1,
+      "start": 1404,
+      "end": 1430,
+      "literal": "$|\\alpha|^2+|\\beta|^2 = 1$",
+      "status": "exact",
+      "display": "|'α'| = −√(1 − qbars('β')²) or |'α'| = √(1 − qbars('β')²)",
+      "copy": "((qbars('α'))==(−√(1 − qbars('β')²)) or (qbars('α'))==(√(1 − qbars('β')²)))"
+    },
+    {
+      "id": "IBM116-2621d5ef-M005",
+      "cell": 1,
+      "start": 1478,
+      "end": 1669,
+      "literal": "$$\n|\\psi\\rangle =\\cos\\frac{\\theta}{2}|0\\rangle+e^{i\\varphi}\\sin\\frac{\\theta}{2}|1\\rangle=\n\\left(\n\\begin{matrix}\n\\cos\\frac{\\theta}{2}\\\\\ne^{i\\varphi}\\sin\\frac{\\theta}{2}\n\\end{matrix}\n\\right)\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [cos(('θ' ∕ 2) rad); (e^(i'φ') ⋅ sin(('θ' rad) ∕ 2))] = [cos(('θ' ∕ 2) rad); (e^(i'φ') ⋅ sin(('θ' rad) ∕ 2))]",
+      "copy": "qequalchain(vector(qketstate('ψ'),matrix(2,1,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(e^(i'φ'))*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))]),matrix(2,1,[cos(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))),(e^(i'φ'))*(sin(('θ')*(1 ∕ 2)*(qphysicalunit(\"rad\",\"\"))))])))"
+    },
+    {
+      "id": "IBM116-2621d5ef-M006",
+      "cell": 2,
+      "start": 60,
+      "end": 75,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M007",
+      "cell": 2,
+      "start": 223,
+      "end": 609,
+      "literal": "$$\n|\\psi \\rangle \\langle \\psi| \\equiv  \\rho = \\left(\n\\begin{pmatrix}\n\\cos\\frac{\\theta}{2}\\\\\ne^{i\\varphi}\\sin\\frac{\\theta}{2}\n\\end{pmatrix}\n\\right)\n\\left(\n\\begin{pmatrix}\n\\cos\\frac{\\theta}{2} & e^{-i\\varphi}\\sin\\frac{\\theta}{2}\n\\end{pmatrix}\n\\right)\n=\\frac{1}{2}\\left(\\begin{pmatrix}\n1+\\cos\\theta & e^{-i\\varphi}\\sin\\theta\\\\\ne^{-i\\varphi}\\sin\\theta & 1-\\cos\\theta\n\\end{pmatrix}\\right)\n$$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM116-2621d5ef-M008",
+      "cell": 2,
+      "start": 640,
+      "end": 646,
+      "literal": "$\\rho$",
+      "status": "exact",
+      "display": "'ρ'",
+      "copy": "'ρ'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M009",
+      "cell": 2,
+      "start": 699,
+      "end": 855,
+      "literal": "$$\n\\rho = \\frac{1}{2}\\bigl( \\textbf{I} + (\\sin{\\theta}\\cos{\\varphi})\\textbf{X}+  (\\sin{\\theta}\\sin{\\varphi})\\textbf{Y} +  (\\cos{\\theta})\\textbf{Z} \\bigr)\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 34"
+    },
+    {
+      "id": "IBM116-2621d5ef-M010",
+      "cell": 2,
+      "start": 874,
+      "end": 963,
+      "literal": "$$\n\\rho = \\frac{1}{2}(\\textbf{I} + r_{x}\\textbf{X}+ r_{y}\\textbf{Y} + r_{z}\\textbf{Z})\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 28"
+    },
+    {
+      "id": "IBM116-2621d5ef-M011",
+      "cell": 2,
+      "start": 971,
+      "end": 998,
+      "literal": "$r_{x}^2+r_{y}^2+r_{z}^2=1$",
+      "status": "exact",
+      "display": "\"r_x\" = −√(1 − \"r_y\"² − \"r_z\"²) or \"r_x\" = √(1 − \"r_y\"² − \"r_z\"²)",
+      "copy": "((\"r_x\")==(−√(1 − \"r_y\"² − \"r_z\"²)) or (\"r_x\")==(√(1 − \"r_y\"² − \"r_z\"²)))"
+    },
+    {
+      "id": "IBM116-2621d5ef-M012",
+      "cell": 2,
+      "start": 1026,
+      "end": 1062,
+      "literal": "$\\textbf{r} = (r_{x}, r_{y}, r_{z})$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 8"
+    },
+    {
+      "id": "IBM116-2621d5ef-M013",
+      "cell": 6,
+      "start": 98,
+      "end": 110,
+      "literal": "$|0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M014",
+      "cell": 6,
+      "start": 116,
+      "end": 128,
+      "literal": "$|1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M015",
+      "cell": 6,
+      "start": 230,
+      "end": 245,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M016",
+      "cell": 6,
+      "start": 378,
+      "end": 399,
+      "literal": "$r_{x}, r_{y}, r_{z}$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM116-2621d5ef-M017",
+      "cell": 6,
+      "start": 460,
+      "end": 466,
+      "literal": "$\\rho$",
+      "status": "exact",
+      "display": "'ρ'",
+      "copy": "'ρ'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M018",
+      "cell": 6,
+      "start": 485,
+      "end": 574,
+      "literal": "$$\n\\rho = \\frac{1}{2}(\\textbf{I} + r_{x}\\textbf{X}+ r_{y}\\textbf{Y} + r_{z}\\textbf{Z})\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 28"
+    },
+    {
+      "id": "IBM116-2621d5ef-M019",
+      "cell": 6,
+      "start": 591,
+      "end": 697,
+      "literal": "$$\nTr(\\textbf{X} \\rho) =  r_{x}, \\quad Tr(\\textbf{Y} \\rho) =  r_{y}, \\quad Tr(\\textbf{Z} \\rho) =  r_{z}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 12"
+    },
+    {
+      "id": "IBM116-2621d5ef-M020",
+      "cell": 6,
+      "start": 702,
+      "end": 709,
+      "literal": "$r_{z}$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M021",
+      "cell": 6,
+      "start": 717,
+      "end": 820,
+      "literal": "$$\nTr(\\textbf{Z} \\rho) =  \\langle 0|\\textbf{Z} \\rho|0 \\rangle +  \\langle 1|\\textbf{Z} \\rho|1 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\textbf at byte 12"
+    },
+    {
+      "id": "IBM116-2621d5ef-M022",
+      "cell": 6,
+      "start": 821,
+      "end": 967,
+      "literal": "$$\n= \\langle 0|(|0 \\rangle\\langle 0|-|1 \\rangle\\langle 1|) \\rho|0 \\rangle +\\langle 1|(|0 \\rangle\\langle 0|-|1 \\rangle\\langle 1|) \\rho|1 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M023",
+      "cell": 6,
+      "start": 968,
+      "end": 1026,
+      "literal": "$$\n=\\langle 0|\\rho|0 \\rangle- \\langle 1| \\rho|1 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M024",
+      "cell": 6,
+      "start": 1027,
+      "end": 1125,
+      "literal": "$$\n=\\langle 0|\\psi\\rangle\\langle \\psi|0 \\rangle -  \\langle 1| \\psi\\rangle\\langle \\psi|1 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M025",
+      "cell": 6,
+      "start": 1126,
+      "end": 1153,
+      "literal": "$$\n=|\\alpha|^2-|\\beta|^2\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M026",
+      "cell": 6,
+      "start": 1202,
+      "end": 1250,
+      "literal": "$|\\psi \\rangle  =\\alpha|0\\rangle+\\beta|1\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩ = ['α'; 'β']",
+      "copy": "qcompare(qketstate('ψ'),matrix(2,1,['α','β']),4)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M027",
+      "cell": 6,
+      "start": 1277,
+      "end": 1284,
+      "literal": "$r_{z}$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M028",
+      "cell": 6,
+      "start": 1303,
+      "end": 1315,
+      "literal": "$|0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M029",
+      "cell": 6,
+      "start": 1334,
+      "end": 1346,
+      "literal": "$|1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M030",
+      "cell": 6,
+      "start": 1362,
+      "end": 1367,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M031",
+      "cell": 6,
+      "start": 1396,
+      "end": 1401,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M032",
+      "cell": 6,
+      "start": 1607,
+      "end": 1612,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M033",
+      "cell": 6,
+      "start": 1691,
+      "end": 1694,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M034",
+      "cell": 6,
+      "start": 1715,
+      "end": 1733,
+      "literal": "$ \\theta, \\varphi$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM116-2621d5ef-M035",
+      "cell": 8,
+      "start": 84,
+      "end": 89,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M036",
+      "cell": 11,
+      "start": 60,
+      "end": 65,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M037",
+      "cell": 11,
+      "start": 159,
+      "end": 164,
+      "literal": "$r_z$",
+      "status": "exact",
+      "display": "\"r_z\"",
+      "copy": "\"r_z\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M038",
+      "cell": 12,
+      "start": 25,
+      "end": 30,
+      "literal": "$r_x$",
+      "status": "exact",
+      "display": "\"r_x\"",
+      "copy": "\"r_x\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M039",
+      "cell": 12,
+      "start": 94,
+      "end": 97,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM116-2621d5ef-M040",
+      "cell": 12,
+      "start": 129,
+      "end": 132,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM116-2621d5ef-M041",
+      "cell": 12,
+      "start": 375,
+      "end": 378,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM116-2621d5ef-M042",
+      "cell": 12,
+      "start": 395,
+      "end": 398,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM116-2621d5ef-M043",
+      "cell": 12,
+      "start": 453,
+      "end": 456,
+      "literal": "$z$",
+      "status": "exact",
+      "display": "z",
+      "copy": "z"
+    },
+    {
+      "id": "IBM116-2621d5ef-M044",
+      "cell": 12,
+      "start": 504,
+      "end": 507,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM116-2621d5ef-M045",
+      "cell": 12,
+      "start": 699,
+      "end": 704,
+      "literal": "$r_x$",
+      "status": "exact",
+      "display": "\"r_x\"",
+      "copy": "\"r_x\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M046",
+      "cell": 16,
+      "start": 25,
+      "end": 30,
+      "literal": "$r_y$",
+      "status": "exact",
+      "display": "\"r_y\"",
+      "copy": "\"r_y\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M047",
+      "cell": 16,
+      "start": 146,
+      "end": 151,
+      "literal": "$r_y$",
+      "status": "exact",
+      "display": "\"r_y\"",
+      "copy": "\"r_y\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M048",
+      "cell": 16,
+      "start": 204,
+      "end": 209,
+      "literal": "$r_y$",
+      "status": "exact",
+      "display": "\"r_y\"",
+      "copy": "\"r_y\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M049",
+      "cell": 20,
+      "start": 40,
+      "end": 49,
+      "literal": "$\\vec{r}$",
+      "status": "exact",
+      "display": "qvectorref('r')",
+      "copy": "qvectorref('r')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M050",
+      "cell": 23,
+      "start": 121,
+      "end": 136,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M051",
+      "cell": 23,
+      "start": 807,
+      "end": 849,
+      "literal": "$\\frac {|00\\rangle + |11\\rangle}{\\sqrt 2}$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M052",
+      "cell": 23,
+      "start": 1262,
+      "end": 1277,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M053",
+      "cell": 23,
+      "start": 1529,
+      "end": 1544,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M054",
+      "cell": 23,
+      "start": 1630,
+      "end": 1645,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M055",
+      "cell": 23,
+      "start": 2068,
+      "end": 2083,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M056",
+      "cell": 24,
+      "start": 381,
+      "end": 395,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M057",
+      "cell": 27,
+      "start": 49,
+      "end": 64,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M058",
+      "cell": 27,
+      "start": 96,
+      "end": 99,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M059",
+      "cell": 29,
+      "start": 100,
+      "end": 103,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M060",
+      "cell": 31,
+      "start": 206,
+      "end": 220,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M061",
+      "cell": 33,
+      "start": 22,
+      "end": 37,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M062",
+      "cell": 33,
+      "start": 83,
+      "end": 87,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M063",
+      "cell": 33,
+      "start": 97,
+      "end": 100,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M064",
+      "cell": 35,
+      "start": 209,
+      "end": 224,
+      "literal": "$|\\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M065",
+      "cell": 39,
+      "start": 50,
+      "end": 53,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M066",
+      "cell": 39,
+      "start": 306,
+      "end": 321,
+      "literal": "$|\\psi\\rangle $",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM116-2621d5ef-M067",
+      "cell": 40,
+      "start": 238,
+      "end": 241,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M068",
+      "cell": 40,
+      "start": 305,
+      "end": 314,
+      "literal": "$U^{-1}U$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM116-2621d5ef-M069",
+      "cell": 40,
+      "start": 376,
+      "end": 388,
+      "literal": "$U|0\\rangle$",
+      "status": "exact",
+      "display": "['U'; 0]",
+      "copy": "matrix(2,1,['U',0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M070",
+      "cell": 40,
+      "start": 429,
+      "end": 457,
+      "literal": "$U^{-1}U|0\\rangle=|0\\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM116-2621d5ef-M071",
+      "cell": 44,
+      "start": 253,
+      "end": 258,
+      "literal": "$q_2$",
+      "status": "exact",
+      "display": "\"q_2\"",
+      "copy": "\"q_2\""
+    },
+    {
+      "id": "IBM116-2621d5ef-M072",
+      "cell": 44,
+      "start": 272,
+      "end": 284,
+      "literal": "$|0\\rangle $",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M073",
+      "cell": 48,
+      "start": 43,
+      "end": 46,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M074",
+      "cell": 48,
+      "start": 177,
+      "end": 180,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM116-2621d5ef-M075",
+      "cell": 67,
+      "start": 61,
+      "end": 73,
+      "literal": "$|1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M076",
+      "cell": 68,
+      "start": 527,
+      "end": 538,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M077",
+      "cell": 68,
+      "start": 542,
+      "end": 553,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM116-2621d5ef-M078",
+      "cell": 70,
+      "start": 99,
+      "end": 130,
+      "literal": "$a_1a_2 \\in \\{00, 01, 10, 11\\}$",
+      "status": "exact",
+      "display": "\"a_1a_2\" ∈ \\{0, 1, 10, 11\\}",
+      "copy": "qmember(\"a_1a_2\",qset(vector(0,1,10,11)))"
+    },
+    {
+      "id": "IBM116-2621d5ef-M079",
+      "cell": 70,
+      "start": 302,
+      "end": 315,
+      "literal": "$a_1a_2 = 00$",
+      "status": "exact",
+      "display": "\"a_1a_2\" = 0",
+      "copy": "(\"a_1a_2\")==(0)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M080",
+      "cell": 70,
+      "start": 343,
+      "end": 356,
+      "literal": "$a_1a_2 = 01$",
+      "status": "exact",
+      "display": "\"a_1a_2\" = 1",
+      "copy": "(\"a_1a_2\")==(1)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M081",
+      "cell": 70,
+      "start": 386,
+      "end": 399,
+      "literal": "$a_1a_2 = 10$",
+      "status": "exact",
+      "display": "\"a_1a_2\" = 10",
+      "copy": "(\"a_1a_2\")==(10)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M082",
+      "cell": 70,
+      "start": 429,
+      "end": 442,
+      "literal": "$a_1a_2 = 11$",
+      "status": "exact",
+      "display": "\"a_1a_2\" = 11",
+      "copy": "(\"a_1a_2\")==(11)"
+    },
+    {
+      "id": "IBM116-2621d5ef-M083",
+      "cell": 70,
+      "start": 760,
+      "end": 860,
+      "literal": "$$\n\\frac {|00\\rangle + |11\\rangle}{\\sqrt 2} \\rightarrow CX_{01}\\otimes H_0 \\rightarrow |00\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M084",
+      "cell": 70,
+      "start": 861,
+      "end": 961,
+      "literal": "$$\n\\frac {|00\\rangle - |11\\rangle}{\\sqrt 2} \\rightarrow CX_{01}\\otimes H_0 \\rightarrow |01\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M085",
+      "cell": 70,
+      "start": 962,
+      "end": 1062,
+      "literal": "$$\n\\frac {|10\\rangle + |01\\rangle}{\\sqrt 2} \\rightarrow CX_{01}\\otimes H_0 \\rightarrow |10\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M086",
+      "cell": 70,
+      "start": 1063,
+      "end": 1164,
+      "literal": "$$\n\\frac {|10\\rangle - |01\\rangle}{\\sqrt 2} \\rightarrow CX_{01}\\otimes H_0 \\rightarrow -|11\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M087",
+      "cell": 70,
+      "start": 1195,
+      "end": 1208,
+      "literal": "$-|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; −1]",
+      "copy": "matrix(4,1,[0,0,0,−1])"
+    }
+  ]
+}

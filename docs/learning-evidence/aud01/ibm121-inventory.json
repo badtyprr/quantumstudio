@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/classical-simulation.mdx",
+  "source_sha256": "c193532df42e1b3ece0a1f10e6b5aee887a4c181a13a13b88cdf229f8589aa32",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

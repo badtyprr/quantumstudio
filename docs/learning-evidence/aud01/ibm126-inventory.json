@@ -1,0 +1,515 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/utility-ii.ipynb",
+  "source_sha256": "7ab7893c481092d1786270a4e7ca61dfce93ddddf4254b52955ef807db8b634d",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 31,
+  "code_cells": 31,
+  "summary": {
+    "exact": 40,
+    "diagnostic": 11
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM126-7ab7893c-M001",
+      "cell": 1,
+      "start": 590,
+      "end": 611,
+      "literal": "$\\vert\\psi(0)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 0)",
+      "copy": "qstatecall('ψ',0)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M002",
+      "cell": 1,
+      "start": 629,
+      "end": 700,
+      "literal": "$$\n\\vert \\psi(t) \\rangle = e^{-i H t} \\vert \\psi(0) \\rangle \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 75"
+    },
+    {
+      "id": "IBM126-7ab7893c-M003",
+      "cell": 1,
+      "start": 708,
+      "end": 711,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM126-7ab7893c-M004",
+      "cell": 1,
+      "start": 849,
+      "end": 867,
+      "literal": "$H=\\sum_j a_j P_j$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k ∈ \"indexset_j\"} (a_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsumset(qadjacent(qindexedlabel(\"a_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),\"indexset_j\",\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M005",
+      "cell": 1,
+      "start": 874,
+      "end": 879,
+      "literal": "$P_j$",
+      "status": "exact",
+      "display": "\"P_j\"",
+      "copy": "\"P_j\""
+    },
+    {
+      "id": "IBM126-7ab7893c-M006",
+      "cell": 1,
+      "start": 935,
+      "end": 938,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM126-7ab7893c-M007",
+      "cell": 1,
+      "start": 1053,
+      "end": 1058,
+      "literal": "$t=0$",
+      "status": "exact",
+      "display": "t = 0",
+      "copy": "('t')==(0)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M008",
+      "cell": 1,
+      "start": 1112,
+      "end": 1129,
+      "literal": "$|\\psi(t)\\rangle$",
+      "status": "exact",
+      "display": "qstatecall('ψ', 't')",
+      "copy": "qstatecall('ψ','t')"
+    },
+    {
+      "id": "IBM126-7ab7893c-M009",
+      "cell": 1,
+      "start": 1245,
+      "end": 1291,
+      "literal": "$$\ne^{-i H t} = 1-iHt-\\frac{1}{2}H^2t^2+...\n$$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 45"
+    },
+    {
+      "id": "IBM126-7ab7893c-M010",
+      "cell": 1,
+      "start": 1328,
+      "end": 1336,
+      "literal": "$e^{iZ}$",
+      "status": "exact",
+      "display": "e^[i, 0; 0, −i]",
+      "copy": "(e)^(matrix(2,2,[i,0,0,−i]))"
+    },
+    {
+      "id": "IBM126-7ab7893c-M011",
+      "cell": 1,
+      "start": 1541,
+      "end": 1554,
+      "literal": "$H = H_1+H_2$",
+      "status": "exact",
+      "display": "qoperatorref('H') = qoperatorref(\"H_1\") + qoperatorref(\"H_2\")",
+      "copy": "qcompare(qoperatorref('H'),qadd(qoperatorref(\"H_1\"),qoperatorref(\"H_2\")),4)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M012",
+      "cell": 1,
+      "start": 1557,
+      "end": 1619,
+      "literal": "$$\ne^{-i H t} = 1-i(H_1+H_2)t-\\frac{1}{2}(H_1+H_2)^2t^2+...\n$$",
+      "status": "diagnostic",
+      "message": "Invalid decimal number at byte 61"
+    },
+    {
+      "id": "IBM126-7ab7893c-M013",
+      "cell": 1,
+      "start": 1626,
+      "end": 1631,
+      "literal": "$H_1$",
+      "status": "exact",
+      "display": "\"H_1\"",
+      "copy": "\"H_1\""
+    },
+    {
+      "id": "IBM126-7ab7893c-M014",
+      "cell": 1,
+      "start": 1636,
+      "end": 1641,
+      "literal": "$H_2$",
+      "status": "exact",
+      "display": "\"H_2\"",
+      "copy": "\"H_2\""
+    },
+    {
+      "id": "IBM126-7ab7893c-M015",
+      "cell": 1,
+      "start": 1724,
+      "end": 1727,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M016",
+      "cell": 1,
+      "start": 1732,
+      "end": 1735,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M017",
+      "cell": 1,
+      "start": 1745,
+      "end": 1788,
+      "literal": "$$\ne^{-i (a+b) t} = e^{-i a t}e^{-i b t}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM126-7ab7893c-M018",
+      "cell": 1,
+      "start": 2018,
+      "end": 2021,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M019",
+      "cell": 1,
+      "start": 2113,
+      "end": 2223,
+      "literal": "$$\ne^{-i (H_1+H_2) t} \\approx 1-i(H_1+H_2)t \\approx (1-i H_1 t)(1-i H_2 t) \\approx e^{-i H_1 t}e^{-i H_2 t}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM126-7ab7893c-M020",
+      "cell": 1,
+      "start": 2390,
+      "end": 2498,
+      "literal": "$$\n\\vert \\psi(t) \\rangle \\approx \\left(\\prod_j e^{-i a_j P_j t/r} \\right)^r \\vert\\psi(0) \\rangle \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 46"
+    },
+    {
+      "id": "IBM126-7ab7893c-M021",
+      "cell": 1,
+      "start": 2505,
+      "end": 2510,
+      "literal": "$t/r$",
+      "status": "exact",
+      "display": "t / r",
+      "copy": "'t' ∕ 'r'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M022",
+      "cell": 1,
+      "start": 2602,
+      "end": 2605,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M023",
+      "cell": 1,
+      "start": 2964,
+      "end": 2969,
+      "literal": "$N=2$",
+      "status": "exact",
+      "display": "N = 2",
+      "copy": "('N')==(2)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M024",
+      "cell": 1,
+      "start": 2974,
+      "end": 2979,
+      "literal": "$N=6$",
+      "status": "exact",
+      "display": "N = 6",
+      "copy": "('N')==(6)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M025",
+      "cell": 1,
+      "start": 3031,
+      "end": 3041,
+      "literal": "$\\sigma_i$",
+      "status": "exact",
+      "display": "\"σ_i\"",
+      "copy": "\"σ_i\""
+    },
+    {
+      "id": "IBM126-7ab7893c-M026",
+      "cell": 1,
+      "start": 3130,
+      "end": 3140,
+      "literal": "$\\uparrow$",
+      "status": "exact",
+      "display": "'↑'",
+      "copy": "'↑'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M027",
+      "cell": 1,
+      "start": 3145,
+      "end": 3157,
+      "literal": "$\\downarrow$",
+      "status": "exact",
+      "display": "'↓'",
+      "copy": "'↓'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M028",
+      "cell": 1,
+      "start": 3198,
+      "end": 3202,
+      "literal": "$+1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM126-7ab7893c-M029",
+      "cell": 1,
+      "start": 3207,
+      "end": 3211,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM126-7ab7893c-M030",
+      "cell": 1,
+      "start": 3227,
+      "end": 3304,
+      "literal": "$$\nH = - J \\sum_{i=0}^{N-2} Z_i Z_{i+1} - h \\sum_{i=0}^{N-1} X_i  \\text{,}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 73"
+    },
+    {
+      "id": "IBM126-7ab7893c-M031",
+      "cell": 1,
+      "start": 3312,
+      "end": 3315,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M032",
+      "cell": 1,
+      "start": 3354,
+      "end": 3357,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M033",
+      "cell": 1,
+      "start": 3550,
+      "end": 3558,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M034",
+      "cell": 1,
+      "start": 3603,
+      "end": 3707,
+      "literal": "$$\nH = -J \\sum_{i=0}^{N-2} Z_i Z_{i+1} -h \\sum_{i=0}^{N-1} (\\sin\\alpha Z_i + \\cos\\alpha X_i) \\text{.}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 100"
+    },
+    {
+      "id": "IBM126-7ab7893c-M035",
+      "cell": 1,
+      "start": 4025,
+      "end": 4049,
+      "literal": "$\\lvert 0 0 0 0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM126-7ab7893c-M036",
+      "cell": 1,
+      "start": 4052,
+      "end": 4086,
+      "literal": "$\\uparrow\\uparrow\\uparrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑'⁴",
+      "copy": "'↑'⁴"
+    },
+    {
+      "id": "IBM126-7ab7893c-M037",
+      "cell": 1,
+      "start": 4099,
+      "end": 4123,
+      "literal": "$\\lvert 1 0 0 0 \\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 0; 1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM126-7ab7893c-M038",
+      "cell": 1,
+      "start": 4126,
+      "end": 4162,
+      "literal": "$\\downarrow\\uparrow\\uparrow\\uparrow$",
+      "status": "exact",
+      "display": "'↑'³'↓'",
+      "copy": "'↑'³ ⋅ '↓'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M039",
+      "cell": 1,
+      "start": 4173,
+      "end": 4181,
+      "literal": "$\\ldots$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM126-7ab7893c-M040",
+      "cell": 1,
+      "start": 4200,
+      "end": 4208,
+      "literal": "$\\ldots$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 7"
+    },
+    {
+      "id": "IBM126-7ab7893c-M041",
+      "cell": 1,
+      "start": 4247,
+      "end": 4271,
+      "literal": "$\\lvert 1 1 1 1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(16,1,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM126-7ab7893c-M042",
+      "cell": 1,
+      "start": 4274,
+      "end": 4316,
+      "literal": "$\\downarrow\\downarrow\\downarrow\\downarrow$",
+      "status": "exact",
+      "display": "'↓'⁴",
+      "copy": "'↓'⁴"
+    },
+    {
+      "id": "IBM126-7ab7893c-M043",
+      "cell": 4,
+      "start": 180,
+      "end": 183,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M044",
+      "cell": 4,
+      "start": 185,
+      "end": 188,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M045",
+      "cell": 4,
+      "start": 194,
+      "end": 197,
+      "literal": "$h$",
+      "status": "exact",
+      "display": "h",
+      "copy": "'h'"
+    },
+    {
+      "id": "IBM126-7ab7893c-M046",
+      "cell": 7,
+      "start": 265,
+      "end": 271,
+      "literal": "$N=20$",
+      "status": "exact",
+      "display": "N = 20",
+      "copy": "('N')==(20)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M047",
+      "cell": 13,
+      "start": 439,
+      "end": 480,
+      "literal": "$$\ne^{H_1+H_2} \\approx e^{H_1} e^{H_2}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM126-7ab7893c-M048",
+      "cell": 15,
+      "start": 79,
+      "end": 96,
+      "literal": "$\\sum_i Z_i  / N$",
+      "status": "exact",
+      "display": "∑_{k ∈ \"indexset_i\"} (Z_k / N)",
+      "copy": "qsumset(qindexedlabel(\"Z_\", \"qboundindex_0\", \"\") ∕ 'N',\"indexset_i\",\"qboundindex_0\")"
+    },
+    {
+      "id": "IBM126-7ab7893c-M049",
+      "cell": 21,
+      "start": 296,
+      "end": 302,
+      "literal": "$N=70$",
+      "status": "exact",
+      "display": "N = 70",
+      "copy": "('N')==(70)"
+    },
+    {
+      "id": "IBM126-7ab7893c-M050",
+      "cell": 25,
+      "start": 421,
+      "end": 462,
+      "literal": "$$\ne^{H_1+H_2} \\approx e^{H_1} e^{H_2}\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM126-7ab7893c-M051",
+      "cell": 27,
+      "start": 148,
+      "end": 165,
+      "literal": "$\\sum_i Z_i  / N$",
+      "status": "exact",
+      "display": "∑_{k ∈ \"indexset_i\"} (Z_k / N)",
+      "copy": "qsumset(qindexedlabel(\"Z_\", \"qboundindex_0\", \"\") ∕ 'N',\"indexset_i\",\"qboundindex_0\")"
+    }
+  ]
+}

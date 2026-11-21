@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/quantum-circuit-optimization.ipynb",
+  "notebook_sha256": "d1dea0447d1fc54d14649a78057483e5380b390a4483f3bf7394317c484398e3",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "eef617e8c1e9ca21288565444a8432098e75c7441ae53350dbab36fd1314e27e",
+  "suite": {
+    "passed": true,
+    "checks": 90,
+    "calls": 10,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 10,
+    "restored_identically": 10,
+    "stable_after_text_reentry": 10
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

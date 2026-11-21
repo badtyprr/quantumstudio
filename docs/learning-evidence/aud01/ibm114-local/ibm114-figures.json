@@ -1,0 +1,92 @@
+{
+  "figures": [
+    {
+      "lesson": "IBM115",
+      "cell": 2,
+      "start": 615,
+      "end": 763,
+      "alt": "\"classical logic and quantum circuit\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/classical-vs-quantum.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/classical-vs-quantum.avif",
+      "bytes": 7679,
+      "sha256": "8c71357b53662f2777b90575fbbcf197c7dc669ab7548462d63c176055f7370c"
+    },
+    {
+      "lesson": "IBM115",
+      "cell": 3,
+      "start": 1511,
+      "end": 1619,
+      "alt": "Bloch sphere",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/bloch.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/bits-gates-and-circuits/bloch.avif",
+      "bytes": 5336,
+      "sha256": "2fc5f62b8238fc8ad9522f3960720cc0b2f3627374759b26e9ceb1735c645835"
+    },
+    {
+      "lesson": "IBM119",
+      "cell": 52,
+      "start": 0,
+      "end": 131,
+      "alt": "\"Quantum Function\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/qiskit-function.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/qiskit-function.avif",
+      "bytes": 19510,
+      "sha256": "7257e1f21e5d564762b5150d1c6767bfb53fb1198bbc9f4ae341d813cde86af6"
+    },
+    {
+      "lesson": "IBM119",
+      "cell": 57,
+      "start": 0,
+      "end": 112,
+      "alt": "\"Maxcut\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/maxcut.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/maxcut.avif",
+      "bytes": 59753,
+      "sha256": "1fa9edcc352a76539cab29570aa1a5f41fcfe5dc42be3f054685bcbd1a65c664"
+    },
+    {
+      "lesson": "IBM119",
+      "cell": 69,
+      "start": 0,
+      "end": 134,
+      "alt": "\"QAOA circuit diagram\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/circuit-diagram.svg",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/circuit-diagram.svg",
+      "bytes": 203166,
+      "sha256": "d9603849cbd9728311035e1a687c27d4ba66a3abf6377a25eaecf1b000be445f"
+    },
+    {
+      "lesson": "IBM119",
+      "cell": 84,
+      "start": 0,
+      "end": 128,
+      "alt": "\"execution mode\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/execution-mode.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/execution-mode.avif",
+      "bytes": 11100,
+      "sha256": "1cf4f98436a1b659db8b7d39199b860b0b151f6f93805eec4de02288c618c289"
+    },
+    {
+      "lesson": "IBM124",
+      "cell": 41,
+      "start": 401,
+      "end": 503,
+      "alt": "image.png",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/error-mitigation/res_level.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/error-mitigation/res_level.avif",
+      "bytes": 15730,
+      "sha256": "64013a0b587751b15014c67aef0dcfc5a9a68936d2d7224bda4d0e70bdf779e9"
+    },
+    {
+      "lesson": "IBM125",
+      "cell": 4,
+      "start": 0,
+      "end": 94,
+      "alt": "image.png",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/utility-i/utility1.avif",
+      "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/utility-scale-quantum-computing/utility-i/utility1.avif",
+      "bytes": 17907,
+      "sha256": "6ba73b5ffadf84e2326a33f061290a4330eafda930205fcacceaf2e1c9038d7d"
+    }
+  ]
+}

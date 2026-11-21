@@ -110,4 +110,15 @@ run(f'qreplace({symbolic},"x_0",2*m)', success=False)
 pending = copied(f"quantum:replace({symbolic},x_0,2*m)")
 value(f"quantum:replace({pending},vector(m,n,y_0),vector(3,1,1))", "6")
 
+# The two-qubit product state uses c as an amplitude beside a ket or inside a probability.
+amplitude = copied("quantum:$|ac|^2$")
+value("quantum:" + amplitude, amplitude)
+value(f'quantum:replace({amplitude},vector("a","c"),vector(3,i))', "9")
+
+# In a Hamiltonian decomposition H stands for the sum, including after Copy.
+hamiltonian = copied("quantum:$H=H_1+H_{2}$")
+value("quantum:" + hamiltonian, hamiltonian)
+for candidate, expected in [("[1,1;1,-1]", "1"), ("Z", "0")]:
+    value(f'quantum:replace({hamiltonian},vector("H","H_1","H_2"),vector({candidate},Z,X))', expected)
+
 print(f"PASS: {len(records)} scalar-product worker calls")

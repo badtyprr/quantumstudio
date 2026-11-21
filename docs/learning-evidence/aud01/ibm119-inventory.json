@@ -1,0 +1,883 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/variational-quantum-algorithms.ipynb",
+  "source_sha256": "2de3fbcf7eaa75852ac3859bedcfa4cf17afbc13dacc88ca1a75a0f06912706e",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "revision": "158fb202",
+  "mode": "Quantum notation",
+  "markdown_cells": 52,
+  "code_cells": 50,
+  "summary": {
+    "exact": 73,
+    "diagnostic": 12
+  },
+  "figures": [
+    {
+      "cell": 52,
+      "start": 0,
+      "end": 131,
+      "alt": "\"Quantum Function\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/qiskit-function.avif"
+    },
+    {
+      "cell": 57,
+      "start": 0,
+      "end": 112,
+      "alt": "\"Maxcut\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/maxcut.avif"
+    },
+    {
+      "cell": 69,
+      "start": 0,
+      "end": 134,
+      "alt": "\"QAOA circuit diagram\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/circuit-diagram.svg"
+    },
+    {
+      "cell": 84,
+      "start": 0,
+      "end": 128,
+      "alt": "\"execution mode\"",
+      "path": "/learning/images/courses/utility-scale-quantum-computing/variational-quantum-algorithms/execution-mode.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM119-2de3fbcf-M001",
+      "cell": 4,
+      "start": 186,
+      "end": 189,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M002",
+      "cell": 12,
+      "start": 66,
+      "end": 69,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M003",
+      "cell": 16,
+      "start": 58,
+      "end": 89,
+      "literal": "$\\langle Z \\rangle = p_0 - p_1$",
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\")) = \"p_0\" − \"p_1\"",
+      "copy": "qcompare(qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\")),\"p_0\" − \"p_1\",4)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M004",
+      "cell": 16,
+      "start": 109,
+      "end": 129,
+      "literal": "$\\{0: p_0, 1: p_1\\}$",
+      "status": "diagnostic",
+      "message": "A set builder requires one predicate separator at byte 19"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M005",
+      "cell": 20,
+      "start": 195,
+      "end": 214,
+      "literal": "$\\langle Z \\rangle$",
+      "status": "exact",
+      "display": "qexpect([1  0; 0  −1], qoperatorref(\"measurement state\"))",
+      "copy": "qexpect(matrix(2,2,vector(1,0,0,−1)),qoperatorref(\"measurement state\"))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M006",
+      "cell": 25,
+      "start": 52,
+      "end": 65,
+      "literal": "$Z \\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M007",
+      "cell": 40,
+      "start": 66,
+      "end": 79,
+      "literal": "$Z \\otimes Z$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, −1, 0, 0; 0, 0, −1, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,−1,0,0,0,0,−1,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M008",
+      "cell": 58,
+      "start": 230,
+      "end": 236,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M009",
+      "cell": 58,
+      "start": 238,
+      "end": 271,
+      "literal": "$$\n\\min_{x\\in \\{0, 1\\}^n}f(x),\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M010",
+      "cell": 58,
+      "start": 289,
+      "end": 292,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M011",
+      "cell": 58,
+      "start": 413,
+      "end": 416,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M012",
+      "cell": 58,
+      "start": 420,
+      "end": 423,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M013",
+      "cell": 58,
+      "start": 533,
+      "end": 538,
+      "literal": "$n=5$",
+      "status": "exact",
+      "display": "n = 5",
+      "copy": "(n)==(5)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M014",
+      "cell": 58,
+      "start": 593,
+      "end": 598,
+      "literal": "$i,j$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM119-2de3fbcf-M015",
+      "cell": 58,
+      "start": 646,
+      "end": 653,
+      "literal": "$(i,j)$",
+      "status": "exact",
+      "display": "(i, j)",
+      "copy": "qtuple(vector(i,'j'))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M016",
+      "cell": 58,
+      "start": 695,
+      "end": 718,
+      "literal": "$x_i + x_j - 2 x_i x_j$",
+      "status": "exact",
+      "display": "\"x_i\" − 2 \"x_i\" ⋅ \"x_j\" + \"x_j\"",
+      "copy": "\"x_i\" − 2 \"x_i\" ⋅ \"x_j\" + \"x_j\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M017",
+      "cell": 58,
+      "start": 746,
+      "end": 751,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M018",
+      "cell": 58,
+      "start": 755,
+      "end": 760,
+      "literal": "$x_j$",
+      "status": "exact",
+      "display": "\"x_j\"",
+      "copy": "\"x_j\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M019",
+      "cell": 58,
+      "start": 898,
+      "end": 962,
+      "literal": "$$\n\\max_{x\\in \\{0, 1\\}^n} \\sum_{(i,j)} x_i + x_j - 2 x_i x_j,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\max at byte 6"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M020",
+      "cell": 58,
+      "start": 1018,
+      "end": 1083,
+      "literal": "$$\n\\min_{x\\in \\{0, 1\\}^n} \\sum_{(i,j)}  2 x_i x_j - x_i - x_j.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M021",
+      "cell": 58,
+      "start": 1100,
+      "end": 1106,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M022",
+      "cell": 59,
+      "start": 49,
+      "end": 54,
+      "literal": "$n=5$",
+      "status": "exact",
+      "display": "n = 5",
+      "copy": "(n)==(5)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M023",
+      "cell": 62,
+      "start": 1169,
+      "end": 1205,
+      "literal": "$$\n\\min_{x\\in \\{0, 1\\}^n}x^T Q x,\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M024",
+      "cell": 62,
+      "start": 1213,
+      "end": 1216,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M025",
+      "cell": 62,
+      "start": 1222,
+      "end": 1233,
+      "literal": "$n\\times n$",
+      "status": "exact",
+      "display": "n²",
+      "copy": "n²"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M026",
+      "cell": 62,
+      "start": 1258,
+      "end": 1261,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M027",
+      "cell": 62,
+      "start": 1312,
+      "end": 1315,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M028",
+      "cell": 62,
+      "start": 1372,
+      "end": 1377,
+      "literal": "$x^T$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M029",
+      "cell": 62,
+      "start": 1416,
+      "end": 1419,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M030",
+      "cell": 64,
+      "start": 167,
+      "end": 215,
+      "literal": "$$\nH_C=\\sum_{ij}Q_{ij}Z_iZ_j + \\sum_i b_iZ_i.\n$$",
+      "status": "exact",
+      "display": "qoperatorref(\"H_C\") = qisinghamiltonian('Q', 'b')",
+      "copy": "qcompare(qoperatorref(\"H_C\"),qisinghamiltonian('Q','b'),4)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M031",
+      "cell": 64,
+      "start": 384,
+      "end": 389,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M032",
+      "cell": 64,
+      "start": 416,
+      "end": 433,
+      "literal": "$z_i\\in\\{-1, 1\\}$",
+      "status": "exact",
+      "display": "\"z_i\" ∈ \\{−1, 1\\}",
+      "copy": "qmember(\"z_i\",qset(vector(−1,1)))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M033",
+      "cell": 64,
+      "start": 439,
+      "end": 467,
+      "literal": "$$\nx_i = \\frac{1-z_i}{2}.\n$$",
+      "status": "exact",
+      "display": "\"x_i\" = 0.5 − 0.5 \"z_i\"",
+      "copy": "(\"x_i\")==(1 ∕ 2 − \"z_i\" ∕ 2)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M034",
+      "cell": 64,
+      "start": 494,
+      "end": 499,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M035",
+      "cell": 64,
+      "start": 503,
+      "end": 506,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M036",
+      "cell": 64,
+      "start": 513,
+      "end": 518,
+      "literal": "$z_i$",
+      "status": "exact",
+      "display": "\"z_i\"",
+      "copy": "\"z_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M037",
+      "cell": 64,
+      "start": 527,
+      "end": 530,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M038",
+      "cell": 64,
+      "start": 541,
+      "end": 546,
+      "literal": "$x_i$",
+      "status": "exact",
+      "display": "\"x_i\"",
+      "copy": "\"x_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M039",
+      "cell": 64,
+      "start": 573,
+      "end": 578,
+      "literal": "$z_i$",
+      "status": "exact",
+      "display": "\"z_i\"",
+      "copy": "\"z_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M040",
+      "cell": 64,
+      "start": 610,
+      "end": 617,
+      "literal": "$x^TQx$",
+      "status": "exact",
+      "display": "x^(Q · T · x)",
+      "copy": "x^('Q''T'x)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M041",
+      "cell": 64,
+      "start": 664,
+      "end": 834,
+      "literal": "$$\nx^TQx=\\sum_{ij}Q_{ij}x_ix_j \\\\ =\\frac{1}{4}\\sum_{ij}Q_{ij}(1-z_i)(1-z_j) \\\\=\\frac{1}{4}\\sum_{ij}Q_{ij}z_iz_j-\\frac{1}{4}\\sum_{ij}(Q_{ij}+Q_{ji})z_i + \\frac{n^2}{4}.\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 17"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M042",
+      "cell": 64,
+      "start": 853,
+      "end": 883,
+      "literal": "$b_i=-\\sum_{j}(Q_{ij}+Q_{ji})$",
+      "status": "exact",
+      "display": "∑_{k ∈ \"indexset_j\"} (\"Q_ij\" + \"Q_ji\") = −\"b_i\"",
+      "copy": "(qsumset(qadd(\"Q_ij\",\"Q_ji\"),\"indexset_j\",\"qboundindex_0\"))==(−\"b_i\")"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M043",
+      "cell": 64,
+      "start": 924,
+      "end": 929,
+      "literal": "$n^2$",
+      "status": "exact",
+      "display": "n²",
+      "copy": "n²"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M044",
+      "cell": 64,
+      "start": 1016,
+      "end": 1100,
+      "literal": "$$\nmin_{x\\in\\{0,1\\}^n} x^TQx\\Longleftrightarrow \\min_{z\\in\\{-1,1\\}^n}z^TQz + b^Tz\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\Longleftrightarrow at byte 46"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M045",
+      "cell": 64,
+      "start": 1108,
+      "end": 1111,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M046",
+      "cell": 64,
+      "start": 1123,
+      "end": 1126,
+      "literal": "$Q$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M047",
+      "cell": 64,
+      "start": 1148,
+      "end": 1162,
+      "literal": "$z^TQz + b^Tz$",
+      "status": "exact",
+      "display": "qisingenergy('Q', 'b', 'z')",
+      "copy": "qisingenergy('Q','b','z')"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M048",
+      "cell": 64,
+      "start": 1217,
+      "end": 1222,
+      "literal": "$n^2$",
+      "status": "exact",
+      "display": "n²",
+      "copy": "n²"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M049",
+      "cell": 64,
+      "start": 1336,
+      "end": 1341,
+      "literal": "$z_i$",
+      "status": "exact",
+      "display": "\"z_i\"",
+      "copy": "\"z_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M050",
+      "cell": 64,
+      "start": 1363,
+      "end": 1366,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M051",
+      "cell": 64,
+      "start": 1385,
+      "end": 1396,
+      "literal": "$2\\times 2$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M052",
+      "cell": 64,
+      "start": 1417,
+      "end": 1474,
+      "literal": "$$\nZ_i = \\begin{pmatrix}1 & 0 \\\\ 0 & -1\\end{pmatrix}.\n $$",
+      "status": "exact",
+      "display": "\"Z_i\" = [1, 0; 0, −1]",
+      "copy": "qcompare(\"Z_i\",matrix(2,2,[1,0,0,−1]),4)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M053",
+      "cell": 64,
+      "start": 1584,
+      "end": 1632,
+      "literal": "$$\nH_C=\\sum_{ij}Q_{ij}Z_iZ_j + \\sum_i b_iZ_i.\n$$",
+      "status": "exact",
+      "display": "qoperatorref(\"H_C\") = qisinghamiltonian('Q', 'b')",
+      "copy": "qcompare(qoperatorref(\"H_C\"),qisinghamiltonian('Q','b'),4)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M054",
+      "cell": 64,
+      "start": 1656,
+      "end": 1659,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M055",
+      "cell": 64,
+      "start": 1762,
+      "end": 1777,
+      "literal": "$2^n\\times 2^n$",
+      "status": "exact",
+      "display": "4^n",
+      "copy": "4^n"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M056",
+      "cell": 64,
+      "start": 1826,
+      "end": 1834,
+      "literal": "$Z_iZ_j$",
+      "status": "exact",
+      "display": "\"Z_iZ_j\"",
+      "copy": "\"Z_iZ_j\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M057",
+      "cell": 64,
+      "start": 1857,
+      "end": 1873,
+      "literal": "$Z_i\\otimes Z_j$",
+      "status": "exact",
+      "display": "\"Z_i\" ⊗ \"Z_j\"",
+      "copy": "qtensor(\"Z_i\",\"Z_j\")"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M058",
+      "cell": 64,
+      "start": 1890,
+      "end": 1905,
+      "literal": "$2^n\\times 2^n$",
+      "status": "exact",
+      "display": "4^n",
+      "copy": "4^n"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M059",
+      "cell": 64,
+      "start": 1985,
+      "end": 1993,
+      "literal": "$Z_1Z_3$",
+      "status": "exact",
+      "display": "\"Z_1Z_3\"",
+      "copy": "\"Z_1Z_3\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M060",
+      "cell": 64,
+      "start": 2016,
+      "end": 2059,
+      "literal": "$I\\otimes Z_3\\otimes I\\otimes Z_1\\otimes I$",
+      "status": "exact",
+      "display": "((([1, 0; 0, 1] ⊗ \"Z_3\") ⊗ [1, 0; 0, 1]) ⊗ \"Z_1\") ⊗ [1, 0; 0, 1]",
+      "copy": "qtensor(qtensor(qtensor(qtensor(matrix(2,2,vector(1,0,0,1)),\"Z_3\"),matrix(2,2,vector(1,0,0,1))),\"Z_1\"),matrix(2,2,vector(1,0,0,1)))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M061",
+      "cell": 64,
+      "start": 2066,
+      "end": 2069,
+      "literal": "$I$",
+      "status": "exact",
+      "display": "[1, 0; 0, 1]",
+      "copy": "matrix(2,2,[1,0,0,1])"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M062",
+      "cell": 64,
+      "start": 2077,
+      "end": 2088,
+      "literal": "$2\\times 2$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M063",
+      "cell": 64,
+      "start": 2280,
+      "end": 2286,
+      "literal": "$f(x)$",
+      "status": "exact",
+      "display": "f(x)",
+      "copy": "qnamedapplication('f',x)"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M064",
+      "cell": 64,
+      "start": 2382,
+      "end": 2387,
+      "literal": "$H_C$",
+      "status": "exact",
+      "display": "\"H_C\"",
+      "copy": "\"H_C\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M065",
+      "cell": 64,
+      "start": 2538,
+      "end": 2549,
+      "literal": "$\\min~f(x)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 5"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M066",
+      "cell": 68,
+      "start": 16,
+      "end": 21,
+      "literal": "$H_C$",
+      "status": "exact",
+      "display": "\"H_C\"",
+      "copy": "\"H_C\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M067",
+      "cell": 68,
+      "start": 353,
+      "end": 377,
+      "literal": "$H^{\\otimes n}|0\\rangle$",
+      "status": "exact",
+      "display": "([1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]^{⊗ n}) ([1; 0])",
+      "copy": "qadjacent(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),matrix(2,1,vector(1,0)))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M068",
+      "cell": 68,
+      "start": 521,
+      "end": 545,
+      "literal": "$\\exp\\{-i\\gamma_k H_C\\}$",
+      "status": "exact",
+      "display": "e^\\{−\"H_C\" ⋅ \"iγ_k\"\\}",
+      "copy": "(e)^(qset(vector(−\"H_C\" ⋅ \"iγ_k\")))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M069",
+      "cell": 68,
+      "start": 550,
+      "end": 573,
+      "literal": "$\\exp\\{-i\\beta_k H_m\\}$",
+      "status": "exact",
+      "display": "e^\\{−\"H_m\" ⋅ \"iβ_k\"\\}",
+      "copy": "(e)^(qset(vector(−\"H_m\" ⋅ \"iβ_k\")))"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M070",
+      "cell": 68,
+      "start": 586,
+      "end": 609,
+      "literal": "$\\gamma_1,...,\\gamma_p$",
+      "status": "exact",
+      "display": "(γ_1, …, γ_p)",
+      "copy": "qindexedlist(\"γ_\",1,'p',vector())"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M071",
+      "cell": 68,
+      "start": 614,
+      "end": 636,
+      "literal": "$\\beta_1,...,\\beta_p~$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM119-2de3fbcf-M072",
+      "cell": 68,
+      "start": 701,
+      "end": 711,
+      "literal": "$\\gamma_i$",
+      "status": "exact",
+      "display": "\"γ_i\"",
+      "copy": "\"γ_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M073",
+      "cell": 68,
+      "start": 716,
+      "end": 725,
+      "literal": "$\\beta_i$",
+      "status": "exact",
+      "display": "\"β_i\"",
+      "copy": "\"β_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M074",
+      "cell": 68,
+      "start": 766,
+      "end": 776,
+      "literal": "$\\gamma_i$",
+      "status": "exact",
+      "display": "\"γ_i\"",
+      "copy": "\"γ_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M075",
+      "cell": 68,
+      "start": 781,
+      "end": 790,
+      "literal": "$\\beta_i$",
+      "status": "exact",
+      "display": "\"β_i\"",
+      "copy": "\"β_i\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M076",
+      "cell": 70,
+      "start": 84,
+      "end": 94,
+      "literal": "$\\gamma_1$",
+      "status": "exact",
+      "display": "\"γ_1\"",
+      "copy": "\"γ_1\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M077",
+      "cell": 70,
+      "start": 99,
+      "end": 108,
+      "literal": "$\\beta_1$",
+      "status": "exact",
+      "display": "\"β_1\"",
+      "copy": "\"β_1\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M078",
+      "cell": 79,
+      "start": 189,
+      "end": 198,
+      "literal": "$\\beta_k$",
+      "status": "exact",
+      "display": "\"β_k\"",
+      "copy": "\"β_k\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M079",
+      "cell": 79,
+      "start": 203,
+      "end": 213,
+      "literal": "$\\gamma_k$",
+      "status": "exact",
+      "display": "\"γ_k\"",
+      "copy": "\"γ_k\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M080",
+      "cell": 82,
+      "start": 285,
+      "end": 290,
+      "literal": "$H_C$",
+      "status": "exact",
+      "display": "\"H_C\"",
+      "copy": "\"H_C\""
+    },
+    {
+      "id": "IBM119-2de3fbcf-M081",
+      "cell": 82,
+      "start": 384,
+      "end": 405,
+      "literal": "$\\langle H_C \\rangle$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM119-2de3fbcf-M082",
+      "cell": 90,
+      "start": 384,
+      "end": 390,
+      "literal": "$\\psi$",
+      "status": "exact",
+      "display": "'ψ'",
+      "copy": "'ψ'"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M083",
+      "cell": 90,
+      "start": 585,
+      "end": 588,
+      "literal": "$x$",
+      "status": "exact",
+      "display": "x",
+      "copy": "x"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M084",
+      "cell": 90,
+      "start": 626,
+      "end": 637,
+      "literal": "$\\max f(x)$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\max at byte 5"
+    },
+    {
+      "id": "IBM119-2de3fbcf-M085",
+      "cell": 90,
+      "start": 641,
+      "end": 652,
+      "literal": "$\\min f(x)$",
+      "status": "exact",
+      "display": "qsetminimum(qfunctionrange('f'))",
+      "copy": "qsetminimum(qfunctionrange('f'))"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/utility-scale-quantum-computing/teleportation.ipynb",
+  "notebook_sha256": "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901",
+  "worker_sha256": "50aa3156fa00527607754495b6f89e7c99c479fb825d2c5f6bcaa273f7220872",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "bf33f23e15db926962d7b6e109981f345193bce0cf32abc665320e921ab1ae5b",
+  "suite": {
+    "passed": true,
+    "checks": 664,
+    "calls": 87,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 70,
+    "restored_identically": 70,
+    "stable_after_text_reentry": 70,
+    "source_diagnostic": 17
+  },
+  "diagnostics": [
+    {
+      "id": "IBM116-2621d5ef-M007",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM116-2621d5ef-M009",
+      "message": "Unsupported TeX command: \\textbf at byte 34"
+    },
+    {
+      "id": "IBM116-2621d5ef-M010",
+      "message": "Unsupported TeX command: \\textbf at byte 28"
+    },
+    {
+      "id": "IBM116-2621d5ef-M012",
+      "message": "Unsupported TeX command: \\textbf at byte 8"
+    },
+    {
+      "id": "IBM116-2621d5ef-M016",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM116-2621d5ef-M018",
+      "message": "Unsupported TeX command: \\textbf at byte 28"
+    },
+    {
+      "id": "IBM116-2621d5ef-M019",
+      "message": "Unsupported TeX command: \\textbf at byte 12"
+    },
+    {
+      "id": "IBM116-2621d5ef-M021",
+      "message": "Unsupported TeX command: \\textbf at byte 12"
+    },
+    {
+      "id": "IBM116-2621d5ef-M022",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M023",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M024",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M025",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM116-2621d5ef-M034",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM116-2621d5ef-M083",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M084",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M085",
+      "message": "Unexpected notation at byte 29"
+    },
+    {
+      "id": "IBM116-2621d5ef-M086",
+      "message": "Unexpected notation at byte 29"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
