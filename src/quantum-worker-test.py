@@ -54,6 +54,13 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         assert b"positive exact integer" in result.stderr
 
 # A written residue ring supplies the modulus in modular powers mode.
+action_table = r"\begin{array}{cc}M_2|2\rangle=|0\rangle&M_2|0\rangle=|1\rangle\\M_2|3\rangle=|3\rangle&M_2|1\rangle=|2\rangle\end{array}"
+action_matrix = data("quantum:"+action_table)["copy_text"]
+assert action_matrix == "matrix(4,4,[0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,1])"
+assert data("quantum:"+action_matrix)["copy_text"] == action_matrix
+run("quantum:"+action_table.replace(r"M_2|2\rangle", r"M_2|1\rangle"), success=False)
+run("quantum:"+action_table.replace(r"=|3\rangle", r"=|4\rangle"), success=False)
+
 printed_pair = data(r"quantum:$$a^{r/2}-1\;(\textrm{mod}\; N)\quad\text{and}\quad a^{r/2}+1\;(\textrm{mod}\; N).$$")["copy_text"]
 assert data("quantum:"+printed_pair)["copy_text"] == printed_pair
 for base, expected in [(14,"vector(13,0)"), (0,"vector(14,1)")]:

@@ -1152,6 +1152,51 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
+ // Columns of the linear operator are the printed images of its basis kets.
+ std::string basisActionTable(const std::string &body,size_t columns) {
+  static const std::regex action(R"(^\s*([A-Z])(?:_\{([0-9]+)\}|_([0-9]))?\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
+  static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
+  std::vector<std::pair<std::string,std::string>> images;
+  std::string name;
+  for(auto row:indexedParts(body,"\\\\")) {
+   if(row.empty())continue;
+   if(!images.empty() && row.front()=='[')row=std::regex_replace(row,rowSpace,"");
+   auto cells=indexedParts(row,"&");
+   for(const auto &cell:cells) {
+    std::smatch m;
+    if(!std::regex_match(cell,m,action)) {
+     if(images.empty())return "";
+     throw std::runtime_error(error("Expected one basis action in each table cell"));
+    }
+    std::string label=m[1].str()+m[2].str()+m[3].str();
+    if(images.empty())name=label;
+    if(label!=name || cells.size()!=columns)throw std::runtime_error(error("A basis action table requires one operator and consistent row widths"));
+    // The editable matrix representation supports 4,096 explicit entries.
+    if(images.size()>=64)throw std::runtime_error(error("A printed basis action matrix exceeds 4096 entries"));
+    images.emplace_back(m[4],m[5]);
+   }
+  }
+  if(images.empty())return "";
+  const size_t n=images.size();
+  std::vector<size_t> destination(n,n);
+  for(const auto &pair:images) {
+   auto label=[&](const std::string &text) {
+    if(text.size()>2 || (text.size()>1 && text.front()=='0'))throw std::runtime_error(error("Expected a decimal index in the listed basis"));
+    size_t index=std::stoul(text);
+    if(index>=n)throw std::runtime_error(error("Basis action index falls outside the listed basis"));
+    return index;
+   };
+   size_t x=label(pair.first);
+   if(destination[x]!=n)throw std::runtime_error(error("Repeated input in a basis action table"));
+   destination[x]=label(pair.second);
+  }
+  std::string values;
+  for(size_t y=0;y<n;++y)for(auto x:destination) {
+   if(!values.empty())values+=",";
+   values+=x==y ? "1" : "0";
+  }
+  return "matrix("+std::to_string(n)+","+std::to_string(n)+",["+values+"])";
+ }
  // A horizontal rule separates column labels from reported numeric data.
  std::string numericTable(bool allowWrapper=true) {
   std::string alignment=nameGroup(true);
@@ -1168,6 +1213,10 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(input.find("\\rangle",pos)<end && input.find('=',pos)<end) {
+   std::string action=basisActionTable(input.substr(pos,end-pos),alignment.size());
+   if(!action.empty()) {pos=end+endMarker.size();return action;}
+  }
   if(input[pos]=='&' && input.find("\\otimes",pos)<end) {
    std::string cells;unsigned count=0;
    bool matched=true;
