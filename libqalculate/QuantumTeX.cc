@@ -2223,6 +2223,24 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
+ // Both occupation conventions occur in the lessons. The sign on iY,
+ // not the operator's printed name, selects its actual ladder matrix.
+ if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {
+  static const std::regex product(R"(\\Bigl\(\s*\\prod\\limits_\{([a-z])\s*\\lt\s+([a-z])\}\{\(-Z_\1\)\}\s*\\Bigr\)\\Bigl\(\s*\\frac\{X_\2\s*([+-])\s*i\s*Y_\2\}\{2\}\s*\\Bigr\))");
+  std::smatch m;
+  while(std::regex_search(s,m,product)) {
+   const std::string value="qjwimage(N,"+m[2].str()+","+(m[3]=="-" ? "1" : "0")+")";
+   s.replace(m.position(),m.length(),value);
+  }
+  if(s.find("qjwimage(")!=std::string::npos) {
+   static const std::regex fermion(R"((?:\\hat\{f\}|\bf)_([a-z])(\^\\dagger)?)");
+   while(std::regex_search(s,m,fermion)) {
+    std::string op="qoperatorref(qindexedlabel(\"f_\","+m[1].str()+",\"\"))";
+    if(m[2].matched)op="qdag("+op+")";
+    s.replace(m.position(),m.length(),op);
+   }
+  }
+ }
  if(s.find("\\sigma^")!=std::string::npos) {
   const std::string raising="((X+i*Y)/2)",lowering="((X-i*Y)/2)";
   static const std::regex pair(R"(^\s*\\sigma\^\{?\\pm\}?\s*$)");
