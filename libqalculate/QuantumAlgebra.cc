@@ -558,7 +558,7 @@ bool stateActionOperand(const MathStructure &value,const EvaluationOptions &eo,u
  if(matrixShape(value,rows,columns,eo))return columns.isOne();
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- if(name=="qketstate" || name=="qstatecall" || name=="qstatecalls")return true;
+ if(name=="qnamedket" || name=="qketstate" || name=="qstatecall" || name=="qstatecalls")return true;
  if(value.size()!=2)return false;
  if(name=="qtensor" || name=="qadd" || name=="qsub")
   return stateActionOperand(value[0],eo,depth+1) && stateActionOperand(value[1],eo,depth+1);
