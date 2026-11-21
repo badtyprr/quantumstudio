@@ -2180,6 +2180,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex subspace(R"(\\operatorname\{dim\}\s*\(\s*\\mathcal\{([A-Z])\}\s*\))");
   s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
  }
+ if(mathWrapper && s.find("[[")!=std::string::npos) {
+  static const std::regex parameters(R"(^\s*\[\[\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*\]\]\s*$)");
+  std::smatch m;if(std::regex_match(s,m,parameters))return "vector("+m[1].str()+","+m[2].str()+","+m[3].str()+")";
+ }
+ if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
+  static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
+  s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
+ }
  const std::string whole=trim(s);
  if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {
   std::string clause=s;

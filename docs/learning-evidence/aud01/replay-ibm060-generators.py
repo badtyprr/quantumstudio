@@ -81,3 +81,10 @@ assert run("qbinarypowersum(vector(X,Z))==(I+Z)*(I+X)")=="0"
 assert run("qspacedimension(qfixedspace(vector(X,Z)))")=="0"
 assert run("qspacedimension(qfixedspace(vector(Z,-Z)))")=="0"
 print("Verified both projector derivations and the dimension chain for one and two generators.")
+
+parameters=bind(run(rows[196]["literal"]),[("n","7"),('"m"',"1"),('"d"',"3")])
+assert parameters=="vector(7,1,3)",parameters
+corrected=bind(run(rows[260]["literal"]),[('"C"',"X"),('"E"',"Z"),('qnamedket("ψ")',"|0>")])
+assert run(f"({corrected})==|1>")=="1"
+assert run(f"({corrected})==-|1>")=="0"
+print("Verified the ordered code-parameter triple and correction after a noncommuting error.")

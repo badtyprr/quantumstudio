@@ -404,15 +404,26 @@ int main(int argc,char **argv) {
   po.number_fraction_format=FRACTION_FRACTIONAL;po.restrict_fraction_length=false;
  }
  if(approximate) po.interval_display=INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
- MathStructure display=result; display.format(po);
+ // Wide Pauli tables have compact exact forms. Formatting each dense zero
+ // before replacing the text can exhaust the interactive calculation deadline.
+ std::vector<std::string> pauliLines;
+ if(json && multipleLines)for(size_t i=0;i<result.size();++i) {
+  if(!result[i].isMatrix()) {pauliLines.clear();break;}
+  std::string word=quantumPauliTensorNotation(result[i]);
+  if(word.empty()) {pauliLines.clear();break;}
+  pauliLines.push_back(word);
+ }
+ MathStructure display;
+ if(pauliLines.empty()) {display=result;display.format(po);}
  if(!json) std::cout << display.print(po) << std::endl;
  else {
   size_t rows=!multipleLines && result.isMatrix() ? result.rows() : 0, cols=!multipleLines && result.isMatrix() ? result.columns() : 0;
-  std::string plain=display.print(po);
+  std::string plain=pauliLines.empty() ? display.print(po) : "";
   std::string shown;
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
-   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    if(i)shown+="\n\n";
+   if(!pauliLines.empty()) {shown+=std::to_string(i+1)+".  "+pauliLines[i];continue;}
+   MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    std::string lineDisplay=QuantumDisplay::print(line,po);
    if(lineDisplay.size()>32768 && !result[i].isApproximate()) {
     PrintOptions exact=po;exact.number_fraction_format=FRACTION_FRACTIONAL;exact.restrict_fraction_length=false;
@@ -422,7 +433,7 @@ int main(int argc,char **argv) {
    shown+=std::to_string(i+1)+".  "+lineDisplay;
   } else if(displayKetCollection(result,po,shown))rows=cols=0;
   else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
-  if(multipleLines && plain.size()>32768 && shown.size()<32768)plain=shown;
+  if(!pauliLines.empty() || (multipleLines && plain.size()>32768 && shown.size()<32768))plain=shown;
   std::cout << "{\"text\":"; jsonString(plain);
   std::cout << ",\"display_text\":"; jsonString(shown);
   // Clipboard serialization must preserve rational values even when their
@@ -434,7 +445,7 @@ int main(int argc,char **argv) {
   std::string copied;
   if(multipleLines) {
    copied="\\begin{gathered}";
-   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=copyText(result[i],copyOptions,true);}
+   for(size_t i=0;i<result.size();++i) {if(i)copied+="\\\\";copied+=pauliLines.empty() ? copyText(result[i],copyOptions,true) : pauliLines[i];}
    copied+="\\end{gathered}";
   } else copied=copyText(result,copyOptions,quantumStart!=0);
   std::cout << ",\"copy_text\":"; jsonString(copied);
