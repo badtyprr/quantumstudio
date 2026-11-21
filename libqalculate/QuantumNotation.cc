@@ -1717,12 +1717,18 @@ class Parser {
      a="[1,0,0,0;0,"+co+","+si+",0;0,"+si+","+co+",0;0,0,0,exp(-i*"+phi+")]";
     } else if(name=="U" || name=="U3" || name=="U2" || name=="U1") {
      std::string theta="0", phi="0", lambda;
-     if(name=="U" || name=="U3") {theta="("+expression()+")"; need(',');}
-     else if(name=="U2") theta="(pi/2)";
-     if(name!="U1") {phi="("+expression()+")"; need(',');}
-     lambda="("+expression()+")"; need(')');
-     std::string co="cos("+theta+"/2)", si="sin("+theta+"/2)";
-     a="["+co+",-exp(i*"+lambda+")*"+si+";exp(i*"+phi+")*"+si+",exp(i*("+phi+"+"+lambda+"))*"+co+"]";
+     if(name=="U" || name=="U3")theta="("+expression()+")";
+     // A spaced U with one grouped operand applies a lesson-defined unitary.
+     if(name=="U" && std::isspace((unsigned char)s[b+1]) && take(')')) {
+      a="qmul("+indexableLabel("U")+","+theta+")";
+     } else {
+      if(name=="U" || name=="U3")need(',');
+      if(name=="U2")theta="(pi/2)";
+      if(name!="U1") {phi="("+expression()+")"; need(',');}
+      lambda="("+expression()+")"; need(')');
+      std::string co="cos("+theta+"/2)", si="sin("+theta+"/2)";
+      a="["+co+",-exp(i*"+lambda+")*"+si+";exp(i*"+phi+")*"+si+",exp(i*("+phi+"+"+lambda+"))*"+co+"]";
+     }
     } else if(name=="Rx" || name=="Ry" || name=="Rz" || name=="P" || name=="CRx" || name=="CRy" || name=="CRz" || name=="CP") {
      bool controlled=name[0]=='C'; if(controlled) name=name.substr(1);
      std::string theta="("+expression()+")"; need(')');
