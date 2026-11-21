@@ -2275,6 +2275,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    }
   }
   if(s.find("Z_{\\mathrm{")!=std::string::npos) {
+   // A register-wide conjugation fixes the identity dimension in its
+   // reflection terms. Keep the intervening oracle as a bindable operator.
+   static const std::regex conjugation(R"rx(^\s*([HXYZ]\^\{\\otimes\s+([a-z]|[0-9]+)\})\s*(Z_\{\\mathrm\{(OR|AND|XOR)\}\})\s*\1\s*=)rx");
+   std::smatch conjugated;
+   if(std::regex_search(s,conjugated,conjugation)) {
+    const std::string power=conjugated[1],label=conjugated[3],name=conjugated[4],count=conjugated[2];
+    const std::string width=asciiLetter((unsigned char)count[0]) ? "\""+count+"\"" : count;
+    const std::string gate=" qtensorpow("+power.substr(0,1)+","+width+") ";
+    for(size_t at=0;(at=s.find(power,at))!=std::string::npos;at+=gate.size())s.replace(at,power.size(),gate);
+    const std::string oracle=" qoperatorref(\"Z_"+name+"\") ";
+    for(size_t at=0;(at=s.find(label,at))!=std::string::npos;at+=oracle.size())s.replace(at,label.size(),oracle);
+    // Only a subtracted identity terminating a reflection term inherits
+    // this width. Identity factors inside other tensor products stay local.
+    static const std::regex identity(R"(-\s*\\mathbb\{I\}(?=\s*(?:=|[,\.]?\s*$)))");
+    s=std::regex_replace(s,identity,"- qtensorpow(I,"+width+") ");
+    const std::regex projector("\\\\vert\\s*0\\^"+count+"\\s*\\\\rangle\\s*\\\\langle\\s*0\\^"+count+"\\s*\\\\vert");
+    const std::string zero="qtensorpow(matrix(2,1,vector(1,0)),"+width+")";
+    s=std::regex_replace(s,projector," qmul("+zero+",qdag("+zero+")) ");
+   }
+
    // Match the zero-register projector and identity at the same width.
    static const std::regex reflection(R"rx(^\s*Z_\{\\mathrm\{(OR|AND|XOR)\}\}\s*=\s*2\s*(?:\\vert|\|)\s*0\^([a-z]|[0-9]+)\s*\\rangle\s*\\langle\s*0\^\2\s*(?:\\vert|\|)\s*-\s*\\mathbb\{I\}\s*\.?\s*$)rx");
    std::smatch match;
