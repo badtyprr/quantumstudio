@@ -2337,6 +2337,22 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "qequalchain(vector(qwalkdistance(\"steps\",\"i\",\"j\"),qsum(qwalkdelta(\"steps\",a,\"i\",\"j\")^2,0,3,a),"+terms+"))";
   }
  }
+ // In the mode-zero occupation identity every factor is local to that
+ // mode; spectator identity factors cancel throughout the derivation.
+ if(s.find("f_0^\\dagger")!=std::string::npos || s.find("[X_0,")!=std::string::npos) {
+  static const std::regex prefix(R"(\\prod_\{k\s*<\s*0\}\s*\(-Z_k\)\^2)");
+  std::string local=std::regex_replace(s,prefix,"I");
+  static const std::regex otherSite(R"([A-Za-z]_(?!0\b))");
+  if(!std::regex_search(local,otherSite)) {
+   s.swap(local);
+   static const std::regex commutator(R"(\[X_0,\s*Y_0\])");
+   s=std::regex_replace(s,commutator,"qcomm(X,Y)");
+   static const std::regex creator(R"(f_0\^\\dagger\s*f_0\b)");
+   s=std::regex_replace(s,creator,"qmul(qfcreate(1,0),qfdestroy(1,0))");
+   static const std::regex pauli(R"(\b([XYZ])_0\b)");
+   s=std::regex_replace(s,pauli,"($1)");
+  }
+ }
  // Both occupation conventions occur in the lessons. The sign on iY,
  // not the operator's printed name, selects its actual ladder matrix.
  if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {

@@ -56,3 +56,14 @@ wrong=occupation.replace('qketstate("empty")',"|1>").replace('qketstate("occupie
 assert run(correct)==r"\begin{gathered}1\\1\end{gathered}"
 assert run(wrong)==r"\begin{gathered}0\\0\end{gathered}"
 print("Verified all indexed ladder actions and both assignments of the occupation labels.")
+
+assert source(78,63)=="matrix(2,2,[0,0,0,1])"
+for row in (64,65,66):
+    assert source(78,row)=="1"
+for width in (1,2,3):
+    projector="matrix(2,2,[0,0,0,1])"
+    for spectator in range(1,width):
+        projector=f"qtensor({projector},I)"
+    occupation=f"qmul(qfcreate({width},0),qfdestroy({width},0))"
+    assert run(f"qcompare({occupation},{projector},4)")=="1"
+print("Verified the mode-zero occupation derivation with up to two spectator wires.")
