@@ -2344,6 +2344,33 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  static const std::regex gap(R"(^\s*\\vert\s*(E)\s*-\s*E_(\d)\s*\\vert\s*>\s*\\delta\s*$)");
+  std::smatch gapMatch;
+  if(std::regex_match(s,gapMatch,gap))
+   return "qdistancegreater(\"E\",\"E_"+gapMatch[2].str()+"\",\"δ\")";
+  if(s.find("T_")!=std::string::npos && s.find("\\left(")!=std::string::npos) {
+   static const std::regex chebyshev(R"(T_([a-z0-9])(\^\{-1\})?\s*\\left\()");
+   std::smatch polynomial;
+   bool found=false;
+   while(std::regex_search(s,polynomial,chebyshev)) {
+    std::string degree=polynomial[1].str();
+    if(!isdigit((unsigned char)degree[0]))degree="\""+degree+"\"";
+    std::string value=(polynomial[2].matched ? "1/" : "")+std::string("qchebyshev(")+degree+",";
+    s.replace(polynomial.position(),polynomial.length(),value);found=true;
+   }
+   if(found) {
+    static const std::regex trailingSpace(R"(,\s*\\quad\s*$)");
+    s=std::regex_replace(s,trailingSpace,"");
+    static const std::regex minimax(R"(\\beta\(\s*([a-z]),\s*([a-z]),\s*([a-z])\s*\))");
+    s=std::regex_replace(s,minimax,"qscalarat(\"β\",vector(\"$1\",\"$2\",\"$3\"))");
+    static const std::regex extremal(R"(p\^\*\s*(?:\\left)?\()");
+    s=std::regex_replace(s,extremal,"qscalarat(\"p_star\",");
+    static const std::regex energyFunction(R"(([fg])\(E\))");
+    s=std::regex_replace(s,energyFunction,"qscalarat(\"$1\",\"E\")");
+    static const std::regex step(R"((?:\\,)?dt)");
+    s=std::regex_replace(s,step,"*\"dt\"");
+   }
+  }
   static const std::regex projectedEigenproblem(R"(^\s*\\tilde\{H\}\s*\\vec\{([a-z])\}\s*=\s*([a-z])\s+S\s*\\vec\{\1\}\s*$)");
   std::smatch eigenproblem;
   if(std::regex_match(s,eigenproblem,projectedEigenproblem)) {

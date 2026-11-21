@@ -129,3 +129,17 @@ assert run("qcompare(qpolynomialat(vector(3,2),matrix(1,1,[4])),matrix(1,1,[11])
 run("qpolynomialat(vector(2,3),matrix(2,1,[1,1]))",error="square matrix")
 run("qpolynomialat(vector(2,infinity),X)",error="finite numbers")
 print("Verified the polynomial spectral expansion and finite matrix evaluation.")
+
+# At dt=1 and delta=pi/2, the degree-two filter has denominator T_2(3)=17.
+filter_chain=course_source(92,378).replace('"dt"',"1").replace("'δ'","(pi/2)")
+filter_chain=filter_chain.replace('"E_0"',"0").replace("'d'","2").replace("'E'","(pi/2)")
+filter_chain=filter_chain.replace("'g'","vector(vector(pi/2,1/2))").replace('"p_star"',"vector(vector(1/2,1/17))")
+for value,expected in [("1/17","1"),("1","0")]:
+    assert run(filter_chain.replace("'f'",f"vector(vector(pi/2,{value}))"))==expected
+assert run("qchebyshev(0,7)")=="1"
+assert run("qchebyshev(3,2)")=="26"
+run("qchebyshev(-1,2)",error="degree")
+gap=course_source(92,388).replace("'E'","2").replace('"E_0"',"5")
+for threshold,result in [(-4,"1"),(2,"1"),(3,"0"),(4,"0")]:
+    assert run(gap.replace("'δ'",str(threshold)))==result
+print("Verified a normalized Chebyshev filter and the strict energy-gap threshold.")

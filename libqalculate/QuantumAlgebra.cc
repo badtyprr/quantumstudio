@@ -809,6 +809,31 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=relation;return 1;
   }
+  if(op=="qchebyshev") {
+   MathStructure degree=raw[0],argument=raw[1];degree.eval(eo);argument.eval(eo);
+   if(!degree.isNumber() || !argument.isNumber())return 0;
+   if(!degree.number().isInteger() || degree.number().isNegative() || degree.number()>Number(4096) ||
+      argument.number().includesInfinity()) {
+    CALCULATOR->error(true,"Chebyshev evaluation needs a degree from 0 to 4096 and a finite argument.",NULL);return 0;
+   }
+   Number previous(1),current=argument.number();
+   int n=degree.number().intValue();
+   for(int i=1;i<n;++i) {
+    if(CALCULATOR->aborted())return 0;
+    Number next=current;
+    if(!next.multiply(argument.number()) || !next.multiply(2) || !next.subtract(previous))return 0;
+    previous=current;current=next;
+   }
+   out.set(n ? current : previous);return 1;
+  }
+  if(op=="qdistancegreater") {
+   MathStructure left=raw[0],right=raw[1],threshold=raw[2];
+   left.eval(eo);right.eval(eo);threshold.eval(eo);
+   if(!left.isNumber() || !right.isNumber() || !threshold.isNumber())return 0;
+   left.subtract(right);left.eval(eo);
+   MathStructure distance(CALCULATOR->getFunction("abs"),&left,NULL);distance.eval(eo);
+   distance.transform(COMPARISON_GREATER,threshold);distance.eval(eo);out=distance;return 1;
+  }
   if(op=="qpolynomialat") {
    MathStructure coefficients=raw[0],argument=raw[1];
    coefficients.eval(eo);argument.eval(eo);
@@ -1557,6 +1582,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
  calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
