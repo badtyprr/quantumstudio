@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "bdad563ebcbe5c8040a81a2a85790ea2448633cdc6630f6a8a23f3ab7b6e7438",
-  "revision": "1b2c52cc6f76dbcf8ec6c7b3dd255e049708fcd5",
+  "worker_sha256": "d52a405cae608291cc0d8d210a69f79dd3543f637e4e7f9505dba12aeee35549",
+  "revision": "48ddc974ecd14ccd46451f5c05025fe344bee003",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 148,
-    "diagnostic": 2
+    "exact": 149,
+    "diagnostic": 1
   },
   "figures": [],
   "rows": [
@@ -678,8 +678,9 @@
       "start": 11741,
       "end": 12059,
       "literal": "$$\n\\begin{array}{c|c}\n  a & f_1(a)\\\\\n  \\hline\n  0 & 0\\\\\n  1 & 0\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_2(a)\\\\\n  \\hline\n  0 & 0\\\\\n  1 & 1\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_3(a)\\\\\n  \\hline\n  0 & 1\\\\\n  1 & 0\n\\end{array}\n\\qquad\n\\begin{array}{c|c}\n  a & f_4(a)\\\\\n  \\hline\n  0 & 1\\\\\n  1 & 1\n\\end{array}\n$$",
-      "status": "diagnostic",
-      "message": "Invalid TeX name at byte 17"
+      "status": "exact",
+      "display": "[['a'  \"f_1(a)\"], [0  0], [1  0]; ['a'  \"f_2(a)\"], [0  0], [1  1]; ['a'  \"f_3(a)\"], [0  1], [1  0]; ['a'  \"f_4(a)\"], [0  1], [1  1]]",
+      "copy": "vector(matrix(3,2,['a',\"f_1(a)\",0,0,1,0]),matrix(3,2,['a',\"f_2(a)\",0,0,1,1]),matrix(3,2,['a',\"f_3(a)\",0,1,1,0]),matrix(3,2,['a',\"f_4(a)\",0,1,1,1]))"
     },
     {
       "id": "IBM037-bb350db4-M068",
