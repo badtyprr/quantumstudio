@@ -1154,12 +1154,17 @@ class TeXReader {
  }
  // Columns of the linear operator are the printed images of its basis kets.
  std::string basisActionTable(const std::string &body,size_t columns) {
-  static const std::regex action(R"(^\s*([A-Z])(?:_\{([0-9]+)\}|_([0-9]))?\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
+  static const std::regex action(R"(^\s*M(?:_\{([0-9]+)\}|_([0-9]))\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
   static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   std::vector<std::pair<std::string,std::string>> images;
   std::string name;
-  for(auto row:indexedParts(body,"\\\\")) {
-   if(row.empty())continue;
+  auto rows=indexedParts(body,"\\\\");
+  if(!rows.empty() && rows.back().empty())rows.pop_back();
+  for(auto row:rows) {
+   if(row.empty()) {
+    if(images.empty())return "";
+    throw std::runtime_error(error("Empty row in a basis action table"));
+   }
    if(!images.empty() && row.front()=='[')row=std::regex_replace(row,rowSpace,"");
    auto cells=indexedParts(row,"&");
    for(const auto &cell:cells) {
@@ -1168,12 +1173,12 @@ class TeXReader {
      if(images.empty())return "";
      throw std::runtime_error(error("Expected one basis action in each table cell"));
     }
-    std::string label=m[1].str()+m[2].str()+m[3].str();
+    std::string label=m[1].str()+m[2].str();
     if(images.empty())name=label;
     if(label!=name || cells.size()!=columns)throw std::runtime_error(error("A basis action table requires one operator and consistent row widths"));
     // The editable matrix representation supports 4,096 explicit entries.
     if(images.size()>=64)throw std::runtime_error(error("A printed basis action matrix exceeds 4096 entries"));
-    images.emplace_back(m[4],m[5]);
+    images.emplace_back(m[3],m[4]);
    }
   }
   if(images.empty())return "";

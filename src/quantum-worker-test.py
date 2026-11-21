@@ -58,6 +58,7 @@ action_table = r"\begin{array}{cc}M_2|2\rangle=|0\rangle&M_2|0\rangle=|1\rangle\
 action_matrix = data("quantum:"+action_table)["copy_text"]
 assert action_matrix == "matrix(4,4,[0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,1])"
 assert data("quantum:"+action_matrix)["copy_text"] == action_matrix
+run(r"quantum:\begin{array}{c}X|0\rangle=|0\rangle\\X|1\rangle=|1\rangle\end{array}", success=False)
 run("quantum:"+action_table.replace(r"M_2|2\rangle", r"M_2|1\rangle"), success=False)
 run("quantum:"+action_table.replace(r"=|3\rangle", r"=|4\rangle"), success=False)
 
