@@ -56,5 +56,30 @@
     "adjacent": "12",
     "separate": "6",
     "alias": "16"
+  },
+  "subsequent_full_notebook_check": {
+    "counts": {
+      "source_exact": 152,
+      "restored_identically": 152,
+      "stable_after_text_reentry": 152,
+      "source_diagnostic": 3
+    },
+    "records_sha256": "54a97a3cedf734d143c37af15ecbf066c9dbfce1ce09fb040fc2be28ea95a083",
+    "worker_sha256": "760d8e011a08f5521e114034817df25e322d7884f61539a050861a77dfb4861c",
+    "diagnostics": [
+      {
+        "id": "IBM034-94ee62dd-M026",
+        "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+      },
+      {
+        "id": "IBM034-94ee62dd-M028",
+        "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+      },
+      {
+        "id": "IBM034-94ee62dd-M040",
+        "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+      }
+    ],
+    "revision": "d94b20b4"
   }
 }
