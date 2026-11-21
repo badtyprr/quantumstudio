@@ -79,6 +79,14 @@ assert data("quantum:qmodpower(2,1000000000,21)")["copy_text"] == str(pow(2,1000
 for invalid in ("qmodpower(2,-1,4)", "qmodpower(1,2,0)", "qmodpower(1/2,2,7)"):
     run("quantum:"+invalid, success=False)
 
+# Preserve the product inside the reciprocal in the phase-recovery bound.
+fraction_bound = r"$\left\vert\frac{y}{2^m}-\frac{1}{r}\right\vert<\frac{1}{2r(r+1)}$"
+copied = data("quantum:"+fraction_bound)["copy_text"]
+assert data("quantum:"+copied)["copy_text"] == copied
+for numerator, expected in [(4, "1"), (5, "0")]:
+    expr = f'replace(replace(replace(({copied}),"m",3),"r",2),y,{numerator})'
+    assert data("quantum:"+expr)["copy_text"] == expected
+
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):
     copied = data("quantum:"+expression)["copy_text"]
