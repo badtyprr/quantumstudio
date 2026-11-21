@@ -1,0 +1,28 @@
+{
+  "source_sha256": "d3185448e3387a0d92d8e09abc2d7490c27a69cb8f6993ff8ffddc07ce5b0fd5",
+  "qiskit": "2.2.3",
+  "times": 61,
+  "matrix_entries_per_method": 4096,
+  "methods": {
+    "lt": {
+      "depth": 17,
+      "gates": 27,
+      "nonlocal_gates": 10,
+      "rms_errors": {
+        "energy": 0.251677985,
+        "magnetization": 0.024701043,
+        "correlation": 0.04740803
+      }
+    },
+    "st2": {
+      "depth": 34,
+      "gates": 53,
+      "nonlocal_gates": 20,
+      "rms_errors": {
+        "energy": 0.137900407,
+        "magnetization": 0.024701043,
+        "correlation": 0.04740803
+      }
+    }
+  }
+}
