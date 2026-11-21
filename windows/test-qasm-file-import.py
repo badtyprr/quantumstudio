@@ -234,6 +234,7 @@ class FileImportTests(unittest.TestCase):
     def test_timed_gate_rejection(self):
         cases = [
             ('qubit q; x[1ns] q;', 'x['),
+            ('x[1ns] $3;', 'x['),
             ('gate g a { x[1ns] a; } qubit q; g q;', 'x['),
             ('def f(qubit a) { x[1ns] a; } qubit q; f(q);', 'x['),
             ('qubit q; gphase(pi)[1ns];', 'gphase'),
