@@ -592,8 +592,8 @@ Pinned URLs and notebook hashes: [source inventory](learning-source-inventory.js
 
 ## Discovery checklist (outside the 190 tracked rows)
 
-- [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs.
-- [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks.
+- [ ] DISC-01 — Reconcile all current IBM course/module/learning-path catalogs with the 2026-10-14 inventory; record added/removed/changed URLs. November comparison confirms all 15 course and 12 module directory URLs, six public path topics, 11 observed subpaths and 43 changed repository files. Interactive path materials still need reconciliation. [Resource registry and scope](learning-evidence/aud02/ibm-resource-discovery.md).
+- [ ] DISC-02 — Inventory IBM overview pages, exams, practice content, videos, downloadable notebooks and linked tutorials; assign stable IDs and source-specific audit tasks. Published-source inventory assigns stable IDs and audit tasks to 1,446 targets across 203 verified files. Embedded or unlabelled exercises and external resources still need review. [Resource registry and scope](learning-evidence/aud02/ibm-resource-discovery.md).
 - [ ] DISC-03 — Reconcile qBraid demo repository HEAD with the pinned `86787e1ba372facc224f925189755e69c479828b` snapshot; record changed notebook hashes and new/deleted paths. [2026-11-17 reconciliation](learning-evidence/aud02/qbraid-catalog-20261117.md): 33 unchanged, two modified, three added, none deleted; review and project verification pending.
 - [ ] DISC-04 — Inventory qBraid SDK, PyQASM, QIR, Algorithms and runtime syntax references beyond demonstration notebooks; separate syntax support from provider execution.
 - [ ] DISC-05 — Inventory qBook courses and chapters through authorized access; record unavailable/account-only content as access-blocked rather than complete.
