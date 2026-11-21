@@ -1,0 +1,174 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation.ipynb",
+  "source_sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
+  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "revision": "957638fa60bad7210f0e290fa61464d732e6e934",
+  "mode": "Quantum notation",
+  "markdown_cells": 10,
+  "code_cells": 10,
+  "summary": {
+    "exact": 14,
+    "diagnostic": 2
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM043-971002d9-M001",
+      "cell": 4,
+      "start": 282,
+      "end": 298,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM043-971002d9-M002",
+      "cell": 4,
+      "start": 303,
+      "end": 319,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM043-971002d9-M003",
+      "cell": 4,
+      "start": 373,
+      "end": 432,
+      "literal": "$\\vert \\psi\\rangle = \\vert 0\\rangle \\otimes \\vert 1\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩ = [0; 1; 0; 0]",
+      "copy": "qcompare(qketstate('ψ'),matrix(4,1,[0,1,0,0]),4)"
+    },
+    {
+      "id": "IBM043-971002d9-M004",
+      "cell": 4,
+      "start": 508,
+      "end": 524,
+      "literal": "$\\vert 0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM043-971002d9-M005",
+      "cell": 4,
+      "start": 529,
+      "end": 545,
+      "literal": "$\\vert 1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM043-971002d9-M006",
+      "cell": 6,
+      "start": 142,
+      "end": 357,
+      "literal": "$$\n\\vert {+i} \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{i}{\\sqrt{2}} \\vert 1 \\rangle\n\\qquad\\text{and}\\qquad\n\\vert {-i} \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle - \\frac{i}{\\sqrt{2}} \\vert 1 \\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM043-971002d9-M007",
+      "cell": 6,
+      "start": 659,
+      "end": 678,
+      "literal": "$\\vert {+} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (1 ∕ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM043-971002d9-M008",
+      "cell": 6,
+      "start": 683,
+      "end": 703,
+      "literal": "$\\vert {-i} \\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−0.5i ⋅ √(2))]",
+      "copy": "matrix(2,1,[1 ∕ √(2),−(i ⋅ √(2)) ∕ 2])"
+    },
+    {
+      "id": "IBM043-971002d9-M009",
+      "cell": 14,
+      "start": 189,
+      "end": 219,
+      "literal": "$(H\\otimes I)\\vert\\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM043-971002d9-M010",
+      "cell": 14,
+      "start": 224,
+      "end": 286,
+      "literal": "$\\vert\\phi\\rangle = \\vert + \\rangle \\otimes \\vert {-i}\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM043-971002d9-M011",
+      "cell": 16,
+      "start": 33,
+      "end": 37,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM043-971002d9-M012",
+      "cell": 16,
+      "start": 63,
+      "end": 84,
+      "literal": "$CX \\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0] |ψ⟩",
+      "copy": "qadjacent(matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0]),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM043-971002d9-M013",
+      "cell": 16,
+      "start": 89,
+      "end": 149,
+      "literal": "$\\vert\\psi\\rangle = \\vert + \\rangle \\otimes \\vert 0 \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); 0; (1 ∕ √(2)); 0]",
+      "copy": "qcompare(qketstate('ψ'),matrix(4,1,[1 ∕ √(2),0,1 ∕ √(2),0]),4)"
+    },
+    {
+      "id": "IBM043-971002d9-M014",
+      "cell": 16,
+      "start": 174,
+      "end": 178,
+      "literal": "$CX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM043-971002d9-M015",
+      "cell": 16,
+      "start": 303,
+      "end": 325,
+      "literal": "$\\vert\\phi^{+}\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM043-971002d9-M016",
+      "cell": 18,
+      "start": 485,
+      "end": 579,
+      "literal": "$$\n\\vert w\\rangle = \\frac{\\vert 001\\rangle + \\vert 010\\rangle + \\vert 100\\rangle}{\\sqrt{3}}\n$$",
+      "status": "exact",
+      "display": "qketstate('w') = [0; (1 ∕ √(3)); (1 ∕ √(3)); 0; (1 ∕ √(3)); 0; 0; 0]",
+      "copy": "qcompare(qketstate('w'),matrix(8,1,[0,1 ∕ √(3),1 ∕ √(3),0,1 ∕ √(3),0,0,0]),4)"
+    }
+  ]
+}

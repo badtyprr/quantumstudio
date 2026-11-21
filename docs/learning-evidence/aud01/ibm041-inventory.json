@@ -1,0 +1,3688 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/classical-information.ipynb",
+  "source_sha256": "624fe895b052089a6afaf5a2ca6849918cd7291dba8932b444827ac042494249",
+  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "revision": "957638fa60bad7210f0e290fa61464d732e6e934",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 274,
+    "diagnostic": 102
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM041-624fe895-M001",
+      "cell": 1,
+      "start": 643,
+      "end": 655,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M002",
+      "cell": 1,
+      "start": 697,
+      "end": 705,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M003",
+      "cell": 1,
+      "start": 715,
+      "end": 727,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M004",
+      "cell": 1,
+      "start": 776,
+      "end": 784,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M005",
+      "cell": 1,
+      "start": 886,
+      "end": 894,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M006",
+      "cell": 1,
+      "start": 899,
+      "end": 907,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M007",
+      "cell": 1,
+      "start": 955,
+      "end": 972,
+      "literal": "$\\Sigma = \\Gamma$",
+      "status": "exact",
+      "display": "'Γ' = 'Σ'",
+      "copy": "('Γ')==('Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M008",
+      "cell": 1,
+      "start": 1151,
+      "end": 1163,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M009",
+      "cell": 1,
+      "start": 1168,
+      "end": 1180,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M010",
+      "cell": 1,
+      "start": 1212,
+      "end": 1224,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M011",
+      "cell": 1,
+      "start": 1241,
+      "end": 1253,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M012",
+      "cell": 1,
+      "start": 1371,
+      "end": 1396,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M013",
+      "cell": 1,
+      "start": 1400,
+      "end": 1413,
+      "literal": "$\\mathsf{XY}$",
+      "status": "exact",
+      "display": "X · Y",
+      "copy": "'X''Y'"
+    },
+    {
+      "id": "IBM041-624fe895-M014",
+      "cell": 1,
+      "start": 1496,
+      "end": 1521,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M015",
+      "cell": 1,
+      "start": 1610,
+      "end": 1635,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M016",
+      "cell": 1,
+      "start": 1666,
+      "end": 1674,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M017",
+      "cell": 1,
+      "start": 1679,
+      "end": 1687,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M018",
+      "cell": 1,
+      "start": 1718,
+      "end": 1806,
+      "literal": "$$\n  \\Sigma\\times\\Gamma = \\bigl\\{(a,b)\\,:\\,a\\in\\Sigma\\;\\text{and}\\;b\\in\\Gamma\\bigr\\}.\n$$",
+      "status": "diagnostic",
+      "message": "An indexed image requires a finite domain of at most 1024 entries."
+    },
+    {
+      "id": "IBM041-624fe895-M019",
+      "cell": 1,
+      "start": 2064,
+      "end": 2089,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M020",
+      "cell": 1,
+      "start": 2116,
+      "end": 2144,
+      "literal": "$(a,b)\\in\\Sigma\\times\\Gamma$",
+      "status": "diagnostic",
+      "message": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM041-624fe895-M021",
+      "cell": 1,
+      "start": 2156,
+      "end": 2168,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M022",
+      "cell": 1,
+      "start": 2195,
+      "end": 2207,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M023",
+      "cell": 1,
+      "start": 2212,
+      "end": 2224,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M024",
+      "cell": 1,
+      "start": 2251,
+      "end": 2263,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M025",
+      "cell": 1,
+      "start": 2295,
+      "end": 2307,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M026",
+      "cell": 1,
+      "start": 2311,
+      "end": 2323,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M027",
+      "cell": 1,
+      "start": 2351,
+      "end": 2363,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M028",
+      "cell": 1,
+      "start": 2367,
+      "end": 2379,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M029",
+      "cell": 1,
+      "start": 2426,
+      "end": 2451,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M030",
+      "cell": 1,
+      "start": 2455,
+      "end": 2462,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM041-624fe895-M031",
+      "cell": 1,
+      "start": 2555,
+      "end": 2589,
+      "literal": "$\\mathsf{X}_1,\\ldots,\\mathsf{X}_n$",
+      "status": "exact",
+      "display": "(X_1, …, X_n)",
+      "copy": "qindexedlist(\"X_\",1,n,vector())"
+    },
+    {
+      "id": "IBM041-624fe895-M032",
+      "cell": 1,
+      "start": 2630,
+      "end": 2656,
+      "literal": "$\\Sigma_1,\\ldots,\\Sigma_n$",
+      "status": "exact",
+      "display": "(Σ_1, …, Σ_n)",
+      "copy": "qindexedlist(\"Σ_\",1,n,vector())"
+    },
+    {
+      "id": "IBM041-624fe895-M033",
+      "cell": 1,
+      "start": 2697,
+      "end": 2700,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M034",
+      "cell": 1,
+      "start": 2733,
+      "end": 2736,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M035",
+      "cell": 1,
+      "start": 2743,
+      "end": 2779,
+      "literal": "$(\\mathsf{X}_1,\\ldots,\\mathsf{X}_n)$",
+      "status": "exact",
+      "display": "(X_1, …, X_n)",
+      "copy": "qindexedlist(\"X_\",1,n,vector())"
+    },
+    {
+      "id": "IBM041-624fe895-M036",
+      "cell": 1,
+      "start": 2840,
+      "end": 2966,
+      "literal": "$$\n  \\Sigma_1\\times\\cdots\\times\\Sigma_n\n  = \\bigl\\{(a_1,\\ldots,a_n)\\,:\\,\n  a_1\\in\\Sigma_1,\\:\\ldots,\\:a_n\\in\\Sigma_n\\bigr\\}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 24"
+    },
+    {
+      "id": "IBM041-624fe895-M037",
+      "cell": 1,
+      "start": 3092,
+      "end": 3095,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M038",
+      "cell": 1,
+      "start": 3153,
+      "end": 3193,
+      "literal": "$\\mathsf{X}_{0},\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M039",
+      "cell": 1,
+      "start": 3264,
+      "end": 3304,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M040",
+      "cell": 1,
+      "start": 3444,
+      "end": 3516,
+      "literal": "$$\n(a_{n-1},\\ldots,a_0) \\in \\Sigma_{n-1}\\times \\cdots \\times \\Sigma_0\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 52"
+    },
+    {
+      "id": "IBM041-624fe895-M041",
+      "cell": 1,
+      "start": 3841,
+      "end": 3863,
+      "literal": "$(a_{n-1},\\ldots,a_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M042",
+      "cell": 1,
+      "start": 3995,
+      "end": 4014,
+      "literal": "$a_{n-1}\\cdots a_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 14"
+    },
+    {
+      "id": "IBM041-624fe895-M043",
+      "cell": 1,
+      "start": 4113,
+      "end": 4143,
+      "literal": "$\\Sigma_0,\\ldots,\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M044",
+      "cell": 1,
+      "start": 4476,
+      "end": 4510,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_9$",
+      "status": "exact",
+      "display": "(\"X_0\", \"X_1\", \"X_2\", \"X_3\", \"X_4\", \"X_5\", \"X_6\", \"X_7\", \"X_8\", \"X_9\")",
+      "copy": "qtuple(vector(\"X_0\",\"X_1\",\"X_2\",\"X_3\",\"X_4\",\"X_5\",\"X_6\",\"X_7\",\"X_8\",\"X_9\"))"
+    },
+    {
+      "id": "IBM041-624fe895-M045",
+      "cell": 1,
+      "start": 4590,
+      "end": 4647,
+      "literal": "$$\n  \\Sigma_0 = \\Sigma_1 = \\cdots = \\Sigma_9 = \\{0,1\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 32"
+    },
+    {
+      "id": "IBM041-624fe895-M046",
+      "cell": 1,
+      "start": 4664,
+      "end": 4679,
+      "literal": "$2^{10} = 1024$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M047",
+      "cell": 1,
+      "start": 4717,
+      "end": 4753,
+      "literal": "$(\\mathsf{X}_9,\\ldots,\\mathsf{X}_0)$",
+      "status": "exact",
+      "display": "()",
+      "copy": "qtuple(vector())"
+    },
+    {
+      "id": "IBM041-624fe895-M048",
+      "cell": 1,
+      "start": 4790,
+      "end": 4862,
+      "literal": "$$\n  \\Sigma_9\\times\\Sigma_8\\times\\cdots\\times\\Sigma_0 = \\{0,1\\}^{10}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 38"
+    },
+    {
+      "id": "IBM041-624fe895-M049",
+      "cell": 1,
+      "start": 4924,
+      "end": 5066,
+      "literal": "$$\n  \\begin{array}{c}\n  0000000000\\\\\n  0000000001\\\\\n  0000000010\\\\\n  0000000011\\\\\n  0000000100\\\\\n  \\vdots\\\\[1mm]\n  1111111111\n  \\end{array}\n$$",
+      "status": "diagnostic",
+      "message": "A numeric table requires a horizontal rule below the labels at byte 50"
+    },
+    {
+      "id": "IBM041-624fe895-M050",
+      "cell": 1,
+      "start": 5092,
+      "end": 5104,
+      "literal": "$0000000110$",
+      "status": "exact",
+      "display": "110",
+      "copy": "110"
+    },
+    {
+      "id": "IBM041-624fe895-M051",
+      "cell": 1,
+      "start": 5132,
+      "end": 5146,
+      "literal": "$\\mathsf{X}_1$",
+      "status": "exact",
+      "display": "\"X_1\"",
+      "copy": "\"X_1\""
+    },
+    {
+      "id": "IBM041-624fe895-M052",
+      "cell": 1,
+      "start": 5151,
+      "end": 5165,
+      "literal": "$\\mathsf{X}_2$",
+      "status": "exact",
+      "display": "\"X_2\"",
+      "copy": "\"X_2\""
+    },
+    {
+      "id": "IBM041-624fe895-M053",
+      "cell": 1,
+      "start": 5183,
+      "end": 5186,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M054",
+      "cell": 1,
+      "start": 5229,
+      "end": 5232,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M055",
+      "cell": 1,
+      "start": 5626,
+      "end": 5638,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M056",
+      "cell": 1,
+      "start": 5643,
+      "end": 5655,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M057",
+      "cell": 1,
+      "start": 5724,
+      "end": 5742,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM041-624fe895-M058",
+      "cell": 1,
+      "start": 5747,
+      "end": 5765,
+      "literal": "$\\Gamma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Γ' = \\{0, 1\\}",
+      "copy": "('Γ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM041-624fe895-M059",
+      "cell": 1,
+      "start": 5823,
+      "end": 5848,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M060",
+      "cell": 1,
+      "start": 5851,
+      "end": 6220,
+      "literal": "$$\n  \\begin{aligned}\n    \\operatorname{Pr}\\bigl( (\\mathsf{X},\\mathsf{Y}) = (0,0)\\bigr)\n    & = 1/2 \\\\[2mm]\n    \\operatorname{Pr}\\bigl( (\\mathsf{X},\\mathsf{Y}) = (0,1)\\bigr)\n    & = 0\\\\[2mm]\n    \\operatorname{Pr}\\bigl( (\\mathsf{X},\\mathsf{Y}) = (1,0)\\bigr)\n    & = 0\\\\[2mm]\n    \\operatorname{Pr}\\bigl( (\\mathsf{X},\\mathsf{Y}) = (1,1)\\bigr)\n    & = 1/2\n  \\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M061",
+      "cell": 1,
+      "start": 6268,
+      "end": 6280,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M062",
+      "cell": 1,
+      "start": 6285,
+      "end": 6297,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M063",
+      "cell": 1,
+      "start": 6324,
+      "end": 6327,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M064",
+      "cell": 1,
+      "start": 6345,
+      "end": 6350,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M065",
+      "cell": 1,
+      "start": 6355,
+      "end": 6358,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M066",
+      "cell": 1,
+      "start": 6376,
+      "end": 6381,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M067",
+      "cell": 1,
+      "start": 7101,
+      "end": 7110,
+      "literal": "$\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{0, 1\\}",
+      "copy": "qset(vector(0,1))"
+    },
+    {
+      "id": "IBM041-624fe895-M068",
+      "cell": 1,
+      "start": 7137,
+      "end": 7140,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M069",
+      "cell": 1,
+      "start": 7151,
+      "end": 7154,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M070",
+      "cell": 1,
+      "start": 7295,
+      "end": 7298,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M071",
+      "cell": 1,
+      "start": 7366,
+      "end": 7369,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M072",
+      "cell": 1,
+      "start": 8031,
+      "end": 8034,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M073",
+      "cell": 1,
+      "start": 8235,
+      "end": 8259,
+      "literal": "$\\{1,2,3\\}\\times\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{1, 2, 3\\} · \\{0, 1\\}",
+      "copy": "qmul(qset(vector(1,2,3)),qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM041-624fe895-M074",
+      "cell": 1,
+      "start": 8283,
+      "end": 8352,
+      "literal": "$$\n  (1,0),\\;\n  (1,1),\\;\n  (2,0),\\;\n  (2,1),\\;\n  (3,0),\\;\n  (3,1).\n$$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM041-624fe895-M075",
+      "cell": 1,
+      "start": 8359,
+      "end": 8362,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M076",
+      "cell": 1,
+      "start": 8456,
+      "end": 8478,
+      "literal": "$\\{0,1\\}\\times\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{0, 1\\} · \\{0, 1\\}",
+      "copy": "qmul(qset(vector(0,1)),qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM041-624fe895-M077",
+      "cell": 1,
+      "start": 8496,
+      "end": 8512,
+      "literal": "$00, 01, 10, 11$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM041-624fe895-M078",
+      "cell": 1,
+      "start": 8526,
+      "end": 8540,
+      "literal": "$\\{0,1\\}^{10}$",
+      "status": "exact",
+      "display": "qset([qbitlabel(0, 10)  qbitlabel(1, 10)  qbitlabel(2, 10)  qbitlabel(3, 10)  qbitlabel(4, 10)  qbitlabel(5, 10)  qbitlabel(6, 10)  qbitlabel(7, 10)  qbitlabel(8, 10)  qbitlabel(9, 10)  qbitlabel(10, 10)  qbitlabel(11, 10)  qbitlabel(12, 10)  qbitlabel(13, 10)  qbitlabel(14, 10)  qbitlabel(15, 10)  qbitlabel(16, 10)  qbitlabel(17, 10)  qbitlabel(18, 10)  qbitlabel(19, 10)  qbitlabel(20, 10)  qbitlabel(21, 10)  qbitlabel(22, 10)  qbitlabel(23, 10)  qbitlabel(24, 10)  qbitlabel(25, 10)  qbitlabel(26, 10)  qbitlabel(27, 10)  qbitlabel(28, 10)  qbitlabel(29, 10)  qbitlabel(30, 10)  qbitlabel(31, 10)  qbitlabel(32, 10)  qbitlabel(33, 10)  qbitlabel(34, 10)  qbitlabel(35, 10)  qbitlabel(36, 10)  qbitlabel(37, 10)  qbitlabel(38, 10)  qbitlabel(39, 10)  qbitlabel(40, 10)  qbitlabel(41, 10)  qbitlabel(42, 10)  qbitlabel(43, 10)  qbitlabel(44, 10)  qbitlabel(45, 10)  qbitlabel(46, 10)  qbitlabel(47, 10)  qbitlabel(48, 10)  qbitlabel(49, 10)  qbitlabel(50, 10)  qbitlabel(51, 10)  qbitlabel(52, 10)  qbitlabel(53, 10)  qbitlabel(54, 10)  qbitlabel(55, 10)  qbitlabel(56, 10)  qbitlabel(57, 10)  qbitlabel(58, 10)  qbitlabel(59, 10)  qbitlabel(60, 10)  qbitlabel(61, 10)  qbitlabel(62, 10)  qbitlabel(63, 10)  qbitlabel(64, 10)  qbitlabel(65, 10)  qbitlabel(66, 10)  qbitlabel(67, 10)  qbitlabel(68, 10)  qbitlabel(69, 10)  qbitlabel(70, 10)  qbitlabel(71, 10)  qbitlabel(72, 10)  qbitlabel(73, 10)  qbitlabel(74, 10)  qbitlabel(75, 10)  qbitlabel(76, 10)  qbitlabel(77, 10)  qbitlabel(78, 10)  qbitlabel(79, 10)  qbitlabel(80, 10)  qbitlabel(81, 10)  qbitlabel(82, 10)  qbitlabel(83, 10)  qbitlabel(84, 10)  qbitlabel(85, 10)  qbitlabel(86, 10)  qbitlabel(87, 10)  qbitlabel(88, 10)  qbitlabel(89, 10)  qbitlabel(90, 10)  qbitlabel(91, 10)  qbitlabel(92, 10)  qbitlabel(93, 10)  qbitlabel(94, 10)  qbitlabel(95, 10)  qbitlabel(96, 10)  qbitlabel(97, 10)  qbitlabel(98, 10)  qbitlabel(99, 10)  qbitlabel(100, 10)  qbitlabel(101, 10)  qbitlabel(102, 10)  qbitlabel(103, 10)  qbitlabel(104, 10)  qbitlabel(105, 10)  qbitlabel(106, 10)  qbitlabel(107, 10)  qbitlabel(108, 10)  qbitlabel(109, 10)  qbitlabel(110, 10)  qbitlabel(111, 10)  qbitlabel(112, 10)  qbitlabel(113, 10)  qbitlabel(114, 10)  qbitlabel(115, 10)  qbitlabel(116, 10)  qbitlabel(117, 10)  qbitlabel(118, 10)  qbitlabel(119, 10)  qbitlabel(120, 10)  qbitlabel(121, 10)  qbitlabel(122, 10)  qbitlabel(123, 10)  qbitlabel(124, 10)  qbitlabel(125, 10)  qbitlabel(126, 10)  qbitlabel(127, 10)  qbitlabel(128, 10)  qbitlabel(129, 10)  qbitlabel(130, 10)  qbitlabel(131, 10)  qbitlabel(132, 10)  qbitlabel(133, 10)  qbitlabel(134, 10)  qbitlabel(135, 10)  qbitlabel(136, 10)  qbitlabel(137, 10)  qbitlabel(138, 10)  qbitlabel(139, 10)  qbitlabel(140, 10)  qbitlabel(141, 10)  qbitlabel(142, 10)  qbitlabel(143, 10)  qbitlabel(144, 10)  qbitlabel(145, 10)  qbitlabel(146, 10)  qbitlabel(147, 10)  qbitlabel(148, 10)  qbitlabel(149, 10)  qbitlabel(150, 10)  qbitlabel(151, 10)  qbitlabel(152, 10)  qbitlabel(153, 10)  qbitlabel(154, 10)  qbitlabel(155, 10)  qbitlabel(156, 10)  qbitlabel(157, 10)  qbitlabel(158, 10)  qbitlabel(159, 10)  qbitlabel(160, 10)  qbitlabel(161, 10)  qbitlabel(162, 10)  qbitlabel(163, 10)  qbitlabel(164, 10)  qbitlabel(165, 10)  qbitlabel(166, 10)  qbitlabel(167, 10)  qbitlabel(168, 10)  qbitlabel(169, 10)  qbitlabel(170, 10)  qbitlabel(171, 10)  qbitlabel(172, 10)  qbitlabel(173, 10)  qbitlabel(174, 10)  qbitlabel(175, 10)  qbitlabel(176, 10)  qbitlabel(177, 10)  qbitlabel(178, 10)  qbitlabel(179, 10)  qbitlabel(180, 10)  qbitlabel(181, 10)  qbitlabel(182, 10)  qbitlabel(183, 10)  qbitlabel(184, 10)  qbitlabel(185, 10)  qbitlabel(186, 10)  qbitlabel(187, 10)  qbitlabel(188, 10)  qbitlabel(189, 10)  qbitlabel(190, 10)  qbitlabel(191, 10)  qbitlabel(192, 10)  qbitlabel(193, 10)  qbitlabel(194, 10)  qbitlabel(195, 10)  qbitlabel(196, 10)  qbitlabel(197, 10)  qbitlabel(198, 10)  qbitlabel(199, 10)  qbitlabel(200, 10)  qbitlabel(201, 10)  qbitlabel(202, 10)  qbitlabel(203, 10)  qbitlabel(204, 10)  qbitlabel(205, 10)  qbitlabel(206, 10)  qbitlabel(207, 10)  qbitlabel(208, 10)  qbitlabel(209, 10)  qbitlabel(210, 10)  qbitlabel(211, 10)  qbitlabel(212, 10)  qbitlabel(213, 10)  qbitlabel(214, 10)  qbitlabel(215, 10)  qbitlabel(216, 10)  qbitlabel(217, 10)  qbitlabel(218, 10)  qbitlabel(219, 10)  qbitlabel(220, 10)  qbitlabel(221, 10)  qbitlabel(222, 10)  qbitlabel(223, 10)  qbitlabel(224, 10)  qbitlabel(225, 10)  qbitlabel(226, 10)  qbitlabel(227, 10)  qbitlabel(228, 10)  qbitlabel(229, 10)  qbitlabel(230, 10)  qbitlabel(231, 10)  qbitlabel(232, 10)  qbitlabel(233, 10)  qbitlabel(234, 10)  qbitlabel(235, 10)  qbitlabel(236, 10)  qbitlabel(237, 10)  qbitlabel(238, 10)  qbitlabel(239, 10)  qbitlabel(240, 10)  qbitlabel(241, 10)  qbitlabel(242, 10)  qbitlabel(243, 10)  qbitlabel(244, 10)  qbitlabel(245, 10)  qbitlabel(246, 10)  qbitlabel(247, 10)  qbitlabel(248, 10)  qbitlabel(249, 10)  qbitlabel(250, 10)  qbitlabel(251, 10)  qbitlabel(252, 10)  qbitlabel(253, 10)  qbitlabel(254, 10)  qbitlabel(255, 10)  qbitlabel(256, 10)  qbitlabel(257, 10)  qbitlabel(258, 10)  qbitlabel(259, 10)  qbitlabel(260, 10)  qbitlabel(261, 10)  qbitlabel(262, 10)  qbitlabel(263, 10)  qbitlabel(264, 10)  qbitlabel(265, 10)  qbitlabel(266, 10)  qbitlabel(267, 10)  qbitlabel(268, 10)  qbitlabel(269, 10)  qbitlabel(270, 10)  qbitlabel(271, 10)  qbitlabel(272, 10)  qbitlabel(273, 10)  qbitlabel(274, 10)  qbitlabel(275, 10)  qbitlabel(276, 10)  qbitlabel(277, 10)  qbitlabel(278, 10)  qbitlabel(279, 10)  qbitlabel(280, 10)  qbitlabel(281, 10)  qbitlabel(282, 10)  qbitlabel(283, 10)  qbitlabel(284, 10)  qbitlabel(285, 10)  qbitlabel(286, 10)  qbitlabel(287, 10)  qbitlabel(288, 10)  qbitlabel(289, 10)  qbitlabel(290, 10)  qbitlabel(291, 10)  qbitlabel(292, 10)  qbitlabel(293, 10)  qbitlabel(294, 10)  qbitlabel(295, 10)  qbitlabel(296, 10)  qbitlabel(297, 10)  qbitlabel(298, 10)  qbitlabel(299, 10)  qbitlabel(300, 10)  qbitlabel(301, 10)  qbitlabel(302, 10)  qbitlabel(303, 10)  qbitlabel(304, 10)  qbitlabel(305, 10)  qbitlabel(306, 10)  qbitlabel(307, 10)  qbitlabel(308, 10)  qbitlabel(309, 10)  qbitlabel(310, 10)  qbitlabel(311, 10)  qbitlabel(312, 10)  qbitlabel(313, 10)  qbitlabel(314, 10)  qbitlabel(315, 10)  qbitlabel(316, 10)  qbitlabel(317, 10)  qbitlabel(318, 10)  qbitlabel(319, 10)  qbitlabel(320, 10)  qbitlabel(321, 10)  qbitlabel(322, 10)  qbitlabel(323, 10)  qbitlabel(324, 10)  qbitlabel(325, 10)  qbitlabel(326, 10)  qbitlabel(327, 10)  qbitlabel(328, 10)  qbitlabel(329, 10)  qbitlabel(330, 10)  qbitlabel(331, 10)  qbitlabel(332, 10)  qbitlabel(333, 10)  qbitlabel(334, 10)  qbitlabel(335, 10)  qbitlabel(336, 10)  qbitlabel(337, 10)  qbitlabel(338, 10)  qbitlabel(339, 10)  qbitlabel(340, 10)  qbitlabel(341, 10)  qbitlabel(342, 10)  qbitlabel(343, 10)  qbitlabel(344, 10)  qbitlabel(345, 10)  qbitlabel(346, 10)  qbitlabel(347, 10)  qbitlabel(348, 10)  qbitlabel(349, 10)  qbitlabel(350, 10)  qbitlabel(351, 10)  qbitlabel(352, 10)  qbitlabel(353, 10)  qbitlabel(354, 10)  qbitlabel(355, 10)  qbitlabel(356, 10)  qbitlabel(357, 10)  qbitlabel(358, 10)  qbitlabel(359, 10)  qbitlabel(360, 10)  qbitlabel(361, 10)  qbitlabel(362, 10)  qbitlabel(363, 10)  qbitlabel(364, 10)  qbitlabel(365, 10)  qbitlabel(366, 10)  qbitlabel(367, 10)  qbitlabel(368, 10)  qbitlabel(369, 10)  qbitlabel(370, 10)  qbitlabel(371, 10)  qbitlabel(372, 10)  qbitlabel(373, 10)  qbitlabel(374, 10)  qbitlabel(375, 10)  qbitlabel(376, 10)  qbitlabel(377, 10)  qbitlabel(378, 10)  qbitlabel(379, 10)  qbitlabel(380, 10)  qbitlabel(381, 10)  qbitlabel(382, 10)  qbitlabel(383, 10)  qbitlabel(384, 10)  qbitlabel(385, 10)  qbitlabel(386, 10)  qbitlabel(387, 10)  qbitlabel(388, 10)  qbitlabel(389, 10)  qbitlabel(390, 10)  qbitlabel(391, 10)  qbitlabel(392, 10)  qbitlabel(393, 10)  qbitlabel(394, 10)  qbitlabel(395, 10)  qbitlabel(396, 10)  qbitlabel(397, 10)  qbitlabel(398, 10)  qbitlabel(399, 10)  qbitlabel(400, 10)  qbitlabel(401, 10)  qbitlabel(402, 10)  qbitlabel(403, 10)  qbitlabel(404, 10)  qbitlabel(405, 10)  qbitlabel(406, 10)  qbitlabel(407, 10)  qbitlabel(408, 10)  qbitlabel(409, 10)  qbitlabel(410, 10)  qbitlabel(411, 10)  qbitlabel(412, 10)  qbitlabel(413, 10)  qbitlabel(414, 10)  qbitlabel(415, 10)  qbitlabel(416, 10)  qbitlabel(417, 10)  qbitlabel(418, 10)  qbitlabel(419, 10)  qbitlabel(420, 10)  qbitlabel(421, 10)  qbitlabel(422, 10)  qbitlabel(423, 10)  qbitlabel(424, 10)  qbitlabel(425, 10)  qbitlabel(426, 10)  qbitlabel(427, 10)  qbitlabel(428, 10)  qbitlabel(429, 10)  qbitlabel(430, 10)  qbitlabel(431, 10)  qbitlabel(432, 10)  qbitlabel(433, 10)  qbitlabel(434, 10)  qbitlabel(435, 10)  qbitlabel(436, 10)  qbitlabel(437, 10)  qbitlabel(438, 10)  qbitlabel(439, 10)  qbitlabel(440, 10)  qbitlabel(441, 10)  qbitlabel(442, 10)  qbitlabel(443, 10)  qbitlabel(444, 10)  qbitlabel(445, 10)  qbitlabel(446, 10)  qbitlabel(447, 10)  qbitlabel(448, 10)  qbitlabel(449, 10)  qbitlabel(450, 10)  qbitlabel(451, 10)  qbitlabel(452, 10)  qbitlabel(453, 10)  qbitlabel(454, 10)  qbitlabel(455, 10)  qbitlabel(456, 10)  qbitlabel(457, 10)  qbitlabel(458, 10)  qbitlabel(459, 10)  qbitlabel(460, 10)  qbitlabel(461, 10)  qbitlabel(462, 10)  qbitlabel(463, 10)  qbitlabel(464, 10)  qbitlabel(465, 10)  qbitlabel(466, 10)  qbitlabel(467, 10)  qbitlabel(468, 10)  qbitlabel(469, 10)  qbitlabel(470, 10)  qbitlabel(471, 10)  qbitlabel(472, 10)  qbitlabel(473, 10)  qbitlabel(474, 10)  qbitlabel(475, 10)  qbitlabel(476, 10)  qbitlabel(477, 10)  qbitlabel(478, 10)  qbitlabel(479, 10)  qbitlabel(480, 10)  qbitlabel(481, 10)  qbitlabel(482, 10)  qbitlabel(483, 10)  qbitlabel(484, 10)  qbitlabel(485, 10)  qbitlabel(486, 10)  qbitlabel(487, 10)  qbitlabel(488, 10)  qbitlabel(489, 10)  qbitlabel(490, 10)  qbitlabel(491, 10)  qbitlabel(492, 10)  qbitlabel(493, 10)  qbitlabel(494, 10)  qbitlabel(495, 10)  qbitlabel(496, 10)  qbitlabel(497, 10)  qbitlabel(498, 10)  qbitlabel(499, 10)  qbitlabel(500, 10)  qbitlabel(501, 10)  qbitlabel(502, 10)  qbitlabel(503, 10)  qbitlabel(504, 10)  qbitlabel(505, 10)  qbitlabel(506, 10)  qbitlabel(507, 10)  qbitlabel(508, 10)  qbitlabel(509, 10)  qbitlabel(510, 10)  qbitlabel(511, 10)  qbitlabel(512, 10)  qbitlabel(513, 10)  qbitlabel(514, 10)  qbitlabel(515, 10)  qbitlabel(516, 10)  qbitlabel(517, 10)  qbitlabel(518, 10)  qbitlabel(519, 10)  qbitlabel(520, 10)  qbitlabel(521, 10)  qbitlabel(522, 10)  qbitlabel(523, 10)  qbitlabel(524, 10)  qbitlabel(525, 10)  qbitlabel(526, 10)  qbitlabel(527, 10)  qbitlabel(528, 10)  qbitlabel(529, 10)  qbitlabel(530, 10)  qbitlabel(531, 10)  qbitlabel(532, 10)  qbitlabel(533, 10)  qbitlabel(534, 10)  qbitlabel(535, 10)  qbitlabel(536, 10)  qbitlabel(537, 10)  qbitlabel(538, 10)  qbitlabel(539, 10)  qbitlabel(540, 10)  qbitlabel(541, 10)  qbitlabel(542, 10)  qbitlabel(543, 10)  qbitlabel(544, 10)  qbitlabel(545, 10)  qbitlabel(546, 10)  qbitlabel(547, 10)  qbitlabel(548, 10)  qbitlabel(549, 10)  qbitlabel(550, 10)  qbitlabel(551, 10)  qbitlabel(552, 10)  qbitlabel(553, 10)  qbitlabel(554, 10)  qbitlabel(555, 10)  qbitlabel(556, 10)  qbitlabel(557, 10)  qbitlabel(558, 10)  qbitlabel(559, 10)  qbitlabel(560, 10)  qbitlabel(561, 10)  qbitlabel(562, 10)  qbitlabel(563, 10)  qbitlabel(564, 10)  qbitlabel(565, 10)  qbitlabel(566, 10)  qbitlabel(567, 10)  qbitlabel(568, 10)  qbitlabel(569, 10)  qbitlabel(570, 10)  qbitlabel(571, 10)  qbitlabel(572, 10)  qbitlabel(573, 10)  qbitlabel(574, 10)  qbitlabel(575, 10)  qbitlabel(576, 10)  qbitlabel(577, 10)  qbitlabel(578, 10)  qbitlabel(579, 10)  qbitlabel(580, 10)  qbitlabel(581, 10)  qbitlabel(582, 10)  qbitlabel(583, 10)  qbitlabel(584, 10)  qbitlabel(585, 10)  qbitlabel(586, 10)  qbitlabel(587, 10)  qbitlabel(588, 10)  qbitlabel(589, 10)  qbitlabel(590, 10)  qbitlabel(591, 10)  qbitlabel(592, 10)  qbitlabel(593, 10)  qbitlabel(594, 10)  qbitlabel(595, 10)  qbitlabel(596, 10)  qbitlabel(597, 10)  qbitlabel(598, 10)  qbitlabel(599, 10)  qbitlabel(600, 10)  qbitlabel(601, 10)  qbitlabel(602, 10)  qbitlabel(603, 10)  qbitlabel(604, 10)  qbitlabel(605, 10)  qbitlabel(606, 10)  qbitlabel(607, 10)  qbitlabel(608, 10)  qbitlabel(609, 10)  qbitlabel(610, 10)  qbitlabel(611, 10)  qbitlabel(612, 10)  qbitlabel(613, 10)  qbitlabel(614, 10)  qbitlabel(615, 10)  qbitlabel(616, 10)  qbitlabel(617, 10)  qbitlabel(618, 10)  qbitlabel(619, 10)  qbitlabel(620, 10)  qbitlabel(621, 10)  qbitlabel(622, 10)  qbitlabel(623, 10)  qbitlabel(624, 10)  qbitlabel(625, 10)  qbitlabel(626, 10)  qbitlabel(627, 10)  qbitlabel(628, 10)  qbitlabel(629, 10)  qbitlabel(630, 10)  qbitlabel(631, 10)  qbitlabel(632, 10)  qbitlabel(633, 10)  qbitlabel(634, 10)  qbitlabel(635, 10)  qbitlabel(636, 10)  qbitlabel(637, 10)  qbitlabel(638, 10)  qbitlabel(639, 10)  qbitlabel(640, 10)  qbitlabel(641, 10)  qbitlabel(642, 10)  qbitlabel(643, 10)  qbitlabel(644, 10)  qbitlabel(645, 10)  qbitlabel(646, 10)  qbitlabel(647, 10)  qbitlabel(648, 10)  qbitlabel(649, 10)  qbitlabel(650, 10)  qbitlabel(651, 10)  qbitlabel(652, 10)  qbitlabel(653, 10)  qbitlabel(654, 10)  qbitlabel(655, 10)  qbitlabel(656, 10)  qbitlabel(657, 10)  qbitlabel(658, 10)  qbitlabel(659, 10)  qbitlabel(660, 10)  qbitlabel(661, 10)  qbitlabel(662, 10)  qbitlabel(663, 10)  qbitlabel(664, 10)  qbitlabel(665, 10)  qbitlabel(666, 10)  qbitlabel(667, 10)  qbitlabel(668, 10)  qbitlabel(669, 10)  qbitlabel(670, 10)  qbitlabel(671, 10)  qbitlabel(672, 10)  qbitlabel(673, 10)  qbitlabel(674, 10)  qbitlabel(675, 10)  qbitlabel(676, 10)  qbitlabel(677, 10)  qbitlabel(678, 10)  qbitlabel(679, 10)  qbitlabel(680, 10)  qbitlabel(681, 10)  qbitlabel(682, 10)  qbitlabel(683, 10)  qbitlabel(684, 10)  qbitlabel(685, 10)  qbitlabel(686, 10)  qbitlabel(687, 10)  qbitlabel(688, 10)  qbitlabel(689, 10)  qbitlabel(690, 10)  qbitlabel(691, 10)  qbitlabel(692, 10)  qbitlabel(693, 10)  qbitlabel(694, 10)  qbitlabel(695, 10)  qbitlabel(696, 10)  qbitlabel(697, 10)  qbitlabel(698, 10)  qbitlabel(699, 10)  qbitlabel(700, 10)  qbitlabel(701, 10)  qbitlabel(702, 10)  qbitlabel(703, 10)  qbitlabel(704, 10)  qbitlabel(705, 10)  qbitlabel(706, 10)  qbitlabel(707, 10)  qbitlabel(708, 10)  qbitlabel(709, 10)  qbitlabel(710, 10)  qbitlabel(711, 10)  qbitlabel(712, 10)  qbitlabel(713, 10)  qbitlabel(714, 10)  qbitlabel(715, 10)  qbitlabel(716, 10)  qbitlabel(717, 10)  qbitlabel(718, 10)  qbitlabel(719, 10)  qbitlabel(720, 10)  qbitlabel(721, 10)  qbitlabel(722, 10)  qbitlabel(723, 10)  qbitlabel(724, 10)  qbitlabel(725, 10)  qbitlabel(726, 10)  qbitlabel(727, 10)  qbitlabel(728, 10)  qbitlabel(729, 10)  qbitlabel(730, 10)  qbitlabel(731, 10)  qbitlabel(732, 10)  qbitlabel(733, 10)  qbitlabel(734, 10)  qbitlabel(735, 10)  qbitlabel(736, 10)  qbitlabel(737, 10)  qbitlabel(738, 10)  qbitlabel(739, 10)  qbitlabel(740, 10)  qbitlabel(741, 10)  qbitlabel(742, 10)  qbitlabel(743, 10)  qbitlabel(744, 10)  qbitlabel(745, 10)  qbitlabel(746, 10)  qbitlabel(747, 10)  qbitlabel(748, 10)  qbitlabel(749, 10)  qbitlabel(750, 10)  qbitlabel(751, 10)  qbitlabel(752, 10)  qbitlabel(753, 10)  qbitlabel(754, 10)  qbitlabel(755, 10)  qbitlabel(756, 10)  qbitlabel(757, 10)  qbitlabel(758, 10)  qbitlabel(759, 10)  qbitlabel(760, 10)  qbitlabel(761, 10)  qbitlabel(762, 10)  qbitlabel(763, 10)  qbitlabel(764, 10)  qbitlabel(765, 10)  qbitlabel(766, 10)  qbitlabel(767, 10)  qbitlabel(768, 10)  qbitlabel(769, 10)  qbitlabel(770, 10)  qbitlabel(771, 10)  qbitlabel(772, 10)  qbitlabel(773, 10)  qbitlabel(774, 10)  qbitlabel(775, 10)  qbitlabel(776, 10)  qbitlabel(777, 10)  qbitlabel(778, 10)  qbitlabel(779, 10)  qbitlabel(780, 10)  qbitlabel(781, 10)  qbitlabel(782, 10)  qbitlabel(783, 10)  qbitlabel(784, 10)  qbitlabel(785, 10)  qbitlabel(786, 10)  qbitlabel(787, 10)  qbitlabel(788, 10)  qbitlabel(789, 10)  qbitlabel(790, 10)  qbitlabel(791, 10)  qbitlabel(792, 10)  qbitlabel(793, 10)  qbitlabel(794, 10)  qbitlabel(795, 10)  qbitlabel(796, 10)  qbitlabel(797, 10)  qbitlabel(798, 10)  qbitlabel(799, 10)  qbitlabel(800, 10)  qbitlabel(801, 10)  qbitlabel(802, 10)  qbitlabel(803, 10)  qbitlabel(804, 10)  qbitlabel(805, 10)  qbitlabel(806, 10)  qbitlabel(807, 10)  qbitlabel(808, 10)  qbitlabel(809, 10)  qbitlabel(810, 10)  qbitlabel(811, 10)  qbitlabel(812, 10)  qbitlabel(813, 10)  qbitlabel(814, 10)  qbitlabel(815, 10)  qbitlabel(816, 10)  qbitlabel(817, 10)  qbitlabel(818, 10)  qbitlabel(819, 10)  qbitlabel(820, 10)  qbitlabel(821, 10)  qbitlabel(822, 10)  qbitlabel(823, 10)  qbitlabel(824, 10)  qbitlabel(825, 10)  qbitlabel(826, 10)  qbitlabel(827, 10)  qbitlabel(828, 10)  qbitlabel(829, 10)  qbitlabel(830, 10)  qbitlabel(831, 10)  qbitlabel(832, 10)  qbitlabel(833, 10)  qbitlabel(834, 10)  qbitlabel(835, 10)  qbitlabel(836, 10)  qbitlabel(837, 10)  qbitlabel(838, 10)  qbitlabel(839, 10)  qbitlabel(840, 10)  qbitlabel(841, 10)  qbitlabel(842, 10)  qbitlabel(843, 10)  qbitlabel(844, 10)  qbitlabel(845, 10)  qbitlabel(846, 10)  qbitlabel(847, 10)  qbitlabel(848, 10)  qbitlabel(849, 10)  qbitlabel(850, 10)  qbitlabel(851, 10)  qbitlabel(852, 10)  qbitlabel(853, 10)  qbitlabel(854, 10)  qbitlabel(855, 10)  qbitlabel(856, 10)  qbitlabel(857, 10)  qbitlabel(858, 10)  qbitlabel(859, 10)  qbitlabel(860, 10)  qbitlabel(861, 10)  qbitlabel(862, 10)  qbitlabel(863, 10)  qbitlabel(864, 10)  qbitlabel(865, 10)  qbitlabel(866, 10)  qbitlabel(867, 10)  qbitlabel(868, 10)  qbitlabel(869, 10)  qbitlabel(870, 10)  qbitlabel(871, 10)  qbitlabel(872, 10)  qbitlabel(873, 10)  qbitlabel(874, 10)  qbitlabel(875, 10)  qbitlabel(876, 10)  qbitlabel(877, 10)  qbitlabel(878, 10)  qbitlabel(879, 10)  qbitlabel(880, 10)  qbitlabel(881, 10)  qbitlabel(882, 10)  qbitlabel(883, 10)  qbitlabel(884, 10)  qbitlabel(885, 10)  qbitlabel(886, 10)  qbitlabel(887, 10)  qbitlabel(888, 10)  qbitlabel(889, 10)  qbitlabel(890, 10)  qbitlabel(891, 10)  qbitlabel(892, 10)  qbitlabel(893, 10)  qbitlabel(894, 10)  qbitlabel(895, 10)  qbitlabel(896, 10)  qbitlabel(897, 10)  qbitlabel(898, 10)  qbitlabel(899, 10)  qbitlabel(900, 10)  qbitlabel(901, 10)  qbitlabel(902, 10)  qbitlabel(903, 10)  qbitlabel(904, 10)  qbitlabel(905, 10)  qbitlabel(906, 10)  qbitlabel(907, 10)  qbitlabel(908, 10)  qbitlabel(909, 10)  qbitlabel(910, 10)  qbitlabel(911, 10)  qbitlabel(912, 10)  qbitlabel(913, 10)  qbitlabel(914, 10)  qbitlabel(915, 10)  qbitlabel(916, 10)  qbitlabel(917, 10)  qbitlabel(918, 10)  qbitlabel(919, 10)  qbitlabel(920, 10)  qbitlabel(921, 10)  qbitlabel(922, 10)  qbitlabel(923, 10)  qbitlabel(924, 10)  qbitlabel(925, 10)  qbitlabel(926, 10)  qbitlabel(927, 10)  qbitlabel(928, 10)  qbitlabel(929, 10)  qbitlabel(930, 10)  qbitlabel(931, 10)  qbitlabel(932, 10)  qbitlabel(933, 10)  qbitlabel(934, 10)  qbitlabel(935, 10)  qbitlabel(936, 10)  qbitlabel(937, 10)  qbitlabel(938, 10)  qbitlabel(939, 10)  qbitlabel(940, 10)  qbitlabel(941, 10)  qbitlabel(942, 10)  qbitlabel(943, 10)  qbitlabel(944, 10)  qbitlabel(945, 10)  qbitlabel(946, 10)  qbitlabel(947, 10)  qbitlabel(948, 10)  qbitlabel(949, 10)  qbitlabel(950, 10)  qbitlabel(951, 10)  qbitlabel(952, 10)  qbitlabel(953, 10)  qbitlabel(954, 10)  qbitlabel(955, 10)  qbitlabel(956, 10)  qbitlabel(957, 10)  qbitlabel(958, 10)  qbitlabel(959, 10)  qbitlabel(960, 10)  qbitlabel(961, 10)  qbitlabel(962, 10)  qbitlabel(963, 10)  qbitlabel(964, 10)  qbitlabel(965, 10)  qbitlabel(966, 10)  qbitlabel(967, 10)  qbitlabel(968, 10)  qbitlabel(969, 10)  qbitlabel(970, 10)  qbitlabel(971, 10)  qbitlabel(972, 10)  qbitlabel(973, 10)  qbitlabel(974, 10)  qbitlabel(975, 10)  qbitlabel(976, 10)  qbitlabel(977, 10)  qbitlabel(978, 10)  qbitlabel(979, 10)  qbitlabel(980, 10)  qbitlabel(981, 10)  qbitlabel(982, 10)  qbitlabel(983, 10)  qbitlabel(984, 10)  qbitlabel(985, 10)  qbitlabel(986, 10)  qbitlabel(987, 10)  qbitlabel(988, 10)  qbitlabel(989, 10)  qbitlabel(990, 10)  qbitlabel(991, 10)  qbitlabel(992, 10)  qbitlabel(993, 10)  qbitlabel(994, 10)  qbitlabel(995, 10)  qbitlabel(996, 10)  qbitlabel(997, 10)  qbitlabel(998, 10)  qbitlabel(999, 10)  qbitlabel(1000, 10)  qbitlabel(1001, 10)  qbitlabel(1002, 10)  qbitlabel(1003, 10)  qbitlabel(1004, 10)  qbitlabel(1005, 10)  qbitlabel(1006, 10)  qbitlabel(1007, 10)  qbitlabel(1008, 10)  qbitlabel(1009, 10)  qbitlabel(1010, 10)  qbitlabel(1011, 10)  qbitlabel(1012, 10)  qbitlabel(1013, 10)  qbitlabel(1014, 10)  qbitlabel(1015, 10)  qbitlabel(1016, 10)  qbitlabel(1017, 10)  qbitlabel(1018, 10)  qbitlabel(1019, 10)  qbitlabel(1020, 10)  qbitlabel(1021, 10)  qbitlabel(1022, 10)  qbitlabel(1023, 10)])",
+      "copy": "qset(vector(qbitlabel(0,10),qbitlabel(1,10),qbitlabel(2,10),qbitlabel(3,10),qbitlabel(4,10),qbitlabel(5,10),qbitlabel(6,10),qbitlabel(7,10),qbitlabel(8,10),qbitlabel(9,10),qbitlabel(10,10),qbitlabel(11,10),qbitlabel(12,10),qbitlabel(13,10),qbitlabel(14,10),qbitlabel(15,10),qbitlabel(16,10),qbitlabel(17,10),qbitlabel(18,10),qbitlabel(19,10),qbitlabel(20,10),qbitlabel(21,10),qbitlabel(22,10),qbitlabel(23,10),qbitlabel(24,10),qbitlabel(25,10),qbitlabel(26,10),qbitlabel(27,10),qbitlabel(28,10),qbitlabel(29,10),qbitlabel(30,10),qbitlabel(31,10),qbitlabel(32,10),qbitlabel(33,10),qbitlabel(34,10),qbitlabel(35,10),qbitlabel(36,10),qbitlabel(37,10),qbitlabel(38,10),qbitlabel(39,10),qbitlabel(40,10),qbitlabel(41,10),qbitlabel(42,10),qbitlabel(43,10),qbitlabel(44,10),qbitlabel(45,10),qbitlabel(46,10),qbitlabel(47,10),qbitlabel(48,10),qbitlabel(49,10),qbitlabel(50,10),qbitlabel(51,10),qbitlabel(52,10),qbitlabel(53,10),qbitlabel(54,10),qbitlabel(55,10),qbitlabel(56,10),qbitlabel(57,10),qbitlabel(58,10),qbitlabel(59,10),qbitlabel(60,10),qbitlabel(61,10),qbitlabel(62,10),qbitlabel(63,10),qbitlabel(64,10),qbitlabel(65,10),qbitlabel(66,10),qbitlabel(67,10),qbitlabel(68,10),qbitlabel(69,10),qbitlabel(70,10),qbitlabel(71,10),qbitlabel(72,10),qbitlabel(73,10),qbitlabel(74,10),qbitlabel(75,10),qbitlabel(76,10),qbitlabel(77,10),qbitlabel(78,10),qbitlabel(79,10),qbitlabel(80,10),qbitlabel(81,10),qbitlabel(82,10),qbitlabel(83,10),qbitlabel(84,10),qbitlabel(85,10),qbitlabel(86,10),qbitlabel(87,10),qbitlabel(88,10),qbitlabel(89,10),qbitlabel(90,10),qbitlabel(91,10),qbitlabel(92,10),qbitlabel(93,10),qbitlabel(94,10),qbitlabel(95,10),qbitlabel(96,10),qbitlabel(97,10),qbitlabel(98,10),qbitlabel(99,10),qbitlabel(100,10),qbitlabel(101,10),qbitlabel(102,10),qbitlabel(103,10),qbitlabel(104,10),qbitlabel(105,10),qbitlabel(106,10),qbitlabel(107,10),qbitlabel(108,10),qbitlabel(109,10),qbitlabel(110,10),qbitlabel(111,10),qbitlabel(112,10),qbitlabel(113,10),qbitlabel(114,10),qbitlabel(115,10),qbitlabel(116,10),qbitlabel(117,10),qbitlabel(118,10),qbitlabel(119,10),qbitlabel(120,10),qbitlabel(121,10),qbitlabel(122,10),qbitlabel(123,10),qbitlabel(124,10),qbitlabel(125,10),qbitlabel(126,10),qbitlabel(127,10),qbitlabel(128,10),qbitlabel(129,10),qbitlabel(130,10),qbitlabel(131,10),qbitlabel(132,10),qbitlabel(133,10),qbitlabel(134,10),qbitlabel(135,10),qbitlabel(136,10),qbitlabel(137,10),qbitlabel(138,10),qbitlabel(139,10),qbitlabel(140,10),qbitlabel(141,10),qbitlabel(142,10),qbitlabel(143,10),qbitlabel(144,10),qbitlabel(145,10),qbitlabel(146,10),qbitlabel(147,10),qbitlabel(148,10),qbitlabel(149,10),qbitlabel(150,10),qbitlabel(151,10),qbitlabel(152,10),qbitlabel(153,10),qbitlabel(154,10),qbitlabel(155,10),qbitlabel(156,10),qbitlabel(157,10),qbitlabel(158,10),qbitlabel(159,10),qbitlabel(160,10),qbitlabel(161,10),qbitlabel(162,10),qbitlabel(163,10),qbitlabel(164,10),qbitlabel(165,10),qbitlabel(166,10),qbitlabel(167,10),qbitlabel(168,10),qbitlabel(169,10),qbitlabel(170,10),qbitlabel(171,10),qbitlabel(172,10),qbitlabel(173,10),qbitlabel(174,10),qbitlabel(175,10),qbitlabel(176,10),qbitlabel(177,10),qbitlabel(178,10),qbitlabel(179,10),qbitlabel(180,10),qbitlabel(181,10),qbitlabel(182,10),qbitlabel(183,10),qbitlabel(184,10),qbitlabel(185,10),qbitlabel(186,10),qbitlabel(187,10),qbitlabel(188,10),qbitlabel(189,10),qbitlabel(190,10),qbitlabel(191,10),qbitlabel(192,10),qbitlabel(193,10),qbitlabel(194,10),qbitlabel(195,10),qbitlabel(196,10),qbitlabel(197,10),qbitlabel(198,10),qbitlabel(199,10),qbitlabel(200,10),qbitlabel(201,10),qbitlabel(202,10),qbitlabel(203,10),qbitlabel(204,10),qbitlabel(205,10),qbitlabel(206,10),qbitlabel(207,10),qbitlabel(208,10),qbitlabel(209,10),qbitlabel(210,10),qbitlabel(211,10),qbitlabel(212,10),qbitlabel(213,10),qbitlabel(214,10),qbitlabel(215,10),qbitlabel(216,10),qbitlabel(217,10),qbitlabel(218,10),qbitlabel(219,10),qbitlabel(220,10),qbitlabel(221,10),qbitlabel(222,10),qbitlabel(223,10),qbitlabel(224,10),qbitlabel(225,10),qbitlabel(226,10),qbitlabel(227,10),qbitlabel(228,10),qbitlabel(229,10),qbitlabel(230,10),qbitlabel(231,10),qbitlabel(232,10),qbitlabel(233,10),qbitlabel(234,10),qbitlabel(235,10),qbitlabel(236,10),qbitlabel(237,10),qbitlabel(238,10),qbitlabel(239,10),qbitlabel(240,10),qbitlabel(241,10),qbitlabel(242,10),qbitlabel(243,10),qbitlabel(244,10),qbitlabel(245,10),qbitlabel(246,10),qbitlabel(247,10),qbitlabel(248,10),qbitlabel(249,10),qbitlabel(250,10),qbitlabel(251,10),qbitlabel(252,10),qbitlabel(253,10),qbitlabel(254,10),qbitlabel(255,10),qbitlabel(256,10),qbitlabel(257,10),qbitlabel(258,10),qbitlabel(259,10),qbitlabel(260,10),qbitlabel(261,10),qbitlabel(262,10),qbitlabel(263,10),qbitlabel(264,10),qbitlabel(265,10),qbitlabel(266,10),qbitlabel(267,10),qbitlabel(268,10),qbitlabel(269,10),qbitlabel(270,10),qbitlabel(271,10),qbitlabel(272,10),qbitlabel(273,10),qbitlabel(274,10),qbitlabel(275,10),qbitlabel(276,10),qbitlabel(277,10),qbitlabel(278,10),qbitlabel(279,10),qbitlabel(280,10),qbitlabel(281,10),qbitlabel(282,10),qbitlabel(283,10),qbitlabel(284,10),qbitlabel(285,10),qbitlabel(286,10),qbitlabel(287,10),qbitlabel(288,10),qbitlabel(289,10),qbitlabel(290,10),qbitlabel(291,10),qbitlabel(292,10),qbitlabel(293,10),qbitlabel(294,10),qbitlabel(295,10),qbitlabel(296,10),qbitlabel(297,10),qbitlabel(298,10),qbitlabel(299,10),qbitlabel(300,10),qbitlabel(301,10),qbitlabel(302,10),qbitlabel(303,10),qbitlabel(304,10),qbitlabel(305,10),qbitlabel(306,10),qbitlabel(307,10),qbitlabel(308,10),qbitlabel(309,10),qbitlabel(310,10),qbitlabel(311,10),qbitlabel(312,10),qbitlabel(313,10),qbitlabel(314,10),qbitlabel(315,10),qbitlabel(316,10),qbitlabel(317,10),qbitlabel(318,10),qbitlabel(319,10),qbitlabel(320,10),qbitlabel(321,10),qbitlabel(322,10),qbitlabel(323,10),qbitlabel(324,10),qbitlabel(325,10),qbitlabel(326,10),qbitlabel(327,10),qbitlabel(328,10),qbitlabel(329,10),qbitlabel(330,10),qbitlabel(331,10),qbitlabel(332,10),qbitlabel(333,10),qbitlabel(334,10),qbitlabel(335,10),qbitlabel(336,10),qbitlabel(337,10),qbitlabel(338,10),qbitlabel(339,10),qbitlabel(340,10),qbitlabel(341,10),qbitlabel(342,10),qbitlabel(343,10),qbitlabel(344,10),qbitlabel(345,10),qbitlabel(346,10),qbitlabel(347,10),qbitlabel(348,10),qbitlabel(349,10),qbitlabel(350,10),qbitlabel(351,10),qbitlabel(352,10),qbitlabel(353,10),qbitlabel(354,10),qbitlabel(355,10),qbitlabel(356,10),qbitlabel(357,10),qbitlabel(358,10),qbitlabel(359,10),qbitlabel(360,10),qbitlabel(361,10),qbitlabel(362,10),qbitlabel(363,10),qbitlabel(364,10),qbitlabel(365,10),qbitlabel(366,10),qbitlabel(367,10),qbitlabel(368,10),qbitlabel(369,10),qbitlabel(370,10),qbitlabel(371,10),qbitlabel(372,10),qbitlabel(373,10),qbitlabel(374,10),qbitlabel(375,10),qbitlabel(376,10),qbitlabel(377,10),qbitlabel(378,10),qbitlabel(379,10),qbitlabel(380,10),qbitlabel(381,10),qbitlabel(382,10),qbitlabel(383,10),qbitlabel(384,10),qbitlabel(385,10),qbitlabel(386,10),qbitlabel(387,10),qbitlabel(388,10),qbitlabel(389,10),qbitlabel(390,10),qbitlabel(391,10),qbitlabel(392,10),qbitlabel(393,10),qbitlabel(394,10),qbitlabel(395,10),qbitlabel(396,10),qbitlabel(397,10),qbitlabel(398,10),qbitlabel(399,10),qbitlabel(400,10),qbitlabel(401,10),qbitlabel(402,10),qbitlabel(403,10),qbitlabel(404,10),qbitlabel(405,10),qbitlabel(406,10),qbitlabel(407,10),qbitlabel(408,10),qbitlabel(409,10),qbitlabel(410,10),qbitlabel(411,10),qbitlabel(412,10),qbitlabel(413,10),qbitlabel(414,10),qbitlabel(415,10),qbitlabel(416,10),qbitlabel(417,10),qbitlabel(418,10),qbitlabel(419,10),qbitlabel(420,10),qbitlabel(421,10),qbitlabel(422,10),qbitlabel(423,10),qbitlabel(424,10),qbitlabel(425,10),qbitlabel(426,10),qbitlabel(427,10),qbitlabel(428,10),qbitlabel(429,10),qbitlabel(430,10),qbitlabel(431,10),qbitlabel(432,10),qbitlabel(433,10),qbitlabel(434,10),qbitlabel(435,10),qbitlabel(436,10),qbitlabel(437,10),qbitlabel(438,10),qbitlabel(439,10),qbitlabel(440,10),qbitlabel(441,10),qbitlabel(442,10),qbitlabel(443,10),qbitlabel(444,10),qbitlabel(445,10),qbitlabel(446,10),qbitlabel(447,10),qbitlabel(448,10),qbitlabel(449,10),qbitlabel(450,10),qbitlabel(451,10),qbitlabel(452,10),qbitlabel(453,10),qbitlabel(454,10),qbitlabel(455,10),qbitlabel(456,10),qbitlabel(457,10),qbitlabel(458,10),qbitlabel(459,10),qbitlabel(460,10),qbitlabel(461,10),qbitlabel(462,10),qbitlabel(463,10),qbitlabel(464,10),qbitlabel(465,10),qbitlabel(466,10),qbitlabel(467,10),qbitlabel(468,10),qbitlabel(469,10),qbitlabel(470,10),qbitlabel(471,10),qbitlabel(472,10),qbitlabel(473,10),qbitlabel(474,10),qbitlabel(475,10),qbitlabel(476,10),qbitlabel(477,10),qbitlabel(478,10),qbitlabel(479,10),qbitlabel(480,10),qbitlabel(481,10),qbitlabel(482,10),qbitlabel(483,10),qbitlabel(484,10),qbitlabel(485,10),qbitlabel(486,10),qbitlabel(487,10),qbitlabel(488,10),qbitlabel(489,10),qbitlabel(490,10),qbitlabel(491,10),qbitlabel(492,10),qbitlabel(493,10),qbitlabel(494,10),qbitlabel(495,10),qbitlabel(496,10),qbitlabel(497,10),qbitlabel(498,10),qbitlabel(499,10),qbitlabel(500,10),qbitlabel(501,10),qbitlabel(502,10),qbitlabel(503,10),qbitlabel(504,10),qbitlabel(505,10),qbitlabel(506,10),qbitlabel(507,10),qbitlabel(508,10),qbitlabel(509,10),qbitlabel(510,10),qbitlabel(511,10),qbitlabel(512,10),qbitlabel(513,10),qbitlabel(514,10),qbitlabel(515,10),qbitlabel(516,10),qbitlabel(517,10),qbitlabel(518,10),qbitlabel(519,10),qbitlabel(520,10),qbitlabel(521,10),qbitlabel(522,10),qbitlabel(523,10),qbitlabel(524,10),qbitlabel(525,10),qbitlabel(526,10),qbitlabel(527,10),qbitlabel(528,10),qbitlabel(529,10),qbitlabel(530,10),qbitlabel(531,10),qbitlabel(532,10),qbitlabel(533,10),qbitlabel(534,10),qbitlabel(535,10),qbitlabel(536,10),qbitlabel(537,10),qbitlabel(538,10),qbitlabel(539,10),qbitlabel(540,10),qbitlabel(541,10),qbitlabel(542,10),qbitlabel(543,10),qbitlabel(544,10),qbitlabel(545,10),qbitlabel(546,10),qbitlabel(547,10),qbitlabel(548,10),qbitlabel(549,10),qbitlabel(550,10),qbitlabel(551,10),qbitlabel(552,10),qbitlabel(553,10),qbitlabel(554,10),qbitlabel(555,10),qbitlabel(556,10),qbitlabel(557,10),qbitlabel(558,10),qbitlabel(559,10),qbitlabel(560,10),qbitlabel(561,10),qbitlabel(562,10),qbitlabel(563,10),qbitlabel(564,10),qbitlabel(565,10),qbitlabel(566,10),qbitlabel(567,10),qbitlabel(568,10),qbitlabel(569,10),qbitlabel(570,10),qbitlabel(571,10),qbitlabel(572,10),qbitlabel(573,10),qbitlabel(574,10),qbitlabel(575,10),qbitlabel(576,10),qbitlabel(577,10),qbitlabel(578,10),qbitlabel(579,10),qbitlabel(580,10),qbitlabel(581,10),qbitlabel(582,10),qbitlabel(583,10),qbitlabel(584,10),qbitlabel(585,10),qbitlabel(586,10),qbitlabel(587,10),qbitlabel(588,10),qbitlabel(589,10),qbitlabel(590,10),qbitlabel(591,10),qbitlabel(592,10),qbitlabel(593,10),qbitlabel(594,10),qbitlabel(595,10),qbitlabel(596,10),qbitlabel(597,10),qbitlabel(598,10),qbitlabel(599,10),qbitlabel(600,10),qbitlabel(601,10),qbitlabel(602,10),qbitlabel(603,10),qbitlabel(604,10),qbitlabel(605,10),qbitlabel(606,10),qbitlabel(607,10),qbitlabel(608,10),qbitlabel(609,10),qbitlabel(610,10),qbitlabel(611,10),qbitlabel(612,10),qbitlabel(613,10),qbitlabel(614,10),qbitlabel(615,10),qbitlabel(616,10),qbitlabel(617,10),qbitlabel(618,10),qbitlabel(619,10),qbitlabel(620,10),qbitlabel(621,10),qbitlabel(622,10),qbitlabel(623,10),qbitlabel(624,10),qbitlabel(625,10),qbitlabel(626,10),qbitlabel(627,10),qbitlabel(628,10),qbitlabel(629,10),qbitlabel(630,10),qbitlabel(631,10),qbitlabel(632,10),qbitlabel(633,10),qbitlabel(634,10),qbitlabel(635,10),qbitlabel(636,10),qbitlabel(637,10),qbitlabel(638,10),qbitlabel(639,10),qbitlabel(640,10),qbitlabel(641,10),qbitlabel(642,10),qbitlabel(643,10),qbitlabel(644,10),qbitlabel(645,10),qbitlabel(646,10),qbitlabel(647,10),qbitlabel(648,10),qbitlabel(649,10),qbitlabel(650,10),qbitlabel(651,10),qbitlabel(652,10),qbitlabel(653,10),qbitlabel(654,10),qbitlabel(655,10),qbitlabel(656,10),qbitlabel(657,10),qbitlabel(658,10),qbitlabel(659,10),qbitlabel(660,10),qbitlabel(661,10),qbitlabel(662,10),qbitlabel(663,10),qbitlabel(664,10),qbitlabel(665,10),qbitlabel(666,10),qbitlabel(667,10),qbitlabel(668,10),qbitlabel(669,10),qbitlabel(670,10),qbitlabel(671,10),qbitlabel(672,10),qbitlabel(673,10),qbitlabel(674,10),qbitlabel(675,10),qbitlabel(676,10),qbitlabel(677,10),qbitlabel(678,10),qbitlabel(679,10),qbitlabel(680,10),qbitlabel(681,10),qbitlabel(682,10),qbitlabel(683,10),qbitlabel(684,10),qbitlabel(685,10),qbitlabel(686,10),qbitlabel(687,10),qbitlabel(688,10),qbitlabel(689,10),qbitlabel(690,10),qbitlabel(691,10),qbitlabel(692,10),qbitlabel(693,10),qbitlabel(694,10),qbitlabel(695,10),qbitlabel(696,10),qbitlabel(697,10),qbitlabel(698,10),qbitlabel(699,10),qbitlabel(700,10),qbitlabel(701,10),qbitlabel(702,10),qbitlabel(703,10),qbitlabel(704,10),qbitlabel(705,10),qbitlabel(706,10),qbitlabel(707,10),qbitlabel(708,10),qbitlabel(709,10),qbitlabel(710,10),qbitlabel(711,10),qbitlabel(712,10),qbitlabel(713,10),qbitlabel(714,10),qbitlabel(715,10),qbitlabel(716,10),qbitlabel(717,10),qbitlabel(718,10),qbitlabel(719,10),qbitlabel(720,10),qbitlabel(721,10),qbitlabel(722,10),qbitlabel(723,10),qbitlabel(724,10),qbitlabel(725,10),qbitlabel(726,10),qbitlabel(727,10),qbitlabel(728,10),qbitlabel(729,10),qbitlabel(730,10),qbitlabel(731,10),qbitlabel(732,10),qbitlabel(733,10),qbitlabel(734,10),qbitlabel(735,10),qbitlabel(736,10),qbitlabel(737,10),qbitlabel(738,10),qbitlabel(739,10),qbitlabel(740,10),qbitlabel(741,10),qbitlabel(742,10),qbitlabel(743,10),qbitlabel(744,10),qbitlabel(745,10),qbitlabel(746,10),qbitlabel(747,10),qbitlabel(748,10),qbitlabel(749,10),qbitlabel(750,10),qbitlabel(751,10),qbitlabel(752,10),qbitlabel(753,10),qbitlabel(754,10),qbitlabel(755,10),qbitlabel(756,10),qbitlabel(757,10),qbitlabel(758,10),qbitlabel(759,10),qbitlabel(760,10),qbitlabel(761,10),qbitlabel(762,10),qbitlabel(763,10),qbitlabel(764,10),qbitlabel(765,10),qbitlabel(766,10),qbitlabel(767,10),qbitlabel(768,10),qbitlabel(769,10),qbitlabel(770,10),qbitlabel(771,10),qbitlabel(772,10),qbitlabel(773,10),qbitlabel(774,10),qbitlabel(775,10),qbitlabel(776,10),qbitlabel(777,10),qbitlabel(778,10),qbitlabel(779,10),qbitlabel(780,10),qbitlabel(781,10),qbitlabel(782,10),qbitlabel(783,10),qbitlabel(784,10),qbitlabel(785,10),qbitlabel(786,10),qbitlabel(787,10),qbitlabel(788,10),qbitlabel(789,10),qbitlabel(790,10),qbitlabel(791,10),qbitlabel(792,10),qbitlabel(793,10),qbitlabel(794,10),qbitlabel(795,10),qbitlabel(796,10),qbitlabel(797,10),qbitlabel(798,10),qbitlabel(799,10),qbitlabel(800,10),qbitlabel(801,10),qbitlabel(802,10),qbitlabel(803,10),qbitlabel(804,10),qbitlabel(805,10),qbitlabel(806,10),qbitlabel(807,10),qbitlabel(808,10),qbitlabel(809,10),qbitlabel(810,10),qbitlabel(811,10),qbitlabel(812,10),qbitlabel(813,10),qbitlabel(814,10),qbitlabel(815,10),qbitlabel(816,10),qbitlabel(817,10),qbitlabel(818,10),qbitlabel(819,10),qbitlabel(820,10),qbitlabel(821,10),qbitlabel(822,10),qbitlabel(823,10),qbitlabel(824,10),qbitlabel(825,10),qbitlabel(826,10),qbitlabel(827,10),qbitlabel(828,10),qbitlabel(829,10),qbitlabel(830,10),qbitlabel(831,10),qbitlabel(832,10),qbitlabel(833,10),qbitlabel(834,10),qbitlabel(835,10),qbitlabel(836,10),qbitlabel(837,10),qbitlabel(838,10),qbitlabel(839,10),qbitlabel(840,10),qbitlabel(841,10),qbitlabel(842,10),qbitlabel(843,10),qbitlabel(844,10),qbitlabel(845,10),qbitlabel(846,10),qbitlabel(847,10),qbitlabel(848,10),qbitlabel(849,10),qbitlabel(850,10),qbitlabel(851,10),qbitlabel(852,10),qbitlabel(853,10),qbitlabel(854,10),qbitlabel(855,10),qbitlabel(856,10),qbitlabel(857,10),qbitlabel(858,10),qbitlabel(859,10),qbitlabel(860,10),qbitlabel(861,10),qbitlabel(862,10),qbitlabel(863,10),qbitlabel(864,10),qbitlabel(865,10),qbitlabel(866,10),qbitlabel(867,10),qbitlabel(868,10),qbitlabel(869,10),qbitlabel(870,10),qbitlabel(871,10),qbitlabel(872,10),qbitlabel(873,10),qbitlabel(874,10),qbitlabel(875,10),qbitlabel(876,10),qbitlabel(877,10),qbitlabel(878,10),qbitlabel(879,10),qbitlabel(880,10),qbitlabel(881,10),qbitlabel(882,10),qbitlabel(883,10),qbitlabel(884,10),qbitlabel(885,10),qbitlabel(886,10),qbitlabel(887,10),qbitlabel(888,10),qbitlabel(889,10),qbitlabel(890,10),qbitlabel(891,10),qbitlabel(892,10),qbitlabel(893,10),qbitlabel(894,10),qbitlabel(895,10),qbitlabel(896,10),qbitlabel(897,10),qbitlabel(898,10),qbitlabel(899,10),qbitlabel(900,10),qbitlabel(901,10),qbitlabel(902,10),qbitlabel(903,10),qbitlabel(904,10),qbitlabel(905,10),qbitlabel(906,10),qbitlabel(907,10),qbitlabel(908,10),qbitlabel(909,10),qbitlabel(910,10),qbitlabel(911,10),qbitlabel(912,10),qbitlabel(913,10),qbitlabel(914,10),qbitlabel(915,10),qbitlabel(916,10),qbitlabel(917,10),qbitlabel(918,10),qbitlabel(919,10),qbitlabel(920,10),qbitlabel(921,10),qbitlabel(922,10),qbitlabel(923,10),qbitlabel(924,10),qbitlabel(925,10),qbitlabel(926,10),qbitlabel(927,10),qbitlabel(928,10),qbitlabel(929,10),qbitlabel(930,10),qbitlabel(931,10),qbitlabel(932,10),qbitlabel(933,10),qbitlabel(934,10),qbitlabel(935,10),qbitlabel(936,10),qbitlabel(937,10),qbitlabel(938,10),qbitlabel(939,10),qbitlabel(940,10),qbitlabel(941,10),qbitlabel(942,10),qbitlabel(943,10),qbitlabel(944,10),qbitlabel(945,10),qbitlabel(946,10),qbitlabel(947,10),qbitlabel(948,10),qbitlabel(949,10),qbitlabel(950,10),qbitlabel(951,10),qbitlabel(952,10),qbitlabel(953,10),qbitlabel(954,10),qbitlabel(955,10),qbitlabel(956,10),qbitlabel(957,10),qbitlabel(958,10),qbitlabel(959,10),qbitlabel(960,10),qbitlabel(961,10),qbitlabel(962,10),qbitlabel(963,10),qbitlabel(964,10),qbitlabel(965,10),qbitlabel(966,10),qbitlabel(967,10),qbitlabel(968,10),qbitlabel(969,10),qbitlabel(970,10),qbitlabel(971,10),qbitlabel(972,10),qbitlabel(973,10),qbitlabel(974,10),qbitlabel(975,10),qbitlabel(976,10),qbitlabel(977,10),qbitlabel(978,10),qbitlabel(979,10),qbitlabel(980,10),qbitlabel(981,10),qbitlabel(982,10),qbitlabel(983,10),qbitlabel(984,10),qbitlabel(985,10),qbitlabel(986,10),qbitlabel(987,10),qbitlabel(988,10),qbitlabel(989,10),qbitlabel(990,10),qbitlabel(991,10),qbitlabel(992,10),qbitlabel(993,10),qbitlabel(994,10),qbitlabel(995,10),qbitlabel(996,10),qbitlabel(997,10),qbitlabel(998,10),qbitlabel(999,10),qbitlabel(1000,10),qbitlabel(1001,10),qbitlabel(1002,10),qbitlabel(1003,10),qbitlabel(1004,10),qbitlabel(1005,10),qbitlabel(1006,10),qbitlabel(1007,10),qbitlabel(1008,10),qbitlabel(1009,10),qbitlabel(1010,10),qbitlabel(1011,10),qbitlabel(1012,10),qbitlabel(1013,10),qbitlabel(1014,10),qbitlabel(1015,10),qbitlabel(1016,10),qbitlabel(1017,10),qbitlabel(1018,10),qbitlabel(1019,10),qbitlabel(1020,10),qbitlabel(1021,10),qbitlabel(1022,10),qbitlabel(1023,10)))"
+    },
+    {
+      "id": "IBM041-624fe895-M079",
+      "cell": 1,
+      "start": 8632,
+      "end": 8678,
+      "literal": "$\\{0, 1, \\dots, 9\\} \\times \\{0, 1, \\dots, 9\\}$",
+      "status": "exact",
+      "display": "indexrange(0, 9) · indexrange(0, 9)",
+      "copy": "qmul(qindexrange(0,9),qindexrange(0,9))"
+    },
+    {
+      "id": "IBM041-624fe895-M080",
+      "cell": 1,
+      "start": 8732,
+      "end": 8736,
+      "literal": "$00$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M081",
+      "cell": 1,
+      "start": 8745,
+      "end": 8749,
+      "literal": "$99$",
+      "status": "exact",
+      "display": "99",
+      "copy": "99"
+    },
+    {
+      "id": "IBM041-624fe895-M082",
+      "cell": 1,
+      "start": 9234,
+      "end": 9638,
+      "literal": "$$\n  \\begin{pmatrix}\n    \\frac{1}{2}\\\\[1mm]\n    0\\\\[1mm]\n    0\\\\[1mm]\n    \\frac{1}{2}\n  \\end{pmatrix}\n  \\begin{array}{l}\n    \\leftarrow \\text{probability of being in the state 00}\\\\[1mm]\n    \\leftarrow \\text{probability of being in the state 01}\\\\[1mm]\n    \\leftarrow \\text{probability of being in the state 10}\\\\[1mm]\n    \\leftarrow \\text{probability of being in the state 11}\n  \\end{array}\n  \\tag{1}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported column label in numeric table at byte 180"
+    },
+    {
+      "id": "IBM041-624fe895-M083",
+      "cell": 1,
+      "start": 10134,
+      "end": 10146,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M084",
+      "cell": 1,
+      "start": 10151,
+      "end": 10163,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M085",
+      "cell": 1,
+      "start": 10204,
+      "end": 10212,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M086",
+      "cell": 1,
+      "start": 10217,
+      "end": 10225,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M087",
+      "cell": 1,
+      "start": 10361,
+      "end": 10501,
+      "literal": "$$\n  \\operatorname{Pr}((\\mathsf{X},\\mathsf{Y}) = (a,b))\n  = \\operatorname{Pr}(\\mathsf{X} = a) \\operatorname{Pr}(\\mathsf{Y} = b)\n  \\tag{2}\n$$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M088",
+      "cell": 1,
+      "start": 10523,
+      "end": 10535,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M089",
+      "cell": 1,
+      "start": 10540,
+      "end": 10552,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M090",
+      "cell": 1,
+      "start": 10659,
+      "end": 10684,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M091",
+      "cell": 1,
+      "start": 10757,
+      "end": 10823,
+      "literal": "$$\n\\sum_{(a,b) \\in \\Sigma\\times\\Gamma} p_{ab} \\vert a b\\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM041-624fe895-M092",
+      "cell": 1,
+      "start": 10839,
+      "end": 10844,
+      "literal": "$(2)$",
+      "status": "exact",
+      "display": "2",
+      "copy": "2"
+    },
+    {
+      "id": "IBM041-624fe895-M093",
+      "cell": 1,
+      "start": 10926,
+      "end": 11079,
+      "literal": "$$\n\\vert \\phi \\rangle = \\sum_{a\\in\\Sigma} q_a \\vert a \\rangle\n\\quad\\text{and}\\quad\n\\vert \\psi \\rangle = \\sum_{b\\in\\Gamma} r_b \\vert b \\rangle,\n\\tag{3}\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M094",
+      "cell": 1,
+      "start": 11152,
+      "end": 11164,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M095",
+      "cell": 1,
+      "start": 11169,
+      "end": 11181,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M096",
+      "cell": 1,
+      "start": 11208,
+      "end": 11238,
+      "literal": "$$\np_{ab} = q_a r_b\n\\tag{4}\n$$",
+      "status": "exact",
+      "display": "\"p_ab\" = \"q_a\" ⋅ \"r_b\"",
+      "copy": "(\"p_ab\")==(\"q_a\" ⋅ \"r_b\")"
+    },
+    {
+      "id": "IBM041-624fe895-M097",
+      "cell": 1,
+      "start": 11248,
+      "end": 11260,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M098",
+      "cell": 1,
+      "start": 11265,
+      "end": 11277,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M099",
+      "cell": 1,
+      "start": 11335,
+      "end": 11360,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M100",
+      "cell": 1,
+      "start": 11388,
+      "end": 11524,
+      "literal": "$$\n  \\frac{1}{6} \\vert 00 \\rangle\n  + \\frac{1}{12} \\vert 01 \\rangle\n  + \\frac{1}{2} \\vert 10 \\rangle\n  + \\frac{1}{4} \\vert 11 \\rangle\n$$",
+      "status": "exact",
+      "display": "[0.166666666666666666666666666667; 0.0833333333333333333333333333333; 0.5; 0.25]",
+      "copy": "matrix(4,1,[1 ∕ 6,1 ∕ 12,1 ∕ 2,1 ∕ 4])"
+    },
+    {
+      "id": "IBM041-624fe895-M101",
+      "cell": 1,
+      "start": 11542,
+      "end": 11554,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M102",
+      "cell": 1,
+      "start": 11559,
+      "end": 11571,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M103",
+      "cell": 1,
+      "start": 11680,
+      "end": 11871,
+      "literal": "$$\n  \\vert \\phi \\rangle = \\frac{1}{4} \\vert 0 \\rangle + \\frac{3}{4} \\vert 1 \\rangle\n  \\quad\\text{and}\\quad\n  \\vert \\psi \\rangle = \\frac{2}{3} \\vert 0 \\rangle + \\frac{1}{3} \\vert 1 \\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M104",
+      "cell": 1,
+      "start": 11921,
+      "end": 11925,
+      "literal": "$00$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M105",
+      "cell": 1,
+      "start": 11947,
+      "end": 11993,
+      "literal": "$\\frac{1}{6} = \\frac{1}{4} \\times \\frac{2}{3}$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M106",
+      "cell": 1,
+      "start": 12119,
+      "end": 12124,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M107",
+      "cell": 1,
+      "start": 12149,
+      "end": 12227,
+      "literal": "$$\n  \\frac{1}{2} \\vert 00 \\rangle + \\frac{1}{2} \\vert 11 \\rangle,\n  \\tag{5}\n$$",
+      "status": "exact",
+      "display": "[0.5; 0; 0; 0.5]",
+      "copy": "matrix(4,1,[1 ∕ 2,0,0,1 ∕ 2])"
+    },
+    {
+      "id": "IBM041-624fe895-M108",
+      "cell": 1,
+      "start": 12281,
+      "end": 12293,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M109",
+      "cell": 1,
+      "start": 12298,
+      "end": 12310,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M110",
+      "cell": 1,
+      "start": 12398,
+      "end": 12417,
+      "literal": "$\\vert \\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M111",
+      "cell": 1,
+      "start": 12422,
+      "end": 12442,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M112",
+      "cell": 1,
+      "start": 12459,
+      "end": 12464,
+      "literal": "$(3)$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM041-624fe895-M113",
+      "cell": 1,
+      "start": 12496,
+      "end": 12501,
+      "literal": "$(4)$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM041-624fe895-M114",
+      "cell": 1,
+      "start": 12535,
+      "end": 12538,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM041-624fe895-M115",
+      "cell": 1,
+      "start": 12543,
+      "end": 12546,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM041-624fe895-M116",
+      "cell": 1,
+      "start": 12583,
+      "end": 12666,
+      "literal": "$$\n  q_0 r_1 = \\operatorname{Pr}\\bigl((\\mathsf{X},\\mathsf{Y}) = (0,1)\\bigr) = 0.\n$$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M117",
+      "cell": 1,
+      "start": 12693,
+      "end": 12702,
+      "literal": "$q_0 = 0$",
+      "status": "exact",
+      "display": "\"q_0\" = 0",
+      "copy": "(\"q_0\")==(0)"
+    },
+    {
+      "id": "IBM041-624fe895-M118",
+      "cell": 1,
+      "start": 12706,
+      "end": 12715,
+      "literal": "$r_1 = 0$",
+      "status": "exact",
+      "display": "\"r_1\" = 0",
+      "copy": "(\"r_1\")==(0)"
+    },
+    {
+      "id": "IBM041-624fe895-M119",
+      "cell": 1,
+      "start": 12759,
+      "end": 12768,
+      "literal": "$q_0 r_1$",
+      "status": "exact",
+      "display": "\"q_0\" ⋅ \"r_1\"",
+      "copy": "\"q_0\" ⋅ \"r_1\""
+    },
+    {
+      "id": "IBM041-624fe895-M120",
+      "cell": 1,
+      "start": 12833,
+      "end": 12846,
+      "literal": "$q_0 r_0 = 0$",
+      "status": "exact",
+      "display": "\"q_0\" = 0 or \"r_0\" = 0",
+      "copy": "((\"q_0\")==(0) or (\"r_0\")==(0))"
+    },
+    {
+      "id": "IBM041-624fe895-M121",
+      "cell": 1,
+      "start": 12856,
+      "end": 12865,
+      "literal": "$q_0 = 0$",
+      "status": "exact",
+      "display": "\"q_0\" = 0",
+      "copy": "(\"q_0\")==(0)"
+    },
+    {
+      "id": "IBM041-624fe895-M122",
+      "cell": 1,
+      "start": 12870,
+      "end": 12883,
+      "literal": "$q_1 r_1 = 0$",
+      "status": "exact",
+      "display": "\"q_1\" = 0 or \"r_1\" = 0",
+      "copy": "((\"q_1\")==(0) or (\"r_1\")==(0))"
+    },
+    {
+      "id": "IBM041-624fe895-M123",
+      "cell": 1,
+      "start": 12893,
+      "end": 12902,
+      "literal": "$r_1 = 0$",
+      "status": "exact",
+      "display": "\"r_1\" = 0",
+      "copy": "(\"r_1\")==(0)"
+    },
+    {
+      "id": "IBM041-624fe895-M124",
+      "cell": 1,
+      "start": 12988,
+      "end": 13003,
+      "literal": "$q_0 r_0 = 1/2$",
+      "status": "exact",
+      "display": "\"q_0\" = 1 ∕ (2 \"r_0\") and \"r_0\" ≠ 0",
+      "copy": "((\"q_0\")==(1 ∕ (2 ⋅ \"r_0\")) and (\"r_0\")!=(0))"
+    },
+    {
+      "id": "IBM041-624fe895-M125",
+      "cell": 1,
+      "start": 13008,
+      "end": 13023,
+      "literal": "$q_1 r_1 = 1/2$",
+      "status": "exact",
+      "display": "\"q_1\" = 1 ∕ (2 \"r_1\") and \"r_1\" ≠ 0",
+      "copy": "((\"q_1\")==(1 ∕ (2 ⋅ \"r_1\")) and (\"r_1\")!=(0))"
+    },
+    {
+      "id": "IBM041-624fe895-M126",
+      "cell": 1,
+      "start": 13059,
+      "end": 13077,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M127",
+      "cell": 1,
+      "start": 13082,
+      "end": 13100,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M128",
+      "cell": 1,
+      "start": 13371,
+      "end": 13376,
+      "literal": "$(5)$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    },
+    {
+      "id": "IBM041-624fe895-M129",
+      "cell": 1,
+      "start": 13811,
+      "end": 13965,
+      "literal": "$$\n\\vert \\phi \\rangle = \\sum_{a\\in\\Sigma} \\alpha_a \\vert a \\rangle\n\\quad\\text{and}\\quad\n\\vert \\psi \\rangle = \\sum_{b\\in\\Gamma} \\beta_b \\vert b \\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M130",
+      "cell": 1,
+      "start": 13986,
+      "end": 14033,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M131",
+      "cell": 1,
+      "start": 14060,
+      "end": 14185,
+      "literal": "$$\n  \\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle\n  = \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} \\alpha_a \\beta_b \\vert ab\\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 87"
+    },
+    {
+      "id": "IBM041-624fe895-M132",
+      "cell": 1,
+      "start": 14270,
+      "end": 14290,
+      "literal": "$\\Sigma\\times\\Gamma$",
+      "status": "exact",
+      "display": "'Γ''Σ'",
+      "copy": "'Γ''Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M133",
+      "cell": 1,
+      "start": 14372,
+      "end": 14439,
+      "literal": "$\\vert \\pi \\rangle = \\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M134",
+      "cell": 1,
+      "start": 14468,
+      "end": 14562,
+      "literal": "$$\n\\langle ab \\vert \\pi \\rangle = \\langle a \\vert \\phi \\rangle \\langle b \\vert \\psi \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M135",
+      "cell": 1,
+      "start": 14585,
+      "end": 14597,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M136",
+      "cell": 1,
+      "start": 14602,
+      "end": 14614,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M137",
+      "cell": 1,
+      "start": 14686,
+      "end": 14712,
+      "literal": "$(\\mathsf{X}, \\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M138",
+      "cell": 1,
+      "start": 14774,
+      "end": 14793,
+      "literal": "$\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM041-624fe895-M139",
+      "cell": 1,
+      "start": 14807,
+      "end": 14819,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M140",
+      "cell": 1,
+      "start": 14824,
+      "end": 14836,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M141",
+      "cell": 1,
+      "start": 14856,
+      "end": 14873,
+      "literal": "$\\vert\\pi\\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM041-624fe895-M142",
+      "cell": 1,
+      "start": 14914,
+      "end": 14987,
+      "literal": "$$\n  \\vert \\pi \\rangle = \\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M143",
+      "cell": 1,
+      "start": 15012,
+      "end": 15032,
+      "literal": "$\\vert \\phi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M144",
+      "cell": 1,
+      "start": 15037,
+      "end": 15057,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M145",
+      "cell": 1,
+      "start": 15084,
+      "end": 15096,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M146",
+      "cell": 1,
+      "start": 15101,
+      "end": 15113,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M147",
+      "cell": 1,
+      "start": 15134,
+      "end": 15153,
+      "literal": "$\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM041-624fe895-M148",
+      "cell": 1,
+      "start": 15233,
+      "end": 15242,
+      "literal": "$\\otimes$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM041-624fe895-M149",
+      "cell": 1,
+      "start": 15299,
+      "end": 15338,
+      "literal": "$\\vert \\phi \\rangle \\vert \\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M150",
+      "cell": 1,
+      "start": 15351,
+      "end": 15398,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M151",
+      "cell": 1,
+      "start": 15588,
+      "end": 15618,
+      "literal": "$\\vert \\phi\\otimes\\psi\\rangle$",
+      "status": "diagnostic",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM041-624fe895-M152",
+      "cell": 1,
+      "start": 15814,
+      "end": 16169,
+      "literal": "$$\n  \\begin{pmatrix}\n  \\alpha_1\\\\\n  \\vdots\\\\\n  \\alpha_m\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n  \\beta_1\\\\\n  \\vdots\\\\\n  \\beta_k\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n  \\alpha_1 \\beta_1\\\\\n  \\vdots\\\\\n  \\alpha_1 \\beta_k\\\\\n  \\alpha_2 \\beta_1\\\\\n  \\vdots\\\\\n  \\alpha_2 \\beta_k\\\\\n  \\vdots\\\\\n  \\alpha_m \\beta_1\\\\\n  \\vdots\\\\\n  \\alpha_m \\beta_k\n  \\end{pmatrix}\n$$",
+      "status": "diagnostic",
+      "message": "An indexed column requires consecutive entries starting at 0 or 1, a vertical ellipsis, and an endpoint in the same family; group compound subscripts"
+    },
+    {
+      "id": "IBM041-624fe895-M153",
+      "cell": 1,
+      "start": 16274,
+      "end": 16339,
+      "literal": "$$\n\\vert a \\rangle \\otimes \\vert b \\rangle = \\vert ab \\rangle.\n$$",
+      "status": "exact",
+      "display": "qketstate('a') ⊗ qketstate('b') = |ab⟩",
+      "copy": "qcompare(qtensor(qketstate('a'),qketstate('b')),qketstate(\"ab\"),4)"
+    },
+    {
+      "id": "IBM041-624fe895-M154",
+      "cell": 1,
+      "start": 16370,
+      "end": 16377,
+      "literal": "$(a,b)$",
+      "status": "exact",
+      "display": "(a, b)",
+      "copy": "qtuple(vector('a','b'))"
+    },
+    {
+      "id": "IBM041-624fe895-M155",
+      "cell": 1,
+      "start": 16444,
+      "end": 16507,
+      "literal": "$\\vert a \\rangle \\otimes \\vert b \\rangle = \\vert (a,b) \\rangle$",
+      "status": "diagnostic",
+      "message": "A computational basis index must be a nonnegative integer."
+    },
+    {
+      "id": "IBM041-624fe895-M156",
+      "cell": 1,
+      "start": 16596,
+      "end": 16657,
+      "literal": "$\\vert a \\rangle \\otimes \\vert b \\rangle = \\vert a,b \\rangle$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M157",
+      "cell": 1,
+      "start": 17084,
+      "end": 17453,
+      "literal": "$$\n   \\begin{aligned}\n   \\bigl(\\vert\\phi_1\\rangle + \\vert\\phi_2\\rangle\\bigr)\\otimes \\vert\\psi\\rangle\n   & = \\vert\\phi_1\\rangle \\otimes \\vert\\psi\\rangle + \\vert\\phi_2\\rangle \\otimes \\vert\\psi\\rangle \\\\[1mm]\n   \\bigl(\\alpha \\vert \\phi \\rangle\\bigr) \\otimes \\vert \\psi \\rangle\n   & = \\alpha \\bigl(\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle \\bigr)\n   \\end{aligned}\n   $$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M158",
+      "cell": 1,
+      "start": 17496,
+      "end": 17891,
+      "literal": "$$\n  \\begin{aligned}\n    \\vert \\phi \\rangle \\otimes\n    \\bigl(\\vert \\psi_1 \\rangle + \\vert \\psi_2 \\rangle \\bigr)\n    & =\n    \\vert \\phi \\rangle \\otimes \\vert \\psi_1 \\rangle +\n    \\vert \\phi \\rangle \\otimes \\vert \\psi_2 \\rangle\\\\[1mm]\n    \\vert \\phi \\rangle \\otimes\n    \\bigl(\\alpha \\vert \\psi \\rangle \\bigr)\n    & = \\alpha \\bigl(\\vert\\phi\\rangle\\otimes\\vert\\psi\\rangle\\bigr)\n  \\end{aligned}\n  $$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M159",
+      "cell": 1,
+      "start": 18022,
+      "end": 18229,
+      "literal": "$$\n\\bigl(\\alpha \\vert \\phi \\rangle\\bigr) \\otimes \\vert \\psi \\rangle\n= \\vert \\phi \\rangle \\otimes \\bigl(\\alpha \\vert \\psi \\rangle \\bigr)\n= \\alpha \\bigl(\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle \\bigr).\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M160",
+      "cell": 1,
+      "start": 18281,
+      "end": 18328,
+      "literal": "$\\alpha\\vert\\phi\\rangle\\otimes\\vert\\psi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M161",
+      "cell": 1,
+      "start": 18347,
+      "end": 18388,
+      "literal": "$\\alpha\\vert\\phi\\rangle\\vert\\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M162",
+      "cell": 1,
+      "start": 18392,
+      "end": 18427,
+      "literal": "$\\alpha\\vert\\phi\\otimes\\psi\\rangle$",
+      "status": "diagnostic",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM041-624fe895-M163",
+      "cell": 1,
+      "start": 18625,
+      "end": 18663,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M164",
+      "cell": 1,
+      "start": 18704,
+      "end": 18734,
+      "literal": "$\\Sigma_0,\\ldots,\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M165",
+      "cell": 1,
+      "start": 18800,
+      "end": 18840,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M166",
+      "cell": 1,
+      "start": 18915,
+      "end": 19012,
+      "literal": "$$\n  \\vert \\psi \\rangle = \\vert \\phi_{n-1} \\rangle \\otimes \\cdots \\otimes \\vert \\phi_0 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 64"
+    },
+    {
+      "id": "IBM041-624fe895-M167",
+      "cell": 1,
+      "start": 19038,
+      "end": 19091,
+      "literal": "$\\vert \\phi_0 \\rangle,\\ldots,\\vert \\phi_{n-1}\\rangle$",
+      "status": "exact",
+      "display": "qindexedketlist(\"φ_\", 0, qsub(n, 1), [])",
+      "copy": "qindexedketlist(\"φ_\",0,qsub(n,1),vector())"
+    },
+    {
+      "id": "IBM041-624fe895-M168",
+      "cell": 1,
+      "start": 19127,
+      "end": 19165,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M169",
+      "cell": 1,
+      "start": 19252,
+      "end": 19347,
+      "literal": "$$\n\\vert \\psi \\rangle = \\vert \\phi_{n-1} \\rangle \\otimes \\cdots \\otimes \\vert \\phi_0 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 62"
+    },
+    {
+      "id": "IBM041-624fe895-M170",
+      "cell": 1,
+      "start": 19377,
+      "end": 19515,
+      "literal": "$$\n  \\langle a_{n-1} \\cdots a_0 \\vert \\psi \\rangle\n  = \\langle a_{n-1} \\vert \\phi_{n-1} \\rangle \\cdots \\langle a_0 \\vert \\phi_0 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 101"
+    },
+    {
+      "id": "IBM041-624fe895-M171",
+      "cell": 1,
+      "start": 19538,
+      "end": 19585,
+      "literal": "$a_0\\in\\Sigma_0, \\ldots a_{n-1}\\in\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 23"
+    },
+    {
+      "id": "IBM041-624fe895-M172",
+      "cell": 1,
+      "start": 19735,
+      "end": 19932,
+      "literal": "$$\n  \\vert \\phi_{n-1} \\rangle \\otimes \\cdots \\otimes \\vert \\phi_0 \\rangle\n  = \\vert \\phi_{n-1} \\rangle \\otimes \\bigl( \\vert \\phi_{n-2} \\rangle \\otimes \\cdots \\otimes \\vert \\phi_0 \\rangle \\bigr).\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 43"
+    },
+    {
+      "id": "IBM041-624fe895-M173",
+      "cell": 1,
+      "start": 20278,
+      "end": 20316,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M174",
+      "cell": 1,
+      "start": 20729,
+      "end": 20732,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM041-624fe895-M175",
+      "cell": 1,
+      "start": 20758,
+      "end": 20778,
+      "literal": "$a_0,\\ldots,a_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M176",
+      "cell": 1,
+      "start": 20789,
+      "end": 20893,
+      "literal": "$$\n\\vert a_{n-1} \\rangle \\otimes \\cdots \\otimes \\vert a_0 \\rangle\n= \\vert a_{n-1} \\cdots a_0 \\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 38"
+    },
+    {
+      "id": "IBM041-624fe895-M177",
+      "cell": 1,
+      "start": 21274,
+      "end": 21299,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M178",
+      "cell": 1,
+      "start": 21340,
+      "end": 21408,
+      "literal": "$$\n  \\frac{1}{2} \\vert 00 \\rangle + \\frac{1}{2} \\vert 11 \\rangle,\n$$",
+      "status": "exact",
+      "display": "[0.5; 0; 0; 0.5]",
+      "copy": "matrix(4,1,[1 ∕ 2,0,0,1 ∕ 2])"
+    },
+    {
+      "id": "IBM041-624fe895-M179",
+      "cell": 1,
+      "start": 21427,
+      "end": 21431,
+      "literal": "$00$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M180",
+      "cell": 1,
+      "start": 21442,
+      "end": 21445,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M181",
+      "cell": 1,
+      "start": 21469,
+      "end": 21481,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M182",
+      "cell": 1,
+      "start": 21486,
+      "end": 21489,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M183",
+      "cell": 1,
+      "start": 21513,
+      "end": 21525,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M184",
+      "cell": 1,
+      "start": 21557,
+      "end": 21562,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M185",
+      "cell": 1,
+      "start": 21579,
+      "end": 21583,
+      "literal": "$11$",
+      "status": "exact",
+      "display": "11",
+      "copy": "11"
+    },
+    {
+      "id": "IBM041-624fe895-M186",
+      "cell": 1,
+      "start": 21618,
+      "end": 21623,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M187",
+      "cell": 1,
+      "start": 21753,
+      "end": 21765,
+      "literal": "$|00\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0]",
+      "copy": "matrix(4,1,[1,0,0,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M188",
+      "cell": 1,
+      "start": 21769,
+      "end": 21781,
+      "literal": "$|11\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM041-624fe895-M189",
+      "cell": 1,
+      "start": 22494,
+      "end": 22506,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M190",
+      "cell": 1,
+      "start": 22511,
+      "end": 22523,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M191",
+      "cell": 1,
+      "start": 22567,
+      "end": 22575,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M192",
+      "cell": 1,
+      "start": 22580,
+      "end": 22588,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M193",
+      "cell": 1,
+      "start": 22720,
+      "end": 22732,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M194",
+      "cell": 1,
+      "start": 22751,
+      "end": 22763,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M195",
+      "cell": 1,
+      "start": 22790,
+      "end": 22802,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M196",
+      "cell": 1,
+      "start": 22838,
+      "end": 22850,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M197",
+      "cell": 1,
+      "start": 22954,
+      "end": 22966,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M198",
+      "cell": 1,
+      "start": 22977,
+      "end": 22989,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M199",
+      "cell": 1,
+      "start": 23086,
+      "end": 23098,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M200",
+      "cell": 1,
+      "start": 23141,
+      "end": 23270,
+      "literal": "$$\n  \\operatorname{Pr}(\\mathsf{X} = a)\n  = \\sum_{b\\in\\Gamma} \\operatorname{Pr}\\bigl( (\\mathsf{X},\\mathsf{Y})\n  = (a,b) \\bigr).\n$$",
+      "status": "exact",
+      "display": "([0, 1; 1, 0] = a) · P · r − (∑_{k ∈ 'Γ'} ((([0, 1; 1, 0], [0, −i; i, 0]) = (a, k)) · P · r)) = 0",
+      "copy": "((('P')*('r')*(qcompare(matrix(2,2,[0,1,1,0]),'a',4)))+ ((−1)*(qsumset(('P')*('r')*(qcompare(qtuple(vector(matrix(2,2,[0,1,1,0]),matrix(2,2,[0,−i,i,0]))),qtuple(vector('a',\"qboundindex_0\")),4)),'Γ',\"qboundindex_0\"))))==(0)"
+    },
+    {
+      "id": "IBM041-624fe895-M201",
+      "cell": 1,
+      "start": 23355,
+      "end": 23367,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M202",
+      "cell": 1,
+      "start": 23563,
+      "end": 23575,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M203",
+      "cell": 1,
+      "start": 23675,
+      "end": 23687,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M204",
+      "cell": 1,
+      "start": 23746,
+      "end": 23758,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M205",
+      "cell": 1,
+      "start": 23763,
+      "end": 23775,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M206",
+      "cell": 1,
+      "start": 24136,
+      "end": 24148,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M207",
+      "cell": 1,
+      "start": 24186,
+      "end": 24198,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M208",
+      "cell": 1,
+      "start": 24295,
+      "end": 24307,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M209",
+      "cell": 1,
+      "start": 24376,
+      "end": 24388,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M210",
+      "cell": 1,
+      "start": 24405,
+      "end": 24417,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M211",
+      "cell": 1,
+      "start": 24489,
+      "end": 24501,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M212",
+      "cell": 1,
+      "start": 24587,
+      "end": 24612,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M213",
+      "cell": 1,
+      "start": 24616,
+      "end": 24633,
+      "literal": "$\\vert ab\\rangle$",
+      "status": "exact",
+      "display": "|ab⟩",
+      "copy": "qketstate(\"ab\")"
+    },
+    {
+      "id": "IBM041-624fe895-M214",
+      "cell": 1,
+      "start": 24656,
+      "end": 24668,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M215",
+      "cell": 1,
+      "start": 24673,
+      "end": 24685,
+      "literal": "$b\\in\\Gamma$",
+      "status": "exact",
+      "display": "b ∈ 'Γ'",
+      "copy": "qmember('b','Γ')"
+    },
+    {
+      "id": "IBM041-624fe895-M216",
+      "cell": 1,
+      "start": 24749,
+      "end": 24761,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M217",
+      "cell": 1,
+      "start": 24862,
+      "end": 25051,
+      "literal": "$$\n  \\operatorname{Pr}(\\mathsf{Y} = b \\,\\vert\\, \\mathsf{X} = a)\n  = \\frac{\n    \\operatorname{Pr}\\bigl((\\mathsf{X},\\mathsf{Y}) = (a,b)\\bigr)\n  }{\n    \\operatorname{Pr}(\\mathsf{X} = a)\n  }\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed ket; use |0> or |0⟩."
+    },
+    {
+      "id": "IBM041-624fe895-M218",
+      "cell": 1,
+      "start": 25074,
+      "end": 25134,
+      "literal": "$\\operatorname{Pr}(\\mathsf{Y} = b \\,\\vert\\, \\mathsf{X} = a)$",
+      "status": "diagnostic",
+      "message": "Unclosed ket; use |0> or |0⟩."
+    },
+    {
+      "id": "IBM041-624fe895-M219",
+      "cell": 1,
+      "start": 25164,
+      "end": 25180,
+      "literal": "$\\mathsf{Y} = b$",
+      "status": "exact",
+      "display": "[0, −i; i, 0] = b",
+      "copy": "qcompare(matrix(2,2,[0,−i,i,0]),'b',4)"
+    },
+    {
+      "id": "IBM041-624fe895-M220",
+      "cell": 1,
+      "start": 25216,
+      "end": 25232,
+      "literal": "$\\mathsf{X} = a$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0] = a",
+      "copy": "qcompare(matrix(2,2,[0,1,1,0]),'a',4)"
+    },
+    {
+      "id": "IBM041-624fe895-M221",
+      "cell": 1,
+      "start": 25292,
+      "end": 25325,
+      "literal": "$\\operatorname{Pr}(\\mathsf{X}=a)$",
+      "status": "exact",
+      "display": "([0, 1; 1, 0] = a) · P · r",
+      "copy": "('P')*('r')*(qcompare(matrix(2,2,[0,1,1,0]),'a',4))"
+    },
+    {
+      "id": "IBM041-624fe895-M222",
+      "cell": 1,
+      "start": 25345,
+      "end": 25382,
+      "literal": "$\\operatorname{Pr}(\\mathsf{X}=a) = 0$",
+      "status": "exact",
+      "display": "P = 0 or r = 0 or ([0, 1; 1, 0] = a) = 0",
+      "copy": "(('P')==(0) or ('r')==(0) or (qcompare(matrix(2,2,[0,1,1,0]),'a',4))==(0))"
+    },
+    {
+      "id": "IBM041-624fe895-M223",
+      "cell": 1,
+      "start": 25445,
+      "end": 25458,
+      "literal": "$\\frac{0}{0}$",
+      "status": "exact",
+      "display": "0 ∕ 0",
+      "copy": "0 ∕ 0"
+    },
+    {
+      "id": "IBM041-624fe895-M224",
+      "cell": 1,
+      "start": 25534,
+      "end": 25537,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM041-624fe895-M225",
+      "cell": 1,
+      "start": 25571,
+      "end": 25574,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM041-624fe895-M226",
+      "cell": 1,
+      "start": 25609,
+      "end": 25621,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M227",
+      "cell": 1,
+      "start": 25769,
+      "end": 25788,
+      "literal": "$\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM041-624fe895-M228",
+      "cell": 1,
+      "start": 25831,
+      "end": 25856,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M229",
+      "cell": 1,
+      "start": 25859,
+      "end": 25941,
+      "literal": "$$\n  \\vert\\pi\\rangle = \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} p_{ab} \\vert ab\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 55"
+    },
+    {
+      "id": "IBM041-624fe895-M230",
+      "cell": 1,
+      "start": 25953,
+      "end": 25965,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M231",
+      "cell": 1,
+      "start": 26001,
+      "end": 26013,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M232",
+      "cell": 1,
+      "start": 26032,
+      "end": 26101,
+      "literal": "$$\n  \\operatorname{Pr}(\\mathsf{X} = a) = \\sum_{c\\in\\Gamma} p_{ac}.\n$$",
+      "status": "exact",
+      "display": "P = (∑_{k ∈ 'Γ'} (\"p_ac\")) / (([0, 1; 1, 0] = a) · r) and r ≠ 0 and ([0, 1; 1, 0] = a) ≠ 0 or r = 0 and ∑_{j ∈ 'Γ'} (\"p_ac\") = 0 or ([0, 1; 1, 0] = a) = 0 and ∑_{l ∈ 'Γ'} (\"p_ac\") = 0 and r ≠ 0",
+      "copy": "((('P')==((1 ∕ 'r')*(qsumset(\"p_ac\",'Γ',\"qboundindex_0\"))*((qcompare(matrix(2,2,[0,1,1,0]),'a',4))^(−1))) and ('r')!=(0) and (qcompare(matrix(2,2,[0,1,1,0]),'a',4))!=(0)) or (('r')!=(0) and (qcompare(matrix(2,2,[0,1,1,0]),'a',4))==(0) and (qsumset(\"p_ac\",'Γ',\"qboundindex_0\"))==(0)) or (('r')==(0) and (qsumset(\"p_ac\",'Γ',\"qboundindex_0\"))==(0)))"
+    },
+    {
+      "id": "IBM041-624fe895-M233",
+      "cell": 1,
+      "start": 26154,
+      "end": 26166,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M234",
+      "cell": 1,
+      "start": 26196,
+      "end": 26276,
+      "literal": "$$\n  \\sum_{a\\in\\Sigma} \\biggl(\\sum_{c\\in\\Gamma} p_{ac}\\biggr) \\vert a\\rangle.\n$$",
+      "status": "exact",
+      "display": "∑_{k ∈ 'Σ'} ((∑_{j ∈ 'Γ'} (\"p_ac\")) |k⟩)",
+      "copy": "qsumset(qadjacent(qsumset(\"p_ac\",'Γ',\"qboundindex_0\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM041-624fe895-M235",
+      "cell": 1,
+      "start": 26315,
+      "end": 26327,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM041-624fe895-M236",
+      "cell": 1,
+      "start": 26350,
+      "end": 26362,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M237",
+      "cell": 1,
+      "start": 26391,
+      "end": 26403,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M238",
+      "cell": 1,
+      "start": 26526,
+      "end": 26630,
+      "literal": "$$\n  \\vert \\psi_a \\rangle\n  = \\frac{\\sum_{b\\in\\Gamma}p_{ab}\\vert b\\rangle}{\\sum_{c\\in\\Gamma} p_{ac}}.\n$$",
+      "status": "exact",
+      "display": "|ψ_a⟩ = (∑_{k ∈ 'Γ'} (\"p_ab\" |k⟩)) / (∑_{j ∈ 'Γ'} (\"p_ac\"))",
+      "copy": "qcompare(qketstate(\"ψ_a\"),qsumset(qadjacent(\"p_ab\", qketstate(\"qboundindex_0\")), 'Γ', \"qboundindex_0\") ∕ qsumset(\"p_ac\", 'Γ', \"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM041-624fe895-M239",
+      "cell": 1,
+      "start": 26669,
+      "end": 26681,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M240",
+      "cell": 1,
+      "start": 26714,
+      "end": 26717,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM041-624fe895-M241",
+      "cell": 1,
+      "start": 26802,
+      "end": 26827,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M242",
+      "cell": 1,
+      "start": 26831,
+      "end": 26874,
+      "literal": "$\\vert a\\rangle \\otimes \\vert\\psi_a\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a') ⊗ |ψ_a⟩",
+      "copy": "qtensor(qketstate('a'),qnamedket(\"ψ_a\"))"
+    },
+    {
+      "id": "IBM041-624fe895-M243",
+      "cell": 1,
+      "start": 26919,
+      "end": 26939,
+      "literal": "$\\vert\\psi_a\\rangle$",
+      "status": "exact",
+      "display": "|ψ_a⟩",
+      "copy": "qketstate(\"ψ_a\")"
+    },
+    {
+      "id": "IBM041-624fe895-M244",
+      "cell": 1,
+      "start": 26988,
+      "end": 27029,
+      "literal": "$\\sum_{b\\in\\Gamma} p_{ab} \\vert b\\rangle$",
+      "status": "exact",
+      "display": "∑_{k ∈ 'Γ'} (\"p_ab\" |k⟩)",
+      "copy": "qsumset(qadjacent(\"p_ab\",qketstate(\"qboundindex_0\")),'Γ',\"qboundindex_0\")"
+    },
+    {
+      "id": "IBM041-624fe895-M245",
+      "cell": 1,
+      "start": 27216,
+      "end": 27228,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M246",
+      "cell": 1,
+      "start": 27257,
+      "end": 27260,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM041-624fe895-M247",
+      "cell": 1,
+      "start": 27323,
+      "end": 27335,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M248",
+      "cell": 1,
+      "start": 27339,
+      "end": 27357,
+      "literal": "$\\Sigma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{0, 1\\}",
+      "copy": "('Σ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM041-624fe895-M249",
+      "cell": 1,
+      "start": 27386,
+      "end": 27398,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M250",
+      "cell": 1,
+      "start": 27402,
+      "end": 27422,
+      "literal": "$\\Gamma = \\{1,2,3\\}$",
+      "status": "exact",
+      "display": "'Γ' = \\{1, 2, 3\\}",
+      "copy": "('Γ')==(qset(vector(1,2,3)))"
+    },
+    {
+      "id": "IBM041-624fe895-M251",
+      "cell": 1,
+      "start": 27455,
+      "end": 27480,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M252",
+      "cell": 1,
+      "start": 27485,
+      "end": 27686,
+      "literal": "$$\n  \\vert \\pi \\rangle\n  = \\frac{1}{2}  \\vert 0,1 \\rangle\n  + \\frac{1}{12} \\vert 0,3 \\rangle\n  + \\frac{1}{12} \\vert 1,1 \\rangle\n  + \\frac{1}{6}  \\vert 1,2 \\rangle\n  + \\frac{1}{6}  \\vert 1,3 \\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM041-624fe895-M253",
+      "cell": 1,
+      "start": 27766,
+      "end": 27769,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M254",
+      "cell": 1,
+      "start": 27774,
+      "end": 27777,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M255",
+      "cell": 1,
+      "start": 27839,
+      "end": 27851,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M256",
+      "cell": 1,
+      "start": 27897,
+      "end": 27909,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M257",
+      "cell": 1,
+      "start": 28065,
+      "end": 28084,
+      "literal": "$\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM041-624fe895-M258",
+      "cell": 1,
+      "start": 28098,
+      "end": 28361,
+      "literal": "$$\n  \\vert \\pi \\rangle\n  = \\vert 0\\rangle \\otimes\n  \\biggl( \\frac{1}{2} \\vert 1 \\rangle + \\frac{1}{12} \\vert 3 \\rangle\\biggr)\n  + \\vert 1\\rangle \\otimes\n  \\biggl( \\frac{1}{12} \\vert 1 \\rangle + \\frac{1}{6} \\vert 2\\rangle\n  + \\frac{1}{6} \\vert 3 \\rangle\\biggr).\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM041-624fe895-M259",
+      "cell": 1,
+      "start": 29043,
+      "end": 29279,
+      "literal": "$$\n  \\begin{aligned}\n    \\operatorname{Pr}(\\mathsf{X} = 0)\n    & = \\frac{1}{2} + \\frac{1}{12} = \\frac{7}{12}\\\\[3mm]\n    \\operatorname{Pr}(\\mathsf{X} = 1)\n    & = \\frac{1}{12} + \\frac{1}{6} + \\frac{1}{6} = \\frac{5}{12}\n  \\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  qeventprob('X', 0) = 0.583333333333333333333333333333 = 0.583333333333333333333333333333\n\n2.  qeventprob('X', 1) = 0.416666666666666666666666666667 = 0.416666666666666666666666666667",
+      "copy": "\\begin{gathered}qequalchain(vector(qeventprob('X',0),7 ∕ 12,7 ∕ 12))\\\\qequalchain(vector(qeventprob('X',1),5 ∕ 12,5 ∕ 12))\\end{gathered}"
+    },
+    {
+      "id": "IBM041-624fe895-M260",
+      "cell": 1,
+      "start": 29412,
+      "end": 29424,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M261",
+      "cell": 1,
+      "start": 29669,
+      "end": 29681,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M262",
+      "cell": 1,
+      "start": 29688,
+      "end": 29691,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M263",
+      "cell": 1,
+      "start": 29720,
+      "end": 29732,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M264",
+      "cell": 1,
+      "start": 29742,
+      "end": 29890,
+      "literal": "$$\n \\frac{\\frac{1}{2} \\vert 1 \\rangle + \\frac{1}{12} \\vert 3 \\rangle}{\\frac{7}{12}}\n = \\frac{6}{7} \\vert 1 \\rangle + \\frac{1}{7} \\vert 3 \\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM041-624fe895-M265",
+      "cell": 1,
+      "start": 29930,
+      "end": 29942,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M266",
+      "cell": 1,
+      "start": 29949,
+      "end": 29952,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M267",
+      "cell": 1,
+      "start": 29981,
+      "end": 29993,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M268",
+      "cell": 1,
+      "start": 30003,
+      "end": 30214,
+      "literal": "$$\n  \\frac{\\frac{1}{12} \\vert 1 \\rangle + \\frac{1}{6} \\vert 2\\rangle\n  + \\frac{1}{6} \\vert 3 \\rangle}{\\frac{5}{12}}\n  = \\frac{1}{5} \\vert 1 \\rangle + \\frac{2}{5} \\vert 2 \\rangle + \\frac{2}{5} \\vert 3 \\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM041-624fe895-M269",
+      "cell": 1,
+      "start": 30628,
+      "end": 30640,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M270",
+      "cell": 1,
+      "start": 30645,
+      "end": 30657,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M271",
+      "cell": 1,
+      "start": 30719,
+      "end": 30744,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M272",
+      "cell": 1,
+      "start": 30935,
+      "end": 30955,
+      "literal": "$\\Sigma\\times\\Gamma$",
+      "status": "exact",
+      "display": "'Γ''Σ'",
+      "copy": "'Γ''Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M273",
+      "cell": 1,
+      "start": 30984,
+      "end": 30996,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M274",
+      "cell": 1,
+      "start": 31001,
+      "end": 31013,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M275",
+      "cell": 1,
+      "start": 31113,
+      "end": 31129,
+      "literal": "$\\mathsf{X} = 1$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M276",
+      "cell": 1,
+      "start": 31163,
+      "end": 31175,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M277",
+      "cell": 1,
+      "start": 31290,
+      "end": 31302,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M278",
+      "cell": 1,
+      "start": 31409,
+      "end": 31421,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M279",
+      "cell": 1,
+      "start": 31477,
+      "end": 31590,
+      "literal": "$$\n\\begin{pmatrix}\n1 & 0 & 0 & 0\\\\[2mm]\n0 & 1 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 1\\\\[2mm]\n0 & 0 & 1 & 0\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M280",
+      "cell": 1,
+      "start": 31644,
+      "end": 31861,
+      "literal": "$$\n\\begin{aligned}\n\\vert 00 \\rangle & \\mapsto \\vert 00 \\rangle\\\\\n\\vert 01 \\rangle & \\mapsto \\vert 01 \\rangle\\\\\n\\vert 10 \\rangle & \\mapsto \\vert 11 \\rangle\\\\\n\\vert 11 \\rangle & \\mapsto \\vert 10 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  [1; 0; 0; 0] ↦ [1; 0; 0; 0]\n\n2.  [0; 1; 0; 0] ↦ [0; 1; 0; 0]\n\n3.  [0; 0; 1; 0] ↦ [0; 0; 0; 1]\n\n4.  [0; 0; 0; 1] ↦ [0; 0; 1; 0]",
+      "copy": "\\begin{gathered}qstateaction(matrix(4,1,[1,0,0,0]),matrix(4,1,[1,0,0,0]))\\\\qstateaction(matrix(4,1,[0,1,0,0]),matrix(4,1,[0,1,0,0]))\\\\qstateaction(matrix(4,1,[0,0,1,0]),matrix(4,1,[0,0,0,1]))\\\\qstateaction(matrix(4,1,[0,0,0,1]),matrix(4,1,[0,0,1,0]))\\end{gathered}"
+    },
+    {
+      "id": "IBM041-624fe895-M281",
+      "cell": 1,
+      "start": 31899,
+      "end": 31911,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M282",
+      "cell": 1,
+      "start": 31916,
+      "end": 31928,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M283",
+      "cell": 1,
+      "start": 31937,
+      "end": 31949,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M284",
+      "cell": 1,
+      "start": 31976,
+      "end": 31988,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M285",
+      "cell": 1,
+      "start": 32073,
+      "end": 32185,
+      "literal": "$$\n\\begin{pmatrix}\n1 & 0 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 1\\\\[2mm]\n0 & 0 & 1 & 0\\\\[2mm]\n0 & 1 & 0 & 0\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0; 0, 1, 0, 0]",
+      "copy": "matrix(4,4,[1,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M286",
+      "cell": 1,
+      "start": 32248,
+      "end": 32465,
+      "literal": "$$\n\\begin{aligned}\n\\vert 00 \\rangle & \\mapsto \\vert 00 \\rangle\\\\\n\\vert 01 \\rangle & \\mapsto \\vert 11 \\rangle\\\\\n\\vert 10 \\rangle & \\mapsto \\vert 10 \\rangle\\\\\n\\vert 11 \\rangle & \\mapsto \\vert 01 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  [1; 0; 0; 0] ↦ [1; 0; 0; 0]\n\n2.  [0; 1; 0; 0] ↦ [0; 0; 0; 1]\n\n3.  [0; 0; 1; 0] ↦ [0; 0; 1; 0]\n\n4.  [0; 0; 0; 1] ↦ [0; 1; 0; 0]",
+      "copy": "\\begin{gathered}qstateaction(matrix(4,1,[1,0,0,0]),matrix(4,1,[1,0,0,0]))\\\\qstateaction(matrix(4,1,[0,1,0,0]),matrix(4,1,[0,0,0,1]))\\\\qstateaction(matrix(4,1,[0,0,1,0]),matrix(4,1,[0,0,1,0]))\\\\qstateaction(matrix(4,1,[0,0,0,1]),matrix(4,1,[0,1,0,0]))\\end{gathered}"
+    },
+    {
+      "id": "IBM041-624fe895-M287",
+      "cell": 1,
+      "start": 32620,
+      "end": 32625,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M288",
+      "cell": 1,
+      "start": 32635,
+      "end": 32647,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M289",
+      "cell": 1,
+      "start": 32663,
+      "end": 32675,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M290",
+      "cell": 1,
+      "start": 32684,
+      "end": 32696,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M291",
+      "cell": 1,
+      "start": 32712,
+      "end": 32724,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M292",
+      "cell": 1,
+      "start": 32797,
+      "end": 33192,
+      "literal": "$$\n\\begin{pmatrix}\n1 & \\frac{1}{2} & \\frac{1}{2} & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & \\frac{1}{2} & \\frac{1}{2} & 1\n\\end{pmatrix}\n=\n\\frac{1}{2}\n\\begin{pmatrix}\n1 & 1 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & 0 & 1 & 1\n\\end{pmatrix}\n+\n\\frac{1}{2}\n\\begin{pmatrix}\n1 & 0 & 1 & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & 0 & 0 & 0\\\\[2mm]\n0 & 1 & 0 & 1\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M293",
+      "cell": 1,
+      "start": 33265,
+      "end": 33579,
+      "literal": "$$\n\\begin{aligned}\n\\vert 00 \\rangle & \\mapsto \\vert 00 \\rangle\\\\[1mm]\n\\vert 01 \\rangle & \\mapsto \\frac{1}{2} \\vert 00 \\rangle + \\frac{1}{2}\\vert 11\\rangle\\\\[3mm]\n\\vert 10 \\rangle & \\mapsto \\frac{1}{2} \\vert 00 \\rangle + \\frac{1}{2}\\vert 11\\rangle\\\\[2mm]\n\\vert 11 \\rangle & \\mapsto \\vert 11 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  [1; 0; 0; 0] ↦ [1; 0; 0; 0]\n\n2.  [0; 1; 0; 0] ↦ [0.5; 0; 0; 0.5]\n\n3.  [0; 0; 1; 0] ↦ [0.5; 0; 0; 0.5]\n\n4.  [0; 0; 0; 1] ↦ [0; 0; 0; 1]",
+      "copy": "\\begin{gathered}qstateaction(matrix(4,1,[1,0,0,0]),matrix(4,1,[1,0,0,0]))\\\\qstateaction(matrix(4,1,[0,1,0,0]),matrix(4,1,[1 ∕ 2,0,0,1 ∕ 2]))\\\\qstateaction(matrix(4,1,[0,0,1,0]),matrix(4,1,[1 ∕ 2,0,0,1 ∕ 2]))\\\\qstateaction(matrix(4,1,[0,0,0,1]),matrix(4,1,[0,0,0,1]))\\end{gathered}"
+    },
+    {
+      "id": "IBM041-624fe895-M294",
+      "cell": 1,
+      "start": 33844,
+      "end": 33847,
+      "literal": "$8$",
+      "status": "exact",
+      "display": "8",
+      "copy": "8"
+    },
+    {
+      "id": "IBM041-624fe895-M295",
+      "cell": 1,
+      "start": 33922,
+      "end": 33925,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M296",
+      "cell": 1,
+      "start": 33930,
+      "end": 33933,
+      "literal": "$7$",
+      "status": "exact",
+      "display": "7",
+      "copy": "7"
+    },
+    {
+      "id": "IBM041-624fe895-M297",
+      "cell": 1,
+      "start": 33961,
+      "end": 33964,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M298",
+      "cell": 1,
+      "start": 34012,
+      "end": 34015,
+      "literal": "$8$",
+      "status": "exact",
+      "display": "8",
+      "copy": "8"
+    },
+    {
+      "id": "IBM041-624fe895-M299",
+      "cell": 1,
+      "start": 34066,
+      "end": 34449,
+      "literal": "$$\n\\begin{aligned}\n  & \\vert 001 \\rangle \\langle 000 \\vert\n    + \\vert 010 \\rangle \\langle 001 \\vert\n    + \\vert 011 \\rangle \\langle 010 \\vert\n    + \\vert 100 \\rangle \\langle 011 \\vert\\\\[1mm]\n  & \\quad + \\vert 101 \\rangle \\langle 100 \\vert\n    + \\vert 110 \\rangle \\langle 101 \\vert\n    + \\vert 111 \\rangle \\langle 110 \\vert\n    + \\vert 000 \\rangle \\langle 111 \\vert.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Expected ')' at byte 168"
+    },
+    {
+      "id": "IBM041-624fe895-M300",
+      "cell": 1,
+      "start": 34484,
+      "end": 34551,
+      "literal": "$$\n\\sum_{k = 0}^{7} \\vert (k+1) \\bmod 8 \\rangle \\langle k \\vert,\n$$",
+      "status": "exact",
+      "display": "|mod(qadd(7, 1), 8)⟩ (dimension unresolved) · |7⟩_{8}† + |mod(qadd(6, 1), 8)⟩ (dimension unresolved) · |6⟩_{8}† + |mod(qadd(5, 1), 8)⟩ (dimension unresolved) · |5⟩_{8}† + |mod(qadd(4, 1), 8)⟩ (dimension unresolved) · |4⟩_{8}† + |mod(qadd(3, 1), 8)⟩ (dimension unresolved) · |3⟩_{8}† + |mod(qadd(2, 1), 8)⟩ (dimension unresolved) · |2⟩_{8}† + |mod(qadd(1, 1), 8)⟩ (dimension unresolved) · |1⟩_{8}† + |mod(qadd(0, 1), 8)⟩ (dimension unresolved) · |0⟩_{8}†",
+      "copy": "qadjacent(qcomputationalket(mod(qadd(7, 1), 8)), qdag(qbasis(7, 8))) + qadjacent(qcomputationalket(mod(qadd(6, 1), 8)), qdag(qbasis(6, 8))) + qadjacent(qcomputationalket(mod(qadd(5, 1), 8)), qdag(qbasis(5, 8))) + qadjacent(qcomputationalket(mod(qadd(4, 1), 8)), qdag(qbasis(4, 8))) + qadjacent(qcomputationalket(mod(qadd(3, 1), 8)), qdag(qbasis(3, 8))) + qadjacent(qcomputationalket(mod(qadd(2, 1), 8)), qdag(qbasis(2, 8))) + qadjacent(qcomputationalket(mod(qadd(1, 1), 8)), qdag(qbasis(1, 8))) + qadjacent(qcomputationalket(mod(qadd(0, 1), 8)), qdag(qbasis(0, 8)))"
+    },
+    {
+      "id": "IBM041-624fe895-M301",
+      "cell": 1,
+      "start": 34593,
+      "end": 34596,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M302",
+      "cell": 1,
+      "start": 34600,
+      "end": 34603,
+      "literal": "$7$",
+      "status": "exact",
+      "display": "7",
+      "copy": "7"
+    },
+    {
+      "id": "IBM041-624fe895-M303",
+      "cell": 1,
+      "start": 34735,
+      "end": 35040,
+      "literal": "$$\n\\begin{pmatrix}\n  0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\\\\n  1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\\\\n  0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\\\\n  0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\\\\n  0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\\\\n  0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\\\\n  0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\\\\n  0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\n\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "[0, 0, 0, 0, 0, 0, 0, 1; 1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 1, 0]",
+      "copy": "matrix(8,8,[0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M304",
+      "cell": 1,
+      "start": 35244,
+      "end": 35256,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M305",
+      "cell": 1,
+      "start": 35261,
+      "end": 35273,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M306",
+      "cell": 1,
+      "start": 35302,
+      "end": 35310,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M307",
+      "cell": 1,
+      "start": 35315,
+      "end": 35323,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M308",
+      "cell": 1,
+      "start": 35387,
+      "end": 35399,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M309",
+      "cell": 1,
+      "start": 35452,
+      "end": 35464,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M310",
+      "cell": 1,
+      "start": 35613,
+      "end": 35625,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M311",
+      "cell": 1,
+      "start": 35655,
+      "end": 35658,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM041-624fe895-M312",
+      "cell": 1,
+      "start": 35680,
+      "end": 35692,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M313",
+      "cell": 1,
+      "start": 35722,
+      "end": 35725,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM041-624fe895-M314",
+      "cell": 1,
+      "start": 35757,
+      "end": 35760,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM041-624fe895-M315",
+      "cell": 1,
+      "start": 35829,
+      "end": 35837,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M316",
+      "cell": 1,
+      "start": 35877,
+      "end": 35880,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM041-624fe895-M317",
+      "cell": 1,
+      "start": 35911,
+      "end": 35919,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M318",
+      "cell": 1,
+      "start": 35968,
+      "end": 35980,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M319",
+      "cell": 1,
+      "start": 35985,
+      "end": 35997,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M320",
+      "cell": 1,
+      "start": 36036,
+      "end": 36061,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M321",
+      "cell": 1,
+      "start": 36372,
+      "end": 36384,
+      "literal": "$M\\otimes N$",
+      "status": "exact",
+      "display": "M ⊗ N",
+      "copy": "qtensor('M','N')"
+    },
+    {
+      "id": "IBM041-624fe895-M322",
+      "cell": 1,
+      "start": 36402,
+      "end": 36475,
+      "literal": "$$\n  M = \\sum_{a,b\\in\\Sigma} \\alpha_{ab} \\vert a\\rangle \\langle b\\vert\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 27"
+    },
+    {
+      "id": "IBM041-624fe895-M323",
+      "cell": 1,
+      "start": 36482,
+      "end": 36554,
+      "literal": "$$\n  N = \\sum_{c,d\\in\\Gamma} \\beta_{cd} \\vert c\\rangle \\langle d\\vert\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 27"
+    },
+    {
+      "id": "IBM041-624fe895-M324",
+      "cell": 1,
+      "start": 36571,
+      "end": 36689,
+      "literal": "$$\n  M \\otimes N = \\sum_{a,b\\in\\Sigma} \\sum_{c,d\\in\\Gamma} \\alpha_{ab} \\beta_{cd} \\vert ac \\rangle \\langle bd \\vert\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM041-624fe895-M325",
+      "cell": 1,
+      "start": 36727,
+      "end": 36730,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM041-624fe895-M326",
+      "cell": 1,
+      "start": 36735,
+      "end": 36738,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM041-624fe895-M327",
+      "cell": 1,
+      "start": 36767,
+      "end": 36885,
+      "literal": "$$\n\\langle ac \\vert M \\otimes N \\vert bd\\rangle\n= \\langle a \\vert M \\vert b\\rangle \\langle c \\vert N \\vert d\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M328",
+      "cell": 1,
+      "start": 36921,
+      "end": 36935,
+      "literal": "$a,b\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ' and b ∈ 'Σ'",
+      "copy": "(qmember('a','Σ') and qmember('b','Σ'))"
+    },
+    {
+      "id": "IBM041-624fe895-M329",
+      "cell": 1,
+      "start": 36940,
+      "end": 36954,
+      "literal": "$c,d\\in\\Gamma$",
+      "status": "exact",
+      "display": "d ∈ 'Γ' and 299.792458 km ∕ ms ∈ 'Γ'",
+      "copy": "(qmember('d','Γ') and qmember(((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\")),'Γ'))"
+    },
+    {
+      "id": "IBM041-624fe895-M330",
+      "cell": 1,
+      "start": 37005,
+      "end": 37017,
+      "literal": "$M\\otimes N$",
+      "status": "exact",
+      "display": "M ⊗ N",
+      "copy": "qtensor('M','N')"
+    },
+    {
+      "id": "IBM041-624fe895-M331",
+      "cell": 1,
+      "start": 37079,
+      "end": 37238,
+      "literal": "$$\n  (M \\otimes N)\n  \\bigl( \\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle \\bigr)\n  = \\bigl(M \\vert\\phi\\rangle\\bigr) \\otimes\n  \\bigl(N \\vert\\psi\\rangle\\bigr)\n$$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M332",
+      "cell": 1,
+      "start": 37277,
+      "end": 37295,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M333",
+      "cell": 1,
+      "start": 37300,
+      "end": 37318,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M334",
+      "cell": 1,
+      "start": 37349,
+      "end": 37367,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M335",
+      "cell": 1,
+      "start": 37398,
+      "end": 37406,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM041-624fe895-M336",
+      "cell": 1,
+      "start": 37426,
+      "end": 37444,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M337",
+      "cell": 1,
+      "start": 37459,
+      "end": 37467,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM041-624fe895-M338",
+      "cell": 1,
+      "start": 37642,
+      "end": 38782,
+      "literal": "$$\n\\begin{gathered}\n  \\begin{pmatrix}\n    \\alpha_{11} & \\cdots & \\alpha_{1m} \\\\\n    \\vdots & \\ddots & \\vdots \\\\\n    \\alpha_{m1} & \\cdots & \\alpha_{mm}\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n    \\beta_{11} & \\cdots & \\beta_{1k} \\\\\n    \\vdots & \\ddots & \\vdots\\\\\n    \\beta_{k1} & \\cdots & \\beta_{kk}\n  \\end{pmatrix}\n  \\hspace{6cm}\\\\[8mm]\n  \\hspace{1cm} =\n  \\begin{pmatrix}\n    \\alpha_{11}\\beta_{11} & \\cdots & \\alpha_{11}\\beta_{1k} & &\n    \\alpha_{1m}\\beta_{11} & \\cdots & \\alpha_{1m}\\beta_{1k} \\\\\n    \\vdots & \\ddots & \\vdots & \\hspace{2mm}\\cdots\\hspace{2mm} & \\vdots & \\ddots & \\vdots \\\\\n    \\alpha_{11}\\beta_{k1} & \\cdots & \\alpha_{11}\\beta_{kk} & &\n    \\alpha_{1m}\\beta_{k1} & \\cdots & \\alpha_{1m}\\beta_{kk} \\\\[2mm]\n    & \\vdots & & \\ddots & & \\vdots & \\\\[2mm]\n    \\alpha_{m1}\\beta_{11} & \\cdots & \\alpha_{m1}\\beta_{1k} & &\n    \\alpha_{mm}\\beta_{11} & \\cdots & \\alpha_{mm}\\beta_{1k} \\\\\n    \\vdots & \\ddots & \\vdots & \\hspace{2mm}\\cdots\\hspace{2mm} & \\vdots & \\ddots & \\vdots \\\\\n    \\alpha_{m1}\\beta_{k1} & \\cdots & \\alpha_{m1}\\beta_{kk} & &\n    \\alpha_{mm}\\beta_{k1} & \\cdots & \\alpha_{mm}\\beta_{kk}\n  \\end{pmatrix}\n\\end{gathered}\n$$",
+      "status": "diagnostic",
+      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM041-624fe895-M339",
+      "cell": 1,
+      "start": 38862,
+      "end": 38884,
+      "literal": "$M_0, \\ldots, M_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M340",
+      "cell": 1,
+      "start": 38947,
+      "end": 38977,
+      "literal": "$\\Sigma_0,\\ldots,\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M341",
+      "cell": 1,
+      "start": 39003,
+      "end": 39036,
+      "literal": "$M_{n-1}\\otimes\\cdots\\otimes M_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 21"
+    },
+    {
+      "id": "IBM041-624fe895-M342",
+      "cell": 1,
+      "start": 39071,
+      "end": 39271,
+      "literal": "$$\n\\langle a_{n-1}\\cdots a_0 \\vert M_{n-1}\\otimes\\cdots\\otimes M_0 \\vert b_{n-1}\\cdots b_0\\rangle\n= \\langle a_{n-1} \\vert M_{n-1} \\vert b_{n-1} \\rangle \\cdots\\langle a_0 \\vert M_0 \\vert b_0 \\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 157"
+    },
+    {
+      "id": "IBM041-624fe895-M343",
+      "cell": 1,
+      "start": 39310,
+      "end": 39368,
+      "literal": "$a_0,b_0\\in\\Sigma_0,\\ldots,a_{n-1},b_{n-1}\\in\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 15"
+    },
+    {
+      "id": "IBM041-624fe895-M344",
+      "cell": 1,
+      "start": 39636,
+      "end": 39762,
+      "literal": "$$\n  (M_{n-1}\\otimes\\cdots\\otimes M_0)(N_{n-1}\\otimes\\cdots\\otimes N_0)\n  = (M_{n-1} N_{n-1})\\otimes\\cdots\\otimes (M_0 N_0)\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 25"
+    },
+    {
+      "id": "IBM041-624fe895-M345",
+      "cell": 1,
+      "start": 39807,
+      "end": 39827,
+      "literal": "$M_0,\\ldots,M_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M346",
+      "cell": 1,
+      "start": 39832,
+      "end": 39851,
+      "literal": "$N_0\\ldots,N_{n-1}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\ldots at byte 10"
+    },
+    {
+      "id": "IBM041-624fe895-M347",
+      "cell": 1,
+      "start": 39880,
+      "end": 39914,
+      "literal": "$M_0 N_0, \\ldots, M_{n-1} N_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM041-624fe895-M348",
+      "cell": 1,
+      "start": 40020,
+      "end": 40023,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM041-624fe895-M349",
+      "cell": 1,
+      "start": 40056,
+      "end": 40068,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M350",
+      "cell": 1,
+      "start": 40070,
+      "end": 40073,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM041-624fe895-M351",
+      "cell": 1,
+      "start": 40106,
+      "end": 40118,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M352",
+      "cell": 1,
+      "start": 40224,
+      "end": 40249,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M353",
+      "cell": 1,
+      "start": 40272,
+      "end": 40284,
+      "literal": "$M\\otimes N$",
+      "status": "exact",
+      "display": "M ⊗ N",
+      "copy": "qtensor('M','N')"
+    },
+    {
+      "id": "IBM041-624fe895-M354",
+      "cell": 1,
+      "start": 40416,
+      "end": 40428,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M355",
+      "cell": 1,
+      "start": 40433,
+      "end": 40445,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M356",
+      "cell": 1,
+      "start": 40497,
+      "end": 40515,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M357",
+      "cell": 1,
+      "start": 40520,
+      "end": 40538,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM041-624fe895-M358",
+      "cell": 1,
+      "start": 40565,
+      "end": 40590,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M359",
+      "cell": 1,
+      "start": 40621,
+      "end": 40662,
+      "literal": "$\\vert\\phi\\rangle\\otimes\\vert\\psi\\rangle$",
+      "status": "diagnostic",
+      "message": "A named ket must evaluate to a column vector with at most 1024 rows. For an integer basis index, specify the dimension, for example |k>_4."
+    },
+    {
+      "id": "IBM041-624fe895-M360",
+      "cell": 1,
+      "start": 40705,
+      "end": 40708,
+      "literal": "$M$",
+      "status": "exact",
+      "display": "M",
+      "copy": "'M'"
+    },
+    {
+      "id": "IBM041-624fe895-M361",
+      "cell": 1,
+      "start": 40713,
+      "end": 40716,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM041-624fe895-M362",
+      "cell": 1,
+      "start": 40800,
+      "end": 40825,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M363",
+      "cell": 1,
+      "start": 40856,
+      "end": 40868,
+      "literal": "$M\\otimes N$",
+      "status": "exact",
+      "display": "M ⊗ N",
+      "copy": "qtensor('M','N')"
+    },
+    {
+      "id": "IBM041-624fe895-M364",
+      "cell": 1,
+      "start": 41023,
+      "end": 41026,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M365",
+      "cell": 1,
+      "start": 41087,
+      "end": 41090,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M366",
+      "cell": 1,
+      "start": 41128,
+      "end": 41133,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM041-624fe895-M367",
+      "cell": 1,
+      "start": 41197,
+      "end": 41284,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & \\frac{1}{2}\\\\[1mm]\n    0 & \\frac{1}{2}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[1, 0.5; 0, 0.5]",
+      "copy": "matrix(2,2,[1,1 ∕ 2,0,1 ∕ 2])"
+    },
+    {
+      "id": "IBM041-624fe895-M368",
+      "cell": 1,
+      "start": 41326,
+      "end": 41338,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M369",
+      "cell": 1,
+      "start": 41405,
+      "end": 41417,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M370",
+      "cell": 1,
+      "start": 41467,
+      "end": 41492,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M371",
+      "cell": 1,
+      "start": 41524,
+      "end": 41854,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & \\frac{1}{2}\\\\[1mm]\n    0 & \\frac{1}{2}\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n    0 & 1\\\\[1mm]\n    1 & 0\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    0 & 1 & 0 & \\frac{1}{2} \\\\[1mm]\n    1 & 0 & \\frac{1}{2} & 0 \\\\[1mm]\n    0 & 0 & 0 & \\frac{1}{2} \\\\[1mm]\n    0 & 0 & \\frac{1}{2} & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM041-624fe895-M372",
+      "cell": 1,
+      "start": 42313,
+      "end": 42325,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M373",
+      "cell": 1,
+      "start": 42333,
+      "end": 42336,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM041-624fe895-M374",
+      "cell": 1,
+      "start": 42364,
+      "end": 42376,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM041-624fe895-M375",
+      "cell": 1,
+      "start": 42443,
+      "end": 42468,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "diagnostic",
+      "message": "Tuples require at most 32 valid scalar, binary-string or tuple entries."
+    },
+    {
+      "id": "IBM041-624fe895-M376",
+      "cell": 1,
+      "start": 42496,
+      "end": 42766,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & 1\\\\[1mm]\n    0 & 0\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n    1 & 0\\\\[1mm]\n    0 & 1\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    1 & 0 & 1 & 0 \\\\[1mm]\n    0 & 1 & 0 & 1 \\\\[1mm]\n    0 & 0 & 0 & 0 \\\\[1mm]\n    0 & 0 & 0 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Operation",
+      "cell": 1,
+      "start": 31083,
+      "end": 31209
+    },
+    {
+      "title": "Operation",
+      "cell": 1,
+      "start": 32526,
+      "end": 32735
+    }
+  ]
+}
