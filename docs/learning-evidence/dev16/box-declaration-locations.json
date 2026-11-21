@@ -1,0 +1,23 @@
+{
+  "previous_revision": "c5713e5d",
+  "frozen_sha256": "49e56ab422cf55b2e2795cbe755415019068676e1d873b1c9e1f13060d05e7dc",
+  "compiler_source_sha256": "48407e3ae2e812698b3051f10ea986b0a3b51cf3fc8974a26cf01507464f6646",
+  "declarations": [
+    {
+      "declaration": "int n;",
+      "before": "main.qasm: Integer declarations in this control structure are not yet supported.",
+      "candidate": "nested \u03ba/control.inc:3:5: Integer declarations in this control structure are not yet supported."
+    },
+    {
+      "declaration": "angle[32] phi;",
+      "before": "main.qasm: Integer declarations in this control structure are not yet supported.",
+      "candidate": "nested \u03ba/control.inc:3:5: Numeric declarations in this control structure are not yet supported."
+    },
+    {
+      "declaration": "float[64] theta;",
+      "before": "main.qasm: Integer declarations in this control structure are not yet supported.",
+      "candidate": "nested \u03ba/control.inc:3:5: Numeric declarations in this control structure are not yet supported."
+    }
+  ],
+  "regression": "test_box_declaration_locations exercises source and frozen routes with module headers and ordinary includes."
+}

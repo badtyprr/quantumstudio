@@ -162,6 +162,23 @@ class FileImportTests(unittest.TestCase):
                     message = self.run_import(command, args, success=False)
                     self.assertEqual(message.strip(), "nested κ/end.inc:3:3: Use at most 4096 variable slots.")
 
+    def test_box_declaration_locations(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/outer.inc";')
+        self.put("nested κ/outer.inc", 'include "box.inc";')
+        for command in COMMANDS:
+            for module in (False, True):
+                header = "OPENQASM 3;" if module else "// included body"
+                args = ["--classical", "--source-file", str(main)]
+                if module:
+                    args.append("--module-headers")
+                for declaration, kind in [("int n;", "Integer"), ("float[64] theta;", "Numeric"),
+                                          ("angle[32] phi;", "Numeric")]:
+                    with self.subTest(command=command, module=module, declaration=declaration):
+                        self.put("nested κ/box.inc", header + "\r\nbox {\r\n    " + declaration + "\r\n}")
+                        message = self.run_import(command, args, success=False)
+                        self.assertEqual(message.strip(), "nested κ/box.inc:3:5: " + kind +
+                                         " declarations in this control structure are not yet supported.")
+
     def test_gate_arithmetic_locations(self):
         main = self.put('main.qasm', 'OPENQASM 3; include "stdgates.inc"; include "nested κ/angles.inc";')
         for body in ('qubit q; rx(1/0) q;', 'gate g a { rx(1/0) a; } qubit q; g q;'):

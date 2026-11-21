@@ -839,8 +839,10 @@ def resolve_integer_scopes(program):
             elif isinstance(statement,(ast.QuantumGateDefinition,ast.SubroutineDefinition)):
                 result.append(statement)
             else:
-                if any(isinstance(item,ast.ClassicalDeclaration) and isinstance(item.type,RUNTIME_SCALAR_TYPES) for item in nodes(statement)):
-                    raise ValueError('Integer declarations in this control structure are not yet supported.')
+                for item in nodes(statement):
+                    if isinstance(item, ast.ClassicalDeclaration) and isinstance(item.type, RUNTIME_SCALAR_TYPES):
+                        kind = 'Numeric' if isinstance(item.type, NUMERIC_TYPES) else 'Integer'
+                        raise error_at(item, kind + ' declarations in this control structure are not yet supported.')
                 if isinstance(statement,ast.QuantumGate):
                     expression(statement.arguments,env);expression(statement.modifiers,env);expression(statement.qubits,env)
                 elif isinstance(statement,ast.QubitDeclaration):
