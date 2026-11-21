@@ -48,3 +48,26 @@ for q in [((-1,2),(0,-3)),((2,-1,0),(3,-2,1),(0,2,-1))]:
         rhs=objective.replace("'Q'",matrix(q)).replace("'z'",spins)
         assert run(lhs)=="1" and run(f"({rhs})==({cost})")=="1",(q,bits)
 print("Verified the unshifted binary-to-spin objective on twelve assignments.")
+
+# Spin energies and the diagonal Pauli Hamiltonian agree on every basis word.
+energy=run(source[27]["literal"])
+comparison=run(source[29]["literal"])
+hamiltonian=run(source[30]["literal"])
+for q in [((-1,2),(0,-3)),((2,-1,0),(3,-2,1),(0,2,-1))]:
+    width=len(q);indices=range(width)
+    fields=[-sum(q[i][j]+q[j][i] for j in indices) for i in indices]
+    field_vector="vector("+",".join(map(str,fields))+")"
+    def bind(expr):
+        return expr.replace("'Q'",matrix(q)).replace("'b'",field_vector)
+    diag=[]
+    for bits in itertools.product(range(2),repeat=width):
+        z=[1-2*bit for bit in bits]
+        value=sum(q[i][j]*z[i]*z[j] for i in indices for j in indices)+sum(fields[i]*z[i] for i in indices)
+        diag.append(value)
+        expr=bind(energy).replace("'z'","vector("+",".join(map(str,z))+")")
+        assert run(f"({expr})==({value})")=="1"
+    matrix_rows=[[v if i==j else 0 for j in range(len(diag))] for i,v in enumerate(diag)]
+    assert run(bind(hamiltonian).replace('qoperatorref("H_C")',matrix(matrix_rows)))=="1"
+    assert run(bind(comparison).replace("n)",f"{width})"))=="1"
+assert run("qisingequivalent(matrix(2,2,[-1,0,0,-1]),vector(-5,-5),2)")=="0"
+print("Verified spin energies, every diagonal entry, and matching and mismatched optimum sets.")

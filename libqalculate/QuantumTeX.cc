@@ -2258,6 +2258,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s.replace(m.position(),m.length(),"qmeanat(\""+m[1].str()+"\","+parameter+")");
   }
  }
+ if(s.find("Q")!=std::string::npos && (s.find("^T")!=std::string::npos || s.find("H_C")!=std::string::npos)) {
+  std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+  if(compact=="z^TQz+b^Tz")return "qisingenergy(\"Q\",\"b\",\"z\")";
+  if(compact=="H_C=\\sum_{ij}Q_{ij}Z_iZ_j+\\sum_ib_iZ_i")
+   return "qcompare(qoperatorref(\"H_C\"),qisinghamiltonian(\"Q\",\"b\"),4)";
+  static const std::regex equivalent(R"(^\\min_\{x\\in\\\{0,1\\\}\^([a-z])\}x\^TQx\\Longleftrightarrow\\min_\{z\\in\\\{-1,1\\\}\^\1\}z\^TQz\+b\^Tz$)");
+  std::smatch m;if(std::regex_match(compact,m,equivalent))return "qisingequivalent(\"Q\",\"b\","+m[1].str()+")";
+ }
  if(s.find("\\sum_{ij}")!=std::string::npos && s.find("Q_{ij}")!=std::string::npos) {
   // Each index ranges over the supplied square matrix. Evaluate the body
   // with the actual coefficient and the two selected vector entries.
