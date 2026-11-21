@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-codes.ipynb",
+  "notebook_sha256": "1338b8f7c27667ecf3b15be528e9903a9972752a2fb4586f954300243f15361b",
+  "worker_sha256": "3e0b81cec3bd9475e0720bd441ba1213efefd9ee7246d6a26d69e2e17ff66c0e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "5f4f92e7958d3c382448c06aed0c8389d01eeaa9d362489ce152d406444137a2",
+  "suite": {
+    "passed": true,
+    "checks": 738,
+    "calls": 82,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 82,
+    "restored_identically": 82,
+    "stable_after_text_reentry": 82
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
