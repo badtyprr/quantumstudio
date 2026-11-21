@@ -1808,7 +1808,7 @@ class TeXReader {
    {"uparrow","↑"},{"downarrow","↓"},
    {"infty","infinity"},{"pi","pi"},{"hbar","ℏ"},{"ell","ℓ"},{"alpha","α"},{"beta","β"},{"gamma","γ"},{"delta","δ"},{"theta","θ"},
    {"phi","φ"},{"Phi","Φ"},{"varphi","φ"},{"psi","ψ"},{"Psi","Ψ"},{"rho","ρ"},{"sigma","σ"},
-   {"lambda","λ"},{"omega","ω"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
+   {"lambda","λ"},{"omega","ω"},{"mu","μ"},{"epsilon","ε"},{"varepsilon","ε"},{"chi","χ"},
    {"zeta","ζ"},{"eta","η"},{"iota","ι"},{"kappa","κ"},{"nu","ν"},{"xi","ξ"},
    {"clubsuit","♣"},{"diamondsuit","♢"},{"heartsuit","♡"},{"spadesuit","♠"},
    {"omicron","ο"},{"tau","τ"},{"upsilon","υ"},{"vartheta","θ"},{"varrho","ρ"},
@@ -2040,7 +2040,14 @@ class TeXReader {
     bool fourier=result.size()>=3 && result.substr(result.size()-3)=="QFT" &&
      (result.size()==3 || (!std::isalnum((unsigned char)result[result.size()-4]) && result[result.size()-4]!='_' && (unsigned char)result[result.size()-4]<128));
     ++pos; space(); std::string index;bool grouped=false;
-    if(pos<input.size() && input[pos]=='{') {grouped=true;index=group();}
+    if(input.compare(pos,6,"\\text{")==0 || input.compare(pos,7,"{\\text{")==0) {
+     static const std::regex textIndex(R"((?:\\text\{([A-Za-z0-9]+)\}|\{\\text\{([A-Za-z0-9]+)\}\}))");
+     std::smatch label;grouped=true;
+     if(std::regex_search(input.cbegin()+pos,input.cend(),label,textIndex,std::regex_constants::match_continuous)) {
+      index=label[1].str()+label[2].str();pos+=label.length();
+     } else index=input[pos]=='{' ? group() : argument();
+    }
+    else if(pos<input.size() && input[pos]=='{') {grouped=true;index=group();}
     else if(pos<input.size() && input[pos]=='(') {grouped=true;++pos;index=read(')');}
     else if(fourier && pos<input.size() && std::isdigit((unsigned char)input[pos])) {
      while(pos<input.size() && std::isdigit((unsigned char)input[pos]))index+=input[pos++];
@@ -2300,6 +2307,22 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(s.find("e^{")!=std::string::npos && s.find('H')!=std::string::npos) {
+  // A Krylov matrix element has the same Hamiltonian in both time
+  // evolutions and in the operator between them. dt is one time step.
+  if(s.find("H\\,dt}")!=std::string::npos) {
+   static const std::regex step(R"(e\^\{(-?)i(?:\\,)?(\([a-z]-[a-z]\)|[a-z])?(?:\\,)?H\\,dt\})");
+   const std::string original=s;
+   std::smatch stepMatch;
+   while(std::regex_search(s,stepMatch,step)) {
+    std::string factor=stepMatch[2].matched ? stepMatch[2].str() : "1";
+    std::string time=(stepMatch[1].matched && !stepMatch[1].str().empty() ? "" : "-")+factor+"*\"dt\"";
+    s.replace(stepMatch.position(),stepMatch.length(),"qpropagator(\"H\","+time+")");
+   }
+   if(s!=original) {
+    static const std::regex insertion(R"((\)|\|)H(?=qpropagator\())");
+    s=std::regex_replace(s,insertion,"$1qoperatorref(\"H\")*");
+   }
+  }
   static const std::regex dimensioned(R"(e\^\{\s*(?:-|−)\s*i\s*H\s*([a-z])\s*/\s*\\hbar\s*\})");
   s=std::regex_replace(s,dimensioned,"qpropagator(\"H\",($1/ℏ))");
   static const std::regex evolution(R"(e\^\{\s*(?:-|−)\s*i\s*H(?:_([A-Z]))?\s*([a-z])(?:/([a-z0-9]))?\s*\})");
@@ -2318,6 +2341,109 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(distinct.size()==2)return "qoperatorunequal("+quantumTeX(distinct[0])+","+quantumTeX(distinct[1])+")";
    static const std::regex initialState(R"(\\phi\(([a-z])=0\))");
    s=std::regex_replace(s,initialState,"\\phi(0)");
+  }
+ }
+ if(mathWrapper) {
+  static const std::regex gap(R"(^\s*\\vert\s*(E)\s*-\s*E_(\d)\s*\\vert\s*>\s*\\delta\s*$)");
+  std::smatch gapMatch;
+  if(std::regex_match(s,gapMatch,gap))
+   return "qdistancegreater(\"E\",\"E_"+gapMatch[2].str()+"\",\"δ\")";
+  if(s.find("T_")!=std::string::npos && s.find("\\left(")!=std::string::npos) {
+   static const std::regex chebyshev(R"(T_([a-z0-9])(\^\{-1\})?\s*\\left\()");
+   std::smatch polynomial;
+   bool found=false;
+   while(std::regex_search(s,polynomial,chebyshev)) {
+    std::string degree=polynomial[1].str();
+    if(!isdigit((unsigned char)degree[0]))degree="\""+degree+"\"";
+    std::string value=(polynomial[2].matched ? "1/" : "")+std::string("qchebyshev(")+degree+",";
+    s.replace(polynomial.position(),polynomial.length(),value);found=true;
+   }
+   if(found) {
+    static const std::regex trailingSpace(R"(,\s*\\quad\s*$)");
+    s=std::regex_replace(s,trailingSpace,"");
+    static const std::regex minimax(R"(\\beta\(\s*([a-z]),\s*([a-z]),\s*([a-z])\s*\))");
+    s=std::regex_replace(s,minimax,"qscalarat(\"β\",vector(\"$1\",\"$2\",\"$3\"))");
+    static const std::regex extremal(R"(p\^\*\s*(?:\\left)?\()");
+    s=std::regex_replace(s,extremal,"qscalarat(\"p_star\",");
+    static const std::regex energyFunction(R"(([fg])\(E\))");
+    s=std::regex_replace(s,energyFunction,"qscalarat(\"$1\",\"E\")");
+    static const std::regex step(R"((?:\\,)?dt)");
+    s=std::regex_replace(s,step,"*\"dt\"");
+   }
+  }
+  static const std::regex projectedEigenproblem(R"(^\s*\\tilde\{H\}\s*\\vec\{([a-z])\}\s*=\s*([a-z])\s+S\s*\\vec\{\1\}\s*$)");
+  std::smatch eigenproblem;
+  if(std::regex_match(s,eigenproblem,projectedEigenproblem)) {
+   std::string state="qvectorref(\"vector_"+eigenproblem[1].str()+"\")";
+   return "qcompare(qmul(qoperatorref(\"H_tilde\"),"+state+"),qmul(\""+eigenproblem[2].str()+
+      "\",qmul(qoperatorref(\"S\"),"+state+")),4)";
+  }
+  if(s.find("f(H)")!=std::string::npos && s.find("f(E_")!=std::string::npos) {
+   static const std::regex hFilter(R"(f\(H\))");
+   static const std::regex energyFilter(R"(f\(E_([a-z])\))");
+   static const std::regex amplitude(R"(\\gamma_([a-z])(?=f\(E_))");
+   s=std::regex_replace(s,amplitude,"qindexedlabel(\"γ_\",$1,\"\")*");
+   s=std::regex_replace(s,hFilter,"qpolynomialat(\"f\",qoperatorref(\"H\"))");
+   s=std::regex_replace(s,energyFilter,"qpolynomialat(\"f\",E_$1)");
+  }
+  // A cost on a ket and a filter on an energy have scalar function values.
+  static const std::regex scalarInput(R"((^|[^A-Za-z])f\(\s*(?=\||E_(?:[A-Za-z0-9]|\{)))");
+  s=std::regex_replace(s,scalarInput,"$1qscalarat(\"f\",");
+  if(s.find("qscalarat(")!=std::string::npos) {
+   static const std::regex polynomialAtZero(R"((^|[^A-Za-z])p\(0\))");
+   s=std::regex_replace(s,polynomialAtZero,"$1qscalarat(\"p\",0)");
+  }
+  // Indexed energies in a weighted energy sum are scalars, including E_0(1).
+  if(s.find("\\sum")!=std::string::npos) {
+   static const std::regex energyFactor(R"((E_(?:[0-9]|\{[0-9]+\}))\s*\(([0-9]+)\))");
+   s=std::regex_replace(s,energyFactor,"$1 * ($2)");
+  }
+  // A named shot count is a single variable in sampling-error formulas.
+  static const std::regex shotRoot(R"(\\sqrt\{\s*shots\s*\})");
+  s=std::regex_replace(s,shotRoot,"qsqrt(\"shots\")");
+  // A proportionality coefficient between two named kets is a scalar.
+  static const std::regex scaledKet(R"((\\rangle\s*=\s*)c\s*(?=\|))");
+  s=std::regex_replace(s,scaledKet,"$1\"c\"*");
+ }
+ if(s.find("H_{\\mathcal{")!=std::string::npos) {
+  static const std::regex projected(R"(H_\{\\mathcal\{([A-Z])\}\^\{\(([a-z])\)\}\})");
+  std::smatch m;
+  if(std::regex_search(s,m,projected)) {
+   const std::string index=m[2].str();
+   s=std::regex_replace(s,projected,"qoperatorref(qindexedlabel(\"H_$1(\",\"$2\",\")\"))");
+   // The parenthesized superscripts in this subspace eigenproblem
+   // identify the sampled batch on the eigenvector and energy as well.
+   const std::string superscript="^{("+index+")}";
+   for(const std::string &name:{std::string("\\psi"),std::string("E")}) {
+    std::string token=name+superscript;
+    std::string value=name=="E" ? "qindexedlabel(\"E(\",\""+index+"\",\")\")" : "\\psi("+index+")";
+    for(size_t pos=s.find(token);pos!=std::string::npos;pos=s.find(token,pos+value.size()))
+     s.replace(pos,token.size(),value);
+   }
+  }
+ }
+ if(s.find("U_{")!=std::string::npos) {
+  static const std::regex applied(R"(U_\{\\text\{([A-Za-z]+)\}\}\s*\()");
+  s=std::regex_replace(s,applied,"qoperatorat(\"U_$1\",");
+  static const std::regex plainApplied(R"(U_\{([A-Za-z]{2,})\}\s*\()");
+  s=std::regex_replace(s,plainApplied,"qoperatorat(\"U_$1\",");
+  static const std::regex named(R"(U_\{\\text\{([A-Za-z]+)\}\})");
+  s=std::regex_replace(s,named,"qoperatorref(\"U_$1\")");
+ }
+ if(s.find("\\vec{")!=std::string::npos) {
+  static const std::regex vectorLabel(R"(\\vec\{(\\[A-Za-z]+|[A-Za-z])(?:_([0-9a-zA-Z]))?\}(?:_(?:\\text\{([A-Za-z]+)\}|\{([A-Za-z](?:[+\-][0-9]+)?|[0-9]+)\}|([a-zA-Z0-9])))?)");
+  std::smatch m;
+  while(std::regex_search(s,m,vectorLabel)) {
+   if(m[2].matched && (m[3].matched || m[4].matched || m[5].matched))
+    throw std::runtime_error("A vector label has two subscripts.");
+   std::string base=quantumTeX(m[1].str()),label;
+   if(m[3].matched)label="\""+base+"_"+m[3].str()+"\"";
+   else {
+    std::string sub=m[2].str()+m[4].str()+m[5].str();
+    if(!sub.empty() && asciiLetter(sub[0]))sub="\""+sub.substr(0,1)+"\""+sub.substr(1);
+    label=sub.empty() ? "\""+base+"\"" : "qindexedlabel(\""+base+"_\",("+sub+"),\"\")";
+   }
+   s.replace(m.position(),m.length(),"qvectorref("+label+")");
   }
  }
  if(s.find("\\langle")!=std::string::npos) {
@@ -2597,7 +2723,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // may be ordinary exponentiation or part of an existing register binder.
  if(mathWrapper) {
   std::smatch m;
-  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\))\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
+  static const std::regex ordinal(R"(^\s*(\([A-Za-z0-9+\- ]+\)|[a-z]|[0-9]+)\s*\^\\text\{(?:st|nd|rd|th)\}\s*$)");
   if(std::regex_match(s,m,ordinal))return quantumTeX(m[1].str());
   static const std::regex sampledSet(R"(^\s*\\\{([a-z])_([a-z])\\\}_\{\2=(\d+)\}\^([A-Za-z0-9]+)\s*$)");
   if(std::regex_match(s,m,sampledSet))return "qindexedset(\""+m[1].str()+"_\","+m[3].str()+","+m[4].str()+",vector())";

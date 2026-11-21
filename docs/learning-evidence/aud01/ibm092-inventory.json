@@ -1,0 +1,3905 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
+  "source_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "revision": "382b202f741714ebda4a862f97b49fb0a2ca5945",
+  "mode": "Quantum notation",
+  "markdown_cells": 65,
+  "code_cells": 45,
+  "summary": {
+    "exact": 322,
+    "diagnostic": 68
+  },
+  "figures": [
+    {
+      "cell": 9,
+      "start": 785,
+      "end": 1067,
+      "alt": "An image showing a very large matrix being projected onto a Krylov subspace, that is, rows of Krylov vectors making a matrix on the left, a Hamiltonian, then columns of Krylov vectors on the right.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig1.avif"
+    },
+    {
+      "cell": 12,
+      "start": 1486,
+      "end": 1683,
+      "alt": "A true eigenvector labeled x, a guess labeled x 0 and a graphical representation of hte error between those two.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig2.avif"
+    },
+    {
+      "cell": 12,
+      "start": 2044,
+      "end": 2236,
+      "alt": "A true eigenvector and an update to the initial guess. The updated guess is closer to the true eigenvector.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig3.avif"
+    },
+    {
+      "cell": 46,
+      "start": 0,
+      "end": 232,
+      "alt": "A circuit diagram with many layers indicating that the circuit must be used many times with different states to perform the modified Hadamard test.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig4.avif"
+    },
+    {
+      "cell": 64,
+      "start": 505,
+      "end": 755,
+      "alt": "An image of a quantum circuit diagram with many layers indicating that the circuit must be evaluated for many different states in order to perform the Hadamard test.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig5.avif"
+    },
+    {
+      "cell": 69,
+      "start": 341,
+      "end": 622,
+      "alt": "An image of a quantum circuit diagram with many layers indicating that the circuit must be evaluated for many different unitary operators in order to perform the modified, efficient Hadamard test.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig6.avif"
+    },
+    {
+      "cell": 107,
+      "start": 348,
+      "end": 661,
+      "alt": "A flow-chart overview of QKD: start with a reference state, evolve the state to approximate Krylov vectors, project into the Krylov subspace, diagonalize the projected subspace classically, and determine ground state properties.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig7.avif"
+    },
+    {
+      "cell": 107,
+      "start": 939,
+      "end": 1218,
+      "alt": "A table describing scaling of different processes classically and in the quantum approach to Krylov methods. Some quantum steps have no analog. The scalings are the same as those stated in text.",
+      "path": "/learning/images/courses/quantum-diagonalization-algorithms/krylov/kqd-fig8.avif"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM092-bdde16a2-M001",
+      "cell": 2,
+      "start": 58,
+      "end": 69,
+      "literal": "$N\\times N$",
+      "status": "exact",
+      "display": "N^2",
+      "copy": "'N'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M002",
+      "cell": 2,
+      "start": 77,
+      "end": 80,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M003",
+      "cell": 2,
+      "start": 99,
+      "end": 114,
+      "literal": "$\\mathcal{K}^r$",
+      "status": "exact",
+      "display": "K^r",
+      "copy": "'K'^'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M004",
+      "cell": 2,
+      "start": 124,
+      "end": 127,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M005",
+      "cell": 2,
+      "start": 210,
+      "end": 213,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M006",
+      "cell": 2,
+      "start": 221,
+      "end": 232,
+      "literal": "$r-1\\leq N$",
+      "status": "exact",
+      "display": "N ≥ r − 1",
+      "copy": "('N')>=('r' − 1)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M007",
+      "cell": 2,
+      "start": 258,
+      "end": 275,
+      "literal": "$\\vert v \\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M008",
+      "cell": 2,
+      "start": 278,
+      "end": 413,
+      "literal": "$$\n\\mathcal{K}^r = \\text{span}\\left\\{ \\vert v \\rangle, A \\vert v \\rangle, A^2 \\vert v \\rangle, ..., A^{r-1} \\vert v \\rangle \\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM092-bdde16a2-M009",
+      "cell": 2,
+      "start": 838,
+      "end": 849,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M010",
+      "cell": 2,
+      "start": 881,
+      "end": 893,
+      "literal": "$A|v\\rangle$",
+      "status": "exact",
+      "display": "(A) (qketstate('v'))",
+      "copy": "qadjacent('A',qketstate('v'))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M011",
+      "cell": 2,
+      "start": 1000,
+      "end": 1011,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M012",
+      "cell": 2,
+      "start": 1023,
+      "end": 1272,
+      "literal": "$$\n\\begin{aligned}\n|v_0\\rangle &=\\frac{|v\\rangle}{\\left|\\left| |v\\rangle \\right|\\right|}\\\\\n\n|v_1\\rangle &=\\frac{A|v\\rangle-\\langle v_0|A|v\\rangle |v_0\\rangle}{\\left|\\left|A|v\\rangle-\\langle v_0|A|v\\rangle |v_0\\rangle \\right|\\right|}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  |v_0⟩ = qketstate('v') ∕ qnorm(qketstate('v'))\n\n2.  |v_1⟩ = ((A) (qketstate('v')) − ⟨v_0| A · (qketstate('v') ⊗ |v_0⟩)) / qnorm(qsub(qadjacent('A', qketstate('v')), qmul(qmul(qdag(qnamedket(\"v_0\")), 'A'), qtensor(qketstate('v'), qnamedket(\"v_0\")))))",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"v_0\"),qketstate('v') ∕ qnorm(qketstate('v')),4)\\\\qcompare(qketstate(\"v_1\"),qmul(qsub(qadjacent('A',qketstate('v')),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qketstate('v'),qnamedket(\"v_0\")))),qpower(qnorm(qsub(qadjacent('A',qketstate('v')),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qketstate('v'),qnamedket(\"v_0\"))))),−1)),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM092-bdde16a2-M013",
+      "cell": 2,
+      "start": 1301,
+      "end": 1332,
+      "literal": "$|v_0\\rangle \\perp |v_1\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\perp at byte 18"
+    },
+    {
+      "id": "IBM092-bdde16a2-M014",
+      "cell": 2,
+      "start": 1340,
+      "end": 1532,
+      "literal": "$$\n\\langle v_0 | v_1\\rangle=\\frac{\\langle v_0 | A|v\\rangle-\\langle v_0 |A|v\\rangle\\langle v_0|v_0\\rangle}{\\left|\\left| A|v\\rangle-\\langle A|v\\rangle|v_0\\rangle |v_0\\rangle \\right|\\right|}=0\n$$",
+      "status": "exact",
+      "display": "⟨v_0|v_1⟩ = (⟨v_0| A · qketstate('v') − ⟨v_0| A · qketstate('v') · ⟨v_0|v_0⟩) / qnorm(qsub(qadjacent('A', qketstate('v')), qadjacent(qmul(qdag(qketstate('A')), qketstate('v')), qtensor(qnamedket(\"v_0\"), qnamedket(\"v_0\"))))) = 0",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket(\"v_0\")),qnamedket(\"v_1\")),qmul(qsub(qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qketstate('v')),qadjacent(qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qketstate('v')),qmul(qdag(qnamedket(\"v_0\")),qnamedket(\"v_0\")))),qpower(qnorm(qsub(qadjacent('A',qketstate('v')),qadjacent(qmul(qdag(qketstate('A')),qketstate('v')),qtensor(qnamedket(\"v_0\"),qnamedket(\"v_0\"))))),−1)),0))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M015",
+      "cell": 2,
+      "start": 1622,
+      "end": 1854,
+      "literal": "$$\n|v_2\\rangle=\\frac{A |v_1\\rangle-\\langle v_0|A |v_1\\rangle |v_0\\rangle-\\langle v_1|A |v_1\\rangle |v_1\\rangle}{\\left|\\left| A |v_1\\rangle-\\langle v_0|A |v_1\\rangle |v_0\\rangle-\\langle v_1|A |v_1\\rangle |v_1\\rangle\\right|\\right|}\n$$",
+      "status": "exact",
+      "display": "|v_2⟩ = (A |v_1⟩ − ⟨v_0| A · (|v_1⟩ ⊗ |v_0⟩) − ⟨v_1| A · (|v_1⟩ ⊗ |v_1⟩)) / qnorm(qsub(qsub(qadjacent('A', qnamedket(\"v_1\")), qmul(qmul(qdag(qnamedket(\"v_0\")), 'A'), qtensor(qnamedket(\"v_1\"), qnamedket(\"v_0\")))), qmul(qmul(qdag(qnamedket(\"v_1\")), 'A'), qtensor(qnamedket(\"v_1\"), qnamedket(\"v_1\")))))",
+      "copy": "qcompare(qketstate(\"v_2\"),qmul(qsub(qsub(qadjacent('A',qnamedket(\"v_1\")),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_0\")))),qmul(qmul(qdag(qnamedket(\"v_1\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_1\")))),qpower(qnorm(qsub(qsub(qadjacent('A',qnamedket(\"v_1\")),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_0\")))),qmul(qmul(qdag(qnamedket(\"v_1\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_1\"))))),−1)),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M016",
+      "cell": 2,
+      "start": 1889,
+      "end": 1892,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M017",
+      "cell": 2,
+      "start": 2025,
+      "end": 2030,
+      "literal": "$r>m$",
+      "status": "exact",
+      "display": "m < r",
+      "copy": "('m')<('r')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M018",
+      "cell": 2,
+      "start": 2038,
+      "end": 2041,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M019",
+      "cell": 2,
+      "start": 2161,
+      "end": 2164,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M020",
+      "cell": 3,
+      "start": 200,
+      "end": 203,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M021",
+      "cell": 3,
+      "start": 223,
+      "end": 282,
+      "literal": "$$\nA=\\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A = [4, −1, 0; −1, 4, −1; 0, −1, 4]",
+      "copy": "qcompare('A',matrix(3,3,[4,−1,0,−1,4,−1,0,−1,4]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M022",
+      "cell": 5,
+      "start": 42,
+      "end": 307,
+      "literal": "$$\n\\begin{aligned}\na_0&=2.59,&|0\\rangle&=&\\begin{pmatrix}1/2\\\\-\\sqrt{2}/2\\\\1/2\\end{pmatrix}\\\\\n\\\\\na_1&=4,&|1\\rangle&=&\\begin{pmatrix}\\sqrt{2}/2\\\\0\\\\-\\sqrt{2}/2\\end{pmatrix}\\\\\n\\\\\na_2&=5.41,&|2\\rangle&=&\\begin{pmatrix}1/2\\\\\\sqrt{2}/2\\\\1/2\\end{pmatrix}\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Empty aligned expression at byte 96"
+    },
+    {
+      "id": "IBM092-bdde16a2-M023",
+      "cell": 6,
+      "start": 110,
+      "end": 113,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M024",
+      "cell": 6,
+      "start": 243,
+      "end": 254,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M025",
+      "cell": 6,
+      "start": 264,
+      "end": 277,
+      "literal": "$|v_0\\rangle$",
+      "status": "exact",
+      "display": "|v_0⟩",
+      "copy": "qketstate(\"v_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M026",
+      "cell": 6,
+      "start": 344,
+      "end": 347,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M027",
+      "cell": 6,
+      "start": 418,
+      "end": 429,
+      "literal": "$\\tilde{A}$",
+      "status": "exact",
+      "display": "\"A_tilde\"",
+      "copy": "\"A_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M028",
+      "cell": 6,
+      "start": 600,
+      "end": 603,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M029",
+      "cell": 6,
+      "start": 679,
+      "end": 690,
+      "literal": "$\\tilde{A}$",
+      "status": "exact",
+      "display": "\"A_tilde\"",
+      "copy": "\"A_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M030",
+      "cell": 6,
+      "start": 846,
+      "end": 849,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M031",
+      "cell": 6,
+      "start": 1258,
+      "end": 1263,
+      "literal": "$r=1$",
+      "status": "exact",
+      "display": "r = 1",
+      "copy": "('r')==(1)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M032",
+      "cell": 6,
+      "start": 1297,
+      "end": 1350,
+      "literal": "$$\n|v_0\\rangle=\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|v_0⟩ = [1; 0; 0]",
+      "copy": "qcompare(qketstate(\"v_0\"),matrix(3,1,[1,0,0]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M033",
+      "cell": 6,
+      "start": 1426,
+      "end": 1429,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M034",
+      "cell": 6,
+      "start": 1468,
+      "end": 1635,
+      "literal": "$$\n\\tilde{A}_0=\\langle v_0| A|v_0\\rangle=\\begin{pmatrix}1&0&0\\end{pmatrix}\\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}=(4)\n$$",
+      "status": "exact",
+      "display": "\"A_tilde_0\" = ⟨v_0| A |v_0⟩ = 4 = 4",
+      "copy": "qequalchain(vector(\"A_tilde_0\",qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qnamedket(\"v_0\")),4,4))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M035",
+      "cell": 6,
+      "start": 1737,
+      "end": 1750,
+      "literal": "$|v_0\\rangle$",
+      "status": "exact",
+      "display": "|v_0⟩",
+      "copy": "qketstate(\"v_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M036",
+      "cell": 6,
+      "start": 1894,
+      "end": 1897,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M037",
+      "cell": 7,
+      "start": 15,
+      "end": 20,
+      "literal": "$r=2$",
+      "status": "exact",
+      "display": "r = 2",
+      "copy": "('r')==(2)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M038",
+      "cell": 7,
+      "start": 94,
+      "end": 97,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M039",
+      "cell": 7,
+      "start": 123,
+      "end": 265,
+      "literal": "$$\nA|v_0\\rangle=\\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}=\\begin{pmatrix}4\\\\-1\\\\0\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A |v_0⟩ = [4; −1; 0] = [4; −1; 0]",
+      "copy": "qequalchain(vector(qadjacent('A',qnamedket(\"v_0\")),matrix(3,1,[4,−1,0]),matrix(3,1,[4,−1,0])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M040",
+      "cell": 7,
+      "start": 367,
+      "end": 434,
+      "literal": "$$\n|v_1\\rangle=A|v_0\\rangle-\\langle v_0 |A|v_0\\rangle|v_0\\rangle\n$$",
+      "status": "exact",
+      "display": "|v_1⟩ = A |v_0⟩ − ⟨v_0| A · (|v_0⟩ ⊗ |v_0⟩)",
+      "copy": "qcompare(qketstate(\"v_1\"),qsub(qadjacent('A',qnamedket(\"v_0\")),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qnamedket(\"v_0\"),qnamedket(\"v_0\")))),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M041",
+      "cell": 7,
+      "start": 435,
+      "end": 633,
+      "literal": "$$\n|v_1\\rangle=\\begin{pmatrix}4\\\\-1\\\\0\\end{pmatrix}-\\begin{pmatrix}1& 0& 0\\end{pmatrix}\\begin{pmatrix}4\\\\-1\\\\0\\end{pmatrix}\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}=\\begin{pmatrix}0\\\\-1\\\\0\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|v_1⟩ = [0; −1; 0] = [0; −1; 0]",
+      "copy": "qequalchain(vector(qketstate(\"v_1\"),matrix(3,1,[0,−1,0]),matrix(3,1,[0,−1,0])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M042",
+      "cell": 7,
+      "start": 735,
+      "end": 789,
+      "literal": "$$\n|v_1\\rangle=\\begin{pmatrix}0\\\\-1\\\\0\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|v_1⟩ = [0; −1; 0]",
+      "copy": "qcompare(qketstate(\"v_1\"),matrix(3,1,[0,−1,0]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M043",
+      "cell": 7,
+      "start": 859,
+      "end": 1137,
+      "literal": "$$\n\\tilde{A}_1= \\begin{pmatrix} 1&0&0\\\\0&-1&0 \\end{pmatrix} \\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}1&0\\\\0&-1\\\\0&0\\end{pmatrix}=\\begin{pmatrix}1&0&0\\\\0&-1&0\\end{pmatrix}\\begin{pmatrix}4&1\\\\-1&-4\\\\0&1\\end{pmatrix}=\\begin{pmatrix}4&1\\\\1&4\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "\"A_tilde_1\" = [4, 1; 1, 4] = [4, 1; 1, 4] = [4, 1; 1, 4]",
+      "copy": "qequalchain(vector(\"A_tilde_1\",matrix(2,2,[4,1,1,4]),matrix(2,2,[4,1,1,4]),matrix(2,2,[4,1,1,4])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M044",
+      "cell": 7,
+      "start": 1386,
+      "end": 1421,
+      "literal": "$$\n\\det(\\tilde{A_1}-\\lambda I)=0\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M045",
+      "cell": 7,
+      "start": 1422,
+      "end": 1500,
+      "literal": "$$\n\\begin{vmatrix} 4-\\lambda&1\\\\1&4-\\lambda\\end{vmatrix} =(4-\\lambda)^2-1=0\n$$",
+      "status": "exact",
+      "display": "'λ'² − 8'λ' + 15 = 'λ'² − 8'λ' + 15 = 0",
+      "copy": "qequalchain(vector('λ'² − 8'λ' + 15,'λ'² − 8'λ' + 15,0))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M046",
+      "cell": 7,
+      "start": 1501,
+      "end": 1531,
+      "literal": "$$\n4-\\lambda=±1→\\lambda=3,5\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M047",
+      "cell": 8,
+      "start": 15,
+      "end": 20,
+      "literal": "$r=3$",
+      "status": "exact",
+      "display": "r = 3",
+      "copy": "('r')==(3)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M048",
+      "cell": 8,
+      "start": 120,
+      "end": 263,
+      "literal": "$$\nA|v_1\\rangle=\\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}0\\\\-1\\\\0\\end{pmatrix}=\\begin{pmatrix}1\\\\-4\\\\1\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A |v_1⟩ = [1; −4; 1] = [1; −4; 1]",
+      "copy": "qequalchain(vector(qadjacent('A',qnamedket(\"v_1\")),matrix(3,1,[1,−4,1]),matrix(3,1,[1,−4,1])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M049",
+      "cell": 8,
+      "start": 370,
+      "end": 809,
+      "literal": "$$\n\\begin{aligned}\n|v_2\\rangle&=A|v_1\\rangle-\\langle v_0 |A|v_1\\rangle|v_0\\rangle-\\langle v_1 |A|v_1\\rangle|v_1\\rangle\\\\\n|v_2\\rangle&=\\begin{pmatrix}1\\\\-4\\\\1\\end{pmatrix}-\\begin{pmatrix}1& 0& 0 \\end{pmatrix}\\begin{pmatrix}1\\\\-4\\\\1\\end{pmatrix}\\begin{pmatrix}1\\\\0\\\\0\\end{pmatrix}-\\begin{pmatrix}0&-1& 0\\end{pmatrix}\\begin{pmatrix}1\\\\-4\\\\1\\end{pmatrix}\\begin{pmatrix}0\\\\-1\\\\0\\end{pmatrix}=\\begin{pmatrix}0\\\\0\\\\1\\end{pmatrix}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  |v_2⟩ = A |v_1⟩ − ⟨v_0| A · (|v_1⟩ ⊗ |v_0⟩) − ⟨v_1| A · (|v_1⟩ ⊗ |v_1⟩)\n\n2.  |v_2⟩ = [0; 0; 1] = [0; 0; 1]",
+      "copy": "\\begin{gathered}qcompare(qketstate(\"v_2\"),qsub(qsub(qadjacent('A',qnamedket(\"v_1\")),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_0\")))),qmul(qmul(qdag(qnamedket(\"v_1\")),'A'),qtensor(qnamedket(\"v_1\"),qnamedket(\"v_1\")))),4)\\\\qequalchain(vector(qketstate(\"v_2\"),matrix(3,1,[0,0,1]),matrix(3,1,[0,0,1])))\\end{gathered}"
+    },
+    {
+      "id": "IBM092-bdde16a2-M050",
+      "cell": 8,
+      "start": 910,
+      "end": 964,
+      "literal": "$$\n|v_2 \\rangle=\\begin{pmatrix}0\\\\0\\\\1\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "|v_2⟩ = [0; 0; 1]",
+      "copy": "qcompare(qketstate(\"v_2\"),matrix(3,1,[0,0,1]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M051",
+      "cell": 8,
+      "start": 991,
+      "end": 994,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M052",
+      "cell": 8,
+      "start": 1032,
+      "end": 1344,
+      "literal": "$$\n\\tilde{A}_2=\\begin{pmatrix}1&0&0\\\\0&-1&0\\\\0&0&1\\end{pmatrix}\\begin{pmatrix}4&-1&0\\\\-1&4&-1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}1&0&0\\\\0&-1&0\\\\0&0&1\\end{pmatrix}=\\begin{pmatrix}4&-1&0\\\\1&-4&1\\\\0&-1&4\\end{pmatrix}\\begin{pmatrix}1&0&0\\\\0&-1&0\\\\0&0&1\\end{pmatrix}=\\begin{pmatrix}4&1&0\\\\1&4&1\\\\0&1&4\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "\"A_tilde_2\" = [4, 1, 0; 1, 4, 1; 0, 1, 4] = [4, 1, 0; 1, 4, 1; 0, 1, 4] = [4, 1, 0; 1, 4, 1; 0, 1, 4]",
+      "copy": "qequalchain(vector(\"A_tilde_2\",matrix(3,3,[4,1,0,1,4,1,0,1,4]),matrix(3,3,[4,1,0,1,4,1,0,1,4]),matrix(3,3,[4,1,0,1,4,1,0,1,4])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M053",
+      "cell": 9,
+      "start": 34,
+      "end": 69,
+      "literal": "$$\n\\det(\\tilde{A}_2-\\lambda I)=0\n$$",
+      "status": "diagnostic",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M054",
+      "cell": 9,
+      "start": 70,
+      "end": 194,
+      "literal": "$$\n\\begin{vmatrix}4-\\lambda&1&0\\\\1&4-\\lambda&1\\\\0&1&4-\\lambda\\end{vmatrix} = (4-\\lambda)((4-\\lambda)^2-1)-(4-\\lambda)=0\\\\\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX control symbol at byte 120"
+    },
+    {
+      "id": "IBM092-bdde16a2-M055",
+      "cell": 9,
+      "start": 195,
+      "end": 273,
+      "literal": "$$\n4-\\lambda=0,4-\\lambda=±2^{1/2}→\\lambda=4-2^{1/2},4,4+2^{1/2}≈2.59,4,5.41\n$$",
+      "status": "diagnostic",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM092-bdde16a2-M056",
+      "cell": 9,
+      "start": 343,
+      "end": 346,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M057",
+      "cell": 9,
+      "start": 469,
+      "end": 472,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M058",
+      "cell": 10,
+      "start": 129,
+      "end": 132,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M059",
+      "cell": 10,
+      "start": 154,
+      "end": 157,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M060",
+      "cell": 10,
+      "start": 305,
+      "end": 308,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M061",
+      "cell": 10,
+      "start": 883,
+      "end": 886,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M062",
+      "cell": 10,
+      "start": 906,
+      "end": 920,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M063",
+      "cell": 10,
+      "start": 923,
+      "end": 978,
+      "literal": "$$\nA=\\begin{pmatrix}2&1&3\\\\1&2&3\\\\3&3&5\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A = [2, 1, 3; 1, 2, 3; 3, 3, 5]",
+      "copy": "qcompare('A',matrix(3,3,[2,1,3,1,2,3,3,3,5]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M064",
+      "cell": 10,
+      "start": 983,
+      "end": 1057,
+      "literal": "$$\n|\\psi\\rangle=\\frac{1}{\\sqrt{2}}\\begin{pmatrix}1\\\\-1\\\\0\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (−1 ∕ √(2)); 0]",
+      "copy": "qcompare(qketstate('ψ'),matrix(3,1,[1 ∕ √(2),−1 ∕ √(2),0]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M065",
+      "cell": 10,
+      "start": 1679,
+      "end": 1734,
+      "literal": "$$\nA=\\begin{pmatrix}1&1&0\\\\1&1&1\\\\0&1&1\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A = [1, 1, 0; 1, 1, 1; 0, 1, 1]",
+      "copy": "qcompare('A',matrix(3,3,[1,1,0,1,1,1,0,1,1]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M066",
+      "cell": 10,
+      "start": 1871,
+      "end": 1943,
+      "literal": "$$\n|v_0\\rangle=\\frac{1}{\\sqrt{3}}\\begin{pmatrix}1\\\\1\\\\1\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "|v_0⟩ = [(1 ∕ √(3)); (1 ∕ √(3)); (1 ∕ √(3))]",
+      "copy": "qcompare(qketstate(\"v_0\"),matrix(3,1,[1 ∕ √(3),1 ∕ √(3),1 ∕ √(3)]),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M067",
+      "cell": 10,
+      "start": 1951,
+      "end": 1964,
+      "literal": "$|v_1\\rangle$",
+      "status": "exact",
+      "display": "|v_1⟩",
+      "copy": "qketstate(\"v_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M068",
+      "cell": 10,
+      "start": 1974,
+      "end": 1977,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M069",
+      "cell": 10,
+      "start": 1986,
+      "end": 1999,
+      "literal": "$|v_0\\rangle$",
+      "status": "exact",
+      "display": "|v_0⟩",
+      "copy": "qketstate(\"v_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M070",
+      "cell": 10,
+      "start": 2015,
+      "end": 2028,
+      "literal": "$|v_1\\rangle$",
+      "status": "exact",
+      "display": "|v_1⟩",
+      "copy": "qketstate(\"v_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M071",
+      "cell": 10,
+      "start": 2043,
+      "end": 2056,
+      "literal": "$|v_0\\rangle$",
+      "status": "exact",
+      "display": "|v_0⟩",
+      "copy": "qketstate(\"v_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M072",
+      "cell": 10,
+      "start": 2058,
+      "end": 2233,
+      "literal": "$$\nA|v_0\\rangle=\\begin{pmatrix}1&1&0\\\\1&1&1\\\\0&1&1\\end{pmatrix}\\frac{1}{\\sqrt{3}}\\begin{pmatrix}1\\\\1\\\\1\\end{pmatrix} = \\frac{1}{\\sqrt{3}}\\begin{pmatrix}2\\\\3\\\\2\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A |v_0⟩ = [(2 ∕ √(3)); √(3); (2 ∕ √(3))] = [(2 ∕ √(3)); √(3); (2 ∕ √(3))]",
+      "copy": "qequalchain(vector(qadjacent('A',qnamedket(\"v_0\")),matrix(3,1,[2 ∕ √(3),√(3),2 ∕ √(3)]),matrix(3,1,[2 ∕ √(3),√(3),2 ∕ √(3)])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M073",
+      "cell": 10,
+      "start": 2234,
+      "end": 2688,
+      "literal": "$$\nA|v_0\\rangle - \\langle v_0|A|v_0\\rangle |v_0\\rangle=\\frac{1}{\\sqrt{3}}\\begin{pmatrix}2\\\\3\\\\2\\end{pmatrix} - \\frac{1}{\\sqrt{3}}\\begin{pmatrix}1&1&1\\end{pmatrix}\\frac{1}{\\sqrt{3}}\\begin{pmatrix}2\\\\3\\\\2\\end{pmatrix}\\frac{1}{\\sqrt{3}}\\begin{pmatrix}1\\\\1\\\\1\\end{pmatrix} = \\frac{1}{\\sqrt{3}}\\begin{pmatrix}2\\\\3\\\\2\\end{pmatrix}-\\frac{7}{3}\\frac{1}{\\sqrt{3}}\\begin{pmatrix}1\\\\1\\\\1\\end{pmatrix}=\\sqrt{\\frac{3}{2}}\\begin{pmatrix}-1/3\\\\2/3\\\\-1/3\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "A |v_0⟩ − ⟨v_0| A · (|v_0⟩ ⊗ |v_0⟩) = [(−1 ∕ (3 ⋅ √(3))); (2 ∕ (3 ⋅ √(3))); (−1 ∕ (3 ⋅ √(3)))] = [(−1 ∕ (3 ⋅ √(3))); (2 ∕ (3 ⋅ √(3))); (−1 ∕ (3 ⋅ √(3)))] = [(−1 ∕ √(6)); (√(6) ∕ 3); (−1 ∕ √(6))]",
+      "copy": "qequalchain(vector(qsub(qadjacent('A',qnamedket(\"v_0\")),qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qtensor(qnamedket(\"v_0\"),qnamedket(\"v_0\")))),matrix(3,1,[−1 ∕ (3 ⋅ √(3)),2 ∕ (3 ⋅ √(3)),−1 ∕ (3 ⋅ √(3))]),matrix(3,1,[−1 ∕ (3 ⋅ √(3)),2 ∕ (3 ⋅ √(3)),−1 ∕ (3 ⋅ √(3))]),matrix(3,1,[−1 ∕ √(6),√(6) ∕ 3,−1 ∕ √(6)])))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M074",
+      "cell": 10,
+      "start": 2747,
+      "end": 2945,
+      "literal": "$$\n\\langle v_0|A|v_0\\rangle=\\frac{1}{\\sqrt{3}}\\begin{pmatrix}1&1&1\\end{pmatrix} \\begin{pmatrix}1&1&0\\\\1&1&1\\\\0&1&1\\end{pmatrix} \\frac{1}{\\sqrt{3}}\\begin{pmatrix}1\\\\1\\\\1\\end{pmatrix} = \\frac{7}{3}\n$$",
+      "status": "exact",
+      "display": "⟨v_0| A |v_0⟩ = 7 ∕ 3 = 7 ∕ 3",
+      "copy": "qequalchain(vector(qmul(qmul(qdag(qnamedket(\"v_0\")),'A'),qnamedket(\"v_0\")),7 ∕ 3,7 ∕ 3))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M075",
+      "cell": 10,
+      "start": 3005,
+      "end": 3378,
+      "literal": "$$\n\\langle V^1|A|V^1\\rangle=\\begin{pmatrix}\\frac{1}{\\sqrt{3}}&\\frac{1}{\\sqrt{3}}&\\frac{1}{\\sqrt{3}}\\\\-\\sqrt{\\frac{1}{6}}&\\sqrt{\\frac{2}{3}}&-\\sqrt{\\frac{1}{6}}\\end{pmatrix} \\begin{pmatrix}1&1&0\\\\1&1&1\\\\0&1&1\\end{pmatrix} \\begin{pmatrix}\\frac{1}{\\sqrt{3}}&-\\sqrt{\\frac{1}{6}}\\\\\\frac{1}{\\sqrt{3}}& \\sqrt{\\frac{2}{3}} \\\\  \\frac{1}{\\sqrt{3}}&-\\sqrt{\\frac{1}{6}}\\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "[−2.33333333333333333333333333333, −0.333333333333333333333333333333 ⋅ √(2); −0.333333333333333333333333333333 ⋅ √(2), 0.333333333333333333333333333333] + |V^1⟩ (dimension unresolved)† · A · |V^1⟩ (dimension unresolved) = 0",
+      "copy": "(qadd(matrix(2,2,vector(−7 ∕ 3,qmul(−1 ∕ 3,qpower(2,1 ∕ 2)),qmul(−1 ∕ 3,qpower(2,1 ∕ 2)),1 ∕ 3)),qmul(qmul(qdag(qcomputationalket(qpower('V',1))),'A'),qcomputationalket(qpower('V',1)))))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M076",
+      "cell": 11,
+      "start": 268,
+      "end": 376,
+      "literal": "$$\\mathcal{K}^r(A,|v\\rangle ) = \\text{span}\\{|v\\rangle, A|v\\rangle, A^2|v\\rangle, ..., A^{r-1}|v\\rangle\\},$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 42"
+    },
+    {
+      "id": "IBM092-bdde16a2-M077",
+      "cell": 11,
+      "start": 384,
+      "end": 395,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M078",
+      "cell": 12,
+      "start": 522,
+      "end": 525,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M079",
+      "cell": 12,
+      "start": 693,
+      "end": 696,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M080",
+      "cell": 12,
+      "start": 814,
+      "end": 841,
+      "literal": "$$\nA|x\\rangle=|b\\rangle.\n$$",
+      "status": "exact",
+      "display": "A |x⟩ = qketstate('b')",
+      "copy": "qcompare(qadjacent('A',qketstate(x)),qketstate('b'),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M081",
+      "cell": 12,
+      "start": 865,
+      "end": 887,
+      "literal": "$|b\\rangle=c|x\\rangle$",
+      "status": "exact",
+      "display": "qketstate('b') = 'c' |x⟩",
+      "copy": "qcompare(qketstate('b'),qmul('c',qketstate(x)),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M082",
+      "cell": 12,
+      "start": 894,
+      "end": 897,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M083",
+      "cell": 12,
+      "start": 1025,
+      "end": 1038,
+      "literal": "$|x_0\\rangle$",
+      "status": "exact",
+      "display": "|x_0⟩",
+      "copy": "qketstate(\"x_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M084",
+      "cell": 12,
+      "start": 1120,
+      "end": 1133,
+      "literal": "$|x_0\\rangle$",
+      "status": "exact",
+      "display": "|x_0⟩",
+      "copy": "qketstate(\"x_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M085",
+      "cell": 12,
+      "start": 1138,
+      "end": 1151,
+      "literal": "$|v_0\\rangle$",
+      "status": "exact",
+      "display": "|v_0⟩",
+      "copy": "qketstate(\"v_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M086",
+      "cell": 12,
+      "start": 1213,
+      "end": 1226,
+      "literal": "$|x_0\\rangle$",
+      "status": "exact",
+      "display": "|x_0⟩",
+      "copy": "qketstate(\"x_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M087",
+      "cell": 12,
+      "start": 1252,
+      "end": 1265,
+      "literal": "$|e_0\\rangle$",
+      "status": "exact",
+      "display": "|e_0⟩",
+      "copy": "qketstate(\"e_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M088",
+      "cell": 12,
+      "start": 1267,
+      "end": 1308,
+      "literal": "$$\n|e_0\\rangle:=|x\\rangle−|x_0\\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M089",
+      "cell": 12,
+      "start": 1337,
+      "end": 1342,
+      "literal": "$R_0$",
+      "status": "exact",
+      "display": "\"R_0\"",
+      "copy": "\"R_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M090",
+      "cell": 12,
+      "start": 1344,
+      "end": 1385,
+      "literal": "$$\n|R_0\\rangle=|b\\rangle−A|x_0\\rangle.\n$$",
+      "status": "exact",
+      "display": "|R_0⟩ = qketstate('b') − A |x_0⟩",
+      "copy": "qcompare(qketstate(\"R_0\"),qsub(qketstate('b'),qadjacent('A',qnamedket(\"x_0\"))),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M091",
+      "cell": 12,
+      "start": 1406,
+      "end": 1409,
+      "literal": "$R$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M092",
+      "cell": 12,
+      "start": 1480,
+      "end": 1483,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M093",
+      "cell": 12,
+      "start": 1735,
+      "end": 1777,
+      "literal": "$$\n|x_1\\rangle=|x_0\\rangle+|p_0\\rangle,\n$$",
+      "status": "exact",
+      "display": "|x_1⟩ = |x_0⟩ + |p_0⟩",
+      "copy": "qcompare(qketstate(\"x_1\"),qadd(qnamedket(\"x_0\"),qnamedket(\"p_0\")),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M094",
+      "cell": 12,
+      "start": 1825,
+      "end": 1838,
+      "literal": "$|p_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩",
+      "copy": "qketstate(\"p_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M095",
+      "cell": 12,
+      "start": 1880,
+      "end": 1893,
+      "literal": "$|e_1\\rangle$",
+      "status": "exact",
+      "display": "|e_1⟩",
+      "copy": "qketstate(\"e_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M096",
+      "cell": 12,
+      "start": 1942,
+      "end": 2042,
+      "literal": "$$\n|e_1\\rangle=|x\\rangle−|x_1\\rangle=|x\\rangle−(|x_0\\rangle+|p_0\\rangle)=|e_0\\rangle−|p_0\\rangle.\n$$",
+      "status": "exact",
+      "display": "|e_1⟩ = |x⟩ − |x_1⟩ = |x⟩ − (|x_0⟩ + |p_0⟩) = |e_0⟩ − |p_0⟩",
+      "copy": "qequalchain(vector(qketstate(\"e_1\"),qsub(qketstate(x),qnamedket(\"x_1\")),qsub(qketstate(x),qadd(qnamedket(\"x_0\"),qnamedket(\"p_0\"))),qsub(qnamedket(\"e_0\"),qnamedket(\"p_0\"))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M097",
+      "cell": 12,
+      "start": 2337,
+      "end": 2340,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M098",
+      "cell": 12,
+      "start": 2368,
+      "end": 2767,
+      "literal": "$$\n\\begin{aligned}\n∥|e_0\\rangle−|p_0\\rangle∥_A^2&=\\left(\\langle e_0|A−\\langle p_0|A\\right)\\left(|e_0\\rangle−|p_0\\rangle\\right)\\\\\n & = \\langle e_0|A|e_0 \\rangle − \\langle e_0|A|p_0\\rangle − \\langle p_0|A|e_0\\rangle+\\langle p_0|A|p_0\\rangle\\\\\n & = \\langle e_0|A|e_0\\rangle−2\\langle e_0|A|p_0\\rangle+\\langle p_0|A|p_0\\rangle\\\\\n & = d−2\\langle R_0|p_0\\rangle +\\langle p_0|A|p_0\\rangle,\n \\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Schatten norm order must be a real number at least 1 or positive infinity."
+    },
+    {
+      "id": "IBM092-bdde16a2-M099",
+      "cell": 12,
+      "start": 2803,
+      "end": 2806,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M100",
+      "cell": 12,
+      "start": 2821,
+      "end": 2850,
+      "literal": "$A |e_0\\rangle = |R_0\\rangle$",
+      "status": "exact",
+      "display": "A |e_0⟩ = |R_0⟩",
+      "copy": "qcompare(qadjacent('A',qnamedket(\"e_0\")),qketstate(\"R_0\"),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M101",
+      "cell": 12,
+      "start": 2857,
+      "end": 2860,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M102",
+      "cell": 12,
+      "start": 2893,
+      "end": 2906,
+      "literal": "$|p_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩",
+      "copy": "qketstate(\"p_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M103",
+      "cell": 12,
+      "start": 2941,
+      "end": 2944,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M104",
+      "cell": 12,
+      "start": 3117,
+      "end": 3130,
+      "literal": "$|p_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩",
+      "copy": "qketstate(\"p_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M105",
+      "cell": 12,
+      "start": 3158,
+      "end": 3161,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M106",
+      "cell": 12,
+      "start": 3173,
+      "end": 3245,
+      "literal": "$$\nf(|p_0\\rangle)=\\langle p_0|A|p_0\\rangle−2\\langle R_0|p_0\\rangle+d.\n$$",
+      "status": "exact",
+      "display": "qscalarat('f', qnamedket(\"p_0\")) = ⟨p_0| A |p_0⟩ − 2 · ⟨R_0|p_0⟩ + d",
+      "copy": "qcompare(qscalarat('f',qnamedket(\"p_0\")),qadd(qsub(qmul(qmul(qdag(qnamedket(\"p_0\")),'A'),qnamedket(\"p_0\")),qadjacent(2,qmul(qdag(qnamedket(\"R_0\")),qnamedket(\"p_0\")))),'d'),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M107",
+      "cell": 12,
+      "start": 3246,
+      "end": 3249,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M108",
+      "cell": 12,
+      "start": 3268,
+      "end": 3281,
+      "literal": "$|e_1\\rangle$",
+      "status": "exact",
+      "display": "|e_1⟩",
+      "copy": "qketstate(\"e_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M109",
+      "cell": 12,
+      "start": 3314,
+      "end": 3327,
+      "literal": "$|p_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩",
+      "copy": "qketstate(\"p_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M110",
+      "cell": 12,
+      "start": 3344,
+      "end": 3347,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M111",
+      "cell": 12,
+      "start": 3379,
+      "end": 3392,
+      "literal": "$|p_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩",
+      "copy": "qketstate(\"p_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M112",
+      "cell": 12,
+      "start": 3403,
+      "end": 3419,
+      "literal": "$f(|p_0\\rangle)$",
+      "status": "exact",
+      "display": "qscalarat('f', qnamedket(\"p_0\"))",
+      "copy": "qscalarat('f',qnamedket(\"p_0\"))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M113",
+      "cell": 12,
+      "start": 3490,
+      "end": 3493,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M114",
+      "cell": 12,
+      "start": 3517,
+      "end": 3520,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M115",
+      "cell": 12,
+      "start": 3529,
+      "end": 3587,
+      "literal": "$$\n\\nabla f(|p_0\\rangle) = 2(A|p_0\\rangle−|R_0\\rangle).\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\nabla at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M116",
+      "cell": 12,
+      "start": 3791,
+      "end": 3804,
+      "literal": "$|x_0\\rangle$",
+      "status": "exact",
+      "display": "|x_0⟩",
+      "copy": "qketstate(\"x_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M117",
+      "cell": 12,
+      "start": 3812,
+      "end": 3827,
+      "literal": "$|p_0\\rangle=0$",
+      "status": "exact",
+      "display": "|p_0⟩ = 0",
+      "copy": "qcompare(qketstate(\"p_0\"),0,4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M118",
+      "cell": 12,
+      "start": 3842,
+      "end": 3871,
+      "literal": "$\\nabla f(0) = -2|R_0\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\nabla at byte 7"
+    },
+    {
+      "id": "IBM092-bdde16a2-M119",
+      "cell": 12,
+      "start": 3892,
+      "end": 3895,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M120",
+      "cell": 12,
+      "start": 3948,
+      "end": 3961,
+      "literal": "$|R_0\\rangle$",
+      "status": "exact",
+      "display": "|R_0⟩",
+      "copy": "qketstate(\"R_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M121",
+      "cell": 12,
+      "start": 4034,
+      "end": 4068,
+      "literal": "$|p_0\\rangle=\\alpha_0 |R_0\\rangle$",
+      "status": "exact",
+      "display": "|p_0⟩ = \"α_0\" |R_0⟩",
+      "copy": "qcompare(qketstate(\"p_0\"),qadjacent(\"α_0\",qnamedket(\"R_0\")),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M122",
+      "cell": 12,
+      "start": 4085,
+      "end": 4095,
+      "literal": "$\\alpha_0$",
+      "status": "exact",
+      "display": "\"α_0\"",
+      "copy": "\"α_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M123",
+      "cell": 12,
+      "start": 4143,
+      "end": 4156,
+      "literal": "$|p_1\\rangle$",
+      "status": "exact",
+      "display": "|p_1⟩",
+      "copy": "qketstate(\"p_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M124",
+      "cell": 12,
+      "start": 4249,
+      "end": 4285,
+      "literal": "$|p_1\\rangle = \\alpha_1 |R_1\\rangle$",
+      "status": "exact",
+      "display": "|p_1⟩ = \"α_1\" |R_1⟩",
+      "copy": "qcompare(qketstate(\"p_1\"),qadjacent(\"α_1\",qnamedket(\"R_1\")),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M125",
+      "cell": 12,
+      "start": 4302,
+      "end": 4312,
+      "literal": "$\\alpha_1$",
+      "status": "exact",
+      "display": "\"α_1\"",
+      "copy": "\"α_1\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M126",
+      "cell": 12,
+      "start": 4356,
+      "end": 4369,
+      "literal": "$k^\\text{th}$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M127",
+      "cell": 12,
+      "start": 4397,
+      "end": 4496,
+      "literal": "$$\n|x_{k+1}\\rangle=|x_0\\rangle+\\alpha_0 |R_0\\rangle+\\alpha_1 |R_1\\rangle+⋯+\\alpha_k |R_k\\rangle.\n$$",
+      "status": "exact",
+      "display": "qstatecall('x', 'k' + 1) = |x_0⟩ + \"α_0\" |R_0⟩ + \"α_1\" |R_1⟩ + '⋯' + \"α_k\" |R_k⟩",
+      "copy": "qcompare(qstatecall('x','k' + 1),qadd(qadd(qadd(qadd(qnamedket(\"x_0\"),qadjacent(\"α_0\",qnamedket(\"R_0\"))),qadjacent(\"α_1\",qnamedket(\"R_1\"))),'⋯'),qadjacent(\"α_k\",qnamedket(\"R_k\"))),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M128",
+      "cell": 12,
+      "start": 4595,
+      "end": 4608,
+      "literal": "$|R_0\\rangle$",
+      "status": "exact",
+      "display": "|R_0⟩",
+      "copy": "qketstate(\"R_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M129",
+      "cell": 12,
+      "start": 4610,
+      "end": 4623,
+      "literal": "$|R_1\\rangle$",
+      "status": "exact",
+      "display": "|R_1⟩",
+      "copy": "qketstate(\"R_1\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M130",
+      "cell": 12,
+      "start": 4650,
+      "end": 4663,
+      "literal": "$k^\\text{th}$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M131",
+      "cell": 12,
+      "start": 4689,
+      "end": 4780,
+      "literal": "$$\n|x_{k+1}\\rangle\\in |x_0\\rangle+\\text{span}\\{|R_0\\rangle,|R_1\\rangle,…,|R_k\\rangle \\}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 44"
+    },
+    {
+      "id": "IBM092-bdde16a2-M132",
+      "cell": 12,
+      "start": 4810,
+      "end": 4941,
+      "literal": "$$\n|R_{k+1}\\rangle=|b\\rangle−A |x_{k+1}\\rangle=|b\\rangle−A(|x_k\\rangle+\\alpha_k |R_k\\rangle)=|R_k\\rangle−\\alpha_k A |R_k\\rangle,\n$$",
+      "status": "exact",
+      "display": "qstatecall('R', 'k' + 1) = qketstate('b') − A · qstatecall('x', qadd('k', 1)) = qketstate('b') − (|x_k⟩ + \"α_k\" |R_k⟩) · A = |R_k⟩ − (\"α_k\" · A) (|R_k⟩)",
+      "copy": "qequalchain(vector(qstatecall('R','k' + 1),qsub(qketstate('b'),qadjacent('A',qstatecall('x',qadd('k',1)))),qsub(qketstate('b'),qmul('A',qadd(qnamedket(\"x_k\"),qadjacent(\"α_k\",qnamedket(\"R_k\"))))),qsub(qnamedket(\"R_k\"),qadjacent(qadjacent(\"α_k\",'A'),qnamedket(\"R_k\")))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M133",
+      "cell": 12,
+      "start": 4954,
+      "end": 5076,
+      "literal": "$$\n\\text{span} \\{|R_0\\rangle,|R_1\\rangle,…,|R_k\\rangle \\}=\\text{span} \\{|R_0\\rangle,A|R_0\\rangle,…,A^{k}|R_0\\rangle \\}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M134",
+      "cell": 12,
+      "start": 5164,
+      "end": 5175,
+      "literal": "$|x\\rangle$",
+      "status": "exact",
+      "display": "|x⟩",
+      "copy": "qketstate(x)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M135",
+      "cell": 12,
+      "start": 5244,
+      "end": 5247,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M136",
+      "cell": 12,
+      "start": 5251,
+      "end": 5264,
+      "literal": "$|R_0\\rangle$",
+      "status": "exact",
+      "display": "|R_0⟩",
+      "copy": "qketstate(\"R_0\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M137",
+      "cell": 13,
+      "start": 81,
+      "end": 84,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M138",
+      "cell": 13,
+      "start": 308,
+      "end": 311,
+      "literal": "$A$",
+      "status": "exact",
+      "display": "A",
+      "copy": "'A'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M139",
+      "cell": 26,
+      "start": 102,
+      "end": 117,
+      "literal": "$\\mathcal{K}^2$",
+      "status": "exact",
+      "display": "K^2",
+      "copy": "'K'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M140",
+      "cell": 26,
+      "start": 137,
+      "end": 152,
+      "literal": "$\\mathcal{K}^3$",
+      "status": "exact",
+      "display": "K^3",
+      "copy": "'K'³"
+    },
+    {
+      "id": "IBM092-bdde16a2-M141",
+      "cell": 38,
+      "start": 398,
+      "end": 406,
+      "literal": "$O(n^3)$",
+      "status": "exact",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M142",
+      "cell": 38,
+      "start": 505,
+      "end": 508,
+      "literal": "$n$",
+      "status": "exact",
+      "display": "n",
+      "copy": "n"
+    },
+    {
+      "id": "IBM092-bdde16a2-M143",
+      "cell": 38,
+      "start": 525,
+      "end": 533,
+      "literal": "$O(n^3)$",
+      "status": "exact",
+      "display": "O(n^3)",
+      "copy": "qbigorder(qpower(n,3))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M144",
+      "cell": 38,
+      "start": 606,
+      "end": 617,
+      "literal": "$\\it{some}$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\it at byte 4"
+    },
+    {
+      "id": "IBM092-bdde16a2-M145",
+      "cell": 41,
+      "start": 295,
+      "end": 298,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M146",
+      "cell": 41,
+      "start": 302,
+      "end": 313,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M147",
+      "cell": 41,
+      "start": 326,
+      "end": 334,
+      "literal": "$O(N^2)$",
+      "status": "exact",
+      "display": "O(N^2)",
+      "copy": "qbigorder(qpower('N',2))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M148",
+      "cell": 41,
+      "start": 487,
+      "end": 493,
+      "literal": "$O(N)$",
+      "status": "exact",
+      "display": "O(N)",
+      "copy": "qbigorder('N')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M149",
+      "cell": 41,
+      "start": 573,
+      "end": 576,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M150",
+      "cell": 41,
+      "start": 618,
+      "end": 621,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M151",
+      "cell": 41,
+      "start": 645,
+      "end": 654,
+      "literal": "$\\log(N)$",
+      "status": "exact",
+      "display": "ln('N')",
+      "copy": "ln('N')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M152",
+      "cell": 41,
+      "start": 694,
+      "end": 710,
+      "literal": "$O(N^2 \\log(N))$",
+      "status": "exact",
+      "display": "O(N^2 · ln('N'))",
+      "copy": "qbigorder(qadjacent(qpower('N',2),ln('N')))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M153",
+      "cell": 41,
+      "start": 997,
+      "end": 1000,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M154",
+      "cell": 42,
+      "start": 86,
+      "end": 102,
+      "literal": "$e^{-iHt/\\hbar}$",
+      "status": "exact",
+      "display": "qpropagator('H', (3018.38035928430368338312868601π't') ∕ (qJ⋅s))",
+      "copy": "qpropagator('H',('t')*((qphysicalunit(\"J\",\"\"))^(−1))*((qphysicalunit(\"s\",\"\"))^(−1))*(4E41 ∕ 132521403)*(π))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M155",
+      "cell": 42,
+      "start": 171,
+      "end": 178,
+      "literal": "$\\hbar$",
+      "status": "exact",
+      "display": "(132521403 ∕ (4E41π)) J⋅s",
+      "copy": "(1 ∕ π)*(132521403 ∕ 4E41)*(qphysicalunit(\"J\",\"\"))*(qphysicalunit(\"s\",\"\"))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M156",
+      "cell": 42,
+      "start": 385,
+      "end": 396,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M157",
+      "cell": 42,
+      "start": 445,
+      "end": 448,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M158",
+      "cell": 42,
+      "start": 573,
+      "end": 739,
+      "literal": "$$\n\\begin{aligned}\ne^{-iHt/\\hbar}→e^{-iHt}&≈1-iHt-\\frac{(H^2 t^2)}{2}+⋯\\\\\ne^{-iHt} |v\\rangle &≈ |v\\rangle-iHt|v\\rangle-\\frac{(H^2 t^2)}{2}|v\\rangle+⋯\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Expected ')' at byte 34"
+    },
+    {
+      "id": "IBM092-bdde16a2-M159",
+      "cell": 42,
+      "start": 934,
+      "end": 943,
+      "literal": "$e^{-iZ}$",
+      "status": "exact",
+      "display": "e^[−i, 0; 0, i]",
+      "copy": "(e)^(matrix(2,2,[−i,0,0,i]))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M160",
+      "cell": 42,
+      "start": 1151,
+      "end": 1231,
+      "literal": "$$\ne^{-iHt}=e^{-i(H_1+H_2+⋯+H_n)t}\\neq e^{-iH_1 t} e^{-iH_2 t}... e^{-iH_n t}\n$$",
+      "status": "diagnostic",
+      "message": "Expected ')' at byte 85"
+    },
+    {
+      "id": "IBM092-bdde16a2-M161",
+      "cell": 42,
+      "start": 1542,
+      "end": 1545,
+      "literal": "$m$",
+      "status": "exact",
+      "display": "m",
+      "copy": "'m'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M162",
+      "cell": 42,
+      "start": 1560,
+      "end": 1564,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M163",
+      "cell": 42,
+      "start": 1623,
+      "end": 1740,
+      "literal": "$$\ne^{-iHt}=e^{-i(H_1+H_2+⋯+H_n )t} = (e^{-i(H_1+H_2+⋯+H_n )t/m} )^m\n≈(e^{-iH_1 dt} e^{-iH_2 dt} …e^{-iH_n dt} )^m\n$$",
+      "status": "diagnostic",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM092-bdde16a2-M164",
+      "cell": 42,
+      "start": 1747,
+      "end": 1757,
+      "literal": "$dt = t/m$",
+      "status": "exact",
+      "display": "d = 1 / m and t ≠ 0 or t = 0 and m ≠ 0",
+      "copy": "((('d')==(1 ∕ 'm') and ('t')!=(0)) or (('m')!=(0) and ('t')==(0)))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M165",
+      "cell": 42,
+      "start": 1899,
+      "end": 2004,
+      "literal": "$$\n\\mathcal{K}_P^r (H,|v\\rangle)=\\text{span}\\{|v\\rangle,H|v\\rangle,H^2 |v\\rangle… H^{r-1}  |v\\rangle\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 43"
+    },
+    {
+      "id": "IBM092-bdde16a2-M166",
+      "cell": 42,
+      "start": 2080,
+      "end": 2099,
+      "literal": "$U \\equiv e^{-iHt}$",
+      "status": "diagnostic",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM092-bdde16a2-M167",
+      "cell": 42,
+      "start": 2151,
+      "end": 2168,
+      "literal": "$\\mathcal{K}_U^r$",
+      "status": "exact",
+      "display": "\"K_U\"^r",
+      "copy": "\"K_U\"^'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M168",
+      "cell": 42,
+      "start": 2196,
+      "end": 2213,
+      "literal": "$\\mathcal{K}_P^r$",
+      "status": "exact",
+      "display": "\"K_P\"^r",
+      "copy": "\"K_P\"^'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M169",
+      "cell": 42,
+      "start": 2293,
+      "end": 2296,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M170",
+      "cell": 42,
+      "start": 2522,
+      "end": 2533,
+      "literal": "$|v\\rangle$",
+      "status": "exact",
+      "display": "qketstate('v')",
+      "copy": "qketstate('v')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M171",
+      "cell": 42,
+      "start": 2764,
+      "end": 2767,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M172",
+      "cell": 42,
+      "start": 2801,
+      "end": 2814,
+      "literal": "$k^\\text{th}$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M173",
+      "cell": 42,
+      "start": 2824,
+      "end": 2827,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M174",
+      "cell": 42,
+      "start": 2858,
+      "end": 2871,
+      "literal": "$k \\times dt$",
+      "status": "exact",
+      "display": "d · k · t",
+      "copy": "'d''k''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M175",
+      "cell": 42,
+      "start": 2952,
+      "end": 2958,
+      "literal": "$k dt$",
+      "status": "exact",
+      "display": "d · k · t",
+      "copy": "'d''k''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M176",
+      "cell": 42,
+      "start": 2962,
+      "end": 2978,
+      "literal": "$|\\psi_k\\rangle$",
+      "status": "exact",
+      "display": "|ψ_k⟩",
+      "copy": "qketstate(\"ψ_k\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M177",
+      "cell": 43,
+      "start": 0,
+      "end": 169,
+      "literal": "$$\n\\begin{aligned}\nU&=e^{-iHdt}\\\\\nU^k&=e^{-iH(kdt)}\\\\\n\\mathcal{K}_U^r&=\\text{span}\\{|\\psi\\rangle,U|\\psi\\rangle,U^2 |\\psi\\rangle… U^{r-1}  |\\psi\\rangle\\}\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 81"
+    },
+    {
+      "id": "IBM092-bdde16a2-M178",
+      "cell": 44,
+      "start": 68,
+      "end": 85,
+      "literal": "$\\mathcal{K}_U^r$",
+      "status": "exact",
+      "display": "\"K_U\"^r",
+      "copy": "\"K_U\"^'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M179",
+      "cell": 44,
+      "start": 139,
+      "end": 142,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M180",
+      "cell": 44,
+      "start": 150,
+      "end": 167,
+      "literal": "$\\mathcal{K}_U^r$",
+      "status": "exact",
+      "display": "\"K_U\"^r",
+      "copy": "\"K_U\"^'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M181",
+      "cell": 44,
+      "start": 216,
+      "end": 227,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M182",
+      "cell": 44,
+      "start": 301,
+      "end": 312,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M183",
+      "cell": 44,
+      "start": 349,
+      "end": 383,
+      "literal": "$\\langle \\psi_m |H| \\psi_n\\rangle$",
+      "status": "exact",
+      "display": "⟨ψ_m| [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] |ψ_n⟩",
+      "copy": "qmul(qmul(qdag(qnamedket(\"ψ_m\")),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket(\"ψ_n\"))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M184",
+      "cell": 44,
+      "start": 454,
+      "end": 457,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M185",
+      "cell": 44,
+      "start": 823,
+      "end": 837,
+      "literal": "$N_\\text{GCP}$",
+      "status": "exact",
+      "display": "\"N_GCP\"",
+      "copy": "\"N_GCP\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M186",
+      "cell": 44,
+      "start": 858,
+      "end": 914,
+      "literal": "$$\nH=\\sum_{\\alpha=1}^{N_\\text{GCP}} c_\\alpha P_\\alpha\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{\"N_GCP\"} (c_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,\"N_GCP\",\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M187",
+      "cell": 44,
+      "start": 920,
+      "end": 930,
+      "literal": "$P_\\alpha$",
+      "status": "exact",
+      "display": "\"P_α\"",
+      "copy": "\"P_α\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M188",
+      "cell": 44,
+      "start": 961,
+      "end": 991,
+      "literal": "$P_\\alpha \\sim IZIXII...YZXIX$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\sim at byte 14"
+    },
+    {
+      "id": "IBM092-bdde16a2-M189",
+      "cell": 44,
+      "start": 1078,
+      "end": 1081,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M190",
+      "cell": 44,
+      "start": 1171,
+      "end": 1182,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M191",
+      "cell": 44,
+      "start": 1248,
+      "end": 1439,
+      "literal": "$$\n\\begin{aligned}\n\\tilde{H}_{mn}&=\\langle \\psi_m |H| \\psi_n\\rangle\\\\\n&=\\langle \\psi e^{iHt_m} |H| \\psi e^{-iHt_n}\\rangle\\\\\n&=\\langle \\psi e^{iHmdt} |H|\\psi e^{-iHndt}\\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "\"H_tilde_mn\" = ⟨ψ_m| [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] |ψ_n⟩ = |'ψ' · e^\"iHt_m\"⟩ (dimension unresolved)† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · |'ψ' · e^(−\"iHt_n\")⟩ (dimension unresolved) = |'ψ' · e^(i · H · d · m · t)⟩ (dimension unresolved)† · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · |'ψ' · e^(−(i · H · d · n · t))⟩ (dimension unresolved)",
+      "copy": "qequalchain(vector(\"H_tilde_mn\",qmul(qmul(qdag(qnamedket(\"ψ_m\")),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qnamedket(\"ψ_n\")),qmul(qmul(qdag(qcomputationalket(qadjacent('ψ',qpower(e,\"iHt_m\")))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qcomputationalket(qadjacent('ψ',qpower(e,qmul(\"iHt_n\",−1))))),qmul(qmul(qdag(qcomputationalket(qadjacent('ψ',qpower(e,qmul(qmul(qmul(qmul('H','d'),'m'),'t'),i))))),matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),qcomputationalket(qadjacent('ψ',qpower(e,qmul(qmul(qmul(qmul('H','d'),'t'),n),−i)))))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M192",
+      "cell": 44,
+      "start": 1447,
+      "end": 1503,
+      "literal": "$\\vert \\psi_n \\rangle = e^{-i H t_n} \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ_n⟩ = e^(−i · [1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)] · \"t_n\") |ψ⟩",
+      "copy": "qcompare(qketstate(\"ψ_n\"),qadjacent(qpower(e,qadjacent(qadjacent(−i,matrix(2,2,vector(qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qpower(2,−1 ∕ 2),qmul(−1,qpower(2,−1 ∕ 2))))),\"t_n\")),qnamedket('ψ')),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M193",
+      "cell": 44,
+      "start": 1552,
+      "end": 1564,
+      "literal": "$t_n = n dt$",
+      "status": "exact",
+      "display": "d = \"t_n\" / (n · t) and n ≠ 0 and t ≠ 0 or n = 0 and \"t_n\" = 0 and t ≠ 0 or t = 0 and \"t_n\" = 0",
+      "copy": "(((\"t_n\")==(0) and ('t')!=(0) and (n)==(0)) or ((\"t_n\")==(0) and ('t')==(0)) or (('d')==(\"t_n\" ∕ (n ⋅ 't')) and ('t')!=(0) and (n)!=(0)))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M194",
+      "cell": 44,
+      "start": 1600,
+      "end": 1604,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M195",
+      "cell": 44,
+      "start": 1829,
+      "end": 1844,
+      "literal": "$\\mathcal{K}_U$",
+      "status": "exact",
+      "display": "\"K_U\"",
+      "copy": "\"K_U\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M196",
+      "cell": 44,
+      "start": 1859,
+      "end": 1862,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M197",
+      "cell": 44,
+      "start": 1929,
+      "end": 1941,
+      "literal": "$r \\times r$",
+      "status": "exact",
+      "display": "r^2",
+      "copy": "'r'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M198",
+      "cell": 44,
+      "start": 1948,
+      "end": 1951,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M199",
+      "cell": 44,
+      "start": 1976,
+      "end": 1984,
+      "literal": "$r<<100$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM092-bdde16a2-M200",
+      "cell": 44,
+      "start": 2107,
+      "end": 2118,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M201",
+      "cell": 44,
+      "start": 2173,
+      "end": 2184,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M202",
+      "cell": 44,
+      "start": 2307,
+      "end": 2318,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M203",
+      "cell": 44,
+      "start": 2320,
+      "end": 2378,
+      "literal": "$$\n\\tilde{S}_{mn} = \\langle \\psi_m \\vert \\psi_n \\rangle\n$$",
+      "status": "exact",
+      "display": "\"S_tilde_mn\" = ⟨ψ_m|ψ_n⟩",
+      "copy": "qcompare(\"S_tilde_mn\",qmul(qdag(qnamedket(\"ψ_m\")),qnamedket(\"ψ_n\")),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M204",
+      "cell": 44,
+      "start": 2499,
+      "end": 2550,
+      "literal": "$$\n\\tilde{H} \\ \\vec{c} = E \\ \\tilde{S} \\ \\vec{c}\n$$",
+      "status": "exact",
+      "display": "E · \"S_tilde\" · qvectorref('c') = \"H_tilde\" · qvectorref('c')",
+      "copy": "(qadjacent(qadjacent('E',\"S_tilde\"),qvectorref('c')))==(qadjacent(\"H_tilde\",qvectorref('c')))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M205",
+      "cell": 44,
+      "start": 2620,
+      "end": 2623,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M206",
+      "cell": 44,
+      "start": 2791,
+      "end": 2794,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M207",
+      "cell": 44,
+      "start": 2851,
+      "end": 2860,
+      "literal": "$\\vec{c}$",
+      "status": "exact",
+      "display": "qvectorref('c')",
+      "copy": "qvectorref('c')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M208",
+      "cell": 44,
+      "start": 2882,
+      "end": 2891,
+      "literal": "$\\vec{c}$",
+      "status": "exact",
+      "display": "qvectorref('c')",
+      "copy": "qvectorref('c')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M209",
+      "cell": 44,
+      "start": 2955,
+      "end": 2970,
+      "literal": "$\\mathcal{K}_U$",
+      "status": "exact",
+      "display": "\"K_U\"",
+      "copy": "\"K_U\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M210",
+      "cell": 45,
+      "start": 71,
+      "end": 82,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M211",
+      "cell": 45,
+      "start": 90,
+      "end": 101,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M212",
+      "cell": 45,
+      "start": 222,
+      "end": 233,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M213",
+      "cell": 46,
+      "start": 410,
+      "end": 427,
+      "literal": "$\\tilde{H}_{i,j}$",
+      "status": "diagnostic",
+      "message": "A coefficient index must be an integer."
+    },
+    {
+      "id": "IBM092-bdde16a2-M214",
+      "cell": 46,
+      "start": 463,
+      "end": 485,
+      "literal": "$\\vert \\psi_i \\rangle$",
+      "status": "exact",
+      "display": "|ψ_i⟩",
+      "copy": "qketstate(\"ψ_i\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M215",
+      "cell": 46,
+      "start": 487,
+      "end": 509,
+      "literal": "$\\vert \\psi_j \\rangle$",
+      "status": "exact",
+      "display": "|ψ_j⟩",
+      "copy": "qketstate(\"ψ_j\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M216",
+      "cell": 46,
+      "start": 626,
+      "end": 649,
+      "literal": "$\\text{Prep} \\; \\psi_i$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M217",
+      "cell": 46,
+      "start": 651,
+      "end": 674,
+      "literal": "$\\text{Prep} \\; \\psi_j$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M218",
+      "cell": 46,
+      "start": 851,
+      "end": 862,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M219",
+      "cell": 46,
+      "start": 1123,
+      "end": 1146,
+      "literal": "$\\text{Prep} \\; \\psi_i$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M220",
+      "cell": 46,
+      "start": 1196,
+      "end": 1218,
+      "literal": "$\\vert \\psi_i \\rangle$",
+      "status": "exact",
+      "display": "|ψ_i⟩",
+      "copy": "qketstate(\"ψ_i\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M221",
+      "cell": 46,
+      "start": 1279,
+      "end": 1302,
+      "literal": "$\\text{Prep} \\; \\psi_j$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M222",
+      "cell": 46,
+      "start": 1322,
+      "end": 1325,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M223",
+      "cell": 46,
+      "start": 1383,
+      "end": 1399,
+      "literal": "$H = \\sum_i P_i$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k ∈ \"indexset_i\"} (P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsumset(qindexedlabel(\"P_\",\"qboundindex_0\",\"\"),\"indexset_i\",\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M224",
+      "cell": 53,
+      "start": 600,
+      "end": 613,
+      "literal": "$i^\\text{th}$",
+      "status": "exact",
+      "display": "i",
+      "copy": "i"
+    },
+    {
+      "id": "IBM092-bdde16a2-M225",
+      "cell": 53,
+      "start": 667,
+      "end": 684,
+      "literal": "$(i-1)^\\text{th}$",
+      "status": "exact",
+      "display": "−1 + i",
+      "copy": "−1 + i"
+    },
+    {
+      "id": "IBM092-bdde16a2-M226",
+      "cell": 53,
+      "start": 689,
+      "end": 706,
+      "literal": "$(i+1)^\\text{th}$",
+      "status": "exact",
+      "display": "1 + i",
+      "copy": "1 + i"
+    },
+    {
+      "id": "IBM092-bdde16a2-M227",
+      "cell": 55,
+      "start": 132,
+      "end": 136,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M228",
+      "cell": 55,
+      "start": 313,
+      "end": 344,
+      "literal": "$\\pi/\\vert \\vert H \\vert \\vert$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM092-bdde16a2-M229",
+      "cell": 55,
+      "start": 592,
+      "end": 596,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M230",
+      "cell": 59,
+      "start": 47,
+      "end": 67,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M231",
+      "cell": 59,
+      "start": 193,
+      "end": 221,
+      "literal": "$\\vert 00..010...00 \\rangle$",
+      "status": "diagnostic",
+      "message": "An ellipsis register requires indexed bit names, such as x_(n-1) ... x_0."
+    },
+    {
+      "id": "IBM092-bdde16a2-M232",
+      "cell": 61,
+      "start": 98,
+      "end": 110,
+      "literal": "$U=e^{-iHt}$",
+      "status": "exact",
+      "display": "qpropagator('H', 't') = U",
+      "copy": "(qpropagator('H','t'))==('U')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M233",
+      "cell": 63,
+      "start": 89,
+      "end": 93,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M234",
+      "cell": 64,
+      "start": 81,
+      "end": 92,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M235",
+      "cell": 64,
+      "start": 113,
+      "end": 124,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M236",
+      "cell": 64,
+      "start": 233,
+      "end": 244,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M237",
+      "cell": 64,
+      "start": 344,
+      "end": 371,
+      "literal": "$\\text{Prep}|\\psi_i\\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M238",
+      "cell": 64,
+      "start": 449,
+      "end": 465,
+      "literal": "$|\\psi_i\\rangle$",
+      "status": "exact",
+      "display": "|ψ_i⟩",
+      "copy": "qketstate(\"ψ_i\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M239",
+      "cell": 64,
+      "start": 470,
+      "end": 486,
+      "literal": "$|\\psi_j\\rangle$",
+      "status": "exact",
+      "display": "|ψ_j⟩",
+      "copy": "qketstate(\"ψ_j\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M240",
+      "cell": 64,
+      "start": 810,
+      "end": 1374,
+      "literal": "$$\n\\begin{aligned}\n    \\text{Step 0:}\\qquad|\\Psi\\rangle & = |0\\rangle|0\\rangle^N \\\\\n    \\text{Step 1:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\Big(|0\\rangle + |1\\rangle \\Big)|0\\rangle^N \\\\\n    \\text{Step 2:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\Big(|0\\rangle|0\\rangle^N+|1\\rangle |\\psi_i\\rangle\\Big)\\\\\n    \\text{Step 3:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\Big(|0\\rangle |0\\rangle^N+|1\\rangle P |\\psi_i\\rangle\\Big) \\\\\n    \\text{Step 4:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\Big(|0\\rangle |\\psi_j\\rangle+|1\\rangle P|\\psi_i\\rangle\\Big)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M241",
+      "cell": 64,
+      "start": 1381,
+      "end": 1384,
+      "literal": "$P$",
+      "status": "exact",
+      "display": "P",
+      "copy": "'P'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M242",
+      "cell": 64,
+      "start": 1627,
+      "end": 1650,
+      "literal": "$\\text{Prep} \\; \\psi_i$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M243",
+      "cell": 64,
+      "start": 1652,
+      "end": 1675,
+      "literal": "$\\text{Prep} \\; \\psi_j$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M244",
+      "cell": 64,
+      "start": 1715,
+      "end": 1731,
+      "literal": "$|\\psi_i\\rangle$",
+      "status": "exact",
+      "display": "|ψ_i⟩",
+      "copy": "qketstate(\"ψ_i\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M245",
+      "cell": 64,
+      "start": 1733,
+      "end": 1749,
+      "literal": "$|\\psi_j\\rangle$",
+      "status": "exact",
+      "display": "|ψ_j⟩",
+      "copy": "qketstate(\"ψ_j\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M246",
+      "cell": 64,
+      "start": 1792,
+      "end": 1888,
+      "literal": "$|\\psi_k\\rangle = e^{-i H k dt } \\vert \\psi \\rangle = e^{-i H k dt } U_{\\psi} \\vert 0 \\rangle^N$",
+      "status": "diagnostic",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M247",
+      "cell": 64,
+      "start": 1915,
+      "end": 1918,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M248",
+      "cell": 64,
+      "start": 1923,
+      "end": 1926,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M249",
+      "cell": 64,
+      "start": 2086,
+      "end": 2089,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M250",
+      "cell": 64,
+      "start": 2112,
+      "end": 2316,
+      "literal": "$$\n\\begin{equation*}\n   |\\Psi\\rangle \\longrightarrow\\quad\\frac{1}{2}|0\\rangle\\Big( |\\psi_j\\rangle + P|\\psi_i\\rangle\\Big) + \\frac{1}{2}|1\\rangle\\Big(|\\psi_j\\rangle - P|\\psi_i\\rangle\\Big)\n\\end{equation*}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M251",
+      "cell": 64,
+      "start": 2338,
+      "end": 2341,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M252",
+      "cell": 64,
+      "start": 2345,
+      "end": 2348,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M253",
+      "cell": 64,
+      "start": 2351,
+      "end": 2636,
+      "literal": "$$\n\\begin{equation*}\n\\begin{split}\n    \\Rightarrow\\quad\\langle X\\rangle &= \\frac{1}{4}\\Bigg(\\Big\\|| \\psi_j\\rangle + P|\\psi_i\\rangle \\Big\\|^2-\\Big\\||\\psi_j\\rangle - P|\\psi_i\\rangle\\Big\\|^2\\Bigg) \\\\\n    &= \\text{Re}\\Big[\\langle\\psi_j| P|\\psi_i\\rangle\\Big].\n\\end{split}\n\\end{equation*}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M254",
+      "cell": 64,
+      "start": 2656,
+      "end": 2754,
+      "literal": "$|a + b\\|^2 = \\langle a + b | a + b \\rangle = \\|a\\|^2 + \\|b\\|^2 + 2\\text{Re}\\langle a | b \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 76"
+    },
+    {
+      "id": "IBM092-bdde16a2-M255",
+      "cell": 64,
+      "start": 2777,
+      "end": 2780,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M256",
+      "cell": 64,
+      "start": 2789,
+      "end": 2902,
+      "literal": "$$\n\\begin{equation*}\n    \\langle Y\\rangle = \\text{Im}\\Big[\\langle\\psi_j| P|\\psi_i\\rangle\\Big].\n\\end{equation*}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M257",
+      "cell": 68,
+      "start": 105,
+      "end": 116,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M258",
+      "cell": 68,
+      "start": 121,
+      "end": 132,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M259",
+      "cell": 69,
+      "start": 660,
+      "end": 665,
+      "literal": "$E_0$",
+      "status": "exact",
+      "display": "\"E_0\"",
+      "copy": "\"E_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M260",
+      "cell": 69,
+      "start": 685,
+      "end": 698,
+      "literal": "$|0\\rangle^N$",
+      "status": "diagnostic",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M261",
+      "cell": 69,
+      "start": 721,
+      "end": 724,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M262",
+      "cell": 69,
+      "start": 949,
+      "end": 962,
+      "literal": "$|0\\rangle^N$",
+      "status": "diagnostic",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M263",
+      "cell": 69,
+      "start": 1172,
+      "end": 1195,
+      "literal": "$\\text{Prep} \\; \\psi_0$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M264",
+      "cell": 69,
+      "start": 1234,
+      "end": 1315,
+      "literal": "$\\ket{\\psi_0} = \\text{Prep} \\; \\psi_0 \\ket{0} = e^{-i H 0 dt} U_{\\psi_0} \\ket{0}$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 27"
+    },
+    {
+      "id": "IBM092-bdde16a2-M265",
+      "cell": 69,
+      "start": 1368,
+      "end": 1391,
+      "literal": "$\\text{Prep} \\; \\psi_0$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M266",
+      "cell": 69,
+      "start": 1447,
+      "end": 1470,
+      "literal": "$\\text{Prep} \\; \\psi_0$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M267",
+      "cell": 69,
+      "start": 1576,
+      "end": 2445,
+      "literal": "$$\n\\begin{aligned}\n    \\text{Step 0:}\\qquad|\\Psi\\rangle & = \\ket{0} \\ket{0}^{N}\\\\\n    \\text{Step 1:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\left(\\ket{0}\\ket{0}^N+ \\ket{1} \\ket{0}^N\\right)\\\\\n    \\text{Step 2:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\left(|0\\rangle|0\\rangle^N+|1\\rangle|\\psi_0\\rangle\\right)\\\\\n    \\text{Step 3:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\left(e^{i\\phi}\\ket{0}\\ket{0}^N+\\ket{1} U\\ket{\\psi_0}\\right)\\\\\n    \\text{Step 4:}\\qquad|\\Psi\\rangle & = \\frac{1}{\\sqrt{2}}\\left(e^{i\\phi}\\ket{0} \\ket{\\psi_0}+\\ket{1} U\\ket{\\psi_0}\\right)\\\\\n    & = \\frac{1}{2}\\left(\\ket{+}\\left(e^{i\\phi}\\ket{\\psi_0}+U\\ket{\\psi_0}\\right)+\\ket{-}\\left(e^{i\\phi}\\ket{\\psi_0}-U\\ket{\\psi_0}\\right)\\right)\\\\\n    & = \\frac{1}{2}\\left(\\ket{+i}\\left(e^{i\\phi}\\ket{\\psi_0}-iU\\ket{\\psi_0}\\right)+\\ket{-i}\\left(e^{i\\phi}\\ket{\\psi_0}+iU\\ket{\\psi_0}\\right)\\right)\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M268",
+      "cell": 69,
+      "start": 2502,
+      "end": 2536,
+      "literal": "$ U\\ket{0}^N = e^{i\\phi}\\ket{0}^N$",
+      "status": "diagnostic",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M269",
+      "cell": 69,
+      "start": 2593,
+      "end": 2997,
+      "literal": "$$\n\\begin{aligned}\n    \\langle X\\otimes P\\rangle&=\\frac{1}{4}\n    \\Big(\n    \\left(e^{-i\\phi}\\bra{\\psi_0}+\\bra{\\psi_0}U^\\dagger\\right)P\\left(e^{i\\phi}\\ket{\\psi_0}+U\\ket{\\psi_0}\\right)\n    \\\\\n    &\\qquad-\\left(e^{-i\\phi}\\bra{\\psi_0}-\\bra{\\psi_0}U^\\dagger\\right)P\\left(e^{i\\phi}\\ket{\\psi_0}-U\\ket{\\psi_0}\\right)\n    \\Big)\\\\\n    &=\\text{Re}\\left[e^{-i\\phi}\\bra{\\psi_0}PU\\ket{\\psi_0}\\right],\n\\end{aligned}\n\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 335"
+    },
+    {
+      "id": "IBM092-bdde16a2-M270",
+      "cell": 69,
+      "start": 2999,
+      "end": 3410,
+      "literal": "$$\n\n\\begin{aligned}\n    \\langle Y\\otimes P\\rangle&=\\frac{1}{4}\n    \\Big(\n    \\left(e^{-i\\phi}\\bra{\\psi_0}+i\\bra{\\psi_0}U^\\dagger\\right)P\\left(e^{i\\phi_0}\\ket{\\psi_0}-iU\\ket{\\psi_0}\\right)\n    \\\\\n    &\\qquad-\\left(e^{-i\\phi}\\bra{\\psi_0}-i\\bra{\\psi_0}U^\\dagger\\right)P\\left(e^{i\\phi}\\ket{\\psi_0}+iU\\ket{\\psi_0}\\right)\n    \\Big)\\\\\n    &=\\text{Im}\\left[e^{-i\\phi}\\bra{\\psi_0}PU\\ket{\\psi_0}\\right].\n\\end{aligned}\n\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 342"
+    },
+    {
+      "id": "IBM092-bdde16a2-M271",
+      "cell": 69,
+      "start": 3608,
+      "end": 3631,
+      "literal": "$\\text{Prep} \\; \\psi_0$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M272",
+      "cell": 69,
+      "start": 4008,
+      "end": 4064,
+      "literal": "$$H=\\sum_{\\alpha = 1}^{N_\\text{GCP}}c_\\alpha P_\\alpha $$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{\"N_GCP\"} (c_k · P_k)) = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"c_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,\"N_GCP\",\"qboundindex_0\")))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M273",
+      "cell": 70,
+      "start": 566,
+      "end": 574,
+      "literal": "$R_{xx}$",
+      "status": "exact",
+      "display": "\"R_xx\"",
+      "copy": "\"R_xx\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M274",
+      "cell": 70,
+      "start": 576,
+      "end": 584,
+      "literal": "$R_{yy}$",
+      "status": "exact",
+      "display": "\"R_yy\"",
+      "copy": "\"R_yy\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M275",
+      "cell": 70,
+      "start": 586,
+      "end": 594,
+      "literal": "$R_{zz}$",
+      "status": "exact",
+      "display": "\"R_zz\"",
+      "copy": "\"R_zz\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M276",
+      "cell": 70,
+      "start": 619,
+      "end": 624,
+      "literal": "$J_x$",
+      "status": "exact",
+      "display": "\"J_x\"",
+      "copy": "\"J_x\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M277",
+      "cell": 70,
+      "start": 626,
+      "end": 631,
+      "literal": "$J_y$",
+      "status": "exact",
+      "display": "\"J_y\"",
+      "copy": "\"J_y\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M278",
+      "cell": 70,
+      "start": 637,
+      "end": 642,
+      "literal": "$J_z$",
+      "status": "exact",
+      "display": "\"J_z\"",
+      "copy": "\"J_z\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M279",
+      "cell": 70,
+      "start": 668,
+      "end": 671,
+      "literal": "$t$",
+      "status": "exact",
+      "display": "t",
+      "copy": "'t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M280",
+      "cell": 70,
+      "start": 727,
+      "end": 764,
+      "literal": "$e^{-i (J_x XX + J_y YY + J_z ZZ) t}$",
+      "status": "exact",
+      "display": "e^[−(i · \"J_x\" · t) − (i · \"J_y\" · t) − (i · \"J_z\" · t), 0; 0, −(i · \"J_x\" · t) − (i · \"J_y\" · t) − (i · \"J_z\" · t)]",
+      "copy": "(e)^(matrix(2,2,[−i ⋅ \"J_x\" ⋅ 't' − i ⋅ \"J_y\" ⋅ 't' − i ⋅ \"J_z\" ⋅ 't',0,0,−i ⋅ \"J_x\" ⋅ 't' − i ⋅ \"J_y\" ⋅ 't' − i ⋅ \"J_z\" ⋅ 't']))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M281",
+      "cell": 70,
+      "start": 912,
+      "end": 918,
+      "literal": "$2*dt$",
+      "status": "exact",
+      "display": "2 · d · t",
+      "copy": "2'd''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M282",
+      "cell": 70,
+      "start": 950,
+      "end": 954,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M283",
+      "cell": 70,
+      "start": 1153,
+      "end": 1160,
+      "literal": "$SU(2)$",
+      "status": "exact",
+      "display": "2 · S · U",
+      "copy": "2'S''U'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M284",
+      "cell": 74,
+      "start": 58,
+      "end": 69,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M285",
+      "cell": 74,
+      "start": 74,
+      "end": 85,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M286",
+      "cell": 85,
+      "start": 13,
+      "end": 18,
+      "literal": "$t=0$",
+      "status": "exact",
+      "display": "t = 0",
+      "copy": "('t')==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M287",
+      "cell": 85,
+      "start": 89,
+      "end": 98,
+      "literal": "$t\\neq 0$",
+      "status": "exact",
+      "display": "t ≠ 0",
+      "copy": "('t')!=(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M288",
+      "cell": 89,
+      "start": 37,
+      "end": 48,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M289",
+      "cell": 89,
+      "start": 53,
+      "end": 64,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M290",
+      "cell": 91,
+      "start": 136,
+      "end": 147,
+      "literal": "$\\tilde{S}$",
+      "status": "exact",
+      "display": "\"S_tilde\"",
+      "copy": "\"S_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M291",
+      "cell": 91,
+      "start": 215,
+      "end": 226,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M292",
+      "cell": 93,
+      "start": 104,
+      "end": 121,
+      "literal": "$\\vert 0 \\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M293",
+      "cell": 95,
+      "start": 116,
+      "end": 119,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M294",
+      "cell": 98,
+      "start": 27,
+      "end": 38,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M295",
+      "cell": 101,
+      "start": 61,
+      "end": 72,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M296",
+      "cell": 101,
+      "start": 75,
+      "end": 110,
+      "literal": "$$\\tilde{H} \\vec{c} = c S \\vec{c}$$",
+      "status": "exact",
+      "display": "qoperatorref(\"H_tilde\") · qvectorref(\"vector_c\") = 'c' · qoperatorref('S') · qvectorref(\"vector_c\")",
+      "copy": "qcompare(qmul(qoperatorref(\"H_tilde\"),qvectorref(\"vector_c\")),qmul('c',qmul(qoperatorref('S'),qvectorref(\"vector_c\"))),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M297",
+      "cell": 101,
+      "start": 159,
+      "end": 168,
+      "literal": "$c_{min}$",
+      "status": "exact",
+      "display": "\"c_min\"",
+      "copy": "\"c_min\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M298",
+      "cell": 107,
+      "start": 1582,
+      "end": 1593,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M299",
+      "cell": 107,
+      "start": 1768,
+      "end": 1773,
+      "literal": "$r^2$",
+      "status": "exact",
+      "display": "r^2",
+      "copy": "'r'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M300",
+      "cell": 107,
+      "start": 1818,
+      "end": 1823,
+      "literal": "$r^2$",
+      "status": "exact",
+      "display": "r^2",
+      "copy": "'r'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M301",
+      "cell": 107,
+      "start": 1983,
+      "end": 2029,
+      "literal": "$N_\\text{shots}\\times N_\\text{GCP} \\times r^2$",
+      "status": "exact",
+      "display": "\"N_GCP\" · \"N_shots\" · r^2",
+      "copy": "\"N_GCP\" ⋅ \"N_shots\" ⋅ 'r'²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M302",
+      "cell": 107,
+      "start": 2047,
+      "end": 2050,
+      "literal": "$S$",
+      "status": "exact",
+      "display": "[1, 0; 0, i]",
+      "copy": "matrix(2,2,[1,0,0,i])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M303",
+      "cell": 107,
+      "start": 2088,
+      "end": 2117,
+      "literal": "$O(N_\\text{shots}\\times r^2)$",
+      "status": "exact",
+      "display": "O(\"N_shots\" · r^2)",
+      "copy": "qbigorder(qmul(\"N_shots\",qpower('r',2)))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M304",
+      "cell": 107,
+      "start": 2214,
+      "end": 2222,
+      "literal": "$O(r^3)$",
+      "status": "exact",
+      "display": "O(r^3)",
+      "copy": "qbigorder(qpower('r',3))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M305",
+      "cell": 107,
+      "start": 2855,
+      "end": 2866,
+      "literal": "$\\tilde{H}$",
+      "status": "exact",
+      "display": "\"H_tilde\"",
+      "copy": "\"H_tilde\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M306",
+      "cell": 107,
+      "start": 3426,
+      "end": 3429,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M307",
+      "cell": 108,
+      "start": 117,
+      "end": 257,
+      "literal": "$$\n\\mathcal{K}_U(H, |\\psi\\rangle) = \\text{span}\\left\\{ |\\psi\\rangle,  e^{-iH\\,dt} |\\psi\\rangle, \\dots, e^{-irH\\,dt} |\\psi\\rangle \\right\\}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M308",
+      "cell": 108,
+      "start": 277,
+      "end": 281,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M309",
+      "cell": 108,
+      "start": 331,
+      "end": 334,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M310",
+      "cell": 108,
+      "start": 356,
+      "end": 363,
+      "literal": "$d=r/2$",
+      "status": "exact",
+      "display": "d = 0.5 · r",
+      "copy": "('d')==('r' ∕ 2)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M311",
+      "cell": 108,
+      "start": 485,
+      "end": 680,
+      "literal": "$$\n\\mathcal{K}_U(H, |\\psi\\rangle) = \\text{span}\\left\\{ e^{i\\,d\\,H\\,dt}|\\psi\\rangle,  e^{i(d-1)H\\,dt} |\\psi\\rangle, \\dots, e^{-i(d-1)H\\,dt} |\\psi\\rangle, e^{-i\\,d\\,H\\,dt} |\\psi\\rangle \\right\\},\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M312",
+      "cell": 108,
+      "start": 745,
+      "end": 748,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M313",
+      "cell": 108,
+      "start": 827,
+      "end": 948,
+      "literal": "$$\n\\tilde{H}_{j,k} = \\langle\\psi|e^{i\\,j\\,H\\,dt}He^{-i\\,k\\,H\\,dt}|\\psi\\rangle=\\langle\\psi|He^{i(j-k)H\\,dt}|\\psi\\rangle\n$$",
+      "status": "exact",
+      "display": "H_tilde_(j,k) = ⟨ψ| (qpropagator('H', qmul(−'j', \"dt\")) · qoperatorref('H') · qpropagator('H', qmul('k', \"dt\"))) |ψ⟩ = ⟨ψ| (qoperatorref('H') · qpropagator('H', qmul(−qsub('j', 'k'), \"dt\"))) |ψ⟩",
+      "copy": "qequalchain(vector(qindexedcoefficient(\"H_tilde_\",'j','k'),qmul(qmul(qdag(qnamedket('ψ')),qmul(qadjacent(qpropagator('H',qmul(−'j',\"dt\")),qoperatorref('H')),qpropagator('H',qmul('k',\"dt\")))),qnamedket('ψ')),qmul(qmul(qdag(qnamedket('ψ')),qmul(qoperatorref('H'),qpropagator('H',qmul(−qsub('j', 'k'),\"dt\")))),qnamedket('ψ'))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M314",
+      "cell": 108,
+      "start": 1072,
+      "end": 1075,
+      "literal": "$r$",
+      "status": "exact",
+      "display": "r",
+      "copy": "'r'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M315",
+      "cell": 108,
+      "start": 1105,
+      "end": 1110,
+      "literal": "$r-1$",
+      "status": "exact",
+      "display": "r − 1",
+      "copy": "'r' − 1"
+    },
+    {
+      "id": "IBM092-bdde16a2-M316",
+      "cell": 108,
+      "start": 1350,
+      "end": 1353,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M317",
+      "cell": 108,
+      "start": 1377,
+      "end": 1380,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M318",
+      "cell": 108,
+      "start": 1495,
+      "end": 1505,
+      "literal": "$f(E_0)=1$",
+      "status": "exact",
+      "display": "qscalarat('f', \"E_0\") = 1",
+      "copy": "(qscalarat('f',\"E_0\"))==(1)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M319",
+      "cell": 108,
+      "start": 1509,
+      "end": 1549,
+      "literal": "$|f(E)|\\le2\\left(1 + \\delta\\right)^{-d}$",
+      "status": "diagnostic",
+      "message": "Bars require a scalar or finite flat collection."
+    },
+    {
+      "id": "IBM092-bdde16a2-M320",
+      "cell": 108,
+      "start": 1568,
+      "end": 1571,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M321",
+      "cell": 108,
+      "start": 1581,
+      "end": 1592,
+      "literal": "$\\ge\\delta$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM092-bdde16a2-M322",
+      "cell": 108,
+      "start": 1603,
+      "end": 1608,
+      "literal": "$E_0$",
+      "status": "exact",
+      "display": "\"E_0\"",
+      "copy": "\"E_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M323",
+      "cell": 108,
+      "start": 1653,
+      "end": 1659,
+      "literal": "$f(E)$",
+      "status": "exact",
+      "display": "f(E)",
+      "copy": "qnamedapplication('f','E')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M324",
+      "cell": 108,
+      "start": 1687,
+      "end": 1700,
+      "literal": "$e^{ijE\\,dt}$",
+      "status": "exact",
+      "display": "e^(i · E · d · j · t)",
+      "copy": "e^(i'E''d''j''t')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M325",
+      "cell": 108,
+      "start": 1705,
+      "end": 1726,
+      "literal": "$j=-d,-d+1,...,d-1,d$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M326",
+      "cell": 108,
+      "start": 1986,
+      "end": 2004,
+      "literal": "$f(H)|\\psi\\rangle$",
+      "status": "exact",
+      "display": "[f / √(2), f / √(2); f / √(2), −(f / √(2))] |ψ⟩",
+      "copy": "qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M327",
+      "cell": 108,
+      "start": 2054,
+      "end": 2068,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M328",
+      "cell": 108,
+      "start": 2096,
+      "end": 2151,
+      "literal": "$$\n|\\psi\\rangle = \\sum_{k=0}^{N}\\gamma_k|E_k\\rangle,\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ∑_{k=0}^{N} (γ_k |E_k⟩)",
+      "copy": "qcompare(qketstate('ψ'),qsum(qadjacent(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M329",
+      "cell": 108,
+      "start": 2159,
+      "end": 2172,
+      "literal": "$|E_k\\rangle$",
+      "status": "exact",
+      "display": "|E_k⟩",
+      "copy": "qketstate(\"E_k\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M330",
+      "cell": 108,
+      "start": 2206,
+      "end": 2216,
+      "literal": "$\\gamma_k$",
+      "status": "exact",
+      "display": "\"γ_k\"",
+      "copy": "\"γ_k\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M331",
+      "cell": 108,
+      "start": 2255,
+      "end": 2269,
+      "literal": "$|\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M332",
+      "cell": 108,
+      "start": 2299,
+      "end": 2317,
+      "literal": "$f(H)|\\psi\\rangle$",
+      "status": "exact",
+      "display": "[f / √(2), f / √(2); f / √(2), −(f / √(2))] |ψ⟩",
+      "copy": "qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M333",
+      "cell": 108,
+      "start": 2331,
+      "end": 2396,
+      "literal": "$$\nf(H)|\\psi\\rangle = \\sum_{k=0}^{N}\\gamma_kf(E_k)|E_k\\rangle,\n$$",
+      "status": "exact",
+      "display": "qcompare(qadjacent(qpolynomialat('f', qoperatorref('H')), qnamedket('ψ')), qsum(qadjacent(qmul(qindexedlabel(\"γ_\", \"qboundindex_0\", \"\"), qpolynomialat('f', qindexedlabel(\"E_\", \"qboundindex_0\", \"\"))), qindexedket(qindexedlabel(\"E_\", \"qboundindex_0\", \"\"))), 0, 'N', \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qadjacent(qpolynomialat('f',qoperatorref('H')),qnamedket('ψ')),qsum(qadjacent(qmul(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"),qpolynomialat('f',qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),qindexedket(qindexedlabel(\"E_\",\"qboundindex_0\",\"\"))),0,'N',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M334",
+      "cell": 108,
+      "start": 2433,
+      "end": 2436,
+      "literal": "$H$",
+      "status": "exact",
+      "display": "[1 ∕ √(2), 1 ∕ √(2); 1 ∕ √(2), −1 ∕ √(2)]",
+      "copy": "matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM092-bdde16a2-M335",
+      "cell": 108,
+      "start": 2440,
+      "end": 2445,
+      "literal": "$E_k$",
+      "status": "exact",
+      "display": "\"E_k\"",
+      "copy": "\"E_k\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M336",
+      "cell": 108,
+      "start": 2477,
+      "end": 2490,
+      "literal": "$|E_k\\rangle$",
+      "status": "exact",
+      "display": "|E_k⟩",
+      "copy": "qketstate(\"E_k\")"
+    },
+    {
+      "id": "IBM092-bdde16a2-M337",
+      "cell": 108,
+      "start": 2537,
+      "end": 2643,
+      "literal": "$$\n\\text{energy error} = \\frac{\\langle\\psi|f(H)(H-E_0)f(H)|\\psi\\rangle}{\\langle\\psi|f(H)^2|\\psi\\rangle}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M338",
+      "cell": 108,
+      "start": 2645,
+      "end": 2740,
+      "literal": "$$\n= \\frac{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2(E_k-E_0)}{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2}.\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM092-bdde16a2-M339",
+      "cell": 108,
+      "start": 2864,
+      "end": 2882,
+      "literal": "$E_k-E_0\\le\\delta$",
+      "status": "exact",
+      "display": "\"E_0\" ≥ \"E_k\" − 'δ'",
+      "copy": "(\"E_0\")>=(\"E_k\" − 'δ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M340",
+      "cell": 108,
+      "start": 2898,
+      "end": 2914,
+      "literal": "$E_k-E_0>\\delta$",
+      "status": "exact",
+      "display": "\"E_0\" < \"E_k\" − 'δ'",
+      "copy": "(\"E_0\")<(\"E_k\" − 'δ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M341",
+      "cell": 108,
+      "start": 2917,
+      "end": 3139,
+      "literal": "$$\n\\text{energy error} = \\frac{\\sum_{E_k\\le E_0+\\delta}|\\gamma_k|^2f(E_k)^2(E_k-E_0)}{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2} + \\frac{\\sum_{E_k> E_0+\\delta}|\\gamma_k|^2f(E_k)^2(E_k-E_0)}{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M342",
+      "cell": 108,
+      "start": 3178,
+      "end": 3186,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M343",
+      "cell": 108,
+      "start": 3189,
+      "end": 3399,
+      "literal": "$$\n\\frac{\\sum_{E_k\\le E_0+\\delta}|\\gamma_k|^2f(E_k)^2(E_k-E_0)}{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2} < \\frac{\\delta\\sum_{E_k\\le E_0+\\delta}|\\gamma_k|^2f(E_k)^2}{\\sum_{k=0}^{N}|\\gamma_k|^2f(E_k)^2} \\le \\delta,\n$$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 32"
+    },
+    {
+      "id": "IBM092-bdde16a2-M344",
+      "cell": 108,
+      "start": 3438,
+      "end": 3456,
+      "literal": "$E_k-E_0\\le\\delta$",
+      "status": "exact",
+      "display": "\"E_0\" ≥ \"E_k\" − 'δ'",
+      "copy": "(\"E_0\")>=(\"E_k\" − 'δ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M345",
+      "cell": 108,
+      "start": 3467,
+      "end": 3472,
+      "literal": "$E_k$",
+      "status": "exact",
+      "display": "\"E_k\"",
+      "copy": "\"E_k\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M346",
+      "cell": 108,
+      "start": 3650,
+      "end": 3664,
+      "literal": "$|\\gamma_0|^2$",
+      "status": "exact",
+      "display": "|\"γ_0\"|^2",
+      "copy": "qbars(\"γ_0\")²"
+    },
+    {
+      "id": "IBM092-bdde16a2-M347",
+      "cell": 108,
+      "start": 3672,
+      "end": 3684,
+      "literal": "$f(E_0)^2=1$",
+      "status": "exact",
+      "display": "qscalarat('f', \"E_0\") = 1 or qscalarat('f', \"E_0\") = −1",
+      "copy": "((qscalarat('f',\"E_0\"))==(1) or (qscalarat('f',\"E_0\"))==(−1))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M348",
+      "cell": 108,
+      "start": 3731,
+      "end": 3843,
+      "literal": "$$\n\\text{energy error} \\le \\delta + \\frac{1}{|\\gamma_0|^2}\\sum_{E_k>E_0+\\delta}|\\gamma_k|^2f(E_k)^2(E_k-E_0).\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M349",
+      "cell": 108,
+      "start": 3897,
+      "end": 3902,
+      "literal": "$E_k$",
+      "status": "exact",
+      "display": "\"E_k\"",
+      "copy": "\"E_k\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M350",
+      "cell": 108,
+      "start": 3925,
+      "end": 3928,
+      "literal": "$f$",
+      "status": "exact",
+      "display": "f",
+      "copy": "'f'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M351",
+      "cell": 108,
+      "start": 3942,
+      "end": 3987,
+      "literal": "$f(E_k)^2 \\le 4\\left(1 + \\delta\\right)^{-2d}$",
+      "status": "exact",
+      "display": "qscalarat('f', \"E_k\")² ≤ 4 / ('δ' + 1)^(2 · d)",
+      "copy": "(qscalarat('f', \"E_k\")²)<=(4 ∕ ('δ' + 1)^(2 ⋅ 'd'))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M352",
+      "cell": 108,
+      "start": 4017,
+      "end": 4033,
+      "literal": "$E_k-E_0<2\\|H\\|$",
+      "status": "diagnostic",
+      "message": "norm and normalize require a column ket.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M353",
+      "cell": 108,
+      "start": 4053,
+      "end": 4090,
+      "literal": "$\\sum_{E_k>E_0+\\delta}|\\gamma_k|^2<1$",
+      "status": "diagnostic",
+      "message": "A finite sum/product requires lower and upper bounds at byte 22"
+    },
+    {
+      "id": "IBM092-bdde16a2-M354",
+      "cell": 108,
+      "start": 4098,
+      "end": 4194,
+      "literal": "$$\n\\text{energy error} \\le \\delta + \\frac{8}{|\\gamma_0|^2}\\|H\\|\\left(1 + \\delta\\right)^{-2d}.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M355",
+      "cell": 108,
+      "start": 4215,
+      "end": 4225,
+      "literal": "$\\delta>0$",
+      "status": "exact",
+      "display": "'δ' > 0",
+      "copy": "('δ')>(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M356",
+      "cell": 108,
+      "start": 4240,
+      "end": 4248,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M357",
+      "cell": 108,
+      "start": 4364,
+      "end": 4370,
+      "literal": "$2d=r$",
+      "status": "exact",
+      "display": "d = 0.5 · r",
+      "copy": "('d')==('r' ∕ 2)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M358",
+      "cell": 108,
+      "start": 4390,
+      "end": 4406,
+      "literal": "$\\delta<E_1-E_0$",
+      "status": "exact",
+      "display": "\"E_0\" < \"E_1\" − 'δ'",
+      "copy": "(\"E_0\")<(\"E_1\" − 'δ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M359",
+      "cell": 108,
+      "start": 4416,
+      "end": 4424,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M360",
+      "cell": 108,
+      "start": 4583,
+      "end": 4601,
+      "literal": "$f(H)|\\psi\\rangle$",
+      "status": "exact",
+      "display": "[f / √(2), f / √(2); f / √(2), −(f / √(2))] |ψ⟩",
+      "copy": "qadjacent(matrix(2,2,vector(qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qpower(2,−1 ∕ 2),'f'),qmul(qmul(−1,qpower(2,−1 ∕ 2)),'f'))),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M361",
+      "cell": 108,
+      "start": 5351,
+      "end": 5362,
+      "literal": "$0 < a < b$",
+      "status": "exact",
+      "display": "a > 0 and a < b",
+      "copy": "(('a')<('b') and ('a')>(0))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M362",
+      "cell": 108,
+      "start": 5371,
+      "end": 5380,
+      "literal": "$\\Pi^*_d$",
+      "status": "exact",
+      "display": "\"_d\" ⋅ 'Π'",
+      "copy": "\"_d\" ⋅ 'Π'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M363",
+      "cell": 108,
+      "start": 5472,
+      "end": 5475,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M364",
+      "cell": 108,
+      "start": 5494,
+      "end": 5570,
+      "literal": "$$\n\\beta(a, b, d) = \\min_{p \\in \\Pi^*_d} \\max_{x \\in [a, b]} |p(x)| \\quad\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\min at byte 23"
+    },
+    {
+      "id": "IBM092-bdde16a2-M365",
+      "cell": 108,
+      "start": 5576,
+      "end": 5682,
+      "literal": "$$\np^*(x) = \\frac{T_d\\left(\\frac{b + a - 2x}{b - a}\\right)}{T_d\\left(\\frac{b + a}{b - a}\\right)}, \\quad\n$$",
+      "status": "exact",
+      "display": "qscalarat(\"p_star\", x) − qchebyshev('d', qsub(qadd('b', 'a'), qadjacent(2, x)) ∕ qsub('b', 'a')) ∕ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) = 0",
+      "copy": "(qadd(qmul(qmul(−1,qchebyshev('d',qmul(qsub(qadd('b','a'),qadjacent(2,x)),qpower(qsub('b','a'),−1)))),qpower(qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1))),−1)),qscalarat(\"p_star\",x)))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M366",
+      "cell": 108,
+      "start": 5724,
+      "end": 5788,
+      "literal": "$$\n\\beta(a, b, d) = T_d^{-1}\\left(\\frac{b + a}{b - a}\\right).\n$$",
+      "status": "exact",
+      "display": "0 ⋅ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) + qscalarat('β', ['a'  'b'  'd']) ⋅ qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) = 1 and qchebyshev('d', qadd('b', 'a') ∕ qsub('b', 'a')) ≠ 0",
+      "copy": "((qadd(qmul(0,qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1)))),qmul(qscalarat('β',vector('a','b','d')),qchebyshev('d',qmul(qadd('b','a'),qpower(qsub('b','a'),−1))))))==(1) and (qchebyshev('d',qadd('b', 'a') ∕ qsub('b', 'a')))!=(0))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M367",
+      "cell": 108,
+      "start": 6129,
+      "end": 6136,
+      "literal": "$[0,1]$",
+      "status": "exact",
+      "display": "[0  1]",
+      "copy": "vector(0,1)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M368",
+      "cell": 108,
+      "start": 6146,
+      "end": 6195,
+      "literal": "$$\ng(E) = \\frac{1-\\cos\\big((E-E_0)dt\\big)}{2},\n$$",
+      "status": "exact",
+      "display": "g(E) = 0.5 · (1 − cos((E − \"E_0\") · d · t))",
+      "copy": "qcompare(qnamedapplication('g','E'),qmul(1 ∕ 2,qsub(1,qcos(qadjacent(qsub('E',\"E_0\"),qmul('d','t'))))),4)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M369",
+      "cell": 108,
+      "start": 6203,
+      "end": 6207,
+      "literal": "$dt$",
+      "status": "exact",
+      "display": "d · t",
+      "copy": "'d''t'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M370",
+      "cell": 108,
+      "start": 6232,
+      "end": 6269,
+      "literal": "$-\\pi < E_0dt < E_\\text{max}dt < \\pi$",
+      "status": "exact",
+      "display": "\"E_0dt\" > −π and \"E_0dt\" < \"E_maxdt\" and \"E_maxdt\" < π",
+      "copy": "((\"E_0dt\")<(\"E_maxdt\") and (\"E_0dt\")>(−π) and (\"E_maxdt\")<(π))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M371",
+      "cell": 108,
+      "start": 6283,
+      "end": 6293,
+      "literal": "$g(E_0)=0$",
+      "status": "exact",
+      "display": "\"E_0\" = 0 or g = 0",
+      "copy": "((\"E_0\")==(0) or ('g')==(0))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M372",
+      "cell": 108,
+      "start": 6298,
+      "end": 6304,
+      "literal": "$g(E)$",
+      "status": "exact",
+      "display": "g(E)",
+      "copy": "qnamedapplication('g','E')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M373",
+      "cell": 108,
+      "start": 6314,
+      "end": 6317,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M374",
+      "cell": 108,
+      "start": 6334,
+      "end": 6339,
+      "literal": "$E_0$",
+      "status": "exact",
+      "display": "\"E_0\"",
+      "copy": "\"E_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M375",
+      "cell": 108,
+      "start": 6367,
+      "end": 6375,
+      "literal": "$p^*(x)$",
+      "status": "exact",
+      "display": "p · x",
+      "copy": "'p'x"
+    },
+    {
+      "id": "IBM092-bdde16a2-M376",
+      "cell": 108,
+      "start": 6411,
+      "end": 6432,
+      "literal": "$a = g(E_0 + \\delta)$",
+      "status": "exact",
+      "display": "\"E_0\" = a / g − 'δ' and g ≠ 0 or a = 0 and g = 0",
+      "copy": "(((\"E_0\")==('a' ∕ 'g' − 'δ') and ('g')!=(0)) or (('a')==(0) and ('g')==(0)))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M377",
+      "cell": 108,
+      "start": 6434,
+      "end": 6441,
+      "literal": "$b = 1$",
+      "status": "exact",
+      "display": "b = 1",
+      "copy": "('b')==(1)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M378",
+      "cell": 108,
+      "start": 6486,
+      "end": 6725,
+      "literal": "$$\nf(E) = p^* \\left( g(E) \\right) = \\frac{T_d\\left(1 + 2\\frac{\\cos\\big((E-E_0)dt\\big) - \\cos\\big(\\delta\\,dt\\big)}{1 +\\cos\\big(\\delta\\,dt\\big)}\\right)}{T_d\\left(1 + 2\\frac{1-\\cos\\big(\\delta\\,dt\\big)}{1 + \\cos\\big(\\delta\\,dt\\big)}\\right)}\n$$",
+      "status": "exact",
+      "display": "qscalarat('f', 'E') = qscalarat(\"p_star\", qscalarat('g', 'E')) = qchebyshev('d', qadd(1, qadjacent(2, qsub(qcos(qmul(qsub('E', \"E_0\"), \"dt\")), qcos(qmul('δ', \"dt\"))) ∕ qadd(1, qcos(qmul('δ', \"dt\")))))) ∕ qchebyshev('d', qadd(1, qadjacent(2, qsub(1, qcos(qmul('δ', \"dt\"))) ∕ qadd(1, qcos(qmul('δ', \"dt\"))))))",
+      "copy": "qequalchain(vector(qscalarat('f','E'),qscalarat(\"p_star\",qscalarat('g','E')),qmul(qchebyshev('d',qadd(1,qadjacent(2,qmul(qsub(qcos(qmul(qsub('E',\"E_0\"),\"dt\")),qcos(qmul('δ',\"dt\"))),qpower(qadd(1,qcos(qmul('δ',\"dt\"))),−1))))),qpower(qchebyshev('d',qadd(1,qadjacent(2,qmul(qsub(1,qcos(qmul('δ',\"dt\"))),qpower(qadd(1,qcos(qmul('δ',\"dt\"))),−1))))),−1))))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M379",
+      "cell": 108,
+      "start": 6733,
+      "end": 6738,
+      "literal": "$E_0$",
+      "status": "exact",
+      "display": "\"E_0\"",
+      "copy": "\"E_0\""
+    },
+    {
+      "id": "IBM092-bdde16a2-M380",
+      "cell": 108,
+      "start": 6791,
+      "end": 6825,
+      "literal": "$\\cos(x)=\\frac{e^{ix}+e^{-ix}}{2}$",
+      "status": "exact",
+      "display": "cos(x rad) − 0.5e^(ix) − 1 ∕ (2e^(ix)) = 0",
+      "copy": "((−e^(i ⋅ x) ∕ 2)+ (−1 ∕ (2 ⋅ e^(i ⋅ x)))+ (cos((qphysicalunit(\"rad\",\"\"))*(x))))==(0)"
+    },
+    {
+      "id": "IBM092-bdde16a2-M381",
+      "cell": 108,
+      "start": 6831,
+      "end": 6837,
+      "literal": "$f(E)$",
+      "status": "exact",
+      "display": "f(E)",
+      "copy": "qnamedapplication('f','E')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M382",
+      "cell": 108,
+      "start": 6878,
+      "end": 6881,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M383",
+      "cell": 108,
+      "start": 6916,
+      "end": 6929,
+      "literal": "$e^{ijE\\,dt}$",
+      "status": "exact",
+      "display": "e^(i · E · d · j · t)",
+      "copy": "e^(i'E''d''j''t')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M384",
+      "cell": 108,
+      "start": 6934,
+      "end": 6955,
+      "literal": "$j=-d,-d+1,...,d-1,d$",
+      "status": "diagnostic",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M385",
+      "cell": 108,
+      "start": 6993,
+      "end": 7001,
+      "literal": "$p^*(x)$",
+      "status": "exact",
+      "display": "p · x",
+      "copy": "'p'x"
+    },
+    {
+      "id": "IBM092-bdde16a2-M386",
+      "cell": 108,
+      "start": 7021,
+      "end": 7036,
+      "literal": "$f(E_0)=p(0)=1$",
+      "status": "exact",
+      "display": "qscalarat('f', \"E_0\") = qscalarat('p', 0) = 1",
+      "copy": "qequalchain(vector(qscalarat('f',\"E_0\"),qscalarat('p',0),1))"
+    },
+    {
+      "id": "IBM092-bdde16a2-M387",
+      "cell": 108,
+      "start": 7049,
+      "end": 7052,
+      "literal": "$E$",
+      "status": "exact",
+      "display": "E",
+      "copy": "'E'"
+    },
+    {
+      "id": "IBM092-bdde16a2-M388",
+      "cell": 108,
+      "start": 7085,
+      "end": 7113,
+      "literal": "$\\vert E-E_0 \\vert > \\delta$",
+      "status": "exact",
+      "display": "qdistancegreater('E', \"E_0\", 'δ')",
+      "copy": "qdistancegreater('E',\"E_0\",'δ')"
+    },
+    {
+      "id": "IBM092-bdde16a2-M389",
+      "cell": 108,
+      "start": 7123,
+      "end": 7246,
+      "literal": "$$\n|f(E)| \\le \\beta(a, b, d) = T_d^{-1}\\left(1 + 2\\frac{1-\\cos\\big(\\delta\\,dt\\big)}{1 + \\cos\\big(\\delta\\,dt\\big)}\\right)\n$$",
+      "status": "diagnostic",
+      "message": "Bars require a scalar or finite flat collection.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M390",
+      "cell": 108,
+      "start": 7248,
+      "end": 7338,
+      "literal": "$$\n\\leq 2\\left(1 + \\delta\\right)^{-d} = 2\\left(1 + \\delta\\right)^{-\\lfloor k/2\\rfloor}.\n$$",
+      "status": "diagnostic",
+      "message": "Unclosed bra."
+    }
+  ]
+}

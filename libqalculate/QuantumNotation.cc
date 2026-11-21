@@ -265,7 +265,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpoststate",3},
  {"qnaimark",2},
  {"qborn",2},
- {"qchannel",2},{"qorderedpowers",2},{"qsignedequal",2},{"qstrictorder",2},{"qallmembers",2},{"qfixedby",2},{"qbinarypowersum",1},{"qprojectorproduct",2},{"qfixedspace",1},{"qsubset",2},{"qwordspan",1},{"qcosetket",2},{"qbinaryminimum",2},{"qpairtotal",6},{"qisingenergy",3},{"qsetminimum",1},{"qisingfield",2},{"qisinghamiltonian",2},{"qisingequivalent",3},{"qwalkdelta",4},{"qwalkdistance",3},{"qwalkindicator",3},{"qmeanat",2},{"qmaxcut",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qkrylovstates",4},{"qoperatorunequal",2},{"qwordkernel",2},{"qspacedimension",1},{"qpauligroup",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qkrausapply",2},{"qoperatorref",1},
+ {"qchannel",2},{"qorderedpowers",2},{"qsignedequal",2},{"qstrictorder",2},{"qallmembers",2},{"qfixedby",2},{"qbinarypowersum",1},{"qprojectorproduct",2},{"qfixedspace",1},{"qsubset",2},{"qwordspan",1},{"qcosetket",2},{"qbinaryminimum",2},{"qpairtotal",6},{"qisingenergy",3},{"qsetminimum",1},{"qisingfield",2},{"qisinghamiltonian",2},{"qisingequivalent",3},{"qwalkdelta",4},{"qwalkdistance",3},{"qwalkindicator",3},{"qoperatorat",2},{"qscalarat",2},{"qmeanat",2},{"qmaxcut",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qkrylovstates",4},{"qoperatorunequal",2},{"qwordkernel",2},{"qspacedimension",1},{"qpauligroup",1},{"qpairwisecommute",1},{"qindependentpaulis",1},{"qsignedpaulimember",2},{"qsomeanticommute",2},{"qkrausapply",2},{"qoperatorref",1},{"qchebyshev",2},{"qdistancegreater",3},{"qpolynomialat",2},{"qvectorref",1},
  {"qchoi",1},
  {"qchi",1},
  {"qspre",1},
@@ -627,8 +627,7 @@ class Parser {
   const std::string prefix="\"qboundindex_";
   if(original.compare(0,prefix.size(),prefix)==0 && original.size()>prefix.size()+1 &&
      original.find_first_not_of("0123456789",prefix.size())==original.size()-1 && original.back()=='"') {
-   auto saved=copiedBinders.emplace(original,symbol);
-   if(!saved.second)saved.first->second.clear();
+   copiedBinders.emplace(symbol,original);
   }
   // A subscript that names this binder is a reference, not an opaque label.
   // Keep the index as a separate expression so nested binders and later
@@ -2518,13 +2517,12 @@ class Parser {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
   if(!copiedBinders.empty()) {
-   std::map<std::string,std::string> originalNames;
-   for(const auto &binder:copiedBinders)if(!binder.second.empty())originalNames.emplace(binder.second,binder.first);
+   // Each scoped declaration has its own fresh key, including repeated copies.
    size_t at=0;
    while((at=out.find_first_of("\"'",at))!=std::string::npos) {
     size_t end=out.find(out[at],at+1);if(end==std::string::npos)break;
-    auto name=originalNames.find(out.substr(at,end+1-at));
-    if(name==originalNames.end())at=end+1;
+    auto name=copiedBinders.find(out.substr(at,end+1-at));
+    if(name==copiedBinders.end())at=end+1;
     else {out.replace(at,end+1-at,name->second);at+=name->second.size();}
    }
   }

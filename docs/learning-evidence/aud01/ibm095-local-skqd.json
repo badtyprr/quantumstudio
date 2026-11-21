@@ -1,0 +1,35 @@
+{
+  "backend": "Aer statevector, seed 24",
+  "qubits": 22,
+  "krylov_dimension": 5,
+  "shots_per_circuit": 100000,
+  "postselected_shots": [
+    100000,
+    100000,
+    100000,
+    100000,
+    100000
+  ],
+  "unique_sample_counts": [
+    1,
+    24,
+    43,
+    97,
+    163
+  ],
+  "projected_energies": [
+    -22.0,
+    -23.45401161497942,
+    -23.486233421259406,
+    -23.597522261563135,
+    -23.75712112046877
+  ],
+  "source_reference_energy": -23.934184,
+  "notebook_sha256": "3ed488d16f7bab398f07d32f95853e1767c1de384095e3712598af6309d09f94",
+  "packages": {
+    "qiskit": "2.6.2",
+    "qiskit-aer": "0.18.4",
+    "qiskit-addon-utils": "0.4.0",
+    "qiskit-addon-sqd": "0.14.1"
+  }
+}

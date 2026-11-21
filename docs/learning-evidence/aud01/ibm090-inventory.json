@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/introduction.ipynb",
+  "source_sha256": "0460de3a26c5a3f217a159e3b479e0a2c717050ccb58aa633483aa9ce8715d8f",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
+  "mode": "Quantum notation",
+  "markdown_cells": 3,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

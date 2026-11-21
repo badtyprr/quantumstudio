@@ -1,0 +1,89 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/vqe.ipynb",
+  "notebook_sha256": "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "51377f31ee017c454d613b82e7ea6e19649782510c09996ac8330dcd22bbdd15",
+  "suite": {
+    "passed": true,
+    "checks": 707,
+    "calls": 91,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 75,
+    "restored_identically": 75,
+    "stable_after_text_reentry": 75,
+    "source_diagnostic": 16
+  },
+  "diagnostics": [
+    {
+      "id": "IBM091-868393ba-M015",
+      "message": "Unclosed magnitude of a Dirac expression; use |<a|U|b>|."
+    },
+    {
+      "id": "IBM091-868393ba-M025",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM091-868393ba-M026",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM091-868393ba-M027",
+      "message": "Unexpected notation at byte 3"
+    },
+    {
+      "id": "IBM091-868393ba-M032",
+      "message": "Matrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM091-868393ba-M033",
+      "message": "Invalid decimal number at byte 37"
+    },
+    {
+      "id": "IBM091-868393ba-M039",
+      "message": "A finite sum/product requires lower and upper bounds at byte 12"
+    },
+    {
+      "id": "IBM091-868393ba-M043",
+      "message": "Invalid summation index at byte 292"
+    },
+    {
+      "id": "IBM091-868393ba-M049",
+      "message": "Unexpected notation at byte 43"
+    },
+    {
+      "id": "IBM091-868393ba-M050",
+      "message": "Unsupported TeX command: \\min at byte 6"
+    },
+    {
+      "id": "IBM091-868393ba-M065",
+      "message": "Finite sum bounds must be integers or unresolved symbolic expressions."
+    },
+    {
+      "id": "IBM091-868393ba-M067",
+      "message": "A finite sum/product requires lower and upper bounds at byte 46"
+    },
+    {
+      "id": "IBM091-868393ba-M068",
+      "message": "A finite sum/product requires lower and upper bounds at byte 132"
+    },
+    {
+      "id": "IBM091-868393ba-M077",
+      "message": "Unsupported TeX command: \\simeq at byte 147"
+    },
+    {
+      "id": "IBM091-868393ba-M079",
+      "message": "Finite sum bounds must be integers or unresolved symbolic expressions."
+    },
+    {
+      "id": "IBM091-868393ba-M088",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

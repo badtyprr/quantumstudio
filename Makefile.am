@@ -523,3 +523,9 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm085-media.json docs/learning-evide
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm088-families.py docs/learning-evidence/aud01/replay-ibm088-skqd.py docs/learning-evidence/aud01/ibm088-local-skqd.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm087-mpi.py docs/learning-evidence/aud01/ibm087-local-mpi.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm086-estimator.py docs/learning-evidence/aud01/ibm086-local-estimator.json
+
+EXTRA_DIST += docs/learning-evidence/aud01/ibm090-inventory.json docs/learning-evidence/aud01/ibm091-inventory.json docs/learning-evidence/aud01/ibm092-inventory.json docs/learning-evidence/aud01/ibm093-inventory.json docs/learning-evidence/aud01/ibm094-inventory.json docs/learning-evidence/aud01/ibm095-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm091-vqe.py docs/learning-evidence/aud01/ibm091-local-vqe.json docs/learning-evidence/aud01/ibm091-windows-sessions.json docs/learning-evidence/aud01/ibm092-windows-sessions.json docs/learning-evidence/aud01/ibm093-windows-sessions.json docs/learning-evidence/aud01/ibm094-windows-sessions.json docs/learning-evidence/aud01/ibm095-windows-sessions.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm091-parameters.py
+
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm094-095-local.py docs/learning-evidence/aud01/ibm094-local-sqd.json docs/learning-evidence/aud01/ibm095-local-skqd.json

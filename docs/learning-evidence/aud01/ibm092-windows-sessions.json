@@ -1,0 +1,297 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
+  "notebook_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "94f470027b6c6f46d59582e6650f2ebee1f3751f51c996ecc53fd2e360e9b875",
+  "suite": {
+    "passed": true,
+    "checks": 3034,
+    "calls": 390,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 322,
+    "restored_identically": 322,
+    "stable_after_text_reentry": 322,
+    "source_diagnostic": 68
+  },
+  "diagnostics": [
+    {
+      "id": "IBM092-bdde16a2-M008",
+      "message": "Unsupported text in a mathematical expression at byte 29"
+    },
+    {
+      "id": "IBM092-bdde16a2-M013",
+      "message": "Unsupported TeX command: \\perp at byte 18"
+    },
+    {
+      "id": "IBM092-bdde16a2-M022",
+      "message": "Empty aligned expression at byte 96"
+    },
+    {
+      "id": "IBM092-bdde16a2-M044",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M046",
+      "message": "Unexpected notation at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M053",
+      "message": "Quantum addition cannot broadcast a scalar over a matrix; use an explicit identity or matrix.\nArgument 1, Matrix, in det() must be a square matrix."
+    },
+    {
+      "id": "IBM092-bdde16a2-M054",
+      "message": "Unsupported TeX control symbol at byte 120"
+    },
+    {
+      "id": "IBM092-bdde16a2-M055",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    },
+    {
+      "id": "IBM092-bdde16a2-M076",
+      "message": "Unsupported text in a mathematical expression at byte 42"
+    },
+    {
+      "id": "IBM092-bdde16a2-M088",
+      "message": "Expected a quantum expression at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M098",
+      "message": "Schatten norm order must be a real number at least 1 or positive infinity."
+    },
+    {
+      "id": "IBM092-bdde16a2-M115",
+      "message": "Unsupported TeX command: \\nabla at byte 8"
+    },
+    {
+      "id": "IBM092-bdde16a2-M118",
+      "message": "Unsupported TeX command: \\nabla at byte 7"
+    },
+    {
+      "id": "IBM092-bdde16a2-M131",
+      "message": "Unsupported text in a mathematical expression at byte 44"
+    },
+    {
+      "id": "IBM092-bdde16a2-M133",
+      "message": "Unsupported text in a mathematical expression at byte 13"
+    },
+    {
+      "id": "IBM092-bdde16a2-M144",
+      "message": "Unsupported TeX command: \\it at byte 4"
+    },
+    {
+      "id": "IBM092-bdde16a2-M158",
+      "message": "Expected ')' at byte 34"
+    },
+    {
+      "id": "IBM092-bdde16a2-M160",
+      "message": "Expected ')' at byte 85"
+    },
+    {
+      "id": "IBM092-bdde16a2-M163",
+      "message": "Approximate equality requires a printed real decimal or a pair of decimal components a + b i."
+    },
+    {
+      "id": "IBM092-bdde16a2-M165",
+      "message": "Unsupported text in a mathematical expression at byte 43"
+    },
+    {
+      "id": "IBM092-bdde16a2-M166",
+      "message": "A congruence requires an explicit modulus."
+    },
+    {
+      "id": "IBM092-bdde16a2-M177",
+      "message": "Unsupported text in a mathematical expression at byte 81"
+    },
+    {
+      "id": "IBM092-bdde16a2-M188",
+      "message": "Unsupported TeX command: \\sim at byte 14"
+    },
+    {
+      "id": "IBM092-bdde16a2-M199",
+      "message": "Unclosed bra."
+    },
+    {
+      "id": "IBM092-bdde16a2-M213",
+      "message": "A coefficient index must be an integer."
+    },
+    {
+      "id": "IBM092-bdde16a2-M216",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M217",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M219",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M221",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M228",
+      "message": "Expected a quantum expression at byte 6"
+    },
+    {
+      "id": "IBM092-bdde16a2-M231",
+      "message": "An ellipsis register requires indexed bit names, such as x_(n-1) ... x_0."
+    },
+    {
+      "id": "IBM092-bdde16a2-M237",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M240",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M242",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M243",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M246",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M250",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M253",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M254",
+      "message": "Unsupported text in a mathematical expression at byte 76"
+    },
+    {
+      "id": "IBM092-bdde16a2-M256",
+      "message": "Unsupported TeX environment: equation* at byte 19"
+    },
+    {
+      "id": "IBM092-bdde16a2-M260",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M262",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M263",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M264",
+      "message": "Unsupported text in a mathematical expression at byte 27"
+    },
+    {
+      "id": "IBM092-bdde16a2-M265",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M266",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M267",
+      "message": "Unsupported text in a mathematical expression at byte 36"
+    },
+    {
+      "id": "IBM092-bdde16a2-M268",
+      "message": "Matrix powers and logarithms require a square matrix of dimension at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M269",
+      "message": "Unsupported text in a mathematical expression at byte 335"
+    },
+    {
+      "id": "IBM092-bdde16a2-M270",
+      "message": "Unsupported text in a mathematical expression at byte 342"
+    },
+    {
+      "id": "IBM092-bdde16a2-M271",
+      "message": "Unsupported text in a mathematical expression at byte 12"
+    },
+    {
+      "id": "IBM092-bdde16a2-M307",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M311",
+      "message": "Unsupported text in a mathematical expression at byte 46"
+    },
+    {
+      "id": "IBM092-bdde16a2-M319",
+      "message": "Bars require a scalar or finite flat collection."
+    },
+    {
+      "id": "IBM092-bdde16a2-M321",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM092-bdde16a2-M325",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M337",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M338",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM092-bdde16a2-M341",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M343",
+      "message": "A finite sum/product requires lower and upper bounds at byte 32"
+    },
+    {
+      "id": "IBM092-bdde16a2-M348",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M352",
+      "message": "norm and normalize require a column ket.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M353",
+      "message": "A finite sum/product requires lower and upper bounds at byte 22"
+    },
+    {
+      "id": "IBM092-bdde16a2-M354",
+      "message": "Unsupported text in a mathematical expression at byte 21"
+    },
+    {
+      "id": "IBM092-bdde16a2-M364",
+      "message": "Unsupported TeX command: \\min at byte 23"
+    },
+    {
+      "id": "IBM092-bdde16a2-M384",
+      "message": "Expected an equation after the comma."
+    },
+    {
+      "id": "IBM092-bdde16a2-M389",
+      "message": "Bars require a scalar or finite flat collection.\nMatrix order requires square matrices of matching dimension, at most 64."
+    },
+    {
+      "id": "IBM092-bdde16a2-M390",
+      "message": "Unclosed bra."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

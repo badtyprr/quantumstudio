@@ -1,0 +1,129 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
+  "notebook_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
+  "worker_sha256": "db0e801d35c59d5a92de7984e40b05e7910c972e38a625edeed0aba2b89688c9",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "577f4fe9b16d013686a1c9206b384dfdd498fe6b095b3ceaea780d21485415cf",
+  "suite": {
+    "passed": true,
+    "checks": 1177,
+    "calls": 151,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 125,
+    "restored_identically": 125,
+    "stable_after_text_reentry": 125,
+    "source_diagnostic": 26
+  },
+  "diagnostics": [
+    {
+      "id": "IBM094-37477fb6-M003",
+      "message": "Unsupported TeX command: \\substack at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M009",
+      "message": "Unclosed ket; use |0> or |0⟩."
+    },
+    {
+      "id": "IBM094-37477fb6-M031",
+      "message": "Unsupported text in a mathematical expression at byte 10"
+    },
+    {
+      "id": "IBM094-37477fb6-M034",
+      "message": "Argument 3, Upper limit (n), in product() must be an integer."
+    },
+    {
+      "id": "IBM094-37477fb6-M084",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M085",
+      "message": "Invalid TeX name at byte 17"
+    },
+    {
+      "id": "IBM094-37477fb6-M086",
+      "message": "Invalid TeX name at byte 11"
+    },
+    {
+      "id": "IBM094-37477fb6-M088",
+      "message": "Unsupported text in a mathematical expression at byte 106"
+    },
+    {
+      "id": "IBM094-37477fb6-M091",
+      "message": "Unsupported text in a mathematical expression at byte 9"
+    },
+    {
+      "id": "IBM094-37477fb6-M104",
+      "message": "Unsupported TeX control symbol at byte 14"
+    },
+    {
+      "id": "IBM094-37477fb6-M105",
+      "message": "Unsupported TeX command: \\nonumber at byte 99"
+    },
+    {
+      "id": "IBM094-37477fb6-M112",
+      "message": "Expected a quantum expression at byte 4"
+    },
+    {
+      "id": "IBM094-37477fb6-M113",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M121",
+      "message": "Unsupported TeX command: \\nonumber at byte 24"
+    },
+    {
+      "id": "IBM094-37477fb6-M122",
+      "message": "Expected a quantum expression at byte 1"
+    },
+    {
+      "id": "IBM094-37477fb6-M125",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M129",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    },
+    {
+      "id": "IBM094-37477fb6-M130",
+      "message": "Unsupported text in a mathematical expression at byte 18"
+    },
+    {
+      "id": "IBM094-37477fb6-M135",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M136",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M140",
+      "message": "Unsupported TeX control symbol at byte 28"
+    },
+    {
+      "id": "IBM094-37477fb6-M141",
+      "message": "Unsupported TeX control symbol at byte 114"
+    },
+    {
+      "id": "IBM094-37477fb6-M143",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M144",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM094-37477fb6-M146",
+      "message": "Expected a quantum expression at byte 2"
+    },
+    {
+      "id": "IBM094-37477fb6-M147",
+      "message": "A plus-minus sign requires an equality with two alternatives."
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}

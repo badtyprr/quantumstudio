@@ -809,6 +809,89 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=relation;return 1;
   }
+  if(op=="qchebyshev") {
+   MathStructure degree=raw[0],argument=raw[1];degree.eval(eo);argument.eval(eo);
+   if(!degree.isNumber() || !argument.isNumber())return 0;
+   if(!degree.number().isInteger() || degree.number().isNegative() || degree.number()>Number(4096) ||
+      argument.number().includesInfinity()) {
+    CALCULATOR->error(true,"Chebyshev evaluation needs a degree from 0 to 4096 and a finite argument.",NULL);return 0;
+   }
+   Number previous(1),current=argument.number();
+   int n=degree.number().intValue();
+   for(int i=1;i<n;++i) {
+    if(CALCULATOR->aborted())return 0;
+    Number next=current;
+    if(!next.multiply(argument.number()) || !next.multiply(2) || !next.subtract(previous))return 0;
+    previous=current;current=next;
+   }
+   out.set(n ? current : previous);return 1;
+  }
+  if(op=="qdistancegreater") {
+   MathStructure left=raw[0],right=raw[1],threshold=raw[2];
+   left.eval(eo);right.eval(eo);threshold.eval(eo);
+   if(!left.isNumber() || !right.isNumber() || !threshold.isNumber())return 0;
+   left.subtract(right);left.eval(eo);
+   MathStructure distance(CALCULATOR->getFunction("abs"),&left,NULL);distance.eval(eo);
+   distance.transform(COMPARISON_GREATER,threshold);distance.eval(eo);out=distance;return 1;
+  }
+  if(op=="qpolynomialat") {
+   MathStructure coefficients=raw[0],argument=raw[1];
+   coefficients.eval(eo);argument.eval(eo);
+   if(coefficients.isSymbolic() || coefficients.isUnknown())return 0;
+   if(!coefficients.isVector() || coefficients.isMatrix() || coefficients.size()==0) {
+    CALCULATOR->error(true,"A polynomial filter needs a coefficient vector, constant term first.",NULL);return 0;
+   }
+   for(size_t i=0;i<coefficients.size();++i) {
+    if(!coefficients[i].isNumber() || coefficients[i].number().includesInfinity()) {
+     CALCULATOR->error(true,"Polynomial coefficients must be finite numbers.",NULL);return 0;
+    }
+   }
+   if(argument.containsUnknowns() || argument.isSymbolic() || argument.isFunction())return 0;
+   bool matrix=argument.isMatrix();
+   if(matrix ? argument.rows()!=argument.columns() : !argument.isNumber()) {
+    CALCULATOR->error(true,"A polynomial filter needs a scalar or square matrix.",NULL);return 0;
+   }
+   const bool oneByOne=matrix && argument.rows()==1;
+   if(oneByOne) {
+    MathStructure scalar=*argument.getElement(1,1);
+    argument=scalar;matrix=false;
+   }
+   if(argument.containsInfinity()) {
+    CALCULATOR->error(true,"Polynomial arguments must be finite.",NULL);return 0;
+   }
+   if(matrix)out.setToIdentityMatrix(argument.rows());
+   else out=1;
+   out.multiply(coefficients.last());out.eval(eo);
+   for(size_t i=coefficients.size()-1;i>0;--i) {
+    if(CALCULATOR->aborted())return 0;
+    out.multiply(argument);out.eval(eo);
+    if(matrix) {
+     if(!out.isMatrix() || out.rows()!=argument.rows() || out.columns()!=argument.columns())return 0;
+     for(size_t j=1;j<=argument.rows();++j)out.getElement(j,j)->add(coefficients[i-1]);
+    } else out.add(coefficients[i-1]);
+    out.eval(eo);
+   }
+   if(oneByOne) {
+    MathStructure scalar=out;
+    out.clearMatrix();out.resizeMatrix(1,1,scalar);
+   }
+   return 1;
+  }
+  if(op=="qvectorref") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(value.isSymbolic() || value.isUnknown() || (value.isFunction() && value.function()->referenceName()=="qindexedlabel"))return 0;
+   if(!value.isVector() || (value.isMatrix() && value.rows()!=1 && value.columns()!=1)) {
+    CALCULATOR->error(true,"A vector parameter requires a row or column vector.",NULL);return 0;
+   }
+   size_t count=value.isMatrix() ? value.rows()*value.columns() : value.size();
+   for(size_t k=0;k<count;++k) {
+    const MathStructure &part=value.isMatrix() ? *value.getElement(value.rows()==1 ? 1 : k+1,value.rows()==1 ? k+1 : 1) : value[k];
+    if(!part.representsScalar() || part.isUndefined() || (part.isNumber() && part.number().isInfinite(false))) {
+     CALCULATOR->error(true,"Vector parameters must contain finite scalar entries.",NULL);return 0;
+    }
+   }
+   out=value;return 1;
+  }
   if(op=="qoperatorref") {
    MathStructure value=raw[0];value.eval(eo);
    if(!value.isMatrix()) {
@@ -1499,6 +1582,10 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qallmembers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qchebyshev",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qdistancegreater",3));
+ calculator.addFunction(new QuantumAlgebraFunction("qpolynomialat",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
