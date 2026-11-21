@@ -76,7 +76,7 @@ std::string binaryNumeral(const std::string &text) {
  return "("+integer+"/2^"+std::to_string(fraction)+")";
 }
 std::string unicodeArithmetic(const std::string &input) {
- static const std::map<std::string,char> symbols={{"×",'*'},{"⋅",'*'},{"·",'*'},{"∙",'*'},{"∗",'*'},{"÷",'/'},{"∕",'/'},{"⁄",'/'}};
+ static const std::map<std::string,char> symbols={{"×",'*'},{"⋅",'*'},{"·",'*'},{"∙",'*'},{"∗",'*'},{"÷",'/'},{"∕",'/'},{"⁄",'/'},{"〈",'<'},{"〉",'>'}};
  std::string out;char quoted=0;
  const size_t start=input.find_first_not_of(" \t\r\n");
  const bool dimensions=start!=std::string::npos && input.compare(start,11,"dimensions:")==0;
