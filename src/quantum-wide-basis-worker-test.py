@@ -81,4 +81,16 @@ if __name__ == '__main__':
     diffusion = request("diffusion", r"$D=2|\psi\rangle\langle\psi|-I$")["copy_text"]
     assert request("copied diffusion operator", diffusion)["copy_text"] == diffusion
 
+    reflection = request("phase oracle reflection",
+        r"$$Z_{\mathrm{OR}} = 2 \vert 0^n \rangle \langle 0^n \vert - \mathbb{I}.$$")["copy_text"]
+    assert request("copied reflection", reflection)["copy_text"] == reflection
+    for width in (1, 2, 3):
+        dimension = 2**width
+        for sign, expected in ((1, "1"), (-1, "0")):
+            entries = [str(sign*(1 if row == 0 else -1)) if row == col else "0"
+                       for row in range(dimension) for col in range(dimension)]
+            operator = f'matrix({dimension},{dimension},[{",".join(entries)}])'
+            bound = f'replace({reflection},vector("Z_OR","n"),vector({operator},{width}))'
+            assert request("bound oracle", bound)["copy_text"] == expected
+
     print('Wide basis worker outcomes:', len(check_wide_copy(request, rejected)))

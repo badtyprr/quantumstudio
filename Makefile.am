@@ -646,3 +646,5 @@ EXTRA_DIST += docs/learning-evidence/aud02/inventory-learning-resources.py
 EXTRA_DIST += docs/learning-evidence/aud02/fetch-learning-resources.py
 EXTRA_DIST += docs/learning-evidence/aud02/ibm-catalog-delta.json
 EXTRA_DIST += docs/learning-evidence/aud02/ibm-resource-discovery.md
+EXTRA_DIST += docs/learning-evidence/aud01/ibm033-reflection-inventory.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm033-reflection-windows.json

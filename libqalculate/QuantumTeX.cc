@@ -2274,6 +2274,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "matrix("+std::to_string(logical.size())+",2,vector("+entries+"))";
    }
   }
+  if(s.find("Z_{\\mathrm{")!=std::string::npos) {
+   // Match the zero-register projector and identity at the same width.
+   static const std::regex reflection(R"rx(^\s*Z_\{\\mathrm\{(OR|AND|XOR)\}\}\s*=\s*2\s*(?:\\vert|\|)\s*0\^([a-z]|[0-9]+)\s*\\rangle\s*\\langle\s*0\^\2\s*(?:\\vert|\|)\s*-\s*\\mathbb\{I\}\s*\.?\s*$)rx");
+   std::smatch match;
+   if(std::regex_match(s,match,reflection)) {
+    std::string width=match[2].str();
+    if(asciiLetter((unsigned char)width[0]))width="\""+width+"\"";
+    std::string ket="qtensorpow(matrix(2,1,vector(1,0)),"+width+")";
+    std::string identity="qtensorpow(matrix(2,2,vector(1,0,0,1)),"+width+")";
+    return "qcompare(qoperatorref(\"Z_"+match[1].str()+"\"),qsub(qmul(2,qmul("+ket+",qdag("+ket+"))),"+identity+"),4)";
+   }
+  }
   // In the register-preparation shorthand, the tensor exponent supplies
   // the width of the all-zero input register.
   if(s.find("\\otimes")!=std::string::npos) {
