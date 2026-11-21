@@ -221,6 +221,63 @@ not which programs the adapter supports. The message text for stdin-only
 compilation remains unchanged. Missing or invalid spans still fall back to the
 entry filename; errors in later lowering/emission stages need separate coverage.
 
+## Bounded DEV-16d lowering diagnostics (development)
+
+Assignment lowering now retains the source statement span on synthesized
+assignments, including assignments produced from declaration initializers.
+Adapter assignment failures during normalization and final classical emission
+use that span. The compile-time for-range integer, zero-step and iteration-limit
+rejections also retain their original loop location. This changes diagnostics
+only; it does not make previously rejected programs supported.
+
+The focused development cases are authored negative tests, not QB-004 source
+examples: a zero-step range, a Boolean compound assignment, and incompatible
+integer-to-bit casts in an assignment and declaration initializer. Nested
+includes with spaces/Unicode, nonzero columns, matching module-header adaptation,
+unchanged stdin messages, and absent/invalid spans are covered. Frozen C# bridge
+checks require failed imports to preserve both the saved document and usable
+undo/redo history. Existing unchanged QB-004 fixture comparisons remain separate
+scoped source-example coverage.
+
+Duplicate switch labels now identify the repeated label; duplicate declarations
+identify the second declaration. Whole-register truth-condition errors preserve
+the original branch location through runtime lowering. Aggregate qubit/bit limits
+identify the first declaration that exceeds the limit, including limits reached
+across multiple declarations. These locations are covered by authored dependency
+tests with module headers, Unicode paths and exact line/column checks.
+Out-of-range branch constants and non-integer switch targets identify their
+control-flow statement; unsupported register declarations within runtime branches
+identify the declaration. Nested-dependency tests also verify that paste-only
+error text remains unchanged for these rejections.
+Runtime switch labels identify the nonconstant label. Global declarations in
+switch cases and unsupported non-integer shadowing identify the offending
+declaration rather than the enclosing switch or branch.
+Numerical qubit and operation limits, unsupported delay operations, controlled
+global-phase limits and invalid runtime loop bindings also retain their original
+locations. Expanded gates inherit the originating operation's span only when
+they have no existing span, so nested custom-gate locations remain specific.
+The zero-qubit numerical-program rejection has no offending declaration and
+continues to name only the entry file. Tests preserve the accepted 512-operation
+boundary and locate the first overflowing operation.
+Condition-expression errors retain their enclosing `if` or `while` location,
+including incompatible numeric/bit expressions and casts. Runtime `while`
+lowering preserves its original span through the temporary branch representation.
+Missing runtime range endpoints identify the originating `for` statement.
+
+Gate duration designators are rejected before lowering, including gates inside
+definitions and subroutines. The pinned parser drops durations on `gphase` AST
+nodes, so compatibility parsing rejects those designators while their grammar
+context is still available. This prevents timed instructions from silently
+becoming untimed gates. Untimed gates and global phases retain their existing
+behavior; timing and pulse execution remain unsupported. See the
+[OpenQASM timing contract](https://openqasm.com/versions/3.0/language/delays.html).
+
+DEV-16d is still incomplete. Other control-flow transformations,
+numerical emission and synthesized nodes without original spans need further
+coverage. Errors without a usable span continue to name only the entry file;
+no nearest statement or invented coordinate is substituted. These changes are
+unreleased development behavior, not a new published-artifact claim.
+
 ## Subroutine locals resolved during compilation
 
 Classical import can now use the pinned compiler's own local scopes when a
@@ -241,4 +298,63 @@ This does not implement runtime classical arguments, measurement-dependent local
 storage, or complete subroutine/array support. Those remain DEV-08 work. The
 classical GUI persistence/export acceptance for the QB-004 subroutines still
 requires merged-artifact validation; successful compilation alone is not that
+acceptance.
+
+### Declaration, register-range and scope limits (development)
+
+Oversized classical variable names, zero-step register ranges, and scope-depth
+limit failures now identify their originating dependency location. Synthesized
+runtime loop bindings retain the source `for` statement, and nested control
+blocks retain the statement or case block that exceeds the scope limit. Existing
+64 UTF-16 code-unit name and 32-level scope limits are unchanged. Regression
+coverage includes accepted boundary values, Unicode names, module headers,
+CRLF dependencies, and both numerical and classical register-range failures.
+This is an additional DEV-16d diagnostic slice; full diagnostic acceptance and
+release verification remain open.
+
+### Constant gate arithmetic diagnostics (development)
+
+Arithmetic failures while evaluating constant gate parameters now retain the
+original gate statement's dependency location. Division by zero, modulo by zero
+and zero raised to a negative power are covered in numerical and classical
+imports, including an error inside a custom gate definition. Original error
+messages remain intact; valid arithmetic expressions retain their compiled
+output. This adds diagnostic coverage without changing arithmetic semantics or
+completing the remaining DEV-16d acceptance and release gates.
+
+### Numerical loop transfers (development correction)
+
+Numerical import now preserves operations executed before `break` and `continue`
+in compile-time `for` and `while` loops. Previously, the pinned compiler let
+`for` transfer signals escape and silently discarded the operations preceding
+`while` transfers. The adapter lowers these transfers to private Boolean control
+variables before unrolling, after the existing source preflight. Nested loops
+retain separate transfer targets; a while condition is reevaluated outside its
+body's local declarations and is not reevaluated after a break.
+
+Seventeen explicit gate-sequence cases cover direct and conditional transfers,
+nesting, local shadowing, name collisions, discrete sets, empty loops and normal
+loops. File-import tests exercise the same behavior through nested Unicode
+module dependencies. These are authored regressions, not a whole-source audit.
+Classical import retains its existing runtime lowering. Numerical measurement
+feedback remains unsupported; existing operation and iteration budgets remain
+in force. Hosted CI and published-artifact acceptance remain required.
+
+The lowering validates declarations in each original block before adding guards,
+including the for-loop binding. Synthetic scopes cannot legalize same-scope
+redeclarations. Regression cases preserve the reviewed duplicate-declaration
+failures alongside the valid nested-shadowing control.
+
+### Additional validation origins (development)
+
+Invalid runtime range bounds, integer-width validation, unsupported switch forms
+and non-finite primitive gate parameters now retain their original source
+locations. Range-bound snapshots generated while expanding subroutine calls
+retain the original bound expression's span before it is replaced. Gate emission
+uses the existing diagnostic context to keep nested, already located failures.
+
+These changes preserve rejection rules and messages. Regressions include direct
+and generated range bounds, numerical/classical gate failures, ordinary and
+module dependencies, and accepted width/range/finite-angle controls. This is
+additional DEV-16d coverage, not completion of its full diagnostic or release
 acceptance.

@@ -1,0 +1,80 @@
+{
+  "published_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "candidate_revision": "56aae0ac",
+  "frozen_sha256": "d56b861c0b023ad3f80031133f4be09b30341b4ce225ca0b2a3a7b466bc414d3",
+  "compiler_source_sha256": "d27d5e489c8829d128a54ee7c9c41ad7030d6addd6e613fa8c4de2ee72ef6bb2",
+  "results": [
+    {
+      "case": "qubit-budget",
+      "route": "released",
+      "message": "main.qasm: Classical circuits support 0–25 qubits and up to 64 classical bits.",
+      "attributed": false
+    },
+    {
+      "case": "qubit-budget",
+      "route": "candidate",
+      "message": "nested κ/body.qasm:3:1: Classical circuits support 0–25 qubits and up to 64 classical bits.",
+      "attributed": true
+    },
+    {
+      "case": "duplicate-switch",
+      "route": "released",
+      "message": "main.qasm: Duplicate switch case value: 1",
+      "attributed": false
+    },
+    {
+      "case": "duplicate-switch",
+      "route": "candidate",
+      "message": "nested κ/body.qasm:3:38: Duplicate switch case value: 1",
+      "attributed": true
+    },
+    {
+      "case": "duplicate-scope",
+      "route": "released",
+      "message": "main.qasm: Duplicate declaration in one scope: n",
+      "attributed": false
+    },
+    {
+      "case": "duplicate-scope",
+      "route": "candidate",
+      "message": "nested κ/body.qasm:3:10: Duplicate declaration in one scope: n",
+      "attributed": true
+    },
+    {
+      "case": "branch-condition",
+      "route": "released",
+      "message": "main.qasm: Whole-register truth conditions require an explicit comparison.",
+      "attributed": false
+    },
+    {
+      "case": "branch-condition",
+      "route": "candidate",
+      "message": "nested κ/body.qasm:3:11: Whole-register truth conditions require an explicit comparison.",
+      "attributed": true
+    },
+    {
+      "case": "qubit-budget",
+      "route": "frozen",
+      "message": "nested κ/body.qasm:3:1: Classical circuits support 0–25 qubits and up to 64 classical bits.",
+      "attributed": true
+    },
+    {
+      "case": "duplicate-switch",
+      "route": "frozen",
+      "message": "nested κ/body.qasm:3:38: Duplicate switch case value: 1",
+      "attributed": true
+    },
+    {
+      "case": "duplicate-scope",
+      "route": "frozen",
+      "message": "nested κ/body.qasm:3:10: Duplicate declaration in one scope: n",
+      "attributed": true
+    },
+    {
+      "case": "branch-condition",
+      "route": "frozen",
+      "message": "nested κ/body.qasm:3:11: Whole-register truth conditions require an explicit comparison.",
+      "attributed": true
+    }
+  ]
+}
