@@ -2223,8 +2223,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
  }
  if(mathWrapper && s.find("[[")!=std::string::npos) {
-  static const std::regex parameters(R"(^\s*\[\[\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*,\s*([a-z]|[0-9]+)\s*\]\]\s*$)");
-  std::smatch m;if(std::regex_match(s,m,parameters))return "vector("+m[1].str()+","+m[2].str()+","+m[3].str()+")";
+  static const std::regex parameters(R"(^\s*\[\[\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*\]\]\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,parameters))
+   return "vector("+quantumTeX(m[1].str())+","+quantumTeX(m[2].str())+","+quantumTeX(m[3].str())+")";
  }
  if(s.find("\\vert")!=std::string::npos || s.find("\\ket")!=std::string::npos) {
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
@@ -2240,7 +2242,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    std::string u=m[3],v=m[7],d="\""+m[4].str()+"_"+m[5].str()+"\"",c="\""+m[10].str()+"_"+m[11].str()+"\"";
    std::string lhs="qcosetket("+u+","+d+")",term="qketstate(qoplus("+u+","+v+"))";
    if(m[1].matched) {
-    std::string transform="qtensorpow(H,"+m[2].str()+")";
+    std::string transform="qhadamardpower("+m[2].str()+")";
     lhs="qmul("+transform+","+lhs+")";term="qmul("+transform+","+term+")";
    }
    std::string rhs="qmul(1/sqrt(2^"+m[6].str()+"),qsumset("+term+","+d+","+v+"))";
