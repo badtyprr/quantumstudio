@@ -1,0 +1,43 @@
+{
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "worker_sha256": "ee3be3a96ba84afbe5071d4e0721d1c4eff677a68dca3c1a3d5cb5a086ee664a",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "suite": {
+    "passed": true,
+    "checks": 44,
+    "calls": 4,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "records_sha256": "034c8f53fe5c8b8f59907524e7cd1f897fc7336d55cc86d8f19d399d315496cf",
+  "cases": [
+    {
+      "id": "IBM033-cf35c640-M076",
+      "substitutions": 18,
+      "copy": "qcompare('M',matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),4)",
+      "second_copy": "qcompare('M',matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),4)",
+      "display": "M = [(|\"A_0\"| − |\"A_1\"|) / N, −(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\")) / N); 2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\")) / N, (|\"A_0\"| − |\"A_1\"|) / N]"
+    },
+    {
+      "id": "IBM033-cf35c640-M080",
+      "substitutions": 18,
+      "copy": "qequalchain(vector(matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'),2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'),(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),'M'))",
+      "second_copy": "qequalchain(vector(matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'),2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'),(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),matrix(2,2,[(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N',−(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\"))) ∕ 'N',(qbars(\"A_0\") − qbars(\"A_1\")) ∕ 'N']),'M'))",
+      "display": "[(|\"A_0\"| − |\"A_1\"|) / N, −2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'); 2 ⋅ √(qbars(\"A_0\") ∕ 'N') ⋅ √(qbars(\"A_1\") ∕ 'N'), (|\"A_0\"| − |\"A_1\"|) / N] = [(|\"A_0\"| − |\"A_1\"|) / N, −(2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\")) / N); 2 ⋅ √(qbars(\"A_0\") ⋅ qbars(\"A_1\")) / N, (|\"A_0\"| − |\"A_1\"|) / N] = M"
+    },
+    {
+      "id": "IBM033-cf35c640-M081",
+      "substitutions": 18,
+      "copy": "matrix(2,2,[√(qbars(\"A_0\") ∕ 'N'),−√(qbars(\"A_1\") ∕ 'N'),√(qbars(\"A_1\") ∕ 'N'),√(qbars(\"A_0\") ∕ 'N')])",
+      "second_copy": "matrix(2,2,[√(qbars(\"A_0\") ∕ 'N'),−√(qbars(\"A_1\") ∕ 'N'),√(qbars(\"A_1\") ∕ 'N'),√(qbars(\"A_0\") ∕ 'N')])",
+      "display": "[√(qbars(\"A_0\") ∕ 'N'), −√(qbars(\"A_1\") ∕ 'N'); √(qbars(\"A_1\") ∕ 'N'), √(qbars(\"A_0\") ∕ 'N')]"
+    },
+    {
+      "id": "IBM033-cf35c640-M082",
+      "substitutions": 18,
+      "copy": "(matrix(2,2,[(√(qbars(\"A_0\") ∕ 'N'))+ ((cos(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1)),(−√(qbars(\"A_1\") ∕ 'N'))+ (sin(('θ')*(qphysicalunit(\"rad\",\"\")))),(√(qbars(\"A_1\") ∕ 'N'))+ ((sin(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1)),(√(qbars(\"A_0\") ∕ 'N'))+ ((cos(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1))]))==(matrix(2,2,[0,0,0,0]))",
+      "second_copy": "(matrix(2,2,[(√(qbars(\"A_0\") ∕ 'N'))+ ((cos(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1)),(−√(qbars(\"A_1\") ∕ 'N'))+ (sin(('θ')*(qphysicalunit(\"rad\",\"\")))),(√(qbars(\"A_1\") ∕ 'N'))+ ((sin(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1)),(√(qbars(\"A_0\") ∕ 'N'))+ ((cos(('θ')*(qphysicalunit(\"rad\",\"\"))))*(−1))]))==(matrix(2,2,[0,0,0,0]))",
+      "display": "[√(qbars(\"A_0\") ∕ 'N') − cos('θ' rad), sin('θ' rad) − √(qbars(\"A_1\") ∕ 'N'); √(qbars(\"A_1\") ∕ 'N') − sin('θ' rad), √(qbars(\"A_0\") ∕ 'N') − cos('θ' rad)] = [0, 0; 0, 0]"
+    }
+  ]
+}
