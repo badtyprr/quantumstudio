@@ -1746,6 +1746,16 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
+  if(op=="qcomplexcolumn") {
+   out=raw[0];out.eval(eo);
+   if(!out.isMatrix())return 0;
+   if(out.columns()!=1){CALCULATOR->error(true,"Expected a single column of coefficients.",NULL);return 0;}
+   for(size_t row=0;row<out.rows();++row) {
+    MathStructure value=element(out,row,0);
+    if(value.isUnknown())element(out,row,0).set(CALCULATOR->getFunction("complexparam"),&value,NULL);
+   }
+   return 1;
+  }
   if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
    const bool samples=op=="qsamplebitmatrix";
    const bool matrix=samples || op=="qindexedmatrix";
@@ -2569,6 +2579,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qonebasedcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qcomplexcolumn",1));
  calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
  calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));

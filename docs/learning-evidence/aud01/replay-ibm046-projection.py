@@ -146,3 +146,12 @@ for matrix, expected in [("[1,i,0;0,1,1;0,0,1]", "1"), ("[1,0,0;0,1,0;0,0,1]", "
         equation = f'replace(({equation}),qnamedket("ψ_{index}"),{column})'
     assert evaluate(equation) == expected
 print("Verified the Gram matrix of three complex, nonorthogonal columns and rejected an unrelated identity matrix")
+
+coefficient_equation = evaluate(rows[8]["literal"])
+for second_amplitude, expected in [("1", "1"), ("-1", "0")]:
+    equation = f"replace(({coefficient_equation}),n,2)"
+    for operand, value in [('qnamedket("ψ")', "[i;1]"), ('qnamedket("φ")', "[1;0]"),
+                           ('"α_1"', "i"), ('"α_2"', "1"), ('"β_1"', second_amplitude), ('"β_2"', "0")]:
+        equation = f"replace(({equation}),{operand},{value})"
+    assert evaluate(equation) == expected
+print("Verified the conjugated coefficient expansion with complex states and rejected an inconsistent amplitude")

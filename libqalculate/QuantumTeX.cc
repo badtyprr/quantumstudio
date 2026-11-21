@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 #include <map>
+#include <regex>
 #include <stdexcept>
 #include <vector>
 
@@ -497,6 +498,19 @@ std::vector<std::string> indexedParts(const std::string &raw,const std::string &
   }
  }
  parts.push_back(trim(raw.substr(start)));return parts;
+}
+std::string conjugateCoefficientRow(const std::string &raw) {
+ if(raw.find("\\cdots")==std::string::npos || raw.find("\\overline{")==std::string::npos)return "";
+ std::string column;
+ for(const auto &cell:indexedParts(raw,"&")) {
+  if(!column.empty())column+="\\\\";
+  if(cell=="\\cdots")column+="\\vdots";
+  else if(cell.compare(0,10,"\\overline{")==0 && cell.back()=='}')
+   column+=cell.substr(10,cell.size()-11);
+  else return "";
+ }
+ std::string values=indexedColumn(column,true);
+ return values.empty() ? "" : "qdag(qcomplexcolumn("+values+"))";
 }
 std::string sampleArray(const std::vector<std::vector<std::string>> &cells,const std::string &horizontal,
                         const std::string &vertical,const std::string &diagonal,bool definitions) {
@@ -1429,6 +1443,7 @@ class TeXReader {
    std::string raw=input.substr(bodyStart,bodyEnd-bodyStart);
    std::string m=indexedMatrix(raw,true);
    if(m.empty())m=indexedColumn(raw,true);
+   if(m.empty())m=conjugateCoefficientRow(raw);
    // Inner products have scalar entries even while the named states are unbound.
    // Preserve the shape instead of asking horizontal concatenation to infer it.
    if(m.empty() && raw.find("\\langle")!=std::string::npos) {
@@ -1558,6 +1573,15 @@ class TeXReader {
    }
    if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
+    if(input.compare(pos,10,"\\overline{")==0 && input.find("\\cdots",pos)!=std::string::npos) {
+     // Both products must use the same two coefficient families and upper index.
+     static const std::regex series(R"(\\overline\{(\\?[a-zA-Z]+)_1\}\s*(\\?[a-zA-Z]+)_1\s*\+\s*\\cdots\s*\+\s*\\overline\{\1_([a-zA-Z])\}\s*\2_\3(?![a-zA-Z0-9_]))");
+     std::smatch match;
+     if(std::regex_search(input.cbegin()+pos,input.cend(),match,series,std::regex_constants::match_continuous)) {
+      auto column=[&](size_t family){return "qonebasedcolumn(\""+quantumTeX(match[family].str())+"_\",("+match[3].str()+"),1)";};
+      result+="qmul(qdag(qcomplexcolumn("+column(1)+")),"+column(2)+")";pos+=match.length();continue;
+     }
+    }
     if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
      if(!series.empty()) {result+=series;continue;}

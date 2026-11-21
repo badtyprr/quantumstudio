@@ -277,6 +277,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qclock",1},
  {"qcomm",2},
  {"qconj",1},
+ {"qcomplexcolumn",1},
  {"qcontrol",3},
  {"qcontrolpattern",4},
  {"qcontrolled",1},
