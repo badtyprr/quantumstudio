@@ -1,0 +1,515 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors.ipynb",
+  "source_sha256": "d76193c45a2764e34600f9339932793c49bf9aef6c2fcc504f34b11e56c6b8dc",
+  "worker_sha256": "e07a2c887b065f5dafba740eb164d78f6d4490e522e048a647c9baff77cee5b8",
+  "revision": "e17adda9ae35f39de006a2ce7b52311d433460d7",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 50
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM056-d76193c4-M001",
+      "cell": 0,
+      "start": 164,
+      "end": 167,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM056-d76193c4-M002",
+      "cell": 0,
+      "start": 179,
+      "end": 182,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM056-d76193c4-M003",
+      "cell": 0,
+      "start": 429,
+      "end": 432,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM056-d76193c4-M004",
+      "cell": 0,
+      "start": 441,
+      "end": 444,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM056-d76193c4-M005",
+      "cell": 0,
+      "start": 1440,
+      "end": 1452,
+      "literal": "$2 \\times 2$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM056-d76193c4-M006",
+      "cell": 0,
+      "start": 1468,
+      "end": 1471,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM056-d76193c4-M007",
+      "cell": 0,
+      "start": 1599,
+      "end": 1658,
+      "literal": "$$\nU = \\alpha \\mathbb{I} + \\beta X + \\gamma Y + \\delta Z\n$$",
+      "status": "exact",
+      "display": "U = ['α' + 'δ', 'β' − i'γ'; 'β' + i'γ', 'α' − 'δ']",
+      "copy": "qcompare('U',matrix(2,2,['α' + 'δ','β' − i'γ','β' + i'γ','α' − 'δ']),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M008",
+      "cell": 0,
+      "start": 1970,
+      "end": 1973,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM056-d76193c4-M009",
+      "cell": 0,
+      "start": 2002,
+      "end": 2010,
+      "literal": "$\\alpha$",
+      "status": "exact",
+      "display": "'α'",
+      "copy": "'α'"
+    },
+    {
+      "id": "IBM056-d76193c4-M010",
+      "cell": 0,
+      "start": 2012,
+      "end": 2019,
+      "literal": "$\\beta$",
+      "status": "exact",
+      "display": "'β'",
+      "copy": "'β'"
+    },
+    {
+      "id": "IBM056-d76193c4-M011",
+      "cell": 0,
+      "start": 2021,
+      "end": 2029,
+      "literal": "$\\gamma$",
+      "status": "exact",
+      "display": "'γ'",
+      "copy": "'γ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M012",
+      "cell": 0,
+      "start": 2035,
+      "end": 2043,
+      "literal": "$\\delta$",
+      "status": "exact",
+      "display": "'δ'",
+      "copy": "'δ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M013",
+      "cell": 0,
+      "start": 2057,
+      "end": 2143,
+      "literal": "$\\vert\\alpha\\vert^2 + \\vert\\beta\\vert^2 + \\vert\\gamma\\vert^2 + \\vert\\delta\\vert^2 = 1$",
+      "status": "exact",
+      "display": "|'α'| = −√(1 − qbars('β')² − qbars('γ')² − qbars('δ')²) or |'α'| = √(1 − qbars('β')² − qbars('γ')² − qbars('δ')²)",
+      "copy": "((qbars('α'))==(−√(1 − qbars('β')² − qbars('γ')² − qbars('δ')²)) or (qbars('α'))==(√(1 − qbars('β')² − qbars('γ')² − qbars('δ')²)))"
+    },
+    {
+      "id": "IBM056-d76193c4-M014",
+      "cell": 0,
+      "start": 2168,
+      "end": 2188,
+      "literal": "$\\vert\\alpha\\vert^2$",
+      "status": "exact",
+      "display": "|'α'|^2",
+      "copy": "qbars('α')²"
+    },
+    {
+      "id": "IBM056-d76193c4-M015",
+      "cell": 0,
+      "start": 2190,
+      "end": 2209,
+      "literal": "$\\vert\\beta\\vert^2$",
+      "status": "exact",
+      "display": "|'β'|^2",
+      "copy": "qbars('β')²"
+    },
+    {
+      "id": "IBM056-d76193c4-M016",
+      "cell": 0,
+      "start": 2211,
+      "end": 2231,
+      "literal": "$\\vert\\gamma\\vert^2$",
+      "status": "exact",
+      "display": "|'γ'|^2",
+      "copy": "qbars('γ')²"
+    },
+    {
+      "id": "IBM056-d76193c4-M017",
+      "cell": 0,
+      "start": 2237,
+      "end": 2257,
+      "literal": "$\\vert\\delta\\vert^2$",
+      "status": "exact",
+      "display": "|'δ'|^2",
+      "copy": "qbars('δ')²"
+    },
+    {
+      "id": "IBM056-d76193c4-M018",
+      "cell": 0,
+      "start": 2589,
+      "end": 2638,
+      "literal": "$(\\mathsf{Q}_8,\\mathsf{Q}_7,\\ldots,\\mathsf{Q}_0)$",
+      "status": "exact",
+      "display": "(\"Q_8\", \"Q_7\", \"Q_6\", \"Q_5\", \"Q_4\", \"Q_3\", \"Q_2\", \"Q_1\", \"Q_0\")",
+      "copy": "qtuple(vector(\"Q_8\",\"Q_7\",\"Q_6\",\"Q_5\",\"Q_4\",\"Q_3\",\"Q_2\",\"Q_1\",\"Q_0\"))"
+    },
+    {
+      "id": "IBM056-d76193c4-M019",
+      "cell": 0,
+      "start": 2857,
+      "end": 3398,
+      "literal": "$$\n\\begin{aligned}\nX_0 & = \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes X \\\\[1.5mm]\nZ_4 & = \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes Z \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\\\[1.5mm]\nU_7 & = \\mathbb{I} \\otimes U \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I} \\otimes \\mathbb{I}\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  qcompare(\"X_0\",(I@I@I@I@I@I@I@I@X),4)\n\n2.  qcompare(\"Z_4\",(I@I@I@I@Z@I@I@I@I),4)\n\n3.  (((((((qimplicitidentity() ⊗ U) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity()) ⊗ qimplicitidentity() = \"U_7\"",
+      "copy": "\\begin{gathered}qcompare(\"X_0\",(I@I@I@I@I@I@I@I@X),4)\\\\qcompare(\"Z_4\",(I@I@I@I@Z@I@I@I@I),4)\\\\(qtensor(qtensor(qtensor(qtensor(qtensor(qtensor(qtensor(qtensor(qimplicitidentity(),'U'),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()),qimplicitidentity()))==(\"U_7\")\\end{gathered}"
+    },
+    {
+      "id": "IBM056-d76193c4-M020",
+      "cell": 0,
+      "start": 3455,
+      "end": 3458,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM056-d76193c4-M021",
+      "cell": 0,
+      "start": 3489,
+      "end": 3492,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM056-d76193c4-M022",
+      "cell": 0,
+      "start": 3510,
+      "end": 3513,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM056-d76193c4-M023",
+      "cell": 0,
+      "start": 3640,
+      "end": 3643,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM056-d76193c4-M024",
+      "cell": 0,
+      "start": 3646,
+      "end": 3715,
+      "literal": "$$\nU_k = \\alpha \\mathbb{I}_k + \\beta X_k + \\gamma Y_k + \\delta Z_k\n$$",
+      "status": "exact",
+      "display": "qoperatorref(\"U_k\") = 'α' · qoperatorref(\"I_k\") + 'β' · qoperatorref(\"X_k\") + 'γ' · qoperatorref(\"Y_k\") + 'δ' · qoperatorref(\"Z_k\")",
+      "copy": "qcompare(qoperatorref(\"U_k\"),qadd(qadd(qadd(qadjacent('α',qoperatorref(\"I_k\")),qadjacent('β',qoperatorref(\"X_k\"))),qadjacent('γ',qoperatorref(\"Y_k\"))),qadjacent('δ',qoperatorref(\"Z_k\"))),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M025",
+      "cell": 0,
+      "start": 3734,
+      "end": 3752,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM056-d76193c4-M026",
+      "cell": 0,
+      "start": 3808,
+      "end": 3811,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM056-d76193c4-M027",
+      "cell": 0,
+      "start": 3833,
+      "end": 3836,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM056-d76193c4-M028",
+      "cell": 0,
+      "start": 3858,
+      "end": 3880,
+      "literal": "$U_k \\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "\"U_k\" |ψ⟩",
+      "copy": "qadjacent(\"U_k\",qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM056-d76193c4-M029",
+      "cell": 0,
+      "start": 3959,
+      "end": 3977,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM056-d76193c4-M030",
+      "cell": 0,
+      "start": 3991,
+      "end": 4129,
+      "literal": "$$\nU_k \\vert\\psi\\rangle = \\alpha \\vert\\psi\\rangle + \\beta X_k\\vert\\psi\\rangle + \\gamma Y_k\\vert\\psi\\rangle + \\delta Z_k\\vert\\psi\\rangle\n$$",
+      "status": "exact",
+      "display": "\"U_k\" |ψ⟩ = 'α' |ψ⟩ + ('β' · \"X_k\") (|ψ⟩) + ('γ' · \"Y_k\") (|ψ⟩) + ('δ' · \"Z_k\") (|ψ⟩)",
+      "copy": "qcompare(qadjacent(\"U_k\",qnamedket('ψ')),qadd(qadd(qadd(qadjacent('α',qnamedket('ψ')),qadjacent(qadjacent('β',\"X_k\"),qnamedket('ψ'))),qadjacent(qadjacent('γ',\"Y_k\"),qnamedket('ψ'))),qadjacent(qadjacent('δ',\"Z_k\"),qnamedket('ψ'))),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M031",
+      "cell": 0,
+      "start": 4173,
+      "end": 4182,
+      "literal": "$Y = iXZ$",
+      "status": "exact",
+      "display": "[0, −i; i, 0] = i · X · Z",
+      "copy": "qcompare(matrix(2,2,[0,−i,i,0]),i'X''Z',4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M032",
+      "cell": 0,
+      "start": 4185,
+      "end": 4328,
+      "literal": "$$\nU_k \\vert\\psi\\rangle = \\alpha \\vert\\psi\\rangle + \\beta X_k\\vert\\psi\\rangle + i \\gamma X_kZ_k\\vert\\psi\\rangle + \\delta Z_k\\vert\\psi\\rangle\n$$",
+      "status": "exact",
+      "display": "\"U_k\" |ψ⟩ = 'α' |ψ⟩ + ('β' · \"X_k\") (|ψ⟩) + (i · 'γ' · \"X_kZ_k\") (|ψ⟩) + ('δ' · \"Z_k\") (|ψ⟩)",
+      "copy": "qcompare(qadjacent(\"U_k\",qnamedket('ψ')),qadd(qadd(qadd(qadjacent('α',qnamedket('ψ')),qadjacent(qadjacent('β',\"X_k\"),qnamedket('ψ'))),qadjacent(qadjacent(qadjacent(i,'γ'),\"X_kZ_k\"),qnamedket('ψ'))),qadjacent(qadjacent('δ',\"Z_k\"),qnamedket('ψ'))),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M033",
+      "cell": 0,
+      "start": 4705,
+      "end": 5050,
+      "literal": "$$\n\\begin{gathered}\n\\alpha\\,\\vert \\mathbb{I} \\text{ syndrome}\\rangle \\otimes \\vert\\psi\\rangle \\\\\n+ \\beta\\,\\vert X_k \\text{ syndrome}\\rangle \\otimes X_k\\vert\\psi\\rangle \\\\\n+ i \\gamma\\,\\vert X_k Z_k \\text{ syndrome}\\rangle \\otimes X_k Z_k\\vert\\psi\\rangle \\\\\n+ \\delta\\,\\vert Z_k \\text{ syndrome}\\rangle \\otimes Z_k\\vert\\psi\\rangle\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "'α' |syndromeI⟩ ⊗ |ψ⟩ + 'β' |syndromeX_k⟩ ⊗ \"X_k\" |ψ⟩ + (i · 'γ') (|syndromeXZ_k⟩) ⊗ \"X_k\" \"Z_k\" |ψ⟩ + 'δ' |syndromeZ_k⟩ ⊗ \"Z_k\" |ψ⟩",
+      "copy": "qadd(qadd(qadd(qtensor(qadjacent('α',qnamedket(\"syndromeI\")),qnamedket('ψ')),qtensorchain(qadjacent('β',qnamedket(\"syndromeX_k\")),vector(\"X_k\",qnamedket('ψ')))),qtensorchain(qadjacent(qadjacent(i,'γ'),qnamedket(\"syndromeXZ_k\")),vector(\"X_k\",\"Z_k\",qnamedket('ψ')))),qtensorchain(qadjacent('δ',qnamedket(\"syndromeZ_k\")),vector(\"Z_k\",qnamedket('ψ'))))"
+    },
+    {
+      "id": "IBM056-d76193c4-M034",
+      "cell": 0,
+      "start": 5180,
+      "end": 5222,
+      "literal": "$\\vert \\mathbb{I} \\text{ syndrome}\\rangle$",
+      "status": "exact",
+      "display": "|syndromeI⟩",
+      "copy": "qketstate(\"syndromeI\")"
+    },
+    {
+      "id": "IBM056-d76193c4-M035",
+      "cell": 0,
+      "start": 5224,
+      "end": 5259,
+      "literal": "$\\vert X_k \\text{ syndrome}\\rangle$",
+      "status": "exact",
+      "display": "|syndromeX_k⟩",
+      "copy": "qketstate(\"syndromeX_k\")"
+    },
+    {
+      "id": "IBM056-d76193c4-M036",
+      "cell": 0,
+      "start": 5868,
+      "end": 5886,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM056-d76193c4-M037",
+      "cell": 0,
+      "start": 6044,
+      "end": 6095,
+      "literal": "$$\n\\xi \\otimes \\vert\\psi\\rangle\\langle\\psi\\vert,\n$$",
+      "status": "exact",
+      "display": "('ξ' ⊗ |ψ⟩) · ⟨ψ|",
+      "copy": "qadjacent(qtensor('ξ',qketstate('ψ')),qdag(qnamedket('ψ')))"
+    },
+    {
+      "id": "IBM056-d76193c4-M038",
+      "cell": 0,
+      "start": 6104,
+      "end": 6547,
+      "literal": "$$\n\\begin{aligned}\n\\xi = & \\vert\\alpha\\vert^2 \\vert \\mathbb{I} \\text{ syndrome}\\rangle\\langle \\mathbb{I} \\text{ syndrome}\\vert \\\\[1mm]\n& + \\vert\\beta\\vert^2 \\vert X_k \\text{ syndrome}\\rangle\\langle X_k \\text{ syndrome}\\vert\\\\[1mm]\n& + \\vert\\gamma\\vert^2 \\vert X_k Z_k \\text{ syndrome}\\rangle\\langle X_k Z_k \\text{ syndrome}\\vert\\\\[1mm]\n& + \\vert\\delta\\vert^2 \\vert Z_k \\text{ syndrome}\\rangle\\langle Z_k \\text{ syndrome}\\vert.\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "'ξ' = |'α'|^2 |syndromeI⟩ · ⟨syndromeI| + |'β'|^2 |syndromeX_k⟩ · ⟨syndromeX_k| + |'γ'|^2 |syndromeXZ_k⟩ · ⟨syndromeXZ_k| + |'δ'|^2 |syndromeZ_k⟩ · ⟨syndromeZ_k|",
+      "copy": "qcompare('ξ',qadd(qadd(qadd(qadjacent(qadjacent(qpower(qbars('α'),2),qnamedket(\"syndromeI\")),qdag(qnamedket(\"syndromeI\"))),qadjacent(qadjacent(qpower(qbars('β'),2),qnamedket(\"syndromeX_k\")),qdag(qnamedket(\"syndromeX_k\")))),qadjacent(qadjacent(qpower(qbars('γ'),2),qnamedket(\"syndromeXZ_k\")),qdag(qnamedket(\"syndromeXZ_k\")))),qadjacent(qadjacent(qpower(qbars('δ'),2),qnamedket(\"syndromeZ_k\")),qdag(qnamedket(\"syndromeZ_k\")))),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M039",
+      "cell": 0,
+      "start": 6703,
+      "end": 6708,
+      "literal": "$\\xi$",
+      "status": "exact",
+      "display": "'ξ'",
+      "copy": "'ξ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M040",
+      "cell": 0,
+      "start": 8023,
+      "end": 8029,
+      "literal": "$\\Phi$",
+      "status": "exact",
+      "display": "'Φ'",
+      "copy": "'Φ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M041",
+      "cell": 0,
+      "start": 8231,
+      "end": 8237,
+      "literal": "$\\Phi$",
+      "status": "exact",
+      "display": "'Φ'",
+      "copy": "'Φ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M042",
+      "cell": 0,
+      "start": 8240,
+      "end": 8292,
+      "literal": "$$\n\\Phi(\\sigma) = \\sum_j A_j \\sigma A_j^{\\dagger}\n$$",
+      "status": "exact",
+      "display": "qcompare(qkrausapply('Φ', qoperatorref('σ')), qsumset(qmul(qmul(qoperatorref(qindexedlabel(\"A_\", \"qboundindex_0\", \"\")), qoperatorref('σ')), qdag(qoperatorref(qindexedlabel(\"A_\", \"qboundindex_0\", \"\")))), \"indexset_j\", \"qboundindex_0\"), 4)",
+      "copy": "qcompare(qkrausapply('Φ',qoperatorref('σ')),qsumset(qmul(qmul(qoperatorref(qindexedlabel(\"A_\",\"qboundindex_0\",\"\")),qoperatorref('σ')),qdag(qoperatorref(qindexedlabel(\"A_\",\"qboundindex_0\",\"\")))),\"indexset_j\",\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M043",
+      "cell": 0,
+      "start": 8327,
+      "end": 8332,
+      "literal": "$A_j$",
+      "status": "exact",
+      "display": "\"A_j\"",
+      "copy": "\"A_j\""
+    },
+    {
+      "id": "IBM056-d76193c4-M044",
+      "cell": 0,
+      "start": 8338,
+      "end": 8349,
+      "literal": "$2\\times 2$",
+      "status": "exact",
+      "display": "4",
+      "copy": "4"
+    },
+    {
+      "id": "IBM056-d76193c4-M045",
+      "cell": 0,
+      "start": 8423,
+      "end": 8492,
+      "literal": "$$\nA_j = \\alpha_j \\mathbb{I} + \\beta_j X + \\gamma_j Y + \\delta_j Z\n$$",
+      "status": "exact",
+      "display": "\"A_j\" = [\"α_j\" + \"δ_j\", \"β_j\" − i ⋅ \"γ_j\"; \"β_j\" + i ⋅ \"γ_j\", \"α_j\" − \"δ_j\"]",
+      "copy": "qcompare(\"A_j\",matrix(2,2,[\"α_j\" + \"δ_j\",\"β_j\" − i ⋅ \"γ_j\",\"β_j\" + i ⋅ \"γ_j\",\"α_j\" − \"δ_j\"]),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M046",
+      "cell": 0,
+      "start": 8544,
+      "end": 8550,
+      "literal": "$\\Phi$",
+      "status": "exact",
+      "display": "'Φ'",
+      "copy": "'Φ'"
+    },
+    {
+      "id": "IBM056-d76193c4-M047",
+      "cell": 0,
+      "start": 8569,
+      "end": 8572,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM056-d76193c4-M048",
+      "cell": 0,
+      "start": 8613,
+      "end": 8859,
+      "literal": "$$\n\\Phi_k \\bigl( \\vert\\psi\\rangle\\langle\\psi\\vert\\bigr) =\n\\sum_j (\\alpha_j \\mathbb{I}_k + \\beta_j X_k + \\gamma_j Y_k + \\delta_j Z_k) \\vert\\psi\\rangle\\langle\\psi\\vert\n(\\alpha_j \\mathbb{I}_k + \\beta_j X_k + \\gamma_j Y_k + \\delta_j Z_k)^{\\dagger}\n$$",
+      "status": "exact",
+      "display": "qkrausapply(\"Φ_k\", qadjacent(qnamedket('ψ'), qdag(qnamedket('ψ')))) = ∑_{l ∈ \"indexset_j\"} ((α_l · qoperatorref(\"I_k\") + β_l · qoperatorref(\"X_k\") + γ_l · qoperatorref(\"Y_k\") + δ_l · qoperatorref(\"Z_k\")) |ψ⟩ · ⟨ψ| · (α_l · qoperatorref(\"I_k\") + β_l · qoperatorref(\"X_k\") + γ_l · qoperatorref(\"Y_k\") + δ_l · qoperatorref(\"Z_k\"))†)",
+      "copy": "qcompare(qkrausapply(\"Φ_k\",qadjacent(qnamedket('ψ'),qdag(qnamedket('ψ')))),qsumset(qadjacent(qadjacent(qadjacent(qadd(qadd(qadd(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qoperatorref(\"I_k\")),qadjacent(qindexedlabel(\"β_\",\"qboundindex_0\",\"\"),qoperatorref(\"X_k\"))),qadjacent(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"),qoperatorref(\"Y_k\"))),qadjacent(qindexedlabel(\"δ_\",\"qboundindex_0\",\"\"),qoperatorref(\"Z_k\"))),qnamedket('ψ')),qdag(qnamedket('ψ'))),qdag(qadd(qadd(qadd(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qoperatorref(\"I_k\")),qadjacent(qindexedlabel(\"β_\",\"qboundindex_0\",\"\"),qoperatorref(\"X_k\"))),qadjacent(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\"),qoperatorref(\"Y_k\"))),qadjacent(qindexedlabel(\"δ_\",\"qboundindex_0\",\"\"),qoperatorref(\"Z_k\"))))),\"indexset_j\",\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM056-d76193c4-M049",
+      "cell": 0,
+      "start": 9147,
+      "end": 9198,
+      "literal": "$$\n\\xi \\otimes \\vert\\psi\\rangle\\langle\\psi\\vert,\n$$",
+      "status": "exact",
+      "display": "('ξ' ⊗ |ψ⟩) · ⟨ψ|",
+      "copy": "qadjacent(qtensor('ξ',qketstate('ψ')),qdag(qnamedket('ψ')))"
+    },
+    {
+      "id": "IBM056-d76193c4-M050",
+      "cell": 0,
+      "start": 9225,
+      "end": 9718,
+      "literal": "$$\n\\begin{aligned}\n\\xi = & \\sum_j \\Bigl(\\vert\\alpha_j\\vert^2 \\vert \\mathbb{I} \\text{ syndrome}\\rangle\\langle \\mathbb{I} \\text{ syndrome}\\vert \\\\[-3mm]\n& \\qquad + \\vert\\beta_j\\vert^2 \\vert X_k \\text{ syndrome}\\rangle\\langle X_k \\text{ syndrome}\\vert\\\\[2mm]\n& \\qquad + \\vert\\gamma_j\\vert^2 \\vert X_k Z_k \\text{ syndrome}\\rangle\\langle X_k Z_k \\text{ syndrome}\\vert\\\\[2mm]\n& \\qquad + \\vert\\delta_j\\vert^2 \\vert Z_k \\text{ syndrome}\\rangle\\langle Z_k \\text{ syndrome}\\vert \\Bigr).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "'ξ' = ∑_{l ∈ \"indexset_j\"} (|α_l|^2 |syndromeI⟩ · ⟨syndromeI| + |β_l|^2 |syndromeX_k⟩ · ⟨syndromeX_k| + |γ_l|^2 |syndromeXZ_k⟩ · ⟨syndromeXZ_k| + |δ_l|^2 |syndromeZ_k⟩ · ⟨syndromeZ_k|)",
+      "copy": "qcompare('ξ',qsumset(qadd(qadd(qadd(qadjacent(qadjacent(qpower(qbars(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),2),qnamedket(\"syndromeI\")),qdag(qnamedket(\"syndromeI\"))),qadjacent(qadjacent(qpower(qbars(qindexedlabel(\"β_\",\"qboundindex_0\",\"\")),2),qnamedket(\"syndromeX_k\")),qdag(qnamedket(\"syndromeX_k\")))),qadjacent(qadjacent(qpower(qbars(qindexedlabel(\"γ_\",\"qboundindex_0\",\"\")),2),qnamedket(\"syndromeXZ_k\")),qdag(qnamedket(\"syndromeXZ_k\")))),qadjacent(qadjacent(qpower(qbars(qindexedlabel(\"δ_\",\"qboundindex_0\",\"\")),2),qnamedket(\"syndromeZ_k\")),qdag(qnamedket(\"syndromeZ_k\")))),\"indexset_j\",\"qboundindex_0\"),4)"
+    }
+  ]
+}

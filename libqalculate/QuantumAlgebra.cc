@@ -640,6 +640,20 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qoperatorref") {
+   MathStructure value=raw[0];value.eval(eo);
+   if(!value.isMatrix()) {
+    if(value.equals(raw[0]))return 0;
+    out.set(this,&value,NULL);return 1;
+   }
+   out=value;return 1;
+  }
+  if(op=="qkrausapply") {
+   MathStructure operators=raw[0];operators.eval(eo);
+   MathStructure density=raw[1];density.eval(eo);
+   if(!operators.isVector() || !density.isMatrix())return 0;
+   out.set(CALCULATOR->getFunction("qchannel"),&density,&operators,NULL);return 1;
+  }
   if(op=="qstateaction") {
    MathStructure states=raw;
    for(unsigned k=0;k<2;++k) {
@@ -1309,6 +1323,8 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));

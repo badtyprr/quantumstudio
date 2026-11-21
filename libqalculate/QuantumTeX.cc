@@ -101,6 +101,12 @@ std::string booleanGraph(const std::string &outputs) {
 // systems. Preserve their names even when the same letters are Pauli gates.
 std::string systemNames(const std::string &input) {
  if(input.find("\\mathsf")==std::string::npos)return "";
+ if(input.find("\\ldots")!=std::string::npos || input.find("\\cdots")!=std::string::npos) {
+  static const std::regex descending(R"(\s*\(\s*\\mathsf\{([A-Za-z])\}_([1-9])\s*,\s*\\mathsf\{\1\}_([0-9])\s*,\s*\\(?:ldots|cdots)\s*,\s*\\mathsf\{\1\}_0\s*\)\s*)");
+  std::smatch match;
+  if(std::regex_match(input,match,descending) && match[2].str()[0]==match[3].str()[0]+1)
+   return "qreverseindexedlist(\""+match[1].str()+"_\",0,"+match[2].str()+",vector())";
+ }
  // A subscript inside the typeface group names a wire; it is not a power,
  // gate application, or subscript on an already evaluated expression.
  if(input.find("_{")!=std::string::npos) {
@@ -878,7 +884,7 @@ class TeXReader {
   const size_t next=input.find_first_not_of(" \t\r\n",pos);
   return next!=std::string::npos && (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0);
  }
- unsigned matrixDepth=0;
+ unsigned matrixDepth=0,alignmentDepth=0;
  void space() { while(pos<input.size() && asciiSpace((unsigned char)input[pos])) ++pos; }
  // Check the displayed initial powers and the final base before consuming
  // an ellipsis. Keep the endpoint expression available for substitution.
@@ -1234,6 +1240,13 @@ class TeXReader {
     }
     return ";";
    }
+   if(c=='\\' && !matrix && alignmentDepth) {
+    space();
+    if(pos<input.size() && input[pos]=='[')spacingDimension(']');
+    space();
+    if(pos<input.size() && input[pos]=='&') {++pos;return " ";}
+    throw std::runtime_error(error("Expected an alignment tab on a grouped continuation"));
+   }
    if(c==',' || c==';' || c==':' || c=='!' || c==' ') return " ";
    if(c=='%')return " qtexpercent ";
    if(c=='|') { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
@@ -1385,6 +1398,14 @@ class TeXReader {
     std::string value=argument();setBound=priorSetBound;
     if(bound=='_') { if(!lower.empty()) throw std::runtime_error(error("Duplicate lower bound")); lower=value; }
     else { if(!upper.empty()) throw std::runtime_error(error("Duplicate upper bound")); upper=value; }
+    // A bare sum index runs through an unspecified finite collection.
+    // Keep that collection symbolic so supplying it later evaluates the sum.
+    if(name=="sum" && bound=='_' && upper.empty()) {
+     std::string index=trim(lower);
+     size_t next=input.find_first_not_of(" \t\r\n",pos);
+     if(index.size()==1 && asciiLetter(index.front()) && next!=std::string::npos && input[next]!='^')
+      lower=index+" ∈ indexset_"+index;
+    }
     if(lower.find("∈")!=std::string::npos)break;
    }
    size_t membership=lower.find("∈");
@@ -1468,7 +1489,10 @@ class TeXReader {
    auto a=nameGroup();
    if(name=="mathrm" && a.size()>1 && a.find_first_not_of("abcdefghijklmnopqrstuvwxyz")==std::string::npos &&
       a!="pi" && a!="inf" && a!="infinity" && (wholeSetEntry(preceding) || beforeMembership()))return "qoutcome(\""+a+"\")";
-   if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
+   if(name=="mathbb" && a=="I") {
+    if(pos<input.size() && input[pos]=='_')return "I";
+    return " qimplicitidentity() ";
+   }
    if(name=="mathbb" && a=="Z") {
     space();
     if(pos<input.size() && input[pos]=='_') {
@@ -1650,6 +1674,7 @@ class TeXReader {
   std::string result; int norms=0; bool closed=false,congruence=false;
   const bool alignment=environment=="aligned" || environment=="align" || environment=="align*" || environment=="gathered" || environment=="gather" || environment=="gather*" || environment=="split";
   const bool gathered=environment=="gathered" || environment=="gather" || environment=="gather*";
+  MatrixScope alignmentScope(alignmentDepth,alignment);
   std::vector<std::string> alignmentCells,expressions;
   std::vector<size_t> preceding;
   unsigned alignmentRows=0;
@@ -1668,7 +1693,8 @@ class TeXReader {
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
     bool relation=value[0]=='=' || value.compare(0,2,"<=")==0 || value.compare(0,2,">=")==0 || value.compare(0,2,"!=")==0;
     bool operation=value[0]=='+' || value[0]=='-' || value[0]=='*' || value[0]=='/' || value[0]=='@' || value[0]=='#';
-    bool continuation=relation || (indented && operation && preceding[column]!=std::string::npos);
+    bool positiveContinuation=(environment=="gathered" && value[0]=='+' && preceding[column]!=std::string::npos);
+    bool continuation=relation || positiveContinuation || (indented && operation && preceding[column]!=std::string::npos);
     if(continuation) {
      if(preceding[column]==std::string::npos)throw std::runtime_error(error("An aligned continuation requires a preceding expression"));
      expressions[preceding[column]]+=" "+value;
@@ -2037,6 +2063,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
+ // An error syndrome names a basis state of the measurement register.
+ // Preserve the operator and its wire in both ket and bra labels.
+ if(s.find("syndrome")!=std::string::npos) {
+  static const std::regex identity(R"(\\mathbb\{I\}\s*\\text\{\s*syndrome\s*\})");
+  static const std::regex pauli(R"(([XYZ])_([a-z])(?:\s+([XYZ])_\2)?\s*\\text\{\s*syndrome\s*\})");
+  s=std::regex_replace(s,identity,"syndromeI");
+  s=std::regex_replace(s,pauli,"syndrome$1$3_$2");
+ }
  const std::string whole=trim(s);
  if(whole=="\\wedge" || whole=="\\land")return booleanGraph("0001");
  if(whole=="\\vee" || whole=="\\lor")return booleanGraph("0111");
@@ -2044,6 +2078,41 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // As a standalone circuit gate label, the circled plus toggles one bit
  // by the other. Infix \oplus retains its operand-dependent interpretation.
  if(whole=="\\oplus")return booleanGraph("0110");
+ // Indexed Pauli expansions are operator equations, including at coefficients
+ // equal to zero. Keep the factors matrix-valued during partial substitutions.
+ if(s.find("\\mathbb{I}_")!=std::string::npos && s.find("X_")!=std::string::npos && s.find("Z_")!=std::string::npos &&
+    s.find("syndrome")==std::string::npos && s.find("qnamedket")==std::string::npos) {
+  static const std::regex pauliWire(R"((\\mathbb\{I\}|\b[UXYZ])_([a-z])\b)");
+  std::string marked;
+  size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),pauliWire),end;it!=end;++it) {
+   const auto &item=*it;
+   marked.append(s,start,item.position()-start);
+   std::string gate=item[1].str();if(gate=="\\mathbb{I}")gate="I";
+   marked+="qoperatorref(\""+gate+"_"+item[2].str()+"\")";
+   start=item.position()+item.length();
+  }
+  marked.append(s,start,std::string::npos);s=marked;
+ }
+ // A channel defined by a Kraus sum acts on the entire density operator.
+ if(s.find("\\Phi")!=std::string::npos && s.find("\\sum")!=std::string::npos) {
+  static const std::regex channel(R"(^\s*\\Phi(?:_([a-z]))?\s*(?:\\bigl\s*)?\((.*?)\s*(?:\\bigr\s*)?\)\s*=)");
+  std::smatch match;
+  if(std::regex_search(s,match,channel)) {
+   std::string name="Φ";if(match[1].matched)name+="_"+match[1].str();
+   std::string argument=match[2].str(),body=s.substr(match.length());
+   // An operator-sum term A_j sigma A_j^dagger stays a matrix
+   // product even while the density operator or its entries are unknown.
+   static const std::regex operatorSum(R"(^\s*\\sum_([a-z])\s+([A-Z])_\1\s+(\\[A-Za-z]+)\s+\2_\1\^\{\\dagger\}\s*$)");
+   std::smatch term;
+   if(std::regex_match(body,term,operatorSum) && trim(argument)==term[3].str()) {
+    std::string op="qoperatorref("+term[2].str()+"_"+term[1].str()+")";
+    argument="qoperatorref("+argument+")";
+    body="\\sum_"+term[1].str()+" "+op+"*"+argument+"*"+op+"^{\\dagger}";
+   }
+   s="qkrausapply(\""+name+"\","+argument+")="+body;
+  }
+ }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
  // A sum written with an ellipsis must have matching indexed endpoints.

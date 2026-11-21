@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/introduction.ipynb",
+  "source_sha256": "bff12f864adf9f56a0e17f5cdacf3087a19336a12c51db1f5e4d34126fa04ff1",
+  "worker_sha256": "3e0b81cec3bd9475e0720bd441ba1213efefd9ee7246d6a26d69e2e17ff66c0e",
+  "revision": "77bd339e74bbe7f921fba188d10dbd4fff3bdb61",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

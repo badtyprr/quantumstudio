@@ -265,7 +265,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpoststate",3},
  {"qnaimark",2},
  {"qborn",2},
- {"qchannel",2},
+ {"qchannel",2},{"qkrausapply",2},{"qoperatorref",1},
  {"qchoi",1},
  {"qchi",1},
  {"qspre",1},
@@ -833,6 +833,18 @@ class Parser {
   return "";
  }
  std::string basisState(const std::string &label,const std::string &dimension="") {
+  // TeX groups each sign in a product of Hadamard-basis states.
+  const std::string signs=labelText(label);
+  if(dimension.empty() && !signs.empty() && signs.size()%3==0) {
+   std::string product;
+   for(size_t i=0;i<signs.size();i+=3) {
+    if(signs[i]!='(' || (signs[i+1]!='+' && signs[i+1]!='-') || signs[i+2]!=')') {product.clear();break;}
+    if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
+    std::string factor=ket(signs.substr(i+1,1));
+    product=product.empty() ? factor : "qtensor("+product+","+factor+")";checkSize(product);
+   }
+   if(!product.empty())return product;
+  }
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
   // Top-level commas and tensor products separate registers. Commas inside
@@ -2465,8 +2477,29 @@ class Parser {
    result="qfunctiontype("+result+","+domain+","+setUnion()+")";checkSize(result);
   }
   if(takeSetOperator("↦")) {
+   size_t imageStart=p;
    std::string image=logicalOr(false);
-   result="qstateaction("+result+","+image+")";checkSize(result);
+   const std::string arrow="↦";
+   std::string input=labelText(s.substr(start,imageStart-start-arrow.size()));
+   std::string output=labelText(s.substr(imageStart,p-imageStart));
+   if(!input.empty() && !output.empty() && input.find_first_not_of("01")==std::string::npos &&
+      output.find_first_not_of("01")==std::string::npos) {
+    if(input.size()>1024 || output.size()>1024)throw std::runtime_error("A binary word may contain up to 1024 binary digits.");
+    result="qtuple(vector(qbitlabel("+binaryNumeral(input)+","+std::to_string(input.size())+
+           "),qbitlabel("+binaryNumeral(output)+","+std::to_string(output.size())+")))";
+   } else if(input.size()==3 && input.find_first_not_of("abcdefghijklmnopqrstuvwxyz")==std::string::npos &&
+             input[0]!=input[1] && input[0]!=input[2] && input[1]!=input[2] &&
+             output=="majority("+input.substr(0,1)+","+input.substr(1,1)+","+input.substr(2,1)+")") {
+    // A three-bit majority decoder is a finite graph on all eight words.
+    result="qset(vector(";
+    for(unsigned word=0;word<8;++word) {
+     if(word)result+=",";
+     unsigned votes=(word>>2)+((word>>1)&1)+(word&1);
+     result+="qtuple(vector(qbitlabel("+std::to_string(word)+",3),qbitlabel("+std::to_string(votes>=2)+",1)))";
+    }
+    result+="))";
+   } else result="qstateaction("+result+","+image+")";
+   checkSize(result);
   }
   if(!takeWord("iff"))return result;
   result=equivalenceOperand(result,start);

@@ -1,0 +1,1183 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code.ipynb",
+  "source_sha256": "8b549b58df4680202abea8df49626546f181312d295097193be00c2ef34c8cbe",
+  "worker_sha256": "3e0b81cec3bd9475e0720bd441ba1213efefd9ee7246d6a26d69e2e17ff66c0e",
+  "revision": "77bd339e74bbe7f921fba188d10dbd4fff3bdb61",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 109
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 1257,
+      "end": 1432,
+      "alt": "Encoding circuit for the 9-qubit Shor code showing three blocks",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-encoder.svg"
+    },
+    {
+      "cell": 0,
+      "start": 3641,
+      "end": 3787,
+      "alt": "X errors before and after CNOT gates",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/X-and-CNOT.svg"
+    },
+    {
+      "cell": 0,
+      "start": 3984,
+      "end": 4130,
+      "alt": "Z errors before and after CNOT gates",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Z-and-CNOT.svg"
+    },
+    {
+      "cell": 0,
+      "start": 5481,
+      "end": 5643,
+      "alt": "Z error on a qubit for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-1.svg"
+    },
+    {
+      "cell": 0,
+      "start": 6319,
+      "end": 6494,
+      "alt": "Z error prior to the inner code for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-2.svg"
+    },
+    {
+      "cell": 0,
+      "start": 7264,
+      "end": 7432,
+      "alt": "Z error detection for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-1.svg"
+    },
+    {
+      "cell": 0,
+      "start": 7788,
+      "end": 7967,
+      "alt": "Simplified Z error detection for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-2.svg"
+    },
+    {
+      "cell": 0,
+      "start": 9886,
+      "end": 10036,
+      "alt": "An XZ error for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-XZ-error.svg"
+    },
+    {
+      "cell": 0,
+      "start": 10653,
+      "end": 10802,
+      "alt": "A ZX error for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error.svg"
+    },
+    {
+      "cell": 0,
+      "start": 10890,
+      "end": 11041,
+      "alt": "A ZX error for the 9-qubit Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error-2.svg"
+    },
+    {
+      "cell": 0,
+      "start": 16453,
+      "end": 16635,
+      "alt": "Error probability graph for independent Y errors using the Shor code",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/breakeven-Shor.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM055-8b549b58-M001",
+      "cell": 0,
+      "start": 2084,
+      "end": 2485,
+      "literal": "$$\n\\begin{aligned}\n\\vert 0\\rangle &\n\\:\\mapsto\\:\n\\frac{1}{2\\sqrt{2}}\n(\\vert 000\\rangle + \\vert 111\\rangle) \\otimes\n(\\vert 000\\rangle + \\vert 111\\rangle) \\otimes\n(\\vert 000\\rangle + \\vert 111\\rangle) \\\\[4mm]\n\\vert 1\\rangle &\n\\:\\mapsto\\:\n\\frac{1}{2\\sqrt{2}}\n(\\vert 000\\rangle - \\vert 111\\rangle) \\otimes\n(\\vert 000\\rangle - \\vert 111\\rangle) \\otimes\n(\\vert 000\\rangle - \\vert 111\\rangle)\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  [1; 0] ↦ [(1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2)))]\n\n2.  [0; 1] ↦ [(1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (−1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (−1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (−1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; (1 ∕ (2 ⋅ √(2))); 0; 0; 0; 0; 0; 0; (−1 ∕ (2 ⋅ √(2)))]",
+      "copy": "\\begin{gathered}qstateaction(matrix(2,1,[1,0]),matrix(512,1,[1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2))]))\\\\qstateaction(matrix(2,1,[0,1]),matrix(512,1,[1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,−1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,−1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ∕ (2 ⋅ √(2)),0,0,0,0,0,0,−1 ∕ (2 ⋅ √(2))]))\\end{gathered}"
+    },
+    {
+      "id": "IBM055-8b549b58-M002",
+      "cell": 0,
+      "start": 2673,
+      "end": 2676,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M003",
+      "cell": 0,
+      "start": 2681,
+      "end": 2684,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M004",
+      "cell": 0,
+      "start": 3039,
+      "end": 3042,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M005",
+      "cell": 0,
+      "start": 3091,
+      "end": 3094,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M006",
+      "cell": 0,
+      "start": 3221,
+      "end": 3224,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M007",
+      "cell": 0,
+      "start": 3295,
+      "end": 3298,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M008",
+      "cell": 0,
+      "start": 3354,
+      "end": 3357,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M009",
+      "cell": 0,
+      "start": 3457,
+      "end": 3460,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M010",
+      "cell": 0,
+      "start": 3818,
+      "end": 3821,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M011",
+      "cell": 0,
+      "start": 4319,
+      "end": 4322,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M012",
+      "cell": 0,
+      "start": 4388,
+      "end": 4391,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M013",
+      "cell": 0,
+      "start": 4566,
+      "end": 4569,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M014",
+      "cell": 0,
+      "start": 4626,
+      "end": 4629,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M015",
+      "cell": 0,
+      "start": 4720,
+      "end": 4723,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M016",
+      "cell": 0,
+      "start": 4780,
+      "end": 4783,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M017",
+      "cell": 0,
+      "start": 5098,
+      "end": 5101,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M018",
+      "cell": 0,
+      "start": 5221,
+      "end": 5224,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M019",
+      "cell": 0,
+      "start": 5379,
+      "end": 5382,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M020",
+      "cell": 0,
+      "start": 5688,
+      "end": 5691,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M021",
+      "cell": 0,
+      "start": 5771,
+      "end": 5774,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M022",
+      "cell": 0,
+      "start": 5869,
+      "end": 5872,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M023",
+      "cell": 0,
+      "start": 5978,
+      "end": 5981,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M024",
+      "cell": 0,
+      "start": 6197,
+      "end": 6200,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M025",
+      "cell": 0,
+      "start": 6298,
+      "end": 6316,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM055-8b549b58-M026",
+      "cell": 0,
+      "start": 6550,
+      "end": 6553,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M027",
+      "cell": 0,
+      "start": 6764,
+      "end": 6767,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M028",
+      "cell": 0,
+      "start": 6918,
+      "end": 6921,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M029",
+      "cell": 0,
+      "start": 7050,
+      "end": 7053,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M030",
+      "cell": 0,
+      "start": 7490,
+      "end": 7494,
+      "literal": "$11$",
+      "status": "exact",
+      "display": "11",
+      "copy": "11"
+    },
+    {
+      "id": "IBM055-8b549b58-M031",
+      "cell": 0,
+      "start": 7514,
+      "end": 7517,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M032",
+      "cell": 0,
+      "start": 7614,
+      "end": 7617,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M033",
+      "cell": 0,
+      "start": 8046,
+      "end": 8049,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M034",
+      "cell": 0,
+      "start": 8098,
+      "end": 8101,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M035",
+      "cell": 0,
+      "start": 8241,
+      "end": 8244,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M036",
+      "cell": 0,
+      "start": 8443,
+      "end": 8446,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M037",
+      "cell": 0,
+      "start": 8584,
+      "end": 8587,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M038",
+      "cell": 0,
+      "start": 8592,
+      "end": 8595,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M039",
+      "cell": 0,
+      "start": 8696,
+      "end": 8699,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M040",
+      "cell": 0,
+      "start": 8721,
+      "end": 8724,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M041",
+      "cell": 0,
+      "start": 9017,
+      "end": 9020,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M042",
+      "cell": 0,
+      "start": 9035,
+      "end": 9038,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M043",
+      "cell": 0,
+      "start": 9113,
+      "end": 9116,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M044",
+      "cell": 0,
+      "start": 9285,
+      "end": 9288,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M045",
+      "cell": 0,
+      "start": 9813,
+      "end": 9816,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M046",
+      "cell": 0,
+      "start": 9823,
+      "end": 9826,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M047",
+      "cell": 0,
+      "start": 10154,
+      "end": 10157,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M048",
+      "cell": 0,
+      "start": 10162,
+      "end": 10165,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M049",
+      "cell": 0,
+      "start": 10216,
+      "end": 10219,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M050",
+      "cell": 0,
+      "start": 10224,
+      "end": 10227,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M051",
+      "cell": 0,
+      "start": 10266,
+      "end": 10537,
+      "literal": "$$\nXZ =\n\\begin{pmatrix}\n0 & 1\\\\[1mm]\n1 & 0\n\\end{pmatrix}\n\\begin{pmatrix}\n1 & 0\\\\[1mm]\n0 & -1\n\\end{pmatrix}\n= \\begin{pmatrix}\n0 & -1\\\\[1mm]\n1 & 0\n\\end{pmatrix}\n= - \\begin{pmatrix}\n1 & 0\\\\[1mm]\n0 & -1\n\\end{pmatrix}\n\\begin{pmatrix}\n0 & 1\\\\[1mm]\n1 & 0\n\\end{pmatrix}\n= -ZX.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM055-8b549b58-M052",
+      "cell": 0,
+      "start": 10646,
+      "end": 10650,
+      "literal": "$-1$",
+      "status": "exact",
+      "display": "−1",
+      "copy": "−1"
+    },
+    {
+      "id": "IBM055-8b549b58-M053",
+      "cell": 0,
+      "start": 10824,
+      "end": 10827,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M054",
+      "cell": 0,
+      "start": 11114,
+      "end": 11117,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M055",
+      "cell": 0,
+      "start": 11149,
+      "end": 11152,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M056",
+      "cell": 0,
+      "start": 11233,
+      "end": 11236,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M057",
+      "cell": 0,
+      "start": 11278,
+      "end": 11281,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M058",
+      "cell": 0,
+      "start": 11351,
+      "end": 11354,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M059",
+      "cell": 0,
+      "start": 11470,
+      "end": 11473,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M060",
+      "cell": 0,
+      "start": 11509,
+      "end": 11512,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M061",
+      "cell": 0,
+      "start": 11654,
+      "end": 11657,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M062",
+      "cell": 0,
+      "start": 11763,
+      "end": 11766,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M063",
+      "cell": 0,
+      "start": 11790,
+      "end": 11793,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M064",
+      "cell": 0,
+      "start": 11840,
+      "end": 11843,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M065",
+      "cell": 0,
+      "start": 11888,
+      "end": 11891,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M066",
+      "cell": 0,
+      "start": 11984,
+      "end": 11987,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M067",
+      "cell": 0,
+      "start": 11992,
+      "end": 11995,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M068",
+      "cell": 0,
+      "start": 12108,
+      "end": 12111,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M069",
+      "cell": 0,
+      "start": 12121,
+      "end": 12124,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M070",
+      "cell": 0,
+      "start": 12257,
+      "end": 12260,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M071",
+      "cell": 0,
+      "start": 12325,
+      "end": 12328,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M072",
+      "cell": 0,
+      "start": 12507,
+      "end": 12510,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M073",
+      "cell": 0,
+      "start": 12520,
+      "end": 12523,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M074",
+      "cell": 0,
+      "start": 12991,
+      "end": 12994,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M075",
+      "cell": 0,
+      "start": 13171,
+      "end": 13174,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M076",
+      "cell": 0,
+      "start": 13176,
+      "end": 13179,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M077",
+      "cell": 0,
+      "start": 13185,
+      "end": 13188,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M078",
+      "cell": 0,
+      "start": 13330,
+      "end": 13333,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M079",
+      "cell": 0,
+      "start": 13381,
+      "end": 13384,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M080",
+      "cell": 0,
+      "start": 13471,
+      "end": 13474,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M081",
+      "cell": 0,
+      "start": 13481,
+      "end": 13484,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M082",
+      "cell": 0,
+      "start": 13531,
+      "end": 13540,
+      "literal": "$Y = iXZ$",
+      "status": "exact",
+      "display": "[0, −i; i, 0] = i · X · Z",
+      "copy": "qcompare(matrix(2,2,[0,−i,i,0]),i'X''Z',4)"
+    },
+    {
+      "id": "IBM055-8b549b58-M083",
+      "cell": 0,
+      "start": 13582,
+      "end": 13585,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M084",
+      "cell": 0,
+      "start": 13632,
+      "end": 13644,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M085",
+      "cell": 0,
+      "start": 13924,
+      "end": 13927,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M086",
+      "cell": 0,
+      "start": 14060,
+      "end": 14063,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M087",
+      "cell": 0,
+      "start": 14097,
+      "end": 14100,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M088",
+      "cell": 0,
+      "start": 14295,
+      "end": 14298,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M089",
+      "cell": 0,
+      "start": 14417,
+      "end": 14420,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M090",
+      "cell": 0,
+      "start": 14482,
+      "end": 14485,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M091",
+      "cell": 0,
+      "start": 14543,
+      "end": 14546,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M092",
+      "cell": 0,
+      "start": 14551,
+      "end": 14554,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M093",
+      "cell": 0,
+      "start": 14673,
+      "end": 14676,
+      "literal": "$Y$",
+      "status": "exact",
+      "display": "[0, −i; i, 0]",
+      "copy": "matrix(2,2,[0,−i,i,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M094",
+      "cell": 0,
+      "start": 14978,
+      "end": 14990,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M095",
+      "cell": 0,
+      "start": 15090,
+      "end": 15118,
+      "literal": "$$\n(1-p)^9 + 9 p (1-p)^8.\n$$",
+      "status": "exact",
+      "display": "9 · p^16 − (72 · p^15) + 252 · p^14 − (504 · p^13) + 630 · p^12 − (504 · p^11) + 252 · p^10 − (73 · p^9) + 18 · p^8 − (36 · p^7) + 84 · p^6 − (126 · p^5) + 126 · p^4 − (84 · p^3) + 36 · p^2 − (9 · p) + 1",
+      "copy": "9 ⋅ 'p'^16 − 72 ⋅ 'p'^15 + 252 ⋅ 'p'^14 − 504 ⋅ 'p'^13 + 630 ⋅ 'p'^12 − 504 ⋅ 'p'^11 + 252 ⋅ 'p'^10 − 73 ⋅ 'p'^9 + 18 ⋅ 'p'^8 − 36 ⋅ 'p'^7 + 84 ⋅ 'p'^6 − 126 ⋅ 'p'^5 + 126 ⋅ 'p'^4 − 84 ⋅ 'p'^3 + 36 ⋅ 'p'^2 − 9 ⋅ 'p' + 1"
+    },
+    {
+      "id": "IBM055-8b549b58-M096",
+      "cell": 0,
+      "start": 15149,
+      "end": 15181,
+      "literal": "$$\n1 - (1-p)^9 - 9 p (1-p)^8,\n$$",
+      "status": "exact",
+      "display": "72 · p^15 − (9 · p^16) − (252 · p^14) + 504 · p^13 − (630 · p^12) + 504 · p^11 − (252 · p^10) + 73 · p^9 − (18 · p^8) + 36 · p^7 − (84 · p^6) + 126 · p^5 − (126 · p^4) + 84 · p^3 − (36 · p^2) + 9 · p",
+      "copy": "72 ⋅ 'p'^15 − 9 ⋅ 'p'^16 − 252 ⋅ 'p'^14 + 504 ⋅ 'p'^13 − 630 ⋅ 'p'^12 + 504 ⋅ 'p'^11 − 252 ⋅ 'p'^10 + 73 ⋅ 'p'^9 − 18 ⋅ 'p'^8 + 36 ⋅ 'p'^7 − 84 ⋅ 'p'^6 + 126 ⋅ 'p'^5 − 126 ⋅ 'p'^4 + 84 ⋅ 'p'^3 − 36 ⋅ 'p'^2 + 9 ⋅ 'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M097",
+      "cell": 0,
+      "start": 15209,
+      "end": 15221,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M098",
+      "cell": 0,
+      "start": 15361,
+      "end": 15373,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M099",
+      "cell": 0,
+      "start": 15408,
+      "end": 15411,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM055-8b549b58-M100",
+      "cell": 0,
+      "start": 15416,
+      "end": 15419,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM055-8b549b58-M101",
+      "cell": 0,
+      "start": 15675,
+      "end": 15687,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M102",
+      "cell": 0,
+      "start": 15827,
+      "end": 15839,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M103",
+      "cell": 0,
+      "start": 16184,
+      "end": 16187,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M104",
+      "cell": 0,
+      "start": 16260,
+      "end": 16296,
+      "literal": "$$\n1 - (1-p)^9 - 9 p (1-p)^8 < p.\n$$",
+      "status": "exact",
+      "display": "p > 1 and 63 · p^13 − (9 · p^14) − (189 · p^12) + 315 · p^11 − (315 · p^10) + 189 · p^9 − (63 · p^8) + 10 · p^7 − (8 · p^6) + 28 · p^5 − (56 · p^4) + 70 · p^3 − (56 · p^2) + 28 · p < 8 or p > 0 and 63 · p^13 − (9 · p^14) − (189 · p^12) + 315 · p^11 − (315 · p^10) + 189 · p^9 − (63 · p^8) + 10 · p^7 − (8 · p^6) + 28 · p^5 − (56 · p^4) + 70 · p^3 − (56 · p^2) + 28 · p > 8 and p < 1 or p < 0 and 63 · p^13 − (9 · p^14) − (189 · p^12) + 315 · p^11 − (315 · p^10) + 189 · p^9 − (63 · p^8) + 10 · p^7 − (8 · p^6) + 28 · p^5 − (56 · p^4) + 70 · p^3 − (56 · p^2) + 28 · p < 8",
+      "copy": "((('p')<(0) and (63 ⋅ 'p'^13 − 9 ⋅ 'p'^14 − 189 ⋅ 'p'^12 + 315 ⋅ 'p'^11 − 315 ⋅ 'p'^10 + 189 ⋅ 'p'^9 − 63 ⋅ 'p'^8 + 10 ⋅ 'p'^7 − 8 ⋅ 'p'^6 + 28 ⋅ 'p'^5 − 56 ⋅ 'p'^4 + 70 ⋅ 'p'^3 − 56 ⋅ 'p'^2 + 28 ⋅ 'p')<(8)) or (('p')<(1) and ('p')>(0) and (63 ⋅ 'p'^13 − 9 ⋅ 'p'^14 − 189 ⋅ 'p'^12 + 315 ⋅ 'p'^11 − 315 ⋅ 'p'^10 + 189 ⋅ 'p'^9 − 63 ⋅ 'p'^8 + 10 ⋅ 'p'^7 − 8 ⋅ 'p'^6 + 28 ⋅ 'p'^5 − 56 ⋅ 'p'^4 + 70 ⋅ 'p'^3 − 56 ⋅ 'p'^2 + 28 ⋅ 'p')>(8)) or (('p')>(1) and (63 ⋅ 'p'^13 − 9 ⋅ 'p'^14 − 189 ⋅ 'p'^12 + 315 ⋅ 'p'^11 − 315 ⋅ 'p'^10 + 189 ⋅ 'p'^9 − 63 ⋅ 'p'^8 + 10 ⋅ 'p'^7 − 8 ⋅ 'p'^6 + 28 ⋅ 'p'^5 − 56 ⋅ 'p'^4 + 70 ⋅ 'p'^3 − 56 ⋅ 'p'^2 + 28 ⋅ 'p')<(8)))"
+    },
+    {
+      "id": "IBM055-8b549b58-M105",
+      "cell": 0,
+      "start": 16355,
+      "end": 16358,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M106",
+      "cell": 0,
+      "start": 16442,
+      "end": 16450,
+      "literal": "$0.0323$",
+      "status": "exact",
+      "display": "0.0323",
+      "copy": "323 ∕ 10000"
+    },
+    {
+      "id": "IBM055-8b549b58-M107",
+      "cell": 0,
+      "start": 16640,
+      "end": 16643,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM055-8b549b58-M108",
+      "cell": 0,
+      "start": 16963,
+      "end": 16975,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM055-8b549b58-M109",
+      "cell": 0,
+      "start": 17090,
+      "end": 17096,
+      "literal": "$50\\%$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/shor-code.ipynb",
+  "notebook_sha256": "8b549b58df4680202abea8df49626546f181312d295097193be00c2ef34c8cbe",
+  "worker_sha256": "3e0b81cec3bd9475e0720bd441ba1213efefd9ee7246d6a26d69e2e17ff66c0e",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "451b81f4809ce49e957895a3c94849469feb33e6d69d2f5d78ff4abdd9ba2c78",
+  "suite": {
+    "passed": true,
+    "checks": 981,
+    "calls": 109,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 109,
+    "restored_identically": 109,
+    "stable_after_text_reentry": 109
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
