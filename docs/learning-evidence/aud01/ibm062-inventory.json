@@ -1,14 +1,13 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes.ipynb",
   "source_sha256": "41cd48f6fa424f1ebd9b8821826ae61b80da341d3b32e9cd1889f456c28d7646",
-  "worker_sha256": "05d9c8ee58e780876821265a1d7b5a432644ceeadba8e98cd1484b7f9f0e2916",
-  "revision": "e0f35821",
+  "worker_sha256": "83c724d1b7053432d298da6733e44d06603bf026ab352369df61f48c0044487b",
+  "revision": "7aac1aee",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
   "summary": {
-    "exact": 272,
-    "diagnostic": 2
+    "exact": 274
   },
   "figures": [],
   "rows": [
@@ -2098,8 +2097,9 @@
       "start": 23353,
       "end": 23510,
       "literal": "$$\n\\vert u \\oplus \\mathcal{D}_X\\rangle\n= \\frac{1}{\\sqrt{2^t}} \\sum_{v\\in\\mathcal{D}_X} \\vert u \\oplus v\\rangle \\qquad \\text{(for all $u\\in\\mathcal{C}_Z$)}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 153"
+      "status": "exact",
+      "display": "qsubset(\"C_Z\", qsetfilter(qcompare(qcosetket(\"qboundindex_1\", \"D_X\"), qmul(1 ∕ qsqrt(qpower(2, 't')), qsumset(qketstate(qoplus(\"qboundindex_1\", \"qboundindex_0\")), \"D_X\", \"qboundindex_0\")), 4), \"C_Z\", \"qboundindex_1\"))",
+      "copy": "qsubset(\"C_Z\",qsetfilter(qcompare(qcosetket(\"qboundindex_1\",\"D_X\"),qmul(1 ∕ qsqrt(qpower(2, 't')),qsumset(qketstate(qoplus(\"qboundindex_1\",\"qboundindex_0\")),\"D_X\",\"qboundindex_0\")),4),\"C_Z\",\"qboundindex_1\"))"
     },
     {
       "id": "IBM062-41cd48f6-M210",
@@ -2497,8 +2497,9 @@
       "start": 26128,
       "end": 26308,
       "literal": "$$\nH^{\\otimes n} \\vert u \\oplus \\mathcal{D}_Z\\rangle\n= \\frac{1}{\\sqrt{2^s}} \\sum_{v\\in\\mathcal{D}_Z}\nH^{\\otimes n}\\vert u \\oplus v\\rangle \\qquad \\text{(for $u\\in\\mathcal{C}_X$)}\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 176"
+      "status": "exact",
+      "display": "qsubset(\"C_X\", qsetfilter(qcompare(qmul(qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], n), qcosetket(\"qboundindex_1\", \"D_Z\")), qmul(1 ∕ qsqrt(qpower(2, 's')), qsumset(qmul(qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], n), qketstate(qoplus(\"qboundindex_1\", \"qboundindex_0\"))), \"D_Z\", \"qboundindex_0\")), 4), \"C_X\", \"qboundindex_1\"))",
+      "copy": "qsubset(\"C_X\",qsetfilter(qcompare(qmul(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qcosetket(\"qboundindex_1\",\"D_Z\")),qmul(1 ∕ qsqrt(qpower(2, 's')),qsumset(qmul(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qketstate(qoplus(\"qboundindex_1\",\"qboundindex_0\"))),\"D_Z\",\"qboundindex_0\")),4),\"C_X\",\"qboundindex_1\"))"
     },
     {
       "id": "IBM062-41cd48f6-M250",
