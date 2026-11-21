@@ -86,6 +86,23 @@ std::string withoutTeXCommentLines(const std::string &s) {
  }
  return result;
 }
+// Aligned rows can put separate equations on either side of an ampersand.
+// A relation inside a function argument or a quoted name does not split a row.
+bool completeAlignedEquation(const std::string &cell) {
+ int nesting=0;char quote=0;
+ for(size_t i=0;i<cell.size();++i) {
+  char c=cell[i];
+  if(quote) {if(c==quote)quote=0;continue;}
+  if(c=='"' || c=='\'')quote=c;
+  else if(c=='(' || c=='[')++nesting;
+  else if(c==')' || c==']')--nesting;
+  else if(!nesting && c=='=' && i && i+1<cell.size()) {
+   const size_t lhs=cell.find_last_not_of(" \t\r\n<>=!",i-1);
+   return lhs!=std::string::npos && cell.find_first_not_of(" \t\r\n=",i+1)!=std::string::npos;
+  }
+ }
+ return false;
+}
 std::string withoutDisplayPunctuation(std::string value) {
  size_t mark=value.find_last_not_of(" \t\r\n");
  // Display spacing may follow the sentence comma inside a math span.
@@ -1319,12 +1336,14 @@ class TeXReader {
   auto finishAlignment=[&]() {
    if(++alignmentRows>128)throw std::runtime_error(error("Alignment is limited to 128 rows"));
    alignmentCells.push_back(trim(result));result.clear();
-   for(size_t cell=0;cell<alignmentCells.size();cell+=2) {
+   const bool separate=alignmentCells.size()>1 && std::all_of(alignmentCells.begin(),alignmentCells.end(),completeAlignedEquation);
+   const size_t stride=separate ? 1 : 2;
+   for(size_t cell=0;cell<alignmentCells.size();cell+=stride) {
     std::string value=alignmentCells[cell];bool indented=value.empty() && cell+1<alignmentCells.size();
-    if(cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
+    if(!separate && cell+1<alignmentCells.size())value+=" "+alignmentCells[cell+1];
     value=trim(withoutDisplayPunctuation(value));
     if(value.empty())throw std::runtime_error(error("Empty aligned expression"));
-    size_t column=cell/2;
+    size_t column=cell/stride;
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
     bool relation=value[0]=='=' || value.compare(0,2,"<=")==0 || value.compare(0,2,">=")==0 || value.compare(0,2,"!=")==0;
     bool operation=value[0]=='+' || value[0]=='-' || value[0]=='*' || value[0]=='/' || value[0]=='@' || value[0]=='#';

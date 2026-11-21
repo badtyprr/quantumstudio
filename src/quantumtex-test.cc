@@ -121,6 +121,7 @@ int main() {
   }
   equal(R"(\begin{aligned}1+1&=2\\&=4/2\end{aligned})","(1+1 =2 =4/2)");
   equal(R"(\begin{aligned}1&=1\\2&=3\end{aligned})","vector((1 =1),(2 =3))");
+  equal(R"(\begin{aligned}a=b & \qquad c=d\\e=f & \qquad g=h\end{aligned})","vector((a=b),(c=d),(e=f),(g=h))");
   equal(R"(\begin{aligned}a&=b&c&=d\\&=e&&=f\end{aligned})","vector((a =b =e),(c =d =f))");
   equal(R"(\begin{aligned}[t]1&=1\\[2mm]2&=2\end{aligned})","vector((1 =1),(2 =2))");
   equal(R"(\begin{gathered}1+2\\3+4\end{gathered})","vector((1+2),(3+4))");
