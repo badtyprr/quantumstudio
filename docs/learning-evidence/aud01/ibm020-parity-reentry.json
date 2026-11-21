@@ -1,0 +1,8 @@
+{
+  "source_id": "R13-0-M047",
+  "source": "z\\cdot x = 0",
+  "copy": "(qcenterdot(z,x))==(0)",
+  "stable": true,
+  "worker_sha256": "e2173bd57f398e5ed859f335a1d43cf7be3e27b6308fb4a5cc03d283f1e7ada4",
+  "typed_and_scalar_comparisons": 1024
+}
