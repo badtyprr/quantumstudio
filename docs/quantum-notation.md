@@ -359,6 +359,8 @@ This convention supports IBM's finite index domains `\{0,\ldots,n-1\}` after sup
 
 This is an explicit step +1 convention, not arbitrary sequence inference. Descending or stepped sequences, multiple leading terms such as `\{0,1,\ldots,3\}`, tuples of ensemble entries, and infinite endpoints are not inferred by this form. Existing parser and collection limits still apply.
 
+TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`.
+
 ## Two-argument probability functions
 
 In Quantum notation, `p(N,s)` represents a scalar probability with two ordered arguments. It stays symbolic until you supply a value. For example, `replace((p(16,4) >= 3/4), p(16,4), 2/3)` returns 0. The displayed expression and its Copy text both accept substitutions. The existing input-size convention for `p(n,m)` and explicit `cost(...)` expressions still applies.

@@ -1,4 +1,4 @@
-"""Replay the complete pinned Shor lesson in the default Windows notation mode."""
+"""Replay the complete pinned Shor or Grover lesson in the default Windows notation mode."""
 import argparse
 from collections import Counter
 import hashlib
@@ -13,8 +13,13 @@ parser.add_argument("--inventory", type=Path, default=Path(__file__).with_name("
 args = parser.parse_args()
 inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
+lesson = rows[0]["id"].split("-")[0].lower()
+assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035"}
+pinned = json.loads(Path(__file__).with_name(lesson+"-inventory.json").read_bytes())
+assert inventory["source_sha256"] == pinned["source_sha256"]
+assert [(r["id"],r["literal"]) for r in rows] == [(r["id"],r["literal"]) for r in pinned["rows"]]
 # The shared Windows runner has a lesson-specific matrix declaration for
-# IBM-028 M123. These keys identify the unmodified, context-free Shor inputs.
+# IBM-028 M123. These keys identify the unmodified, context-free source inputs.
 inputs = [[r["id"]+"-original",r["literal"],"0"] for r in rows]
 directory = args.directory
 if not args.report:
@@ -31,7 +36,7 @@ assert args.package and digest(args.package/"quantum-worker.exe") == inventory["
 suite = json.loads((directory/"result.json").read_bytes())
 records = json.loads((directory/"records.json").read_bytes())
 assert json.loads((directory/"inputs.json").read_bytes()) == inputs
-assert suite["passed"] and suite["clipboardRestored"] and suite["calls"] == len(records) == len(rows) == 438
+assert suite["passed"] and suite["clipboardRestored"] and suite["calls"] == len(records) == len(rows)
 counts = Counter()
 diagnostics,changes,failures = [],[],[]
 for (key,expression,_),source,gui in zip(inputs,rows,records):
