@@ -16,35 +16,54 @@ class QuantumGateFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(eo);
   const MathStructure &a=args[0];
-  if(op=="qmodmul" || op=="qresiduemultiplier") {
+  const bool graph=op=="qregistermultipliergraph";
+  const bool explicitWidth=graph || op=="qregistermultiplier";
+  if(op=="qmodmul" || op=="qresiduemultiplier" || explicitWidth) {
    const MathStructure &modulus=args[1];
    const bool residueBasis=op=="qresiduemultiplier";
-   if(residueBasis) {
-    bool deferred=false;
-    for(size_t k=0;k<2;++k) {
+   size_t registerDimension=0;
+   bool deferred=false;
+   if(residueBasis || explicitWidth) {
+    for(size_t k=0;k<args.size();++k) {
      if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar()) {deferred=true;continue;}
-     if(!args[k].isInteger() || args[k].isApproximate() || args[k].number()<(k==0 ? 1 : 2) ||
-        args[k].number()>(k==0 ? 63 : 64)) {
-      CALCULATOR->error(true,"A residue-basis multiplier requires exact integers, 1 <= a < N and 2 <= N <= 64.",NULL);return 0;
+     int minimum=k==0 && graph ? 0 : k==1 ? 2 : 1;
+     int maximum=k==2 ? 6 : k==1 ? 64 : 63;
+     if(!args[k].isInteger() || args[k].isApproximate() || args[k].number()<minimum || args[k].number()>maximum) {
+      CALCULATOR->error(true,"Modular multiplication requires exact integer parameters, a modulus from 2 to 64 and a multiplier below the modulus. Explicit registers support 1 to 6 bits.",NULL);return 0;
      }
     }
-    if(a.equals(modulus) || (!deferred && a.number()>=modulus.number())) {
+    if(explicitWidth && args[2].isInteger()) {
+     registerDimension=size_t(1)<<args[2].number().intValue();
+     if(modulus.isInteger() && modulus.number()>int(registerDimension)) {
+      CALCULATOR->error(true,"The modulus must fit in the stated register width.",NULL);return 0;
+     }
+    }
+    if(a.equals(modulus) || (a.isInteger() && modulus.isInteger() && a.number()>=modulus.number())) {
      CALCULATOR->error(true,"A residue-basis multiplier must be smaller than the modulus.",NULL);return 0;
     }
-    if(deferred)return 0;
    } else if(!a.isNumber() || !a.number().isInteger() || !modulus.isNumber() || !modulus.number().isInteger() || modulus.number()<2 || modulus.number()>512 || a.number()<1 || a.number()>=modulus.number()) {
     CALCULATOR->error(true,"modmul(a,N) requires integer N from 2 to 512 and an integer multiplier 1 <= a < N.",NULL);return 0;
    }
-   size_t multiplier=a.number().intValue(), mod=modulus.number().intValue(), u=multiplier, v=mod;
-   while(v) {size_t remainder=u%v;u=v;v=remainder;}
-   if(u!=1) {CALCULATOR->error(true,"A reversible modular multiplier requires gcd(a,N)=1.",NULL);return 0;}
-   size_t dimension=mod;
-   if(!residueBasis) {dimension=1;while(dimension<mod)dimension*=2;}
-   out.clearMatrix();out.resizeMatrix(dimension,dimension,m_zero);
+   if(!graph && a.isInteger() && modulus.isInteger()) {
+    Number divisor=a.number();
+    if(!divisor.gcd(modulus.number()) || !divisor.isOne()) {CALCULATOR->error(true,"A reversible modular multiplier requires gcd(a,N)=1.",NULL);return 0;}
+   }
+   if(deferred)return 0;
+   size_t multiplier=a.number().intValue(),mod=modulus.number().intValue();
+   size_t dimension=explicitWidth ? registerDimension : mod;
+   if(op=="qmodmul") {dimension=1;while(dimension<mod)dimension*=2;}
+   MathStructure pairs;
+   if(graph)pairs.clearVector();
+   else {out.clearMatrix();out.resizeMatrix(dimension,dimension,m_zero);}
    for(size_t x=0;x<dimension;++x) {
     if(CALCULATOR->aborted())return 0;
-    element(out,x<mod ? multiplier*x%mod : x,x)=m_one;
+    size_t y=x<mod ? multiplier*x%mod : x;
+    if(graph) {
+     MathStructure pair;pair.clearVector();pair.addChild(MathStructure(int(x)));pair.addChild(MathStructure(int(y)));
+     pairs.addChild(MathStructure(CALCULATOR->getFunction("qtuple"),&pair,NULL));
+    } else element(out,y,x)=m_one;
    }
+   if(graph)out.set(CALCULATOR->getFunction("qset"),&pairs,NULL);
    return 1;
   }
   if(op=="qoracle") {
@@ -132,6 +151,6 @@ class QuantumGateFunction: public MathFunction {
 };
 }
 void registerQuantumGates(Calculator &calculator) {
- for(const auto &entry:{std::pair<const char *,int>("qmodmul",2),{"qresiduemultiplier",2},{"qoracle",2},{"qphaseoracle",2},{"qdiffusion",1},{"qsumgate",2},{"qft",1},{"qfourier",1},{"qshift",1},{"qclock",1}})
+ for(const auto &entry:{std::pair<const char *,int>("qmodmul",2),{"qresiduemultiplier",2},{"qregistermultiplier",3},{"qregistermultipliergraph",3},{"qoracle",2},{"qphaseoracle",2},{"qdiffusion",1},{"qsumgate",2},{"qft",1},{"qfourier",1},{"qshift",1},{"qclock",1}})
   calculator.addFunction(new QuantumGateFunction(entry.first,entry.second));
 }

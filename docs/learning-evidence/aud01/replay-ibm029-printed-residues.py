@@ -20,13 +20,10 @@ def evaluate(expr):
                           capture_output=True,timeout=30,check=True)
     return json.loads(proc.stdout)["copy_text"]
 
-# These source definitions need typed register and function bindings. Guard
-# against interpreting their names as scalar products or ket-family names.
-for raw in [rows[143]["literal"]] + [rows[152]["literal"].replace("f_a(x)", name)
-                                    for name in ("f_a(x)", "f_a ( x )", "(f_a(x))", "f_a((x))")]:
-    p = subprocess.run([worker,"--json"],input=("quantum:"+raw).encode(),env=env,
-                       capture_output=True,timeout=30)
-    assert p.returncode == 2 and (b"register encoding" in p.stderr or b"function or operator binding" in p.stderr)
+# A register operator and a classical function graph have distinct Copy forms.
+assert evaluate(rows[143]["literal"]) == "qregistermultiplier('a','N','n')"
+for name in ("f_a(x)", "f_a ( x )", "(f_a(x))", "f_a((x))"):
+    assert evaluate(rows[152]["literal"].replace("f_a(x)",name)) == "qregistermultipliergraph('a','N','n')"
 checks = {}
 gui = {}
 for i in (424,427):

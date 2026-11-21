@@ -71,6 +71,14 @@ for a,n in ((2,3),(2,5),(4,15)):
 run("quantum:qresiduemultiplier(3,15)",success=False)
 run("quantum:qresiduemultiplier(a,65)",success=False)
 run("quantum:qresiduemultiplier(a,a)",success=False)
+definition = r"f_a(x)=\begin{cases}ax\;(\textrm{mod}\;N)&0\leq x<N\\x&N\leq x<2^n\end{cases}"
+graph = data("quantum:"+definition)["copy_text"]
+assert graph == "qregistermultipliergraph('a','N','n')"
+for x, expected in ((0,0),(2,4),(3,0),(6,6),(15,15)):
+    probe = data(f"quantum:qfiniteapply({graph},{x})")["copy_text"]
+    assert data(f'quantum:replace(replace(replace(({probe}),"n",4),"a",2),"N",6)')["copy_text"] == str(expected)
+run("quantum:qregistermultiplier(2,6,n)",success=False)
+run("quantum:qregistermultipliergraph(a,9,3)",success=False)
 
 encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
 encoding_copy = data("quantum:"+encoding_table)["copy_text"]
