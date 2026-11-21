@@ -639,3 +639,5 @@ EXTRA_DIST += docs/learning-evidence/dev16/released-nested-editors.md
 EXTRA_DIST += docs/learning-evidence/dev16/ModuleRecovery.cs
 EXTRA_DIST += docs/learning-evidence/dev16/replay-nested-composer.py
 EXTRA_DIST += docs/learning-evidence/dev16/integrated-source-locations.json
+EXTRA_DIST += docs/learning-evidence/dev13/qb007-cpu/verify-full-state.py
+EXTRA_DIST += docs/learning-evidence/dev13/qb007-cpu/full-state.json
