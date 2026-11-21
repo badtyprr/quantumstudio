@@ -1,0 +1,99 @@
+{
+  "source_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "rows": [
+    {
+      "spans": [
+        "IBM083-0db143f4-M058",
+        "IBM083-0db143f4-M059"
+      ],
+      "gate": "I",
+      "initial": 0,
+      "received": 0,
+      "final": 0,
+      "probability": "99/400"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M061",
+        "IBM083-0db143f4-M062"
+      ],
+      "gate": "I",
+      "initial": 0,
+      "received": 1,
+      "final": 1,
+      "probability": "1/400"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M063",
+        "IBM083-0db143f4-M064"
+      ],
+      "gate": "I",
+      "initial": 1,
+      "received": 1,
+      "final": 1,
+      "probability": "9/40"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M066",
+        "IBM083-0db143f4-M067"
+      ],
+      "gate": "I",
+      "initial": 1,
+      "received": 0,
+      "final": 0,
+      "probability": "1/40"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M068",
+        "IBM083-0db143f4-M069"
+      ],
+      "gate": "X",
+      "initial": 0,
+      "received": 1,
+      "final": 0,
+      "probability": "9/40"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M071",
+        "IBM083-0db143f4-M072"
+      ],
+      "gate": "X",
+      "initial": 0,
+      "received": 0,
+      "final": 1,
+      "probability": "1/40"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M073",
+        "IBM083-0db143f4-M074"
+      ],
+      "gate": "X",
+      "initial": 1,
+      "received": 0,
+      "final": 1,
+      "probability": "99/400"
+    },
+    {
+      "spans": [
+        "IBM083-0db143f4-M076",
+        "IBM083-0db143f4-M077"
+      ],
+      "gate": "X",
+      "initial": 1,
+      "received": 1,
+      "final": 0,
+      "probability": "1/400"
+    }
+  ],
+  "reported_probabilities": [
+    "1/2",
+    "1/2"
+  ],
+  "z_expectation": "0"
+}

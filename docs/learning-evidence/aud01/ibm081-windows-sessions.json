@@ -1,22 +1,22 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/noise-and-errors.ipynb",
   "notebook_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
-  "worker_sha256": "0a498f87efd8690b4c161abdfb1feef79af727fbf5f9d072889aaf56c48002ff",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
   "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
-  "records_sha256": "7fea987dfe258feec2f3d196b7c4e7af59438d0676961912bb1292ee3800c491",
+  "records_sha256": "66fa4670b9534be55604fb056047f1672b7b90d1db424069846cfd70f7b6be65",
   "suite": {
     "passed": true,
-    "checks": 2564,
+    "checks": 2592,
     "calls": 309,
     "sessionsOnly": true,
     "clipboardRetries": 0,
     "clipboardRestored": false
   },
   "counts": {
-    "source_exact": 278,
-    "restored_identically": 278,
-    "stable_after_text_reentry": 278,
-    "source_diagnostic": 31
+    "source_exact": 282,
+    "restored_identically": 282,
+    "stable_after_text_reentry": 282,
+    "source_diagnostic": 27
   },
   "diagnostics": [
     {
@@ -26,10 +26,6 @@
     {
       "id": "IBM081-7b09f95f-M021",
       "message": "Unexpected notation at byte 6"
-    },
-    {
-      "id": "IBM081-7b09f95f-M031",
-      "message": "Unsupported TeX command: \\mu at byte 4"
     },
     {
       "id": "IBM081-7b09f95f-M054",
@@ -54,18 +50,6 @@
     {
       "id": "IBM081-7b09f95f-M102",
       "message": "Unexpected notation at byte 8"
-    },
-    {
-      "id": "IBM081-7b09f95f-M103",
-      "message": "Unsupported TeX command: \\hbar at byte 18"
-    },
-    {
-      "id": "IBM081-7b09f95f-M105",
-      "message": "Unsupported TeX command: \\hbar at byte 6"
-    },
-    {
-      "id": "IBM081-7b09f95f-M106",
-      "message": "Unsupported TeX command: \\hbar at byte 6"
     },
     {
       "id": "IBM081-7b09f95f-M120",

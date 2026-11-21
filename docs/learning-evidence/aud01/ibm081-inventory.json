@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/tools-for-quantum-advantage/noise-and-errors.ipynb",
   "source_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
-  "worker_sha256": "0a498f87efd8690b4c161abdfb1feef79af727fbf5f9d072889aaf56c48002ff",
-  "revision": "4bd12264ffcf1f436cc2fd701eabb236b1633690",
+  "worker_sha256": "816ca636d9921b2630e9b0ff3439c8212cb9b201679fd55db249195cc38fd0d7",
+  "revision": "10020dd5d25128f9e642d8ae651d9ea1f169efbc",
   "mode": "Quantum notation",
   "markdown_cells": 26,
   "code_cells": 18,
   "summary": {
-    "exact": 278,
-    "diagnostic": 31
+    "exact": 282,
+    "diagnostic": 27
   },
   "figures": [
     {
@@ -380,8 +380,9 @@
       "start": 14342,
       "end": 14349,
       "literal": "$\\mu s$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\mu at byte 4"
+      "status": "exact",
+      "display": "1 μs",
+      "copy": "(1 ∕ 1000000)*(qphysicalunit(\"s\",\"\"))"
     },
     {
       "id": "IBM081-7b09f95f-M032",
@@ -1093,8 +1094,9 @@
       "start": 1313,
       "end": 1333,
       "literal": "$U = e^{-iHt/\\hbar}$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\hbar at byte 18"
+      "status": "exact",
+      "display": "qpropagator('H', (3018.38035928430368338312868601π't') ∕ (qJ⋅s)) = U",
+      "copy": "(qpropagator('H',('t')*((qphysicalunit(\"J\",\"\"))^(−1))*((qphysicalunit(\"s\",\"\"))^(−1))*(4E41 ∕ 132521403)*(π)))==('U')"
     },
     {
       "id": "IBM081-7b09f95f-M104",
@@ -1112,8 +1114,9 @@
       "start": 1375,
       "end": 1382,
       "literal": "$\\hbar$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\hbar at byte 6"
+      "status": "exact",
+      "display": "(132521403 ∕ (4E41π)) J⋅s",
+      "copy": "(1 ∕ π)*(132521403 ∕ 4E41)*(qphysicalunit(\"J\",\"\"))*(qphysicalunit(\"s\",\"\"))"
     },
     {
       "id": "IBM081-7b09f95f-M106",
@@ -1121,8 +1124,9 @@
       "start": 1535,
       "end": 1542,
       "literal": "$\\hbar$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\hbar at byte 6"
+      "status": "exact",
+      "display": "(132521403 ∕ (4E41π)) J⋅s",
+      "copy": "(1 ∕ π)*(132521403 ∕ 4E41)*(qphysicalunit(\"J\",\"\"))*(qphysicalunit(\"s\",\"\"))"
     },
     {
       "id": "IBM081-7b09f95f-M107",
