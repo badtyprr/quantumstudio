@@ -2223,6 +2223,30 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex definition(R"(^\s*\\text\{CNOT\}\s*=\s*(?=\\begin\{[bp]matrix\}))");
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
+ if(s.find("\\sigma^")!=std::string::npos) {
+  const std::string raising="((X+i*Y)/2)",lowering="((X-i*Y)/2)";
+  static const std::regex pair(R"(^\s*\\sigma\^\{?\\pm\}?\s*$)");
+  if(std::regex_match(s,pair))return "vector("+raising+","+lowering+")";
+  // Preserve independent displayed action equations when their only
+  // separator is a line break. A vanishing ket is the zero vector.
+  static const std::regex action(R"(^\s*\\sigma\^\{?([+-])\}?\s*\|([01])\\rangle\s*=\s*(0|\|[01]\\rangle)\s*$)");
+  std::string block;size_t start=0,count=0;
+  while(start<s.size()) {
+   size_t end=s.find('\n',start);std::string line=trim(s.substr(start,end-start));
+   if(!line.empty()) {
+    std::smatch m;if(!std::regex_match(line,m,action)) {block.clear();break;}
+    std::string gate=m[1].str()=="+" ? raising : lowering;
+    std::string target=m[3].str()=="0" ? "0*|0>" : "|"+m[3].str().substr(1,1)+">";
+    if(count++)block+=",";
+    block+="qcompare(qmul("+gate+",|"+m[2].str()+">),"+target+",4)";
+   }
+   if(end==std::string::npos)break;
+   start=end+1;
+  }
+  if(!block.empty())return count==1 ? block : "vector("+block+")";
+  static const std::regex plus(R"(\\sigma\^(?:\{\+\}|\+))"),minus(R"(\\sigma\^(?:\{-\}|-))");
+  s=std::regex_replace(std::regex_replace(s,plus,raising),minus,lowering);
+ }
  // An error syndrome names a basis state of the measurement register.
  // Preserve the operator and its wire in both ket and bra labels.
  if(s.find("syndrome")!=std::string::npos) {
