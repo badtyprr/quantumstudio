@@ -215,7 +215,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -1776,6 +1776,7 @@ class Parser {
      args.insert(args.begin(),indexableLabel(name));name="qmul";
     }
     if(publicName=="O")name="qbigorder";
+    if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";

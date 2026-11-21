@@ -222,6 +222,8 @@ class Printer {
    if((head=="f" || head=="g" || head=="h") && arg.size()==1 && std::isalpha((unsigned char)arg[0]))
     return Fragment(head+"("+arg+")");
   }
+  if(name=="qprobabilitycall" && value.size()==2)
+   return Fragment("p("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qbigorder" && value.size()==1)return Fragment("O("+render(value[0],depth+1).text+")");
   if(name=="qcostcall" && value.size()==2 && value[0].isSymbolic()) {
    const std::string &function=value[0].symbol();

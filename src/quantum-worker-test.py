@@ -24,6 +24,19 @@ def data(expression, *flags):
     return value
 
 
+# Two-argument probability calls keep ordered scalar inputs through Copy.
+prob = data("quantum:p(N,s)")
+assert prob["display_text"] == "p(N, s)" and not prob["cells"]
+assert data("quantum:"+prob["copy_text"])["copy_text"] == prob["copy_text"]
+assert data("quantum:p(1+1,4)=p(2,4)")["copy_text"] == "1"
+assert data("quantum:p(2,1)")["copy_text"] != data("quantum:p(1,2)")["copy_text"]
+bound = data(r"quantum:$p(N,s) \geq 1 - \frac{s}{N}$")["copy_text"]
+for probability, expected in [("3/4", "1"), ("2/3", "0")]:
+    predicate = f"replace(replace(replace(({bound}),p(N,s),{probability}),N,16),s,4)"
+    assert data("quantum:"+predicate)["copy_text"] == expected
+assert "qcostcall(" in data("quantum:cost(p(N,s))")["copy_text"]
+assert data("quantum:p(x)")["copy_text"] == data("quantum:p*x")["copy_text"]
+
 # Physical units must survive Copy without becoming quantum variables.
 for speed in ("c", "element([c;2*c],1,1)"):
     text = data("quantum:"+speed)["copy_text"]
