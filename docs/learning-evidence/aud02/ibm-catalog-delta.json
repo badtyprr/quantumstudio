@@ -1,0 +1,468 @@
+{
+  "prior_revision": "f842259423a7adc9adeafd54153cdb5d3c5b680b",
+  "current_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "added": [],
+  "removed": [],
+  "modified": [
+    {
+      "path": "learning/courses/integrating-quantum-and-high-performance-computing/compute-resources.ipynb",
+      "old_sha256": "e6d3174eb78d569bf79b58972fba0f29e3c6eeb12159a8eeb5f5426e41239760",
+      "new_sha256": "96bd537fbdbd3713f6db45dde350c4297e1cb5870f79f739152cf9f0c8acb8a0",
+      "code_source_changed": false,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/practical-near-term-qc/index.mdx",
+      "old_sha256": "df4f26d2db852670aff031078007b278849074f430bd0d4a3b02e8ae6e2e5dc8",
+      "new_sha256": "ed60fc6fb80d46da3904e47580907ca150125591e79668d827c637746697f628"
+    },
+    {
+      "path": "learning/courses/quantum-chem-with-vqe/geometry.ipynb",
+      "old_sha256": "dd8d2e4d69b27a513b2459334485069c212f9070db34992b2fe333ca92cb0510",
+      "new_sha256": "0348f18121040503977fe28087d3ae4c06330390a958cb473d0845297571124e",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-chem-with-vqe/ground-state.ipynb",
+      "old_sha256": "2047e9348a25dc9b11296a0d4638090409b68f629ffa06b3336256a00641c1bc",
+      "new_sha256": "61e192e771001085e17eb6e5df15ade98a51cc324dde1dafe8a63836df3bbe0e",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/quantum-diagonalization-algorithms/krylov.ipynb",
+      "old_sha256": "bdde16a26dda202a7be847f4aa4f770fe14edcdee64365c5b6c1cd55b1c6d218",
+      "new_sha256": "15e827470795ddd4fdb03c02940a80ef19ab17c91c07bb2ebd6e2a9e64dbb6b3",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-diagonalization-algorithms/skqd.ipynb",
+      "old_sha256": "3ed488d16f7bab398f07d32f95853e1767c1de384095e3712598af6309d09f94",
+      "new_sha256": "f1549c9987357b8e44c2653eea55a227a02fac0139959ae4b8ef78c9636e4c70",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-diagonalization-algorithms/sqd-implementation.ipynb",
+      "old_sha256": "37477fb6301ec3616c6f1760d58ef621767ddedb8c162f66d7c5b517f3c2e272",
+      "new_sha256": "5b7b34bdc4663d0bd8e68aaf7b4d3e4050a78510b75f7d769b8469d4fca74e27",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-diagonalization-algorithms/vqe.ipynb",
+      "old_sha256": "868393ba4d27901e99903c1eae71f46b44c333090b546ba70150aa10a8b79b1c",
+      "new_sha256": "48511472291576d7345427f8653fd006ecaf00149f2ac1dc114865f23aaf741b",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-machine-learning/quantum-kernel-methods.ipynb",
+      "old_sha256": "76b7eaf248593faf84d322d622c59c40b1cbc9abf897894de0795d422973858b",
+      "new_sha256": "d48fd60aab3c56cdfd8ca7da2cb6ca1591341b65bf8c82b2c6a0c0a623f4a6cb",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/quantum-machine-learning/qvc-qnn.ipynb",
+      "old_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+      "new_sha256": "d3160b65ffd71678d53ead533f60f5b5793c53f2784d3ec5350626cd3518f810",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/tools-for-quantum-advantage/error-mitigation.ipynb",
+      "old_sha256": "0db143f434dce3c6cf6fc2292c1419efc2fb50402a990306e844069f340072e0",
+      "new_sha256": "390cdd7bad8b8817102a69988a02797c12eac3610647a0ed331bf52baba50e41",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/tools-for-quantum-advantage/error-suppression.ipynb",
+      "old_sha256": "a3fcfc9e0a84f18267115e9b1597efca99d08deb94a9c5b37b1c8a27eb44dfc5",
+      "new_sha256": "f9b3019f1612782553f7cb1fd2cc57008defcdf3ec118f4c2de77ad35c5932f5",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/tools-for-quantum-advantage/modern-workflows.mdx",
+      "old_sha256": "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25",
+      "new_sha256": "04cdc25efa121c6067b3c64d7c1bfb1fe44e054e7612bf360af1f9419f8b3137"
+    },
+    {
+      "path": "learning/courses/tools-for-quantum-advantage/noise-and-errors.ipynb",
+      "old_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
+      "new_sha256": "0508c818696e8a73b01a133e15495ad9aacc20b27a06ea2f5ad2ffb3e0a270ca",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/use-a-qc-today/build-and-run-your-first-quantum-program.ipynb",
+      "old_sha256": "e77ac6b0cce54e7f5264122591a9532a502a4a10e05d5fa5d3545275832e3155",
+      "new_sha256": "035de774df016c24bb63fe1d5259051b65c68af2f95d7e31ac73172626ecc118",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/use-a-qc-today/your-first-quantum-experiment.ipynb",
+      "old_sha256": "07ed4dc2bc61a2b36515bba6f8fb9b3ed0d2ad41b6265f1be17ad6b31bb6698c",
+      "new_sha256": "3a4eb26dbe31e2c55fedfa3e06da465bcce67f2ee5a6a31f8dcd8a656f2add14",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/bits-gates-and-circuits.ipynb",
+      "old_sha256": "0533f5bdd69d17a87ef66b56c5cdb722c0d11cb4416e0cbc5e3377818217c615",
+      "new_sha256": "8f2394c5a4b2978122f7da79e2367f73504818fcd23cc57174f19b38ab8c1382",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/error-mitigation.ipynb",
+      "old_sha256": "d4662436f973fd2550f5efa6a6ae4441eba9a13f25ef8763f555c37e013ffad8",
+      "new_sha256": "268717fc55c792b9da06f24a6a09253a28f57425448c73b49c9afa56bc5440f2",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/grovers-algorithm.ipynb",
+      "old_sha256": "2c47467fed30021fc7b9495c0a97f927aee6c177dc48ebf34923fa33d296775e",
+      "new_sha256": "e20aa4c70f13b305eff9f774cda12c7115d66c3be914e63ef0e20f444e6ed13f",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/quantum-circuit-optimization.ipynb",
+      "old_sha256": "d1dea0447d1fc54d14649a78057483e5380b390a4483f3bf7394317c484398e3",
+      "new_sha256": "cf741b3a07c4abe2db1b87bd48d57545a9f48720c196dc4ac7efda52e91731c8",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/quantum-phase-estimation.ipynb",
+      "old_sha256": "54e2989d3c1974521ce022669f5c8bd0753322df183073541b66b58170cd5f79",
+      "new_sha256": "0f106eb5e997b808dea9bcd666628064e464bcf56c4b17e2a4a8a5997b80e1d7",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/quantum-simulation.ipynb",
+      "old_sha256": "90815385dbbbfe5e740fa75972cd8ba422cf0982ccd58517e282725598dd2e45",
+      "new_sha256": "d3185448e3387a0d92d8e09abc2d7490c27a69cb8f6993ff8ffddc07ce5b0fd5",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/teleportation.ipynb",
+      "old_sha256": "2621d5efc94bbb3a6761a0cf49918448675b742f3d2f17e8749aeb2e08e55901",
+      "new_sha256": "bc2023ac9ac39f8e66a1c8b97963fea901e331aa58fa51acbaafba895f34953a",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/utility-i.ipynb",
+      "old_sha256": "7afe50add8fa8489327ef3972ec6743df853ef1610531a0bc7b9b26959364e22",
+      "new_sha256": "a022363919030a2b512b12d2d934c4f1b9bce20f9df95d97b87b3398b02d689b",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/utility-ii.ipynb",
+      "old_sha256": "7ab7893c481092d1786270a4e7ca61dfce93ddddf4254b52955ef807db8b634d",
+      "new_sha256": "7449434c4d05091394bf5627d417b2ece53e567136010489e4423dfac8d0cedf",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/utility-iii.ipynb",
+      "old_sha256": "41e43b9b2a3c95b3faffdbea0bbff02d86872b7bc3c0fc446a7c2df174373727",
+      "new_sha256": "8d8d63d8b47f1393367d56a11785289bbb77afb35436379c3b8c2cd449928110",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/variational-quantum-algorithms.ipynb",
+      "old_sha256": "2de3fbcf7eaa75852ac3859bedcfa4cf17afbc13dacc88ca1a75a0f06912706e",
+      "new_sha256": "0d963da047d7484764bee0d0bedaa9165d71017a7ffa85667fbdfd6135bf1b8d",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/variational-algorithm-design/cost-functions.ipynb",
+      "old_sha256": "62108930aca4330587cb805357519f56cc57db2e1c651a5d2ad8e529f0a39e58",
+      "new_sha256": "6cd10db2c11e21bcf81a4b433525ecc099dfa329c6c9cf7ed846eb3305a742de",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/courses/variational-algorithm-design/examples-and-applications.ipynb",
+      "old_sha256": "0e3777202516059dfac67212bcce290fda4e56db19b3d7f86e8306da3ea33ed0",
+      "new_sha256": "20689891d9fe6aaac6acbcbb166d1c955ec1397f73fba0b754596cbe539254ac",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/courses/variational-algorithm-design/instances-and-extensions.ipynb",
+      "old_sha256": "ab0d6f7e093c1f04e6095fad2f4d4d651fd4e00aa35baf7f1e2dda220fa310ec",
+      "new_sha256": "5296e453a3e45f310e97b836b8fb1be628adbbba38096ff09de406929bcf7e5f",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/modules/computer-science/deutsch-jozsa.ipynb",
+      "old_sha256": "97c3647171421329879fc181d7c5fdfe20e103424f46ef03e245aa8c15f81d16",
+      "new_sha256": "ab98d7ae3eeae59f82e6f5ad1d0bb40ff2deb66bdf895f28aae3b90c44dbe7ba",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/grovers.ipynb",
+      "old_sha256": "7cefeb9c0a32ae71cd6289c4bcfd5e2aca7c8995ee5518eeeb8eeb89cee7d815",
+      "new_sha256": "6840783226317f1aefef7ab88a9e8df06ccbfe122f97b6012f95412627435e8c",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/qft.ipynb",
+      "old_sha256": "8dd872f45c510fc45b352d872ccd93ded9a45ff325a069e2d10bfc31a6679ee3",
+      "new_sha256": "18a5a4255e07de1d0d58d9abced3c6af512845404f975d2db3bad9a2582b82d3",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/quantum-key-distribution.ipynb",
+      "old_sha256": "f5cc4e53bbe810ed05eb0f7f5610c202a661a8d3b82471362bff7df992388a69",
+      "new_sha256": "66ef0b3adbe9d59d22306dc0b73e4ddbb67ab66cfdb0d6a4f35cd3e66a396613",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/quantum-teleportation.ipynb",
+      "old_sha256": "608a7a3c62365d9a2258f01e488a8cffb6e9da7d1a03009ab760cf651cfdde22",
+      "new_sha256": "3203eeb8cf62775ef8794b40a2b2a8c649dd64d5db7971b75aa77627a6979a57",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/shors-algorithm.ipynb",
+      "old_sha256": "5bfc3b01851652ac989ae8a8dbb76065615f6365731598d7f5c5f77e1acbceb2",
+      "new_sha256": "2e7d0842cbf9f1d426ed3fda184de58f5d3459956867f9d9dc6ab2d75f4bd6ae",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/computer-science/vqe.ipynb",
+      "old_sha256": "3a5ede46c1a83d15660cfe1de08bb3849678fb64b1cf2f08e8d58d3051175d00",
+      "new_sha256": "680b1834d811d23d75ab3200558de94d53724952b8ee8afba0c10fccadc9b1d2",
+      "code_source_changed": true,
+      "markdown_source_changed": false
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/bells-inequality-with-qiskit.ipynb",
+      "old_sha256": "978b0a220ccf12f9aadf15f87441c638e87c60f8f34ba5765e1304f1893feb09",
+      "new_sha256": "f51ba7aa9c4668d826615e9e9b77760b033d0d3cbac7c4a5194ed21bd61d7678",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/exploring-uncertainty-with-qiskit.ipynb",
+      "old_sha256": "7fe0521321d2d4b52c185fdbea3611d24fe3006b276869688c44e3e307365b8c",
+      "new_sha256": "ee06e113f61b248ed466bd0e98ce8a8a5a02a793e52d55567a4e3ddfc130bd80",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/get-started-with-qiskit.ipynb",
+      "old_sha256": "6636cf01e92441e8554ae42c81b709691c75a3c8d65f6b83248369e78305bc98",
+      "new_sha256": "0666df3e648912731963f1ca48a61e916b9c508e340c59df5e4f01151b6fe813",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/nmr-with-qiskit.ipynb",
+      "old_sha256": "057fe876a3ed23e7bea2c8cea8370c76631577b94141189d65149584c86be2f4",
+      "new_sha256": "6a4b981e2fc80e42246a243b9007168c77d24274b49361444ea0f99903bb72b2",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit.ipynb",
+      "old_sha256": "85b4ccc0d50e74d88f7d42ebd787cbb3bb9582cc54ecb1f70eb29b8b04c647c9",
+      "new_sha256": "5ecd9a76b4733fec5d8cbb07eb412c7523f2b82c149359b9b0e96bff2e84c82d",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    },
+    {
+      "path": "learning/modules/quantum-mechanics/superposition-with-qiskit.ipynb",
+      "old_sha256": "fb0a2cf0f5f3a0043debd4d32bc5c1d88d841f5593bb6ba5d31113409ed07be5",
+      "new_sha256": "7f41b2b3c2d704ad81272f1639b8f65a428cb3e7e7e52dfc5200390b3e765ac0",
+      "code_source_changed": true,
+      "markdown_source_changed": true
+    }
+  ],
+  "public_catalog_comparison": {
+    "courses": {
+      "original": 15,
+      "current": 15,
+      "added": [],
+      "removed": [],
+      "common": 15
+    },
+    "modules": {
+      "original": 12,
+      "current": 12,
+      "added": [],
+      "removed": [],
+      "common": 12
+    }
+  },
+  "public_catalog": [
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-computing-in-practice"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/fundamentals-of-quantum-algorithms"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/general-formulation-of-quantum-information"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/foundations-of-quantum-error-correction"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/tools-for-quantum-advantage"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/integrating-quantum-and-high-performance-computing"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-machine-learning"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/variational-algorithm-design"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-chem-with-vqe"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/utility-scale-quantum-computing"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations"
+    },
+    {
+      "kind": "courses",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/get-started-with-qiskit"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/superposition-with-qiskit"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/stern-gerlach-measurements-with-qiskit"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/exploring-uncertainty-with-qiskit"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/quantum-mechanics/bells-inequality-with-qiskit"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/deutsch-jozsa"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/grovers"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-teleportation"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/quantum-key-distribution"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/qft"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/shors-algorithm"
+    },
+    {
+      "kind": "modules",
+      "url": "https://quantum.cloud.ibm.com/learning/en/modules/computer-science/vqe"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=introduction-to-quantum"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=optimization"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=data-science"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development"
+    },
+    {
+      "kind": "paths",
+      "url": "https://quantum.cloud.ibm.com/learning/en?modal=qise"
+    }
+  ],
+  "observed_path_levels": [
+    "https://quantum.cloud.ibm.com/learning/en?modal=data-science%2Fdata-science-i",
+    "https://quantum.cloud.ibm.com/learning/en?modal=data-science%2Fdata-science-ii",
+    "https://quantum.cloud.ibm.com/learning/en?modal=optimization%2Foptimization-i",
+    "https://quantum.cloud.ibm.com/learning/en?modal=optimization%2Foptimization-ii",
+    "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry%2Fphysics-and-chemistry-i",
+    "https://quantum.cloud.ibm.com/learning/en?modal=physics-and-chemistry%2Fphysics-and-chemistry-ii",
+    "https://quantum.cloud.ibm.com/learning/en?modal=qise%2Fqise-i",
+    "https://quantum.cloud.ibm.com/learning/en?modal=qise%2Fqise-ii",
+    "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-i",
+    "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-ii",
+    "https://quantum.cloud.ibm.com/learning/en?modal=quantum-algorithm-development%2Fquantum-algorithm-developer-iii"
+  ]
+}
