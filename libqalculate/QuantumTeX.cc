@@ -2215,6 +2215,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // sentence punctuation or a check mark that annotates the completed proof.
   static const std::regex annotation(R"(\s*~\s*(?:\\checkmark|[.,])\s*$)");
   s=withoutDisplayPunctuation(std::regex_replace(s,annotation,""));
+  static const std::regex bellTextSign(R"((\\(?:Phi|Psi|phi|psi))_\\text\{([+-])\})");
+  s=std::regex_replace(s,bellTextSign,"$1^$2");
   static const std::regex bell(R"(^\s*(\\(?:Phi|Psi|phi|psi))\^\{?([+-])\}?\s*$)");
   std::smatch m;
   if(std::regex_match(s,m,bell))return quantumTeX("\\vert"+m[1].str()+"^"+m[2].str()+"\\rangle");
