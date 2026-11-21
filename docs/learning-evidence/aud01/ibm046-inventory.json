@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "15fb3e765e3a51dccd42a29cbaabff6a1e12ca31e4d9f239a1760a1bc41537c8",
-  "revision": "124f422dd70d5c8bee4fec49ee59df1ac9729b53",
+  "worker_sha256": "2c1026487117e1462a355d5750027bcb2af13b0a6153553636b3c335f7e60405",
+  "revision": "0d05b27754ca01fed6d37951930b368aa1a10e34",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 236,
-    "diagnostic": 3
+    "exact": 237,
+    "diagnostic": 2
   },
   "figures": [],
   "rows": [
@@ -29,8 +29,8 @@
       "end": 936,
       "literal": "$$\n\\langle \\psi \\vert = \\bigl(\\vert \\psi \\rangle \\bigr)^{\\dagger}\n=\n\\begin{pmatrix}\n\\overline{\\alpha_1} & \\overline{\\alpha_2} & \\cdots & \\overline{\\alpha_n}\n\\end{pmatrix}.\n\\tag{1}\n$$",
       "status": "exact",
-      "display": "⟨ψ| = ⟨ψ| = [\"α_1\"  \"α_2\"  '⋯'  \"α_n\"]",
-      "copy": "qequalchain(vector(qdag(qnamedket('ψ')),qdag(qnamedket('ψ')),vector(\"α_1\",\"α_2\",'⋯',\"α_n\")))"
+      "display": "⟨ψ| = ⟨ψ| = qcomplexcolumn(qonebasedcolumn(\"α_\", n, 2))†",
+      "copy": "qequalchain(vector(qdag(qnamedket('ψ')),qdag(qnamedket('ψ')),qdag(qcomplexcolumn(qonebasedcolumn(\"α_\",n,2)))))"
     },
     {
       "id": "IBM046-3c1262a5-M003",
@@ -98,8 +98,9 @@
       "start": 1770,
       "end": 2088,
       "literal": "$$\n\\langle \\psi \\vert \\phi \\rangle = \\langle \\psi \\vert \\vert \\phi \\rangle\n= \\begin{pmatrix}\n\\overline{\\alpha_1} & \\overline{\\alpha_2} & \\cdots & \\overline{\\alpha_n}\n\\end{pmatrix}\n\\begin{pmatrix}\n\\beta_1\\\\\n\\beta_2\\\\\n\\vdots\\\\\n\\beta_n\n\\end{pmatrix}\n= \\overline{\\alpha_1} \\beta_1 + \\cdots + \\overline{\\alpha_n}\\beta_n.\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported TeX command: \\cdots at byte 284"
+      "status": "exact",
+      "display": "⟨ψ|φ⟩ = ⟨ψ|φ⟩ = qcomplexcolumn(qonebasedcolumn(\"α_\", n, 2))† · [β_1; β_2; ⋮; β_(n)] = qcomplexcolumn(qonebasedcolumn(\"α_\", n, 1))† · [β_1; ⋮; β_(n)]",
+      "copy": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qdag(qcomplexcolumn(qonebasedcolumn(\"α_\",n,2))),qonebasedcolumn(\"β_\",n,2)),qmul(qdag(qcomplexcolumn(qonebasedcolumn(\"α_\",n,1))),qonebasedcolumn(\"β_\",n,1))))"
     },
     {
       "id": "IBM046-3c1262a5-M010",
