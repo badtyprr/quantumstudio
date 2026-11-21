@@ -363,7 +363,7 @@ A single gate letter used as an integer range endpoint denotes a variable. For e
 
 ## Textual logical operators
 
-TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`.
+TeX predicates can join comparisons with `\text{and}` or `\text{or}`. Both spellings use the same Boolean operations as `\land` and `\lor`. A negated operand can appear in a comparison, as in `g(x) = \neg f(x)`. The copied prefix `!` is accepted on re-entry.
 
 ## Two-argument probability functions
 
