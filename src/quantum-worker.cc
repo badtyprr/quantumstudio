@@ -83,6 +83,31 @@ static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=
  for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k],orderedOnly))return true;
  return false;
 }
+// Recognize large real Pauli tensor products from their exact matrix entries.
+static std::string compactPauliMatrix(const MathStructure &matrix) {
+ unsigned n=matrix.rows();
+ if(n<64 || n!=matrix.columns() || (n&(n-1)) || matrix.isApproximate())return "";
+ unsigned flip=0,phase=0;
+ while(flip<n && matrix.getElement(1,flip+1)->isZero())++flip;
+ if(flip==n || !matrix.getElement(1,flip+1)->isOne())return "";
+ for(unsigned bit=1;bit<n;bit*=2)
+  if(matrix.getElement(bit+1,(bit^flip)+1)->isMinusOne())phase|=bit;
+ if(flip&phase)return "";
+ for(unsigned row=0;row<n;++row) {
+  bool negative=false;
+  for(unsigned bits=row&phase;bits;bits&=bits-1)negative=!negative;
+  for(unsigned col=0;col<n;++col) {
+   const MathStructure &entry=*matrix.getElement(row+1,col+1);
+   if(col!=(row^flip) ? !entry.isZero() : negative ? !entry.isMinusOne() : !entry.isOne())return "";
+  }
+ }
+ std::string factors;
+ for(unsigned bit=n/2;bit;bit/=2) {
+  if(!factors.empty())factors+="@";
+  factors+=flip&bit ? "X" : phase&bit ? "Z" : "I";
+ }
+ return "("+factors+")";
+}
 static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode,bool explicitEntries) {
  // Identify physical units and prefixes separately from quantum variables.
  if(quantumMode && result.isUnit()) {
@@ -92,6 +117,10 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  // Explicit dimensions preserve singleton matrices; commas cannot be mistaken
  // for implicit multiplication by the quantum parser.
  bool scalarMatrix=result.isMatrix();
+ if(quantumMode && scalarMatrix) {
+  std::string compact=compactPauliMatrix(result);
+  if(!compact.empty())return compact;
+ }
  if(scalarMatrix)for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c)
   if(result.getElement(r,c)->isVector())scalarMatrix=false;
  // A vector of equal-sized matrices also satisfies isMatrix(). Keep these
@@ -406,7 +435,13 @@ int main(int argc,char **argv) {
   if(multipleLines)for(size_t i=0;i<result.size();++i) {
    MathStructure line=result[i];if(!decimalMatch(line))line.format(po);
    if(i)shown+="\n\n";
-   shown+=std::to_string(i+1)+".  "+QuantumDisplay::print(line,po);
+   std::string lineDisplay=QuantumDisplay::print(line,po);
+   if(lineDisplay.size()>32768 && !result[i].isApproximate()) {
+    PrintOptions exact=po;exact.number_fraction_format=FRACTION_FRACTIONAL;exact.restrict_fraction_length=false;
+    std::string compact=copyText(result[i],exact,true);
+    if(compact.size()<32768)lineDisplay=compact;
+   }
+   shown+=std::to_string(i+1)+".  "+lineDisplay;
   } else if(displayKetCollection(result,po,shown))rows=cols=0;
   else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
   std::cout << ",\"display_text\":"; jsonString(shown);

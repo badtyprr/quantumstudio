@@ -374,6 +374,13 @@ class QuantumOrderFunction: public MathFunction {
   if(equality && quantumMatrixShape(args[0],rows,columns,eo) && columns.isOne())
    quantumResolveBasisDimension(args[1],rows);
   args[1].eval(eo);
+  if(equality)for(unsigned k=0;k<2;++k) {
+   if(args[k].containsFunction(CALCULATOR->getFunction("qkrausapply")) ||
+      args[k].containsFunction(CALCULATOR->getFunction("qoperatorref"))) {
+    if(args.equals(raw))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
+  }
   // A named probability can be defined by the squared magnitude of a
   // pending sum. Keep one copy of its binder until the limits are known.
   if(equality)for(unsigned k=0;k<2;++k) {

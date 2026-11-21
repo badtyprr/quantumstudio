@@ -2078,6 +2078,25 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // As a standalone circuit gate label, the circled plus toggles one bit
  // by the other. Infix \oplus retains its operand-dependent interpretation.
  if(whole=="\\oplus")return booleanGraph("0110");
+ // A channel defined by a Kraus sum acts on the entire density operator.
+ if(s.find("\\Phi")!=std::string::npos && s.find("\\sum")!=std::string::npos) {
+  static const std::regex channel(R"(^\s*\\Phi(?:_([a-z]))?\s*(?:\\bigl\s*)?\((.*?)\s*(?:\\bigr\s*)?\)\s*=)");
+  std::smatch match;
+  if(std::regex_search(s,match,channel)) {
+   std::string name="Φ";if(match[1].matched)name+="_"+match[1].str();
+   std::string argument=match[2].str(),body=s.substr(match.length());
+   // An operator-sum term A_j sigma A_j^dagger stays a matrix
+   // product even while the density operator or its entries are unknown.
+   static const std::regex operatorSum(R"(^\s*\\sum_([a-z])\s+([A-Z])_\1\s+(\\[A-Za-z]+)\s+\2_\1\^\{\\dagger\}\s*$)");
+   std::smatch term;
+   if(std::regex_match(body,term,operatorSum) && trim(argument)==term[3].str()) {
+    std::string op="qoperatorref("+term[2].str()+"_"+term[1].str()+")";
+    argument="qoperatorref("+argument+")";
+    body="\\sum_"+term[1].str()+" "+op+"*"+argument+"*"+op+"^{\\dagger}";
+   }
+   s="qkrausapply(\""+name+"\","+argument+")="+body;
+  }
+ }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
  // A sum written with an ellipsis must have matching indexed endpoints.
