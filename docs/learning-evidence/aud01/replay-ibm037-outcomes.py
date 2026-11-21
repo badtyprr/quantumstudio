@@ -66,3 +66,16 @@ for first, second, expected in [(reset,flip,"matrix(2,2,[0,0,1,1])"), (flip,rese
     assert evaluate(f"quantum:replace({assigned},n,2)") == expected
     assert evaluate(f"quantum:replace({assigned},n,1)") == first
 print("Verified ordered matrix composition, reversed order and single-map bounds")
+
+# M021 defines the classical system's four possible outcomes. Keep each
+# complete printed word distinct from the product of its component letters.
+outcome_definition = inventory["rows"][20]
+assert outcome_definition["id"].endswith("M021")
+definition = evaluate("quantum:" + outcome_definition["literal"])
+domain_source = outcome_definition["literal"].strip("$").split("=")[1]
+domain = evaluate("quantum:$" + domain_source + "$")
+assert domain == 'qset(vector("high","medium","low","off"))' and domain in definition
+assert evaluate(domain) == domain
+for name in ("high", "medium", "low", "off"):
+    assert evaluate(f'qmember("{name}",{domain})') == "1"
+print("Verified all four named outcomes from M021, including Copy re-entry")

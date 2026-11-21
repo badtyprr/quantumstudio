@@ -677,7 +677,14 @@ class TeXReader {
  bool stateLabel=false;
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
- unsigned setExpressions=0;
+ unsigned setDepth=0;
+ bool wholeSetEntry(const std::string *preceding) const {
+  if(!setDepth || depth!=setDepth || !preceding)return false;
+  const size_t last=preceding->find_last_not_of(" \t\r\n");
+  if(last!=std::string::npos && (*preceding)[last]!=',')return false;
+  const size_t next=input.find_first_not_of(" \t\r\n",pos);
+  return next!=std::string::npos && (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0);
+ }
  unsigned matrixDepth=0;
  void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
  // Check the displayed initial powers and the final base before consuming
@@ -806,7 +813,10 @@ class TeXReader {
   return (order.empty() ? ")" : ","+order+")")+(power.empty() ? "" : "^("+power+")");
  }
  std::string setLiteral(bool escaped) {
-  ++setExpressions;std::string contents=read(escaped ? 0 : '}',false,"",escaped);--setExpressions;
+  const unsigned outerSet=setDepth;
+  setDepth=depth+1;
+  std::string contents=read(escaped ? 0 : '}',false,"",escaped);
+  setDepth=outerSet;
   size_t membership=std::string::npos,separator=std::string::npos,startEntry=0;int nesting=0;char quote=0;
   std::vector<std::string> entries;
   for(size_t j=0;j<contents.size();++j) {
@@ -1005,7 +1015,7 @@ class TeXReader {
    return (name=="lfloor" ? "floor(" : "ceil(")+body+")";
   }
   if(name=="rfloor" || name=="rceil")throw std::runtime_error(error("Unmatched rounding delimiter"));
-  if(name=="mid" && setExpressions)return ":";
+  if(name=="mid" && setDepth)return ":";
   if((name=="ldots" || name=="dots" || name=="cdots") && pos>name.size()+1) {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2);
    size_t after=input.find_first_not_of(" \t\r\n",pos);
@@ -1020,7 +1030,7 @@ class TeXReader {
        (end>=5 && input.compare(end-5,6,"\\rvert")==0)))return "...";
    }
   }
-  if(setExpressions && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
+  if(setDepth && (name=="ldots" || name=="cdots" || name=="dots"))return "...";
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="overline") {
@@ -1140,6 +1150,8 @@ class TeXReader {
   }
   if(name=="operatorname" || name=="mathrm" || name=="mathsf" || name=="mathbf" || name=="mathbb" || name=="mathcal") {
    auto a=nameGroup();
+   if(name=="mathrm" && a.size()>1 && a.find_first_not_of("abcdefghijklmnopqrstuvwxyz")==std::string::npos &&
+      a!="pi" && a!="inf" && a!="infinity" && wholeSetEntry(preceding))return "\""+a+"\"";
    if(name=="mathbb" && a=="I")return " qimplicitidentity() ";
    if(name=="mathbb" && a=="Z") {
     space();
@@ -1173,8 +1185,7 @@ class TeXReader {
      if(prefix.back()=='|' && (input[next]=='>' || input.compare(next,7,"\\rangle")==0))return text;
      if(prefix.back()=='<' && (input[next]=='|' || input.compare(next,5,"\\vert")==0))return text;
     }
-    if(setExpressions && (prefix.empty() || prefix.back()==',') && next!=std::string::npos &&
-       (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0))return "\""+text+"\"";
+    if(wholeSetEntry(preceding))return "\""+text+"\"";
    }
    if(text=="and" || text=="or")return " "+text+" ";
    if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
@@ -1335,7 +1346,7 @@ class TeXReader {
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
    }
-   if(!matrixDepth && !stateLabel && !setExpressions && !setBound) {
+   if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
     if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
