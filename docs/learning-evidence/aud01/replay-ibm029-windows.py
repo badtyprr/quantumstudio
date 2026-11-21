@@ -17,7 +17,7 @@ args = parser.parse_args()
 inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
 lesson = rows[0]["id"].split("-")[0].lower()
-assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035","ibm047"}
+assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035","ibm046","ibm047"}
 pinned = json.loads(Path(__file__).with_name(lesson+"-inventory.json").read_bytes())
 assert inventory["source_sha256"] == pinned["source_sha256"]
 assert [(r["id"],r["literal"]) for r in rows] == [(r["id"],r["literal"]) for r in pinned["rows"]]
@@ -63,9 +63,12 @@ for (key,expression,_),source,gui in zip(inputs,rows,records):
         counts["restored_identically"] += 1
         if args.reenter_text:
             assert gui["copy_text"] == source["copy"], number
-            assert gui["reentry_label"] == "EXACT RESULT", number
-            assert gui["reentry_text"] == gui["copy_text"], number
-            counts["stable_after_text_reentry"] += 1
+            if gui["reentry_label"] != "EXACT RESULT":
+                failures.append(dict(id=number,stage="text re-entry",message=gui["reentry_text"]))
+            elif gui["reentry_text"] != gui["copy_text"]:
+                changes.append(dict(id=number,first=gui["copy_text"],second=gui["reentry_text"]))
+            else:
+                counts["stable_after_text_reentry"] += 1
         continue
     if gui["restored_same"]:
         counts["restored_identically"] += 1

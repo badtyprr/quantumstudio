@@ -1,0 +1,179 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
+  "notebook_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
+  "worker_sha256": "5cc9c28d956e8fab917fb0598eb886e53e30572f72b44d65d8d625718fd26bf0",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "e292da3fa3e9fdce7259b759c1a5b28b506d9d679e29b091b185efa5eca042e0",
+  "suite": {
+    "passed": true,
+    "checks": 2102,
+    "calls": 239,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 232,
+    "restored_identically": 232,
+    "stable_after_text_reentry": 207,
+    "source_diagnostic": 7
+  },
+  "diagnostics": [
+    {
+      "id": "IBM046-3c1262a5-M009",
+      "message": "Unsupported TeX command: \\cdots at byte 284"
+    },
+    {
+      "id": "IBM046-3c1262a5-M090",
+      "message": "Argument 1, Matrix 1, in horzcat() must be a matrix.\nArgument 2, Matrix 2, in horzcat() must be a matrix.\nArgument 3, Matrix 2, in horzcat() must be a matrix.\nArgument 1, Matrix 1, in vertcat() must be a matrix.\nArgument 2, Matrix 2, in vertcat() must be a matrix.\nArgument 3, Matrix 2, in vertcat() must be a matrix."
+    },
+    {
+      "id": "IBM046-3c1262a5-M098",
+      "message": "Unsupported column label in numeric table at byte 150"
+    },
+    {
+      "id": "IBM046-3c1262a5-M195",
+      "message": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses"
+    },
+    {
+      "id": "IBM046-3c1262a5-M216",
+      "message": "Maximum recursive depth reached."
+    },
+    {
+      "id": "IBM046-3c1262a5-M219",
+      "message": "Unsupported TeX command: \\fbox at byte 35"
+    },
+    {
+      "id": "IBM046-3c1262a5-M221",
+      "message": "Unsupported TeX command: \\fbox at byte 6"
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM046-3c1262a5-M004",
+      "first": "qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),'Σ',\"qboundindex_0\"),4)",
+      "second": "qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_1\",\"\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M005",
+      "first": "qcompare(qdag(qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\"),4)",
+      "second": "qcompare(qdag(qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_1\",\"\")),qdag(qketstate(\"qboundindex_1\"))),'Σ',\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M010",
+      "first": "(qcompare(qketstate('φ'),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_1\",\"\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\"),4) and qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),'Σ',\"qboundindex_0\"),4))",
+      "second": "(qcompare(qketstate('φ'),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_2\",\"\"),qketstate(\"qboundindex_2\")),'Σ',\"qboundindex_2\"),4) and qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_3\",\"\"),qketstate(\"qboundindex_3\")),'Σ',\"qboundindex_3\"),4))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M013",
+      "first": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\"),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_1\",\"\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\")),qsumset(qsumset(qadjacent(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_3\",\"\")),qindexedlabel(\"β_\",\"qboundindex_2\",\"\")),qmul(qdag(qketstate(\"qboundindex_3\")),qketstate(\"qboundindex_2\"))),'Σ',\"qboundindex_2\"),'Σ',\"qboundindex_3\"),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_4\",\"\")),qindexedlabel(\"β_\",\"qboundindex_4\",\"\")),'Σ',\"qboundindex_4\")))",
+      "second": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qdag(qnamedket('ψ')),qnamedket('φ')),qadjacent(qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_5\",\"\")),qdag(qketstate(\"qboundindex_5\"))),'Σ',\"qboundindex_5\"),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_6\",\"\"),qketstate(\"qboundindex_6\")),'Σ',\"qboundindex_6\")),qsumset(qsumset(qadjacent(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_8\",\"\")),qindexedlabel(\"β_\",\"qboundindex_7\",\"\")),qmul(qdag(qketstate(\"qboundindex_8\")),qketstate(\"qboundindex_7\"))),'Σ',\"qboundindex_7\"),'Σ',\"qboundindex_8\"),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_9\",\"\")),qindexedlabel(\"β_\",\"qboundindex_9\",\"\")),'Σ',\"qboundindex_9\")))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M022",
+      "first": "qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),'Σ',\"qboundindex_0\"),4)",
+      "second": "qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_1\",\"\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M023",
+      "first": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),'Σ',\"qboundindex_0\"),qsumset(qpower(qbars(qindexedlabel(\"α_\",\"qboundindex_1\",\"\")),2),'Σ',\"qboundindex_1\"),qnorm(qnamedket('ψ'))²))",
+      "second": "qequalchain(vector(qmul(qdag(qnamedket('ψ')),qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_2\",\"\")),qindexedlabel(\"α_\",\"qboundindex_2\",\"\")),'Σ',\"qboundindex_2\"),qsumset(qpower(qbars(qindexedlabel(\"α_\",\"qboundindex_3\",\"\")),2),'Σ',\"qboundindex_3\"),qnorm(qnamedket('ψ'))²))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M029",
+      "first": "(qcompare(qketstate('φ'),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_1\",\"\"),qketstate(\"qboundindex_1\")),'Σ',\"qboundindex_1\"),4) and qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),'Σ',\"qboundindex_0\"),4))",
+      "second": "(qcompare(qketstate('φ'),qsumset(qadjacent(qindexedlabel(\"β_\",\"qboundindex_2\",\"\"),qketstate(\"qboundindex_2\")),'Σ',\"qboundindex_2\"),4) and qcompare(qketstate('ψ'),qsumset(qadjacent(qindexedlabel(\"α_\",\"qboundindex_3\",\"\"),qketstate(\"qboundindex_3\")),'Σ',\"qboundindex_3\"),4))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M030",
+      "first": "(qcompare(qmul(qdag(qnamedket('φ')),qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"β_\",\"qboundindex_1\",\"\")),qindexedlabel(\"α_\",\"qboundindex_1\",\"\")),'Σ',\"qboundindex_1\"),4) and qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_0\",\"\")),qindexedlabel(\"β_\",\"qboundindex_0\",\"\")),'Σ',\"qboundindex_0\"),4))",
+      "second": "(qcompare(qmul(qdag(qnamedket('φ')),qnamedket('ψ')),qsumset(qadjacent(conj(qindexedlabel(\"β_\",\"qboundindex_2\",\"\")),qindexedlabel(\"α_\",\"qboundindex_2\",\"\")),'Σ',\"qboundindex_2\"),4) and qcompare(qmul(qdag(qnamedket('ψ')),qnamedket('φ')),qsumset(qadjacent(conj(qindexedlabel(\"α_\",\"qboundindex_3\",\"\")),qindexedlabel(\"β_\",\"qboundindex_3\",\"\")),'Σ',\"qboundindex_3\"),4))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M031",
+      "first": "qcompare(ℜ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − i ⋅ ℑ(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))),qmul(qdag(qnamedket('φ')),qnamedket('ψ')),4)",
+      "second": "qcompare(qsub(re(qmul(qdag(qnamedket('ψ')),qnamedket('φ'))),qmul(i,im(qmul(qdag(qnamedket('ψ')),qnamedket('φ'))))),qmul(qdag(qnamedket('φ')),qnamedket('ψ')),4)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M048",
+      "first": "(qbars(qmul(qdag(qnamedket('ψ')), qnamedket('φ'))) − qadjacent(qnorm(qnamedket('ψ')), qnorm(qnamedket('φ'))))<=(0)",
+      "second": "(qsub(qbars(qmul(qdag(qnamedket('ψ')),qnamedket('φ'))),qadjacent(qnorm(qnamedket('ψ')),qnorm(qnamedket('φ')))))<=(0)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M064",
+      "first": "qsetimage(qketstate(\"qboundindex_0\"),'Σ',\"qboundindex_0\")",
+      "second": "qsetimage(qketstate(\"qboundindex_1\"),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM046-3c1262a5-M086",
+      "first": "((matrix(3,3,[−\"α_1,1\",−\"α_2,1\",−\"α_3,1\",−\"α_1,2\",−\"α_2,2\",−\"α_3,2\",−\"α_1,3\",−\"α_2,3\",−\"α_3,3\"]))+ (qdag('U')))==(0)",
+      "second": "(qadd(matrix(3,3,vector(−\"α_1,1\",−\"α_2,1\",−\"α_3,1\",−\"α_1,2\",−\"α_2,2\",−\"α_3,2\",−\"α_1,3\",−\"α_2,3\",−\"α_3,3\")),qdag('U')))==(0)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M108",
+      "first": "('A''B' − qadjacent(qdag('B'), qdag('A')))==(0)",
+      "second": "(qsub(qadjacent('A','B'),qadjacent(qdag('B'),qdag('A'))))==(0)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M118",
+      "first": "(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")))),1,'m',\"qboundindex_0\"))==('Π')",
+      "second": "(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")))),1,'m',\"qboundindex_1\"))==('Π')"
+    },
+    {
+      "id": "IBM046-3c1262a5-M119",
+      "first": "qequalchain(vector('Π',qdag(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")))),1,'m',\"qboundindex_0\")),qsum(qdag(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\"))))),1,'m',\"qboundindex_1\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\")))),1,'m',\"qboundindex_2\"),'Π'))",
+      "second": "qequalchain(vector('Π',qdag(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\")))),1,'m',\"qboundindex_3\")),qsum(qdag(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_4\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_4\",\"\"))))),1,'m',\"qboundindex_4\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_5\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_5\",\"\")))),1,'m',\"qboundindex_5\"),'Π'))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M120",
+      "first": "qequalchain(vector('Π'²,qadjacent(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_0\",\"\")))),1,'m',\"qboundindex_0\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_1\",\"\")))),1,'m',\"qboundindex_1\")),qsum(qsum(qadjacent(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\")),qmul(qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_3\",\"\"))),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\")))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_2\",\"\")))),1,'m',\"qboundindex_2\"),1,'m',\"qboundindex_3\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_4\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_4\",\"\")))),1,'m',\"qboundindex_4\"),'Π'))",
+      "second": "qequalchain(vector('Π'²,qadjacent(qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_5\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_5\",\"\")))),1,'m',\"qboundindex_5\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_6\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_6\",\"\")))),1,'m',\"qboundindex_6\")),qsum(qsum(qadjacent(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_8\",\"\")),qmul(qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_8\",\"\"))),qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_7\",\"\")))),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_7\",\"\")))),1,'m',\"qboundindex_7\"),1,'m',\"qboundindex_8\"),qsum(qadjacent(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_9\",\"\")),qdag(qindexedket(qindexedlabel(\"ψ_\",\"qboundindex_9\",\"\")))),1,'m',\"qboundindex_9\"),'Π'))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M139",
+      "first": "qsetimage(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),'Σ',\"qboundindex_0\")",
+      "second": "qsetimage(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM046-3c1262a5-M140",
+      "first": "((matrix(2,2,[−1,0,0,−1]))+ (qsumset(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),'Σ',\"qboundindex_0\")))==(0)",
+      "second": "(qadd(matrix(2,2,vector(−1,0,0,−1)),qsumset(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),'Σ',\"qboundindex_1\")))==(0)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M150",
+      "first": "qsetimage(qadjacent(qketstate(\"qboundindex_0\"),qdag(qketstate(\"qboundindex_0\"))),'Σ',\"qboundindex_0\")",
+      "second": "qsetimage(qadjacent(qketstate(\"qboundindex_1\"),qdag(qketstate(\"qboundindex_1\"))),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM046-3c1262a5-M156",
+      "first": "qsetimage(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),'Σ',\"qboundindex_0\")",
+      "second": "qsetimage(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM046-3c1262a5-M159",
+      "first": "qsetimage(qtensor(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),qimplicitidentity()),'Σ',\"qboundindex_0\")",
+      "second": "qsetimage(qtensor(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),qimplicitidentity()),'Σ',\"qboundindex_1\")"
+    },
+    {
+      "id": "IBM046-3c1262a5-M177",
+      "first": "((matrix(2,2,[−\"_n\",0,0,−\"_n\"]))+ (qsum(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),0,qsub('m',1),\"qboundindex_0\")))==(0)",
+      "second": "(qadd(matrix(2,2,vector(−\"_n\",0,0,−\"_n\")),qsum(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),0,qsub('m',1),\"qboundindex_1\")))==(0)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M193",
+      "first": "qcompare('M',qsum(qtensor(qadjacent(qketstate(\"qboundindex_0\"),qdag(matrix(2,1,vector(1,0)))),qindexedlabel(\"Π_\",\"qboundindex_0\",\"\")),0,qsub('m',1),\"qboundindex_0\"),4)",
+      "second": "qcompare('M',qsum(qtensor(qadjacent(qketstate(\"qboundindex_1\"),qdag(matrix(2,1,vector(1,0)))),qindexedlabel(\"Π_\",\"qboundindex_1\",\"\")),0,qsub('m',1),\"qboundindex_1\"),4)"
+    },
+    {
+      "id": "IBM046-3c1262a5-M211",
+      "first": "qequalchain(vector(qketstate(\"ψ_j\"),qadjacent('M',qtensor(matrix(2,1,vector(1,0)),qketstate('j'))),qsum(qtensorchain(qketstate(\"qboundindex_0\"),vector(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),qketstate('j'))),0,qsub('m',1),\"qboundindex_0\")))",
+      "second": "qequalchain(vector(qketstate(\"ψ_j\"),qadjacent('M',qtensor(matrix(2,1,vector(1,0)),qketstate('j'))),qsum(qtensorchain(qketstate(\"qboundindex_1\"),vector(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),qketstate('j'))),0,qsub('m',1),\"qboundindex_1\")))"
+    },
+    {
+      "id": "IBM046-3c1262a5-M227",
+      "first": "qequalchain(vector(qmul('U',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),('M')*(qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qsum(qtensorchain(qketstate(\"qboundindex_0\"),vector(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),qnamedket('φ'))),0,qsub('m',1),\"qboundindex_0\")))",
+      "second": "qequalchain(vector(qmul('U',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qmul('M',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qsum(qtensorchain(qketstate(\"qboundindex_1\"),vector(qindexedlabel(\"Π_\",\"qboundindex_1\",\"\"),qnamedket('φ'))),0,qsub('m',1),\"qboundindex_1\")))"
+    }
+  ],
+  "failures": []
+}
