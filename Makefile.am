@@ -671,3 +671,4 @@ EXTRA_DIST += docs/learning-evidence/IBM-035.md docs/learning-evidence/IBM-034.m
 EXTRA_DIST += docs/learning-evidence/IBM-090.md docs/learning-evidence/aud01/ibm090-glossary-kets.json
 EXTRA_DIST += docs/learning-evidence/IBM-044.md docs/learning-evidence/aud01/ibm044-caption-checks.json docs/learning-evidence/aud01/ibm-lecture-caption-tracks.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-binary-encoding.py docs/learning-evidence/aud01/ibm029-binary-encoding.json
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-printed-orders.py docs/learning-evidence/aud01/ibm029-printed-orders.json

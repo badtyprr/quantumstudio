@@ -634,10 +634,10 @@ class QuantumAlgebraFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || MathFunction::representsScalar(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || MathFunction::representsNonMatrix(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qoperatorunequal") {
@@ -1060,24 +1060,31 @@ class QuantumAlgebraFunction: public MathFunction {
    out=value.number().integerLength();return 1;
   }
   if(op=="qrecoverphase")return recoverPhaseFraction(out,raw,eo);
-  if(op=="qintegergcd" || op=="qmodpower") {
+  if(op=="qintegergcd" || op=="qmodpower" || op=="qmodpowerequal") {
    MathStructure args=raw;
    bool pending=false;
    for(size_t k=0;k<args.size();++k) {
     args[k].eval(eo);
     if(args[k].isInteger() && !args[k].isApproximate() && (k!=2 || args[k].number().isPositive()))continue;
     if(!args[k].isNumber() && args[k].containsUnknowns() && args[k].representsScalar()) {pending=true;continue;}
-    CALCULATOR->error(true,op=="qmodpower" ? "Modular powers require exact integers and a positive modulus." : "Integer GCD requires two exact integers.",NULL);return 0;
+    CALCULATOR->error(true,op=="qintegergcd" ? "Integer GCD requires two exact integers." : "Modular powers require exact integers and a positive modulus.",NULL);return 0;
    }
    if(pending)return 0;
-   if(op=="qmodpower") {
+   if(op!="qintegergcd") {
     if(args[1].number().isNegative()) {
      Number divisor=args[0].number();
      if(!divisor.gcd(args[2].number()) || !divisor.isOne()) {
       CALCULATOR->error(true,"A negative modular exponent requires an invertible base.",NULL);return 0;
      }
     }
-    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_POWER_MOD),&args[0],&args[1],&args[2],NULL);return 1;
+    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_POWER_MOD),&args[0],&args[1],&args[2],NULL);
+    if(op=="qmodpowerequal") {
+     out.eval(eo);
+     Number rhs=args[3].number();
+     if(!out.isInteger() || !rhs.mod(args[2].number()))return 0;
+     out=out.number()==rhs ? 1 : 0;
+    }
+    return 1;
    }
    // Polynomial GCD would assume two unbound integer labels are coprime.
    Number result=args[0].number();
@@ -1692,6 +1699,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qrecoverphase",2));
  calculator.addFunction(new QuantumAlgebraFunction("qintegergcd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qmodpower",3));
+ calculator.addFunction(new QuantumAlgebraFunction("qmodpowerequal",4));
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));

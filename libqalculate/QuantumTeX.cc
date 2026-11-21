@@ -859,6 +859,7 @@ std::string orderedKetList(const std::string &text) {
 }
 class TeXReader {
  const std::string &input;
+ bool modularTables=false;
  size_t pos=0;
  unsigned depth=0;
  std::string rootAlignment;
@@ -1152,6 +1153,10 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
+ std::string withoutRowSpacing(const std::string &row) {
+  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
+  return !row.empty() && row.front()=='[' ? std::regex_replace(row,spacing,"") : row;
+ }
  // A gathered list beginning at zero can describe decimal inputs and their
  // fixed-width binary encodings. Check every printed example before filling
  // the gap indicated by the vertical ellipsis.
@@ -1159,12 +1164,11 @@ class TeXReader {
   if(body.find("\\mapsto")==std::string::npos || body.find("\\vdots")==std::string::npos)return "";
   auto rows=indexedParts(body,"\\\\");
   if(rows.size()<4)return "";
-  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   static const std::regex entry(R"(^(0|[1-9][0-9]*)\s*\\mapsto\s*([01]+)$)");
   size_t width=0;
   unsigned endpoint=0;
   for(size_t i=0;i<rows.size();++i) {
-   std::string row=i ? std::regex_replace(rows[i],spacing,"") : rows[i];
+   std::string row=i ? withoutRowSpacing(rows[i]) : rows[i];
    if(i==rows.size()-2) {
     if(row!="\\vdots")return "";
     continue;
@@ -1188,7 +1192,6 @@ class TeXReader {
  // Columns of the linear operator are the printed images of its basis kets.
  std::string basisActionTable(const std::string &body,size_t columns) {
   static const std::regex action(R"(^\s*M(?:_\{([0-9]+)\}|_([0-9]))\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
-  static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
   std::vector<std::pair<std::string,std::string>> images;
   std::string name;
   auto rows=indexedParts(body,"\\\\");
@@ -1198,7 +1201,7 @@ class TeXReader {
     if(images.empty())return "";
     throw std::runtime_error(error("Empty row in a basis action table"));
    }
-   if(!images.empty() && row.front()=='[')row=std::regex_replace(row,rowSpace,"");
+   if(!images.empty())row=withoutRowSpacing(row);
    auto cells=indexedParts(row,"&");
    for(const auto &cell:cells) {
     std::smatch m;
@@ -1235,6 +1238,28 @@ class TeXReader {
   }
   return "matrix("+std::to_string(n)+","+std::to_string(n)+",["+values+"])";
  }
+ // The modulus of a table can come from the surrounding prose. Keep it
+ // editable when the user selects modular powers for the pasted equations.
+ std::string modularPowerTable(const std::string &body,size_t columns) {
+  static const std::regex power(R"(^\s*([0-9]+)\s*\^\s*(?:\{(-?[0-9]+)\}|([0-9]))\s*=\s*(-?[0-9]+)(?:\s|\\q?quad)*$)");
+  auto rows=indexedParts(body,"\\\\");
+  if(!rows.empty() && rows.back().empty())rows.pop_back();
+  if(rows.empty())return "";
+  std::string entries;
+  for(size_t i=0;i<rows.size();++i) {
+   auto cells=indexedParts(i ? withoutRowSpacing(rows[i]) : rows[i],"&");
+   if(cells.size()!=columns)return "";
+   for(const auto &cell:cells) {
+    std::smatch m;
+    if(!std::regex_match(cell,m,power))return "";
+    if(!entries.empty())entries+=",";
+    entries+="qmodpowerequal("+m[1].str()+","+m[2].str()+m[3].str()+",\"modulus\","+m[4].str()+")";
+   }
+  }
+  // Each editable cell retains a four-argument predicate until binding.
+  if(rows.size()>64/columns)throw std::runtime_error(error("A modular power table supports at most 64 editable equations"));
+  return "matrix("+std::to_string(rows.size())+","+std::to_string(columns)+",["+entries+"])";
+ }
  // A horizontal rule separates column labels from reported numeric data.
  std::string numericTable(bool allowWrapper=true) {
   std::string alignment=nameGroup(true);
@@ -1251,6 +1276,10 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(modularTables && input.find('^',pos)<end && input.find('=',pos)<end) {
+   std::string table=modularPowerTable(input.substr(pos,end-pos),alignment.size());
+   if(!table.empty()) {pos=end+endMarker.size();return table;}
+  }
   if(input.find("\\rangle",pos)<end && input.find('=',pos)<end) {
    std::string action=basisActionTable(input.substr(pos,end-pos),alignment.size());
    if(!action.empty()) {pos=end+endMarker.size();return action;}
@@ -2289,7 +2318,7 @@ class TeXReader {
   --depth; return result;
  }
  public:
- explicit TeXReader(const std::string &s):input(s) {}
+ explicit TeXReader(const std::string &s,bool modular=false):input(s),modularTables(modular) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
   std::string integers=explicitIntegerList(result);
@@ -3515,7 +3544,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!matched)normalized+=s[k++];
  }
  if(splitDimensions)normalized+="))";
- std::string result=TeXReader(normalized).run(lines);
+ std::string result=TeXReader(normalized,modularPowers).run(lines);
  if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
   std::string value=trim(result),order;
   static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");

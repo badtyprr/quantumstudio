@@ -75,6 +75,18 @@ run("quantum:"+action_table.replace(r"M_2|2\rangle", r"M_2|1\rangle"), success=F
 run("quantum:"+action_table.replace(r"=|3\rangle", r"=|4\rangle"), success=False)
 
 printed_pair = data(r"quantum:$$a^{r/2}-1\;(\textrm{mod}\; N)\quad\text{and}\quad a^{r/2}+1\;(\textrm{mod}\; N).$$")["copy_text"]
+order_grid = r"\begin{array}{cc}8^{2}=1&2^{6}=1\\[1mm]5^6=1&20^2=1\end{array}"
+order_copy = data("quantum:modpowers:"+order_grid)["copy_text"]
+assert data("quantum:modpowers:"+order_copy)["copy_text"] == order_copy
+for modulus in (2, 7, 11, 21, 22):
+    results = [str(int(pow(a, r, modulus) == 1 % modulus)) for a,r in ((8,2),(2,6),(5,6),(20,2))]
+    assert data(f'quantum:replace(({order_copy}),"modulus",{modulus})')["copy_text"] == "matrix(2,2,["+",".join(results)+"])"
+run(f'quantum:replace(({order_copy}),"modulus",0)', success=False)
+run("quantum:"+order_grid, success=False)
+identity_grid = r"\begin{array}{cc}2^2=4&5^2=25\\2^1=2&3^1=3\end{array}"
+identity_copy = data("quantum:modpowers:"+identity_grid)["copy_text"]
+assert data(f'quantum:replace(({identity_copy}),"modulus",7)')["copy_text"] == "matrix(2,2,[1,1,1,1])"
+run(f'quantum:replace(({identity_copy}),"modulus",0)', success=False)
 assert data("quantum:"+printed_pair)["copy_text"] == printed_pair
 for base, expected in [(14,"vector(13,0)"), (0,"vector(14,1)")]:
     bound = f'replace(replace(replace(({printed_pair}),"r",2),"a",{base}),"N",15)'
