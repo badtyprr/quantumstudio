@@ -42,6 +42,14 @@ lessons = {
         ("IBM038", "quantum-information", 161, 0),
     "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a":
         ("IBM039", "qiskit-implementation", 20, 0),
+    "3bfb6f099daae3385bb1fd1d5e2a28eac844a1f95dbbd6024749efc6a3a4f676":
+        ("IBM040", "introduction", 0, 0),
+    "624fe895b052089a6afaf5a2ca6849918cd7291dba8932b444827ac042494249":
+        ("IBM041", "classical-information", 376, 0),
+    "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5":
+        ("IBM042", "quantum-information", 332, 0),
+    "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840":
+        ("IBM043", "qiskit-implementation", 16, 0),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
@@ -49,7 +57,8 @@ if args.lesson and lesson != args.lesson:
 cells = json.loads(data)["cells"]
 types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
-expected_cells = {"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
+multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
+expected_cells = {"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
@@ -85,6 +94,8 @@ chapter = "phase-estimation-and-factoring" if lesson in ("IBM028", "IBM029") els
 course = "fundamentals-of-quantum-algorithms"
 if single_systems:
     course,chapter = "basics-of-quantum-information","single-systems"
+if multiple_systems:
+    course,chapter = "basics-of-quantum-information","multiple-systems"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")

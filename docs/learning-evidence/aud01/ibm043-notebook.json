@@ -1,0 +1,110 @@
+{
+  "source_sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
+  "worker_sha256": "4ebc40e0e67cecb22225a7422d3748685cc3d829c6f11e64f60201fd4170427d",
+  "qiskit": "2.6.2",
+  "numpy": "2.5.5",
+  "cells": [
+    {
+      "cell": 1,
+      "id": "ccae3e0d-3195-469c-b398-00da485bb2b9",
+      "stdout": "2.6.2",
+      "displays": []
+    },
+    {
+      "cell": 3,
+      "id": "d38829a6",
+      "stdout": "",
+      "displays": []
+    },
+    {
+      "cell": 5,
+      "id": "da1a4b33",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 7,
+      "id": "3bea1435",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 9,
+      "id": "c29b76c5-8513-4e8b-b95e-0fe91fa31986",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 11,
+      "id": "3ca88116",
+      "stdout": "",
+      "displays": [
+        "Latex",
+        "Latex"
+      ]
+    },
+    {
+      "cell": 13,
+      "id": "c43069b5-07be-4e7f-99c1-c3ddbd86b5c7",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 15,
+      "id": "850cb4ff",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 17,
+      "id": "dce9679d",
+      "stdout": "",
+      "displays": [
+        "Latex"
+      ]
+    },
+    {
+      "cell": 19,
+      "id": "1e76a49f-fc55-4a48-bd56-d812ac59572b",
+      "stdout": "Measured: 1\nState after measurement:\nMeasured: 10\nState after measurement:",
+      "displays": [
+        "Latex",
+        "Latex",
+        "Latex"
+      ]
+    }
+  ],
+  "seed": 4319,
+  "measurements": [
+    {
+      "bits": 1,
+      "outcome": "1",
+      "probability": 0.3333333333333334
+    },
+    {
+      "bits": 2,
+      "outcome": "10",
+      "probability": 0.3333333333333334
+    }
+  ],
+  "calculator_checks": [
+    "(|0>@|1>)=[0;1;0;0]",
+    "(|+>@|-i>)=([1;-i;1;-i]/2)",
+    "(H@I)*(|+>@|-i>)=([1;-i;0;0]/sqrt(2))",
+    "CX*(|+>@|0>)=([1;0;0;1]/sqrt(2))",
+    "replace((qcompare(qketstate('\u03c6'),matrix(4,1,[1 \u2215 2,\u2212i \u2215 2,1 \u2215 2,\u2212i \u2215 2]),4)),qketstate(\"\u03c6\"),(|+>@|-i>))=1",
+    "(replace((qadjacent(qtensor(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),matrix(2,2,[1,0,0,1])),qnamedket('\u03c6'))),qnamedket(\"\u03c6\"),(|+>@|-i>))=([1;-i;0;0]/sqrt(2)))=1",
+    "replace((qcompare(qketstate('\u03c6'),matrix(4,1,[1 \u2215 2,\u2212i \u2215 2,1 \u2215 2,\u2212i \u2215 2]),4)),qketstate(\"\u03c6\"),|00>)=0",
+    "(replace((qadjacent(qtensor(matrix(2,2,[1 \u2215 \u221a(2),1 \u2215 \u221a(2),1 \u2215 \u221a(2),\u22121 \u2215 \u221a(2)]),matrix(2,2,[1,0,0,1])),qnamedket('\u03c6'))),qnamedket(\"\u03c6\"),|00>)=([1;-i;0;0]/sqrt(2)))=0"
+  ]
+}

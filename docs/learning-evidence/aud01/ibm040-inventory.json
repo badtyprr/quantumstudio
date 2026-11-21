@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/introduction.ipynb",
+  "source_sha256": "3bfb6f099daae3385bb1fd1d5e2a28eac844a1f95dbbd6024749efc6a3a4f676",
+  "worker_sha256": "38a7fcc0fbabcc5275bbf60c3bf9ec121d4b5971719d99e8702e0c7e946562ef",
+  "revision": "957638fa60bad7210f0e290fa61464d732e6e934",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

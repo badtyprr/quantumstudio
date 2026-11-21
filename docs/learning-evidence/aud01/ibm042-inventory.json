@@ -1,0 +1,3282 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/quantum-information.ipynb",
+  "source_sha256": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5",
+  "worker_sha256": "ef12551a1071244da3b8ce55484a6ece16b522619a6dfe8a5417a0f7da83a570",
+  "revision": "68b98f600b38d651667933a47142e2913eedaf42",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 278,
+    "diagnostic": 54
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM042-1173c31c-M001",
+      "cell": 1,
+      "start": 656,
+      "end": 659,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M002",
+      "cell": 1,
+      "start": 978,
+      "end": 990,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M003",
+      "cell": 1,
+      "start": 995,
+      "end": 1007,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M004",
+      "cell": 1,
+      "start": 1071,
+      "end": 1096,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M005",
+      "cell": 1,
+      "start": 1163,
+      "end": 1185,
+      "literal": "$\\{0,1\\}\\times\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{0, 1\\} · \\{0, 1\\}",
+      "copy": "qmul(qset(vector(0,1)),qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M006",
+      "cell": 1,
+      "start": 1312,
+      "end": 1329,
+      "literal": "$\\{00,01,10,11\\}$",
+      "status": "exact",
+      "display": "\\{0, 1, 10, 11\\}",
+      "copy": "qset(vector(0,1,10,11))"
+    },
+    {
+      "id": "IBM042-1173c31c-M007",
+      "cell": 1,
+      "start": 1417,
+      "end": 1442,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M008",
+      "cell": 1,
+      "start": 1445,
+      "end": 1718,
+      "literal": "$$\n  \\frac{1}{\\sqrt{2}} \\vert 00 \\rangle\n  - \\frac{1}{\\sqrt{6}} \\vert 01\\rangle\n  + \\frac{i}{\\sqrt{6}} \\vert 10\\rangle\n  + \\frac{1}{\\sqrt{6}} \\vert 11\\rangle, \\quad\n  \\frac{3}{5} \\vert 00\\rangle - \\frac{4}{5} \\vert 11\\rangle,\n  \\quad \\text{and} \\quad\n  \\vert 01 \\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Expected an operand; group a logical predicate when using it in arithmetic."
+    },
+    {
+      "id": "IBM042-1173c31c-M009",
+      "cell": 1,
+      "start": 1960,
+      "end": 2009,
+      "literal": "$\\vert ab\\rangle = \\vert a\\rangle \\vert b\\rangle$",
+      "status": "exact",
+      "display": "|ab⟩ = qketstate('a') ⊗ qketstate('b')",
+      "copy": "qcompare(qketstate(\"ab\"),qtensor(qketstate('a'),qketstate('b')),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M010",
+      "cell": 1,
+      "start": 2036,
+      "end": 2039,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM042-1173c31c-M011",
+      "cell": 1,
+      "start": 2044,
+      "end": 2047,
+      "literal": "$b$",
+      "status": "exact",
+      "display": "b",
+      "copy": "'b'"
+    },
+    {
+      "id": "IBM042-1173c31c-M012",
+      "cell": 1,
+      "start": 2070,
+      "end": 2295,
+      "literal": "$$\n    \\frac{1}{\\sqrt{2}} \\vert 0\\rangle\\vert 0 \\rangle\n    - \\frac{1}{\\sqrt{6}} \\vert 0\\rangle\\vert 1\\rangle\n    + \\frac{i}{\\sqrt{6}} \\vert 1\\rangle\\vert 0\\rangle\n    + \\frac{1}{\\sqrt{6}} \\vert 1\\rangle\\vert 1\\rangle.\n    $$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M013",
+      "cell": 1,
+      "start": 2375,
+      "end": 2628,
+      "literal": "$$\n    \\frac{1}{\\sqrt{2}} \\vert 0\\rangle\\otimes\\vert 0 \\rangle\n    - \\frac{1}{\\sqrt{6}} \\vert 0\\rangle\\otimes\\vert 1\\rangle\n    + \\frac{i}{\\sqrt{6}} \\vert 1\\rangle\\otimes\\vert 0\\rangle\n    + \\frac{1}{\\sqrt{6}} \\vert 1\\rangle\\otimes\\vert 1\\rangle.\n    $$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M014",
+      "cell": 1,
+      "start": 2739,
+      "end": 3068,
+      "literal": "$$\n    \\frac{1}{\\sqrt{2}} \\vert 0\\rangle_{\\mathsf{X}}\\vert 0 \\rangle_{\\mathsf{Y}}\n    - \\frac{1}{\\sqrt{6}} \\vert 0\\rangle_{\\mathsf{X}}\\vert 1\\rangle_{\\mathsf{Y}}\n    + \\frac{i}{\\sqrt{6}} \\vert 1\\rangle_{\\mathsf{X}}\\vert 0\\rangle_{\\mathsf{Y}}\n    + \\frac{1}{\\sqrt{6}} \\vert 1\\rangle_{\\mathsf{X}}\\vert 1\\rangle_{\\mathsf{Y}}.\n    $$",
+      "status": "diagnostic",
+      "message": "basis(index,dimension) requires a positive integer dimension and a zero-based index in range."
+    },
+    {
+      "id": "IBM042-1173c31c-M015",
+      "cell": 1,
+      "start": 3152,
+      "end": 3299,
+      "literal": "$$\n  \\begin{pmatrix}\n  \\frac{1}{\\sqrt{2}}\\\\[2mm]\n  - \\frac{1}{\\sqrt{6}}\\\\[2mm]\n  \\frac{i}{\\sqrt{6}}\\\\[2mm]\n  \\frac{1}{\\sqrt{6}}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M016",
+      "cell": 1,
+      "start": 3771,
+      "end": 3791,
+      "literal": "$\\vert \\phi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M017",
+      "cell": 1,
+      "start": 3830,
+      "end": 3842,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M018",
+      "cell": 1,
+      "start": 3847,
+      "end": 3867,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M019",
+      "cell": 1,
+      "start": 3906,
+      "end": 3918,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M020",
+      "cell": 1,
+      "start": 3939,
+      "end": 3986,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M021",
+      "cell": 1,
+      "start": 4026,
+      "end": 4065,
+      "literal": "$\\vert \\phi \\rangle \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M022",
+      "cell": 1,
+      "start": 4072,
+      "end": 4105,
+      "literal": "$\\vert \\phi \\otimes \\psi \\rangle$",
+      "status": "diagnostic",
+      "message": "Use a basis label or a named column vector inside a ket."
+    },
+    {
+      "id": "IBM042-1173c31c-M023",
+      "cell": 1,
+      "start": 4158,
+      "end": 4183,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M024",
+      "cell": 1,
+      "start": 4300,
+      "end": 4325,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M025",
+      "cell": 1,
+      "start": 4348,
+      "end": 4395,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M026",
+      "cell": 1,
+      "start": 4435,
+      "end": 4447,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M027",
+      "cell": 1,
+      "start": 4472,
+      "end": 4492,
+      "literal": "$\\vert \\phi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M028",
+      "cell": 1,
+      "start": 4494,
+      "end": 4506,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M029",
+      "cell": 1,
+      "start": 4531,
+      "end": 4551,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M030",
+      "cell": 1,
+      "start": 4665,
+      "end": 4712,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M031",
+      "cell": 1,
+      "start": 4841,
+      "end": 5526,
+      "literal": "$$\n\\begin{aligned}\n  \\bigl\\| \\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle \\bigr\\|\n  & = \\sqrt{\n    \\sum_{(a,b)\\in\\Sigma\\times\\Gamma}\n    \\bigl\\vert\\langle ab \\vert \\phi\\otimes\\psi \\rangle \\bigr\\vert^2\n  }\\\\[1mm]\n  & = \\sqrt{\n    \\sum_{a\\in\\Sigma} \\sum_{b\\in\\Gamma}\n    \\bigl\\vert\\langle a \\vert \\phi \\rangle\n    \\langle b \\vert \\psi \\rangle \\bigr\\vert^2\n  }\\\\[1mm]\n  & = \\sqrt{\n    \\biggl(\\sum_{a\\in\\Sigma}\n    \\bigl\\vert \\langle a \\vert \\phi \\rangle \\bigr\\vert^2\n    \\biggr)\n    \\biggl(\\sum_{b\\in\\Gamma}\n    \\bigl\\vert \\langle b \\vert \\psi \\rangle \\bigr\\vert^2\n    \\biggr)\n  }\\\\[1mm]\n  & = \\bigl\\|\n    \\vert \\phi \\rangle \\bigr\\| \\bigl\\| \\vert \\psi \\rangle\n  \\bigr\\|.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 132"
+    },
+    {
+      "id": "IBM042-1173c31c-M032",
+      "cell": 1,
+      "start": 5536,
+      "end": 5556,
+      "literal": "$\\vert \\phi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M033",
+      "cell": 1,
+      "start": 5561,
+      "end": 5581,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M034",
+      "cell": 1,
+      "start": 5617,
+      "end": 5645,
+      "literal": "$\\|\\vert \\phi \\rangle\\| = 1$",
+      "status": "exact",
+      "display": "qnorm(qnamedket('φ')) − 1 = 0",
+      "copy": "(qnorm(qnamedket('φ')) − 1)==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M035",
+      "cell": 1,
+      "start": 5650,
+      "end": 5678,
+      "literal": "$\\|\\vert \\psi \\rangle\\| = 1$",
+      "status": "exact",
+      "display": "qnorm(qnamedket('ψ')) − 1 = 0",
+      "copy": "(qnorm(qnamedket('ψ')) − 1)==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M036",
+      "cell": 1,
+      "start": 5694,
+      "end": 5749,
+      "literal": "$\\|\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle\\| = 1$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires a matrix (kets are column matrices)."
+    },
+    {
+      "id": "IBM042-1173c31c-M037",
+      "cell": 1,
+      "start": 5754,
+      "end": 5801,
+      "literal": "$\\vert \\phi \\rangle \\otimes \\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |ψ⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket('ψ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M038",
+      "cell": 1,
+      "start": 5881,
+      "end": 5935,
+      "literal": "$\\vert \\psi_0 \\rangle,\\ldots,\\vert \\psi_{n-1} \\rangle$",
+      "status": "exact",
+      "display": "qindexedketlist(\"ψ_\", 0, qsub(n, 1), [])",
+      "copy": "qindexedketlist(\"ψ_\",0,qsub(n,1),vector())"
+    },
+    {
+      "id": "IBM042-1173c31c-M039",
+      "cell": 1,
+      "start": 5973,
+      "end": 6011,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M040",
+      "cell": 1,
+      "start": 6018,
+      "end": 6085,
+      "literal": "$\\vert \\psi_{n-1} \\rangle\\otimes\\cdots\\otimes \\vert \\psi_0 \\rangle$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 38"
+    },
+    {
+      "id": "IBM042-1173c31c-M041",
+      "cell": 1,
+      "start": 6163,
+      "end": 6203,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M042",
+      "cell": 1,
+      "start": 6265,
+      "end": 6457,
+      "literal": "$$\n  \\bigl\\|\n  \\vert \\psi_{n-1} \\rangle\\otimes\\cdots\\otimes \\vert \\psi_0 \\rangle\n  \\bigr\\|\n  = \\bigl\\|\\vert \\psi_{n-1} \\rangle\\bigl\\| \\cdots\n  \\bigl\\|\\vert \\psi_0 \\rangle \\bigr\\| = 1^n = 1.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 51"
+    },
+    {
+      "id": "IBM042-1173c31c-M043",
+      "cell": 1,
+      "start": 6590,
+      "end": 6679,
+      "literal": "$$\n  \\frac{1}{\\sqrt{2}} \\vert 00\\rangle + \\frac{1}{\\sqrt{2}} \\vert 11\\rangle\n  \\tag{1}\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M044",
+      "cell": 1,
+      "start": 6851,
+      "end": 6856,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M045",
+      "cell": 1,
+      "start": 6919,
+      "end": 6937,
+      "literal": "$\\vert\\phi\\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M046",
+      "cell": 1,
+      "start": 6942,
+      "end": 6960,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M047",
+      "cell": 1,
+      "start": 6972,
+      "end": 7098,
+      "literal": "$$\n  \\vert\\phi\\rangle\\otimes\\vert\\psi\\rangle\n  = \\frac{1}{\\sqrt{2}} \\vert 00\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert 11\\rangle.\n$$",
+      "status": "exact",
+      "display": "[(−1 ∕ √(2)); 0; 0; (−1 ∕ √(2))] + |φ⟩ ⊗ |ψ⟩ = 0",
+      "copy": "((matrix(4,1,[−1 ∕ √(2),0,0,−1 ∕ √(2)]))+ (qtensor(qnamedket('φ'),qnamedket('ψ'))))==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M048",
+      "cell": 1,
+      "start": 7148,
+      "end": 7263,
+      "literal": "$$\n  \\langle 0 \\vert \\phi\\rangle\n  \\langle 1 \\vert \\psi\\rangle\n  = \\langle 01 \\vert \\phi\\otimes\\psi\\rangle\n  = 0\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 46"
+    },
+    {
+      "id": "IBM042-1173c31c-M049",
+      "cell": 1,
+      "start": 7279,
+      "end": 7312,
+      "literal": "$\\langle 0 \\vert \\phi\\rangle = 0$",
+      "status": "exact",
+      "display": "[1; 0]† |φ⟩ = 0",
+      "copy": "(qmul(qdag(matrix(2,1,vector(1,0))),qnamedket('φ')))==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M050",
+      "cell": 1,
+      "start": 7316,
+      "end": 7349,
+      "literal": "$\\langle 1 \\vert \\psi\\rangle = 0$",
+      "status": "exact",
+      "display": "[0; 1]† |ψ⟩ = 0",
+      "copy": "(qmul(qdag(matrix(2,1,vector(0,1))),qnamedket('ψ')))==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M051",
+      "cell": 1,
+      "start": 7393,
+      "end": 7523,
+      "literal": "$$\n  \\langle 0 \\vert \\phi\\rangle \\langle 0 \\vert \\psi\\rangle\n  = \\langle 00 \\vert \\phi\\otimes\\psi\\rangle\n  = \\frac{1}{\\sqrt{2}}\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 44"
+    },
+    {
+      "id": "IBM042-1173c31c-M052",
+      "cell": 1,
+      "start": 7530,
+      "end": 7660,
+      "literal": "$$\n  \\langle 1 \\vert \\phi\\rangle \\langle 1 \\vert \\psi\\rangle\n  = \\langle 11 \\vert \\phi\\otimes\\psi\\rangle\n  = \\frac{1}{\\sqrt{2}}\n$$",
+      "status": "diagnostic",
+      "message": "Expected a quantum expression at byte 44"
+    },
+    {
+      "id": "IBM042-1173c31c-M053",
+      "cell": 1,
+      "start": 7711,
+      "end": 7716,
+      "literal": "$(1)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M054",
+      "cell": 1,
+      "start": 7855,
+      "end": 7867,
+      "literal": "$1/\\sqrt{2}$",
+      "status": "exact",
+      "display": "1 ∕ √(2)",
+      "copy": "1 ∕ √(2)"
+    },
+    {
+      "id": "IBM042-1173c31c-M055",
+      "cell": 1,
+      "start": 7996,
+      "end": 8061,
+      "literal": "$$\n  \\frac{3}{5} \\vert 00\\rangle + \\frac{4}{5} \\vert 11\\rangle\n$$",
+      "status": "exact",
+      "display": "[0.6; 0; 0; 0.8]",
+      "copy": "matrix(4,1,[3 ∕ 5,0,0,4 ∕ 5])"
+    },
+    {
+      "id": "IBM042-1173c31c-M056",
+      "cell": 1,
+      "start": 8743,
+      "end": 8872,
+      "literal": "$$\n   \\frac{1}{2} \\vert 00\\rangle\n + \\frac{i}{2} \\vert 01\\rangle\n - \\frac{1}{2} \\vert 10\\rangle\n - \\frac{i}{2} \\vert 11\\rangle\n$$",
+      "status": "exact",
+      "display": "[0.5; 0.5i; −0.5; −0.5i]",
+      "copy": "matrix(4,1,[1 ∕ 2,i ∕ 2,−1 ∕ 2,−i ∕ 2])"
+    },
+    {
+      "id": "IBM042-1173c31c-M057",
+      "cell": 1,
+      "start": 8909,
+      "end": 9238,
+      "literal": "$$\n  \\frac{1}{2} \\vert 00\\rangle\n  + \\frac{i}{2} \\vert 01\\rangle\n  - \\frac{1}{2} \\vert 10\\rangle\n  - \\frac{i}{2} \\vert 11\\rangle\n  =\n  \\biggl(\n    \\frac{1}{\\sqrt{2}}\\vert 0\\rangle - \\frac{1}{\\sqrt{2}}\\vert 1\\rangle\n  \\biggr)\n  \\otimes\n  \\biggl(\n    \\frac{1}{\\sqrt{2}}\\vert 0\\rangle + \\frac{i}{\\sqrt{2}}\\vert 1\\rangle\n  \\biggr)\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M058",
+      "cell": 1,
+      "start": 9459,
+      "end": 9922,
+      "literal": "$$\n\\begin{aligned}\n  \\vert \\phi^+ \\rangle & = \\frac{1}{\\sqrt{2}} \\vert 00 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 11 \\rangle \\\\[3mm]\n  \\vert \\phi^- \\rangle & = \\frac{1}{\\sqrt{2}} \\vert 00 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 11 \\rangle \\\\[3mm]\n  \\vert \\psi^+ \\rangle & = \\frac{1}{\\sqrt{2}} \\vert 01 \\rangle + \\frac{1}{\\sqrt{2}} \\vert 10 \\rangle \\\\[3mm]\n  \\vert \\psi^- \\rangle & = \\frac{1}{\\sqrt{2}} \\vert 01 \\rangle - \\frac{1}{\\sqrt{2}} \\vert 10 \\rangle\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  1\n\n2.  1\n\n3.  1\n\n4.  1",
+      "copy": "\\begin{gathered}1\\\\1\\\\1\\\\1\\end{gathered}"
+    },
+    {
+      "id": "IBM042-1173c31c-M059",
+      "cell": 1,
+      "start": 10196,
+      "end": 10216,
+      "literal": "$\\vert\\phi^+\\rangle$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M060",
+      "cell": 1,
+      "start": 10422,
+      "end": 10530,
+      "literal": "$$\n  \\bigl\\{\\vert \\phi^+ \\rangle, \\vert \\phi^- \\rangle, \\vert \\psi^+ \\rangle, \\vert \\psi^- \\rangle\\bigr\\}\n$$",
+      "status": "exact",
+      "display": "\\{[(1 ∕ √(2)); 0; 0; (1 ∕ √(2))], [(1 ∕ √(2)); 0; 0; (−1 ∕ √(2))], [0; (1 ∕ √(2)); (1 ∕ √(2)); 0], [0; (1 ∕ √(2)); (−1 ∕ √(2)); 0]\\}",
+      "copy": "qset(vector(matrix(4,1,[1 ∕ √(2),0,0,1 ∕ √(2)]),matrix(4,1,[1 ∕ √(2),0,0,−1 ∕ √(2)]),matrix(4,1,[0,1 ∕ √(2),1 ∕ √(2),0]),matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0])))"
+    },
+    {
+      "id": "IBM042-1173c31c-M061",
+      "cell": 1,
+      "start": 10824,
+      "end": 10936,
+      "literal": "$$\n  \\vert 0 0 \\rangle\n  = \\frac{1}{\\sqrt{2}} \\vert \\phi^+\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert \\phi^-\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M062",
+      "cell": 1,
+      "start": 11193,
+      "end": 11277,
+      "literal": "$$\n  \\frac{1}{\\sqrt{2}} \\vert 000\\rangle +\n  \\frac{1}{\\sqrt{2}} \\vert 111\\rangle.\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(8,1,[1 ∕ √(2),0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M063",
+      "cell": 1,
+      "start": 11325,
+      "end": 11449,
+      "literal": "$$\n  \\frac{1}{\\sqrt{3}} \\vert 001\\rangle +\n  \\frac{1}{\\sqrt{3}} \\vert 010\\rangle +\n  \\frac{1}{\\sqrt{3}} \\vert 100\\rangle.\n$$",
+      "status": "exact",
+      "display": "[0; (1 ∕ √(3)); (1 ∕ √(3)); 0; (1 ∕ √(3)); 0; 0; 0]",
+      "copy": "matrix(8,1,[0,1 ∕ √(3),1 ∕ √(3),0,1 ∕ √(3),0,0,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M064",
+      "cell": 1,
+      "start": 11990,
+      "end": 12002,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M065",
+      "cell": 1,
+      "start": 12004,
+      "end": 12016,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M066",
+      "cell": 1,
+      "start": 12022,
+      "end": 12034,
+      "literal": "$\\mathsf{Z}$",
+      "status": "exact",
+      "display": "Z",
+      "copy": "'Z'"
+    },
+    {
+      "id": "IBM042-1173c31c-M067",
+      "cell": 1,
+      "start": 12069,
+      "end": 12081,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M068",
+      "cell": 1,
+      "start": 12109,
+      "end": 12121,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M069",
+      "cell": 1,
+      "start": 12165,
+      "end": 12177,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M070",
+      "cell": 1,
+      "start": 12182,
+      "end": 12194,
+      "literal": "$\\mathsf{Z}$",
+      "status": "exact",
+      "display": "Z",
+      "copy": "'Z'"
+    },
+    {
+      "id": "IBM042-1173c31c-M071",
+      "cell": 1,
+      "start": 12198,
+      "end": 12248,
+      "literal": "$\\{\\clubsuit,\\diamondsuit,\\heartsuit,\\spadesuit\\}$",
+      "status": "exact",
+      "display": "\\{'♣', '♢', '♡', '♠'\\}",
+      "copy": "qset(vector('♣','♢','♡','♠'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M072",
+      "cell": 1,
+      "start": 12251,
+      "end": 12513,
+      "literal": "$$\n  \\frac{1}{2} \\vert 0 \\rangle \\vert \\heartsuit\\rangle\n  \\vert \\heartsuit \\rangle\n  + \\frac{1}{2} \\vert 1 \\rangle \\vert \\spadesuit\\rangle\n  \\vert \\heartsuit \\rangle\n  - \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle \\vert \\heartsuit\\rangle\n  \\vert \\diamondsuit \\rangle.\n$$",
+      "status": "exact",
+      "display": "0.5 · (([1; 0] ⊗ |♡⟩) ⊗ |♡⟩) + 0.5 · (([0; 1] ⊗ |♠⟩) ⊗ |♡⟩) − 1 / √(2) · (([1; 0] ⊗ |♡⟩) ⊗ |♢⟩)",
+      "copy": "qsub(qadd(qadjacent(1 ∕ 2,qtensor(qtensor(matrix(2,1,vector(1,0)),qnamedket('♡')),qnamedket('♡'))),qadjacent(1 ∕ 2,qtensor(qtensor(matrix(2,1,vector(0,1)),qnamedket('♠')),qnamedket('♡')))),qadjacent(1 ∕ qsqrt(2),qtensor(qtensor(matrix(2,1,vector(1,0)),qnamedket('♡')),qnamedket('♢'))))"
+    },
+    {
+      "id": "IBM042-1173c31c-M073",
+      "cell": 1,
+      "start": 12574,
+      "end": 12586,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M074",
+      "cell": 1,
+      "start": 12588,
+      "end": 12600,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M075",
+      "cell": 1,
+      "start": 12606,
+      "end": 12618,
+      "literal": "$\\mathsf{Z}$",
+      "status": "exact",
+      "display": "Z",
+      "copy": "'Z'"
+    },
+    {
+      "id": "IBM042-1173c31c-M076",
+      "cell": 1,
+      "start": 12664,
+      "end": 12675,
+      "literal": "$\\{0,1,2\\}$",
+      "status": "exact",
+      "display": "\\{0, 1, 2\\}",
+      "copy": "qset(vector(0,1,2))"
+    },
+    {
+      "id": "IBM042-1173c31c-M077",
+      "cell": 1,
+      "start": 12678,
+      "end": 12849,
+      "literal": "$$\n  \\frac{\n    \\vert 012 \\rangle\n    - \\vert 021 \\rangle\n    + \\vert 120 \\rangle\n    - \\vert 102 \\rangle\n    + \\vert 201 \\rangle\n    - \\vert 210 \\rangle\n  }{\\sqrt{6}}.\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM042-1173c31c-M078",
+      "cell": 1,
+      "start": 12890,
+      "end": 12901,
+      "literal": "$\\{0,1,2\\}$",
+      "status": "exact",
+      "display": "\\{0, 1, 2\\}",
+      "copy": "qset(vector(0,1,2))"
+    },
+    {
+      "id": "IBM042-1173c31c-M079",
+      "cell": 1,
+      "start": 13051,
+      "end": 13069,
+      "literal": "$\\{0,\\ldots,d-1\\}$",
+      "status": "exact",
+      "display": "{0, …, d − 1} (integer endpoints)",
+      "copy": "qindexrange(0,qsub('d',1))"
+    },
+    {
+      "id": "IBM042-1173c31c-M080",
+      "cell": 1,
+      "start": 13097,
+      "end": 13100,
+      "literal": "$d$",
+      "status": "exact",
+      "display": "d",
+      "copy": "'d'"
+    },
+    {
+      "id": "IBM042-1173c31c-M081",
+      "cell": 1,
+      "start": 13280,
+      "end": 13288,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M082",
+      "cell": 1,
+      "start": 13337,
+      "end": 13357,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M083",
+      "cell": 1,
+      "start": 13461,
+      "end": 13473,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M084",
+      "cell": 1,
+      "start": 13499,
+      "end": 13542,
+      "literal": "$\\vert \\langle a \\vert \\psi \\rangle\\vert^2$",
+      "status": "exact",
+      "display": "|qmul(qdag(qketstate('a')), qnamedket('ψ'))|²",
+      "copy": "|qmul(qdag(qketstate('a')), qnamedket('ψ'))|²"
+    },
+    {
+      "id": "IBM042-1173c31c-M085",
+      "cell": 1,
+      "start": 13771,
+      "end": 13809,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M086",
+      "cell": 1,
+      "start": 13850,
+      "end": 13880,
+      "literal": "$\\Sigma_0,\\ldots,\\Sigma_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M087",
+      "cell": 1,
+      "start": 13913,
+      "end": 13953,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M088",
+      "cell": 1,
+      "start": 14037,
+      "end": 14077,
+      "literal": "$\\Sigma_{n-1}\\times\\cdots\\times\\Sigma_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 25"
+    },
+    {
+      "id": "IBM042-1173c31c-M089",
+      "cell": 1,
+      "start": 14156,
+      "end": 14174,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M090",
+      "cell": 1,
+      "start": 14240,
+      "end": 14303,
+      "literal": "$(a_{n-1},\\ldots,a_0)\\in\\Sigma_{n-1}\\times\\cdots\\times\\Sigma_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 48"
+    },
+    {
+      "id": "IBM042-1173c31c-M091",
+      "cell": 1,
+      "start": 14329,
+      "end": 14385,
+      "literal": "$\\vert\\langle a_{n-1}\\cdots a_0\\vert \\psi\\rangle\\vert^2$",
+      "status": "exact",
+      "display": "|qmul(qdag(qregisterfamily(\"a_\", qsub(n, 1), 0, [])), qnamedket('ψ'))|²",
+      "copy": "(abs(qmul(qdag(qregisterfamily(\"a_\",qsub(n,1),0,vector())),qnamedket('ψ'))))^(2)"
+    },
+    {
+      "id": "IBM042-1173c31c-M092",
+      "cell": 1,
+      "start": 14412,
+      "end": 14424,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M093",
+      "cell": 1,
+      "start": 14429,
+      "end": 14441,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M094",
+      "cell": 1,
+      "start": 14476,
+      "end": 14589,
+      "literal": "$$\n\\frac{3}{5} \\vert 0\\rangle \\vert \\heartsuit \\rangle\n- \\frac{4i}{5} \\vert 1\\rangle \\vert \\spadesuit \\rangle,\n$$",
+      "status": "exact",
+      "display": "0.6 · ([1; 0] ⊗ |♡⟩) − 0.2 · 4 · i · ([0; 1] ⊗ |♠⟩)",
+      "copy": "qsub(qadjacent(3 ∕ 5,qtensor(matrix(2,1,vector(1,0)),qnamedket('♡'))),qadjacent(qadjacent(4, i) ∕ 5,qtensor(matrix(2,1,vector(0,1)),qnamedket('♠'))))"
+    },
+    {
+      "id": "IBM042-1173c31c-M095",
+      "cell": 1,
+      "start": 14671,
+      "end": 14687,
+      "literal": "$(0,\\heartsuit)$",
+      "status": "exact",
+      "display": "(0, '♡')",
+      "copy": "qtuple(vector(0,'♡'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M096",
+      "cell": 1,
+      "start": 14705,
+      "end": 14711,
+      "literal": "$9/25$",
+      "status": "exact",
+      "display": "0.36",
+      "copy": "9 ∕ 25"
+    },
+    {
+      "id": "IBM042-1173c31c-M097",
+      "cell": 1,
+      "start": 14728,
+      "end": 14744,
+      "literal": "$(1,\\spadesuit)$",
+      "status": "exact",
+      "display": "(1, '♠')",
+      "copy": "qtuple(vector(1,'♠'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M098",
+      "cell": 1,
+      "start": 14762,
+      "end": 14769,
+      "literal": "$16/25$",
+      "status": "exact",
+      "display": "0.64",
+      "copy": "16 ∕ 25"
+    },
+    {
+      "id": "IBM042-1173c31c-M099",
+      "cell": 1,
+      "start": 14978,
+      "end": 14990,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M100",
+      "cell": 1,
+      "start": 14995,
+      "end": 15007,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M101",
+      "cell": 1,
+      "start": 15036,
+      "end": 15044,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M102",
+      "cell": 1,
+      "start": 15049,
+      "end": 15057,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M103",
+      "cell": 1,
+      "start": 15112,
+      "end": 15137,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M104",
+      "cell": 1,
+      "start": 15154,
+      "end": 15247,
+      "literal": "$$\n  \\vert \\psi \\rangle\n  = \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} \\alpha_{ab} \\vert ab\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 60"
+    },
+    {
+      "id": "IBM042-1173c31c-M105",
+      "cell": 1,
+      "start": 15255,
+      "end": 15301,
+      "literal": "$\\{\\alpha_{ab} : (a,b)\\in\\Sigma\\times\\Gamma\\}$",
+      "status": "diagnostic",
+      "message": "An indexed image requires a symbol index at byte 45"
+    },
+    {
+      "id": "IBM042-1173c31c-M106",
+      "cell": 1,
+      "start": 15349,
+      "end": 15421,
+      "literal": "$$\n  \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} \\vert \\alpha_{ab} \\vert^2 = 1,\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM042-1173c31c-M107",
+      "cell": 1,
+      "start": 15446,
+      "end": 15466,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M108",
+      "cell": 1,
+      "start": 15546,
+      "end": 15558,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M109",
+      "cell": 1,
+      "start": 15563,
+      "end": 15575,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M110",
+      "cell": 1,
+      "start": 15617,
+      "end": 15645,
+      "literal": "$(a,b)\\in\\Sigma\\times\\Gamma$",
+      "status": "diagnostic",
+      "message": "A set sum requires a finite flat vector of at most 1024 scalar indices."
+    },
+    {
+      "id": "IBM042-1173c31c-M111",
+      "cell": 1,
+      "start": 15672,
+      "end": 15760,
+      "literal": "$$\n  \\bigl\\vert \\langle ab \\vert \\psi \\rangle \\bigr\\vert^2 = \\vert\\alpha_{ab}\\vert^2.\n$$",
+      "status": "exact",
+      "display": "|\"α_ab\"| = −√(|qmul(qdag(qnamedket(\"ab\")), qnamedket('ψ'))|²) or |\"α_ab\"| = √(|qmul(qdag(qnamedket(\"ab\")), qnamedket('ψ'))|²)",
+      "copy": "((qbars(\"α_ab\"))==(−√(|qmul(qdag(qnamedket(\"ab\")), qnamedket('ψ'))|²)) or (qbars(\"α_ab\"))==(√(|qmul(qdag(qnamedket(\"ab\")), qnamedket('ψ'))|²)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M112",
+      "cell": 1,
+      "start": 15811,
+      "end": 15823,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M113",
+      "cell": 1,
+      "start": 15870,
+      "end": 15882,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M114",
+      "cell": 1,
+      "start": 15921,
+      "end": 16047,
+      "literal": "$$\n  \\sum_{b\\in\\Gamma} \\bigl\\vert \\langle ab \\vert \\psi \\rangle \\bigr\\vert^{2} = \\sum_{b\\in\\Gamma} \\vert\\alpha_{ab}\\vert^2.\n$$",
+      "status": "exact",
+      "display": "∑_{k ∈ 'Γ'} (|qmul(qdag(qnamedket(\"ab\")), qnamedket('ψ'))|^2) = ∑_{j ∈ 'Γ'} (|\"α_ab\"|^2)",
+      "copy": "(qsumset(qpower(abs(qmul(qdag(qnamedket(\"ab\")),qnamedket('ψ'))),2),'Γ',\"qboundindex_0\"))==(qsumset(qpower(qbars(\"α_ab\"),2),'Γ',\"qboundindex_1\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M115",
+      "cell": 1,
+      "start": 16220,
+      "end": 16232,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M116",
+      "cell": 1,
+      "start": 16285,
+      "end": 16297,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M117",
+      "cell": 1,
+      "start": 16412,
+      "end": 16424,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M118",
+      "cell": 1,
+      "start": 16460,
+      "end": 16472,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M119",
+      "cell": 1,
+      "start": 16520,
+      "end": 16532,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M120",
+      "cell": 1,
+      "start": 16564,
+      "end": 16580,
+      "literal": "$\\vert a\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a')",
+      "copy": "qketstate('a')"
+    },
+    {
+      "id": "IBM042-1173c31c-M121",
+      "cell": 1,
+      "start": 16660,
+      "end": 16672,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M122",
+      "cell": 1,
+      "start": 16732,
+      "end": 16750,
+      "literal": "$\\vert\\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M123",
+      "cell": 1,
+      "start": 16755,
+      "end": 16851,
+      "literal": "$$\n  \\vert\\psi\\rangle\n  = \\sum_{a\\in\\Sigma}\n  \\vert a \\rangle\n  \\otimes \\vert \\phi_a \\rangle,\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = ∑_{k ∈ 'Σ'} (|k⟩ ⊗ |φ_k⟩)",
+      "copy": "qcompare(qketstate('ψ'),qsumset(qtensor(qketstate(\"qboundindex_0\"),qindexedket(qindexedlabel(\"φ_\",\"qboundindex_0\",\"\"))),'Σ',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M124",
+      "cell": 1,
+      "start": 16860,
+      "end": 16935,
+      "literal": "$$\n  \\vert \\phi_a \\rangle = \\sum_{b\\in\\Gamma} \\alpha_{ab} \\vert b\\rangle\n$$",
+      "status": "exact",
+      "display": "|φ_a⟩ = ∑_{k ∈ 'Γ'} (\"α_ab\" |k⟩)",
+      "copy": "qcompare(qketstate(\"φ_a\"),qsumset(qadjacent(\"α_ab\",qketstate(\"qboundindex_0\")),'Γ',\"qboundindex_0\"),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M125",
+      "cell": 1,
+      "start": 16946,
+      "end": 16958,
+      "literal": "$a\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ'",
+      "copy": "qmember('a','Σ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M126",
+      "cell": 1,
+      "start": 17155,
+      "end": 17167,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M127",
+      "cell": 1,
+      "start": 17189,
+      "end": 17192,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM042-1173c31c-M128",
+      "cell": 1,
+      "start": 17209,
+      "end": 17300,
+      "literal": "$$\n  \\sum_{b\\in\\Gamma} \\vert\\alpha_{ab}\\vert^2 = \\bigl\\| \\vert \\phi_a \\rangle \\bigr\\|^2.\n$$",
+      "status": "exact",
+      "display": "∑_{k ∈ 'Γ'} (|\"α_ab\"|^2) = qnorm(qnamedket(\"φ_a\"))²",
+      "copy": "(qsumset(qpower(qbars(\"α_ab\"),2),'Γ',\"qboundindex_0\"))==(qnorm(qnamedket(\"φ_a\"))²)"
+    },
+    {
+      "id": "IBM042-1173c31c-M129",
+      "cell": 1,
+      "start": 17356,
+      "end": 17368,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M130",
+      "cell": 1,
+      "start": 17388,
+      "end": 17391,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM042-1173c31c-M131",
+      "cell": 1,
+      "start": 17423,
+      "end": 17448,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M132",
+      "cell": 1,
+      "start": 17467,
+      "end": 17553,
+      "literal": "$$\n  \\vert a \\rangle \\otimes \\frac{\\vert \\phi_a \\rangle}{\\|\\vert \\phi_a \\rangle\\|}.\n$$",
+      "status": "exact",
+      "display": "qketstate('a') ⊗ |φ_a⟩ / qnorm(qnamedket(\"φ_a\"))",
+      "copy": "qtensor(qketstate('a'),qnamedket(\"φ_a\") ∕ qnorm(qnamedket(\"φ_a\")))"
+    },
+    {
+      "id": "IBM042-1173c31c-M133",
+      "cell": 1,
+      "start": 17704,
+      "end": 17716,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M134",
+      "cell": 1,
+      "start": 17745,
+      "end": 17748,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM042-1173c31c-M135",
+      "cell": 1,
+      "start": 17772,
+      "end": 17817,
+      "literal": "$\\vert a \\rangle \\otimes \\vert \\phi_a\\rangle$",
+      "status": "exact",
+      "display": "qketstate('a') ⊗ |φ_a⟩",
+      "copy": "qtensor(qketstate('a'),qnamedket(\"φ_a\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M136",
+      "cell": 1,
+      "start": 17846,
+      "end": 17865,
+      "literal": "$\\vert \\psi\\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M137",
+      "cell": 1,
+      "start": 17911,
+      "end": 17923,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M138",
+      "cell": 1,
+      "start": 17949,
+      "end": 17952,
+      "literal": "$a$",
+      "status": "exact",
+      "display": "a",
+      "copy": "'a'"
+    },
+    {
+      "id": "IBM042-1173c31c-M139",
+      "cell": 1,
+      "start": 18044,
+      "end": 18068,
+      "literal": "$\\|\\vert\\phi_a\\rangle\\|$",
+      "status": "exact",
+      "display": "qnorm(qnamedket(\"φ_a\"))",
+      "copy": "qnorm(qnamedket(\"φ_a\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M140",
+      "cell": 1,
+      "start": 18141,
+      "end": 18144,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M141",
+      "cell": 1,
+      "start": 18360,
+      "end": 18385,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M142",
+      "cell": 1,
+      "start": 18422,
+      "end": 18609,
+      "literal": "$$\n  \\vert \\psi \\rangle\n  = \\frac{1}{\\sqrt{2}} \\vert 00 \\rangle\n  - \\frac{1}{\\sqrt{6}} \\vert 01 \\rangle\n  + \\frac{i}{\\sqrt{6}} \\vert 10 \\rangle\n  + \\frac{1}{\\sqrt{6}} \\vert 11 \\rangle.\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "qcompare(qketstate('ψ'),matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)]),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M143",
+      "cell": 1,
+      "start": 18660,
+      "end": 18672,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M144",
+      "cell": 1,
+      "start": 18707,
+      "end": 18985,
+      "literal": "$$\n  \\vert \\psi \\rangle\n  = \\vert 0 \\rangle \\otimes \\biggl(\n    \\frac{1}{\\sqrt{2}}  \\vert 0 \\rangle\n    - \\frac{1}{\\sqrt{6}} \\vert 1 \\rangle \\biggr)\n    + \\vert 1 \\rangle \\otimes \\biggl(\n    \\frac{i}{\\sqrt{6}} \\vert 0 \\rangle\n    + \\frac{1}{\\sqrt{6}} \\vert 1 \\rangle \\biggr).\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "qcompare(qketstate('ψ'),matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)]),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M145",
+      "cell": 1,
+      "start": 19097,
+      "end": 19100,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM042-1173c31c-M146",
+      "cell": 1,
+      "start": 19105,
+      "end": 19251,
+      "literal": "$$\n  \\biggl\\|\\frac{1}{\\sqrt{2}}  \\vert 0 \\rangle\n  -\\frac{1}{\\sqrt{6}} \\vert 1 \\rangle\\biggr\\|^2\n  = \\frac{1}{2} + \\frac{1}{6}\n  = \\frac{2}{3},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M147",
+      "cell": 1,
+      "start": 19280,
+      "end": 19305,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M148",
+      "cell": 1,
+      "start": 19315,
+      "end": 19556,
+      "literal": "$$\n  \\vert 0\\rangle \\otimes\n  \\frac{\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n  -\\frac{1}{\\sqrt{6}} \\vert 1 \\rangle}{\\sqrt{\\frac{2}{3}}}\n  = \\vert 0\\rangle \\otimes\n  \\Biggl( \\frac{\\sqrt{3}}{2} \\vert 0 \\rangle - \\frac{1}{2} \\vert 1\\rangle\\Biggr);\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 136"
+    },
+    {
+      "id": "IBM042-1173c31c-M149",
+      "cell": 1,
+      "start": 19623,
+      "end": 19626,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M150",
+      "cell": 1,
+      "start": 19631,
+      "end": 19778,
+      "literal": "$$\n  \\biggl\\|\\frac{i}{\\sqrt{6}}  \\vert 0 \\rangle\n  + \\frac{1}{\\sqrt{6}} \\vert 1 \\rangle\\biggr\\|^2\n  = \\frac{1}{6} + \\frac{1}{6}\n  = \\frac{1}{3},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M151",
+      "cell": 1,
+      "start": 19807,
+      "end": 19832,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M152",
+      "cell": 1,
+      "start": 19842,
+      "end": 20091,
+      "literal": "$$\n  \\vert 1\\rangle \\otimes\n  \\frac{\\frac{i}{\\sqrt{6}} \\vert 0 \\rangle\n  +\\frac{1}{\\sqrt{6}} \\vert 1 \\rangle}{\\sqrt{\\frac{1}{3}}}\n  = \\vert 1\\rangle \\otimes\n  \\Biggl( \\frac{i}{\\sqrt{2}} \\vert 0 \\rangle\n  +\\frac{1}{\\sqrt{2}} \\vert 1\\rangle\\Biggr).\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M153",
+      "cell": 1,
+      "start": 20182,
+      "end": 20194,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M154",
+      "cell": 1,
+      "start": 20262,
+      "end": 20282,
+      "literal": "$\\vert \\psi \\rangle$",
+      "status": "exact",
+      "display": "|ψ⟩",
+      "copy": "qketstate('ψ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M155",
+      "cell": 1,
+      "start": 20287,
+      "end": 20563,
+      "literal": "$$\n  \\vert \\psi \\rangle\n  = \\biggl(\n    \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n    + \\frac{i}{\\sqrt{6}} \\vert 1 \\rangle\n  \\biggr) \\otimes \\vert 0\\rangle\n  + \\biggl(\n    -\\frac{1}{\\sqrt{6}} \\vert 0 \\rangle\n    +\\frac{1}{\\sqrt{6}} \\vert 1\\rangle\n  \\biggr) \\otimes \\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "|ψ⟩ = [(1 ∕ √(2)); (−1 ∕ √(6)); (0.166666666666666666666666666667i ⋅ √(6)); (1 ∕ √(6))]",
+      "copy": "qcompare(qketstate('ψ'),matrix(4,1,[1 ∕ √(2),−1 ∕ √(6),(i ⋅ √(6)) ∕ 6,1 ∕ √(6)]),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M156",
+      "cell": 1,
+      "start": 20605,
+      "end": 20617,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M157",
+      "cell": 1,
+      "start": 20636,
+      "end": 20639,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM042-1173c31c-M158",
+      "cell": 1,
+      "start": 20644,
+      "end": 20788,
+      "literal": "$$\n\\biggl\\| \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n    + \\frac{i}{\\sqrt{6}} \\vert 1 \\rangle \\biggr\\|^2\n= \\frac{1}{2} + \\frac{1}{6} = \\frac{2}{3},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M159",
+      "cell": 1,
+      "start": 20817,
+      "end": 20842,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M160",
+      "cell": 1,
+      "start": 20852,
+      "end": 21093,
+      "literal": "$$\n  \\frac{\\frac{1}{\\sqrt{2}} \\vert 0 \\rangle\n    + \\frac{i}{\\sqrt{6}} \\vert 1 \\rangle}{\\sqrt{\\frac{2}{3}}} \\otimes \\vert 0 \\rangle\n  = \\biggl(\\frac{\\sqrt{3}}{2} \\vert 0 \\rangle + \\frac{i}{2} \\vert 1 \\rangle\\biggr) \\otimes\\vert 0 \\rangle;\n$$",
+      "status": "diagnostic",
+      "message": "Unexpected notation at byte 136"
+    },
+    {
+      "id": "IBM042-1173c31c-M161",
+      "cell": 1,
+      "start": 21147,
+      "end": 21150,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M162",
+      "cell": 1,
+      "start": 21155,
+      "end": 21308,
+      "literal": "$$\n  \\biggl\\|\n    -\\frac{1}{\\sqrt{6}} \\vert 0 \\rangle\n    +\\frac{1}{\\sqrt{6}} \\vert 1\\rangle\n  \\biggr\\|^2\n  = \\frac{1}{6} + \\frac{1}{6} = \\frac{1}{3},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M163",
+      "cell": 1,
+      "start": 21337,
+      "end": 21362,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M164",
+      "cell": 1,
+      "start": 21372,
+      "end": 21623,
+      "literal": "$$\n\\frac{\n  -\\frac{1}{\\sqrt{6}} \\vert 0 \\rangle\n    +\\frac{1}{\\sqrt{6}} \\vert 1\\rangle }{\\frac{1}{\\sqrt{3}}}\n  \\otimes \\vert 1\\rangle\n  = \\biggl(-\\frac{1}{\\sqrt{2}} \\vert 0\\rangle\n  + \\frac{1}{\\sqrt{2}} \\vert 1\\rangle\\biggr) \\otimes \\vert 1\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M165",
+      "cell": 1,
+      "start": 22014,
+      "end": 22039,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M166",
+      "cell": 1,
+      "start": 22075,
+      "end": 22140,
+      "literal": "$$\n  \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} p_{ab} \\vert ab\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM042-1173c31c-M167",
+      "cell": 1,
+      "start": 22206,
+      "end": 22218,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M168",
+      "cell": 1,
+      "start": 22229,
+      "end": 22370,
+      "literal": "$$\n  \\sum_{a\\in\\Sigma} \\biggl( \\sum_{b\\in\\Gamma} p_{ab}\\biggr) \\vert a\\rangle =\n  \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} p_{ab} \\vert a\\rangle.\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 114"
+    },
+    {
+      "id": "IBM042-1173c31c-M169",
+      "cell": 1,
+      "start": 22483,
+      "end": 22574,
+      "literal": "$$\n  \\vert \\psi \\rangle = \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} \\alpha_{ab} \\vert ab\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 58"
+    },
+    {
+      "id": "IBM042-1173c31c-M170",
+      "cell": 1,
+      "start": 22588,
+      "end": 22656,
+      "literal": "$$\n  \\sum_{(a,b)\\in\\Sigma\\times\\Gamma} \\alpha_{ab} \\vert a\\rangle\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM042-1173c31c-M171",
+      "cell": 1,
+      "start": 23683,
+      "end": 23719,
+      "literal": "$(\\mathsf{X}_4,\\ldots,\\mathsf{X}_0)$",
+      "status": "exact",
+      "display": "()",
+      "copy": "qtuple(vector())"
+    },
+    {
+      "id": "IBM042-1173c31c-M172",
+      "cell": 1,
+      "start": 23788,
+      "end": 23838,
+      "literal": "$\\{\\clubsuit,\\diamondsuit,\\heartsuit,\\spadesuit\\}$",
+      "status": "exact",
+      "display": "\\{'♣', '♢', '♡', '♠'\\}",
+      "copy": "qset(vector('♣','♢','♡','♠'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M173",
+      "cell": 1,
+      "start": 23841,
+      "end": 24563,
+      "literal": "$$\n\\begin{gathered}\n\\sqrt{\\frac{1}{7}}\n\\vert\\heartsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\spadesuit\\rangle \\vert\\spadesuit\\rangle\n+ \\sqrt{\\frac{2}{7}}\n\\vert\\diamondsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\spadesuit\\rangle \\vert\\clubsuit\\rangle\n+ \\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle \\vert\\spadesuit\\rangle \\vert\\clubsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\clubsuit\\rangle \\\\\n-i \\sqrt{\\frac{2}{7}}\n\\vert\\heartsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\heartsuit\\rangle \\vert\\heartsuit\\rangle\n- \\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle \\vert\\heartsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\spadesuit\\rangle \\vert\\clubsuit\\rangle.\n\\end{gathered}\n$$",
+      "status": "exact",
+      "display": "1.  √(0.142857142857142857142857142857) · ((((|♡⟩ ⊗ |♣⟩) ⊗ |♢⟩) ⊗ |♠⟩) ⊗ |♠⟩) + √(0.285714285714285714285714285714) · ((((|♢⟩ ⊗ |♣⟩) ⊗ |♢⟩) ⊗ |♠⟩) ⊗ |♣⟩) + √(0.142857142857142857142857142857) · ((((|♠⟩ ⊗ |♠⟩) ⊗ |♣⟩) ⊗ |♢⟩) ⊗ |♣⟩)\n\n2.  −i · √(0.285714285714285714285714285714) · ((((|♡⟩ ⊗ |♣⟩) ⊗ |♢⟩) ⊗ |♡⟩) ⊗ |♡⟩) − √(0.142857142857142857142857142857) · ((((|♠⟩ ⊗ |♡⟩) ⊗ |♣⟩) ⊗ |♠⟩) ⊗ |♣⟩)",
+      "copy": "\\begin{gathered}qadd(qadd(qadjacent(qsqrt(1 ∕ 7),qtensor(qtensor(qtensor(qtensor(qnamedket('♡'),qnamedket('♣')),qnamedket('♢')),qnamedket('♠')),qnamedket('♠'))),qadjacent(qsqrt(2 ∕ 7),qtensor(qtensor(qtensor(qtensor(qnamedket('♢'),qnamedket('♣')),qnamedket('♢')),qnamedket('♠')),qnamedket('♣')))),qadjacent(qsqrt(1 ∕ 7),qtensor(qtensor(qtensor(qtensor(qnamedket('♠'),qnamedket('♠')),qnamedket('♣')),qnamedket('♢')),qnamedket('♣'))))\\\\qsub(qadjacent(qadjacent(−i,qsqrt(2 ∕ 7)),qtensor(qtensor(qtensor(qtensor(qnamedket('♡'),qnamedket('♣')),qnamedket('♢')),qnamedket('♡')),qnamedket('♡'))),qadjacent(qsqrt(1 ∕ 7),qtensor(qtensor(qtensor(qtensor(qnamedket('♠'),qnamedket('♡')),qnamedket('♣')),qnamedket('♠')),qnamedket('♣'))))\\end{gathered}"
+    },
+    {
+      "id": "IBM042-1173c31c-M174",
+      "cell": 1,
+      "start": 25299,
+      "end": 26072,
+      "literal": "$$\n\\begin{gathered}\n\\sqrt{\\frac{1}{7}}\n\\vert\\heartsuit\\rangle_4 \\vert\\clubsuit\\rangle_3 \\vert\\diamondsuit\\rangle_2 \\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n+ \\sqrt{\\frac{2}{7}}\n\\vert\\diamondsuit\\rangle_4 \\vert\\clubsuit\\rangle_3 \\vert\\diamondsuit\\rangle_2 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\\\\\n+ \\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle_4 \\vert\\spadesuit\\rangle_3 \\vert\\clubsuit\\rangle_2 \\vert\\diamondsuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n-i \\sqrt{\\frac{2}{7}}\n\\vert\\heartsuit\\rangle_4 \\vert\\clubsuit\\rangle_3 \\vert\\diamondsuit\\rangle_2 \\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0\\\\\n- \\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle_4 \\vert\\heartsuit\\rangle_3 \\vert\\clubsuit\\rangle_2 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0.\n\\end{gathered}\n$$",
+      "status": "diagnostic",
+      "message": "Put a basis dimension expression in braces or parentheses."
+    },
+    {
+      "id": "IBM042-1173c31c-M175",
+      "cell": 1,
+      "start": 26210,
+      "end": 26222,
+      "literal": "$0,\\ldots,4$",
+      "status": "exact",
+      "display": "\\{0, 1, 2, 3, 4\\}",
+      "copy": "qset(vector(0,1,2,3,4))"
+    },
+    {
+      "id": "IBM042-1173c31c-M176",
+      "cell": 1,
+      "start": 26334,
+      "end": 26346,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M177",
+      "cell": 1,
+      "start": 26348,
+      "end": 26360,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M178",
+      "cell": 1,
+      "start": 26366,
+      "end": 26378,
+      "literal": "$\\mathsf{Z}$",
+      "status": "exact",
+      "display": "Z",
+      "copy": "'Z'"
+    },
+    {
+      "id": "IBM042-1173c31c-M179",
+      "cell": 1,
+      "start": 26456,
+      "end": 27997,
+      "literal": "$$\n\\begin{aligned}\n&\n\\sqrt{\\frac{1}{7}}\n\\vert\\heartsuit\\rangle_4 \\vert\\diamondsuit\\rangle_2 \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n+\n\\sqrt{\\frac{2}{7}}\n\\vert\\diamondsuit\\rangle_4 \\vert\\diamondsuit\\rangle_2 \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\\\\\n& \\quad +\n\\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle_4 \\vert\\clubsuit\\rangle_2 \\vert\\spadesuit\\rangle_3 \\vert\\diamondsuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n-i\n\\sqrt{\\frac{2}{7}}\n\\vert\\heartsuit\\rangle_4 \\vert\\diamondsuit\\rangle_2 \\vert\\clubsuit\\rangle_3 \\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0\\\\\n& \\quad -\\sqrt{\\frac{1}{7}}\n\\vert\\spadesuit\\rangle_4 \\vert\\clubsuit\\rangle_2 \\vert\\heartsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\\\\[2mm]\n& \\hspace{1.5cm} = \\vert\\heartsuit\\rangle_4 \\vert\\diamondsuit\\rangle_2\n\\biggl(\n\\sqrt{\\frac{1}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n-i \\sqrt{\\frac{2}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0\n\\biggr)\\\\\n& \\hspace{1.5cm} \\quad\n+ \\vert\\diamondsuit\\rangle_4 \\vert\\diamondsuit\\rangle_2\n\\biggl(\n\\sqrt{\\frac{2}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n\\biggr)\\\\\n& \\hspace{1.5cm} \\quad + \\vert\\spadesuit\\rangle_4 \\vert\\clubsuit\\rangle_2\n\\biggl(\n\\sqrt{\\frac{1}{7}} \\vert\\spadesuit\\rangle_3 \\vert\\diamondsuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n- \\sqrt{\\frac{1}{7}} \\vert\\heartsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\\biggr).\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "basis(index,dimension) requires a positive integer dimension and a zero-based index in range."
+    },
+    {
+      "id": "IBM042-1173c31c-M180",
+      "cell": 1,
+      "start": 28170,
+      "end": 28189,
+      "literal": "$\\vert \\phi\\rangle$",
+      "status": "exact",
+      "display": "|φ⟩",
+      "copy": "qketstate('φ')"
+    },
+    {
+      "id": "IBM042-1173c31c-M181",
+      "cell": 1,
+      "start": 28194,
+      "end": 28213,
+      "literal": "$\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩",
+      "copy": "qketstate(\"pi\")"
+    },
+    {
+      "id": "IBM042-1173c31c-M182",
+      "cell": 1,
+      "start": 28245,
+      "end": 28288,
+      "literal": "$\\vert \\phi\\rangle\\otimes\\vert \\pi \\rangle$",
+      "status": "exact",
+      "display": "|φ⟩ ⊗ |pi⟩",
+      "copy": "qtensor(qnamedket('φ'),qnamedket(\"pi\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M183",
+      "cell": 1,
+      "start": 28307,
+      "end": 28350,
+      "literal": "$\\vert \\pi\\rangle\\otimes\\vert \\phi \\rangle$",
+      "status": "exact",
+      "display": "|pi⟩ ⊗ |φ⟩",
+      "copy": "qtensor(qnamedket(\"pi\"),qnamedket('φ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M184",
+      "cell": 1,
+      "start": 28425,
+      "end": 28542,
+      "literal": "$\\vert\\heartsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\spadesuit\\rangle \\vert\\spadesuit\\rangle$",
+      "status": "exact",
+      "display": "(((|♡⟩ ⊗ |♣⟩) ⊗ |♢⟩) ⊗ |♠⟩) ⊗ |♠⟩",
+      "copy": "qtensor(qtensor(qtensor(qtensor(qnamedket('♡'),qnamedket('♣')),qnamedket('♢')),qnamedket('♠')),qnamedket('♠'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M185",
+      "cell": 1,
+      "start": 28570,
+      "end": 28687,
+      "literal": "$\\vert\\heartsuit\\rangle \\vert\\diamondsuit\\rangle \\vert\\clubsuit\\rangle \\vert\\spadesuit\\rangle \\vert\\spadesuit\\rangle$",
+      "status": "exact",
+      "display": "(((|♡⟩ ⊗ |♢⟩) ⊗ |♣⟩) ⊗ |♠⟩) ⊗ |♠⟩",
+      "copy": "qtensor(qtensor(qtensor(qtensor(qnamedket('♡'),qnamedket('♢')),qnamedket('♣')),qnamedket('♠')),qnamedket('♠'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M186",
+      "cell": 1,
+      "start": 28924,
+      "end": 28992,
+      "literal": "$(\\mathsf{X}_4,\\mathsf{X}_2,\\mathsf{X}_3,\\mathsf{X}_1,\\mathsf{X}_0)$",
+      "status": "exact",
+      "display": "(\"X_4\", \"X_2\", \"X_3\", \"X_1\", \"X_0\")",
+      "copy": "qtuple(vector(\"X_4\",\"X_2\",\"X_3\",\"X_1\",\"X_0\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M187",
+      "cell": 1,
+      "start": 29005,
+      "end": 29073,
+      "literal": "$(\\mathsf{X}_4,\\mathsf{X}_3,\\mathsf{X}_2,\\mathsf{X}_1,\\mathsf{X}_0)$",
+      "status": "exact",
+      "display": "(\"X_4\", \"X_3\", \"X_2\", \"X_1\", \"X_0\")",
+      "copy": "qtuple(vector(\"X_4\",\"X_3\",\"X_2\",\"X_1\",\"X_0\"))"
+    },
+    {
+      "id": "IBM042-1173c31c-M188",
+      "cell": 1,
+      "start": 29252,
+      "end": 29266,
+      "literal": "$\\mathsf{X}_4$",
+      "status": "exact",
+      "display": "\"X_4\"",
+      "copy": "\"X_4\""
+    },
+    {
+      "id": "IBM042-1173c31c-M189",
+      "cell": 1,
+      "start": 29271,
+      "end": 29285,
+      "literal": "$\\mathsf{X}_2$",
+      "status": "exact",
+      "display": "\"X_2\"",
+      "copy": "\"X_2\""
+    },
+    {
+      "id": "IBM042-1173c31c-M190",
+      "cell": 1,
+      "start": 29398,
+      "end": 29425,
+      "literal": "$(\\heartsuit,\\diamondsuit)$",
+      "status": "exact",
+      "display": "('♡', '♢')",
+      "copy": "qtuple(vector('♡','♢'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M191",
+      "cell": 1,
+      "start": 29453,
+      "end": 29719,
+      "literal": "$$\n  \\biggl\\|\n  \\sqrt{\\frac{1}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n  -i \\sqrt{\\frac{2}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0\n  \\biggr\\|^2 = \\frac{1}{7} + \\frac{2}{7} = \\frac{3}{7}\n  $$",
+      "status": "diagnostic",
+      "message": "basis(index,dimension) requires a positive integer dimension and a zero-based index in range."
+    },
+    {
+      "id": "IBM042-1173c31c-M192",
+      "cell": 1,
+      "start": 29749,
+      "end": 29778,
+      "literal": "$(\\diamondsuit,\\diamondsuit)$",
+      "status": "exact",
+      "display": "('♢', '♢')",
+      "copy": "qtuple(vector('♢','♢'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M193",
+      "cell": 1,
+      "start": 29806,
+      "end": 29945,
+      "literal": "$$\n  \\biggl\\|\n  \\sqrt{\\frac{2}{7}} \\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n  \\biggr\\|^2 = \\frac{2}{7}\n  $$",
+      "status": "diagnostic",
+      "message": "basis(index,dimension) requires a positive integer dimension and a zero-based index in range."
+    },
+    {
+      "id": "IBM042-1173c31c-M194",
+      "cell": 1,
+      "start": 29975,
+      "end": 29999,
+      "literal": "$(\\spadesuit,\\clubsuit)$",
+      "status": "exact",
+      "display": "('♠', '♣')",
+      "copy": "qtuple(vector('♠','♣'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M195",
+      "cell": 1,
+      "start": 30027,
+      "end": 30295,
+      "literal": "$$\n  \\biggl\\|\n  \\sqrt{\\frac{1}{7}} \\vert\\spadesuit\\rangle_3 \\vert\\diamondsuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n  - \\sqrt{\\frac{1}{7}} \\vert\\heartsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\clubsuit\\rangle_0\n  \\biggr\\|^2 = \\frac{1}{7} + \\frac{1}{7} = \\frac{2}{7}.\n  $$",
+      "status": "diagnostic",
+      "message": "basis(index,dimension) requires a positive integer dimension and a zero-based index in range."
+    },
+    {
+      "id": "IBM042-1173c31c-M196",
+      "cell": 1,
+      "start": 30327,
+      "end": 30354,
+      "literal": "$(\\heartsuit,\\diamondsuit)$",
+      "status": "exact",
+      "display": "('♡', '♢')",
+      "copy": "qtuple(vector('♡','♢'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M197",
+      "cell": 1,
+      "start": 30419,
+      "end": 31049,
+      "literal": "$$\n\\begin{aligned}\n& \\vert \\heartsuit\\rangle_4 \\vert \\diamondsuit \\rangle_2\n\\otimes\n\\frac{\n\\sqrt{\\frac{1}{7}}\n\\vert\\clubsuit\\rangle_3 \\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n- i\n\\sqrt{\\frac{2}{7}}\n\\vert\\clubsuit\\rangle_3 \\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0}\n{\\sqrt{\\frac{3}{7}}}\\\\\n& \\qquad\n=\n\\sqrt{\\frac{1}{3}}\n\\vert \\heartsuit\\rangle_4 \\vert\\clubsuit\\rangle_3 \\vert \\diamondsuit \\rangle_2\\vert\\spadesuit\\rangle_1 \\vert\\spadesuit\\rangle_0\n-i\n\\sqrt{\\frac{2}{3}}\n\\vert \\heartsuit\\rangle_4 \\vert\\clubsuit\\rangle_3 \\vert \\diamondsuit \\rangle_2\\vert\\heartsuit\\rangle_1 \\vert\\heartsuit\\rangle_0.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Put a basis dimension expression in braces or parentheses."
+    },
+    {
+      "id": "IBM042-1173c31c-M198",
+      "cell": 1,
+      "start": 31351,
+      "end": 31431,
+      "literal": "$$\n\\frac{1}{\\sqrt{2}} \\vert 000\\rangle + \\frac{1}{\\sqrt{2}} \\vert 111\\rangle.\n$$",
+      "status": "exact",
+      "display": "[(1 ∕ √(2)); 0; 0; 0; 0; 0; 0; (1 ∕ √(2))]",
+      "copy": "matrix(8,1,[1 ∕ √(2),0,0,0,0,0,0,1 ∕ √(2)])"
+    },
+    {
+      "id": "IBM042-1173c31c-M199",
+      "cell": 1,
+      "start": 31493,
+      "end": 31496,
+      "literal": "$0$",
+      "status": "exact",
+      "display": "0",
+      "copy": "0"
+    },
+    {
+      "id": "IBM042-1173c31c-M200",
+      "cell": 1,
+      "start": 31514,
+      "end": 31519,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM042-1173c31c-M201",
+      "cell": 1,
+      "start": 31573,
+      "end": 31591,
+      "literal": "$\\vert 000\\rangle$",
+      "status": "exact",
+      "display": "[1; 0; 0; 0; 0; 0; 0; 0]",
+      "copy": "matrix(8,1,[1,0,0,0,0,0,0,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M202",
+      "cell": 1,
+      "start": 31624,
+      "end": 31627,
+      "literal": "$1$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M203",
+      "cell": 1,
+      "start": 31645,
+      "end": 31650,
+      "literal": "$1/2$",
+      "status": "exact",
+      "display": "0.5",
+      "copy": "1 ∕ 2"
+    },
+    {
+      "id": "IBM042-1173c31c-M204",
+      "cell": 1,
+      "start": 31704,
+      "end": 31722,
+      "literal": "$\\vert 111\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 0; 0; 0; 1]",
+      "copy": "matrix(8,1,[0,0,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM042-1173c31c-M205",
+      "cell": 1,
+      "start": 31857,
+      "end": 32190,
+      "literal": "$$\n\\begin{aligned}\n&\n\\frac{1}{\\sqrt{3}} \\vert 001\\rangle +\n\\frac{1}{\\sqrt{3}} \\vert 010\\rangle +\n\\frac{1}{\\sqrt{3}} \\vert 100\\rangle \\\\\n& \\qquad\n= \\vert 0 \\rangle \\biggl(\n\\frac{1}{\\sqrt{3}} \\vert 01\\rangle +\n\\frac{1}{\\sqrt{3}} \\vert 10\\rangle\\biggr)\n+ \\vert 1 \\rangle \\biggl(\\frac{1}{\\sqrt{3}}\\vert 00\\rangle\\biggr).\n\\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M206",
+      "cell": 1,
+      "start": 32294,
+      "end": 32406,
+      "literal": "$$\n\\biggl\\|\n\\frac{1}{\\sqrt{3}} \\vert 01\\rangle +\n\\frac{1}{\\sqrt{3}} \\vert 10\\rangle\n\\biggr\\|^2 = \\frac{2}{3},\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M207",
+      "cell": 1,
+      "start": 32516,
+      "end": 32813,
+      "literal": "$$\n\\vert 0\\rangle\\otimes\n  \\frac{\n    \\frac{1}{\\sqrt{3}} \\vert 01\\rangle +\n    \\frac{1}{\\sqrt{3}} \\vert 10\\rangle\n  }{\n    \\sqrt{\\frac{2}{3}}\n  }\n  = \\vert 0\\rangle \\biggl(\\frac{1}{\\sqrt{2}} \\vert 01\\rangle\n    + \\frac{1}{\\sqrt{2}} \\vert 10\\rangle \\biggr)\n  = \\vert 0\\rangle\\vert \\psi^+\\rangle.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M208",
+      "cell": 1,
+      "start": 32868,
+      "end": 32873,
+      "literal": "$1/3$",
+      "status": "exact",
+      "display": "0.333333333333333333333333333333",
+      "copy": "1 ∕ 3"
+    },
+    {
+      "id": "IBM042-1173c31c-M209",
+      "cell": 1,
+      "start": 32927,
+      "end": 32945,
+      "literal": "$\\vert 100\\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 0; 1; 0; 0; 0]",
+      "copy": "matrix(8,1,[0,0,0,0,1,0,0,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M210",
+      "cell": 1,
+      "start": 33520,
+      "end": 33532,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M211",
+      "cell": 1,
+      "start": 33572,
+      "end": 33580,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M212",
+      "cell": 1,
+      "start": 33586,
+      "end": 33598,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M213",
+      "cell": 1,
+      "start": 33638,
+      "end": 33646,
+      "literal": "$\\Gamma$",
+      "status": "exact",
+      "display": "'Γ'",
+      "copy": "'Γ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M214",
+      "cell": 1,
+      "start": 33697,
+      "end": 33722,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M215",
+      "cell": 1,
+      "start": 33726,
+      "end": 33746,
+      "literal": "$\\Sigma\\times\\Gamma$",
+      "status": "exact",
+      "display": "'Γ''Σ'",
+      "copy": "'Γ''Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M216",
+      "cell": 1,
+      "start": 33900,
+      "end": 33920,
+      "literal": "$\\Sigma\\times\\Gamma$",
+      "status": "exact",
+      "display": "'Γ''Σ'",
+      "copy": "'Γ''Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M217",
+      "cell": 1,
+      "start": 34050,
+      "end": 34075,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M218",
+      "cell": 1,
+      "start": 34111,
+      "end": 34131,
+      "literal": "$\\Sigma = \\{1,2,3\\}$",
+      "status": "exact",
+      "display": "'Σ' = \\{1, 2, 3\\}",
+      "copy": "('Σ')==(qset(vector(1,2,3)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M219",
+      "cell": 1,
+      "start": 34136,
+      "end": 34154,
+      "literal": "$\\Gamma = \\{0,1\\}$",
+      "status": "exact",
+      "display": "'Γ' = \\{0, 1\\}",
+      "copy": "('Γ')==(qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M220",
+      "cell": 1,
+      "start": 34247,
+      "end": 34271,
+      "literal": "$\\{1,2,3\\}\\times\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{1, 2, 3\\} · \\{0, 1\\}",
+      "copy": "qmul(qset(vector(1,2,3)),qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M221",
+      "cell": 1,
+      "start": 34282,
+      "end": 34335,
+      "literal": "$$\n(1,0),\\;(1,1),\\;(2,0),\\;(2,1),\\;(3,0),\\; (3,1).\n$$",
+      "status": "diagnostic",
+      "message": "Expected a shared ordering or set membership relation after the comma-separated operands."
+    },
+    {
+      "id": "IBM042-1173c31c-M222",
+      "cell": 1,
+      "start": 34404,
+      "end": 34429,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M223",
+      "cell": 1,
+      "start": 34432,
+      "end": 34891,
+      "literal": "$$\nU =\n\\begin{pmatrix}\n  \\frac{1}{2} & \\frac{1}{2} & \\frac{1}{2} & 0 & 0 & \\frac{1}{2} \\\\[2mm]\n  \\frac{1}{2} & \\frac{i}{2} & -\\frac{1}{2} & 0 & 0 & -\\frac{i}{2} \\\\[2mm]\n  \\frac{1}{2} & -\\frac{1}{2} & \\frac{1}{2} & 0 & 0 & -\\frac{1}{2} \\\\[2mm]\n  0 & 0 & 0 & \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} & 0\\\\[2mm]\n  \\frac{1}{2} & -\\frac{i}{2} & -\\frac{1}{2} & 0 & 0 & \\frac{i}{2} \\\\[2mm]\n  0 & 0 & 0 &  -\\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} & 0\n\\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "U = [0.5, 0.5, 0.5, 0, 0, 0.5; 0.5, 0.5i, −0.5, 0, 0, −0.5i; 0.5, −0.5, 0.5, 0, 0, −0.5; 0, 0, 0, 1 ∕ √(2), 1 ∕ √(2), 0; 0.5, −0.5i, −0.5, 0, 0, 0.5i; 0, 0, 0, −1 ∕ √(2), 1 ∕ √(2), 0]",
+      "copy": "qcompare('U',matrix(6,6,[1 ∕ 2,1 ∕ 2,1 ∕ 2,0,0,1 ∕ 2,1 ∕ 2,i ∕ 2,−1 ∕ 2,0,0,−i ∕ 2,1 ∕ 2,−1 ∕ 2,1 ∕ 2,0,0,−1 ∕ 2,0,0,0,1 ∕ √(2),1 ∕ √(2),0,1 ∕ 2,−i ∕ 2,−1 ∕ 2,0,0,i ∕ 2,0,0,0,−1 ∕ √(2),1 ∕ √(2),0]),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M224",
+      "cell": 1,
+      "start": 34964,
+      "end": 34967,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M225",
+      "cell": 1,
+      "start": 35018,
+      "end": 35046,
+      "literal": "$U^{\\dagger} U = \\mathbb{I}$",
+      "status": "exact",
+      "display": "U† · U − qidentitylike(qadjacent(qdag('U'), 'U')) = 0",
+      "copy": "(qadjacent(qdag('U'), 'U') − qidentitylike(qadjacent(qdag('U'), 'U')))==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M226",
+      "cell": 1,
+      "start": 35213,
+      "end": 35216,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M227",
+      "cell": 1,
+      "start": 35233,
+      "end": 35236,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M228",
+      "cell": 1,
+      "start": 35266,
+      "end": 35286,
+      "literal": "$\\vert 1, 1 \\rangle$",
+      "status": "exact",
+      "display": "[0; 0; 0; 1]",
+      "copy": "matrix(4,1,[0,0,0,1])"
+    },
+    {
+      "id": "IBM042-1173c31c-M229",
+      "cell": 1,
+      "start": 35306,
+      "end": 35463,
+      "literal": "$$\nU \\vert 1, 1\\rangle =\n\\frac{1}{2} \\vert 1, 0 \\rangle\n+ \\frac{i}{2} \\vert 1, 1 \\rangle\n- \\frac{1}{2} \\vert 2, 0 \\rangle\n- \\frac{i}{2} \\vert 3, 0\\rangle,\n$$",
+      "status": "diagnostic",
+      "message": "Nonbinary numeric kets require an explicit dimension, such as |2>_3 or basis(2,3)."
+    },
+    {
+      "id": "IBM042-1173c31c-M230",
+      "cell": 1,
+      "start": 35516,
+      "end": 35519,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M231",
+      "cell": 1,
+      "start": 35557,
+      "end": 35581,
+      "literal": "$\\{1,2,3\\}\\times\\{0,1\\}$",
+      "status": "exact",
+      "display": "\\{1, 2, 3\\} · \\{0, 1\\}",
+      "copy": "qmul(qset(vector(1,2,3)),qset(vector(0,1)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M232",
+      "cell": 1,
+      "start": 35630,
+      "end": 35633,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M233",
+      "cell": 1,
+      "start": 35715,
+      "end": 35718,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M234",
+      "cell": 1,
+      "start": 35792,
+      "end": 35803,
+      "literal": "$6\\times 6$",
+      "status": "exact",
+      "display": "36",
+      "copy": "36"
+    },
+    {
+      "id": "IBM042-1173c31c-M235",
+      "cell": 1,
+      "start": 36254,
+      "end": 36321,
+      "literal": "$$\n\\sum_{k = 0}^{7} \\vert (k+1) \\bmod 8 \\rangle \\langle k \\vert,\n$$",
+      "status": "exact",
+      "display": "|mod(qadd(7, 1), 8)⟩ (dimension unresolved) · |7⟩_{8}† + |mod(qadd(6, 1), 8)⟩ (dimension unresolved) · |6⟩_{8}† + |mod(qadd(5, 1), 8)⟩ (dimension unresolved) · |5⟩_{8}† + |mod(qadd(4, 1), 8)⟩ (dimension unresolved) · |4⟩_{8}† + |mod(qadd(3, 1), 8)⟩ (dimension unresolved) · |3⟩_{8}† + |mod(qadd(2, 1), 8)⟩ (dimension unresolved) · |2⟩_{8}† + |mod(qadd(1, 1), 8)⟩ (dimension unresolved) · |1⟩_{8}† + |mod(qadd(0, 1), 8)⟩ (dimension unresolved) · |0⟩_{8}†",
+      "copy": "qadjacent(qcomputationalket(mod(qadd(7, 1), 8)), qdag(qbasis(7, 8))) + qadjacent(qcomputationalket(mod(qadd(6, 1), 8)), qdag(qbasis(6, 8))) + qadjacent(qcomputationalket(mod(qadd(5, 1), 8)), qdag(qbasis(5, 8))) + qadjacent(qcomputationalket(mod(qadd(4, 1), 8)), qdag(qbasis(4, 8))) + qadjacent(qcomputationalket(mod(qadd(3, 1), 8)), qdag(qbasis(3, 8))) + qadjacent(qcomputationalket(mod(qadd(2, 1), 8)), qdag(qbasis(2, 8))) + qadjacent(qcomputationalket(mod(qadd(1, 1), 8)), qdag(qbasis(1, 8))) + qadjacent(qcomputationalket(mod(qadd(0, 1), 8)), qdag(qbasis(0, 8)))"
+    },
+    {
+      "id": "IBM042-1173c31c-M236",
+      "cell": 1,
+      "start": 36365,
+      "end": 36368,
+      "literal": "$3$",
+      "status": "exact",
+      "display": "3",
+      "copy": "3"
+    },
+    {
+      "id": "IBM042-1173c31c-M237",
+      "cell": 1,
+      "start": 36626,
+      "end": 36756,
+      "literal": "$$\n\\sum_{k = 0}^{7} \\vert k \\rangle \\langle (k+1) \\bmod 8 \\vert\n= \\sum_{k = 0}^{7} \\vert (k-1) \\bmod 8 \\rangle \\langle k \\vert.\n$$",
+      "status": "exact",
+      "display": "|7⟩_{8} · |mod(qadd(7, 1), 8)⟩ (dimension unresolved)† + |6⟩_{8} · |mod(qadd(6, 1), 8)⟩ (dimension unresolved)† + |5⟩_{8} · |mod(qadd(5, 1), 8)⟩ (dimension unresolved)† + |4⟩_{8} · |mod(qadd(4, 1), 8)⟩ (dimension unresolved)† + |3⟩_{8} · |mod(qadd(3, 1), 8)⟩ (dimension unresolved)† + |2⟩_{8} · |mod(qadd(2, 1), 8)⟩ (dimension unresolved)† + |1⟩_{8} · |mod(qadd(1, 1), 8)⟩ (dimension unresolved)† + |0⟩_{8} · |mod(qadd(0, 1), 8)⟩ (dimension unresolved)† − (|mod(qsub(7, 1), 8)⟩ (dimension unresolved) · |7⟩_{8}†) − (|mod(qsub(6, 1), 8)⟩ (dimension unresolved) · |6⟩_{8}†) − (|mod(qsub(5, 1), 8)⟩ (dimension unresolved) · |5⟩_{8}†) − (|mod(qsub(4, 1), 8)⟩ (dimension unresolved) · |4⟩_{8}†) − (|mod(qsub(3, 1), 8)⟩ (dimension unresolved) · |3⟩_{8}†) − (|mod(qsub(2, 1), 8)⟩ (dimension unresolved) · |2⟩_{8}†) − (|mod(qsub(1, 1), 8)⟩ (dimension unresolved) · |1⟩_{8}†) − (|mod(qsub(0, 1), 8)⟩ (dimension unresolved) · |0⟩_{8}†) = 0",
+      "copy": "(qadjacent(qbasis(7, 8), qdag(qcomputationalket(mod(qadd(7, 1), 8)))) + qadjacent(qbasis(6, 8), qdag(qcomputationalket(mod(qadd(6, 1), 8)))) + qadjacent(qbasis(5, 8), qdag(qcomputationalket(mod(qadd(5, 1), 8)))) + qadjacent(qbasis(4, 8), qdag(qcomputationalket(mod(qadd(4, 1), 8)))) + qadjacent(qbasis(3, 8), qdag(qcomputationalket(mod(qadd(3, 1), 8)))) + qadjacent(qbasis(2, 8), qdag(qcomputationalket(mod(qadd(2, 1), 8)))) + qadjacent(qbasis(1, 8), qdag(qcomputationalket(mod(qadd(1, 1), 8)))) + qadjacent(qbasis(0, 8), qdag(qcomputationalket(mod(qadd(0, 1), 8)))) − qadjacent(qcomputationalket(mod(qsub(7, 1), 8)), qdag(qbasis(7, 8))) − qadjacent(qcomputationalket(mod(qsub(6, 1), 8)), qdag(qbasis(6, 8))) − qadjacent(qcomputationalket(mod(qsub(5, 1), 8)), qdag(qbasis(5, 8))) − qadjacent(qcomputationalket(mod(qsub(4, 1), 8)), qdag(qbasis(4, 8))) − qadjacent(qcomputationalket(mod(qsub(3, 1), 8)), qdag(qbasis(3, 8))) − qadjacent(qcomputationalket(mod(qsub(2, 1), 8)), qdag(qbasis(2, 8))) − qadjacent(qcomputationalket(mod(qsub(1, 1), 8)), qdag(qbasis(1, 8))) − qadjacent(qcomputationalket(mod(qsub(0, 1), 8)), qdag(qbasis(0, 8))))==(0)"
+    },
+    {
+      "id": "IBM042-1173c31c-M238",
+      "cell": 1,
+      "start": 37329,
+      "end": 37369,
+      "literal": "$\\mathsf{X}_{0},\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M239",
+      "cell": 1,
+      "start": 37391,
+      "end": 37412,
+      "literal": "$U_0,\\ldots, U_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M240",
+      "cell": 1,
+      "start": 37562,
+      "end": 37602,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M241",
+      "cell": 1,
+      "start": 37632,
+      "end": 37665,
+      "literal": "$U_{n-1}\\otimes\\cdots\\otimes U_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 21"
+    },
+    {
+      "id": "IBM042-1173c31c-M242",
+      "cell": 1,
+      "start": 38019,
+      "end": 38130,
+      "literal": "$$\n  (M_{n-1} \\otimes \\cdots \\otimes M_0)^{\\dagger} = M_{n-1}^{\\dagger} \\otimes \\cdots \\otimes M_0^{\\dagger}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 27"
+    },
+    {
+      "id": "IBM042-1173c31c-M243",
+      "cell": 1,
+      "start": 38156,
+      "end": 38176,
+      "literal": "$M_0,\\ldots,M_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M244",
+      "cell": 1,
+      "start": 38381,
+      "end": 38563,
+      "literal": "$$\n (U_{n-1} \\otimes \\cdots \\otimes U_0)^{\\dagger} (U_{n-1}\\otimes\\cdots\\otimes U_0)\n = (U_{n-1}^{\\dagger} \\otimes \\cdots \\otimes U_0^{\\dagger}) (U_{n-1}\\otimes\\cdots\\otimes U_0).\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 26"
+    },
+    {
+      "id": "IBM042-1173c31c-M245",
+      "cell": 1,
+      "start": 38637,
+      "end": 38868,
+      "literal": "$$\n  (U_{n-1}^{\\dagger} \\otimes \\cdots \\otimes U_0^{\\dagger}) (U_{n-1}\\otimes\\cdots\\otimes U_0)\n  = (U_{n-1}^{\\dagger} U_{n-1}) \\otimes \\cdots \\otimes (U_0^{\\dagger} U_0)\n  = \\mathbb{I}_{n-1} \\otimes \\cdots \\otimes \\mathbb{I}_0.\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 37"
+    },
+    {
+      "id": "IBM042-1173c31c-M246",
+      "cell": 1,
+      "start": 38891,
+      "end": 38929,
+      "literal": "$\\mathbb{I}_0,\\ldots,\\mathbb{I}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M247",
+      "cell": 1,
+      "start": 39006,
+      "end": 39044,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M248",
+      "cell": 1,
+      "start": 39152,
+      "end": 39190,
+      "literal": "$\\mathsf{X}_0,\\ldots,\\mathsf{X}_{n-1}$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M249",
+      "cell": 1,
+      "start": 39221,
+      "end": 39275,
+      "literal": "$\\mathbb{I}_{n-1} \\otimes \\cdots \\otimes \\mathbb{I}_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 32"
+    },
+    {
+      "id": "IBM042-1173c31c-M250",
+      "cell": 1,
+      "start": 39434,
+      "end": 39472,
+      "literal": "$\\mathbb{I}_{n-1},\\ldots,\\mathbb{I}_0$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M251",
+      "cell": 1,
+      "start": 39556,
+      "end": 39596,
+      "literal": "$(\\mathsf{X}_{n-1},\\ldots,\\mathsf{X}_0)$",
+      "status": "diagnostic",
+      "message": "Expected a measurement list from the first sample to the final sample in a shared domain."
+    },
+    {
+      "id": "IBM042-1173c31c-M252",
+      "cell": 1,
+      "start": 39658,
+      "end": 40063,
+      "literal": "$$\n\\begin{aligned}\n  & (U_{n-1} \\otimes \\cdots \\otimes U_0)^{\\dagger} (U_{n-1}\\otimes\\cdots\\otimes U_0) \\\\\n  & \\quad = (U_{n-1}^{\\dagger} \\otimes \\cdots \\otimes U_0^{\\dagger}) (U_{n-1}\\otimes\\cdots\\otimes U_0) \\\\\n  & \\quad = (U_{n-1}^{\\dagger} U_{n-1}) \\otimes \\cdots \\otimes (U_0^{\\dagger} U_0)\\\\\n  & \\quad = \\mathbb{I}_{n-1} \\otimes \\cdots \\otimes \\mathbb{I}_0\\\\\n  & \\quad = \\mathbb{I}.\n\\end{aligned}\n$$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 45"
+    },
+    {
+      "id": "IBM042-1173c31c-M253",
+      "cell": 1,
+      "start": 40092,
+      "end": 40128,
+      "literal": "$U_{n-1} \\otimes \\cdots \\otimes U_0$",
+      "status": "diagnostic",
+      "message": "Unsupported TeX command: \\cdots at byte 23"
+    },
+    {
+      "id": "IBM042-1173c31c-M254",
+      "cell": 1,
+      "start": 40340,
+      "end": 40352,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M255",
+      "cell": 1,
+      "start": 40357,
+      "end": 40369,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M256",
+      "cell": 1,
+      "start": 40445,
+      "end": 40470,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M257",
+      "cell": 1,
+      "start": 40519,
+      "end": 40531,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M258",
+      "cell": 1,
+      "start": 40568,
+      "end": 40571,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M259",
+      "cell": 1,
+      "start": 40621,
+      "end": 40633,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M260",
+      "cell": 1,
+      "start": 40728,
+      "end": 40740,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M261",
+      "cell": 1,
+      "start": 40795,
+      "end": 40798,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M262",
+      "cell": 1,
+      "start": 40818,
+      "end": 40830,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M263",
+      "cell": 1,
+      "start": 40861,
+      "end": 40873,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M264",
+      "cell": 1,
+      "start": 40913,
+      "end": 40916,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M265",
+      "cell": 1,
+      "start": 40920,
+      "end": 40932,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M266",
+      "cell": 1,
+      "start": 40965,
+      "end": 40977,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M267",
+      "cell": 1,
+      "start": 41007,
+      "end": 41019,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M268",
+      "cell": 1,
+      "start": 41074,
+      "end": 41086,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M269",
+      "cell": 1,
+      "start": 41132,
+      "end": 41155,
+      "literal": "$\\mathbb{I}_\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[\"_Y\", 0; 0, \"_Y\"]",
+      "copy": "matrix(2,2,[\"_Y\",0,0,\"_Y\"])"
+    },
+    {
+      "id": "IBM042-1173c31c-M270",
+      "cell": 1,
+      "start": 41190,
+      "end": 41202,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M271",
+      "cell": 1,
+      "start": 41217,
+      "end": 41240,
+      "literal": "$\\mathbb{I}_\\mathsf{Y}$",
+      "status": "exact",
+      "display": "[\"_Y\", 0; 0, \"_Y\"]",
+      "copy": "matrix(2,2,[\"_Y\",0,0,\"_Y\"])"
+    },
+    {
+      "id": "IBM042-1173c31c-M272",
+      "cell": 1,
+      "start": 41352,
+      "end": 41364,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M273",
+      "cell": 1,
+      "start": 41384,
+      "end": 41409,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M274",
+      "cell": 1,
+      "start": 41443,
+      "end": 41446,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M275",
+      "cell": 1,
+      "start": 41450,
+      "end": 41462,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M276",
+      "cell": 1,
+      "start": 41481,
+      "end": 41493,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M277",
+      "cell": 1,
+      "start": 41542,
+      "end": 41584,
+      "literal": "$$\n  U \\otimes \\mathbb{I}_{\\mathsf{Y}}.\n$$",
+      "status": "exact",
+      "display": "(U ⊗ [1, 0; 0, 1]) · \"_Y\"",
+      "copy": "qadjacent(qtensor('U',matrix(2,2,[1,0,0,1])),\"_Y\")"
+    },
+    {
+      "id": "IBM042-1173c31c-M278",
+      "cell": 1,
+      "start": 41602,
+      "end": 41614,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M279",
+      "cell": 1,
+      "start": 41619,
+      "end": 41631,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M280",
+      "cell": 1,
+      "start": 41679,
+      "end": 41691,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M281",
+      "cell": 1,
+      "start": 41713,
+      "end": 41725,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M282",
+      "cell": 1,
+      "start": 41769,
+      "end": 42275,
+      "literal": "$$\n  H \\otimes \\mathbb{I}_{\\mathsf{Y}} =\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n    1 & 0\\\\\n    0 & 1\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & 0 & \\frac{1}{\\sqrt{2}} & 0\\\\[2mm]\n    0 & \\frac{1}{\\sqrt{2}} & 0 & \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & 0 & -\\frac{1}{\\sqrt{2}} & 0\\\\[2mm]\n    0 & \\frac{1}{\\sqrt{2}} & 0 & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n$$",
+      "status": "exact",
+      "display": "[\"_Y\" ∕ √(2), 0, \"_Y\" ∕ √(2), 0; 0, \"_Y\" ∕ √(2), 0, \"_Y\" ∕ √(2); \"_Y\" ∕ √(2), 0, −\"_Y\" ∕ √(2), 0; 0, \"_Y\" ∕ √(2), 0, −\"_Y\" ∕ √(2)] = [1 ∕ √(2), 0, 1 ∕ √(2), 0; 0, 1 ∕ √(2), 0, 1 ∕ √(2); 1 ∕ √(2), 0, −1 ∕ √(2), 0; 0, 1 ∕ √(2), 0, −1 ∕ √(2)] = [1 ∕ √(2), 0, 1 ∕ √(2), 0; 0, 1 ∕ √(2), 0, 1 ∕ √(2); 1 ∕ √(2), 0, −1 ∕ √(2), 0; 0, 1 ∕ √(2), 0, −1 ∕ √(2)]",
+      "copy": "qequalchain(vector(matrix(4,4,[\"_Y\" ∕ √(2),0,\"_Y\" ∕ √(2),0,0,\"_Y\" ∕ √(2),0,\"_Y\" ∕ √(2),\"_Y\" ∕ √(2),0,−\"_Y\" ∕ √(2),0,0,\"_Y\" ∕ √(2),0,−\"_Y\" ∕ √(2)]),matrix(4,4,[1 ∕ √(2),0,1 ∕ √(2),0,0,1 ∕ √(2),0,1 ∕ √(2),1 ∕ √(2),0,−1 ∕ √(2),0,0,1 ∕ √(2),0,−1 ∕ √(2)]),matrix(4,4,[1 ∕ √(2),0,1 ∕ √(2),0,0,1 ∕ √(2),0,1 ∕ √(2),1 ∕ √(2),0,−1 ∕ √(2),0,0,1 ∕ √(2),0,−1 ∕ √(2)])))"
+    },
+    {
+      "id": "IBM042-1173c31c-M283",
+      "cell": 1,
+      "start": 42297,
+      "end": 42322,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M284",
+      "cell": 1,
+      "start": 42394,
+      "end": 42397,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M285",
+      "cell": 1,
+      "start": 42412,
+      "end": 42424,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M286",
+      "cell": 1,
+      "start": 42448,
+      "end": 42460,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M287",
+      "cell": 1,
+      "start": 42489,
+      "end": 42514,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M288",
+      "cell": 1,
+      "start": 42553,
+      "end": 42595,
+      "literal": "$$\n  \\mathbb{I}_{\\mathsf{X}} \\otimes U.\n$$",
+      "status": "exact",
+      "display": "qimplicitidentity() · \"_X\" ⊗ U",
+      "copy": "qtensor(qadjacent(qimplicitidentity(),\"_X\"),'U')"
+    },
+    {
+      "id": "IBM042-1173c31c-M289",
+      "cell": 1,
+      "start": 42659,
+      "end": 42671,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M290",
+      "cell": 1,
+      "start": 42676,
+      "end": 42688,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M291",
+      "cell": 1,
+      "start": 42704,
+      "end": 42707,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M292",
+      "cell": 1,
+      "start": 42760,
+      "end": 42785,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M293",
+      "cell": 1,
+      "start": 42816,
+      "end": 43285,
+      "literal": "$$\n  \\begin{pmatrix}\n    1 & 0\\\\\n    0 & 1\n  \\end{pmatrix}\n  \\otimes\n  \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}\n  = \\begin{pmatrix}\n    \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}} & 0 & 0\\\\[2mm]\n    \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}} & 0 & 0\\\\[2mm]\n    0 & 0 & \\frac{1}{\\sqrt{2}} & \\frac{1}{\\sqrt{2}}\\\\[2mm]\n    0 & 0 & \\frac{1}{\\sqrt{2}} & -\\frac{1}{\\sqrt{2}}\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M294",
+      "cell": 1,
+      "start": 43849,
+      "end": 43861,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M295",
+      "cell": 1,
+      "start": 43866,
+      "end": 43878,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M296",
+      "cell": 1,
+      "start": 43931,
+      "end": 43939,
+      "literal": "$\\Sigma$",
+      "status": "exact",
+      "display": "'Σ'",
+      "copy": "'Σ'"
+    },
+    {
+      "id": "IBM042-1173c31c-M297",
+      "cell": 1,
+      "start": 43974,
+      "end": 43999,
+      "literal": "$(\\mathsf{X},\\mathsf{Y})$",
+      "status": "exact",
+      "display": "(X, Y)",
+      "copy": "qtuple(vector('X','Y'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M298",
+      "cell": 1,
+      "start": 44114,
+      "end": 44126,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M299",
+      "cell": 1,
+      "start": 44151,
+      "end": 44163,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M300",
+      "cell": 1,
+      "start": 44217,
+      "end": 44238,
+      "literal": "$\\operatorname{SWAP}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM042-1173c31c-M301",
+      "cell": 1,
+      "start": 44303,
+      "end": 44317,
+      "literal": "$a,b\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ' and b ∈ 'Σ'",
+      "copy": "(qmember('a','Σ') and qmember('b','Σ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M302",
+      "cell": 1,
+      "start": 44320,
+      "end": 44412,
+      "literal": "$$\n\\operatorname{SWAP} \\vert a \\rangle \\vert b \\rangle = \\vert b \\rangle \\vert a \\rangle.\n$$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1] · (qketstate('a') ⊗ qketstate('b')) = qketstate('b') ⊗ qketstate('a')",
+      "copy": "qcompare(qadjacent(matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1]),qtensor(qketstate('a'),qketstate('b'))),qtensor(qketstate('b'),qketstate('a')),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M303",
+      "cell": 1,
+      "start": 44514,
+      "end": 44628,
+      "literal": "$$\n\\mathrm{SWAP} = \\sum_{c,d\\in\\Sigma} \\vert c \\rangle \\langle d \\vert \\otimes \\vert d \\rangle \\langle c \\vert.\n$$",
+      "status": "diagnostic",
+      "message": "Invalid summation index at byte 37"
+    },
+    {
+      "id": "IBM042-1173c31c-M304",
+      "cell": 1,
+      "start": 44690,
+      "end": 44711,
+      "literal": "$\\operatorname{SWAP}$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1]",
+      "copy": "matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1])"
+    },
+    {
+      "id": "IBM042-1173c31c-M305",
+      "cell": 1,
+      "start": 44757,
+      "end": 44844,
+      "literal": "$\\operatorname{SWAP} \\vert a \\rangle \\vert b \\rangle = \\vert b \\rangle \\vert a \\rangle$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 0, 1, 0; 0, 1, 0, 0; 0, 0, 0, 1] · (qketstate('a') ⊗ qketstate('b')) = qketstate('b') ⊗ qketstate('a')",
+      "copy": "qcompare(qadjacent(matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1]),qtensor(qketstate('a'),qketstate('b'))),qtensor(qketstate('b'),qketstate('a')),4)"
+    },
+    {
+      "id": "IBM042-1173c31c-M306",
+      "cell": 1,
+      "start": 44882,
+      "end": 44896,
+      "literal": "$a,b\\in\\Sigma$",
+      "status": "exact",
+      "display": "a ∈ 'Σ' and b ∈ 'Σ'",
+      "copy": "(qmember('a','Σ') and qmember('b','Σ'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M307",
+      "cell": 1,
+      "start": 44924,
+      "end": 44936,
+      "literal": "$\\mathsf{X}$",
+      "status": "exact",
+      "display": "X",
+      "copy": "'X'"
+    },
+    {
+      "id": "IBM042-1173c31c-M308",
+      "cell": 1,
+      "start": 44941,
+      "end": 44953,
+      "literal": "$\\mathsf{Y}$",
+      "status": "exact",
+      "display": "Y",
+      "copy": "'Y'"
+    },
+    {
+      "id": "IBM042-1173c31c-M309",
+      "cell": 1,
+      "start": 44980,
+      "end": 45114,
+      "literal": "$$\n  \\operatorname{SWAP} =\n  \\begin{pmatrix}\n  1 & 0 & 0 & 0\\\\\n  0 & 0 & 1 & 0\\\\\n  0 & 1 & 0 & 0\\\\\n  0 & 0 & 0 & 1\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M310",
+      "cell": 1,
+      "start": 45175,
+      "end": 45187,
+      "literal": "$\\mathsf{Q}$",
+      "status": "exact",
+      "display": "Q",
+      "copy": "'Q'"
+    },
+    {
+      "id": "IBM042-1173c31c-M311",
+      "cell": 1,
+      "start": 45203,
+      "end": 45215,
+      "literal": "$\\mathsf{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M312",
+      "cell": 1,
+      "start": 45313,
+      "end": 45316,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M313",
+      "cell": 1,
+      "start": 45338,
+      "end": 45350,
+      "literal": "$\\mathsf{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M314",
+      "cell": 1,
+      "start": 45367,
+      "end": 45370,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M315",
+      "cell": 1,
+      "start": 45416,
+      "end": 45441,
+      "literal": "$(\\mathsf{Q},\\mathsf{R})$",
+      "status": "exact",
+      "display": "(Q, R)",
+      "copy": "qtuple(vector('Q','R'))"
+    },
+    {
+      "id": "IBM042-1173c31c-M316",
+      "cell": 1,
+      "start": 45463,
+      "end": 45578,
+      "literal": "$$\nCU =\n\\vert 0\\rangle \\langle 0\\vert \\otimes \\mathbb{I}_{\\mathsf{R}} + \\vert 1\\rangle \\langle 1\\vert \\otimes U.\n$$",
+      "status": "diagnostic",
+      "message": "Quantum operation requires two matrices."
+    },
+    {
+      "id": "IBM042-1173c31c-M317",
+      "cell": 1,
+      "start": 45596,
+      "end": 45608,
+      "literal": "$\\mathsf{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M318",
+      "cell": 1,
+      "start": 45652,
+      "end": 45655,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M319",
+      "cell": 1,
+      "start": 45669,
+      "end": 45681,
+      "literal": "$\\mathrm{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M320",
+      "cell": 1,
+      "start": 45701,
+      "end": 45704,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M321",
+      "cell": 1,
+      "start": 45728,
+      "end": 45953,
+      "literal": "$$\n  CX =\n  \\vert 0\\rangle \\langle 0\\vert \\otimes \\mathbb{I}_{\\mathsf{R}} + \\vert 1\\rangle \\langle 1\\vert \\otimes X =\n  \\begin{pmatrix}\n  1 & 0 & 0 & 0\\\\\n  0 & 1 & 0 & 0\\\\\n  0 & 0 & 0 & 1\\\\\n  0 & 0 & 1 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0] = [\"_R\", 0, 0, 0; 0, \"_R\", 0, 0; 0, 0, 0, 1; 0, 0, 1, 0] = [1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 0, 1; 0, 0, 1, 0]",
+      "copy": "qequalchain(vector(matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0]),matrix(4,4,[\"_R\",0,0,0,0,\"_R\",0,0,0,0,0,1,0,0,1,0]),matrix(4,4,[1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0])))"
+    },
+    {
+      "id": "IBM042-1173c31c-M322",
+      "cell": 1,
+      "start": 46105,
+      "end": 46108,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M323",
+      "cell": 1,
+      "start": 46122,
+      "end": 46134,
+      "literal": "$\\mathsf{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M324",
+      "cell": 1,
+      "start": 46142,
+      "end": 46145,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM042-1173c31c-M325",
+      "cell": 1,
+      "start": 46179,
+      "end": 46405,
+      "literal": "$$\n  CZ =\n  \\vert 0\\rangle \\langle 0\\vert \\otimes \\mathbb{I}_{\\mathsf{R}} + \\vert 1\\rangle \\langle 1\\vert \\otimes Z =\n  \\begin{pmatrix}\n  1 & 0 & 0 & 0\\\\\n  0 & 1 & 0 & 0\\\\\n  0 & 0 & 1 & 0\\\\\n  0 & 0 & 0 & -1\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, −1] = [\"_R\", 0, 0, 0; 0, \"_R\", 0, 0; 0, 0, 1, 0; 0, 0, 0, −1] = [1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, −1]",
+      "copy": "qequalchain(vector(matrix(4,4,[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,−1]),matrix(4,4,[\"_R\",0,0,0,0,\"_R\",0,0,0,0,1,0,0,0,0,−1]),matrix(4,4,[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,−1])))"
+    },
+    {
+      "id": "IBM042-1173c31c-M326",
+      "cell": 1,
+      "start": 46426,
+      "end": 46438,
+      "literal": "$\\mathsf{R}$",
+      "status": "exact",
+      "display": "R",
+      "copy": "'R'"
+    },
+    {
+      "id": "IBM042-1173c31c-M327",
+      "cell": 1,
+      "start": 46469,
+      "end": 46472,
+      "literal": "$U$",
+      "status": "exact",
+      "display": "U",
+      "copy": "'U'"
+    },
+    {
+      "id": "IBM042-1173c31c-M328",
+      "cell": 1,
+      "start": 46553,
+      "end": 46895,
+      "literal": "$$\n  \\operatorname{CSWAP} =\n  \\begin{pmatrix}\n  1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\\\\n  0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\\\\n  0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\\\\n  0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\\\\n  0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\\\\n  0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\\\\n  0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\\\\n  0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M329",
+      "cell": 1,
+      "start": 47054,
+      "end": 47247,
+      "literal": "$$\n  \\begin{aligned}\n    \\operatorname{CSWAP} \\vert 0 b c \\rangle\n    & = \\vert 0 b c \\rangle \\\\[1mm]\n    \\operatorname{CSWAP} \\vert 1 b c \\rangle\n    & = \\vert 1 c b \\rangle\n  \\end{aligned}\n$$",
+      "status": "exact",
+      "display": "1.  qcontrolled([1  0  0  0; 0  0  1  0; 0  1  0  0; 0  0  0  1]) |0 b c⟩ = |0 b c⟩\n\n2.  qcontrolled([1  0  0  0; 0  0  1  0; 0  1  0  0; 0  0  0  1]) |1 b c⟩ = |1 c b⟩",
+      "copy": "\\begin{gathered}qcompare(qadjacent(qcontrolled(matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1])),qnamedket(\"0 b c\")),qketstate(\"0 b c\"),4)\\\\qcompare(qadjacent(qcontrolled(matrix(4,4,[1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1])),qnamedket(\"1 b c\")),qketstate(\"1 c b\"),4)\\end{gathered}"
+    },
+    {
+      "id": "IBM042-1173c31c-M330",
+      "cell": 1,
+      "start": 47322,
+      "end": 47327,
+      "literal": "$CCX$",
+      "status": "exact",
+      "display": "[1, 0, 0, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0, 0, 0; 0, 0, 0, 1, 0, 0, 0, 0; 0, 0, 0, 0, 1, 0, 0, 0; 0, 0, 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 0, 0, 0, 1; 0, 0, 0, 0, 0, 0, 1, 0]",
+      "copy": "matrix(8,8,[1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0])"
+    },
+    {
+      "id": "IBM042-1173c31c-M331",
+      "cell": 1,
+      "start": 47424,
+      "end": 47758,
+      "literal": "$$\n  CCX =\n  \\begin{pmatrix}\n    1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\\\\n    0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\\\\n    0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\\\\n    0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\\\\n    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\\\\n    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\\\\n    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\\\\n    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\n  \\end{pmatrix}.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM042-1173c31c-M332",
+      "cell": 1,
+      "start": 47830,
+      "end": 48045,
+      "literal": "$$\n  CCX = \\bigl(\n    \\vert 00 \\rangle \\langle 00 \\vert\n    + \\vert 01 \\rangle \\langle 01 \\vert\n    + \\vert 10 \\rangle \\langle 10 \\vert \\bigr) \\otimes \\mathbb{I}\n    + \\vert 11 \\rangle \\langle 11 \\vert \\otimes X.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    }
+  ]
+}

@@ -86,6 +86,32 @@ std::string withoutTeXCommentLines(const std::string &s) {
  }
  return result;
 }
+// In a standalone register declaration, sans-serif capital letters name
+// systems. Preserve their names even when the same letters are Pauli gates.
+std::string systemNames(const std::string &input) {
+ if(input.find("\\mathsf")==std::string::npos)return "";
+ size_t at=0;
+ auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ space();bool tuple=at<input.size() && input[at]=='(';
+ if(tuple)++at;
+ std::string result=tuple ? "tuple(" : "";
+ do {
+  space();
+  if(input.compare(at,7,"\\mathsf")!=0)return "";
+  at+=7;space();if(at==input.size() || input[at++]!='{')return "";
+  space();if(at==input.size() || input[at]<'A' || input[at]>'Z')return "";
+  std::string label(1,input[at++]);
+  space();if(at==input.size() || input[at++]!='}')return "";
+  result+="\""+label+"\"";space();
+  if(!tuple || at==input.size() || input[at]!=',')break;
+  ++at;result+=",";
+ } while(true);
+ if(tuple) {
+  if(at==input.size() || input[at++]!=')' || result.find(',')==std::string::npos)return "";
+  result+=")";space();
+ }
+ return at==input.size() ? result : "";
+}
 // Aligned rows can put separate equations on either side of an ampersand.
 // A relation inside a function argument or a quoted name does not split a row.
 bool completeAlignedEquation(const std::string &cell) {
@@ -1750,6 +1776,8 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
  if(mathWrapper)s=withoutDisplayPunctuation(withoutTeXCommentLines(s));
+ std::string systems=systemNames(s);
+ if(!systems.empty())return systems;
  if(fractionBits) {
   std::string expansion=openBinaryFraction(s);
   if(!expansion.empty())s=expansion;
