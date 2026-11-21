@@ -651,6 +651,21 @@ class QuantumAlgebraFunction: public MathFunction {
    if(!h.isMatrix() || !time.representsReal())return 0;
    out.set(CALCULATOR->getFunction("qevolution"),&h,&time,NULL);out.eval(eo);return 1;
   }
+  if(op=="qspinladder") {
+   MathStructure args=raw;for(size_t k=0;k<3;++k)args[k].eval(eo);
+   for(size_t k=0;k<3;++k)if(!args[k].isInteger() || args[k].isApproximate())return 0;
+   if(args[0].number()<1 || args[0].number()>9 || args[1].number()<0 ||
+      args[1].number()>=args[0].number() || (!args[2].isZero() && !args[2].isOne())) {
+    CALCULATOR->error(true,"A spin ladder requires 1 to 9 wires, a wire in range, and a binary transition selector.",NULL);return 0;
+   }
+   const unsigned n=args[0].number().intValue(),site=args[1].number().intValue();
+   const unsigned dimension=1u<<n,bit=1u<<(n-1-site);
+   const bool create=args[2].isOne();
+   out.clearMatrix();out.resizeMatrix(dimension,dimension,m_zero);
+   for(unsigned column=0;column<dimension;++column)
+    if(bool(column&bit)!=create)element(out,column^bit,column)=m_one;
+   return 1;
+  }
   if(op=="qjwimage") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure width=raw[0],site=raw[1],create=raw[2];
@@ -1468,6 +1483,6 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qketstate",1));
  calculator.addFunction(new QuantumAlgebraFunction("qnamedket",1));
  calculator.addFunction(new QuantumAlgebraFunction("qcomputationalket",1));
- for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qpropagator",2},{"qoperatorunequal",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
+ for(const auto &entry:{std::pair<const char *,int>("qbasis",2),{"qstateaction",2},{"qcheckaction",2},{"qfourierdomain",3},{"qindexxor",2},{"qoplus",2},{"qdag",1},{"qconj",1},{"qtranspose",1},{"qmul",2},{"qadjacent",2},{"qtensorchain",2},{"qtensorpow",2},{"qhadamardpower",1},{"qjwimage",3},{"qspinladder",3},{"qpropagator",2},{"qoperatorunequal",2},{"qnorm",1},{"qnormalize",1},{"qdensity",1},{"qtrace",1},{"qcontrol",3},{"qcontrolpattern",4},{"qcontrolled",1},{"qcomm",2},{"qanticomm",2},{"qtensor",2},{"qdirectsum",2}})
   calculator.addFunction(new QuantumAlgebraFunction(entry.first,entry.second));
 }

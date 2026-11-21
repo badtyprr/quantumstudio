@@ -71,3 +71,18 @@ for q in [((-1,2),(0,-3)),((2,-1,0),(3,-2,1),(0,2,-1))]:
     assert run(bind(comparison).replace("n)",f"{width})"))=="1"
 assert run("qisingequivalent(matrix(2,2,[-1,0,0,-1]),vector(-5,-5),2)")=="0"
 print("Verified spin energies, every diagonal entry, and matching and mismatched optimum sets.")
+
+minimum=run(source[13]["literal"])
+graph="qset(vector(qtuple(vector(0,4)),qtuple(vector(1,-3)),qtuple(vector(2,-3))))"
+assert run(minimum.replace("'f'",graph))=="−3"
+field_equation=run(source[25]["literal"])
+grouped=run(source[23]["literal"])
+weights=((2,-1,3),(3,-2,1),(0,2,-1))
+for i in range(3):
+    field=-sum(weights[i][j]+weights[j][i] for j in range(3))
+    expr=field_equation.replace("'Q'",matrix(weights)).replace("'i'",str(i))
+    assert run(expr.replace('"b_i"',str(field)))=="1"
+    assert run(expr.replace('"b_i"',str(field+1)))=="0"
+for z in itertools.product((-1,1),repeat=3):
+    assert run(grouped.replace("'Q'",matrix(weights)).replace("'z'","vector("+",".join(map(str,z))+")"))=="1"
+print("Verified the finite objective minimum and all row-plus-column fields on asymmetric coefficients.")

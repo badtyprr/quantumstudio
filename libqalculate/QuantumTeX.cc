@@ -2258,6 +2258,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s.replace(m.position(),m.length(),"qmeanat(\""+m[1].str()+"\","+parameter+")");
   }
  }
+ if(s.find("\\min")!=std::string::npos) {
+  static const std::regex minimum(R"(^\s*\\min\s+(f|𝑓)\(\s*(?:[a-z]|𝑥)\s*\)\s*$)");
+  if(std::regex_match(s,minimum))return "qsetminimum(qfunctionrange(\"f\"))";
+ }
+ if(s.find("\\sum_{j}")!=std::string::npos) {
+  static const std::regex field(R"(^\s*b_i\s*=\s*-\\sum_\{j\}\s*Q_\{ij\}\s*\+\s*Q_\{ji\}\s*$)");
+  if(std::regex_match(s,field))return "qcompare(\"b_i\",qisingfield(\"Q\",\"i\"),4)";
+ }
  if(s.find("Q")!=std::string::npos && (s.find("^T")!=std::string::npos || s.find("H_C")!=std::string::npos)) {
   std::string compact=s;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
   if(compact=="z^TQz+b^Tz")return "qisingenergy(\"Q\",\"b\",\"z\")";
@@ -2276,6 +2284,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    const std::string vector(1,word);
    if(term==vector+"^TQ"+vector)
     return "qpairtotal(\"Q\",\""+vector+"\",\"weight\"*\"leftword\"*\"rightword\""+binders;
+   const std::string grouped=vector+"^TQ"+vector+"+(-"+prefix;
+   bool subtractLinear=term.compare(0,grouped.size(),grouped)==0 && term.back()==')';
+   if(subtractLinear)term=prefix+term.substr(grouped.size(),term.size()-grouped.size()-1);
    if(term.compare(0,prefix.size(),prefix)!=0)return "";
    term.erase(0,prefix.size());
    auto sub=[&](const std::string &from,const std::string &to) {
@@ -2294,7 +2305,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
        (term[k-1]==')' || term[k-1]=='W' || term[k-1]=='L' || term[k-1]=='R' || std::isdigit((unsigned char)term[k-1])))body+='*';
     if(ch=='W')body+="\"weight\"";else if(ch=='L')body+="\"leftword\"";else if(ch=='R')body+="\"rightword\"";else body+=ch;
    }
-   return "qpairtotal(\"Q\",\""+vector+"\","+body+binders;
+   std::string sum="qpairtotal(\"Q\",\""+vector+"\","+body+binders;
+   if(subtractLinear)return "(qpairtotal(\"Q\",\""+vector+"\",\"weight\"*\"leftword\"*\"rightword\""+binders+"-"+sum+")";
+   return sum;
   };
   size_t eq=compact.find('=');
   std::string left=side(compact.substr(0,eq));
@@ -2341,6 +2354,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     s.replace(m.position(),m.length(),op);
    }
   }
+ }
+ if(s.find("\\sigma_")!=std::string::npos) {
+  static const std::regex ladder(R"(\\sigma_([a-z]|[0-9]+)\^(?:\{([+-])\}|([+-])))");
+  std::smatch m;
+  while(std::regex_search(s,m,ladder)) {
+   std::string selector=m[2]=="-" || m[3]=="-" ? "1" : "0";
+   s.replace(m.position(),m.length(),"qspinladder(N,"+m[1].str()+","+selector+")");
+  }
+ }
+ if(s.find("\\text{")!=std::string::npos && s.find("\\rangle")!=std::string::npos) {
+  static const std::regex occupation(R"(\|([01])\\rangle\s*&\s*=\s*\\text\{\s*(empty|occupied)\s*\})");
+  s=std::regex_replace(s,occupation,"|$1\\rangle &= qnamedket(\"$2\")");
  }
  if(s.find("\\sigma^")!=std::string::npos) {
   const std::string raising="((X+i*Y)/2)",lowering="((X-i*Y)/2)";

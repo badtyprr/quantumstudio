@@ -1309,6 +1309,27 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qsetminimum") {
+   MathStructure values;
+   if(finiteDomain(raw[0],values,eo)!=DomainState::Finite || !values.size())return 0;
+   Number minimum;
+   for(size_t k=0;k<values.size();++k) {
+    const auto &v=values[k];if(!v.isNumber() || v.isApproximate() || !v.number().isRational())return 0;
+    if(!k || v.number()<minimum)minimum=v.number();
+   }
+   out=minimum;return 1;
+  }
+  if(op=="qisingfield") {
+   MathStructure weights=raw[0],index=raw[1];weights.eval(eo);index.eval(eo);
+   if(!weights.isMatrix() || weights.rows()!=weights.columns() || !index.isInteger() ||
+      index.isApproximate() || index.number()<0 || index.number()>=int(weights.rows()))return 0;
+   size_t i=index.number().intValue();MathStructure field(0);
+   for(size_t j=0;j<weights.rows();++j) {
+    if(CALCULATOR->aborted())return 0;
+    field-=element(weights,i,j);field-=element(weights,j,i);
+   }
+   out=field;out.eval(eo);return 1;
+  }
   if(op=="qisingenergy" || op=="qisinghamiltonian" || op=="qisingequivalent") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure weights=raw[0],fields=raw[1];weights.eval(exact);fields.eval(exact);
@@ -2887,6 +2908,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qsetminimum",1));
+ calculator.addFunction(new QuantumIndexedFunction("qisingfield",2));
  calculator.addFunction(new QuantumIndexedFunction("qisingenergy",3));
  calculator.addFunction(new QuantumIndexedFunction("qisinghamiltonian",2));
  calculator.addFunction(new QuantumIndexedFunction("qisingequivalent",3));

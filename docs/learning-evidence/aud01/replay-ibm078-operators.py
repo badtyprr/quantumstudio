@@ -40,3 +40,19 @@ for start,end in ((1,5),(2,4),(3,3)):
     assert run(distance)=="1"
     assert run(f"qwalkdistance(vector(0,1,0,2,3),{start},{end})")==str(sum(c*c for c in counts))
 print("Verified all four signed coordinate counts and squared distances for three segments.")
+
+for width in (1,2,3):
+    for site in range(width):
+        for source_row,ladder in [(58,"matrix(2,2,[0,0,1,0])"),(60,"matrix(2,2,[0,1,0,0])")]:
+            expression=source(78,source_row).replace("'N'",str(width)).replace("'k'",str(site))
+            gates=["I"]*site+[ladder]+["I"]*(width-site-1)
+            expected=gates[0]
+            for gate in gates[1:]:
+                expected=f"qtensor({expected},{gate})"
+            assert run(f"qcompare({expression},{expected},4)")=="1"
+occupation=source(78,44)
+correct=occupation.replace('qketstate("empty")',"|0>").replace('qketstate("occupied")',"|1>")
+wrong=occupation.replace('qketstate("empty")',"|1>").replace('qketstate("occupied")',"|0>")
+assert run(correct)==r"\begin{gathered}1\\1\end{gathered}"
+assert run(wrong)==r"\begin{gathered}0\\0\end{gathered}"
+print("Verified all indexed ladder actions and both assignments of the occupation labels.")
