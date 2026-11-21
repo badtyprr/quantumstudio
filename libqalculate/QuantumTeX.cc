@@ -2470,6 +2470,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(modularPowers) {
+  // In a residue ring the prose may supply the modulus. Keep that
+  // parameter editable when an isolated equation or inverse is pasted.
+  static const std::regex product(R"(^\s*([0-9]+|[A-Za-z])\s*(?:\\cdot(?![A-Za-z])|\*)\s*([0-9]+|[A-Za-z])\s*=\s*(1)\s*$)");
+  static const std::regex implicitProduct(R"(^\s*([A-Za-z])\s*([A-Za-z])\s*=\s*(1)\s*$)");
+  static const std::regex inverse(R"(^\s*([0-9]+|[A-Za-z])\s*\^\s*\{\s*-\s*1\s*\}\s*$)");
+  std::smatch match;
+  auto operand=[](std::string token) {return std::isdigit((unsigned char)token[0]) ? token : "\""+token+"\"";};
+  if(std::regex_match(s,match,product) || std::regex_match(s,match,implicitProduct))
+   return "qmodpowerequal(qmul("+operand(match[1])+","+operand(match[2])+"),1,\"modulus\",1)";
+  if(std::regex_match(s,match,inverse))
+   return "qmodpower("+operand(match[1])+",-1,\"modulus\")";
+ }
  if(modularPowers && s.find("\\mapsto")!=std::string::npos && s.find("\\oplus")!=std::string::npos) {
   if(s.find("\\stackrel")!=std::string::npos && s.find('@')==std::string::npos) {
    static const std::regex step(R"(\\stackrel\{\s*\\text\{step\s+([123])\}\s*\}\{\s*\\mapsto\s*\})");
