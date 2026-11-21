@@ -26,3 +26,19 @@ for projector, expected in [("[1,0;0,0]", "|0>"), ("[0,0;0,1]", "|1>")]:
     bound = f'replace(replace(({expression}),"Π_k",{projector}),qnamedket("ψ"),|+>)'
     assert evaluate(bound) == evaluate(expected)
 print("Verified both normalized projections of the plus state from IBM-046 M136")
+
+def verify_distribution(equation, bindings):
+    for operand, value in bindings:
+        equation = f"replace(({equation}),{operand},{value})"
+    for distribution, expected in [("[1;0]", "1"), ("[0;1]", "0")]:
+        bound = f'replace(({equation}),"measurement probabilities",{distribution})'
+        assert evaluate(bound) == expected
+
+projection_probability = evaluate(rows[132]["literal"])
+verify_distribution(projection_probability, [('"k"', "0"), ('"Π_k"', "[1,0;0,0]"),
+                                             ('qnamedket("ψ")', "|0>")])
+limitations = json.loads(Path(__file__).with_name("ibm047-inventory.json").read_bytes())["rows"]
+branch_probabilities = evaluate(limitations[104]["literal"])
+verify_distribution(branch_probabilities, [('qnamedket("γ_0")', "|0>"),
+                                            ('qnamedket("γ_1")', "[0;0]")])
+print("Verified both lesson probabilities with matching and reversed distributions")

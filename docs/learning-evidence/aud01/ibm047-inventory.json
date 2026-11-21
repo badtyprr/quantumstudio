@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/limitations-on-quantum-information.ipynb",
   "source_sha256": "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2",
-  "worker_sha256": "61054fce23d5dab52022b223ae21c140780999894346fc1767e5abc26326e215",
-  "revision": "e069d6a77971dac124829ddebab1520a84cded2c",
+  "worker_sha256": "16286f7b806be591252ad4a9860a3926664680443190c38a485ed1fa79a9e653",
+  "revision": "a50f69d18e5876ab19478d923af4e1e8d399a49b",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 133,
-    "diagnostic": 13
+    "exact": 134,
+    "diagnostic": 12
   },
   "figures": [
     {
@@ -1070,8 +1070,9 @@
       "start": 13572,
       "end": 13765,
       "literal": "$$\n\\operatorname{Pr}(\\text{outcome is $0$}) = \\bigl\\| \\vert\\gamma_0\\rangle \\bigr\\|^2\n\\qquad\\text{and}\\qquad\n\\operatorname{Pr}(\\text{outcome is $1$}) = \\bigl\\| \\vert\\gamma_1\\rangle \\bigr\\|^2.\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 41"
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 1) = qnorm(qnamedket(\"γ_1\"))² and qeventprob(\"measurement probabilities\", 0) = qnorm(qnamedket(\"γ_0\"))²",
+      "copy": "((qeventprob(\"measurement probabilities\",0))==(qnorm(qnamedket(\"γ_0\"))²) and (qeventprob(\"measurement probabilities\",1))==(qnorm(qnamedket(\"γ_1\"))²))"
     },
     {
       "id": "IBM047-f4526623-M106",

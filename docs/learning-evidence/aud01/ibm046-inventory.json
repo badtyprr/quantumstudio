@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "6c63fcfd11fd4dd965800a99732dbd04df6acae06c97033528239f0fba320fe9",
-  "revision": "415eddddd9c1aef00c628c92be15f138b3becffc",
+  "worker_sha256": "16286f7b806be591252ad4a9860a3926664680443190c38a485ed1fa79a9e653",
+  "revision": "a50f69d18e5876ab19478d923af4e1e8d399a49b",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 218,
-    "diagnostic": 21
+    "exact": 221,
+    "diagnostic": 18
   },
   "figures": [],
   "rows": [
@@ -1329,8 +1329,9 @@
       "start": 19103,
       "end": 19211,
       "literal": "$$\n   \\operatorname{Pr}\\bigl(\\text{outcome is $k$}\\bigr) = \\bigl\\| \\Pi_k \\vert \\psi \\rangle \\bigr\\|^2.\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 49"
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 'k') = qnorm(qadjacent(\"Π_k\", qnamedket('ψ')))²",
+      "copy": "(qeventprob(\"measurement probabilities\",'k'))==(qnorm(qadjacent(\"Π_k\", qnamedket('ψ')))²)"
     },
     {
       "id": "IBM046-3c1262a5-M134",
@@ -1438,8 +1439,9 @@
       "start": 19942,
       "end": 20050,
       "literal": "$$\n   \\operatorname{Pr}\\bigl(\\text{outcome is $a$}\\bigr) = \\bigl\\| \\Pi_a \\vert \\psi \\rangle \\bigr\\|^2.\n   $$",
-      "status": "diagnostic",
-      "message": "Unsupported text in a mathematical expression at byte 49"
+      "status": "exact",
+      "display": "qeventprob(\"measurement probabilities\", 'a') = qnorm(qadjacent(\"Π_a\", qnamedket('ψ')))²",
+      "copy": "(qeventprob(\"measurement probabilities\",'a'))==(qnorm(qadjacent(\"Π_a\", qnamedket('ψ')))²)"
     },
     {
       "id": "IBM046-3c1262a5-M145",
@@ -2259,8 +2261,9 @@
       "start": 27238,
       "end": 27409,
       "literal": "$$\nU \\bigl( \\vert 0\\rangle \\vert \\phi\\rangle\\bigr)\n= M \\bigl( \\vert 0\\rangle \\vert \\phi\\rangle\\bigr)\n= \\sum_{k = 0}^{m-1} \\vert k\\rangle \\otimes \\Pi_k \\vert\\phi\\rangle,\n$$",
-      "status": "diagnostic",
-      "message": "Expected ',' at byte 16"
+      "status": "exact",
+      "display": "U · ([1; 0] ⊗ |φ⟩) = ([1; 0] ⊗ |φ⟩) · M = (∑_{k=0}^{m − 1} (|k⟩ ⊗ Π_k |φ⟩))",
+      "copy": "qequalchain(vector(qmul('U',qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),('M')*(qtensor(matrix(2,1,vector(1,0)),qnamedket('φ'))),qsum(qtensorchain(qketstate(\"qboundindex_0\"),vector(qindexedlabel(\"Π_\",\"qboundindex_0\",\"\"),qnamedket('φ'))),0,qsub('m',1),\"qboundindex_0\")))"
     },
     {
       "id": "IBM046-3c1262a5-M228",
