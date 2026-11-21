@@ -634,10 +634,12 @@ class QuantumAlgebraFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qbinarylog" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsScalar(args);
+  if(op=="qbinarylog")return args.size()==1 && args[0].representsScalar();
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qbinarylog" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsNonMatrix(args);
+  if(op=="qbinarylog")return args.size()==1 && args[0].representsScalar();
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qoperatorunequal") {
@@ -1038,6 +1040,7 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qbinarylog") {
    MathStructure value=raw[0];value.eval(eo);
+   if(value.isVector()) {CALCULATOR->error(true,"A binary logarithm requires a scalar operand.",NULL);return 0;}
    if(value.containsUnknowns())return 0;
    MathStructure two(2);
    out.set(CALCULATOR->getFunctionById(FUNCTION_ID_LOGN),&value,&two,NULL);return 1;
