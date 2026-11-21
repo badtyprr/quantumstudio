@@ -1152,7 +1152,6 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
- // Columns of the linear operator are the printed images of its basis kets.
  // A gathered list beginning at zero can describe decimal inputs and their
  // fixed-width binary encodings. Check every printed example before filling
  // the gap indicated by the vertical ellipsis.
@@ -1186,6 +1185,7 @@ class TeXReader {
   }
   return "qsetimage(qtuple(vector(j,qbitlabel(j,"+std::to_string(width)+"))),qindexrange(0,"+std::to_string(endpoint)+"),j)";
  }
+ // Columns of the linear operator are the printed images of its basis kets.
  std::string basisActionTable(const std::string &body,size_t columns) {
   static const std::regex action(R"(^\s*M(?:_\{([0-9]+)\}|_([0-9]))\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle\s*=\s*(?:\\vert|\|)\s*([0-9]+)\s*\\rangle(?:\s|\\q?quad)*$)");
   static const std::regex rowSpace(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");

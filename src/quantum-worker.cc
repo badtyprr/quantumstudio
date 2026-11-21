@@ -75,6 +75,26 @@ static bool completeComputationalBasis(const MathStructure &states) {
  }
  return true;
 }
+// Large binary encoding graphs exceed the editable expression budget when
+// expanded. Recognize the exact pairs before writing their finite set image.
+static std::string copyBinaryEncodingGraph(const MathStructure &entries) {
+ if(!entries.isVector() || entries.size()<=64 || entries.size()>1024 || entries.isApproximate())return "";
+ int width=0;
+ for(size_t i=0;i<entries.size();++i) {
+  const MathStructure &entry=entries[i];
+  if(!entry.isFunction() || entry.function()->referenceName()!="qtuple" || entry.size()!=1 ||
+     !entry[0].isVector() || entry[0].size()!=2)return "";
+  const MathStructure &index=entry[0][0], &label=entry[0][1];
+  if(!index.isNumber() || index.number()!=int(i) || !label.isFunction() ||
+     label.function()->referenceName()!="qbitlabel" || label.size()!=2 ||
+     !label[0].isNumber() || label[0].number()!=int(i) || !label[1].isNumber())return "";
+  const Number &bits=label[1].number();
+  if(!bits.isInteger() || bits<1 || bits>1024)return "";
+  if(i==0)width=bits.intValue();
+  if(bits!=width || (width<10 && i>=(size_t(1)<<width)))return "";
+ }
+ return "qsetimage(qtuple(vector(j,qbitlabel(j,"+std::to_string(width)+"))),qindexrange(0,"+std::to_string(entries.size()-1)+"),j)";
+}
 static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=false) {
  if(value.isFunction()) {
   const std::string &name=value.function()->referenceName();
@@ -107,8 +127,11 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
   // copy/re-entry even when no typed binary label occurs in the expression.
   if(result.isFunction()) {
    const std::string name=result.function()->referenceName();
-   if(quantumMode && name=="qset" && result.size()==1 && completeComputationalBasis(result[0]))
-    return "basisset("+std::to_string(result[0].size())+")";
+   if(quantumMode && name=="qset" && result.size()==1) {
+    if(completeComputationalBasis(result[0]))return "basisset("+std::to_string(result[0].size())+")";
+    std::string graph=copyBinaryEncodingGraph(result[0]);
+    if(!graph.empty())return graph;
+   }
    // A deferred exponent can contain an already parsed scalar product.
    // Explicit multiplication preserves its factors on the first re-entry.
    if(name=="qpower" && result.size()==2 && result[1].isMultiplication() && result[1].size()>=2) {
