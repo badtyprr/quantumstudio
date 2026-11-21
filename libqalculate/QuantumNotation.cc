@@ -932,6 +932,15 @@ class Parser {
   if(p==start || (p<s.size() && (s[p]=='.' || std::isalnum((unsigned char)s[p]))))throw std::runtime_error("Put a basis dimension expression in braces or parentheses.");
   return s.substr(start,p-start);
  }
+ std::string rangeEndpoint() {
+  ws();size_t begin=p;
+  std::string value=expression();
+  size_t end=p;
+  while(end>begin && std::isspace((unsigned char)s[end-1]))--end;
+  // A single gate letter in an integer endpoint denotes an index variable.
+  if(end==begin+1 && gates.count(s.substr(begin,1)))return indexableLabel(s.substr(begin,1));
+  return value;
+ }
  std::string binaryArgument() {
   if(!take('"'))return expression();
   std::string bits;
@@ -1495,6 +1504,9 @@ class Parser {
      if(p==s.size()) throw std::runtime_error("Unclosed Pauli label.");
      std::string label=labelText(s.substr(begin,p-begin)); if(quote) ++p; need(')');
      a=pauliLabelExpression(label,name=="compact_pauli");
+    } else if(name=="qindexrange") {
+     std::string first=rangeEndpoint();need(',');std::string last=rangeEndpoint();need(')');
+     a="qindexrange("+first+","+last+")";
     } else if(name=="matrixcontext") {
      std::string label=expression();need(',');
      if(label.size()<3 || label.front()!='"' || label.back()!='"')throw std::runtime_error("Expected a quoted matrix name.");

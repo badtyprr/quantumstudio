@@ -24,6 +24,14 @@ def data(expression, *flags):
     return value
 
 
+# A bare gate letter in an integer range can be bound after Copy.
+held_range = data(r"quantum:$\{1,\ldots,T\}$")["copy_text"]
+assert data("quantum:"+held_range)["copy_text"] == held_range
+for endpoint, expected in [(3,"qset(vector(1,2,3))"),(1,"qset(vector(1))"),(0,"qset(vector())")]:
+    assert data(f'quantum:replace({held_range},"T",{endpoint})')["copy_text"] == expected
+assert data('quantum:replace(indexrange(X,2),"X",1)')["copy_text"] == "qset(vector(1,2))"
+assert data("quantum:T")["rows"] == 2
+
 # Two-argument probability calls keep ordered scalar inputs through Copy.
 prob = data("quantum:p(N,s)")
 assert prob["display_text"] == "p(N, s)" and not prob["cells"]
