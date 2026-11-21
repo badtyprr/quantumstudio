@@ -1272,6 +1272,10 @@ class Parser {
    if(costContext && a.size()>1 && a.find_first_not_of("nmk")==std::string::npos) {
     p=b+1;a.resize(1);
    }
+   // A spaced parenthesis after an indexed uppercase factor can group the
+   // operand of a matrix product. Keep adjacent call syntax for named gates.
+   const bool groupedFactor=a!="U_1" && a!="U_2" && a!="U_3" && a.size()>2 && a[0]>='A' && a[0]<='Z' && a[1]=='_' &&
+    a.find_first_not_of("0123456789",2)==std::string::npos && p>b+a.size();
    bool indexedScalar=false;
    if(!numericToken && a.back()=='_' && take('{')) {
     std::string index=expression();need('}');
@@ -1310,7 +1314,7 @@ class Parser {
    }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
-   else if(!numericToken && !indexedScalar && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
+   else if(!numericToken && !indexedScalar && !groupedFactor && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     if(name=="J_x" || name=="Jₓ") name="Jx";
     if(name=="J_y") name="Jy";

@@ -24,6 +24,8 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("U_1 (0)",translateQuantum("U_1(0)"));
+ equal("M_2 (M_1 u)",translateQuantum("qadjacent(M_2,(M_1 u))"));
  equal("1=1, 2=2, and 3=3",translateQuantum("1=1, 2=2, 3=3"));
  rejects("1=1, and 2=2, 3=3");
  equal("(b,a)","(qtuple(vector(b,a)))");

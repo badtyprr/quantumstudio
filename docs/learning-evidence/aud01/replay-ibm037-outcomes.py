@@ -106,3 +106,28 @@ for pairs, key in [("tuple(0,0),tuple(0,1)",0), ("tuple(0,1),tuple(1,0)",2)]:
     process = subprocess.run([worker,"--json"],input=expr.encode(),env=environment,capture_output=True,timeout=30)
     assert process.returncode == 2 and process.stderr.strip(), expr
 print("Verified the five indexed function equations on all eight inputs, including changed and invalid graphs")
+
+# Substitute the column and the map(s) together. Both operand orders must
+# remain distinct when the expression is copied before any assignments.
+def bind_maps(value, bindings):
+    for name, replacement in bindings:
+        value = f'replace(({value}),{name},{replacement})'
+    return evaluate("quantum:" + value)
+
+column = ("u","[3/5;2/5]")
+forward = [('"M_1"',reset),('"M_2"',flip)]
+reverse = [('"M_1"',flip),('"M_2"',reset)]
+for number, normal, swapped in [(138, "matrix(2,1,[1,0])", "matrix(2,1,[2 ∕ 5,3 ∕ 5])"),
+                                (140, "1", "1"),
+                                (143, "matrix(2,2,[0,0,1,1])", reset),
+                                (150, "1", "0")]:
+    source = inventory["rows"][number-1]["literal"]
+    result = evaluate("quantum:" + source)
+    for maps,expected in [(forward,normal),(reverse,swapped)]:
+        bindings = maps[:1] + [column] if number==138 else maps + [column] if number==140 else maps
+        assert bind_maps(result, bindings) == expected, number
+        assert bind_maps(result, reversed(bindings)) == expected, number
+    if number==140:
+        changed = evaluate("quantum:" + source.replace("M_2 M_1","M_1 M_2"))
+        assert bind_maps(changed, forward + [column]) == "0"
+print("Verified four ordered matrix expressions with both map assignments")
