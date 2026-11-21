@@ -1,0 +1,9 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M424",
+    "IBM029-9ea5aee3-M427"
+  ],
+  "exact_cases": 96,
+  "windows_clipboard_cases": 6,
+  "worker_sha256": "5312f9cea107c9511f79c3056228f0310c149f48147f5730d0a42e31feefe96c"
+}

@@ -541,6 +541,18 @@ std::string indexedColumn(const std::string &raw, bool tex) {
 }
 // Split only at the current matrix level; commas in grouped paired indices
 // and delimiters in quoted labels must not create extra cells.
+std::string ungroupTeX(std::string text) {
+ while(text.size()>1 && text.front()=='(' && text.back()==')') {
+  size_t depth=1,at=1;
+  for(;at<text.size() && depth;++at) {
+   if(text[at]=='(')++depth;
+   if(text[at]==')')--depth;
+  }
+  if(depth || at!=text.size())break;
+  text=trim(text.substr(1,text.size()-2));
+ }
+ return text;
+}
 std::vector<std::string> indexedParts(const std::string &raw,const std::string &separator) {
  std::vector<std::string> parts;size_t start=0;unsigned nesting=0;char quote=0;
  for(size_t i=0;i<raw.size();++i) {
@@ -971,12 +983,12 @@ class TeXReader {
   ++pos;
  }
  // Match only the text label that introduces a parenthesized modulus.
- bool takeModulusLabel(bool congruence) {
+ bool takeModulusLabel(bool &roman) {
   size_t start=pos;
   space();
   size_t length=0;
-  if(congruence && input.compare(pos,7,"\\textrm")==0)length=7;
-  else if(congruence && input.compare(pos,7,"\\mathrm")==0)length=7;
+  if(input.compare(pos,7,"\\textrm")==0)length=7;
+  else if(input.compare(pos,7,"\\mathrm")==0)length=7;
   else if(input.compare(pos,5,"\\text")==0)length=5;
   if(length) {
    pos+=length;space();
@@ -984,7 +996,7 @@ class TeXReader {
     ++pos;space();
     if(input.compare(pos,3,"mod")==0) {
      pos+=3;space();
-     if(pos<input.size() && input[pos]=='}') {++pos;return true;}
+     if(pos<input.size() && input[pos]=='}') {++pos;roman=length==7;return true;}
     }
    }
   }
@@ -1733,7 +1745,20 @@ class TeXReader {
        *preceding="(qbitvalue(qbitlabel("+lhs.substr(2)+",1))/2)=";
      }
     }
-    return read(0,true,env);
+    std::string branches=read(0,true,env);
+    if(preceding && branches.find(" qpostmod ")!=std::string::npos) {
+     std::string lhs=trim(*preceding);
+     if(!lhs.empty() && lhs.back()=='=') {
+      lhs=trim(lhs.substr(0,lhs.size()-1));
+      lhs=ungroupTeX(lhs);
+      size_t open=lhs.find('(');
+      static const std::regex indexedName(R"([A-Za-z]+_[A-Za-z0-9]+)");
+      if(open!=std::string::npos && std::regex_match(trim(lhs.substr(0,open)),indexedName) &&
+         ungroupTeX(lhs.substr(open))!=lhs.substr(open))
+       throw std::runtime_error(error("An indexed modular map requires an explicit function or operator binding"));
+     }
+    }
+    return branches;
    }
    if(env=="aligned" || env=="align" || env=="align*" || env=="gathered" || env=="gather" || env=="gather*" || env=="split") {
     space();
@@ -1990,10 +2015,11 @@ class TeXReader {
    }
    else if(input[pos]=='(' || input[pos]=='[') {
     char open=input[pos++], end=open=='(' ? ')' : ']';
-    if(open=='(' && takeModulusLabel(congruence)) {
+    bool roman=false;
+    if(open=='(' && takeModulusLabel(roman)) {
      auto modulus=trim(read(end));
      if(modulus.empty())throw std::runtime_error(error("Expected a modulus"));
-     result=trim(result)+(congruence ? " qtexmodulus (" : " pmod (")+modulus+")";
+     result=trim(result)+(congruence ? " qtexmodulus (" : roman ? " qpostmod (" : " pmod (")+modulus+")";
      congruence=false;continue;
     }
     // Mixed delimiters denote a half-open interval only after membership.
@@ -2254,21 +2280,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    for(const std::string spacing:{"\\qquad","\\quad","\\;","\\,"})
     if(equation.size()>=spacing.size() && equation.compare(equation.size()-spacing.size(),spacing.size(),spacing)==0)
      equation=trim(equation.substr(0,equation.size()-spacing.size()));
-   while(equation.size()>2 && equation.front()=='(' && equation.back()==')') {
-    size_t depth=1,at=1;
-    for(;at<equation.size() && depth;++at) {
-     if(equation[at]=='(')++depth;
-     if(equation[at]==')')--depth;
-    }
-    if(depth || at!=equation.size())break;
-    equation=trim(equation.substr(1,equation.size()-2));
-   }
+   equation=ungroupTeX(equation);
    auto sides=indexedParts(equation,"=");
    if(sides.size()!=2 || sides[0].empty() || sides[1].empty())throw std::runtime_error("A residue-ring annotation requires one equation.");
    std::string modulus=note[1];
    if(modulus.front()=='{')modulus=modulus.substr(1,modulus.size()-2);
    return "qcompare(qringexpr("+modulus+","+quantumTeX(sides[0])+"),qringexpr("+modulus+","+quantumTeX(sides[1])+"),4)";
   }
+ }
+ if(s.find("{mod")!=std::string::npos && s.find("\\equiv")==std::string::npos) {
+  // The lesson lists two numbers in prose. Each trailing modulus applies
+  // to the complete arithmetic expression before it, including its offset.
+  static const std::regex marker(R"(\(\s*\\(?:textrm|mathrm)\{\s*mod\s*\}(?:\s|\\[,;!])*([A-Za-z]|[0-9]+)\s*\)(?:\s|\\q?quad)*$)");
+  std::string text=trim(s);
+  if(!text.empty() && text.back()=='.')text.pop_back();
+  auto listed=indexedParts(text,"\\text{and}");
+  if(listed.size()==2 && std::regex_search(listed[0],marker) && std::regex_search(listed[1],marker))
+   return "vector("+quantumTeX(listed[0])+","+quantumTeX(listed[1])+")";
  }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {

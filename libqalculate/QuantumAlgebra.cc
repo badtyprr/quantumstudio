@@ -634,10 +634,10 @@ class QuantumAlgebraFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsScalar(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
-  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
+  return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qoperatorunequal") {
