@@ -1,0 +1,16 @@
+{
+  "worker_sha256": "172f70e751f615048e19283370bc9f75cac6490446af15f39cb42b6e0c9c4a5f",
+  "source_spans": [
+    67,
+    68,
+    69,
+    72,
+    75,
+    76
+  ],
+  "finite_inputs": 8,
+  "changed_graph_controls": 8,
+  "invalid_graph_controls": 2,
+  "clipboard_sessions": 22,
+  "windows_checks": 242
+}
