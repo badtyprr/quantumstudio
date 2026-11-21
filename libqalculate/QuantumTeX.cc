@@ -758,6 +758,11 @@ class TeXReader {
    space();if(input.compare(at,token.size(),token)!=0)return false;
    at+=token.size();return true;
   };
+  std::string closingSize;
+  static const std::pair<const char *,const char *> sizes[]={{"\\left","\\right"},{"\\bigl","\\bigr"},{"\\Bigl","\\Bigr"},{"\\biggl","\\biggr"},{"\\Biggl","\\Biggr"}};
+  for(const auto &size:sizes) {
+   if(take(size.first)) {closingSize=size.second;break;}
+  }
   if(!take("("))return "";
   std::string distribution;
   bool prose=take("\\text");
@@ -773,11 +778,18 @@ class TeXReader {
    distribution=input.substr(begin,at-begin);
    if(!take("}") || !take("="))return "";
   }
-  space();size_t digit=at;
-  while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
-  if(at==digit || (at>digit+1 && input[digit]=='0'))return "";
-  std::string outcome=input.substr(digit,at-digit);
-  if((prose && !take("}")) || !take(")"))return "";
+  bool inlineMath=prose && take("$");
+  space();size_t first=at;
+  std::string outcome;
+  if(inlineMath && at<input.size() && asciiLetter(input[at])) {
+   outcome="\""+input.substr(at++,1)+"\"";
+  } else {
+   while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
+   if(at==first || (at>first+1 && input[first]=='0'))return "";
+   outcome=input.substr(first,at-first);
+  }
+  if(inlineMath && !take("$"))return "";
+  if((prose && !take("}")) || (!closingSize.empty() && !take(closingSize)) || !take(")"))return "";
   pos=at;return "qeventprob(\""+distribution+"\","+outcome+")";
  }
  bool beforeMembership() const {
