@@ -2232,6 +2232,40 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
  }
+ // A single-qubit gate's dagger binds before composition with its neighbor.
+ if(s.find("\\dagger")!=std::string::npos) {
+  static const std::regex gates(R"(\b([HSTXYZ])([HSTXYZ])\^\{\\dagger\}\s*(?=\\(?:vert|ket)\b))");
+  s=std::regex_replace(s,gates,"$1*qdag($2)*");
+ }
+ // A textual subscript on a scalar parameter names it (e.g. a threshold).
+ if(s.find("_{\\text{")!=std::string::npos) {
+  static const std::regex subscript(R"(\b([a-z])_\{\\text\{([a-z]+)\}\})");
+  s=std::regex_replace(s,subscript,"\"$1_$2\"");
+ }
+ if(s.find("\\log^")!=std::string::npos) {
+  static const std::regex power(R"(\\log\^([a-z]|[0-9]+)\s*\(([a-zA-Z]+)\))");
+  s=std::regex_replace(s,power,"(ln($2)^$1)");
+ }
+ // In a scalar probability recurrence the adjacent symbols C and p multiply.
+ if(mathWrapper && s.find("Cp")!=std::string::npos && s.find('=')!=std::string::npos &&
+    s.find("\\vert")==std::string::npos && s.find("\\ket")==std::string::npos) {
+  static const std::regex scalarProduct(R"(\bCp\b)");
+  s=std::regex_replace(s,scalarProduct,"C*p");
+  if(s.find("\\bigl")!=std::string::npos) {
+   static const std::regex leadingConstant(R"(^\s*C\s*\\bigl)");
+   s=std::regex_replace(s,leadingConstant,"C*\\bigl");
+  }
+ }
+ // In this injection circuit the data qubit controls the auxiliary T|+>
+ // register. The displayed tensor order places the auxiliary register first.
+ const std::string cnotArrow="\\stackrel{\\text{CNOT}}{\\longmapsto}";
+ const size_t cnotAt=s.find(cnotArrow);
+ if(cnotAt!=std::string::npos) {
+  const std::string input=trim(s.substr(0,cnotAt)),result=trim(s.substr(cnotAt+cnotArrow.size()));
+  static const std::regex injection(R"(^T\s*\\vert\s*\{\+\}\s*\\rangle\s*\\otimes\s*\\vert\s*\\psi\s*\\rangle$)");
+  if(std::regex_match(input,injection))
+   return "qcompare(qmul(SWAP*CNOT*SWAP,"+quantumTeX(input)+"),"+quantumTeX(result)+",4)";
+ }
  // Apply the stated domain of the representative to the whole coset identity.
  if(s.find("\\oplus")!=std::string::npos && s.find("\\text{(for")!=std::string::npos) {
   std::string compact=s;

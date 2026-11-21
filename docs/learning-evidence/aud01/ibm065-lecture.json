@@ -1,0 +1,48 @@
+{
+  "url": "https://www.youtube.com/watch?v=aeaqXh2XXMk",
+  "duration_seconds": 2209,
+  "title": "Fault Tolerant Quantum Computation | Understanding Quantum Information & Computation | Lesson 16",
+  "chapters": [
+    [
+      "0:00",
+      "Introduction"
+    ],
+    [
+      "1:48",
+      "Overview"
+    ],
+    [
+      "3:14",
+      "Model for fault tolerance"
+    ],
+    [
+      "6:42",
+      "Fault-tolerant implementations"
+    ],
+    [
+      "9:22",
+      "Error propagation"
+    ],
+    [
+      "12:03",
+      "Transversal gates"
+    ],
+    [
+      "18:20",
+      "Magic states"
+    ],
+    [
+      "25:43",
+      "Fault-tolerant error correction"
+    ],
+    [
+      "28:43",
+      "Threshold theorem"
+    ],
+    [
+      "36:17",
+      "Conclusion"
+    ]
+  ],
+  "english_caption_bytes": 0
+}

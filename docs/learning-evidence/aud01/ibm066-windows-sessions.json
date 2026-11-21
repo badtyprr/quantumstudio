@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance.ipynb",
+  "notebook_sha256": "e774a7223c3a5b4473198591f1c3a29863178b4b0b92055a6cfb185403214c96",
+  "worker_sha256": "c97f8db5379b10d8020ced9ba8d2a14217f947d185d680cac6fb710c3a9e1e4c",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "0f66c05cf3ae0737b2b89a26c634f5e695d5168535b24dd91e50d99ab8dcb406",
+  "suite": {
+    "passed": true,
+    "checks": 9,
+    "calls": 1,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 1,
+    "restored_identically": 1,
+    "stable_after_text_reentry": 1
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
