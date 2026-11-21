@@ -2239,6 +2239,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(std::regex_match(s,match,monotone))
    return "qstrictorder(qindexedentries(\""+trim(quantumTeX(match[1].str()))+"_\",1,"+match[3].str()+",vector()),"+(match[2].str()==">" ? "1)" : "0)");
  }
+ if(s.find("\\cdots")!=std::string::npos) {
+  static const std::regex products(R"(((?:[A-Z]|\\Pi))_1(?:\^\{?([01]|[a-z]_1)\}?)?\s*\\cdots\s*\1_([a-z])(?:\^\{?([01]|[a-z]_[a-z])\}?)?)");
+  std::string expanded;size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),products),end;it!=end;++it) {
+   const auto &m=*it;
+   std::string first=m[2].str(),last=m[4].str(),upper=m[3].str();
+   std::string power=first.empty() ? "1" : first;
+   if(first!=last) {
+    if(first.size()!=3 || last!=first.substr(0,2)+upper)continue;
+    power="qindexedentries(\""+first.substr(0,2)+"\",1,"+upper+",vector())";
+   }
+   expanded.append(s,start,m.position()-start);
+   expanded+="qorderedpowers(qindexedentries(\""+trim(quantumTeX(m[1].str()))+"_\",1,"+upper+",vector()),"+power+")";
+   start=m.position()+m.length();
+  }
+  if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
+ }
  std::string systems=systemNames(s);
  if(!systems.empty())return systems;
  // A sum written with an ellipsis must have matching indexed endpoints.

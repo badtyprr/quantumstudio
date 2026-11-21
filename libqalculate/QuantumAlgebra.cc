@@ -640,6 +640,25 @@ class QuantumAlgebraFunction: public MathFunction {
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || MathFunction::representsNonMatrix(args);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qorderedpowers") {
+   MathStructure factors=raw[0],powers=raw[1];factors.eval(eo);powers.eval(eo);
+   bool single=factors.isMatrix() && factors.rows() && factors.columns() && factors.getElement(1,1)->isNumber();
+   size_t count=single ? 1 : factors.size();
+   if(!factors.isVector() || !count)return 0;
+   bool shared=powers.isInteger();
+   if(!shared && (!powers.isVector() || powers.size()!=count))return 0;
+   MathStructure accumulated;
+   for(size_t k=0;k<count;++k) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &factor=single ? factors : factors[k],&power=shared ? powers : powers[k];
+    if(!factor.isMatrix() || !power.isInteger())return 0;
+    MathStructure term(CALCULATOR->getFunction("qpower"),&factor,&power,NULL);
+    term.eval(eo);
+    if(!k)accumulated=term;
+    else {MathStructure left=accumulated;accumulated.set(CALCULATOR->getFunction("qmul"),&left,&term,NULL);accumulated.eval(eo);}
+   }
+   out=accumulated;return 1;
+  }
   if(op=="qsignedequal") {
    MathStructure left=raw[0],right=raw[1];left.eval(eo);right.eval(eo);
    if(!left.isMatrix() || !right.isMatrix() || left.containsUnknowns() || right.containsUnknowns())return 0;
@@ -1340,6 +1359,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qresidue",2));
  calculator.addFunction(new QuantumAlgebraFunction("qfrequency",1));
  calculator.addFunction(new QuantumAlgebraFunction("qphysicalunit",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qorderedpowers",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsignedequal",2));
  calculator.addFunction(new QuantumAlgebraFunction("qstrictorder",2));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
