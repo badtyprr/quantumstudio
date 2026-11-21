@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/continue-your-learning-journey.ipynb",
+  "source_sha256": "b01c624b43a681fd0035f7ab6f8c9908b0571d174c4ab5c5ca3d8680fb69ecfa",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "revision": "77aa49dd",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {},
+  "figures": [],
+  "rows": []
+}

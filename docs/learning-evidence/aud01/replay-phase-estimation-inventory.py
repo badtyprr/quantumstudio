@@ -18,6 +18,11 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "e77ac6b0cce54e7f5264122591a9532a502a4a10e05d5fa5d3545275832e3155": ("IBM069", "build-and-run-your-first-quantum-program", 16, 0),
+    "70686bafd5486949decd0166944c52ad02c55ea183f4e7ef4d6ded3ad5ef709d": ("IBM070", "quantum-mechanics-basics", 92, 0),
+    "07ed4dc2bc61a2b36515bba6f8fb9b3ed0d2ad41b6265f1be17ad6b31bb6698c": ("IBM071", "your-first-quantum-experiment", 20, 0),
+    "96b3ab669c676704e53032e82d552263b315b3d35e881142ad9eaa668fe571e5": ("IBM072", "quantum-computing-context", 2, 1),
+    "b01c624b43a681fd0035f7ab6f8c9908b0571d174c4ab5c5ca3d8680fb69ecfa": ("IBM073", "continue-your-learning-journey", 0, 0),
     "c79165e211e3669c87b20fc1f7018571ba734f5d4b11bb3e6c004d3037211de4": ("IBM065", "introduction", 0, 0),
     "e774a7223c3a5b4473198591f1c3a29863178b4b0b92055a6cfb185403214c96": ("IBM066", "approach-to-fault-tolerance", 1, 2),
     "86969cf39e501273ae90ccf63633bbe71e30ce976458af053dd97449d0220305": ("IBM067", "controlling-error-propagation", 87, 8),
@@ -107,6 +112,7 @@ multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 expected_cells = {"IBM068":(2,0),"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
 if lesson in {"IBM049","IBM050","IBM051"}: expected_cells=(2,0)
 if lesson=="IBM052": expected_cells=(22,19)
+expected_cells = {'IBM069': (10, 7), 'IBM070': (5, 1), 'IBM071': (11, 13), 'IBM072': (11, 0), 'IBM073': (2, 0)}.get(lesson, expected_cells)
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
@@ -164,6 +170,8 @@ if lesson in {"IBM065","IBM066","IBM067","IBM068"}:
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")
+if lesson in ('IBM069', 'IBM070', 'IBM071', 'IBM072', 'IBM073'):
+    source = f"https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/{slug}.ipynb"
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
               revision=args.revision, mode="Quantum notation", markdown_cells=types["markdown"], code_cells=types["code"],

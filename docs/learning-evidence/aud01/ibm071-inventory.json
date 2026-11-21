@@ -1,0 +1,215 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/your-first-quantum-experiment.ipynb",
+  "source_sha256": "07ed4dc2bc61a2b36515bba6f8fb9b3ed0d2ad41b6265f1be17ad6b31bb6698c",
+  "worker_sha256": "e160f6cb64118676a0fd70ef0b39a83aedc4666730ee39c0ef79caaecf51ba99",
+  "revision": "77aa49dd",
+  "mode": "Quantum notation",
+  "markdown_cells": 11,
+  "code_cells": 13,
+  "summary": {
+    "exact": 20
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM071-07ed4dc2-M001",
+      "cell": 1,
+      "start": 2027,
+      "end": 2038,
+      "literal": "$|0\\rangle$",
+      "status": "exact",
+      "display": "[1; 0]",
+      "copy": "matrix(2,1,[1,0])"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M002",
+      "cell": 1,
+      "start": 2059,
+      "end": 2070,
+      "literal": "$|1\\rangle$",
+      "status": "exact",
+      "display": "[0; 1]",
+      "copy": "matrix(2,1,[0,1])"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M003",
+      "cell": 1,
+      "start": 2816,
+      "end": 2853,
+      "literal": "$$\nH = J Z_1 Z_0 + h_x (X_1 + X_0)\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + J · \"Z_1\" · \"Z_0\" + (\"X_1\" + \"X_0\") · '_' · h · x = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qadd(qadjacent(qadjacent('J',\"Z_1\"),\"Z_0\"),qmul(qmul(qmul(x,'_'),'h'),qadd(\"X_1\",\"X_0\")))))==(0)"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M004",
+      "cell": 1,
+      "start": 2863,
+      "end": 2866,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M005",
+      "cell": 1,
+      "start": 2946,
+      "end": 2951,
+      "literal": "$h_x$",
+      "status": "exact",
+      "display": "\"h_x\"",
+      "copy": "\"h_x\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M006",
+      "cell": 1,
+      "start": 3018,
+      "end": 3027,
+      "literal": "$Z_1 Z_0$",
+      "status": "exact",
+      "display": "\"Z_1\" · \"Z_0\"",
+      "copy": "qadjacent(\"Z_1\",\"Z_0\")"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M007",
+      "cell": 1,
+      "start": 3118,
+      "end": 3123,
+      "literal": "$X_0$",
+      "status": "exact",
+      "display": "\"X_0\"",
+      "copy": "\"X_0\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M008",
+      "cell": 1,
+      "start": 3128,
+      "end": 3133,
+      "literal": "$X_1$",
+      "status": "exact",
+      "display": "\"X_1\"",
+      "copy": "\"X_1\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M009",
+      "cell": 1,
+      "start": 6297,
+      "end": 6375,
+      "literal": "$$\n\\vert\\Psi\\rangle = \\frac{1}{\\sqrt{2}}(\\vert 10\\rangle - \\vert 01\\rangle)\n$$",
+      "status": "exact",
+      "display": "|Ψ⟩ = [0; (−1 ∕ √(2)); (1 ∕ √(2)); 0]",
+      "copy": "qcompare(qketstate('Ψ'),matrix(4,1,[0,−1 ∕ √(2),1 ∕ √(2),0]),4)"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M010",
+      "cell": 13,
+      "start": 189,
+      "end": 211,
+      "literal": "$\\vert \\Psi^- \\rangle$",
+      "status": "exact",
+      "display": "[0; (1 ∕ √(2)); (−1 ∕ √(2)); 0]",
+      "copy": "matrix(4,1,[0,1 ∕ √(2),−1 ∕ √(2),0])"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M011",
+      "cell": 13,
+      "start": 394,
+      "end": 474,
+      "literal": "$\\vert \\Psi^- \\rangle = \\frac{1}{\\sqrt{2}}(\\vert 01 \\rangle - \\vert 10 \\rangle)$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M012",
+      "cell": 13,
+      "start": 580,
+      "end": 583,
+      "literal": "$J$",
+      "status": "exact",
+      "display": "J",
+      "copy": "'J'"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M013",
+      "cell": 13,
+      "start": 618,
+      "end": 623,
+      "literal": "$h_x$",
+      "status": "exact",
+      "display": "\"h_x\"",
+      "copy": "\"h_x\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M014",
+      "cell": 13,
+      "start": 658,
+      "end": 695,
+      "literal": "$$\nH = J Z_1 Z_0 + h_x (X_1 + X_0)\n$$",
+      "status": "exact",
+      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + J · \"Z_1\" · \"Z_0\" + (\"X_1\" + \"X_0\") · '_' · h · x = 0",
+      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qadd(qadjacent(qadjacent('J',\"Z_1\"),\"Z_0\"),qmul(qmul(qmul(x,'_'),'h'),qadd(\"X_1\",\"X_0\")))))==(0)"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M015",
+      "cell": 13,
+      "start": 912,
+      "end": 921,
+      "literal": "$Z_1 Z_0$",
+      "status": "exact",
+      "display": "\"Z_1\" · \"Z_0\"",
+      "copy": "qadjacent(\"Z_1\",\"Z_0\")"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M016",
+      "cell": 13,
+      "start": 934,
+      "end": 937,
+      "literal": "$Z$",
+      "status": "exact",
+      "display": "[1, 0; 0, −1]",
+      "copy": "matrix(2,2,[1,0,0,−1])"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M017",
+      "cell": 13,
+      "start": 956,
+      "end": 961,
+      "literal": "$X_0$",
+      "status": "exact",
+      "display": "\"X_0\"",
+      "copy": "\"X_0\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M018",
+      "cell": 13,
+      "start": 972,
+      "end": 975,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    },
+    {
+      "id": "IBM071-07ed4dc2-M019",
+      "cell": 13,
+      "start": 990,
+      "end": 995,
+      "literal": "$X_1$",
+      "status": "exact",
+      "display": "\"X_1\"",
+      "copy": "\"X_1\""
+    },
+    {
+      "id": "IBM071-07ed4dc2-M020",
+      "cell": 13,
+      "start": 1006,
+      "end": 1009,
+      "literal": "$X$",
+      "status": "exact",
+      "display": "[0, 1; 1, 0]",
+      "copy": "matrix(2,2,[0,1,1,0])"
+    }
+  ]
+}
