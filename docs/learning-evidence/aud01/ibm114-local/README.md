@@ -10,3 +10,5 @@ The four local replay scripts read their named source notebooks from this direct
 - The linked Tokyo lecture's Schmidt singular values agreed with Aer's matrix-product-state bond. Its stabilizer state gave XX = −1 and ZZ = +1. Three simultaneous Pauli estimates agreed with separate expectations, and an adapted 65,536-shot sample agreed within 0.018. The original sampling cell requests ten million shots. The scaling benchmarks and the full linked lecture remain open.
 
 The figure manifest records byte counts and hashes for eight Markdown images. The calculations used local simulators. Remaining notebooks, exercises, hardware workflows, diagrams, unsupported expressions and release checks still require verification.
+
+The updated IBM-120 notebook supplies exact energy, magnetization and nearest-neighbor correlation for six spins initially in `001100`. Direct diagonalization of the 64-dimensional Hamiltonian independently reproduced all 303 entries at the 101 published times to within 1e-10. Run `check-exact-spin.py NOTEBOOK REPORT` with NumPy to repeat the comparison. [Results](exact-spin-results.json).
