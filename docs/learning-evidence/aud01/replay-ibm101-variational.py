@@ -61,3 +61,25 @@ energy=source(106,74).replace("qstatecall('ψ',qvectorref('θ'))","|1>").replace
 energy=energy.replace("'θ'","vector(1,2)")
 for value,expected in [(-1,"1"),(1,"0")]:
     assert run(energy.replace('"C_VQE"',f"vector(vector(vector(1,2),{value}))"))==expected
+
+# Bind the source observables to an independent Pauli construction. Check
+# the eigenpairs in the displayed order, including the repeated eigenvalue.
+operator="(2*(I ⊗ I)-2*(X ⊗ X)+3*(Y ⊗ Y)-3*(Z ⊗ Z))"
+assert run(source(107,1).replace('"O_1"',operator))=="1"
+assert run(source(107,1).replace('"O_1"',"(I ⊗ I)"))=="0"
+states=["((|00>+|11>)/sqrt(2))","((|00>-|11>)/sqrt(2))",
+        "((|01>-|10>)/sqrt(2))","((|01>+|10>)/sqrt(2))"]
+values=source(107,2);vectors=source(107,3)
+for j,(state,value) in enumerate(zip(states,[-6,4,4,6])):
+    values=values.replace(f'"λ_{j}"',f"({value})")
+    vectors=vectors.replace(f'"φ_{j}"',state)
+    assert run(f"qcompare(qmul({operator},{state}),qmul({value},{state}),4)")=="1"
+assert run(values)==run(vectors)==r"\begin{gathered}1\\1\\1\\1\end{gathered}"
+diagonal=source(104,154)
+for index in range(16):
+    bits=f"{index:04b}"
+    signs=[1 if b=="0" else -1 for b in bits]
+    expected=sum(signs[a]*signs[b] for a,b in [(2,3),(1,3),(1,2),(0,3),(0,1)])
+    assert run(f"qexpect({diagonal},|{bits}>)")==run(str(expected))
+run("$XX + XYZ$","equal register width")
+print("Verified four eigenpairs and all 16 diagonal Max-Cut energies.")

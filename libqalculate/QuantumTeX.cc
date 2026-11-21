@@ -2366,6 +2366,32 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
     return "qrealvectormember("+quantumTeX("$"+dimensions[1].str()+"$")+","+dimension+")";
    }
   }
+  if(s.find("\\begin{array}{c}")!=std::string::npos && s.find('=')!=std::string::npos) {
+   static const std::regex equations(R"(^\s*\\left\\\{\s*\\begin\{array\}\{c\}([\s\S]+)\\end\{array\}\s*\\right\\\}\s*$)");
+   std::smatch group;
+   if(std::regex_match(s,group,equations))
+    s="\\begin{gathered}"+group[1].str()+"\\end{gathered}";
+  }
+  if(s.find_first_of("IXYZ")!=std::string::npos &&
+     (s.find('+')!=std::string::npos || s.find('-')!=std::string::npos)) {
+   static const std::regex pauliSum(R"(^\s*(?:\\hat\{([A-Z])\}_\{?([0-9]+)\}?\s*:?=\s*)?([+-]?\s*(?:[0-9]+(?:\.[0-9]+)?\s+)?[IXYZ]{2,}(?:\s*[+-]\s*(?:[0-9]+(?:\.[0-9]+)?\s+)?[IXYZ]{2,})+)\s*$)");
+   static const std::regex term(R"(([+-]?)\s*(?:([0-9]+(?:\.[0-9]+)?)\s+)?([IXYZ]{2,}))");
+   std::smatch expansion;
+   if(std::regex_match(s,expansion,pauliSum)) {
+    std::string body=expansion[3].str(),expression;size_t width=0;
+    for(std::sregex_iterator it(body.begin(),body.end(),term),end;it!=end;++it) {
+     std::string word=(*it)[3].str();
+     if(width && word.size()!=width)throw std::runtime_error("Pauli strings in a Hamiltonian must have equal register width.");
+     width=word.size();
+     std::string coefficient=(*it)[2].matched ? (*it)[2].str() : "1";
+     if((*it)[1].str()=="-")coefficient="-"+coefficient;
+     std::string part="qmul("+coefficient+",pauli(\""+word+"\"))";
+     expression=expression.empty() ? part : "qadd("+expression+","+part+")";
+    }
+    if(expansion[1].matched)return "qcompare(qoperatorref(\""+expansion[1].str()+"_"+expansion[2].str()+"\"),"+expression+",4)";
+    return expression;
+   }
+  }
   // In variational notation rho inside a ket names a state, including
   // when rho elsewhere in the same document denotes a density operator.
   static const std::regex rhoKet(R"(\|\s*\\rho\s*\\rangle)");
