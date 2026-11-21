@@ -1,7 +1,8 @@
-"""Verify the exponent selection in Shor's classical circuit preparation (IBM-029 M357)."""
+"""Verify the exponent selection and repeated squaring in Shor's classical circuit preparation."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
+import math
 import json
 import os
 from pathlib import Path
@@ -19,7 +20,8 @@ def evaluate(expr):
                           capture_output=True, timeout=30, check=True)
     return json.loads(proc.stdout)["copy_text"]
 
-row = json.loads(Path(__file__).with_name("ibm029-inventory.json").read_bytes())["rows"][356]
+rows = json.loads(Path(__file__).with_name("ibm029-inventory.json").read_bytes())["rows"]
+row = rows[356]
 assert row["id"].endswith("M357")
 raw = row["literal"]
 copy = evaluate(raw)
@@ -30,14 +32,31 @@ for width in (1, 2, 3, 4, 6, 12, 32, 64):
     for exponent in sorted({-1, 0, 1, 2, 3, 4, 8, 15, 2**(width-1), 2**(width-1)+1, 2**width}):
         expr = f'replace(replace(({copy}),"m",{width}),"k",{exponent})'
         checks[f"m{width}-k{exponent}"] = (expr, str(int(exponent in allowed)))
+index_checks = len(checks)
+powers_row = rows[179]
+assert powers_row["id"].endswith("M180")
+power_source = powers_row["literal"]
+power_copy = evaluate(power_source)
+assert evaluate(power_copy) == power_copy
+ring_copy = evaluate(power_source.replace(r"^{\ast}", ""))
+for modulus in (6, 15, 21, 35):
+    for base in (-2, 0, 1, 3, 5, 8):
+        for width in (1, 4, 64):
+            residues = [pow(base, 2**j, modulus) for j in range(1, width)]
+            for key, expression in (("units", power_copy), ("ring", ring_copy)):
+                expected = all(math.gcd(x, modulus) == 1 for x in residues) if key == "units" else all(0 <= x < modulus for x in residues)
+                expr = f'replace(replace(replace(({expression}),"N",{modulus}),"a",{base}),"m",{width})'
+                checks[f"{key}-{modulus}-{base}-{width}"] = (expr, str(int(expected)))
+
 def verify(item):
     expr, expected = item
     assert evaluate(expr) == expected, expr
 with ThreadPoolExecutor(max_workers=4) as pool:
     list(pool.map(verify, checks.values()))
 
-gui = {"M357": (raw, copy)}
-for key in ("m1-k2", "m2-k2", "m4-k3", "m4-k8", "m64-k9223372036854775808"):
+gui = {"M357": (raw, copy), "M180": (power_source, power_copy)}
+for key in ("m1-k2", "m2-k2", "m4-k3", "m4-k8", "m64-k9223372036854775808",
+            "units-21-5-64", "units-21-3-4", "units-21-0-1", "ring-21-3-4"):
     gui[key] = checks[key]
 inputs = [[key, expr, "0"] for key, (expr, _) in gui.items()]
 (args.directory / "inputs.json").write_text(json.dumps(inputs), encoding="utf8")
@@ -46,6 +65,6 @@ if args.verify_windows:
     assert [r["id"] for r in records] == list(gui)
     for record in records:
         assert record["restored_same"] and record["copy_text"] == record["reentry_text"] == gui[record["id"]][1]
-    print(json.dumps(dict(source=row["id"], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-                          widths=[1,2,3,4,6,12,32,64], exact_memberships=len(checks),
+    print(json.dumps(dict(sources=[row["id"], powers_row["id"]], worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
+                          widths=[1,2,3,4,6,12,32,64], exponent_memberships=index_checks, modular_memberships=len(checks)-index_checks,
                           windows_sessions=len(records)), indent=2))
