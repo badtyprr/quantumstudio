@@ -222,8 +222,12 @@ def validate_request(request):
     contract = json.loads(contract_bytes)
     profile = contract_profile(contract)
     raw = Path(request["source"]).read_bytes()
-    if digest(raw) != contract["source"]["sha256"]:
+    source_hash = digest(raw)
+    revisions = [contract["source"], *contract.get("source_revisions", [])]
+    source = next((revision for revision in revisions if revision["sha256"] == source_hash), None)
+    if source is None:
         raise ValueError("SOURCE_HASH_MISMATCH")
+    contract["source"] = source
     original = json.loads(raw)
     cells = [{"index": i, "type": c["cell_type"], "sha256": digest(cell_text(c).encode("utf-8"))}
              for i, c in enumerate(original["cells"])]

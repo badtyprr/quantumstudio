@@ -54,3 +54,7 @@ The [earlier execution interface](execution-interface.md) describes the initial
 two-contract runtime and its historical acceptance. Its old launch details and
 contract count are superseded by this integration; its recorded test outcomes
 are historical, not evidence for the new runtime.
+
+## Deutsch lesson revisions
+
+Pass either recorded notebook revision to the existing `ibm019` or `ibm020` contract. Each revision retains the same eight executable cells. The runner verifies the full file and the cell manifest for that revision. A fresh offline Windows installation ran both revisions of both lessons. The runs preserved every original cell, produced the required figures and text, and passed the reference state, sampling and error checks. Changing a code cell in either pinned notebook produced a source hash mismatch. All 121 execution and Windows lifecycle tests passed. Linux execution of the revised inputs and published-release checks remain open. [Four runs and reference results](deutsch-notebook-revisions.json).

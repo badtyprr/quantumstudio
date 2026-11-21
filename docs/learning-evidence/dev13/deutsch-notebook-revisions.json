@@ -1,0 +1,406 @@
+{
+  "profile": "qiskit-aer-win-py312",
+  "python": "3.12.10",
+  "lock_sha256": "0ac7a06688424d9260aaf75af2cab390519ff587cf367891f36dd74da30ae45a",
+  "offline_wheels": 51,
+  "runs": {
+    "ibm019-old": {
+      "source_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+      "source_cells": 17,
+      "executed_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "required_images": [
+        7,
+        11
+      ],
+      "required_text": {
+        "15": "'balanced'"
+      },
+      "results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ],
+        "kernel_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      }
+    },
+    "ibm019-pinned": {
+      "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+      "source_cells": 16,
+      "executed_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "required_images": [
+        7,
+        11
+      ],
+      "required_text": {
+        "15": "'balanced'"
+      },
+      "results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ],
+        "kernel_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+      },
+      "changed_code_rejected": true
+    },
+    "ibm020-old": {
+      "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+      "source_cells": 20,
+      "executed_code_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "required_images": [
+        6,
+        12,
+        15
+      ],
+      "required_text": {
+        "12": "'balanced'",
+        "17": "'1011'"
+      },
+      "results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "001": 1042,
+          "101": 985,
+          "110": 1037,
+          "010": 1032
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    },
+    "ibm020-pinned": {
+      "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+      "source_cells": 19,
+      "executed_code_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "required_images": [
+        6,
+        12,
+        15
+      ],
+      "required_text": {
+        "12": "'balanced'",
+        "17": "'1011'"
+      },
+      "results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "001": 1042,
+          "101": 985,
+          "110": 1037,
+          "010": 1032
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      },
+      "changed_code_rejected": true
+    }
+  }
+}
