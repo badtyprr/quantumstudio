@@ -843,20 +843,20 @@ class Parser {
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
    if(dimension.empty())return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
   }
-  // Commas at the top level separate registers. Commas inside a computed
-  // basis index, such as mod(k,3), remain ordinary function arguments.
+  // Top-level commas and tensor products separate registers. Commas inside
+  // a computed basis index, such as mod(k,3), remain function arguments.
   std::vector<std::string> registers;size_t start=0;int nesting=0;
   for(size_t k=0;k<label.size();++k) {
    if(label[k]=='(' || label[k]=='[')++nesting;
    else if(label[k]==')' || label[k]==']')--nesting;
-   else if(label[k]==',' && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
+   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
   }
   if(!registers.empty()) {
-   if(!dimension.empty())throw std::runtime_error("A comma-separated register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
+   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
    registers.push_back(label.substr(start));std::string state;
    for(const auto &part:registers) {
     if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
-    if(labelText(part).empty())throw std::runtime_error("Empty register in a comma-separated state label.");
+    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
     std::string factor=basisState(part);
     state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
    }
@@ -1171,7 +1171,8 @@ class Parser {
    size_t end=labelEnd('>',p), bar=labelEnd('|',p);
    if(end!=std::string::npos && (bar==std::string::npos || end<bar)) {
     std::string rawLabel=s.substr(p,end-p), label=labelText(rawLabel); bool valid=!label.empty();
-    if(label!="+" && label!="-" && label!="+i" && label!="-i") for(unsigned char c:label) if(c<128 && !std::isalnum(c) && c!='_' && c!='+' && c!='-' && c!=',') valid=false;
+    if(label!="+" && label!="-" && label!="+i" && label!="-i") for(unsigned char c:label) if(c<128 && !std::isalnum(c) && c!='_' && c!='+' && c!='-' && c!=',' && (vectorized || c!='@')) valid=false;
+    if(!vectorized && (label=="0...0" || label=="1...1"))valid=true;
     size_t suffix=end+1;while(suffix<s.size() && std::isspace((unsigned char)s[suffix]))++suffix;
     if(!vectorized && (!dimension.empty() || (suffix<s.size() && s[suffix]=='_')))valid=!label.empty();
     if(!vectorized && repeatedRegister(rawLabel)!=std::string::npos)valid=true;
