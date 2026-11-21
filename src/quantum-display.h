@@ -212,6 +212,8 @@ class Printer {
    return Fragment("integergcd("+render(value[0],depth+1).text+", "+render(value[1],depth+1).text+")");
   if(name=="qresidue" && value.size()==2)
    return Fragment(grouped(render(value[0],depth+1),40)+" pmod ("+render(value[1],depth+1).text+")",40);
+  if(name=="qscalarupdate" && value.size()==2 && value[0].isSymbolic())
+   return Fragment(value[0].symbol()+" ← "+render(value[1],depth+1).text);
   if(name=="qcostparam" && value.size()==1 && value[0].isSymbolic())return Fragment(value[0].symbol());
   if(name=="qinversefunction" && value.size()==1 && value[0].isSymbolic())
    return Fragment(value[0].symbol()+"^(-1)",80);

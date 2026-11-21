@@ -44,5 +44,27 @@
     "IBM034-94ee62dd-M152",
     "IBM034-94ee62dd-M153"
   ],
-  "scalar_shared_sign_controls": 175
+  "scalar_shared_sign_controls": 175,
+  "reviewed_candidate": {
+    "revision": "5817f2d7",
+    "independent_specification": "Both source formulas, 33 finite substitutions, 175 scalar sign controls and seven additional growth-class probes passed.",
+    "independent_standards": "Fixed loss of growth-class membership in signed chains and added positive and zero-bound regressions. Reviewer reproduced both on the updated worker.",
+    "source_replay": {
+      "counts": {
+        "source_exact": 151,
+        "restored_identically": 151,
+        "stable_after_text_reentry": 150,
+        "source_diagnostic": 4
+      },
+      "records_sha256": "0bdee084c26f825360d00f37394d0290664deddf5f52eb86f1ffb589b0cff3f6",
+      "worker_sha256": "e338a19327b75d2b05b8e75664cb70c5e32aca44021a9822a15bf023c6e9e1a2",
+      "changed_copy": [
+        {
+          "id": "IBM034-94ee62dd-M112",
+          "first": "(qasin('\u03b1') \u2212 '\u03b1')>=(0)",
+          "second": "(qsub(qasin('\u03b1'),'\u03b1'))>=(0)"
+        }
+      ]
+    }
+  }
 }

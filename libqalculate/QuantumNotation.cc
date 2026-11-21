@@ -215,7 +215,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qscalarupdate",2},{"qstepvalue",2},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -426,6 +426,7 @@ class Parser {
  }
  bool spinContext=false;
  bool setNotation=false;
+ std::string updateVariable;
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
@@ -1308,7 +1309,10 @@ class Parser {
    const bool groupedFactor=a!="U_1" && a!="U_2" && a!="U_3" && a.size()>2 && a[0]>='A' && a[0]<='Z' && a[1]=='_' &&
     a.find_first_not_of("0123456789",2)==std::string::npos && p>b+a.size();
    bool indexedScalar=false;
-   if(!numericToken && a.back()=='_' && take('{')) {
+   if(!updateVariable.empty() && a==updateVariable) {
+    a=indexableLabel(a);indexedScalar=true;
+   }
+   else if(!numericToken && a.back()=='_' && take('{')) {
     std::string index=expression();need('}');
     a="qindexedlabel("+indexableLabel(a)+","+index+","+indexableLabel("")+")";
     indexedScalar=true;
@@ -2522,7 +2526,21 @@ class Parser {
   return graphCalls(value,std::string(1,name));
  }
  std::string expression(bool allowSharedOperands=false) {
-  ws();size_t start=p;std::string result=logicalOr(allowSharedOperands);
+  ws();size_t start=p;
+  // A left arrow binds the target on its right hand side as a scalar.
+  // Return the update rule itself so evaluation never mutates the session.
+  if(p<s.size() && ((s[p]>='a' && s[p]<='z') || (s[p]>='A' && s[p]<='Z'))) {
+   std::string target(1,s[p++]);
+   if(takeSetOperator("←")) {
+    if(!updateVariable.empty())throw std::runtime_error("Nested scalar updates are unsupported.");
+    updateVariable=target;
+    std::string body=logicalOr(false);
+    updateVariable.clear();
+    return "qscalarupdate("+indexableLabel(target)+","+body+")";
+   }
+   p=start;
+  }
+  std::string result=logicalOr(allowSharedOperands);
   if(take(':')) {
    std::string domain=setUnion();
    if(!takeSetOperator("→"))throw std::runtime_error("A function signature requires a domain and a codomain separated by an arrow.");
