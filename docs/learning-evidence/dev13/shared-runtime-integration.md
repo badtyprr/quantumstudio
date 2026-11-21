@@ -20,6 +20,7 @@ Unknown or changed sources are rejected. Only these finite contracts are exposed
 | qb017 | QIR source contract with explicit semantic rejection when unsupported |
 | qb027 | Selected Braket local simulation cells; provider work remains outstanding |
 | qb030 | Selected Pulser local pulse/solver cells; hardware work remains outstanding |
+| qb036, qb038 | Original Qiskit GHZ construction and drawing cell. CPU Aer checks the three-qubit statevector and samples three widths through 100 qubits in two bases. Provider execution remains open. [Recorded runs](qb036-qb038-ghz-routes.json) |
 | ibm-timing | Finite timing observations with authored reference and retained artifacts |
 
 Windows launch ownership is established at process creation with a job-list

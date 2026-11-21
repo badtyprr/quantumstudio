@@ -1,0 +1,197 @@
+{
+  "version": 2,
+  "id": "qb038",
+  "route": "selected-cells/direct-native-execution",
+  "profiles": {
+    "win32": "qiskit-aer-win-py312",
+    "linux": "qiskit-aer-linux-py312"
+  },
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/4deeced918b79c10a4f7585fafbc65d4250dc6e7/qBraid-Runtime/qperfect_mimiq_quickstart.ipynb",
+    "revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+    "sha256": "0c953abc62d97d819435b4ed3bcf3d820b3b24b2af514c3ea3a3bceb79999412",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "96eadfb6ec597646617f4bc1f7969f2c60ccfad0aada0bc57074188488f122de"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "7d8683e21e1379e8a16a90da8dc9788aaa37a3f6c21f18a879e4c34984a3af96"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "7315752dbc1fef1a07fc95f49f0d34e293aedde27b7adc9b729d7cff249a2b93"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "80d70df796f161ad6aca55954f3220feff2544d0635171c1d87847763d57e9ef"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "3067ed999c83c9bf50d29a975bd48c77b3e8e65bd56832d4d9cd7f7e7f74989a"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "5924a91db251cb25872a9d7345fc8ec60de758bcc8833476664530bea77f2e09"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "10fb274079ba7993b6e2599324e78e19aff5644fc9ab1cc8b91659805d4a8009"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "8f51295fa6d45d1acffb0a2f19f0cc754363baebd8bbe089250c6fb9ee3f8380"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "325a5f5e21f2c91d123b851281dd0c433c23710c65e4a5db25e1e37297dcb92e"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "169848855ac35bc2984be207b962d3c6dd9aad562ba52d14a8f03a64541a9089"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "9b029a7035e044a42cf991658e1b8cc354dfe0feeb80b9e661443199474039f7"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "628b611d720adeff00de383f4fd4550408cc263aad9ead757c80e3c904abf966"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "09838eab3a4ebc14da26c3e38357dbdd70701c2723437e86e08a701d426c1d33"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "1fde44290d6cb336825e17ad5cc75437f5d22490e62a7813ea66892ac5714c2c"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "ad8e9bafcfcf869ffb49be61a003fffbf4302f9e60b9a9b2d96a163cb5d2514b"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "dc9c314a4b7fe954696db27c1fe5bc9cc673d35567acd301f21eca3d8401a963"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "45498d5f1cd8a863baaf65db5a58da180cf9f61ac283f0bd81b0309806f3af20"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "87fcff5e2113f41c978b695777dee67ceef4ddb59ec9eff9c881ae63a1e471d0"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "6eb39835026bf7eaf70a954d9f57ce5468085547309d2aba3e59f0903f203148"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "cf10a57cf1ec556140353bc6b34209b596d7e2a86dce4456807b0f29ec937f3e"
+      },
+      {
+        "index": 20,
+        "type": "markdown",
+        "sha256": "fe558ebc0ec48a71808cee7e98964706c7a6f818bb3bba234926cd0ee7b11919"
+      },
+      {
+        "index": 21,
+        "type": "code",
+        "sha256": "6fd4bb7ef1bd9e6d3fa930d2dc45d8bf0774b20b2ae55043c00a4f8d3f423e65"
+      },
+      {
+        "index": 22,
+        "type": "code",
+        "sha256": "7b4452cbf71015fdb29df662d2492a2e75ca9c05d2f8445dd611195ade4465da"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "6fdedba875add01c8066515b961bb870428b7c5890512603830336778f7cd832"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "4670b91a0a31d6777ae33abdf4dd1995da365ab02e92c3271bf7036e5bc51782"
+      },
+      {
+        "index": 25,
+        "type": "code",
+        "sha256": "81cba3bacc35ef3276a2695febdb4c22e89d84a2f048d67107d94ded83fbe95f"
+      },
+      {
+        "index": 26,
+        "type": "markdown",
+        "sha256": "8e84d98e270ab78421e56b3db8a80c2bee5ff6cd6af39acc514db1d0413c3c51"
+      },
+      {
+        "index": 27,
+        "type": "markdown",
+        "sha256": "0c61cd59e4e7d447ff6af14e576b91aa9c54a2c2ddce3b62566de0b69a32ddb2"
+      },
+      {
+        "index": 28,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    8
+  ],
+  "code_cells": [
+    8
+  ],
+  "excluded_code_cells": {
+    "1": "Source installs unpinned provider packages. This route uses the locked local Qiskit profile.",
+    "3": "Creates a cloud provider and looks up its device.",
+    "4": "Reads remote MPS device metadata.",
+    "6": "Reads supported inputs from the remote statevector device.",
+    "9": "Submits to the remote statevector device.",
+    "13": "Submits a wide circuit to the remote MPS device.",
+    "15": "Reads fidelity from the provider result.",
+    "17": "Sets provider bond dimension and time limit.",
+    "19": "Tests provider seeding.",
+    "21": "Reads provider batch capability.",
+    "22": "Submits the rotation sweep to the provider.",
+    "23": "Plots results from the excluded provider batch.",
+    "25": "Plots selected provider distributions."
+  },
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb_ghz.py",
+    "sha256": "3bc4fddb125ada0d9a31561c99da365202ce59ed3ee3d0ca59525084d536dea1"
+  },
+  "required_images": [],
+  "required_text": {
+    "8": "        ┌───┐           ░ ┌─┐      \n   q_0: ┤ H ├──■────────░─┤M├──────\n        └───┘┌─┴─┐      ░ └╥┘┌─┐   \n   q_1: ─────┤ X ├──■───░──╫─┤M├───\n             └───┘┌─┴─┐ ░  ║ └╥┘┌─┐\n   q_2: ──────────┤ X ├─░──╫──╫─┤M├\n                  └───┘ ░  ║  ║ └╥┘\nmeas: 3/═══════════════════╩══╩══╩═\n                           0  1  2 "
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "limits": [
+    "Original local GHZ construction and drawing cell. Additional sizes and sampling use an authored CPU simulator check.",
+    "Provider jobs, precision, metadata, and performance remain outside this local route."
+  ]
+}
