@@ -1,0 +1,21 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M144",
+    "IBM029-9ea5aee3-M153"
+  ],
+  "classical_graphs": 38,
+  "classical_images": 828,
+  "operators": 26,
+  "matrix_entries": 21344,
+  "clipboard_sessions": 6,
+  "compatibility": {
+    "originals": 438,
+    "accepted_before": 428,
+    "accepted_after": 430,
+    "changed": [
+      "IBM029-9ea5aee3-M144",
+      "IBM029-9ea5aee3-M153"
+    ],
+    "timeouts": 0
+  }
+}
