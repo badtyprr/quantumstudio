@@ -1,0 +1,45 @@
+{
+  "source_spans": [
+    152,
+    157,
+    162
+  ],
+  "forward_actions": 117,
+  "inverse_actions": 117,
+  "three_step_traces": 61,
+  "worker_comparison": {
+    "builds": {
+      "orbitket3.exe": "f8f1b929de0f96e1c909e2c774cd1297d80eb7170fe73a9f96d4c23ff7f45132",
+      "modxor3.exe": "73aa7ad3b1c6a668ba29c9df6e95d893de3863292c5b25f4410ecf62d59f1394"
+    },
+    "rows": 438,
+    "counts": [
+      433,
+      436
+    ],
+    "changes": [
+      {
+        "id": "IBM029-9ea5aee3-M152",
+        "old": {
+          "error": "A state mapping requires an input ket and an output ket."
+        },
+        "new": "qregisterxoraction(qregistermultipliergraph('a','N','n'),'x','y')"
+      },
+      {
+        "id": "IBM029-9ea5aee3-M157",
+        "old": {
+          "error": "Scalar XOR requires nonnegative integer operands.\nA computational basis index must be a nonnegative integer.\nA state mapping requires an input ket and an output ket."
+        },
+        "new": "qregisterinversexoraction(qregistermultipliergraph('a','N','n'),'x','y')"
+      },
+      {
+        "id": "IBM029-9ea5aee3-M162",
+        "old": {
+          "error": "Unsupported TeX command: \\stackrel at byte 45"
+        },
+        "new": "qregisteruncompute(qregistermultipliergraph('a','N','n'),'x')"
+      }
+    ],
+    "timeouts": 0
+  }
+}

@@ -678,3 +678,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-register-definitions.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-adjacent-congruence.py docs/learning-evidence/aud01/ibm029-adjacent-congruence.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm029-current-clipboard.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm029-orbit-kets.py docs/learning-evidence/aud01/ibm029-orbit-kets.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm029-modular-xor-actions.json docs/learning-evidence/aud01/replay-ibm029-modular-xor-actions.py
