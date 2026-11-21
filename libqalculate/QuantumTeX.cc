@@ -2446,6 +2446,25 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   return quantumTeX(binaryLogs ? "binarylogs:"+part : part);
  };
  std::string s=input.substr(first,last-first+1);
+ // Keep a pasted lesson formula intact as the first argument of a
+ // substitution. Its relation must be parsed before binding the parameter.
+ if(s.compare(0,8,"replace(")==0 && s.back()==')' && s.find('$')!=std::string::npos) {
+  size_t start=s.find_first_not_of(" \t\r\n(",8);
+  if(start!=std::string::npos && s[start]=='$') {
+   size_t delimiter=s.compare(start,2,"$$")==0 ? 2 : 1;
+   size_t end=s.find('$',start+delimiter);
+   if(end!=std::string::npos && end>start+delimiter && s.compare(end,delimiter,s,start,delimiter)==0) {
+    std::string masked=s.substr(8,start-8)+"@"+s.substr(end+delimiter,s.size()-1-end-delimiter);
+    auto args=indexedParts(masked,",");
+    if(args.size()==3 && ungroupTeX(args[0])=="@") {
+     size_t prefix=input.find_first_not_of(" \t\r\n");
+     std::string mode=input.substr(prefix,contextStart-prefix);
+     std::string translated=quantumTeX(mode+s.substr(start,end+delimiter-start));
+     s="replace(("+translated+"),"+args[1]+","+args[2]+")";
+    }
+   }
+  }
+ }
  // Inline Markdown can leave the radix point immediately outside the
  // math span, as in .$01$. The selected mode supplies it for $01$ alone.
  if(fractionBits && s.compare(0,2,".$")==0)s.erase(0,1);

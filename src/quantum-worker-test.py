@@ -395,6 +395,11 @@ for cost, expected in ((6, "1"), (7, "0")):
     probe = f"replace(replace(replace(cost(g(n,m)<=c*h(n,m)),g(n,m),{cost}),h(n,m),3),cost(c),2)"
     assert data("quantum:" + probe)["copy_text"] == expected
 assert data("quantum:cost(replace((c>0),c,-1))")["copy_text"] == "0"
+for delimiters in ("$","$$"):
+    formula=delimiters+"m = O(n)"+delimiters
+    for width,expected in (("2*n+1","1"),("n^2","0")):
+        assert data(f'quantum:replace(({formula}),"m",{width})')["copy_text"]==expected
+run('quantum:replace(($m = O(n)),"m",2*n+1)',success=False)
 assert data("quantum:nn^2=O(n^3)")["copy_text"] == "1"
 assert data("quantum:cost(replace(replace(nm^2,n,3),m,2))")["copy_text"] == "12"
 for source, binding, expected in [
