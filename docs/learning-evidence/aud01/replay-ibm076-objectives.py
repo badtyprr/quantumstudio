@@ -31,3 +31,7 @@ for q in [((-1,2),(0,-3)),((1,0),(0,1)),((2,-1,0),(3,-2,1),(0,2,-1))]:
     assert run(f"({expr})==({optimum})")=="1",(q,expr)
 assert run("qmaxcut(vector(),3)")=="0" and run("qbinaryminimum(vector(),0)")=="0"
 print("Verified MaxCut, its negation, asymmetric quadratic matrices, and empty inputs.")
+
+figures=json.loads(Path(__file__).with_name("ibm074-figures.json").read_bytes())["graph"]
+graph=matrix(figures["edges"])
+assert run(f"qmaxcut({graph},5)")==str(figures["maximum_cut"])=="5"

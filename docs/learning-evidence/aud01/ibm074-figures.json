@@ -1,0 +1,216 @@
+{
+  "figures": [
+    {
+      "lesson": 75,
+      "path": "/learning/images/courses/quantum-computing-in-practice/running-quantum-circuits/simplecircuit.avif",
+      "sha256": "d928d878f023ff958206a71b24038c8b524381abb06b6d830f5290d541be48e1",
+      "alt": "Example simple quantum circuit"
+    },
+    {
+      "lesson": 75,
+      "path": "/learning/images/courses/quantum-computing-in-practice/running-quantum-circuits/circuitdepth.avif",
+      "sha256": "1bf07c26e631592e1426a28824ba477f1f9c50a73fb070d73107fe03ee7ba3c8",
+      "alt": "Example nine-layer circuit"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/maxcut-illustration.avif",
+      "sha256": "6d8e08debd9a1af1b5949bbd178c24e38653ca8e03cfbad3ba0e39a5d9883343",
+      "alt": "Illustration of a max-cut problem"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/rustworxMaxCut.avif",
+      "sha256": "78441d2ae5167c917533720bbd35d131b067af9c170825a8777aa4bc25009e3d",
+      "alt": "Output of Rustworkx max-cut graph"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/circuit-diagram.svg",
+      "sha256": "52c3e9d1052494f77ac25a61577b288678558f3ef7fc53ba8e094924643dd879",
+      "alt": "Circuit diagram with QAOA layers"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/COBYLA.avif",
+      "sha256": "9a30f3bd533fdcbd409f1c4561c191dac0d12d303884b5e1d4838235bf9b0eaf",
+      "alt": "COBYLA optimization graph"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/MaxcutHistogram.avif",
+      "sha256": "9039d853eb0219150742021610e2d9af62caad52dfe1f8c91b7b6bfea592b1f2",
+      "alt": "Max-cut solution histogram"
+    },
+    {
+      "lesson": 76,
+      "path": "/learning/images/courses/quantum-computing-in-practice/utility-scale-qaoa/MaxCutsolution.avif",
+      "sha256": "a01e51da335a85e20f7a4c41474a3e3b14f18542bb148002bccdc285b3c1d488",
+      "alt": "Max-cut solution"
+    },
+    {
+      "lesson": 77,
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/complexity_classes.avif",
+      "sha256": "1454414db1b054bcd52d793129cfe74a70cfc047c78f1a12a4ea5740e5415dc8",
+      "alt": "Suspected relationships among complexity classes"
+    },
+    {
+      "lesson": 77,
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/hadron_paper.avif",
+      "sha256": "adadbc6eaaaa42173f7d3bf6b895d5be2c7255e858e8c44b29c022fe6ee4641e",
+      "alt": "Results of hadron simulations"
+    },
+    {
+      "lesson": 77,
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/paper_results.avif",
+      "sha256": "4eec58bffc97e519fa3653c721cbef7fe5c241ec4eac77d6ce4a33d6c35de351",
+      "alt": "Results from Ising spin-glass paper"
+    },
+    {
+      "lesson": 77,
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/mrna_structure.avif",
+      "sha256": "31ccfe3b2759ebba1f38564260996899a4f384a2109e2fa5df34c2b3c63a77f0",
+      "alt": "Diagram of mRNA secondary structure"
+    },
+    {
+      "lesson": 77,
+      "path": "/learning/images/courses/quantum-computing-in-practice/applications-of-qc/mrna_paper.avif",
+      "sha256": "40e4b9b185fcc092b218d1d39f5a19edf9ceed396a3a3b4eb89d880edd18a5a8",
+      "alt": "Results from mRNA paper"
+    },
+    {
+      "lesson": 78,
+      "path": "/learning/images/courses/quantum-computing-in-practice/mapping/protein-tetra.avif",
+      "sha256": "fea65f4ee7fb8ac80decb1344c6cea34d2333ec810478d7908b9fb222cf11933",
+      "alt": "Amino acid chain on a tetrahedral lattice"
+    },
+    {
+      "lesson": 78,
+      "path": "/learning/images/courses/quantum-computing-in-practice/mapping/bindingenergies.avif",
+      "sha256": "9ad3e68bb8e6c9c40d25d4cadd8dfedecfdaeac9a9ae6ca5988ea6dbd37c97ae",
+      "alt": "Binding energies of amino acids"
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/prob-scale.svg",
+      "sha256": "b1c58f3ec3e8682d987cd1c8d47eb9568433df93150e1101abacf1c22487c553",
+      "alt": "A diagram showing the spread of possible problems from easy to hard, needing no quantum computer to needing a fault-tolerant one, and indicating that we are focused on problems in the middle."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/spins-fermions.svg",
+      "sha256": "66fa4342f4f5005ed344c0c24f7bc58ade6dd66b87cb8ebc2242766881cda2d7",
+      "alt": "A lattice with spins and a molecule which is bonded together using electrons which are fermions."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/ham-encoding.svg",
+      "sha256": "51589e46e8c58fa28c6b3953e803fb8201adf4ed820c0d0addbae31d60edec0c",
+      "alt": "A flow chart showing different potential types of mappings for different system types including bosons, fermions, and distinguishable particles like spins on a lattice."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/trotter.svg",
+      "sha256": "cbbc09ae49fc33ab3861b331a3179a5e8130bcc79d2b7547a90fcffb8e1cf03c",
+      "alt": "A quantum circuit showing Trotterized time-evolution operators: operators split into small pieces."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/utility.svg",
+      "sha256": "5c9f66f43879d1681f62965398acf14780d31166f04902be59eeca1dd3b15846",
+      "alt": "The cover art of the article we call the utility paper, published in the journal Nature."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/spins-lattice.svg",
+      "sha256": "9f629ab88b14c4f81aea2da56ec5c0863c97b3897364723b6c5db1ddc59e13d3",
+      "alt": "Spins on a lattice that point either up or down."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/layers.svg",
+      "sha256": "c98c4cd4f206a87e0dcf2270b10abef0571fb22f6718541ace902d9f599d3872",
+      "alt": "A color-coded map showing layers of couplings. The emphasizes that two-qubit gates can be executed across the entire quantum computer, even though only one two-qubit gate can be executed simultaneously on a given qubit."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/bad-qubits.svg",
+      "sha256": "f04ec1c0227dc0e7580b720466bfc31b304edcfa2aae91abea0301425d734668",
+      "alt": "The layout of a quantum computer is shown with a low-performing qubit indicated in pink."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/zne.svg",
+      "sha256": "2191f130f03fd8a7626b45d78cd2a88989c89bc88673f3421984218acce1b7ef",
+      "alt": "Plots are shown of an expectation value, that same expectation value with noise amplified, and then the value extrapolated back to the case of zero noise."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/noise-amp.svg",
+      "sha256": "50f87f5e71422ef95900d4276a760e2a9f135c3ecc9cd4c147c179b78bbc56c5",
+      "alt": "Three methods of amplifying noise for ZNE are shown: pulse stretching, gate folding, and probabilistic error amplification."
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/lindblad.svg",
+      "sha256": "ffecfa4cbfddf1c8a061d88ec563b24daf8c042ea761d536d4aee958286b8bbe",
+      "alt": "Steps are shown in learning a sparse Pauli-Lindblad noise model"
+    },
+    {
+      "lesson": 79,
+      "path": "/learning/images/courses/quantum-computing-in-practice/simulating-nature/data.svg",
+      "sha256": "b2d78c7ec3bc9f05ec57c01d1bc96ac2ba183ea3fa5d0d6fe54c2d13b4a13ecd",
+      "alt": "A plot of exact solutions, unmitigated solutions, and mitigated solutions to the problem solved in the utility paper."
+    }
+  ],
+  "graph": {
+    "vertex_order": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "edges": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        4,
+        0
+      ]
+    ],
+    "assignments": 32,
+    "maximum_cut": 5,
+    "maximizers": [
+      "00101",
+      "01101",
+      "10010",
+      "11010"
+    ]
+  },
+  "diagram_review": {
+    "IBM075": "Two-wire Bell preparation and measurements, and a separate gate-layer illustration.",
+    "IBM076": "Read the five numbered vertices and six edges from the graph and enumerated all 32 bit assignments. Other figures depict cost/mixer layers, optimizer trace and measured solutions.",
+    "IBM077": "Complexity classes, hadron comparison, energy histograms and RNA secondary-structure illustrations.",
+    "IBM078": "Tetrahedral lattice encoding and a table of interaction energies.",
+    "IBM079": "Hamiltonian mappings, product formulas, qubit layouts, noise amplification, noise modelling and magnetization plots."
+  }
+}
