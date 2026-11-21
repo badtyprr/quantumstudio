@@ -210,7 +210,7 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
   }
   if(quantumMode && result.isPower() && result.size()==2 &&
      (explicitEntries || result[0].containsFunction(CALCULATOR->getFunction("qstatecall")) ||
-      result[1].containsFunction(CALCULATOR->getFunction("qadjacent"))))
+      result.containsFunction(CALCULATOR->getFunction("qadjacent"))))
    return "qpower("+copyText(result[0],po,true,true)+","+copyText(result[1],po,true,true)+")";
   if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&
      (explicitEntries || result.containsType(STRUCT_VECTOR) || containsDeferredQuantum(result,true))) {
