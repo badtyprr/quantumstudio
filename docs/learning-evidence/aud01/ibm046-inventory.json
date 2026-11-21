@@ -1,14 +1,14 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
   "source_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
-  "worker_sha256": "2c1026487117e1462a355d5750027bcb2af13b0a6153553636b3c335f7e60405",
-  "revision": "0d05b27754ca01fed6d37951930b368aa1a10e34",
+  "worker_sha256": "f07f625b0c8e520b2013e1f307146d3b1c71d972096a747e1996e81c176fecf6",
+  "revision": "9b8863e636bff0e17438a42d3001084cb67522a7",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
   "summary": {
-    "exact": 237,
-    "diagnostic": 2
+    "exact": 238,
+    "diagnostic": 1
   },
   "figures": [],
   "rows": [
@@ -988,8 +988,9 @@
       "start": 14471,
       "end": 14899,
       "literal": "$$\nU =\n\\left(\n  \\begin{array}{ccccccc}\n    \\rule{0.4pt}{10pt} & \\rule{0.4pt}{10pt} & & \\rule{0.4pt}{10pt} & \\rule{0.4pt}{10pt} & & \\rule{0.4pt}{10pt}\\\\\n    \\vert\\psi_1\\rangle & \\vert\\psi_2\\rangle & \\cdots & \\vert\\psi_m\\rangle & \\vert\\psi_{m+1}\\rangle &\n    \\cdots & \\vert\\psi_n\\rangle\\\\[2mm]\n    \\rule{0.4pt}{10pt} & \\rule{0.4pt}{10pt} & & \\rule{0.4pt}{10pt} & \\rule{0.4pt}{10pt} & & \\rule{0.4pt}{10pt}\n  \\end{array}\n\\right).\n$$",
-      "status": "diagnostic",
-      "message": "Unsupported column label in numeric table at byte 150"
+      "status": "exact",
+      "display": "U = qbasiscolumns(qindexedentries(\"ψ_\", 1, n, []), 'm')",
+      "copy": "('U')==(qbasiscolumns(qindexedentries(\"ψ_\",1,n,vector()),'m'))"
     },
     {
       "id": "IBM046-3c1262a5-M099",
