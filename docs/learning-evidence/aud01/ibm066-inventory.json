@@ -1,0 +1,40 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance.ipynb",
+  "source_sha256": "e774a7223c3a5b4473198591f1c3a29863178b4b0b92055a6cfb185403214c96",
+  "worker_sha256": "604765cc3c2e851c0d27adc71e1b5ee765e4de2f45e794ad51d4ffeccceee0de",
+  "revision": "956323fa",
+  "mode": "Quantum notation",
+  "markdown_cells": 1,
+  "code_cells": 0,
+  "summary": {
+    "exact": 1
+  },
+  "figures": [
+    {
+      "cell": 0,
+      "start": 625,
+      "end": 776,
+      "alt": "A teleportation circuit",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/teleportation-circuit.svg"
+    },
+    {
+      "cell": 0,
+      "start": 4625,
+      "end": 4812,
+      "alt": "Fault-tolerant implementation of a teleportation circuit",
+      "path": "/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/FT-teleportation-circuit.svg"
+    }
+  ],
+  "rows": [
+    {
+      "id": "IBM066-e774a722-M001",
+      "cell": 0,
+      "start": 5599,
+      "end": 5602,
+      "literal": "$5$",
+      "status": "exact",
+      "display": "5",
+      "copy": "5"
+    }
+  ]
+}

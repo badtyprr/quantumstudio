@@ -18,6 +18,10 @@ worker = args.worker.resolve()
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "c79165e211e3669c87b20fc1f7018571ba734f5d4b11bb3e6c004d3037211de4": ("IBM065", "introduction", 0, 0),
+    "e774a7223c3a5b4473198591f1c3a29863178b4b0b92055a6cfb185403214c96": ("IBM066", "approach-to-fault-tolerance", 1, 2),
+    "86969cf39e501273ae90ccf63633bbe71e30ce976458af053dd97449d0220305": ("IBM067", "controlling-error-propagation", 87, 8),
+    "8712a2075639c675ded5b842dce3ccbf2288e32eaf5a3db494151d67e2581289": ("IBM068", "threshold-theorem", 31, 0),
     "2ff07f29f923364ca6d47b07a36266bebe64e335cce6d50cdeed2d1cbf39af4e":
         ("IBM028", "phase-estimation-procedure", 396, 17),
     "9ea5aee35aea5a33049ce593ef683ad2dcfc3bfff96f058d9ca8dbe0422c8681":
@@ -100,7 +104,7 @@ cells = json.loads(data)["cells"]
 types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
-expected_cells = {"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
+expected_cells = {"IBM068":(2,0),"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
 if lesson in {"IBM049","IBM050","IBM051"}: expected_cells=(2,0)
 if lesson=="IBM052": expected_cells=(22,19)
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
@@ -155,6 +159,8 @@ if lesson in {"IBM057","IBM058","IBM059","IBM060"}:
     course,chapter = "foundations-of-quantum-error-correction","stabilizer-formalism"
 if lesson in {"IBM061","IBM062","IBM063","IBM064"}:
     course,chapter = "foundations-of-quantum-error-correction","quantum-code-constructions"
+if lesson in {"IBM065","IBM066","IBM067","IBM068"}:
+    course,chapter = "foundations-of-quantum-error-correction","fault-tolerant-quantum-computing"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")
@@ -166,3 +172,4 @@ if panels:
     report["panels"] = panels
 args.output.write_bytes((json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode())
 print(dict(counts))
+

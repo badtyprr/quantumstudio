@@ -16,9 +16,9 @@ def rows(n):
     return json.loads((directory/f"ibm{n}-inventory.json").read_bytes())["rows"]
 
 mapping=rows("067")[41]["copy"]
-assert "qnamedket('Ïˆ')" in mapping
+assert "qnamedket('ψ')" in mapping
 for probe in ("|0>","|1>","|+>","|+i>"):
-    assert evaluate(mapping.replace("qnamedket('Ïˆ')",probe))=="1"
+    assert evaluate(mapping.replace("qnamedket('ψ')",probe))=="1"
 # The conditional S correction works for every input because S T† = T.
 assert evaluate("qcompare(qmul(S,qdag(T)),T,4)")=="1"
 print("Verified magic-state injection for both basis inputs and two phase-sensitive superpositions.")

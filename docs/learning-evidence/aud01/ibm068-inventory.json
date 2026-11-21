@@ -1,0 +1,333 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/threshold-theorem.ipynb",
+  "source_sha256": "8712a2075639c675ded5b842dce3ccbf2288e32eaf5a3db494151d67e2581289",
+  "worker_sha256": "604765cc3c2e851c0d27adc71e1b5ee765e4de2f45e794ad51d4ffeccceee0de",
+  "revision": "956323fa",
+  "mode": "Quantum notation",
+  "markdown_cells": 2,
+  "code_cells": 0,
+  "summary": {
+    "exact": 31
+  },
+  "figures": [],
+  "rows": [
+    {
+      "id": "IBM068-8712a207-M001",
+      "cell": 0,
+      "start": 367,
+      "end": 370,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M002",
+      "cell": 0,
+      "start": 556,
+      "end": 575,
+      "literal": "$p_{\\text{th}} > 0$",
+      "status": "exact",
+      "display": "\"p_th\" > 0",
+      "copy": "(\"p_th\")>(0)"
+    },
+    {
+      "id": "IBM068-8712a207-M003",
+      "cell": 0,
+      "start": 617,
+      "end": 633,
+      "literal": "$O(N \\log^c(N))$",
+      "status": "exact",
+      "display": "O(ln('N')^c · N)",
+      "copy": "qbigorder(qpower(ln('N'), qcostparam('c')) ⋅ 'N')"
+    },
+    {
+      "id": "IBM068-8712a207-M004",
+      "cell": 0,
+      "start": 658,
+      "end": 661,
+      "literal": "$c$",
+      "status": "exact",
+      "display": "299.792458 km ∕ ms",
+      "copy": "((qphysicalunit(\"s\",\"\"))^(−1))*(299792458)*(qphysicalunit(\"m\",\"\"))"
+    },
+    {
+      "id": "IBM068-8712a207-M005",
+      "cell": 0,
+      "start": 742,
+      "end": 745,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M006",
+      "cell": 0,
+      "start": 759,
+      "end": 762,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M007",
+      "cell": 0,
+      "start": 1101,
+      "end": 1104,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M008",
+      "cell": 0,
+      "start": 1151,
+      "end": 1154,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M009",
+      "cell": 0,
+      "start": 2557,
+      "end": 2560,
+      "literal": "$7$",
+      "status": "exact",
+      "display": "7",
+      "copy": "7"
+    },
+    {
+      "id": "IBM068-8712a207-M010",
+      "cell": 0,
+      "start": 2730,
+      "end": 2745,
+      "literal": "$p_{\\text{th}}$",
+      "status": "exact",
+      "display": "\"p_th\"",
+      "copy": "\"p_th\""
+    },
+    {
+      "id": "IBM068-8712a207-M011",
+      "cell": 0,
+      "start": 2989,
+      "end": 2992,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M012",
+      "cell": 0,
+      "start": 3019,
+      "end": 3022,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M013",
+      "cell": 0,
+      "start": 3056,
+      "end": 3059,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M014",
+      "cell": 0,
+      "start": 3408,
+      "end": 3411,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M015",
+      "cell": 0,
+      "start": 3532,
+      "end": 3535,
+      "literal": "$9$",
+      "status": "exact",
+      "display": "9",
+      "copy": "9"
+    },
+    {
+      "id": "IBM068-8712a207-M016",
+      "cell": 0,
+      "start": 3785,
+      "end": 3788,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M017",
+      "cell": 0,
+      "start": 4719,
+      "end": 4726,
+      "literal": "$C p^2$",
+      "status": "exact",
+      "display": "C · p^2",
+      "copy": "'C' ⋅ 'p'²"
+    },
+    {
+      "id": "IBM068-8712a207-M018",
+      "cell": 0,
+      "start": 4763,
+      "end": 4766,
+      "literal": "$C$",
+      "status": "exact",
+      "display": "C",
+      "copy": "'C'"
+    },
+    {
+      "id": "IBM068-8712a207-M019",
+      "cell": 0,
+      "start": 4838,
+      "end": 4841,
+      "literal": "$N$",
+      "status": "exact",
+      "display": "N",
+      "copy": "'N'"
+    },
+    {
+      "id": "IBM068-8712a207-M020",
+      "cell": 0,
+      "start": 4880,
+      "end": 4883,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M021",
+      "cell": 0,
+      "start": 4900,
+      "end": 4905,
+      "literal": "$1/C$",
+      "status": "exact",
+      "display": "1 / C",
+      "copy": "1 ∕ 'C'"
+    },
+    {
+      "id": "IBM068-8712a207-M022",
+      "cell": 0,
+      "start": 4962,
+      "end": 4977,
+      "literal": "$p_{\\text{th}}$",
+      "status": "exact",
+      "display": "\"p_th\"",
+      "copy": "\"p_th\""
+    },
+    {
+      "id": "IBM068-8712a207-M023",
+      "cell": 0,
+      "start": 5995,
+      "end": 5998,
+      "literal": "$p$",
+      "status": "exact",
+      "display": "p",
+      "copy": "'p'"
+    },
+    {
+      "id": "IBM068-8712a207-M024",
+      "cell": 0,
+      "start": 6053,
+      "end": 6078,
+      "literal": "$p < p_{\\text{th}} = 1/C$",
+      "status": "exact",
+      "display": "C = 1 ∕ \"p_th\" and p < \"p_th\" and \"p_th\" ≠ 0",
+      "copy": "((\"p_th\")!=(0) and ('C')==(1 ∕ \"p_th\") and ('p')<(\"p_th\"))"
+    },
+    {
+      "id": "IBM068-8712a207-M025",
+      "cell": 0,
+      "start": 6121,
+      "end": 6136,
+      "literal": "$Cp^2 = (Cp) p$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM068-8712a207-M026",
+      "cell": 0,
+      "start": 6318,
+      "end": 6359,
+      "literal": "$$\nC \\bigl((Cp) p \\bigr)^2 = (Cp)^3 p.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM068-8712a207-M027",
+      "cell": 0,
+      "start": 6416,
+      "end": 6459,
+      "literal": "$$\nC \\bigl((Cp)^3 p \\bigr)^2 = (Cp)^7 p.\n$$",
+      "status": "exact",
+      "display": "1",
+      "copy": "1"
+    },
+    {
+      "id": "IBM068-8712a207-M028",
+      "cell": 0,
+      "start": 6502,
+      "end": 6505,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM068-8712a207-M029",
+      "cell": 0,
+      "start": 6586,
+      "end": 6609,
+      "literal": "$$\n(Cp)^{2^k - 1} p,\n$$",
+      "status": "exact",
+      "display": "(C · p)^(2^k) / C",
+      "copy": "('C' ⋅ 'p')^(2^'k') ∕ 'C'"
+    },
+    {
+      "id": "IBM068-8712a207-M030",
+      "cell": 0,
+      "start": 6644,
+      "end": 6647,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    },
+    {
+      "id": "IBM068-8712a207-M031",
+      "cell": 0,
+      "start": 6893,
+      "end": 6896,
+      "literal": "$k$",
+      "status": "exact",
+      "display": "k",
+      "copy": "'k'"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Theorem",
+      "cell": 0,
+      "start": 289,
+      "end": 672
+    }
+  ]
+}
