@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"($\Pi_k$)","Π_k");
+  equal(R"($\Pi_{k+1}$)","Π_{k+1}");
   equal(R"($\mathsf{X}$)","\"X\"");
   equal(R"($(\mathsf{X},\mathsf{Y})$)","tuple(\"X\",\"Y\")");
   equal(R"(\mathsf{X}\ket{0})",quantumTeX(R"(\mathrm{X}\ket{0})"));

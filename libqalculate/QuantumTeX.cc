@@ -7,18 +7,19 @@
 #include <vector>
 
 namespace {
+bool asciiSpace(unsigned char c) {return c==' ' || (c>='\t' && c<='\r');}
 bool asciiLetter(unsigned char c) {return (c>='A' && c<='Z') || (c>='a' && c<='z');}
 // In binary-word mode, adjacent digits and named bits occupy consecutive
 // positions, most significant first. Leave explicit calculator calls intact.
 std::string orderedBitWord(const std::string &text) {
  std::string digits;
- for(unsigned char c:text)if(!std::isspace(c))digits+=c;
+ for(unsigned char c:text)if(!asciiSpace(c))digits+=c;
  if(!digits.empty() && digits.find_first_not_of("01")==std::string::npos)
   return "bitstring(\""+digits+"\")";
  std::string result="qbitword(vector(";size_t count=0;
  for(size_t i=0;i<text.size();) {
   unsigned char c=text[i];
-  if(std::isspace(c)) {++i;continue;}
+  if(asciiSpace(c)) {++i;continue;}
   size_t first=i++;
   if(asciiLetter(c)) {
    if(i<text.size() && text[i]=='_') {
@@ -46,7 +47,7 @@ std::string openBinaryFraction(const std::string &source) {
  }
  if(end==text.size())return "";
  size_t equals=text.rfind('=',end),at=equals==std::string::npos ? 0 : equals+1;
- auto space=[&](){while(at<end && std::isspace((unsigned char)text[at]))++at;};
+ auto space=[&](){while(at<end && asciiSpace((unsigned char)text[at]))++at;};
  space();
  if(text.compare(at,2,"0.")==0)++at;
  std::string prefix,entries;int count=0,point=-1;
@@ -91,7 +92,7 @@ std::string withoutTeXCommentLines(const std::string &s) {
 std::string systemNames(const std::string &input) {
  if(input.find("\\mathsf")==std::string::npos)return "";
  size_t at=0;
- auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  space();bool tuple=at<input.size() && input[at]=='(';
  if(tuple)++at;
  std::string result=tuple ? "tuple(" : "";
@@ -195,7 +196,7 @@ std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
 // unsupported; the existing register owns bit, width and substitution checks.
 std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t &end) {
  size_t at=start;
- auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {
   space();if(input.compare(at,text.size(),text)!=0)return false;
   const size_t next=at+text.size();
@@ -211,7 +212,7 @@ std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t 
   space();if(at==input.size())return false;
   if(input[at]=='{') {
    ++at;while(at<input.size() && input[at]!='}') {
-    if(!std::isspace((unsigned char)input[at]))index+=input[at];
+    if(!asciiSpace((unsigned char)input[at]))index+=input[at];
     if(index.size()>32)return false;++at;
    }
    if(at==input.size())return false;++at;
@@ -244,7 +245,7 @@ struct TensorSeriesPattern {
 // original first factor text for the ordinary TeX and lexical-binder parsers.
 bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPattern &pattern) {
  size_t at=start;
- auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {
   space();if(input.compare(at,text.size(),text)!=0)return false;
   size_t next=at+text.size();
@@ -283,7 +284,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
   for(size_t k=0;k<text.size();++k) {
    if(text[k]=='\'' || text[k]=='"') {if(!quote)quote=text[k];else if(quote==text[k])quote=0;}
    if(quote || text[k]!='_')continue;
-   size_t begin=k+1;while(begin<text.size() && std::isspace((unsigned char)text[begin]))++begin;
+   size_t begin=k+1;while(begin<text.size() && asciiSpace((unsigned char)text[begin]))++begin;
    if(begin==text.size())continue;
    size_t end=begin;std::string index;
    if(text[begin]=='{') {
@@ -293,7 +294,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
    } else {end=begin+1;index=text.substr(begin,1);}
    std::string compact;bool scalar=true;
    for(unsigned char c:index) {
-    if(std::isspace(c))continue;
+    if(asciiSpace(c))continue;
     if(!std::isalnum(c) && c!='+' && c!='-' && c!='*' && c!='/' && c!='(' && c!=')')scalar=false;
     compact+=char(c);
    }
@@ -304,7 +305,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
  auto canonical=[](const std::string &text) {
   std::string out;
   for(size_t k=0;k<text.size();++k) {
-   if(std::isspace((unsigned char)text[k]))continue;
+   if(asciiSpace((unsigned char)text[k]))continue;
    out+=text[k];
    if(text[k]=='\'' || text[k]=='"') {
     const char quote=text[k];
@@ -350,7 +351,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
 std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
  size_t at=start;
- auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+ auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
  auto factor=[&](std::string &family,std::string &index) {
   space();size_t begin=at;while(at<input.size() && asciiLetter((unsigned char)input[at]))++at;
@@ -359,7 +360,7 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
   space();if(at==input.size())return false;
   if(input[at]=='{') {
    ++at;while(at<input.size() && input[at]!='}') {
-    if(!std::isspace((unsigned char)input[at]))index+=input[at];
+    if(!asciiSpace((unsigned char)input[at]))index+=input[at];
     if(index.size()>32)return false;++at;
    }
    if(at==input.size())return false;++at;
@@ -381,7 +382,7 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
      (upperA[0]=='0' || upperA.find_first_not_of("0123456789")!=std::string::npos))return "";
   space();
   if(at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
-  if(at<input.size() && std::string(",)}=").find(input[at])==std::string::npos && !std::isspace((unsigned char)input[at]))return "";
+  if(at<input.size() && std::string(",)}=").find(input[at])==std::string::npos && !asciiSpace((unsigned char)input[at]))return "";
   end=at;
   return "qcomposemaps(qindexedentries(\""+first+"_\",1,"+upperA+",vector()))";
  }
@@ -470,7 +471,7 @@ std::string indexedColumn(const std::string &raw, bool tex) {
   if(index.empty())invalid();
   // Endpoint arithmetic deliberately excludes separators, calls, and nested
   // subscripts: those require a more explicit indexed construction.
-  for(unsigned char c:index)if(c<128 && !std::isalnum(c) && !std::isspace(c) && ( !grouped || (c!='+' && c!='-' && c!='*' && c!='/')))invalid();
+  for(unsigned char c:index)if(c<128 && !std::isalnum(c) && !asciiSpace(c) && ( !grouped || (c!='+' && c!='-' && c!='*' && c!='/')))invalid();
   indices.push_back(index);
  }
  if(indices.size()+1!=rows.size())invalid();
@@ -591,7 +592,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    for(auto &index:pair) {
     std::string compact;
     for(unsigned char ch:index) {
-     if(std::isspace(ch)) {compact+=ch;continue;}
+     if(asciiSpace(ch)) {compact+=ch;continue;}
      if(ch<128 && !std::isalnum(ch) && ch!='+' && ch!='-' && ch!='*' && ch!='/')invalid();
      compact+=ch;
     }
@@ -752,7 +753,7 @@ class TeXReader {
  // as a free name until the caller supplies the probabilities.
  std::string eventProbability() {
   size_t at=pos;
-  auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
   auto take=[&](const std::string &token) {
    space();if(input.compare(at,token.size(),token)!=0)return false;
    at+=token.size();return true;
@@ -761,8 +762,8 @@ class TeXReader {
   std::string distribution;
   bool prose=take("\\text");
   if(prose) {
-   if(!take("{") || !take("outcome") || at==input.size() || !std::isspace((unsigned char)input[at]) ||
-      !take("is") || at==input.size() || !std::isspace((unsigned char)input[at]))return "";
+   if(!take("{") || !take("outcome") || at==input.size() || !asciiSpace((unsigned char)input[at]) ||
+      !take("is") || at==input.size() || !asciiSpace((unsigned char)input[at]))return "";
    distribution="measurement probabilities";
   } else {
    if(!take("\\mathsf") || !take("{"))return "";
@@ -797,18 +798,18 @@ class TeXReader {
   return next!=std::string::npos && (input[next]==',' || input[next]=='}' || input.compare(next,2,"\\}")==0);
  }
  unsigned matrixDepth=0;
- void space() { while(pos<input.size() && std::isspace((unsigned char)input[pos])) ++pos; }
+ void space() { while(pos<input.size() && asciiSpace((unsigned char)input[pos])) ++pos; }
  // Check the displayed initial powers and the final base before consuming
  // an ellipsis. Keep the endpoint expression available for substitution.
  std::string geometricSum() {
   size_t at=pos;
   auto token=[&](const std::string &s) {
-   while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+   while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;
    if(input.compare(at,s.size(),s)!=0)return false;
    at+=s.size();return true;
   };
   if(!token("1") || !token("+"))return "";
-  while(at<input.size() && std::isspace((unsigned char)input[at]))++at;
+  while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;
   size_t first=at;
   if(at<input.size() && input[at]=='\\') {
    ++at;size_t name=at;while(at<input.size() && asciiLetter(input[at]))++at;
@@ -1109,7 +1110,7 @@ class TeXReader {
     else if(pos<input.size() && input[pos]=='{')operand=group();
     else throw std::runtime_error(error("A powered trigonometric function requires a parenthesized or braced argument"));
     if(trim(operand).empty())throw std::runtime_error(error("Empty trigonometric argument"));
-    std::string compactPower;for(unsigned char c:power)if(!std::isspace(c))compactPower+=c;
+    std::string compactPower;for(unsigned char c:power)if(!asciiSpace(c))compactPower+=c;
     if(compactPower=="-1")return "a"+name+"("+operand+")";
     return "("+name+"("+operand+"))^("+power+")";
    }
@@ -1304,7 +1305,7 @@ class TeXReader {
    if(text=="and" || text=="or")return " "+text+" ";
    if(!cases)throw std::runtime_error(error("Unsupported text in a mathematical expression"));
    if(text=="otherwise")return text;
-   if(text!="if" && (text.size()<3 || text.compare(0,2,"if")!=0 || !std::isspace((unsigned char)text[2])))throw std::runtime_error(error("Cases text must introduce if or otherwise"));
+   if(text!="if" && (text.size()<3 || text.compare(0,2,"if")!=0 || !asciiSpace((unsigned char)text[2])))throw std::runtime_error(error("Cases text must introduce if or otherwise"));
    text=trim(text.substr(2));
    if(text.size()>=2 && text.front()=='$' && text.back()=='$')text=text.substr(1,text.size()-2);
    return text;
@@ -1509,7 +1510,7 @@ class TeXReader {
        bool grouped=first.size()>2 && first.front()=='{' && first.back()=='}';
        if(grouped)first=first.substr(1,first.size()-2);
        bool valid=!first.empty();
-       for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (std::isspace(c) || c=='+' || c=='-' || c=='*' || c=='/')))valid=false;
+       for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (asciiSpace(c) || c=='+' || c=='-' || c=='*' || c=='/')))valid=false;
        size_t endpoint=input.find_first_not_of(" \t\r\n",pos+6);
        if(valid && endpoint!=std::string::npos && input.compare(endpoint,word.size()+1,word+"_")==0) {
         pos=endpoint+word.size()+1;
@@ -1594,7 +1595,7 @@ class TeXReader {
      std::string prefix=trim(result.substr(stateDelimiter+1));stateSubscript=!prefix.empty();
      for(unsigned char c:prefix)if(c<128 && !std::isalnum(c) && c!='_')stateSubscript=false;
     }
-    while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
+    while(!result.empty() && asciiSpace((unsigned char)result.back()))result.pop_back();
     bool spin=!result.empty() && result.back()=='J' && (result.size()==1 ||
      ((unsigned char)result[result.size()-2]<128 && !std::isalnum((unsigned char)result[result.size()-2]) && result[result.size()-2]!='_'));
     bool bell=false;
@@ -1640,7 +1641,7 @@ class TeXReader {
     } else if(grouped && !result.empty() && (result.back()=='>' || result.back()=='|'))result+="_("+index+")";
     else {
      index=trim(index);
-     bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !std::isspace(c))compound=true;
+     bool compound=false;for(unsigned char c:index)if(c<128 && !std::isalnum(c) && c!='_' && !asciiSpace(c))compound=true;
      // Preserve arithmetic subscripts for scalar references and declarations
      // as well as state families. Atomic labels retain their spelling.
      result+=grouped && compound && index!="+" && index!="-" ? "_{"+index+"}" : "_"+index;
@@ -1651,14 +1652,14 @@ class TeXReader {
     // TeX ignores spaces around operator-valued superscripts.
     size_t first=value.find_first_not_of(" \t\r\n"), last=value.find_last_not_of(" \t\r\n");
     if(first!=std::string::npos)value=value.substr(first,last-first+1);
-    while(!result.empty() && std::isspace((unsigned char)result.back()))result.pop_back();
+    while(!result.empty() && asciiSpace((unsigned char)result.back()))result.pop_back();
     // The displayed open-ended family uses ordinary braces and an ellipsis.
     if(value.find("…")!=std::string::npos || value.find("...")!=std::string::npos) {
      std::string family=openIndexedFamily(indexedParts(value,","));
      if(!family.empty()) {result+=family;continue;}
     }
     // Braces around an entire Dirac label are typesetting, not arithmetic.
-    size_t after=pos;while(after<input.size() && std::isspace((unsigned char)input[after]))++after;
+    size_t after=pos;while(after<input.size() && asciiSpace((unsigned char)input[after]))++after;
     bool ketLabel=!result.empty() && result.back()=='|' &&
      (input.compare(after,7,"\\rangle")==0 || input.compare(after,1,">")==0);
     bool braLabel=!result.empty() && result.back()=='<' &&
