@@ -277,6 +277,8 @@ const std::map<std::string,int> quantumSignatures = {
  {"qclock",1},
  {"qcomm",2},
  {"qconj",1},
+ {"qcomplexcolumn",1},
+ {"qbasiscolumns",2},
  {"qcontrol",3},
  {"qcontrolpattern",4},
  {"qcontrolled",1},
@@ -343,7 +345,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -432,6 +434,7 @@ class Parser {
  bool parsingMatrixEntries=false, nextMatrixEntries=false;
  unsigned scalarProductDepth=0;
  unsigned nextBoundIndex=0,indexedReferences=0;
+ std::map<std::string,std::string> copiedBinders;
  // TeX binds indices before parsing its body. A joined letter product may
  // also contain free coefficients; quoted and declared names stay atomic.
  std::vector<std::string> texIndices;
@@ -618,6 +621,14 @@ class Parser {
    used=s.find(symbol.substr(1,symbol.size()-2))!=std::string::npos;
    for(const auto &arg:args)if(arg.find(symbol)!=std::string::npos)used=true;
   } while(used);
+  // Scope copied declarations with fresh names during parsing as usual.
+  // Recover their spelling only after all enclosing binders have been scoped.
+  const std::string prefix="\"qboundindex_";
+  if(original.compare(0,prefix.size(),prefix)==0 && original.size()>prefix.size()+1 &&
+     original.find_first_not_of("0123456789",prefix.size())==original.size()-1 && original.back()=='"') {
+   auto saved=copiedBinders.emplace(original,symbol);
+   if(!saved.second)saved.first->second.clear();
+  }
   // A subscript that names this binder is a reference, not an opaque label.
   // Keep the index as a separate expression so nested binders and later
   // substitutions can operate structurally without editing quoted names.
@@ -773,6 +784,9 @@ class Parser {
   if(dots!=std::string::npos) {
    if(!dimension.empty() || expanded.find("...",dots+3)!=std::string::npos)
     throw std::runtime_error("Use one ellipsis in an indexed qubit register without an overall dimension.");
+   std::string firstBit=labelText(expanded.substr(0,dots));
+   if((firstBit=="0" || firstBit=="1") && labelText(expanded.substr(dots+3))==firstBit)
+    return "qtensorpow("+ket(firstBit)+",\"register width\")";
    // Parse endpoints as indexed names, retaining compound bounds as expressions.
    // Explicit trailing indices are redundant notation and must be consecutive.
    auto trim=[](const std::string &value) {size_t a=value.find_first_not_of(" \t\r\n"),b=value.find_last_not_of(" \t\r\n");return a==std::string::npos ? std::string() : value.substr(a,b-a+1);};
@@ -840,20 +854,20 @@ class Parser {
    if(familyLabel[familyOpen]=='{')familyName.pop_back();
    if(dimension.empty())return count==1 ? "qstatecall(\""+familyName+"\","+argument+")" : "qstatecalls(\""+familyName+"\",vector("+argument+"))";
   }
-  // Commas at the top level separate registers. Commas inside a computed
-  // basis index, such as mod(k,3), remain ordinary function arguments.
+  // Top-level commas and tensor products separate registers. Commas inside
+  // a computed basis index, such as mod(k,3), remain function arguments.
   std::vector<std::string> registers;size_t start=0;int nesting=0;
   for(size_t k=0;k<label.size();++k) {
    if(label[k]=='(' || label[k]=='[')++nesting;
    else if(label[k]==')' || label[k]==']')--nesting;
-   else if(label[k]==',' && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
+   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
   }
   if(!registers.empty()) {
-   if(!dimension.empty())throw std::runtime_error("A comma-separated register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
+   if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
    registers.push_back(label.substr(start));std::string state;
    for(const auto &part:registers) {
     if(++nodes>nodeLimit)throw std::runtime_error("Quantum expression is too complex.");
-    if(labelText(part).empty())throw std::runtime_error("Empty register in a comma-separated state label.");
+    if(labelText(part).empty())throw std::runtime_error("Empty register in a product state label.");
     std::string factor=basisState(part);
     state=state.empty() ? factor : "qtensor("+state+","+factor+")";checkSize(state);
    }
@@ -1168,7 +1182,8 @@ class Parser {
    size_t end=labelEnd('>',p), bar=labelEnd('|',p);
    if(end!=std::string::npos && (bar==std::string::npos || end<bar)) {
     std::string rawLabel=s.substr(p,end-p), label=labelText(rawLabel); bool valid=!label.empty();
-    if(label!="+" && label!="-" && label!="+i" && label!="-i") for(unsigned char c:label) if(c<128 && !std::isalnum(c) && c!='_' && c!='+' && c!='-' && c!=',') valid=false;
+    if(label!="+" && label!="-" && label!="+i" && label!="-i") for(unsigned char c:label) if(c<128 && !std::isalnum(c) && c!='_' && c!='+' && c!='-' && c!=',' && (vectorized || c!='@')) valid=false;
+    if(!vectorized && (label=="0...0" || label=="1...1"))valid=true;
     size_t suffix=end+1;while(suffix<s.size() && std::isspace((unsigned char)s[suffix]))++suffix;
     if(!vectorized && (!dimension.empty() || (suffix<s.size() && s[suffix]=='_')))valid=!label.empty();
     if(!vectorized && repeatedRegister(rawLabel)!=std::string::npos)valid=true;
@@ -1243,7 +1258,11 @@ class Parser {
       std::string nextState=take('>') ? operatorState(nextLabel) : basisState(nextLabel,dimensionSuffix());
       state="qtensor("+state+","+nextState+")";
      }
-     a="qmul(qmul("+a+","+op+"),"+state+")";kind=0;
+     // Between a bra and a ket the implicit identity acts in their shared
+     // space. Their ordinary inner product already checks the dimensions.
+     if(op=="qimplicitidentity()")a="qmul("+a+","+state+")";
+     else a="qmul(qmul("+a+","+op+"),"+state+")";
+     kind=0;
     }
    }
   }
@@ -1717,12 +1736,18 @@ class Parser {
      a="[1,0,0,0;0,"+co+","+si+",0;0,"+si+","+co+",0;0,0,0,exp(-i*"+phi+")]";
     } else if(name=="U" || name=="U3" || name=="U2" || name=="U1") {
      std::string theta="0", phi="0", lambda;
-     if(name=="U" || name=="U3") {theta="("+expression()+")"; need(',');}
-     else if(name=="U2") theta="(pi/2)";
-     if(name!="U1") {phi="("+expression()+")"; need(',');}
-     lambda="("+expression()+")"; need(')');
-     std::string co="cos("+theta+"/2)", si="sin("+theta+"/2)";
-     a="["+co+",-exp(i*"+lambda+")*"+si+";exp(i*"+phi+")*"+si+",exp(i*("+phi+"+"+lambda+"))*"+co+"]";
+     if(name=="U" || name=="U3")theta="("+expression()+")";
+     // A spaced U with one grouped operand applies a lesson-defined unitary.
+     if(name=="U" && std::isspace((unsigned char)s[b+1]) && take(')')) {
+      a="qmul("+indexableLabel("U")+","+theta+")";
+     } else {
+      if(name=="U" || name=="U3")need(',');
+      if(name=="U2")theta="(pi/2)";
+      if(name!="U1") {phi="("+expression()+")"; need(',');}
+      lambda="("+expression()+")"; need(')');
+      std::string co="cos("+theta+"/2)", si="sin("+theta+"/2)";
+      a="["+co+",-exp(i*"+lambda+")*"+si+";exp(i*"+phi+")*"+si+",exp(i*("+phi+"+"+lambda+"))*"+co+"]";
+     }
     } else if(name=="Rx" || name=="Ry" || name=="Rz" || name=="P" || name=="CRx" || name=="CRy" || name=="CRz" || name=="CP") {
      bool controlled=name[0]=='C'; if(controlled) name=name.substr(1);
      std::string theta="("+expression()+")"; need(')');
@@ -2342,6 +2367,22 @@ class Parser {
    return result;
   }
   if(equalities && operands.size()>2) {
+   // An equality chain ending in the Kronecker delta of two ket labels
+   // identifies bare |i> as an index. Explicit |+i> remains a phase state.
+   std::string &last=operands.back();
+   const std::string typedI=std::string(1,constantMarkerBegin)+"i"+constantMarkerEnd;
+   for(char label='a';label<='z';++label) {
+    std::string pair=typedI+","+label;
+    if(last!="(if(qcompare("+pair+",4),1,if(qcompare("+pair+",5),0,undefined)))")continue;
+    bool indexed=false;
+    for(const auto &term:operands)if(term.find(phaseKetMarker)!=std::string::npos &&
+       term.find("qketstate("+std::string(1,label)+")")!=std::string::npos)indexed=true;
+    if(indexed) {
+     replaceAll(last,typedI,"\"i\"");
+     for(auto &term:operands)replaceAll(term,std::string(1,phaseKetMarker),"qketstate(\"i\")");
+    }
+    break;
+   }
    result="qequalchain(vector(";
    for(size_t k=0;k<operands.size();++k) {if(k)result+=",";result+=operands[k];checkSize(result);}
    return result+"))";
@@ -2424,7 +2465,23 @@ class Parser {
  }
  public:
  explicit Parser(std::string text,bool spin=false,bool sets=false):spinContext(spin),setNotation(sets),s(text) {}
- std::string run() { auto out=expression(true); ws(); if(p!=s.size()) throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1)); replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");checkSize(out);return withoutLabelMarkers(out); }
+ std::string run() {
+  auto out=expression(true);ws();
+  if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
+  if(!copiedBinders.empty()) {
+   std::map<std::string,std::string> originalNames;
+   for(const auto &binder:copiedBinders)if(!binder.second.empty())originalNames.emplace(binder.second,binder.first);
+   size_t at=0;
+   while((at=out.find_first_of("\"'",at))!=std::string::npos) {
+    size_t end=out.find(out[at],at+1);if(end==std::string::npos)break;
+    auto name=originalNames.find(out.substr(at,end+1-at));
+    if(name==originalNames.end())at=end+1;
+    else {out.replace(at,end+1-at,name->second);at+=name->second.size();}
+   }
+  }
+  replaceAll(out,std::string(1,phaseKetMarker),"(matrix(2,1,[1,i])/sqrt(2))");
+  checkSize(out);return withoutLabelMarkers(out);
+ }
 };
 
 }

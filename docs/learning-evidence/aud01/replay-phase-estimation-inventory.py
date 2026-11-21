@@ -50,6 +50,14 @@ lessons = {
         ("IBM042", "quantum-information", 332, 0),
     "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840":
         ("IBM043", "qiskit-implementation", 16, 0),
+    "453512b0cc2393c251c129824aac06bd162fa096937cf83fb8bbbef197e15010":
+        ("IBM044", "introduction", 0, 0),
+    "6b5989521e76ced735050fe1780acaa60c01452629fedc6612867673b409df7b":
+        ("IBM045", "circuits", 76, 17),
+    "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb":
+        ("IBM046", "inner-products-and-projections", 239, 0),
+    "f45266235639d924711d7f3a57bd39db1e99a3705cb2c3401117d68a75d477e2":
+        ("IBM047", "limitations-on-quantum-information", 146, 2),
 }
 lesson, slug, math_count, image_count = lessons[digest]
 if args.lesson and lesson != args.lesson:
@@ -58,7 +66,7 @@ cells = json.loads(data)["cells"]
 types = Counter(c["cell_type"] for c in cells)
 single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
-expected_cells = {"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
+expected_cells = {"IBM046":(2,0),"IBM047":(2,0),"IBM041":(2,0),"IBM042":(2,0),"IBM043":(10,10),"IBM037":(2,0),"IBM038":(2,0),"IBM039":(19,18)}.get(lesson,(1,0))
 assert (types["markdown"],types["code"]) == expected_cells and sum(expected_cells) == len(cells)
 math = re.compile(r"(?<!\\)(\$\$|\$).*?(?<!\\)\1", re.DOTALL)
 rows, figures, cache = [], [], {}
@@ -74,9 +82,14 @@ for index, cell in enumerate(cells):
             result = subprocess.run([worker, "--json"], input=("quantum:" + literal).encode(),
                                     capture_output=True, timeout=60)
             if result.returncode == 0:
-                value = json.loads(result.stdout)
-                cache[literal] = dict(status="approximate" if value["approximate"] else "exact",
-                                      display=value["display_text"], copy=value["copy_text"])
+                try:
+                    value = json.loads(result.stdout)
+                except UnicodeDecodeError as error:
+                    cache[literal] = dict(status="invalid-encoding", offset=error.start,
+                                          output_hex=result.stdout.hex())
+                else:
+                    cache[literal] = dict(status="approximate" if value["approximate"] else "exact",
+                                          display=value["display_text"], copy=value["copy_text"])
             elif result.returncode == 2 and result.stderr.strip():
                 cache[literal] = dict(status="diagnostic", message=result.stderr.decode().strip())
             else:
@@ -96,6 +109,8 @@ if single_systems:
     course,chapter = "basics-of-quantum-information","single-systems"
 if multiple_systems:
     course,chapter = "basics-of-quantum-information","multiple-systems"
+if lesson in {"IBM044","IBM045","IBM046","IBM047"}:
+    course,chapter = "basics-of-quantum-information","quantum-circuits"
 source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
           f"learning/courses/{course}/{chapter}/"
           f"{slug}.ipynb")

@@ -1,0 +1,375 @@
+{
+  "worker_sha256": "95019ebd43c441a5320a76e31ba883ee5626b47f3fd05e62ef7f2fbcce8299f2",
+  "figures": {
+    "Boolean-circuit-XOR.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/Boolean-circuit-XOR.svg",
+      "sha256": "43090627e3a2ab7a0b56ba1b23761c5796869bfcd62b94158017f2992c6c7f39",
+      "checks": [
+        {
+          "expression": "(0 and not 0) or ((not 0) and 0)",
+          "expected": "0"
+        },
+        {
+          "expression": "(0 and not 1) or ((not 0) and 1)",
+          "expected": "1"
+        },
+        {
+          "expression": "(1 and not 0) or ((not 1) and 0)",
+          "expected": "1"
+        },
+        {
+          "expression": "(1 and not 1) or ((not 1) and 1)",
+          "expected": "0"
+        }
+      ]
+    },
+    "Boolean-circuit-classic.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/Boolean-circuit-classic.svg",
+      "sha256": "09d4194a1aa3f0a470923e8677fd3963cd9133d25ca08bd591e1c578fcf2ac3e",
+      "checks": [
+        {
+          "expression": "(0 and not 0) or ((not 0) and 0)",
+          "expected": "0"
+        },
+        {
+          "expression": "(0 and not 1) or ((not 0) and 1)",
+          "expected": "1"
+        },
+        {
+          "expression": "(1 and not 0) or ((not 1) and 0)",
+          "expected": "1"
+        },
+        {
+          "expression": "(1 and not 1) or ((not 1) and 1)",
+          "expected": "0"
+        }
+      ]
+    },
+    "XOR-circuit-evaluate.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/XOR-circuit-evaluate.svg",
+      "sha256": "9d90b2b59365a40993e725f294e98a2332f2ef8a0f45b10038d5c4d59b3077df",
+      "checks": [
+        {
+          "expression": "(1 and not 0) or ((not 1) and 0)",
+          "expected": "1"
+        }
+      ]
+    },
+    "arithmetic-circuit.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/arithmetic-circuit.svg",
+      "sha256": "84efe0d7d7651f2f39442b404014d2a6351b6cd4b0d2f9d53aa8986310ffd982",
+      "checks": [
+        {
+          "expression": "(x*x+y)*(y+1)==x^2*y+x^2+y^2+y",
+          "expected": "1"
+        }
+      ]
+    },
+    "simple-quantum-circuit.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/simple-quantum-circuit.svg",
+      "sha256": "f93555da180eeb55637edcc64b387f509b2989c62a4fcc7db15f3e5357279640",
+      "checks": [
+        {
+          "expression": "T*H*S*H*|0>==[(1+i)/2;1/sqrt(2)]",
+          "expected": "1"
+        }
+      ]
+    },
+    "simple-quantum-circuit-evaluated.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/simple-quantum-circuit-evaluated.svg",
+      "sha256": "67fa78a9202b76f525ba8477444252bb1f59abf4c7652440abbec4f06d9bff32",
+      "checks": [
+        {
+          "expression": "T*H*S*H*|0>==[(1+i)/2;1/sqrt(2)]",
+          "expected": "1"
+        }
+      ]
+    },
+    "ebit-circuit.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/ebit-circuit.svg",
+      "sha256": "8cb2c68068a46350eb4e321330339e668b1727940d9271005c17090a2aa8202b",
+      "checks": [
+        {
+          "expression": "(SWAP*CNOT*SWAP)*(I@H)*|00>",
+          "expected": "[1;0;0;1]/sqrt(2)"
+        }
+      ]
+    },
+    "ebit-circuit-first.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/ebit-circuit-first.svg",
+      "sha256": "f29a3e0bb0e48bb2f371ef85a52884e3108dadc613ac3cfd4b5d143693ee795c",
+      "checks": [
+        {
+          "expression": "(I@H)*|00>",
+          "expected": "[1;1;0;0]/sqrt(2)"
+        }
+      ]
+    },
+    "ebit-circuit-second.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/ebit-circuit-second.svg",
+      "sha256": "489cabcc1f24e9382761c5251efbb99eb87d7fe3f95497cbdef2a3220ce032e7",
+      "checks": [
+        {
+          "expression": "(SWAP*CNOT*SWAP)*(I@H)*|00>",
+          "expected": "[1;0;0;1]/sqrt(2)"
+        }
+      ]
+    },
+    "cNOT.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/cNOT.svg",
+      "sha256": "8c9a483ed58351ba3913c4b115ea19b6fddb7afd9be35fc0cf9d61d8609c6a2b",
+      "checks": [
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|00>",
+          "expected": "|00>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|10>",
+          "expected": "|10>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|01>",
+          "expected": "|11>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|11>",
+          "expected": "|01>"
+        }
+      ]
+    },
+    "ebit-circuit-measured.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/ebit-circuit-measured.svg",
+      "sha256": "94378473cfc98890054b1acc192fedf29cb046f855d4d7bc99ccdd8bdc24947f",
+      "checks": [
+        {
+          "expression": "probs((SWAP*CNOT*SWAP)*(I@H)*|00>)",
+          "expected": "[1/2;0;0;1/2]"
+        }
+      ]
+    },
+    "ebit-circuit-measured-compact.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/ebit-circuit-measured-compact.svg",
+      "sha256": "12fc05a2e60cce614ba65b1e544506c1060f9cd2c219cc8ea2a2e57b68dc6ff6",
+      "checks": [
+        {
+          "expression": "probs((SWAP*CNOT*SWAP)*(I@H)*|00>)",
+          "expected": "[1/2;0;0;1/2]"
+        }
+      ]
+    },
+    "single-qubit-gates.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/single-qubit-gates.svg",
+      "sha256": "f0e450be0da2dfa955ef7a82c8fbe214c85003bcad7fb37c718fd99c28518eca",
+      "checks": [
+        {
+          "expression": "X*|0>",
+          "expected": "|1>"
+        },
+        {
+          "expression": "Y*|0>",
+          "expected": "i*|1>"
+        },
+        {
+          "expression": "Z*|0>",
+          "expected": "|0>"
+        },
+        {
+          "expression": "H*|0>",
+          "expected": "|+>"
+        },
+        {
+          "expression": "S*|0>",
+          "expected": "|0>"
+        },
+        {
+          "expression": "T*|0>",
+          "expected": "|0>"
+        },
+        {
+          "expression": "X*|1>==|0>",
+          "expected": "1"
+        },
+        {
+          "expression": "Y*|1>==-i*|0>",
+          "expected": "1"
+        },
+        {
+          "expression": "Z*|1>==-|1>",
+          "expected": "1"
+        },
+        {
+          "expression": "H*|1>==|->",
+          "expected": "1"
+        },
+        {
+          "expression": "S*|1>==i*|1>",
+          "expected": "1"
+        },
+        {
+          "expression": "T*|1>==(1+i)/sqrt(2)*|1>",
+          "expected": "1"
+        }
+      ]
+    },
+    "not-gate.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/not-gate.svg",
+      "sha256": "d5c8db71be7bb5115abddf07992ea91305f0e2b3af2ded7b1191694a57130736",
+      "checks": [
+        {
+          "expression": "X*|0>",
+          "expected": "|1>"
+        },
+        {
+          "expression": "X*|1>",
+          "expected": "|0>"
+        }
+      ]
+    },
+    "swap-gate.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/swap-gate.svg",
+      "sha256": "cf8e5f4d9ad14a96b72b4deb38d31e4018bbecdbd389c87bdd2746ab9e95e6ae",
+      "checks": [
+        {
+          "expression": "SWAP*|00>",
+          "expected": "|00>"
+        },
+        {
+          "expression": "SWAP*|01>",
+          "expected": "|10>"
+        },
+        {
+          "expression": "SWAP*|10>",
+          "expected": "|01>"
+        },
+        {
+          "expression": "SWAP*|11>",
+          "expected": "|11>"
+        }
+      ]
+    },
+    "controlled-gates.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/controlled-gates.svg",
+      "sha256": "feca9c84caa604aac420ceedb401e43382a6e602da8e052fdc6164c9f12a536f",
+      "checks": [
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|00>",
+          "expected": "|00>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|10>",
+          "expected": "|10>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|01>",
+          "expected": "|11>"
+        },
+        {
+          "expression": "(SWAP*CNOT*SWAP)*|11>",
+          "expected": "|01>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|000>",
+          "expected": "|000>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|000>",
+          "expected": "|000>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|100>",
+          "expected": "|100>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|100>",
+          "expected": "|100>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|010>",
+          "expected": "|010>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|010>",
+          "expected": "|010>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|110>",
+          "expected": "|110>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|110>",
+          "expected": "|110>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|001>",
+          "expected": "|001>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|001>",
+          "expected": "|001>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|101>",
+          "expected": "|101>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|101>",
+          "expected": "|011>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|011>",
+          "expected": "|111>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|011>",
+          "expected": "|101>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*Toffoli*((SWAP@I)*(I@SWAP)*(SWAP@I))*|111>",
+          "expected": "|011>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*|111>",
+          "expected": "|111>"
+        }
+      ]
+    },
+    "uncontrolled-and-controlled-unitary.svg": {
+      "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/public/learning/images/courses/basics-of-quantum-information/quantum-circuits/uncontrolled-and-controlled-unitary.svg",
+      "sha256": "6b1b0e577c2e2a71aaa0d94f9cceaa089d9ea9159ee31d5e47a537c69c1abec6",
+      "checks": [
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|000>",
+          "expected": "|000>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|100>",
+          "expected": "|100>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|010>",
+          "expected": "|010>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|110>",
+          "expected": "|110>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|001>",
+          "expected": "|001>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|101>",
+          "expected": "|011>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|011>",
+          "expected": "|101>"
+        },
+        {
+          "expression": "((SWAP@I)*(I@SWAP)*(SWAP@I))*qcontrolled(SWAP)*((SWAP@I)*(I@SWAP)*(SWAP@I))*|111>",
+          "expected": "|111>"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "slides": "https://ibm.box.com/public/static/zsd4694uko51kzcohdvbp6ncgl9u9ys3.pdf",
+  "slide_sha256": "d57bb4350afb674084faea28488bee651cd6e56d702365c195499838df115521",
+  "reviewed_pages": 50,
+  "worker_sha256": "95019ebd43c441a5320a76e31ba883ee5626b47f3fd05e62ef7f2fbcce8299f2",
+  "checks": [
+    {
+      "pages": [
+        2
+      ],
+      "equation": "(1 and not 0) or ((not 1) and 0)"
+    },
+    {
+      "pages": [
+        3
+      ],
+      "equation": "(x*x+y)*(y+1)==x^2*y+x^2+y^2+y"
+    },
+    {
+      "pages": [
+        4
+      ],
+      "equation": "T*H*S*H*|0>==[(1+i)/2;1/sqrt(2)]"
+    },
+    {
+      "pages": [
+        5,
+        6,
+        7
+      ],
+      "equation": "probs(SWAP*CNOT*SWAP*(I@H)*|00>)==[1/2;0;0;1/2]"
+    },
+    {
+      "pages": [
+        13,
+        14
+      ],
+      "equation": "|->~*[1/2;sqrt(3)/2]==(1-sqrt(3))/(2*sqrt(2))"
+    },
+    {
+      "pages": [
+        15
+      ],
+      "equation": "[sqrt(3)/2;-1/2]~*[1/2;sqrt(3)/2]==0"
+    },
+    {
+      "pages": [
+        10,
+        11,
+        12,
+        17
+      ],
+      "equation": "[i;1]~*[1;0]==-i"
+    },
+    {
+      "pages": [
+        16
+      ],
+      "equation": "[i;1]~*[i;1]==2"
+    },
+    {
+      "pages": [
+        18
+      ],
+      "equation": "<0|*(i*|0>+|1>)==i"
+    },
+    {
+      "pages": [
+        19
+      ],
+      "equation": "(i*|0>+|1>)~*|0>==-i"
+    },
+    {
+      "pages": [
+        20
+      ],
+      "equation": "abs(<0|+>)<=1"
+    },
+    {
+      "pages": [
+        21,
+        22
+      ],
+      "equation": "<+|->==0"
+    },
+    {
+      "pages": [
+        23
+      ],
+      "equation": "<0|+>==1/sqrt(2)"
+    },
+    {
+      "pages": [
+        24,
+        25,
+        26,
+        27
+      ],
+      "equation": "H~*H==I"
+    },
+    {
+      "pages": [
+        28,
+        29,
+        30,
+        31
+      ],
+      "equation": "(|+><+|)*(|+><+|)==|+><+|"
+    },
+    {
+      "pages": [
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "equation": "probs(|+>)==[1/2;1/2]"
+    },
+    {
+      "pages": [
+        37
+      ],
+      "equation": "(I@I@H)*((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*(I@I@H)*(((|01>+|10>)/sqrt(2))@|0>)==((|01>+|10>)/sqrt(2))@|0>"
+    },
+    {
+      "pages": [
+        37
+      ],
+      "equation": "(I@I@H)*((SWAP@I)*(I@SWAP)*(SWAP@I))*CSWAP*((SWAP@I)*(I@SWAP)*(SWAP@I))*(I@I@H)*(((|01>-|10>)/sqrt(2))@|0>)==((|01>-|10>)/sqrt(2))@|1>"
+    },
+    {
+      "pages": [
+        38,
+        39,
+        40,
+        41
+      ],
+      "equation": "probs(i*|->)==probs(|->)"
+    },
+    {
+      "pages": [
+        42
+      ],
+      "equation": "probs(H*|->)==[0;1]"
+    },
+    {
+      "pages": [
+        43,
+        44,
+        45,
+        46
+      ],
+      "equation": "CNOT*(|+>@|0>)!=(|+>@|+>)"
+    },
+    {
+      "pages": [
+        47,
+        48,
+        49,
+        50
+      ],
+      "equation": "probs(H*|+>)==[1;0]"
+    }
+  ],
+  "circuit_gate_examples_on_pages_8_and_9": "ibm045-figures.json",
+  "video": "https://www.youtube.com/watch?v=30U2DTfIrOU",
+  "duration_seconds": 3651,
+  "video_evidence": "The public player lists twelve chapter starts. The English caption endpoints returned empty responses.",
+  "chapter_starts_seconds": [
+    0,
+    66,
+    148,
+    445,
+    1107,
+    1455,
+    1955,
+    2182,
+    2627,
+    2893,
+    3217,
+    3599
+  ]
+}

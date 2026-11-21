@@ -32,7 +32,7 @@ static void jsonString(const std::string &s) {
  }
  std::cout << '"';
 }
-static std::string copyText(const MathStructure &,const PrintOptions &,bool quantumMode=false);
+static std::string copyText(const MathStructure &,const PrintOptions &,bool quantumMode=false,bool explicitEntries=false);
 static std::string copyCollection(const MathStructure &value,const PrintOptions &po,unsigned depth,bool quantumMode) {
  if(!value.isVector())return copyText(value,po,quantumMode);
  std::string text="vector(";
@@ -74,7 +74,16 @@ static bool completeComputationalBasis(const MathStructure &states) {
  }
  return true;
 }
-static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode) {
+static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=false) {
+ if(value.isFunction()) {
+  const std::string &name=value.function()->referenceName();
+  if(orderedOnly ? (name=="qnamedket" || name=="qdag" || name=="qtensor" || name=="qadjacent")
+                 : name.compare(0,1,"q")==0)return true;
+ }
+ for(size_t k=0;k<value.size();++k)if(containsDeferredQuantum(value[k],orderedOnly))return true;
+ return false;
+}
+static std::string copyText(const MathStructure &result, const PrintOptions &po,bool quantumMode,bool explicitEntries) {
  // Identify physical units and prefixes separately from quantum variables.
  if(quantumMode && result.isUnit()) {
   const std::string prefix=result.prefix() ? result.prefix()->referenceName() : "";
@@ -152,6 +161,13 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    }
    return "("+copyText(result[0],po,quantumMode)+")"+comparison+"("+copyText(result[1],po,quantumMode)+")";
   }
+  if(quantumMode && (result.isAddition() || result.isMultiplication()) && result.size()>1 &&
+     (explicitEntries || containsDeferredQuantum(result,!result.containsType(STRUCT_VECTOR)))) {
+   const std::string op=result.isAddition() ? "qadd(" : "qmul(";
+   std::string text=copyText(result[0],po,true,true);
+   for(size_t k=1;k<result.size();++k)text=op+text+","+copyText(result[k],po,true,true)+")";
+   return text;
+  }
   // Arithmetic can enclose unevaluated matrix-valued states. Formatting the
   // whole expression would lose explicit comma-separated matrix dimensions.
   if((result.isAddition() || result.isMultiplication() || result.isPower()) &&
@@ -172,13 +188,15 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  }
  if(result.rows()==1 && result.columns()==1)
   return "qmul(("+copyText(*result.getElement(1,1),po,quantumMode)+"),qbasis(0,1))";
- std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+",[";
+ bool useVector=explicitEntries;
+ if(quantumMode && !useVector)useVector=containsDeferredQuantum(result);
+ std::string text="matrix("+std::to_string(result.rows())+","+std::to_string(result.columns())+(useVector ? ",vector(" : ",[");
  for(size_t r=1;r<=result.rows();++r)for(size_t c=1;c<=result.columns();++c) {
   if(r!=1 || c!=1)text+=",";
   const MathStructure &cell=*result.getElement(r,c);
-  text+=quantumMode && cell.containsType(STRUCT_UNIT) ? copyText(cell,po,quantumMode) : copyScalar(cell,po);
+  text+=quantumMode && (useVector || cell.containsType(STRUCT_UNIT)) ? copyText(cell,po,quantumMode) : copyScalar(cell,po);
  }
- return text+"])";
+ return text+(useVector ? "))" : "])");
 }
 // Keep ordered lists of states distinct from both sets and matrices.
 static bool displayKetCollection(const MathStructure &value,const PrintOptions &po,std::string &shown) {

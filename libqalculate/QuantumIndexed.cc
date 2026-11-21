@@ -122,25 +122,37 @@ bool namedOutcome(const MathStructure &value) {
 bool stateColumn(const MathStructure &value) {
  return value.isMatrix() && value.columns()==1 && value.rows()>0;
 }
+bool namedProjector(const MathStructure &value) {
+ if(!value.isFunction() || value.size()!=2)return false;
+ const MathStructure *product=&value;
+ if(value.function()->referenceName()=="qsub" && value[0].isFunction() &&
+    value[0].function()->referenceName()=="qimplicitidentity")product=&value[1];
+ if(!product->isFunction() || product->size()!=2)return false;
+ const auto &name=product->function()->referenceName();
+ const auto &ket=(*product)[0], &bra=(*product)[1];
+ return (name=="qadjacent" || name=="qmul") && ket.isFunction() &&
+        (namedKet(ket) || ket.function()->referenceName()=="qnamedket") &&
+        bra.isFunction() && bra.function()->referenceName()=="qdag" && bra.size()==1 && ket.equals(bra[0]);
+}
 SetEquality setEquality(const MathStructure &left,const MathStructure &right) {
  if(left.equals(right))return SetEquality::Equal;
  if(namedOutcome(left) || namedOutcome(right)) {
   const MathStructure &other=namedOutcome(left) ? right : left;
   if(namedOutcome(other) || other.isNumber())return SetEquality::Different;
  }
- if(namedKet(left) || namedKet(right))return SetEquality::Unknown;
- if(stateColumn(left) && stateColumn(right)) {
-  if(left.rows()!=right.rows())return SetEquality::Different;
+ if(namedKet(left) || namedKet(right) || namedProjector(left) || namedProjector(right))return SetEquality::Unknown;
+ if(left.isMatrix() && right.isMatrix()) {
+  if(left.rows()!=right.rows() || left.columns()!=right.columns())return SetEquality::Different;
   bool unknown=false;
-  for(size_t k=0;k<left.size();++k) {
-   SetEquality entry=setEquality(left[k][0],right[k][0]);
+  for(size_t k=0;k<left.size();++k)for(size_t j=0;j<left[k].size();++j) {
+   SetEquality entry=setEquality(left[k][j],right[k][j]);
    if(entry==SetEquality::Different)return entry;
    unknown=unknown || entry==SetEquality::Unknown;
   }
   return unknown ? SetEquality::Unknown : SetEquality::Equal;
  }
- if(stateColumn(left) || stateColumn(right)) {
-  const MathStructure &other=stateColumn(left) ? right : left;
+ if(left.isMatrix() || right.isMatrix()) {
+  const MathStructure &other=left.isMatrix() ? right : left;
   return other.containsUnknowns() ? SetEquality::Unknown : SetEquality::Different;
  }
  bool leftTuple=left.isFunction() && left.function()->referenceName()=="qtuple";
@@ -181,7 +193,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qindexedset" || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -193,7 +205,7 @@ bool pendingDomain(const MathStructure &value) {
  return value.isSymbolic() || (value.isVariable() && !value.variable()->isKnown()) || domainExpression(value);
 }
 // Keep tuples distinct from vectors/matrices, including the zero-length tuple.
-bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &pending,unsigned depth=0) {
+bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &pending,unsigned depth=0,bool operators=false) {
  if(depth>32)return false;
  if(namedOutcome(value))return value.size()==1 && value[0].isSymbolic() && !value[0].symbol().empty();
  if(value.isFunction() && value.function()->referenceName()=="qtuple") {
@@ -216,15 +228,17 @@ bool canonicalSetElement(MathStructure &value,const EvaluationOptions &eo,bool &
  }
  value.eval(eo);
  if(!depth && namedKet(value))return true;
- if(!depth && stateColumn(value)) {
-  for(size_t k=0;k<value.size();++k)if(!value[k][0].representsScalar() || value[k][0].isUndefined())return false;
+ if(!depth && operators && namedProjector(value)) {pending=true;return true;}
+ if(!depth && value.isMatrix() && value.rows() && (value.columns()==1 || (operators && value.columns()))) {
+  for(size_t k=0;k<value.size();++k)for(size_t j=0;j<value[k].size();++j)
+   if(!value[k][j].representsScalar() || value[k][j].isUndefined())return false;
   return true;
  }
  return value.representsScalar() && !value.isUndefined();
 }
 enum class DomainState { Invalid, Pending, Finite };
-bool normalizeSetEntries(MathStructure &members,const EvaluationOptions &eo,bool &pending) {
- for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending))return false;
+bool normalizeSetEntries(MathStructure &members,const EvaluationOptions &eo,bool &pending,bool operators) {
+ for(size_t k=0;k<members.size();++k)if(!canonicalSetElement(members[k],eo,pending,0,operators))return false;
  for(size_t k=members.size();k>0;--k)for(size_t j=0;j<k-1;++j)if(setEquality(members[k-1],members[j])==SetEquality::Equal) {members.delChild(k);break;}
  return true;
 }
@@ -242,12 +256,13 @@ void evaluateDomain(const MathStructure &raw,MathStructure &members,const Evalua
 }
 DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const EvaluationOptions &eo) {
  evaluateDomain(raw,members,eo);
- if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
+ bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
+ if(explicitSet) {MathStructure entries=members[0];members=entries;}
  if(!members.isVector() && collectionExpression(raw) && !domainExpression(members))members.transform(STRUCT_VECTOR);
  if(pendingDomain(members))return DomainState::Pending;
  if(!members.isVector() || members.size()>1024)return DomainState::Invalid;
  bool pending=false;
- if(!normalizeSetEntries(members,eo,pending))return DomainState::Invalid;
+ if(!normalizeSetEntries(members,eo,pending,explicitSet))return DomainState::Invalid;
  return pending ? DomainState::Pending : DomainState::Finite;
 }
 // A register family retains bit assignments made before its width is known.
@@ -318,7 +333,7 @@ bool bindRegisterBit(MathStructure &value,const MathStructure &label,const MathS
    value.childrenUpdated();return true;
   }
  }
- const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
+ const bool list=value.isFunction() && (value.function()->referenceName()=="qindexedsum" || value.function()->referenceName()=="qindexedset" || value.function()->referenceName()=="qindexedlist" || value.function()->referenceName()=="qreverseindexedlist" || value.function()->referenceName()=="qindexedentries" || value.function()->referenceName()=="qindexedketset" || value.function()->referenceName()=="qindexedketlist");
  const bool dotColumn=value.isFunction() && value.function()->referenceName()=="qsampledotcolumn";
  const bool samples=dotColumn || (value.isFunction() && value.function()->referenceName()=="qfamilymembers");
  if(value.isFunction() && (samples || list || value.function()->referenceName()=="qregisterfamily" || value.function()->referenceName()=="qregisterword") && value.size()==(dotColumn ? 5 : 4) && value[0].isSymbolic()) {
@@ -960,6 +975,11 @@ bool projectRegisterShape(MathStructure &value,const RegisterShapeProjection &co
 // The complete range 0..d-1 supplies a basis for bare kets/bras of its index.
 // Explicit basis dimensions and nested declarations retain their own meaning.
 // With no dimension, report whether a free bare basis reference needs one.
+void resolveIndexedNames(MathStructure &value,const EvaluationOptions &eo) {
+ if(value.isFunction() && value.function()->referenceName()=="qindexedlabel") {value.eval(eo);return;}
+ for(size_t k=0;k<value.size();++k)resolveIndexedNames(value[k],eo);
+ value.childrenUpdated();
+}
 bool inferSumBasis(MathStructure &value,const MathStructure &index,const MathStructure *dimension) {
  if(value.isFunction() && value.size()==1 && value[0].equals(index) &&
     (value.function()->referenceName()=="qketstate" || value.function()->referenceName()=="qnamedket")) {
@@ -1342,7 +1362,8 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(!entries.isVector() || entries.size()>1024) {CALCULATOR->error(true,"A set requires a vector of at most 1024 valid entries.",NULL);return 0;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;bool pending=false;
-   if(!normalizeSetEntries(entries,exact,pending)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
+   if(!normalizeSetEntries(entries,exact,pending,true)) {CALCULATOR->error(true,"Invalid set entry.",NULL);return 0;}
+   if(pending && entries.containsFunction(CALCULATOR->getFunction("qimplicitidentity")))return 0;
    if(!entries.equals(raw[0])) {out.set(this,&entries,NULL);return 1;}
    return 0;
   }
@@ -1730,6 +1751,36 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
+  if(op=="qbasiscolumns") {
+   MathStructure entries,split=raw[1];split.eval(eo);
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo) || pendingRegisterIndex(split))return 0;
+   const size_t size=entries.size();
+   if(!size || !split.isInteger() || split.number()<1 || split.number()>long(size)) {
+    CALCULATOR->error(true,"The initial basis size must be between one and the number of columns.",NULL);return 0;
+   }
+   for(size_t c=0;c<size;++c) {
+    if(entries[c].isSymbolic() || namedKet(entries[c]))return 0;
+    if(!stateColumn(entries[c]) || entries[c].rows()!=size) {
+     CALCULATOR->error(true,"Every basis column must match the dimension of the space.",NULL);return 0;
+    }
+   }
+   out.clearMatrix();out.resizeMatrix(size,size,m_zero);
+   for(size_t c=0;c<size;++c) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t r=0;r<size;++r)element(out,r,c)=element(entries[c],r,0);
+   }
+   return 1;
+  }
+  if(op=="qcomplexcolumn") {
+   out=raw[0];out.eval(eo);
+   if(!out.isMatrix())return 0;
+   if(out.columns()!=1){CALCULATOR->error(true,"Expected a single column of coefficients.",NULL);return 0;}
+   for(size_t row=0;row<out.rows();++row) {
+    MathStructure value=element(out,row,0);
+    if(value.isUnknown())element(out,row,0).set(CALCULATOR->getFunction("complexparam"),&value,NULL);
+   }
+   return 1;
+  }
   if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
    const bool samples=op=="qsamplebitmatrix";
    const bool matrix=samples || op=="qindexedmatrix";
@@ -1905,10 +1956,63 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedlist" || op=="qindexedentries") {
+  if(op=="qmissingblock" || op=="qopenblockcolumn")return 0;
+  if(op=="qblockcolumn" || op=="qmatchblockcolumn") {
+   MathStructure blocks;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(blocks,raw[0],eo))return 0;
+   if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(blocks.size())) {
+    CALCULATOR->error(true,"A block column must contain its displayed blocks.",NULL);return 0;
+   }
+   size_t width=0;bool pending=false;
+   for(size_t k=0;k<blocks.size();++k) {
+    blocks[k].eval(eo);
+    if(!blocks[k].isMatrix() && blocks[k].containsUnknowns()) {pending=true;continue;}
+    if(!blocks[k].isMatrix() || !blocks[k].rows() || blocks[k].rows()!=blocks[k].columns() ||
+       (width && width!=blocks[k].rows())) {
+     CALCULATOR->error(true,"A block column requires square blocks of equal dimension.",NULL);return 0;
+    }
+    width=blocks[k].rows();
+   }
+   if(pending)return 0;
+   if(blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
+   size_t size=width*blocks.size();bool match=op=="qmatchblockcolumn";
+   MathStructure candidate;
+   if(match) {
+    candidate=raw[2];candidate.eval(eo);
+    if(!candidate.isMatrix() && candidate.containsUnknowns())return 0;
+    if(!raw[3].isInteger() || (raw[3].number()!=4 && raw[3].number()!=5))return 0;
+    if(!candidate.isMatrix() || candidate.rows()!=size || candidate.columns()!=size) {out=raw[3].number()==5 ? 1 : 0;return 1;}
+   }
+   out.clearMatrix();out.resizeMatrix(size,match ? width : size,m_zero);
+   for(size_t k=0;k<blocks.size();++k)for(size_t r=0;r<width;++r) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t c=0;c<width;++c)element(out,k*width+r,c)=element(blocks[k],r,c);
+   }
+   if(match) {
+    candidate.resizeMatrix(size,width,m_zero);
+    MathStructure expected=out;
+    out.set(CALCULATOR->getFunction("qcompare"),&candidate,&expected,&raw[3],NULL);
+   }
+   return 1;
+  }
+  if(op=="qindexedsum" || op=="qindexedset" || op=="qindexedlist" || op=="qreverseindexedlist" || op=="qindexedentries") {
    MathStructure entries;
    if(!indexedEntries(entries,raw,eo))return 0;
-   if(op=="qindexedentries")out=entries;else out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);
+   if(op=="qindexedsum") {
+    if(!entries.size()) {out=m_zero;return 1;}
+    for(size_t i=0;i<entries.size();++i)if(entries[i].isSymbolic())return 0;
+    out=entries[0];
+    for(size_t i=1;i<entries.size();++i) {
+     if(CALCULATOR->aborted())return 0;
+     MathStructure previous=out;
+     out.set(CALCULATOR->getFunction("qadd"),&previous,&entries[i],NULL);out.eval(eo);
+    }
+   } else if(op=="qreverseindexedlist") {
+    MathStructure reversed;reversed.clearVector();
+    for(size_t k=entries.size();k>0;--k)reversed.addChild(entries[k-1]);
+    out.set(CALCULATOR->getFunction("qtuple"),&reversed,NULL);
+   } else if(op=="qindexedentries")out=entries;
+   else out.set(CALCULATOR->getFunction(op=="qindexedset" ? "qset" : "qtuple"),&entries,NULL);
    return 1;
   }
   if(op=="qindexedfamily") {
@@ -1996,6 +2100,26 @@ class QuantumIndexedFunction: public MathFunction {
     Number dimension=last.number();dimension+=1;
     MathStructure basisDimension(dimension);
     inferSumBasis(parameters[0],raw[3],&basisDimension);
+    // A tensor sum can have unknown matrix entries when its bounds first
+    // become concrete. Expose the indexed operands for later substitution.
+    if(parameters[0].isFunction() && parameters[0].containsFunction(CALCULATOR->getFunction("qindexedlabel")) &&
+       dimension.isPositive() && dimension<=1024) {
+     std::vector<MathStructure> terms;
+     for(int k=0;k<dimension.intValue();++k) {
+      if(CALCULATOR->aborted())return 0;
+      MathStructure term=parameters[0],index(k,1);
+      replaceQuantumIndex(term,raw[3],index);resolveIndexedNames(term,eo);term.eval(eo);terms.push_back(term);
+     }
+     while(terms.size()>1) {
+      std::vector<MathStructure> next;
+      for(size_t k=0;k<terms.size();k+=2) {
+       if(k+1==terms.size())next.push_back(terms[k]);
+       else next.emplace_back(CALCULATOR->getFunction("qadd"),&terms[k],&terms[k+1],NULL);
+      }
+      terms.swap(next);
+     }
+     out=terms[0];out.eval(eo);return 1;
+    }
    }
    // The generic sum substitutes recursively. Give this binder a fresh name
    // first, so it cannot replace a nested sum's declaration or bound body.
@@ -2100,6 +2224,10 @@ class QuantumIndexedFunction: public MathFunction {
    // collection. Retain the bars so substitution can determine the result.
    if(value.containsUnknowns() && (value.containsFunction(CALCULATOR->getFunction("qsumset")) ||
       value.containsFunction(CALCULATOR->getFunction("qsum"))))return 0;
+   // A free amplitude can later take a complex value. Preserve its magnitude
+   // when other factors have already reduced to concrete overlaps.
+   if(value.containsUnknowns() && (value.isMultiplication() || (value.isFunction() &&
+      (value.function()->referenceName()=="qmul" || value.function()->referenceName()=="qadjacent"))))return 0;
    if(!value.representsScalar()) {CALCULATOR->error(true,"Bars require a scalar or finite flat collection.",NULL);return 0;}
    auto absolute=CALCULATOR->getFunction("abs");if(!absolute)return 0;
    out.set(absolute,&value,NULL);out.eval(eo);return 1;
@@ -2168,7 +2296,8 @@ class QuantumIndexedFunction: public MathFunction {
     }
     return 0;
    }
-   if(members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1) {MathStructure entries=members[0];members=entries;}
+   bool explicitSet=members.isFunction() && members.function()->referenceName()=="qset" && members.size()==1;
+   if(explicitSet) {MathStructure entries=members[0];members=entries;}
    // The generic evaluator collapses a singleton function-result vector.
    // Preserve the collection type of the set operations used by TeX builders.
    bool bitLabel=members.isFunction() && members.function()->referenceName()=="qbitlabel";
@@ -2179,7 +2308,7 @@ class QuantumIndexedFunction: public MathFunction {
    // count, deduplicate, or test membership before their domains are known.
    bool deferredLabels=false;
    auto validateLabel=[&](MathStructure &value)->bool {
-    return canonicalSetElement(value,exact,deferredLabels);
+    return canonicalSetElement(value,exact,deferredLabels,0,explicitSet);
    };
    MathStructure probe=raw[0];
    if(op=="qmember") {
@@ -2487,12 +2616,21 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qreverseindexedlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
+ calculator.addFunction(new QuantumIndexedFunction("qopenblockcolumn",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmatchblockcolumn",4));
+ calculator.addFunction(new QuantumIndexedFunction("qmissingblock",0));
  calculator.addFunction(new QuantumIndexedFunction("qindexedfamily",2));
  calculator.addFunction(new QuantumIndexedFunction("qfamilyat",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlabel",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qonebasedcolumn",3));
+ calculator.addFunction(new QuantumIndexedFunction("qcomplexcolumn",1));
+ calculator.addFunction(new QuantumIndexedFunction("qbasiscolumns",2));
  calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
  calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));

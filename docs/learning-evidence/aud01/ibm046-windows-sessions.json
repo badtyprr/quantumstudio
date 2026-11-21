@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/quantum-circuits/inner-products-and-projections.ipynb",
+  "notebook_sha256": "3c1262a55ec7ddcc7f4b650f16b1ab45c65b8f6c529b7f736a1a43f438f762bb",
+  "worker_sha256": "4bf70a0a91f863447a53e0d521a1d14592b43a384ba382051b65e541f5db1eea",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "eb6cf7e480743b2911ccaf81d2b286d6b30628cc4ded9c0463f94bb846243a78",
+  "suite": {
+    "passed": true,
+    "checks": 2151,
+    "calls": 239,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 239,
+    "restored_identically": 239,
+    "stable_after_text_reentry": 239
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

@@ -1,4 +1,4 @@
-"""Replay the complete pinned Shor or Grover lesson in the default Windows notation mode."""
+"""Replay a pinned lesson in the default Windows notation mode."""
 import argparse
 from collections import Counter
 import hashlib
@@ -9,12 +9,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=Path)
 parser.add_argument("--package", type=Path)
 parser.add_argument("--report", type=Path)
+parser.add_argument("--sessions-only", action="store_true")
+parser.add_argument("--reenter-text", action="store_true",
+                    help="Verify the app's Copy text by re-entering it without the clipboard")
 parser.add_argument("--inventory", type=Path, default=Path(__file__).with_name("ibm029-inventory.json"))
 args = parser.parse_args()
 inventory = json.loads(args.inventory.read_bytes())
 rows = inventory["rows"]
 lesson = rows[0]["id"].split("-")[0].lower()
-assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035"}
+assert lesson in {"ibm029","ibm031","ibm032","ibm033","ibm034","ibm035","ibm045","ibm046","ibm047"}
 pinned = json.loads(Path(__file__).with_name(lesson+"-inventory.json").read_bytes())
 assert inventory["source_sha256"] == pinned["source_sha256"]
 assert [(r["id"],r["literal"]) for r in rows] == [(r["id"],r["literal"]) for r in pinned["rows"]]
@@ -36,7 +39,11 @@ assert args.package and digest(args.package/"quantum-worker.exe") == inventory["
 suite = json.loads((directory/"result.json").read_bytes())
 records = json.loads((directory/"records.json").read_bytes())
 assert json.loads((directory/"inputs.json").read_bytes()) == inputs
-assert suite["passed"] and suite["clipboardRestored"] and suite["calls"] == len(records) == len(rows)
+assert suite["passed"] and suite["calls"] == len(records) == len(rows)
+without_clipboard = args.sessions_only or args.reenter_text
+assert suite.get("sessionsOnly", False) == without_clipboard
+if not without_clipboard:
+    assert suite["clipboardRestored"]
 counts = Counter()
 diagnostics,changes,failures = [],[],[]
 for (key,expression,_),source,gui in zip(inputs,rows,records):
@@ -51,6 +58,18 @@ for (key,expression,_),source,gui in zip(inputs,rows,records):
     counts["source_exact"] += 1
     session = json.loads((directory/(key+".qsession")).read_bytes().decode("utf-8-sig"))
     assert session["Expression"] == expression and session["Mode"] == 0 and not session["Matrices"]
+    if without_clipboard:
+        assert gui["display"] == source["display"] and gui["restored_same"], number
+        counts["restored_identically"] += 1
+        if args.reenter_text:
+            assert gui["copy_text"] == source["copy"], number
+            if gui["reentry_label"] != "EXACT RESULT":
+                failures.append(dict(id=number,stage="text re-entry",message=gui["reentry_text"]))
+            elif gui["reentry_text"] != gui["copy_text"]:
+                changes.append(dict(id=number,first=gui["copy_text"],second=gui["reentry_text"]))
+            else:
+                counts["stable_after_text_reentry"] += 1
+        continue
     if gui["restored_same"]:
         counts["restored_identically"] += 1
     else:
@@ -68,6 +87,8 @@ report = dict(source=inventory["source"],notebook_sha256=inventory["source_sha25
               records_sha256=digest(directory/"records.json"),suite=suite,counts=counts,
               diagnostics=diagnostics,changed_copy=changes,failures=failures)
 args.report.write_bytes((json.dumps(report,indent=2,ensure_ascii=False)+"\n").encode())
-print(dict(counts), len(changes),"changed Copy strings;",len(failures),"restore or re-entry failures")
+print(dict(counts))
+if not without_clipboard:
+    print(len(changes),"changed Copy strings;",len(failures),"restore or re-entry failures")
 if failures:
     raise SystemExit(1)

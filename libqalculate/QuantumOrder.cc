@@ -342,7 +342,7 @@ bool introducesUnknown(const MathStructure &result,const MathStructure &operands
 bool inferProductIdentity(MathStructure &identity,const MathStructure &product) {
  if(!identity.isFunction() || identity.function()->referenceName()!="qimplicitidentity" || !product.isFunction())return false;
  const std::string &op=product.function()->referenceName();
- if((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag")))return false;
+ if(op!="qindexedsum" && ((op!="qadjacent" && op!="qmul") || !product.containsFunction(CALCULATOR->getFunction("qdag"))))return false;
  identity.set(CALCULATOR->getFunction("qidentitylike"),&product,NULL);return true;
 }
 // Real inequality isolation is invalid inside the modulus of a complex
@@ -360,6 +360,12 @@ class QuantumOrderFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;args[2].eval(eo);
   bool equality=args[2].isNumber() && args[2].number()==4;
+  if(equality || (args[2].isNumber() && args[2].number()==5))for(unsigned k=0;k<2;++k) {
+   const auto &pattern=args[k];
+   if(pattern.isFunction() && pattern.function()->referenceName()=="qopenblockcolumn" && pattern.size()==2) {
+    out.set(CALCULATOR->getFunction("qmatchblockcolumn"),&pattern[0],&pattern[1],&args[1-k],&args[2],NULL);return 1;
+   }
+  }
   if(equality && (inferProductIdentity(args[0],args[1]) || inferProductIdentity(args[1],args[0]))) {
    out.set(this,&args[0],&args[1],&args[2],NULL);out.eval(eo);return 1;
   }
@@ -431,7 +437,7 @@ class QuantumOrderFunction: public MathFunction {
    bool equal=false;
    // A state family can be defined later. Keep each matrix on its own
    // side of the comparison and retain evaluated arguments for re-entry.
-   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate"}) {
+   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate","qnamedket"}) {
     const auto function=CALCULATOR->getFunction(state);
     if(!args[0].containsFunction(function) && !args[1].containsFunction(function))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
@@ -446,6 +452,11 @@ class QuantumOrderFunction: public MathFunction {
    // Preserve products with adjoints until the factors have concrete values.
    // Scalar comparison would rewrite the equality as a difference from zero.
    if(kind>=4 && gramFactor(args[0]) && gramFactor(args[1]) && !args[0].equals(args[1]))return 0;
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    const MathStructure &identity=args[k], &product=args[1-k];
+    if(identity.isFunction() && identity.function()->referenceName()=="qidentitylike" &&
+       identity.size()==1 && identity[0].equals(product) && (gramFactor(product) || (product.isFunction() && product.function()->referenceName()=="qindexedsum")))return 0;
+   }
    if(kind>=4 && (quantumComplexDomain(args[0]) || quantumComplexDomain(args[1]))) {
     if(quantumComplexDomain(args[0]) && quantumComplexDomain(args[1])) {
      out=(args[0].function()==args[1].function())==(kind==4) ? 1 : 0;return 1;
@@ -549,6 +560,10 @@ class QuantumEqualityChain: public MathFunction {
   for(size_t k=0;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    operands[k].eval(eo);MathStructure rows,columns;
+   // A projector complement supplies the dimension of its identity only
+   // after the ket is bound. Keep the original chain during that interval.
+   if(operands[k].containsFunction(CALCULATOR->getFunction("qimplicitidentity")) &&
+      operands[k].containsFunction(CALCULATOR->getFunction("qnorm")))return 0;
    if(quantumMatrixShape(operands[k],rows,columns,eo) && columns.isOne()) {
     if(!known) {dimension=rows;known=true;}
     else if(!dimension.equals(rows))consistent=false;

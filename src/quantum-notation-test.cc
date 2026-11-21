@@ -24,6 +24,9 @@ static std::string basis(unsigned index,unsigned dimension) {
  return result+"])";
 }
 int main(){try {
+ equal("U (|0>@|1>)",translateQuantum("qmul(\"U\",(|0>@|1>))"));
+ equal("U (0,pi,0)",translateQuantum("U(0,pi,0)"));
+ rejects("U(0)");
  equal("U_1 (0)",translateQuantum("U_1(0)"));
  equal("M_2 (M_1 u)",translateQuantum("qadjacent(M_2,(M_1 u))"));
  equal("1=1, 2=2, and 3=3",translateQuantum("1=1, 2=2, 3=3"));
