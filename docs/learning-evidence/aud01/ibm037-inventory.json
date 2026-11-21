@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "c9b706f6d9e9a0606f6a64867d89306fd0ba8bfe00401724db3ecd64cd4252c3",
-  "revision": "1c9c03a5bd5eb756260220f6d8960d520647c623",
+  "worker_sha256": "bf438abcd506b61c284fdffaf4f1e0310edd157f75a1d4ed62a5a38371d888c0",
+  "revision": "a7cc7a058876aa5914278f0e3f730335dc8c2ba7",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -688,8 +688,8 @@
       "end": 12127,
       "literal": "$f_1(a) = 0$",
       "status": "exact",
-      "display": "'_' = 0 or a = 0 or f = 0",
-      "copy": "(('_')==(0) or ('a')==(0) or ('f')==(0))"
+      "display": "qfiniteapply(\"f_1\", 'a') = 0",
+      "copy": "(qfiniteapply(\"f_1\",'a'))==(0)"
     },
     {
       "id": "IBM037-bb350db4-M069",
@@ -698,8 +698,8 @@
       "end": 12144,
       "literal": "$f_4(a) = 1$",
       "status": "exact",
-      "display": "'_' = 1 / (4 · a · f) and a ≠ 0 and f ≠ 0",
-      "copy": "(('_')==(1 ∕ (4 ⋅ 'a' ⋅ 'f')) and ('a')!=(0) and ('f')!=(0))"
+      "display": "qfiniteapply(\"f_4\", 'a') = 1",
+      "copy": "(qfiniteapply(\"f_4\",'a'))==(1)"
     },
     {
       "id": "IBM037-bb350db4-M070",
@@ -728,8 +728,8 @@
       "end": 12503,
       "literal": "$f_2(a) = a$",
       "status": "exact",
-      "display": "a = 0 or '_' = 1 / (2 · f) and a ≠ 0 and f ≠ 0",
-      "copy": "(('a')==(0) or (('_')==(1 ∕ (2 ⋅ 'f')) and ('a')!=(0) and ('f')!=(0)))"
+      "display": "qfiniteapply(\"f_2\", 'a') − a = 0",
+      "copy": "(qfiniteapply(\"f_2\", 'a') − 'a')==(0)"
     },
     {
       "id": "IBM037-bb350db4-M073",
@@ -758,8 +758,8 @@
       "end": 12565,
       "literal": "$f_3(0) = 1$",
       "status": "exact",
-      "display": "0",
-      "copy": "0"
+      "display": "qfiniteapply(\"f_3\", 0) = 1",
+      "copy": "(qfiniteapply(\"f_3\",0))==(1)"
     },
     {
       "id": "IBM037-bb350db4-M076",
@@ -768,8 +768,8 @@
       "end": 12582,
       "literal": "$f_3(1) = 0$",
       "status": "exact",
-      "display": "'_' = 0 or f = 0",
-      "copy": "(('_')==(0) or ('f')==(0))"
+      "display": "qfiniteapply(\"f_3\", 1) = 0",
+      "copy": "(qfiniteapply(\"f_3\",1))==(0)"
     },
     {
       "id": "IBM037-bb350db4-M077",
