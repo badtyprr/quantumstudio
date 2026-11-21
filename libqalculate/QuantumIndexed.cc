@@ -1309,6 +1309,27 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qmeanat") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure points=raw[0],parameter=raw[1];points.eval(exact);parameter.eval(exact);
+   if(!parameter.isNumber() || !points.isVector())return 0;
+   if(!points.isMatrix() && points.size()==2) {
+    if(!points[0].equals(parameter))return 0;
+    out=points[1];return 1;
+   }
+   if(!points.isMatrix() || points.columns()!=2)return 0;
+   bool found=false;
+   for(size_t row=0;row<points.rows();++row) {
+    if(CALCULATOR->aborted())return 0;
+    if(!element(points,row,0).equals(parameter))continue;
+    const auto &mean=element(points,row,1);
+    if(found && !out.equals(mean)) {
+     CALCULATOR->error(true,"A sampled expectation has conflicting values at this parameter.",NULL);return 0;
+    }
+    out=mean;found=true;
+   }
+   return found ? 1 : 0;
+  }
   if(op=="qbinaryminimum" || op=="qmaxcut") {
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure width=raw[1],data=raw[0];width.eval(exact);data.eval(exact);
@@ -2753,6 +2774,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qmeanat",2));
  calculator.addFunction(new QuantumIndexedFunction("qbinaryminimum",2));
  calculator.addFunction(new QuantumIndexedFunction("qmaxcut",2));
  calculator.addFunction(new QuantumIndexedFunction("qcosetket",2));

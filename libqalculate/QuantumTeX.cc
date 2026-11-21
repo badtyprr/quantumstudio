@@ -2248,6 +2248,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    return "qcompare(qmul("+a+","+b+"),qmul("+b+","+a+"),5)";
   }
  }
+ if(s.find("\\langle")!=std::string::npos && s.find("\\rangle")!=std::string::npos && s.find("\\lambda")!=std::string::npos) {
+  static const std::regex mean(R"(\\langle\s*([A-Z])\((0|\\lambda(?:_[0-9]+)?)\)\s*\\rangle)");
+  std::smatch m;
+  while(std::regex_search(s,m,mean)) {
+   std::string parameter=m[2]=="0" ? "0" : "\"λ"+m[2].str().substr(7)+"\"";
+   s.replace(m.position(),m.length(),"qmeanat(\""+m[1].str()+"\","+parameter+")");
+  }
+ }
  // Both occupation conventions occur in the lessons. The sign on iY,
  // not the operator's printed name, selects its actual ladder matrix.
  if(s.find("\\prod\\limits")!=std::string::npos && s.find("(-Z_")!=std::string::npos) {
