@@ -1158,8 +1158,8 @@ class QuantumIndexedFunction: public MathFunction {
  QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(quantumHasIndexedNameArgument(op))setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
- bool representsScalar(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsScalar(value);}
- bool representsNonMatrix(const MathStructure &value) const {return op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
+ bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
+ bool representsNonMatrix(const MathStructure &value) const {return op=="qbars" || op=="qscalarproductsum" || MathFunction::representsNonMatrix(value);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   if(op=="qscalarproductsum")return calculateScalarProduct(out,raw,this,eo);
   if(op=="qregistersum")return calculateRegisterSum(out,raw,eo);

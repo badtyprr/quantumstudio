@@ -32,6 +32,11 @@ for endpoint, expected in [(3,"qset(vector(1,2,3))"),(1,"qset(vector(1))"),(0,"q
 assert data('quantum:replace(indexrange(X,2),"X",1)')["copy_text"] == "qset(vector(1,2))"
 assert data("quantum:T")["rows"] == 2
 
+# Cardinalities are scalar matrix entries even before the set is supplied.
+bars_matrix = data(r"quantum:$\begin{pmatrix}\vert A_0\vert & 1 \\ 0 & 1\end{pmatrix}$")
+assert (bars_matrix["rows"], bars_matrix["columns"]) == (2,2)
+assert data(f'quantum:replace(({bars_matrix["copy_text"]}),qbars("A_0"),3)')["cells"] == data("quantum:[3,1;0,1]")["cells"]
+
 # Two-argument probability calls keep ordered scalar inputs through Copy.
 prob = data("quantum:p(N,s)")
 assert prob["display_text"] == "p(N, s)" and not prob["cells"]
@@ -66,6 +71,11 @@ for dimension in (1, 3, 15, 128):
     assert data(f"quantum:basis(0,{dimension}) ∈ {concrete}")["copy_text"] == "1"
 assert data("quantum:basis(0,16) ∈ basisset(15)")["copy_text"] == "0"
 assert data("quantum:qset(vector(basis(1,3),basis(0,3)))")["copy_text"] != "basisset(2)"
+
+# Re-entering the displayed bound must keep c bindable.
+display_bound = data(r"quantum:$b,c\geq 2$")["display_text"]
+for y, expected in [(1,"0"),(2,"1")]:
+    assert data(f'quantum:replace(replace(({display_bound}),"b",2),"c",{y})')["copy_text"] == expected
 
 # A leading list shares the ordering relation and keeps factor names bindable.
 for expr, expected in [(r"$b,c\geq 2$", (1,0,0)), (r"$s,j\geq 2$", (1,0,0))]:

@@ -119,6 +119,8 @@ class Printer {
   for(auto i=bindings.rbegin();i!=bindings.rend();++i)if(value.equals(i->first))return Fragment(i->second);
   if(value.isSymbolic() && familyName(value.symbol())!=value.symbol())return Fragment(familyName(value.symbol()));
   if(value.isVariable() && !value.variable()->isKnown())return Fragment(value.variable()->referenceName());
+  // Bare c denotes the speed of light on re-entry.
+  if(value.isSymbolic() && value.symbol()=="c")return Fragment("'c'");
   if(value.isSymbolic() && value.symbol().size()==1 && std::isalpha(static_cast<unsigned char>(value.symbol()[0])) && value.symbol()!="i" && value.symbol()!="e")return Fragment(value.symbol());
   if(value.isLogicalAnd() || value.isLogicalOr()) {
    const int level=value.isLogicalAnd() ? 3 : 2;
