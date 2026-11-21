@@ -9,6 +9,7 @@ import subprocess
 parser = ArgumentParser()
 parser.add_argument("worker", type=Path)
 parser.add_argument("--windows",type=Path,required=True)
+parser.add_argument("--prepare",action="store_true",help="Write the input list for the Windows runner")
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -23,6 +24,10 @@ def evaluate(expression):
 
 indexes = (76,80,81,82)
 inputs = [[source["rows"][i-1]["id"],source["rows"][i-1]["literal"],"0"] for i in indexes]
+if args.prepare:
+    args.windows.mkdir(exist_ok=True,parents=True)
+    (args.windows/"inputs.json").write_bytes(json.dumps(inputs).encode())
+    raise SystemExit()
 assert json.loads((args.windows/"inputs.json").read_bytes()) == inputs
 suite = json.loads((args.windows/"result.json").read_bytes())
 raw = (args.windows/"records.json").read_bytes()
