@@ -53,7 +53,19 @@ for formula in (power_list, power_list.replace(r"^{\ast}", "")):
         result = run(f'quantum:replace(({empty}),"N",{invalid})', success=False)
         assert b"positive exact integer" in result.stderr
 
-# A written residue ring supplies the modulus in modular powers mode.
+encoding_table = r"\begin{gathered}0\mapsto 000\\1\mapsto 001\\\vdots\\5\mapsto 101\end{gathered}"
+encoding_copy = data("quantum:"+encoding_table)["copy_text"]
+encoding_pairs = [f"qtuple(vector({j},qbitlabel({j},3)))" for j in range(6)]
+assert encoding_copy == "qset(vector("+",".join(encoding_pairs)+"))"
+assert data("quantum:"+encoding_copy)["copy_text"] == encoding_copy
+large_graph = encoding_table.replace("000", "0000000000").replace("001\\","0000000001\\").replace("5\\mapsto 101","1023\\mapsto 1111111111")
+large_copy = data("quantum:"+large_graph)["copy_text"]
+assert large_copy == "qsetimage(qtuple(vector(j,qbitlabel(j,10))),qindexrange(0,1023),j)"
+assert data("quantum:"+large_copy)["copy_text"] == large_copy
+for inconsistent in (encoding_table.replace("101","100"), encoding_table.replace("001","01"),
+                     encoding_table.replace("1\\mapsto","2\\mapsto")):
+    run("quantum:"+inconsistent, success=False)
+
 action_table = r"\begin{array}{cc}M_2|2\rangle=|0\rangle&M_2|0\rangle=|1\rangle\\M_2|3\rangle=|3\rangle&M_2|1\rangle=|2\rangle\end{array}"
 action_matrix = data("quantum:"+action_table)["copy_text"]
 assert action_matrix == "matrix(4,4,[0,0,1,0,1,0,0,0,0,1,0,0,0,0,0,1])"

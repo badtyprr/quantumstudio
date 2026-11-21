@@ -1,0 +1,16 @@
+{
+  "source": "IBM029-9ea5aee3-M141",
+  "source_entries": 21,
+  "checked_entries": 1286,
+  "clipboard_sessions": 7,
+  "worker_sha256": "530c2f7f74d1d31e0c79513c8b40bb3bbb3b18969fdc1fa5d46821a5e78b021b",
+  "compatibility": {
+    "originals": 438,
+    "default_mode_before": 424,
+    "default_mode_after": 425,
+    "changed": [
+      "IBM029-9ea5aee3-M141"
+    ],
+    "timeouts": 0
+  }
+}
