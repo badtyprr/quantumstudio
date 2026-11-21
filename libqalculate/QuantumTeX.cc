@@ -2256,18 +2256,21 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,span,"qwordspan(qindexedentries(\"$1_\",1,$2,vector()))");
   s=std::regex_replace(s,kernel,"qwordkernel(qindexedentries(\"$3_\",1,$4,vector()),$2)");
  }
- if(s.find("\\Sigma^")!=std::string::npos) {
-  static const std::regex words(R"(\\Sigma\^([a-z]|[0-9]+))");
-  s=std::regex_replace(s,words,"qwordpower(\"Σ\",$1)");
- }
+ // Sigma is an alphabet in these set relations. Elsewhere its power
+ // may be ordinary exponentiation or part of an existing register binder.
  if(s.find("\\subseteq")!=std::string::npos) {
   auto sides=indexedParts(s,"\\subseteq");
-  if(sides.size()==2)return "qsubset("+quantumTeX(sides[0])+","+quantumTeX(sides[1])+")";
+  if(sides.size()==2) {
+   static const std::regex words(R"(\s*\\Sigma\^([a-z]|[0-9]+)\s*)");
+   std::smatch m;
+   std::string domain=std::regex_match(sides[1],m,words) ? "qwordpower(\"Σ\","+m[1].str()+")" : quantumTeX(sides[1]);
+   return "qsubset("+quantumTeX(sides[0])+","+domain+")";
+  }
  }
- if(s.find("\\ldots")!=std::string::npos && s.find("qwordpower(")!=std::string::npos) {
-  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*(qwordpower\("[^"]+",[a-z0-9]+\))\s*$)");
+ if(s.find("\\ldots")!=std::string::npos && s.find("\\Sigma^")!=std::string::npos) {
+  static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\Sigma\^([a-z]|[0-9]+)\s*$)");
   std::smatch m;if(std::regex_match(s,m,membership))
-   return "qallmembers(qindexedentries(\""+m[1].str()+"_\",1,"+m[2].str()+",vector()),"+m[3].str()+")";
+   return "qallmembers(qindexedentries(\""+m[1].str()+"_\",1,"+m[2].str()+",vector()),qwordpower(\"Σ\","+m[3].str()+"))";
  }
  const std::string whole=trim(s);
  if(s.find("\\text{")!=std::string::npos && s.find("for")!=std::string::npos) {
