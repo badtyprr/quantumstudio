@@ -389,7 +389,7 @@ bool matrixShape(const MathStructure &value,MathStructure &rows,MathStructure &c
   MathStructure term;
   return quantumReplacementShapeInput(value,term,eo) && matrixShape(term,rows,columns,eo,depth+1);
  }
- if(name=="matrix") {
+ if(name=="matrix" || name=="qmatrix") {
   // Deferred tensors retain their original arguments, which may include a
   // concrete constructor. Reuse its validation before trusting its shape.
   MathStructure concrete=value;concrete.eval(eo);

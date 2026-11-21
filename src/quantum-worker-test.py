@@ -35,6 +35,23 @@ for generator, expected in (("", "-i"), ("Z", "(-i)*Z"), ("X", "(-i)*X"), ("Y", 
     phase = phase.replace('"ω_B"', "2").replace("'t'", "(pi/2)")
     assert data(f"quantum:qcompare(({phase}),({expected}),4)")["copy_text"] == "1"
 
+mapping = data(r"quantum:$|a\rangle|0\rangle \mapsto |a\rangle|a\rangle$")["copy_text"]
+assert data("quantum:"+mapping)["copy_text"] == mapping
+parameters = data("quantum:$[[n,n-2,2]]$")["copy_text"]
+assert parameters.startswith("vector(") and data("quantum:"+parameters)["copy_text"] == parameters
+
+fidelity = data(r"quantum:$$F(p,q)=(\sum_i \sqrt{p_i\,q_i})^2$$")["copy_text"]
+assert data("quantum:"+fidelity)["copy_text"] == fidelity
+# For p=(1,0) and q=(1/4,3/4) the squared classical fidelity is 1/4.
+for value, truth in (("1/4", "1"), ("1/2", "0")):
+    graph = f"qset(vector(qtuple(vector(qtuple(vector(7,8)),{value}))))"
+    relation = fidelity.replace("'F'",graph).replace("'p'","7").replace("'q'","8")
+    relation = relation.replace('"indexset_i"', "qset(vector(0,1))")
+    concrete = data("quantum:"+relation)["copy_text"]
+    for label, weight in (("p_0","1"), ("p_1","0"), ("q_0","1/4"), ("q_1","3/4")):
+        concrete = concrete.replace('"'+label+'"',"("+weight+")")
+    assert data("quantum:"+concrete)["copy_text"] == truth
+
 # Logical complements used as equation operands survive Copy and re-entry.
 for spelling in (r"$g(x)=\neg f(x)$","g(x)=!f(x)"):
     predicate = data("quantum:"+spelling)["copy_text"]

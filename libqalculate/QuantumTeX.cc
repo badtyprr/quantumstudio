@@ -2226,6 +2226,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,definition,"qoperatorref(\"CNOT\") = ");
  }
  if(s.find("\\sum_")!=std::string::npos) {
+  // The classical fidelity definition names a function on an ordered
+  // pair of distributions. Keep its sum over the common outcome set.
+  static const std::regex distributionPair(R"(^\s*F\(\s*([a-z])\s*,\s*([a-z])\s*\)\s*=\s*)");
+  std::smatch pair;
+  if(std::regex_search(s,pair,distributionPair)) {
+   std::string domain="qtuple(vector(\""+pair[1].str()+"\",\""+pair[2].str()+"\"))";
+   return "qcompare(qfiniteapply(\"F\","+domain+"),"+quantumTeX(s.substr(pair.length()))+",4)";
+  }
+ }
+ if(s.find("\\sum_")!=std::string::npos) {
   // A sum of N local contributions with no printed starting index.
   static const std::regex localTerms(R"(^\s*([A-Z])\s*=\s*\\sum_([a-z])\^([A-Z])\s*\{\s*\1_\2\s*\}\s*$)");
   std::smatch m;
@@ -2460,7 +2470,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=std::regex_replace(s,subspace,"qspacedimension(\"$1\")");
  }
  if(mathWrapper && s.find("[[")!=std::string::npos) {
-  static const std::regex parameters(R"(^\s*\[\[\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*,\s*([a-zA-Z0-9]+(?:\^[0-9]+)?)\s*\]\]\s*$)");
+  static const std::string term=R"([a-zA-Z0-9]+(?:\^[0-9]+)?)";
+  static const std::string parameter="("+term+"(?:\\s*[+-]\\s*"+term+")*)";
+  static const std::regex parameters("^\\s*\\[\\[\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*,\\s*"+parameter+"\\s*\\]\\]\\s*$");
   std::smatch m;
   if(std::regex_match(s,m,parameters))
    return "vector("+quantumTeX(m[1].str())+","+quantumTeX(m[2].str())+","+quantumTeX(m[3].str())+")";
