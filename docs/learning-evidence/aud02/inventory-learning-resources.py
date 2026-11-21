@@ -23,6 +23,8 @@ tasks={
     "overview":"Audit the overview, navigation and linked lesson sequence.",
     "exam":"Verify the exam instructions and authorized assessment route.",
     "practice":"Review the question, its answer or rubric, and reproduce any calculation.",
+    "practice-panel":"Review the prompt preceding or naming the panel, and verify the answer, hint or rubric.",
+    "reading-panel":"Read the expanded explanation and verify its worked examples.",
     "video":"Review the video or transcript and audit its worked examples.",
     "notebook":"Verify the original notebook cells, dependencies, execution and outputs.",
     "tutorial":"Follow the referenced tutorial and reproduce its worked examples.",
@@ -51,9 +53,22 @@ def linked(raw,cell,image=False):
     else:kind="reference"
     add(kind,url,cell)
 class Components(HTMLParser):
-    def __init__(self,cell):super().__init__();self.cell=cell
+    def __init__(self,cell,source_id):
+        super().__init__()
+        self.cell=cell
+        self.source_id=source_id
+        self.panel_titles={}
     def handle_starttag(self,tag,attrs):
         props=dict(attrs)
+        if tag=="accordionitem":
+            title=props.get("title") or ""
+            occurrence=self.panel_titles.get(title,0)+1
+            self.panel_titles[title]=occurrence
+            # A question mark inside the title of an optional reading is common.
+            practice=(title in {"Answer","Hints","Guidance"} or title.startswith("True or false:")
+                      or (title.startswith("What ") and title.endswith("?")))
+            kind="practice-panel" if practice else "reading-panel"
+            add(kind,f"{path}#cell={self.source_id}&panel={title}&occurrence={occurrence}",self.cell)
         if tag=="ibmvideo" and props.get("id"):
             add("video","ibm-video:"+props["id"],self.cell)
         if tag=="iframe" and props.get("src"):
@@ -87,7 +102,8 @@ for path,meta in sorted(listed.items()):
     if p.stem=="exam":add("exam",page,0)
     if p.suffix==".ipynb":
         add("notebook","github:Qiskit/documentation/"+path,0)
-        cells=[(i,"".join(c["source"])) for i,c in enumerate(json.loads(raw)["cells"]) if c["cell_type"]=="markdown"]
+        notebook_cells=json.loads(raw)["cells"]
+        cells=[(i,"".join(c["source"])) for i,c in enumerate(notebook_cells) if c["cell_type"]=="markdown"]
     else:cells=[(0,raw.decode("utf8"))]
     seen={}
     for i,text in cells:
@@ -97,7 +113,8 @@ for path,meta in sorted(listed.items()):
             if token.type in ("fence","code_block"):
                 for j in range(*token.map):lines[j]=""
         clean="\n".join(lines)
-        Components(i).feed(clean)
+        source_id=notebook_cells[i].get("id",i) if p.suffix==".ipynb" else "document"
+        Components(i,source_id).feed(clean)
         plain=re.sub(r"</?[A-Z][\w.]*\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>","",clean)
         parsed=parser.parse(plain)
         for tok in walk(parsed):
