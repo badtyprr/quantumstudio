@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families.ipynb",
+  "notebook_sha256": "74ead1b72d7283a14c0c3cf9049a4a2ec0b85dbab8f1ad66812ab6530037ee65",
+  "worker_sha256": "053c4a8987049b4a2ed9f1200e95d9f145c9d6a46c79f903589ce88a127ce1ea",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "60f417b37634a775e786539f4bb9d361d47b2ba3c56bcc2c86ed7473d434b943",
+  "suite": {
+    "passed": true,
+    "checks": 135,
+    "calls": 15,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 15,
+    "restored_identically": 15,
+    "stable_after_text_reentry": 15
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

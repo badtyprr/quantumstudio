@@ -1,0 +1,21 @@
+{
+  "slides": 38,
+  "sha256": "35228f45d04fab1782b8f0c83a8aec69dd05f312646cc3a884204653440e175b",
+  "chapters": {
+    "1": "Title",
+    "2-6": "Classical generators and parity checks",
+    "7-11": "CSS bases, stabilizers and error correction",
+    "12-14": "CSS code spaces and Steane encoding",
+    "15-19": "Periodic 8 by 8 lattice and generator ranks",
+    "20-27": "Error chains, closed loops and code distance",
+    "28-31": "Corrections and shortest-path matching",
+    "32-35": "Planar and rotated boundaries",
+    "36-38": "Steane color code, larger color codes and the gross code"
+  },
+  "checks": [
+    "replay-ibm062-tables.py",
+    "replay-ibm063-lattice.py",
+    "replay-ibm064-figures.py"
+  ],
+  "source": "https://ibm.box.com/public/static/9gpegrj4bkz31i4qcw1uluhlsjfk42vt.pdf"
+}

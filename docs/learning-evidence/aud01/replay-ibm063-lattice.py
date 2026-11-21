@@ -53,16 +53,17 @@ def rank(rows):
     return len(pivots)
 
 
-def lattice():
-    edges = [(x, y) for x in range(18) for y in range(18) if (x+y) % 2]
+def lattice(side=9):
+    period=2*side
+    edges = [(x, y) for x in range(period) for y in range(period) if (x+y) % 2]
     def incident(x, y):
-        return sum(1 << edges.index(((x+dx) % 18, (y+dy) % 18))
+        return sum(1 << edges.index(((x+dx) % period, (y+dy) % period))
                    for dx, dy in ((1,0), (-1,0), (0,1), (0,-1)))
-    stars = [incident(x,y) for x in range(0,18,2) for y in range(0,18,2)]
-    faces = [incident(x,y) for x in range(1,18,2) for y in range(1,18,2)]
+    stars = [incident(x,y) for x in range(0,period,2) for y in range(0,period,2)]
+    faces = [incident(x,y) for x in range(1,period,2) for y in range(1,period,2)]
     assert all((s & f).bit_count() % 2 == 0 for s in stars for f in faces)
     ranks = [rank(stars), rank(faces)]
-    assert ranks == [80,80] and len(edges) - sum(ranks) == 2
+    assert ranks == [side*side-1]*2 and len(edges) - sum(ranks) == 2
     return dict(edges=len(edges), stars=len(stars), faces=len(faces), ranks=ranks, logical_qubits=2)
 
 
@@ -79,8 +80,52 @@ cases = {
 }
 
 
+def geometry(figures):
+    def paths(name):
+        return [p for p in ET.parse(figures/(name+".svg")).iter() if p.tag.endswith("path")]
+    names=("9-by-9-lattice","qubits-on-lattice-edges","stabilizer-generator-examples",
+           "stabilizer-generators-overlap","toric-code-stabilizer-generators","torus")
+    results={}
+    for name in names:
+        data=paths(name)
+        def matching(style):
+            return [p for p in data if style in p.get("style","")]
+        entry={"sha256":hashlib.sha256((figures/(name+".svg")).read_bytes()).hexdigest()}
+        if name==names[0]:
+            lines=matching("stroke-width:0.59776")
+            assert len(lines)==18
+            entry["grid_lines"]=len(lines)
+        elif name in names[1:4]:
+            points={tuple(round(float(n)/10.63038)%18 for n in
+                    re.match(r"[Mm]\s*([-\d.]+),([-\d.]+)",p.get("d")).groups())
+                    for p in matching("fill:#78a9ff")}
+            expected={(x,y) for x in range(18) for y in range(18) if (x+y)%2}
+            assert points==expected
+            entry["qubit_edges"]=len(points)
+            if name==names[3]:
+                def incident(x,y):
+                    return {(x-1,y),(x+1,y),(x,y-1),(x,y+1)}
+                markers={tuple(round(float(n)/10.63038) for n in
+                        re.match(r"[Mm]\s*([-\d.]+),([-\d.]+)",p.get("d")).groups())
+                        for p in matching("fill:#fff200")}
+                assert markers==incident(8,8)&incident(9,9)
+                entry["shared_edges"]=sorted(markers)
+            if name==names[2]:
+                entry["highlighted_paths"]=len(matching("stroke-width:1.99255"))
+                assert entry["highlighted_paths"]==8
+        elif name==names[4]:
+            transforms=collections.Counter(p.get("transform") for p in matching("fill:#78a9ff"))
+            assert sorted(transforms.values())==[4,4]
+            entry["generator_weights"]=list(transforms.values())
+        else:
+            entry["visible_shaded_tiles"]=len(matching("fill:#f6f6f6"))
+            assert entry["visible_shaded_tiles"]==41
+        results[name]=entry
+    return results
+
+
 if __name__ == "__main__":
-    result = {"lattice": lattice(), "figures": {}}
+    result = {"lattice": lattice(), "lecture_lattice": lattice(8), "figures": {}, "geometry": geometry(Path(sys.argv[1]))}
     for name, (ne, nc, nt, expected_winding) in cases.items():
         path = Path(sys.argv[1]) / (name + ".svg")
         errors, corrections, tiles = diagram(path)

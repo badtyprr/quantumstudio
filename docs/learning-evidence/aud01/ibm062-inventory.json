@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes.ipynb",
   "source_sha256": "41cd48f6fa424f1ebd9b8821826ae61b80da341d3b32e9cd1889f456c28d7646",
-  "worker_sha256": "83c724d1b7053432d298da6733e44d06603bf026ab352369df61f48c0044487b",
-  "revision": "7aac1aee",
+  "worker_sha256": "053c4a8987049b4a2ed9f1200e95d9f145c9d6a46c79f903589ce88a127ce1ea",
+  "revision": "61cf0b1e",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
@@ -2498,8 +2498,8 @@
       "end": 26308,
       "literal": "$$\nH^{\\otimes n} \\vert u \\oplus \\mathcal{D}_Z\\rangle\n= \\frac{1}{\\sqrt{2^s}} \\sum_{v\\in\\mathcal{D}_Z}\nH^{\\otimes n}\\vert u \\oplus v\\rangle \\qquad \\text{(for $u\\in\\mathcal{C}_X$)}\n$$",
       "status": "exact",
-      "display": "qsubset(\"C_X\", qsetfilter(qcompare(qmul(qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], n), qcosetket(\"qboundindex_1\", \"D_Z\")), qmul(1 ∕ qsqrt(qpower(2, 's')), qsumset(qmul(qtensorpow([(1 ∕ √(2))  (1 ∕ √(2)); (1 ∕ √(2))  (−1 ∕ √(2))], n), qketstate(qoplus(\"qboundindex_1\", \"qboundindex_0\"))), \"D_Z\", \"qboundindex_0\")), 4), \"C_X\", \"qboundindex_1\"))",
-      "copy": "qsubset(\"C_X\",qsetfilter(qcompare(qmul(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qcosetket(\"qboundindex_1\",\"D_Z\")),qmul(1 ∕ qsqrt(qpower(2, 's')),qsumset(qmul(qtensorpow(matrix(2,2,[1 ∕ √(2),1 ∕ √(2),1 ∕ √(2),−1 ∕ √(2)]),n),qketstate(qoplus(\"qboundindex_1\",\"qboundindex_0\"))),\"D_Z\",\"qboundindex_0\")),4),\"C_X\",\"qboundindex_1\"))"
+      "display": "qsubset(\"C_X\", qsetfilter(qcompare(qmul(qhadamardpower(n), qcosetket(\"qboundindex_1\", \"D_Z\")), qmul(1 ∕ qsqrt(qpower(2, 's')), qsumset(qmul(qhadamardpower(n), qketstate(qoplus(\"qboundindex_1\", \"qboundindex_0\"))), \"D_Z\", \"qboundindex_0\")), 4), \"C_X\", \"qboundindex_1\"))",
+      "copy": "qsubset(\"C_X\",qsetfilter(qcompare(qmul(qhadamardpower(n),qcosetket(\"qboundindex_1\",\"D_Z\")),qmul(1 ∕ qsqrt(qpower(2, 's')),qsumset(qmul(qhadamardpower(n),qketstate(qoplus(\"qboundindex_1\",\"qboundindex_0\"))),\"D_Z\",\"qboundindex_0\")),4),\"C_X\",\"qboundindex_1\"))"
     },
     {
       "id": "IBM062-41cd48f6-M250",

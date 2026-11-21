@@ -9,6 +9,16 @@
     ],
     "logical_qubits": 2
   },
+  "lecture_lattice": {
+    "edges": 128,
+    "stars": 64,
+    "faces": 64,
+    "ranks": [
+      63,
+      63
+    ],
+    "logical_qubits": 2
+  },
   "figures": {
     "toric-code-bit-flip": {
       "sha256": "b83f7d5cb69d65ec9db4910b1c198c70100f7fdf3823792a21f7ad439635dbf5",
@@ -80,6 +90,46 @@
       "corrections": 10,
       "negative_checks": 8,
       "closed_chain_winding": null
+    }
+  },
+  "geometry": {
+    "9-by-9-lattice": {
+      "sha256": "1ca29814f0152d06725524c4d25ff3a799125412f652c15d5fc741d42bc1c48b",
+      "grid_lines": 18
+    },
+    "qubits-on-lattice-edges": {
+      "sha256": "143c1bf73368ae6970c17296ce57614a053d010f2e9123439914b3124dbc4da9",
+      "qubit_edges": 162
+    },
+    "stabilizer-generator-examples": {
+      "sha256": "dd51db47a45d1240429901e7ffbeaa11c572aac4280455522e083acb778f9be1",
+      "qubit_edges": 162,
+      "highlighted_paths": 8
+    },
+    "stabilizer-generators-overlap": {
+      "sha256": "e772d390abc09f8b598edae851e0d53458c08441ff4abd9a6989e6fe50ce6e5b",
+      "qubit_edges": 162,
+      "shared_edges": [
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          8
+        ]
+      ]
+    },
+    "toric-code-stabilizer-generators": {
+      "sha256": "38219d8e43b90bb5db9c603357f5ec09fd2d50e4550021911719573cb64017e1",
+      "generator_weights": [
+        4,
+        4
+      ]
+    },
+    "torus": {
+      "sha256": "848d2575341ad9ce54b764db0309be121827570c4f82c8181a417525e677752d",
+      "visible_shaded_tiles": 41
     }
   }
 }

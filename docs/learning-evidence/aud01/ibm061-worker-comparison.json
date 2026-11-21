@@ -1,0 +1,11 @@
+{
+  "windows_worker_revision": "61cf0b1e",
+  "windows_worker_sha256": "053c4a8987049b4a2ed9f1200e95d9f145c9d6a46c79f903589ce88a127ce1ea",
+  "regression_fix_revision": "658c8fed",
+  "regression_fix_worker_sha256": "61ac2c57ffe387d33254fbc3998cb2c164b0dcfa24e08fd2aab690643a40efa0",
+  "identical_formula_records": {
+    "062": 274,
+    "063": 134,
+    "064": 15
+  }
+}

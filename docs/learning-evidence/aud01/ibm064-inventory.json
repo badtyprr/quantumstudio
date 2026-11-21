@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/other-code-families.ipynb",
   "source_sha256": "74ead1b72d7283a14c0c3cf9049a4a2ec0b85dbab8f1ad66812ab6530037ee65",
-  "worker_sha256": "5a90b733fd49a3ec7290ebe4a4f70149bcaaf9b93dd62c17c25a25dd2608bf7c",
-  "revision": "4dbec74a",
+  "worker_sha256": "053c4a8987049b4a2ed9f1200e95d9f145c9d6a46c79f903589ce88a127ce1ea",
+  "revision": "61cf0b1e",
   "mode": "Quantum notation",
   "markdown_cells": 1,
   "code_cells": 0,
@@ -158,7 +158,7 @@
       "literal": "$[[19,1,5]]$",
       "status": "exact",
       "display": "[19  1  5]",
-      "copy": "matrix(1,3,[19,1,5])"
+      "copy": "vector(19,1,5)"
     },
     {
       "id": "IBM064-74ead1b7-M013",
@@ -188,7 +188,7 @@
       "literal": "$[[144,12,12]]$",
       "status": "exact",
       "display": "[144  12  12]",
-      "copy": "matrix(1,3,[144,12,12])"
+      "copy": "vector(144,12,12)"
     }
   ]
 }

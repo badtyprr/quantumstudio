@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/quantum-code-constructions/css-codes.ipynb",
+  "notebook_sha256": "41cd48f6fa424f1ebd9b8821826ae61b80da341d3b32e9cd1889f456c28d7646",
+  "worker_sha256": "053c4a8987049b4a2ed9f1200e95d9f145c9d6a46c79f903589ce88a127ce1ea",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "d62b9032c9da4129b3517fcc695240e15873dfbedaa5bfd564398a460d4d140d",
+  "suite": {
+    "passed": true,
+    "checks": 2466,
+    "calls": 274,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 274,
+    "restored_identically": 274,
+    "stable_after_text_reentry": 274
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}
