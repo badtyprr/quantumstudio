@@ -857,6 +857,51 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
 std::string orderedKetList(const std::string &text) {
  return text.find("...")==std::string::npos ? "" : indexedKets(indexedParts(text,","),true);
 }
+// Recognize the complete two-branch definition, including the domain of
+// each branch and the identity action on unused register labels.
+std::string registerMultiplierCases(const std::string &raw) {
+ const std::string begin="\\begin{cases}",end="\\end{cases}";
+ std::string text=trim(raw);
+ size_t split=text.find(begin);
+ if(split==std::string::npos || text.size()<end.size() || text.compare(text.size()-end.size(),end.size(),end)!=0)return "";
+ static const std::regex ket(R"(\\vert(?![A-Za-z]))"),close(R"(\\rangle(?![A-Za-z]))");
+ static const std::regex lessEqual(R"(\\leq(?![A-Za-z]))"),mod(R"(\\(?:textrm|mathrm)\{\s*mod\s*\})");
+ static const std::regex spacing(R"(\\[,;!]|\\q?quad(?![A-Za-z]))");
+ auto compact=[](std::string s) {
+  s=std::regex_replace(std::regex_replace(s,ket,"|"),close,">");
+  s=std::regex_replace(std::regex_replace(s,lessEqual,"<="),mod,"mod");
+  s=std::regex_replace(s,spacing,"");s.erase(std::remove_if(s.begin(),s.end(),asciiSpace),s.end());return s;
+ };
+ std::string lhs=compact(text.substr(0,split));
+ if(lhs.empty() || lhs.back()!='=')return "";
+ lhs=ungroupTeX(lhs.substr(0,lhs.size()-1));
+ static const std::regex name(R"(^([fM])_(?:\{([A-Za-z]|[0-9]+)\}|([A-Za-z0-9]))(.+)$)");
+ std::smatch m;if(!std::regex_match(lhs,m,name))return "";
+ bool graph=m[1]=="f";std::string a=m[2].str()+m[3].str(),argument=m[4].str();
+ if(graph && argument.front()=='(' && argument.back()==')')argument=ungroupTeX(argument);
+ else if(!graph && argument.front()=='|' && argument.back()=='>')argument=argument.substr(1,argument.size()-2);
+ else return "";
+ if(argument.size()!=1 || !asciiLetter(argument[0]) || argument==a)return "";
+ size_t start=split+begin.size();
+ auto rows=indexedParts(text.substr(start,text.size()-end.size()-start),"\\\\");
+ if(rows.size()!=2)return "";
+ static const std::regex gap(R"(^\[\s*-?[0-9]+(?:\.[0-9]+)?\s*(?:mm|cm|pt|em|ex)\s*\])");
+ auto first=indexedParts(compact(rows[0]),"&"),second=indexedParts(compact(std::regex_replace(rows[1],gap,"")),"&");
+ if(first.size()!=2 || second.size()!=2)return "";
+ std::string prefix="0<="+argument+"<";
+ if(first[1].compare(0,prefix.size(),prefix)!=0)return "";
+ std::string modulus=first[1].substr(prefix.size());
+ prefix=modulus+"<="+argument+"<2^";
+ if(second[1].compare(0,prefix.size(),prefix)!=0)return "";
+ std::string width=second[1].substr(prefix.size());
+ if(width.size()>2 && width.front()=='{' && width.back()=='}')width=width.substr(1,width.size()-2);
+ static const std::regex parameter(R"([A-Za-z]|[0-9]+)");
+ if(!std::regex_match(modulus,parameter) || !std::regex_match(width,parameter) || modulus==argument || width==argument)return "";
+ std::string product=a+argument+"(mod"+modulus+")";
+ if(first[0]!=(graph ? product : "|"+product+">") || second[0]!=(graph ? argument : "|"+argument+">"))return "";
+ auto atom=[](const std::string &v) {return asciiLetter(v[0]) ? "\""+v+"\"" : v;};
+ return std::string(graph ? "qregistermultipliergraph(" : "qregistermultiplier(")+atom(a)+","+atom(modulus)+","+atom(width)+")";
+}
 class TeXReader {
  const std::string &input;
  bool modularTables=false;
@@ -2409,6 +2454,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  else if(s.size()>=2 && s.front()=='$' && s.back()=='$') s=s.substr(1,s.size()-2);
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(s.find("\\begin{cases}")!=std::string::npos) {
+  std::string definition=registerMultiplierCases(s);
+  if(!definition.empty())return definition;
+ }
  if(s.find("working within")!=std::string::npos) {
   // A trailing annotation qualifies the entire equation on its left.
   static const std::regex ringNote(R"(\\text\{\s*\(\s*working within\s+\$\\mathbb\{Z\}_([1-9]|\{[1-9][0-9]*\})\$\s*\)\s*\}\s*$)");
