@@ -1,0 +1,55 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/introduction.ipynb",
+  "notebook_sha256": "aad7521b575bfd6090d4d738b336f1b786d9fce68db4cd7e675b306c200cf381",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "30f67596a51ad86664d9df6c69f0201e9f84ceb95250feae70e6beb4c386938c",
+  "suite": {
+    "passed": true,
+    "checks": 129,
+    "calls": 19,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 13,
+    "restored_identically": 13,
+    "stable_after_text_reentry": 12,
+    "source_diagnostic": 6
+  },
+  "diagnostics": [
+    {
+      "id": "IBM096-aad7521b-M002",
+      "message": "Unsupported TeX command: \\reals at byte 78"
+    },
+    {
+      "id": "IBM096-aad7521b-M006",
+      "message": "Invalid decimal number at byte 34"
+    },
+    {
+      "id": "IBM096-aad7521b-M012",
+      "message": "Invalid decimal number at byte 17"
+    },
+    {
+      "id": "IBM096-aad7521b-M013",
+      "message": "Unsupported text in a mathematical expression at byte 11"
+    },
+    {
+      "id": "IBM096-aad7521b-M014",
+      "message": "Set entries must be scalars or valid binary-string labels."
+    },
+    {
+      "id": "IBM096-aad7521b-M015",
+      "message": "Unsupported text in a mathematical expression at byte 22"
+    }
+  ],
+  "changed_copy": [
+    {
+      "id": "IBM096-aad7521b-M019",
+      "first": "qcompare(\"P_i\",|qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ'))|²,4)",
+      "second": "qcompare(\"P_i\",qbars(qmul(qdag(qnamedket(\"φ_i\")), qnamedket('ψ')))²,4)"
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,53 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/quantum-machine-learning/qvc-qnn.ipynb",
+  "notebook_sha256": "1f86ee572a58afff7ba19c7e5f91eb2a0b1e48b1b4b3ae828cd36b678032aad7",
+  "worker_sha256": "4fb9f0db07328883d48da5fbbf822f9379c39bce082d434f0e6227d36c504e65",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "8687bac443b767e589e48a3fc053434140438c6cc95c80acd0281afe35153115",
+  "suite": {
+    "passed": true,
+    "checks": 194,
+    "calls": 27,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 20,
+    "restored_identically": 20,
+    "stable_after_text_reentry": 20,
+    "source_diagnostic": 7
+  },
+  "diagnostics": [
+    {
+      "id": "IBM100-1f86ee57-M003",
+      "message": "Expected a quantum expression at byte 4"
+    },
+    {
+      "id": "IBM100-1f86ee57-M004",
+      "message": "Expected a quantum expression at byte 4"
+    },
+    {
+      "id": "IBM100-1f86ee57-M008",
+      "message": "Unexpected notation at byte 24"
+    },
+    {
+      "id": "IBM100-1f86ee57-M009",
+      "message": "Expected ',' at byte 78"
+    },
+    {
+      "id": "IBM100-1f86ee57-M010",
+      "message": "Expected ',' at byte 18"
+    },
+    {
+      "id": "IBM100-1f86ee57-M014",
+      "message": "Expected ',' at byte 18"
+    },
+    {
+      "id": "IBM100-1f86ee57-M020",
+      "message": "Expected a quantum expression at byte 4"
+    }
+  ],
+  "changed_copy": [],
+  "failures": []
+}
