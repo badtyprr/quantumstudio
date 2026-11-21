@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/classical-information.ipynb",
   "source_sha256": "bb350db44104e0d9c25b66b09cc4162b32caff52f0853faa31fbda73e8f019aa",
-  "worker_sha256": "14718779ffeaa45205add3aba41ecaca0cb7c8fe294a3301e448c2a8596ae880",
-  "revision": "b5cf05104fed6d49646090ca4fd6cf67ed79f6e7",
+  "worker_sha256": "c9b706f6d9e9a0606f6a64867d89306fd0ba8bfe00401724db3ecd64cd4252c3",
+  "revision": "1c9c03a5bd5eb756260220f6d8960d520647c623",
   "mode": "Quantum notation",
   "markdown_cells": 2,
   "code_cells": 0,
@@ -348,8 +348,8 @@
       "end": 5544,
       "literal": "$$\n\\operatorname{Pr}(\\mathsf{X}=0) = \\frac{3}{4}\n\\quad\\text{and}\\quad\n\\operatorname{Pr}(\\mathsf{X}=1) = \\frac{1}{4}.\n$$",
       "status": "exact",
-      "display": "0",
-      "copy": "0"
+      "display": "qeventprob('X', 1) = 0.25 and qeventprob('X', 0) = 0.75",
+      "copy": "((qeventprob('X',0))==(3 ∕ 4) and (qeventprob('X',1))==(1 ∕ 4))"
     },
     {
       "id": "IBM037-bb350db4-M035",
