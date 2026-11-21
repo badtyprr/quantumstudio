@@ -17,6 +17,8 @@ static void rejects(const std::string &input) {
 }
 int main() {
  try {
+  equal(R"(\operatorname{Pr}(\text{outcome is 1}))","qeventprob(\"measurement probabilities\",1)");
+  equal(R"(\operatorname{Pr}(\mathsf{X}=0))","qeventprob(\"X\",0)");
   equal(R"($8,9,\ldots,11$)","qindexsequence(8,11)");
   rejects(R"($8,10,\ldots,12$)");
   rejects(R"($8,9,\ldots,7$)");

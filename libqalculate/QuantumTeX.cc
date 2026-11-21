@@ -721,6 +721,37 @@ class TeXReader {
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setDepth=0;
+ // The state is supplied by the surrounding lesson. Keep its distribution
+ // as a free name until the caller supplies the probabilities.
+ std::string eventProbability() {
+  size_t at=pos;
+  auto space=[&]() {while(at<input.size() && std::isspace((unsigned char)input[at]))++at;};
+  auto take=[&](const std::string &token) {
+   space();if(input.compare(at,token.size(),token)!=0)return false;
+   at+=token.size();return true;
+  };
+  if(!take("("))return "";
+  std::string distribution;
+  bool prose=take("\\text");
+  if(prose) {
+   if(!take("{") || !take("outcome") || at==input.size() || !std::isspace((unsigned char)input[at]) ||
+      !take("is") || at==input.size() || !std::isspace((unsigned char)input[at]))return "";
+   distribution="measurement probabilities";
+  } else {
+   if(!take("\\mathsf") || !take("{"))return "";
+   space();size_t begin=at;
+   while(at<input.size() && asciiLetter(input[at]))++at;
+   if(at==begin)return "";
+   distribution=input.substr(begin,at-begin);
+   if(!take("}") || !take("="))return "";
+  }
+  space();size_t digit=at;
+  while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
+  if(at==digit || (at>digit+1 && input[digit]=='0'))return "";
+  std::string outcome=input.substr(digit,at-digit);
+  if((prose && !take("}")) || !take(")"))return "";
+  pos=at;return "qeventprob(\""+distribution+"\","+outcome+")";
+ }
  bool beforeMembership() const {
   size_t next=input.find_first_not_of(" \t\r\n",pos);
   if(next==std::string::npos)return false;
@@ -1223,6 +1254,9 @@ class TeXReader {
    }
    if(name=="mathbb" && a=="T")return " qunitcircle() ";
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
+   if(name=="operatorname" && a=="Pr") {
+    std::string event=eventProbability();if(!event.empty())return event;
+   }
    if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
