@@ -1309,6 +1309,51 @@ class QuantumIndexedFunction: public MathFunction {
    }
    out.eval(eo);return 1;
   }
+  if(op=="qwordspan" || op=="qwordkernel") {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure rows=raw[0];rows.eval(exact);
+   if(!rows.isVector())return 0;
+   MathStructure width;
+   if(op=="qwordkernel") {width=raw[1];width.eval(exact);}
+   else if(rows.size() && rows[0].isFunction() && rows[0].function()->referenceName()=="qbitlabel")width=rows[0][1];
+   else return 0;
+   if(!width.isInteger() || width.isApproximate() || width.number()<0 || width.number()>10)return 0;
+   const unsigned count=1u<<width.number().intValue();
+   std::set<unsigned> masks;
+   for(size_t j=0;j<rows.size();++j) {
+    const auto &row=rows[j];
+    if(!row.isFunction() || row.function()->referenceName()!="qbitlabel" || !row[1].equals(width) ||
+       !row[0].isInteger() || row[0].isApproximate() || row[0].number()<0 || row[0].number()>=int(count))return 0;
+    masks.insert(row[0].number().intValue());
+   }
+   std::set<unsigned> words;
+   if(op=="qwordspan") {
+    words.insert(0);
+    for(unsigned mask:masks) {
+     if(CALCULATOR->aborted())return 0;
+     auto previous=words;
+     for(unsigned word:previous)words.insert(word^mask);
+    }
+   } else {
+    for(unsigned word=0;word<count;++word) {
+     if(CALCULATOR->aborted())return 0;
+     bool allowed=true;
+     for(unsigned mask:masks) {
+      unsigned bits=word & mask;
+      bool odd=false;
+      while(bits) {bits&=bits-1;odd=!odd;}
+      if(odd) {allowed=false;break;}
+     }
+     if(allowed)words.insert(word);
+    }
+   }
+   MathStructure entries;entries.clearVector();
+   for(unsigned word:words) {
+    MathStructure value((int)word),label(CALCULATOR->getFunction("qbitlabel"),&value,&width,NULL);
+    entries.addChild(label);
+   }
+   out.set(CALCULATOR->getFunction("qset"),&entries,NULL);return 1;
+  }
   if(op=="qsubset") {
    if(raw[0].equals(raw[1])) {out=1;return 1;}
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
@@ -2638,6 +2683,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
+ calculator.addFunction(new QuantumIndexedFunction("qwordspan",1));
+ calculator.addFunction(new QuantumIndexedFunction("qwordkernel",2));
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));

@@ -2230,6 +2230,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   static const std::regex operators(R"(\b([CEPQU])([CEPQU])\s*(?=\\(?:vert|ket)\b))");
   s=std::regex_replace(s,operators,"qoperatorref(\"$1\")*qoperatorref(\"$2\")*");
  }
+ // A binary code is specified by generators or homogeneous parity checks.
+ if(s.find("\\bigl\\{")!=std::string::npos && s.find("\\cdots")!=std::string::npos) {
+  static const std::regex span(R"(\\bigl\\\{\s*\\alpha_1\s+([a-z])_1\s*\\oplus\s*\\cdots\s*\\oplus\s*\\alpha_([a-z])\s+\1_\2\s*\\,\s*:\s*\\,\s*\\alpha_1\s*,\s*\\ldots\s*,\s*\\alpha_\2\s*\\in\s*\\\{0,1\\\}\s*\\bigr\\\})");
+  static const std::regex kernel(R"(\\bigl\\\{\s*([a-z])\s*\\in\s*\\Sigma\^([a-z])\s*\\,\s*:\s*\\,\s*\1\s*\\cdot\s*([a-z])_1\s*=\s*\\cdots\s*=\s*\1\s*\\cdot\s*\3_([a-z])\s*=\s*0\s*\\bigr\\\})");
+  s=std::regex_replace(s,span,"qwordspan(qindexedentries(\"$1_\",1,$2,vector()))");
+  s=std::regex_replace(s,kernel,"qwordkernel(qindexedentries(\"$3_\",1,$4,vector()),$2)");
+ }
  if(s.find("\\Sigma^")!=std::string::npos) {
   static const std::regex words(R"(\\Sigma\^([a-z]|[0-9]+))");
   s=std::regex_replace(s,words,"qwordpower(\"Σ\",$1)");
