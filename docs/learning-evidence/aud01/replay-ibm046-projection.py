@@ -155,3 +155,15 @@ for second_amplitude, expected in [("1", "1"), ("-1", "0")]:
         equation = f"replace(({equation}),{operand},{value})"
     assert evaluate(equation) == expected
 print("Verified the conjugated coefficient expansion with complex states and rejected an inconsistent amplitude")
+
+column_diagram = evaluate(rows[97]["literal"])
+for columns, candidate, split, expected in [
+    (("[0;i]", "[1;0]"), "[0,1;i,0]", 1, "1"),
+    (("[0;i]", "[1;0]"), "[1,0;0,i]", 1, "0"),
+    (("[0;1;0]", "[0;0;1]", "[1;0;0]"), "[0,0,1;1,0,0;0,1,0]", 2, "1"),
+]:
+    equation = f"replace(replace(({column_diagram}),m,{split}),n,{len(columns)})"
+    for index, column in enumerate(columns, 1):
+        equation = f'replace(({equation}),"ψ_{index}",{column})'
+    assert evaluate(f"replace(({equation}),'U',{candidate})") == expected
+print("Verified the basis completion diagram in two and three dimensions and rejected swapped columns")

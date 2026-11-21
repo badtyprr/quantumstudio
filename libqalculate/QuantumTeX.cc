@@ -1059,6 +1059,41 @@ class TeXReader {
   const std::string endMarker="\\end{array}";
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  const size_t firstCell=input.find_first_not_of(" \t\r\n",pos);
+  if(firstCell<end && input.compare(firstCell,5,"\\rule")==0) {
+   auto rows=indexedParts(input.substr(pos,end-pos),"\\\\");
+   if(rows.size()!=3 || alignment.size()!=7)throw std::runtime_error(error("Expected a seven-column basis completion diagram"));
+   if(!rows[2].empty() && rows[2][0]=='[') {
+    auto close=rows[2].find(']');
+    if(close!=std::string::npos) {
+     size_t saved=pos;pos=input.find(rows[2],pos);spacingDimension(']');pos=saved;
+     rows[2]=trim(rows[2].substr(close+1));
+    }
+   }
+   const auto top=indexedParts(rows[0],"&"),labels=indexedParts(rows[1],"&"),bottom=indexedParts(rows[2],"&");
+   if(top.size()!=7 || labels.size()!=7 || top!=bottom)throw std::runtime_error(error("Mismatched column guides in basis diagram"));
+   static const std::regex rule(R"(\\rule\{[0-9]+(\.[0-9]+)?pt\}\{[0-9]+(\.[0-9]+)?pt\})");
+   static const std::regex ket(R"(\\vert\s*(\\?[a-zA-Z]+)_(\{[a-zA-Z0-9+]+\}|[a-zA-Z0-9])\s*\\rangle)");
+   std::string family;std::vector<std::string> indices;
+   for(size_t k=0;k<labels.size();++k) {
+    if(k==2 || k==5) {
+     if(!top[k].empty() || labels[k]!="\\cdots")throw std::runtime_error(error("Expected a horizontal ellipsis between ket columns"));
+    } else {
+     std::smatch match;
+     if(!std::regex_match(top[k],rule) || !std::regex_match(labels[k],match,ket))
+      throw std::runtime_error(error("Expected an indexed ket between column guides"));
+     if(family.empty())family=match[1].str();
+     if(family!=match[1].str())throw std::runtime_error(error("Ket columns must share a family"));
+     std::string index=match[2].str();if(index.front()=='{')index=index.substr(1,index.size()-2);
+     indices.push_back(index);
+    }
+   }
+   if(indices[0]!="1" || indices[1]!="2" || indices[2].size()!=1 || !asciiLetter(indices[2][0]) ||
+      indices[3]!=indices[2]+"+1" || indices[4].size()!=1 || !asciiLetter(indices[4][0]))
+    throw std::runtime_error(error("Expected consecutive ket ranges for a basis completion"));
+   pos=end+endMarker.size();
+   return "qbasiscolumns(qindexedentries(\""+quantumTeX(family)+"_\",1,"+indices[4]+",vector()),"+indices[2]+")";
+  }
   std::string values;
   size_t rows=0;
   while(pos<end) {

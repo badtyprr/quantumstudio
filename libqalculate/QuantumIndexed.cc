@@ -1746,6 +1746,26 @@ class QuantumIndexedFunction: public MathFunction {
    PrintOptions print;print.use_unicode_signs=false;print.min_exp=EXP_NONE;
    out.set(prefix+indices[0].print(print)+","+indices[1].print(print),true);return 1;
   }
+  if(op=="qbasiscolumns") {
+   MathStructure entries,split=raw[1];split.eval(eo);
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo) || pendingRegisterIndex(split))return 0;
+   const size_t size=entries.size();
+   if(!size || !split.isInteger() || split.number()<1 || split.number()>long(size)) {
+    CALCULATOR->error(true,"The initial basis size must be between one and the number of columns.",NULL);return 0;
+   }
+   for(size_t c=0;c<size;++c) {
+    if(entries[c].isSymbolic() || namedKet(entries[c]))return 0;
+    if(!stateColumn(entries[c]) || entries[c].rows()!=size) {
+     CALCULATOR->error(true,"Every basis column must match the dimension of the space.",NULL);return 0;
+    }
+   }
+   out.clearMatrix();out.resizeMatrix(size,size,m_zero);
+   for(size_t c=0;c<size;++c) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t r=0;r<size;++r)element(out,r,c)=element(entries[c],r,0);
+   }
+   return 1;
+  }
   if(op=="qcomplexcolumn") {
    out=raw[0];out.eval(eo);
    if(!out.isMatrix())return 0;
@@ -2580,6 +2600,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qdescendingcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qonebasedcolumn",3));
  calculator.addFunction(new QuantumIndexedFunction("qcomplexcolumn",1));
+ calculator.addFunction(new QuantumIndexedFunction("qbasiscolumns",2));
  calculator.addFunction(new QuantumIndexedFunction("qzerocolumnlike",2));
  calculator.addFunction(new QuantumIndexedFunction("qsamplewordrows",5));
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
