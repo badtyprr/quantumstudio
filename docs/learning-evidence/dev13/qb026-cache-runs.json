@@ -1,0 +1,44 @@
+{
+  "cache_sha256": "6d8dd3ea032411e396207ddeb3e59a70301fd59e2f062903747c757c46cc290e",
+  "cache_source": "qBraid-Runtime/data/quobly_ghz_bench.json",
+  "runs": [
+    {
+      "revision": "86787e1ba372facc224f925189755e69c479828b",
+      "source_sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+      "selected_cells": [
+        4,
+        6,
+        8,
+        9,
+        11,
+        13
+      ],
+      "rendered_plot_cell": 11,
+      "results": {
+        "accepted": true,
+        "cached_runs": 16,
+        "measured_shots": 3200,
+        "noisy_population_at_nine": 0.29500000000000004
+      }
+    },
+    {
+      "revision": "4deeced918b79c10a4f7585fafbc65d4250dc6e7",
+      "source_sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
+      "selected_cells": [
+        4,
+        6,
+        8,
+        9,
+        11,
+        13
+      ],
+      "rendered_plot_cell": 11,
+      "results": {
+        "accepted": true,
+        "cached_runs": 16,
+        "measured_shots": 3200,
+        "noisy_population_at_nine": 0.29500000000000004
+      }
+    }
+  ]
+}
