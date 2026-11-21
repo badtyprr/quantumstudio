@@ -684,3 +684,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm029-width-bound.json docs/learning
 EXTRA_DIST += docs/learning-evidence/aud01/ibm037-indexed-windows.json
 EXTRA_DIST += docs/learning-evidence/aud01/learning_clipboard_checks.py docs/learning-evidence/aud01/ibm037-ordered-windows.json docs/learning-evidence/aud01/ibm038-single-windows.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm037-038-probability-windows.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-quantified-dot.json docs/learning-evidence/aud01/replay-ibm020-quantified-dot.py
