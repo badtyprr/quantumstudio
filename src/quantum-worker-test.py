@@ -39,6 +39,19 @@ for width, exponent, expected in [(1, 2, 0), (2, 2, 1), (4, 3, 0), (4, 8, 1), (4
 named_bound = data(r"quantum:$j=2,4,8,\cdots,2^e$")["copy_text"]
 assert data(f'quantum:replace(replace(({named_bound}),"e",4),"j",16)')["copy_text"] == "1"
 run(r"quantum:$k=2,4,9,\ldots,2^{m-1}$", success=False)
+power_list = r"$a^2,a^4,\ldots a^{2^{m-1}}\in\mathbb{Z}_N^{\ast}$"
+for formula, base, width, expected in [(power_list, 5, 4, 1), (power_list, 3, 4, 0),
+                                       (power_list, 3, 1, 1), (power_list.replace(r"^{\ast}", ""), 3, 4, 1)]:
+    copied = data("quantum:" + formula)["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    bound = f'replace(replace(replace(({copied}),"N",21),"a",{base}),"m",{width})'
+    assert data("quantum:" + bound)["copy_text"] == str(expected)
+for formula in (power_list, power_list.replace(r"^{\ast}", "")):
+    copied = data("quantum:" + formula)["copy_text"]
+    empty = f'replace(replace(({copied}),"m",1),"a",2)'
+    for invalid in (0, -1):
+        result = run(f'quantum:replace(({empty}),"N",{invalid})', success=False)
+        assert b"positive exact integer" in result.stderr
 
 # Copying a deferred ordered product preserves its factors and matrix entries.
 for expression in (r"$X|\psi(t_0)\rangle$", r"$e^{-i\epsilon Z_j Z_{j+1}}$"):

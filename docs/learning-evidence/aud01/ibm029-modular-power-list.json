@@ -1,0 +1,20 @@
+{
+  "sources": [
+    "IBM029-9ea5aee3-M357",
+    "IBM029-9ea5aee3-M180"
+  ],
+  "worker_sha256": "8827c19d32868901f0543c7591cb53c1cc0da7f2e21a304c188bdcfc16ab88af",
+  "widths": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    12,
+    32,
+    64
+  ],
+  "exponent_memberships": 79,
+  "modular_memberships": 144,
+  "windows_sessions": 11
+}

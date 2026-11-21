@@ -3129,6 +3129,15 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(asciiLetter(limit[0]))limit="\""+limit+"\"";
    return "qmember(\""+m[1].str()+"\",qsetimage(2^j,qindexrange(1,"+limit+m[3].str()+"),j))";
   }
+  // These powers are elements of a residue ring. Reduce each power before
+  // comparing it with the canonical representatives of the printed domain.
+  static const std::regex residuePowers(R"(^\s*([a-z])\^2\s*,\s*\1\^4\s*,\s*\\(?:ldots|cdots|dots)\s*,?\s*\1\^\{2\^\{([a-z])\s*-\s*1\}\}\s*\\in\s*(\\mathbb\{Z\}_([A-Za-z])(?:\^\{\\ast\})?)\s*$)");
+  if(std::regex_match(s,m,residuePowers)) {
+   const std::string index="\"qpowerindex\"";
+   std::string powers="qsetimage(powmod(\""+m[1].str()+"\",2^"+index+",\""+m[4].str()+"\"),qindexrange(1,\""+m[2].str()+"\"-1),"+index+")";
+   std::string domain=m[3].str().find("\\ast")==std::string::npos ? "qresidues" : "qunitsmod";
+   return "qsubset("+powers+","+domain+"(\""+m[4].str()+"\"))";
+  }
  }
  if(s.find("\\ldots")!=std::string::npos && s.find("\\Sigma^")!=std::string::npos) {
   static const std::regex membership(R"(^\s*([a-z])_1\s*,\s*\\ldots\s*,\s*\1_([a-z])\s*\\in\s*\\Sigma\^([a-z]|[0-9]+)\s*$)");
