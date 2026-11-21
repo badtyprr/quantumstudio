@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/discretization-of-errors.ipynb",
+  "notebook_sha256": "d76193c45a2764e34600f9339932793c49bf9aef6c2fcc504f34b11e56c6b8dc",
+  "worker_sha256": "e07a2c887b065f5dafba740eb164d78f6d4490e522e048a647c9baff77cee5b8",
+  "application_sha256": "ffa0dcc733ebf526f8d409ef808ef710ed1798d0ba45559fd639b350464863fb",
+  "records_sha256": "68d8c7634f0df8b0309c64d79c4e539f30439313b8179948520893a1b0ee8c28",
+  "suite": {
+    "passed": true,
+    "checks": 450,
+    "calls": 50,
+    "sessionsOnly": true,
+    "clipboardRetries": 0,
+    "clipboardRestored": false
+  },
+  "counts": {
+    "source_exact": 50,
+    "restored_identically": 50,
+    "stable_after_text_reentry": 50
+  },
+  "diagnostics": [],
+  "changed_copy": [],
+  "failures": []
+}

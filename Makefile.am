@@ -498,3 +498,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm050-superdense.py docs/lear
 EXTRA_DIST += docs/learning-evidence/aud01/replay-entanglement-figures.py docs/learning-evidence/aud01/ibm048-figures.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm053-inventory.json docs/learning-evidence/aud01/ibm054-inventory.json docs/learning-evidence/aud01/ibm055-inventory.json docs/learning-evidence/aud01/ibm056-inventory.json docs/learning-evidence/aud01/ibm054-windows-sessions.json docs/learning-evidence/aud01/ibm055-windows-sessions.json docs/learning-evidence/aud01/replay-ibm054-repetition.py docs/learning-evidence/aud01/replay-ibm055-shor.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm056-kraus.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm056-windows-sessions.json docs/learning-evidence/aud01/replay-error-correction-figures.py docs/learning-evidence/aud01/ibm053-figures.json
