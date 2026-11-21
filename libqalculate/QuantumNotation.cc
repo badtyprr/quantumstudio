@@ -2255,6 +2255,29 @@ class Parser {
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);
  }
+ std::string equalityChain(std::vector<std::string> operands,bool prepare) {
+  bool growthClass=false;
+  for(size_t k=1;k<operands.size();++k) {
+   auto &left=operands[k-1],&right=operands[k];
+   if(prepare) {
+    preserveZeroWord(left,right);preserveZeroWord(right,left);
+    prepareEquality(left,right);
+   }
+   if(right.compare(0,10,"qbigorder(")==0)growthClass=true;
+  }
+  std::string result;
+  if(growthClass) {
+   // The final equality may denote membership in a growth class.
+   result="qcompare("+operands[operands.size()-2]+","+operands.back()+",4)";
+   for(size_t k=operands.size()-2;k>0;--k) {
+    result="if(qcompare("+operands[k-1]+","+operands[k]+",4),"+result+",0)";checkSize(result);
+   }
+   return result;
+  }
+  result="qequalchain(vector(";
+  for(size_t k=0;k<operands.size();++k) {if(k)result+=",";result+=operands[k];checkSize(result);}
+  return result+"))";
+ }
  std::string comparison(bool allowSharedOperands) {
   if(!costContext && costWitnessAhead()) {
    costContext=true;std::string witness=comparison(allowSharedOperands);costContext=false;
@@ -2340,17 +2363,41 @@ class Parser {
     right=applyLogicalNot(comparisonOperand(),negations);
    }
    if(leadingSign || (equality && takeSetOperator("±"))) {
-    if(!result.empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
-    std::string magnitude=product();
-    // In a ± b + c the trailing c belongs to both alternatives.
-    std::string center=additiveTail(right);
-    std::string pair=center=="0" ? magnitude+",(-"+magnitude+")" : "qadd("+center+","+magnitude+"),qsub("+center+","+magnitude+")";
-    if(center=="0" && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos ||
+    // The additive tail belongs to both branches in a ± b + c.
+    bool zeroCenter=false;
+    auto alternatives=[&](const std::string &start) {
+     std::string magnitude=product(),center=additiveTail(start);
+     zeroCenter=center=="0";
+     return std::make_pair(zeroCenter ? magnitude : "qadd("+center+","+magnitude+")",
+                           zeroCenter ? "(-"+magnitude+")" : "qsub("+center+","+magnitude+")");
+    };
+    auto branches=alternatives(right);
+    std::string next=takeComparisonRelation();
+    if(!result.empty() || !next.empty()) {
+     if(!equalities)throw std::runtime_error("A shared sign requires an equality chain.");
+     std::vector<std::string> plus=operands,minus=operands;
+     // Each branch tests every operand using the same choice of sign.
+     for(;;) {
+      plus.push_back(branches.first);minus.push_back(branches.second);
+      if(plus.size()>128)throw std::runtime_error("An equality chain requires 3 to 128 operands.");
+      if(next.empty())break;
+      if(next!="=" && next!="==")throw std::runtime_error("A shared sign requires an equality chain.");
+      if(takeSetOperator("±"))branches=alternatives("0");
+      else {
+       std::string value=comparisonOperand();
+       branches=takeSetOperator("±") ? alternatives(value) : std::make_pair(value,value);
+      }
+      next=takeComparisonRelation();
+     }
+     result="("+equalityChain(plus,true)+"||"+equalityChain(minus,true)+")";
+     checkSize(result);return result;
+    }
+    const std::string &magnitude=branches.first;
+    if(zeroCenter && (left.find("qdag(")!=std::string::npos || magnitude.find("qnamedket(")!=std::string::npos ||
                        magnitude.compare(0,10,"qketstate(")==0))
      result="qsignedequal("+left+","+magnitude+")";
-    else result="qmember("+left+",qset(vector("+pair+")))";
+    else result="qmember("+left+",qset(vector("+branches.first+","+branches.second+")))";
     checkSize(result);
-    if(!takeComparisonRelation().empty())throw std::runtime_error("Group a plus-minus equality separately from a comparison chain.");
     return result;
    }
    // In a quantified index declaration, j = 1,...,N lists the allowed
@@ -2415,9 +2462,7 @@ class Parser {
     }
     break;
    }
-   result="qequalchain(vector(";
-   for(size_t k=0;k<operands.size();++k) {if(k)result+=",";result+=operands[k];checkSize(result);}
-   return result+"))";
+   return equalityChain(operands,false);
   }
   return result.empty() ? left : result;
  }

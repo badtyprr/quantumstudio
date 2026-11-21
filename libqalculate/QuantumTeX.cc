@@ -2279,7 +2279,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(s.find("Z_f")!=std::string::npos && s.find("\\mathbb{I}")!=std::string::npos) {
    // In the Grover iterate derivations G and Z_f are operators on the
    // same register. Its size can be inferred once G is assigned a matrix.
-   static const std::regex iterate(R"(^\s*\\begin\{aligned\}\s*(G)\s*\\vert\s*A_[01]\s*\\rangle\s*&\s*=)");
+   static const std::regex iterate(R"(^\s*\\begin\{aligned\}\s*(G)\s*\\vert\s*(?:A_[01]|u)\s*\\rangle\s*&\s*=)");
    std::smatch action;
    if(std::regex_search(s,action,iterate)) {
     s.replace(action.position(1),1,"qoperatorref(\"G\")");
