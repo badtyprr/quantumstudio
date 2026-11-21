@@ -72,3 +72,9 @@ cell hashes were checked. Exact-head reviews remain pending. External records ar
 `cleanup-audit/learning-coverage-20261117/qb007-cpu/` and the adjacent
 `qb007-prerequisites/`. GPU execution, speedup, whole-source audit, GUI/package,
 required CI and release remain open.
+
+## Independent full-state comparison
+
+A seeded five-by-five instance now has an independent reference for all 33,554,432 complex amplitudes. The reference forms phases from the grid field and both edge arrays, then applies the final fractional-X layer. Cirq executes the source circuit without terminal measurements for the amplitude comparison. After global phase alignment the maximum amplitude error was 7.15e-9 and fidelity exceeded 0.999999999999. The exact mean energy was 12.5754101. A separate 10,000-shot run of the measured circuit gave 12.569, with standard error 0.08222. Every sampled row energy matched the independently calculated grid energy. Inputs and numerical details are in full-state.json.
+
+Run verify-full-state.py with the pinned source notebook and a fresh output JSON path using the Cirq/qsimcirq CPU environment. This is a seeded additional instance. The source's GPU, speedup, whole-notebook and published app checks remain open.
