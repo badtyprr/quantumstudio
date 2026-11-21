@@ -1,8 +1,8 @@
 {
   "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/integrating-quantum-and-high-performance-computing/sqd-skqd.ipynb",
   "source_sha256": "9d14af04bd68ca2df180adbcc18fd95073bdecce98407a8e3bcdc76c146df481",
-  "worker_sha256": "3da7514ef4ef11685bf7077ba4376707d05073ec197aa4580f24ded1e07705f4",
-  "revision": "74307d0e2030b05f5dfbe86eb210c896b8bcc1b4",
+  "worker_sha256": "6765041066bf949d8008acf04b7905dac69d8b274d16b98a340825cf0f690e86",
+  "revision": "09bcf28a48fd1b05574f2b1b580f66e9386b72c9",
   "mode": "Quantum notation",
   "markdown_cells": 7,
   "code_cells": 0,
@@ -68,8 +68,8 @@
       "end": 1568,
       "literal": "$$\nH = \\begin{pmatrix}\nH_{0,0} & H_{0,1} & \\cdots & H_{0,N-1} \\\\\nH_{1,0} & H_{1,1} & \\cdots & H_{1,N-1} \\\\\n\\vdots & \\vdots & \\ddots & \\vdots \\\\\nH_{N-1,0} & H_{N-1,1} & \\cdots & H_{N-1,N-1}\n\\end{pmatrix} \\quad (N=2^n)\n$$",
       "status": "exact",
-      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + [H_(0,0), H_(0,1), ⋯, H_(0,N − 1);\n H_(1,0), H_(1,1), ⋯, H_(1,N − 1);\n ⋮, ⋮, ⋱, ⋮;\n H_(N − 1,0), H_(N − 1,1), ⋯, H_(N − 1,N − 1)] · (N = 2^n) = 0",
-      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qadjacent(qindexedmatrix(\"H_\",qsub('N',1),qsub('N',1),1,1),qcompare('N',qpower(2,n),4))))==(0)"
+      "display": "qoperatorref('H') = [H_(0,0), H_(0,1), ⋯, H_(0,N − 1);\n H_(1,0), H_(1,1), ⋯, H_(1,N − 1);\n ⋮, ⋮, ⋱, ⋮;\n H_(N − 1,0), H_(N − 1,1), ⋯, H_(N − 1,N − 1)] and N = 2^n",
+      "copy": "(('N')==(2^n) and qcompare(qoperatorref('H'),qindexedmatrix(\"H_\",qsub('N',1),qsub('N',1),1,1),4))"
     },
     {
       "id": "IBM088-9d14af04-M004",
@@ -117,8 +117,8 @@
       "end": 896,
       "literal": "$H = \\sum_{j=1}^Q \\alpha_j P_j$",
       "status": "exact",
-      "display": "[−1 ∕ √(2), −1 ∕ √(2); −1 ∕ √(2), 1 ∕ √(2)] + (∑_{k=1}^{Q} (α_k · P_k)) = 0",
-      "copy": "(qadd(matrix(2,2,vector(qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qmul(−1,qpower(2,−1 ∕ 2)),qpower(2,−1 ∕ 2))),qsum(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,'Q',\"qboundindex_0\")))==(0)"
+      "display": "qoperatorref('H') = ∑_{k=1}^{Q} (α_k · P_k)",
+      "copy": "qcompare(qoperatorref('H'),qsum(qadjacent(qindexedlabel(\"α_\",\"qboundindex_0\",\"\"),qindexedlabel(\"P_\",\"qboundindex_0\",\"\")),1,'Q',\"qboundindex_0\"),4)"
     },
     {
       "id": "IBM088-9d14af04-M009",
