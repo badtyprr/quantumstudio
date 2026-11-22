@@ -2952,6 +2952,9 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers || binaryLogs || binaryOracles) {
   first=input.find_first_not_of(" \t\r\n",first+(dimensions || binaryLogs ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
   if(first==std::string::npos)return "";
+ } else if(input.compare(first,4,"gf2:")==0) {
+  first=input.find_first_not_of(" \t\r\n",first+4);
+  if(first==std::string::npos)return "";
  } else if(sets) {
   if(setNotation)*setNotation=true;
   first=input.find_first_not_of(" \t\r\n",first+5);

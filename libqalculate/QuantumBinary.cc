@@ -300,8 +300,10 @@ class QuantumBinaryFunction: public MathFunction {
    std::vector<std::vector<unsigned char>> left,right;
    // A named matrix or vector can be supplied after a formula is copied.
    // Validate each concrete operand even while the other is still unknown.
-   bool pendingLeft=a.isUnknown() || a.isSymbolic();
-   bool pendingRight=args[1].isUnknown() || args[1].isSymbolic();
+   auto pendingProduct=[](const MathStructure &v) {
+    return v.isUnknown() || v.isSymbolic() || (v.isFunction() && v.function()->referenceName()=="qgf2mul" && v.containsUnknowns());
+   };
+   bool pendingLeft=pendingProduct(a),pendingRight=pendingProduct(args[1]);
    if((!pendingLeft && !binaryMatrix(a,left)) || (!pendingRight && !binaryMatrix(args[1],right)))return 0;
    if(pendingLeft || pendingRight)return 0;
    if(left[0].size()!=right.size()) {CALCULATOR->error(true,"GF(2) matrix multiplication requires matching inner dimensions.",NULL);return 0;}
