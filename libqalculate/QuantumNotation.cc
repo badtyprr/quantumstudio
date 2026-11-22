@@ -2607,6 +2607,9 @@ class Parser {
      need(',');right="qindexrange("+right+","+setUnion()+")";relation="∈";equalities=false;
     } else p=end;
    }
+   // The column index in c = 0,...,n-1 or c in that integer range is a free variable.
+   if(left=="c" && (relation=="∈" || relation=="∉") && right.compare(0,12,"qindexrange(")==0)
+    left=indexableLabel(left);
    // A sign condition on the free coefficient must survive substitution.
    if(kind<4) {
     if(left=="c" && right=="0")left="qcostparam("+indexableLabel(left)+")";

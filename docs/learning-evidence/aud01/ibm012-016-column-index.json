@@ -1,0 +1,35 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-012",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 4682,
+          "end": 4700,
+          "literal_sha256": "12539d984fa69b9e900f08417b2afd18eed9a2eb28f97e8cdacf35eeb5b52167",
+          "outcome": "result",
+          "copy_text": "qmember('c',qindexrange(0,qsub(n,1)))"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-016",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+      "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 14613,
+          "end": 14635,
+          "literal_sha256": "522b56c43eb3a5aaced951fb39c17e0d2a302039735cda0c7e5aa7fe2ec6fce6",
+          "outcome": "result",
+          "copy_text": "qmember('c',qindexrange(0,qsub(n,1)))"
+        }
+      ]
+    }
+  ]
+}
