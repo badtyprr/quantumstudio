@@ -184,6 +184,9 @@ for ket_state, bra_state, output in [
     tensor_unit = f"|0><0| @ {ket_state}{bra_state}"
     assert data(f"quantum:({tensor_unit})=({output})")["copy_text"] == "1"
     assert data(f"quantum:({tensor_unit})=tensor(|0><0|,({ket_state}{bra_state}))")["copy_text"] == "1"
+for unit in ("(|0>)<1|", "|0>(<1|)", "((|0>))((<1|))"):
+    assert data(f"quantum:(I @ {unit})=tensor(I,(|0><1|))")["copy_text"] == "1"
+assert data("quantum:(I @ 2|0><1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(H @ H |00>)=([1;1;1;1]/2)")["copy_text"] == "1"
 
 # Both textbook declarations name c as a column index.

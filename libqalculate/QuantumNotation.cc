@@ -2174,6 +2174,19 @@ class Parser {
   p=end;return true;
  }
  std::string product() {return productTail(diracFactor());}
+ // Parentheses around a single ket or bra preserve its orientation.
+ int tensorDiracKind(size_t start) const {
+  if(diracKind)return diracKind;
+  start=s.find_first_not_of(" \t\r\n",start);
+  if(start>=p || s[start]!='(')return 0;
+  std::string text=labelText(s.substr(start,p-start));
+  size_t lo=0,hi=text.size();
+  while(hi>lo+1 && text[lo]=='(' && text[hi-1]==')') {++lo;--hi;}
+  if(hi<=lo+2 || text.find_first_of("|<>",lo+1)!=hi-1)return 0;
+  if(text[lo]=='|' && text[hi-1]=='>')return 1;
+  if(text[lo]=='<' && text[hi-1]=='|')return 2;
+  return 0;
+ }
  std::string productTail(std::string a) {
   while(true) {
    if(takeWord("pmod")) {
@@ -2190,23 +2203,24 @@ class Parser {
     a=ringModulus.empty() ? "("+a+"/("+denominator+"))" : "qmul("+a+",qmodpower("+denominator+",-1,"+ringModulus+"))";
    }
    else if(take('@')) {
-    std::string right=diracFactor(),factors;
-    bool firstKet=diracKind==1;
+    size_t start=p;
+    std::string pending=diracFactor(),factors;
+    int orientation=tensorDiracKind(start);
     while(startsAtom()) {
-     bool possibleBra=firstKet && s[p]=='<';
-     std::string next=diracFactor();
-     if(possibleBra && diracKind==2) {
-      // The matrix unit |a><b| is one tensor factor, including off-diagonal units.
-      right="qadjacent("+right+","+next+")";
+     start=p;std::string next=diracFactor();
+     int nextOrientation=tensorDiracKind(start);
+     if(orientation==1 && nextOrientation==2) {
+      // A matrix unit is one factor even after a scalar coefficient.
+      pending="qadjacent("+pending+","+next+")";orientation=0;
      } else {
-      factors+=","+next;checkSize(factors);
+      factors+=pending+",";checkSize(factors);
+      pending=next;orientation=nextOrientation;
      }
-     firstKet=false;
     }
-    // A scalar may scale the next ket, or the tensor of two operators may
-    // act on a following state. Preserve that decision until evaluation.
-    if(factors.empty())a="qtensor("+a+","+right+")";
-    else a="qtensorchain("+a+",vector("+right+factors+"))";
+    // A scalar may scale the next matrix, or a tensor of operators may
+    // act on the following state. Resolve that distinction during evaluation.
+    if(factors.empty())a="qtensor("+a+","+pending+")";
+    else a="qtensorchain("+a+",vector("+factors+pending+"))";
    }
    else if(take('#')) {
     std::string right=diracFactor();
