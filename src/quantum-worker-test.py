@@ -209,6 +209,13 @@ assert data("quantum:gf2:" + binary_product)["cells"] == [["0"], ["0"]]
 assert data("quantum:" + binary_product)["cells"] == [["2"], ["0"]]
 run("quantum:gf2:M matrix(2,1,[0,2])", "--json", success=False)
 
+# The encoding table uses epsilon for the zero-length binary word.
+for empty in (r"$\varepsilon$", r"$\epsilon$", "ε"):
+    assert data("quantum:bitword:" + empty)["copy_text"] == "qbitlabel(0,0)"
+assert data(r"quantum:bitword:$\epsilon \oplus \varepsilon$")["copy_text"] == "qbitlabel(0,0)"
+assert data(r"quantum:$\varepsilon$")["copy_text"] == "'ε'"
+assert data(r"quantum:bitword:$\epsilon_1$")["copy_text"] == '"ε_1"'
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
