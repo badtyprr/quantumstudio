@@ -645,6 +645,14 @@ class Parser {
   if(!indexed) {
   const std::string labelIndex=plain ? original : original.substr(1,original.size()-2);
   scopeScalarProducts(args[body],labelIndex,symbol);
+  // Oracle keys written as bare letters are word references. They stay
+  // formal outside the sum but refer to its index inside the body.
+  if(binaryOracles && labelIndex.size()==1) {
+   for(const std::string oracle:{"f","g","h"}) {
+    const std::string call="qgraphapply("+indexableLabel(oracle)+",";
+    replaceAll(args[body],call+indexableLabel(labelIndex)+")",call+symbol+")");
+   }
+  }
   // Bare |i> remains undecided until its lexical binder is known. Explicit
   // |+i> keeps the phase-state meaning even inside an i-indexed sum.
   if(labelIndex=="i") {
@@ -2038,6 +2046,7 @@ class Parser {
      size_t begin=0,end=key.size();
      while(end>begin+1 && key[begin]=='(' && key[end-1]==')') {++begin;--end;}
      key=key.substr(begin,end-begin);
+     if(binaryOracles && key.size()==3 && key.front()==constantMarkerBegin && key.back()==constantMarkerEnd)key=key.substr(1,1);
      if(!key.empty() && key.find_first_not_of("0123456789.")==std::string::npos) {
       if(key.find_first_not_of("01")!=std::string::npos)throw std::runtime_error("A binary oracle key requires a word of zeros and ones.");
       if(key.size()>1024)throw std::runtime_error("A binary oracle key supports at most 1024 bits.");
@@ -2138,11 +2147,11 @@ class Parser {
   --depth;diracKind=kind;checkSize(a);return a;
  }
  // Inspect the original base so a matrix equal to S keeps its matrix meaning.
- static bool groupedToken(const std::string &text,size_t start,size_t end,char token) {
+ static bool groupedToken(const std::string &text,size_t start,size_t end,const std::string &token) {
   while(start<end) {
    while(start<end && std::isspace((unsigned char)text[start]))++start;
    while(start<end && std::isspace((unsigned char)text[end-1]))--end;
-   if(end-start==1)return text[start]==token;
+   if(end-start==token.size())return text.compare(start,token.size(),token)==0;
    if(end-start<3 || text[start]!='(' || text[end-1]!=')')break;
    ++start;--end;
   }
@@ -2158,7 +2167,8 @@ class Parser {
   auto a=atom();int kind=diracKind;
   if(takeWord("qtexdegrees"))a="("+a+"*(pi/180))";
   if(allowPercent)percentSuffix(a);
-  bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
+  bool sphere=setNotation && groupedToken(s,baseStart,p,"S");
+  const bool binaryAlphabet=binaryOracles && groupedToken(s,baseStart,p,"Σ");
   if(take('^')) {
    kind=0;
    if(!ringModulus.empty()) {
@@ -2206,7 +2216,9 @@ class Parser {
      }
     } else {
      p=start;
-     if(sphere && groupedToken(exponent,0,exponent.size(),'1'))a="qunitcircle()";
+     if(sphere && groupedToken(exponent,0,exponent.size(),"1"))a="qunitcircle()";
+     else if(binaryAlphabet)
+      a="qbitstrings("+exponent+")";
      else if(setNotation && a=="\"Σ\"" && s.compare(baseStart,2,"Σ")==0)
       a="qwordpower("+a+","+exponent+")";
      else a="qpower("+a+","+exponent+")";

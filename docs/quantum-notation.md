@@ -1279,7 +1279,7 @@ Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to
 
 ## Binary oracle queries
 
-Select **Binary oracles** when a lesson defines `f`, `g`, or `h` as a function from binary words to a single bit. For example, `(-1)^{f(0)}` retains the lookup until you assign the function's truth table. Leading zeros specify the width, so `f(01)` and `f(1)` query different keys. The worker prefix is `quantum:oracles:`.
+Select **Binary oracles** when a lesson defines `f`, `g`, or `h` as a function from binary words to a single bit. For example, `(-1)^{f(0)}` retains the lookup until you assign the function's truth table. Leading zeros specify the width, so `f(01)` and `f(1)` query different keys. In this mode `Σ^n` enumerates all words of width n, and an oracle query inside a sum uses the word selected by that sum. The worker prefix is `quantum:oracles:`.
 
 For example, enter `replace(f(0),f,qset(vector(qtuple(vector(qbitlabel(0,1),1)),qtuple(vector(qbitlabel(1,1),0)))))` in Binary oracles mode. This assigns the two one-bit inputs the outputs 1 and 0 respectively, so the result is 1. Use **Binary word** for adjacent outputs such as `f(0)f(1)` when the lesson calls them a string.
 

@@ -91,6 +91,15 @@ for values, truth in [(("qbitlabel(1,2)", "qbitlabel(2,2)", "qbitlabel(3,2)"), "
 run(r"quantum:$(s\cdot x)\oplus(-1)$", "--json", success=False)
 
 # Binary oracles keep a query until a truth table and a word are supplied.
+alphabet_sum = r"\sum_{x\in(\Sigma)^1}"
+identity_graph = "qset(vector(qtuple(vector(qbitlabel(0,1),0)),qtuple(vector(qbitlabel(1,1),1))))"
+for index in ("x", "c", "i", "e"):
+    total = data("quantum:oracles:$" + alphabet_sum.replace("x", index) + f"f({index})$")["copy_text"]
+    assert data(f'quantum:replace(({total}),"f",{identity_graph})')["copy_text"] == "1"
+nested = data("quantum:oracles:$" + alphabet_sum + r"\bigl(f(x)+" + alphabet_sum + r"f(x)\bigr)$")["copy_text"]
+assert data(f'quantum:replace(({nested}),"f",{identity_graph})')["copy_text"] == "3"
+free_key = data("quantum:oracles:$" + alphabet_sum + 'f("x")$')["copy_text"]
+assert data(f'quantum:replace(replace(({free_key}),"f",{identity_graph}),"x",qbitlabel(1,1))')["copy_text"] == "2"
 oracle_graph = 'qset(vector(qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(1,1),0))))'
 for oracle in "fgh":
     query = data(f"quantum:oracles:{oracle}(c)")["copy_text"]
