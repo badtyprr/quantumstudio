@@ -272,6 +272,12 @@ class Cases(unittest.TestCase):
         self.assertEqual(json.loads(restored.export_handle()), FIXTURES["handle"])
         self.calls()
 
+        handle = dict(FIXTURES["handle"], job_id="job-測定-🌐")
+        imported = OfflineJob.from_handle(json.dumps(handle), self.transport, self.clock.now, self.clock.sleep)
+        encoded = imported.export_handle().encode("utf-8")
+        self.assertEqual(json.loads(encoded), handle)
+        self.calls()
+
     def test_H02_unknown_submission(self):
         self.make()
         job = OfflineJob.record_submission_unknown(source_id="QB-SYNTHETIC", device_id="fixture-device",
@@ -304,7 +310,7 @@ class Cases(unittest.TestCase):
 
     def test_H04_invalid_identity(self):
         for field in ("source_id", "device_id", "job_id"):
-            for value in [None, "", " ", "x" * 257, 1, "bad\nidentity"]:
+            for value in [None, "", " ", "x" * 257, 1, "bad\nidentity", "job\u0085id", "job\ud800id"]:
                 with self.subTest(field=field, value=value):
                     self.reject_handle(dict(FIXTURES["handle"], **{field: value}))
         for value in [dict(FIXTURES["handle"], submission_state="unknown"),

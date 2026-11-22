@@ -7,6 +7,7 @@ module cannot preempt a hung transport. No SDK, credentials or network are used.
 import copy
 import json
 import math
+import unicodedata
 
 
 STATUSES = frozenset(("INITIALIZING", "QUEUED", "VALIDATING", "RUNNING",
@@ -29,7 +30,7 @@ def _identity(value, nullable=False):
     if nullable and value is None:
         return
     if (type(value) is not str or not 1 <= len(value) <= 256
-            or not value.strip() or any(ord(c) < 32 or ord(c) == 127 for c in value)):
+            or not value.strip() or any(unicodedata.category(c) in ("Cc", "Cs") for c in value)):
         raise ValueError("invalid identity field")
 
 
