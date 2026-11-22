@@ -1,0 +1,236 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "word_mode": "Binary word",
+  "formula": "$f(0)f(1)$",
+  "copy_text": "qbitword(vector(qcontrolbit(qgraphapply('f',qbitlabel(0,1))),qcontrolbit(qgraphapply('f',qbitlabel(1,1)))))",
+  "source_queries": {
+    "12": "$f(0)$",
+    "13": "$f(1)$",
+    "14": "$f(1) = 1$",
+    "17": "$f(0) = 1$",
+    "18": "$f(0) = 0$",
+    "34": "$(-1)^{f(0)}$",
+    "37": "$f(0) \\oplus f(1)$",
+    "39": "$f(1) - f(0)$"
+  },
+  "controls": [
+    {
+      "occurrence": 10,
+      "f0": 0,
+      "f1": 0,
+      "expected": "qbitlabel(0,2)"
+    },
+    {
+      "occurrence": 12,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 13,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 14,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 17,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 18,
+      "f0": 0,
+      "f1": 0,
+      "expected": "1"
+    },
+    {
+      "occurrence": 34,
+      "f0": 0,
+      "f1": 0,
+      "expected": "1"
+    },
+    {
+      "occurrence": 37,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 39,
+      "f0": 0,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 10,
+      "f0": 0,
+      "f1": 1,
+      "expected": "qbitlabel(1,2)"
+    },
+    {
+      "occurrence": 12,
+      "f0": 0,
+      "f1": 1,
+      "expected": "0"
+    },
+    {
+      "occurrence": 13,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 14,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 17,
+      "f0": 0,
+      "f1": 1,
+      "expected": "0"
+    },
+    {
+      "occurrence": 18,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 34,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 37,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 39,
+      "f0": 0,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 10,
+      "f0": 1,
+      "f1": 0,
+      "expected": "qbitlabel(2,2)"
+    },
+    {
+      "occurrence": 12,
+      "f0": 1,
+      "f1": 0,
+      "expected": "1"
+    },
+    {
+      "occurrence": 13,
+      "f0": 1,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 14,
+      "f0": 1,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 17,
+      "f0": 1,
+      "f1": 0,
+      "expected": "1"
+    },
+    {
+      "occurrence": 18,
+      "f0": 1,
+      "f1": 0,
+      "expected": "0"
+    },
+    {
+      "occurrence": 34,
+      "f0": 1,
+      "f1": 0,
+      "expected": "-1"
+    },
+    {
+      "occurrence": 37,
+      "f0": 1,
+      "f1": 0,
+      "expected": "1"
+    },
+    {
+      "occurrence": 39,
+      "f0": 1,
+      "f1": 0,
+      "expected": "-1"
+    },
+    {
+      "occurrence": 10,
+      "f0": 1,
+      "f1": 1,
+      "expected": "qbitlabel(3,2)"
+    },
+    {
+      "occurrence": 12,
+      "f0": 1,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 13,
+      "f0": 1,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 14,
+      "f0": 1,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 17,
+      "f0": 1,
+      "f1": 1,
+      "expected": "1"
+    },
+    {
+      "occurrence": 18,
+      "f0": 1,
+      "f1": 1,
+      "expected": "0"
+    },
+    {
+      "occurrence": 34,
+      "f0": 1,
+      "f1": 1,
+      "expected": "-1"
+    },
+    {
+      "occurrence": 37,
+      "f0": 1,
+      "f1": 1,
+      "expected": "0"
+    },
+    {
+      "occurrence": 39,
+      "f0": 1,
+      "f1": 1,
+      "expected": "0"
+    }
+  ]
+}

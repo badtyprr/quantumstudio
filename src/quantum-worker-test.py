@@ -67,6 +67,15 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Binary-word mode concatenates oracle outputs in source order.
+word = data("quantum:bitword:$f(0)f(1)$")["copy_text"]
+assert data("quantum:" + word)["copy_text"] == word
+graph = 'qset(vector(qtuple(vector(qbitlabel(0,1),1)),qtuple(vector(qbitlabel(1,1),0))))'
+assert data(f'quantum:replace(({word}),"f",{graph})')["copy_text"] == "qbitlabel(2,2)"
+assert data("quantum:bitword:$h((01))$")["copy_text"].count("qbitlabel(1,2)") == 1
+run("quantum:bitword:$g(2)g(1)$", "--json", success=False)
+run(f'quantum:replace(({word}),"f",{graph.replace(",1))", ",2))", 1)})', "--json", success=False)
+
 # In a one-bit XOR identity, a shared Pauli exponent is the same bit.
 bit_ket = r"\vert b\oplus (c)\rangle"
 for pauli in [r"(X^c)\vert b\rangle", r"X^c\cdot\vert b\rangle", r"X^c(\vert b\rangle)"]:

@@ -22,9 +22,24 @@ std::string orderedBitWord(const std::string &text) {
  for(size_t i=0;i<text.size();) {
   unsigned char c=text[i];
   if(asciiSpace(c)) {++i;continue;}
-  size_t first=i++;
+  size_t first=i++;std::string bit;
   if(asciiLetter(c)) {
-   if(i<text.size() && text[i]=='_') {
+   size_t open=text.find_first_not_of(" \t\r\n",i);
+   if((c=='f' || c=='g' || c=='h') && (first==0 || !asciiLetter(text[first-1])) &&
+      open!=std::string::npos && text[open]=='(') {
+    size_t pos=open,depth=0;
+    auto skipSpace=[&](){while(pos<text.size() && asciiSpace(text[pos]))++pos;};
+    do {++pos;++depth;skipSpace();} while(pos<text.size() && text[pos]=='(');
+    size_t key=pos;
+    while(pos<text.size() && (text[pos]=='0' || text[pos]=='1'))++pos;
+    size_t width=pos-key;
+    if(width==0 || width>1024)throw std::runtime_error("A binary oracle key requires 1 to 1024 binary digits.");
+    skipSpace();
+    while(depth && pos<text.size() && text[pos]==')') {++pos;--depth;skipSpace();}
+    if(depth)throw std::runtime_error("A binary oracle key requires a binary literal.");
+    bit="qcontrolbit(qgraphapply(\""+std::string(1,c)+"\",bitstring(\""+text.substr(key,width)+"\")))";
+    i=pos;
+   } else if(i<text.size() && text[i]=='_') {
     size_t index=++i;
     while(i<text.size() && std::isdigit((unsigned char)text[i]))++i;
     if(i==index)return text;
@@ -32,7 +47,7 @@ std::string orderedBitWord(const std::string &text) {
   } else if(!std::isdigit(c))return text;
   if(count==1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
   if(count++)result+=",";
-  result+=text.substr(first,i-first);
+  result+=bit.empty() ? text.substr(first,i-first) : bit;
  }
  return count ? result+"))" : text;
 }
