@@ -1733,7 +1733,10 @@ class Parser {
     } else if(name=="qtexregistersum" || name=="qtexgroupregistersum") {
      const bool grouped=name=="qtexgroupregistersum";
      std::vector<std::string> args;
-     for(unsigned k=0;k<5;++k) {if(k)need(',');args.push_back(expression());}
+     size_t alphabetStart=p;
+     args.push_back(expression());
+     if(binaryOracles && groupedToken(s,alphabetStart,p,"Σ"))args[0]="qset(vector(0,1))";
+     for(unsigned k=1;k<5;++k) {need(',');args.push_back(expression());}
      need(grouped ? ',' : ')');std::string body=grouped ? expression() : product();
      if(grouped)need(')');
      a="qregistersum("+body+","+args[0]+","+args[2]+","+args[3]+","+withoutLabelMarkers(args[4])+","+args[1]+",vector())";

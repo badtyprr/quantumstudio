@@ -579,7 +579,7 @@ void renameRegisterFamily(MathStructure &value,const MathStructure &old,const Ma
  }
  if(value.isFunction()) {
   const std::string &name=value.function()->referenceName();
-  if((name=="qregisterfamily" || name=="qindexedlabel") && value.size() && value[0].equals(old))value[0]=fresh;
+  if((name=="qregisterfamily" || name=="qregisterword" || name=="qindexedlabel") && value.size() && value[0].equals(old))value[0]=fresh;
   if(scalarProductNode(value))for(unsigned k:{0u,1u})if(value[k].equals(old))value[k]=fresh;
  }
  for(size_t k=0;k<value.size();++k) {
@@ -707,6 +707,15 @@ struct RegisterTupleBinding {
  unsigned dimension;
  bool validateOnly=false;
 };
+bool applyRegisterHistory(MathStructure &body,const MathStructure &history,const EvaluationOptions &exact) {
+ for(size_t k=0;k<history.size();k+=2) {
+  if(CALCULATOR->aborted())return false;
+  resolveIndexedLabels(body,exact);
+  replaceQuantumIndex(body,history[k],history[k+1],false,false,true);
+  bindRegisterBit(body,history[k],history[k+1],true);
+ }
+ return true;
+}
 bool bindRegisterTuple(MathStructure &value,const RegisterTupleBinding &binding,const EvaluationOptions &eo) {
  const auto &prefix=binding.prefix,&digits=binding.digits;
  const Number &first=binding.first,&last=binding.last;
@@ -735,6 +744,13 @@ bool bindRegisterTuple(MathStructure &value,const RegisterTupleBinding &binding,
  }
  const std::string name=value.function()->referenceName();
  if(registerSumNode(value)) {
+  // Resolve substitutions in the nested body before binding outer components.
+  MathStructure history;
+  if(!tensorReplacementHistory(value[6],history))return false;
+  if(history.size()) {
+   if(!freshRegisterFamily(value,m_zero,m_zero) || !applyRegisterHistory(value[0],history,eo))return false;
+   value[6].clearVector();
+  }
   for(unsigned k:{1u,2u,3u,5u})if(!bindRegisterTuple(value[k],binding,eo))return false;
   if(!value[4].equals(prefix) && !bindRegisterTuple(value[0],binding,eo))return false;
   for(size_t k=1;k<value[6].size();k+=2)if(!bindRegisterTuple(value[6][k],binding,eo))return false;
@@ -765,7 +781,7 @@ bool bindRegisterTuple(MathStructure &value,const RegisterTupleBinding &binding,
   }
   value.childrenUpdated();return true;
  }
- if(name=="qregisterfamily" && value.size()==4 && value[0].equals(prefix)) {
+ if((name=="qregisterfamily" || name=="qregisterword") && value.size()==4 && value[0].equals(prefix)) {
   MathStructure begin=value[1],end=value[2],bindings=value[3];begin.eval(eo);end.eval(eo);
   if(pendingRegisterIndex(begin) || pendingRegisterIndex(end))return binding.validateOnly;
   if(!begin.isNumber() || !end.isNumber() || !begin.number().isInteger() || !end.number().isInteger() ||
@@ -780,6 +796,23 @@ bool bindRegisterTuple(MathStructure &value,const RegisterTupleBinding &binding,
    }
    for(size_t j=0;j<k;j+=2)if(bindings[k].equals(bindings[j])) {CALCULATOR->error(true,"Duplicate bound register assignment.",NULL);return false;}
    if(!bindRegisterTuple(bindings[k+1],binding,eo))return false;
+  }
+  if(name=="qregisterword") {
+   for(size_t k=0;k<binding.alphabet.size();++k) {
+    const MathStructure &member=binding.alphabet[k];
+    if(!member.isNumber() || !(member.isZero() || member.isOne())) {
+     CALCULATOR->error(true,"A bound binary word requires a binary alphabet.",NULL);return false;
+    }
+   }
+   if(binding.validateOnly)return true;
+   for(size_t k=0;k<digits.size();++k) {
+    Number index=last;index+=Number(k);
+    if(index<end.number() || index>begin.number())continue;
+    bool supplied=false;
+    for(size_t j=0;j<bindings.size();j+=2)if(bindings[j].number()==index) {supplied=true;break;}
+    if(!supplied) {bindings.addChild(MathStructure(index));bindings.addChild(digits[k]);}
+   }
+   value[3]=bindings;value.childrenUpdated();return true;
   }
   if(span==-1) {value.setToIdentityMatrix(1);return true;}
   if(!basisAvailable())return false; // A sparse alphabet does not declare an ambient basis.
@@ -854,12 +887,7 @@ int calculateRegisterSum(MathStructure &out,const MathStructure &raw,const Evalu
  // Freshening excludes every saved replacement value before replay begins.
  if(!freshRegisterFamily(args,m_zero,m_zero))return 0;
  MathStructure body=args[0];
- for(size_t k=0;k<history.size();k+=2) {
-  if(CALCULATOR->aborted())return 0;
-  resolveIndexedLabels(body,exact);
-  replaceQuantumIndex(body,history[k],history[k+1],false,false,true);
-  bindRegisterBit(body,history[k],history[k+1],true);
- }
+ if(!applyRegisterHistory(body,history,exact))return 0;
  // Validate bound uses before either expansion cutoff. This traverses the
  // scoped body without constructing a tuple or requiring a complete basis.
  MathStructure validationBody=body,emptyDigits;emptyDigits.clearVector();
