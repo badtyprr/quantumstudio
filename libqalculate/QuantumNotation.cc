@@ -2619,8 +2619,47 @@ class Parser {
   ket="qcomputationalket(qoplus("+bit(bits[0])+","+bit(bits[1])+"))";
   action="qmul(qpower("+power[0]+","+bit(power[1])+"),qcomputationalket("+bit(state[0])+"))";
  }
+ // A minus-sign phase controlled by a one-bit XOR ket uses the numerical
+ // value of that same bit, including when a caller supplies a typed word.
+ static bool bindPhaseBit(std::string &state,const std::string &name,unsigned depth=0) {
+  if(depth>64 || state.find("qcomputationalket(qoplus")==std::string::npos)return false;
+  for(const std::string op:{"qsub","qadd"}) {
+   auto parts=bitCall(state,op);
+   if(parts.size()!=2)continue;
+   bool left=bindPhaseBit(parts[0],name,depth+1),right=bindPhaseBit(parts[1],name,depth+1);
+   if(left || right)state=op+"("+parts[0]+","+parts[1]+")";
+   return left || right;
+  }
+  const auto ket=bitCall(state,"qcomputationalket");
+  if(ket.size()!=1)return false;
+  auto bits=bitCall(ket[0],"qoplus");
+  if(bits.size()!=2)return false;
+  for(size_t i=0;i<2;++i) {
+   const auto word=bitCall(bits[1-i],"qbitlabel");
+   if(bits[i]!=name || word.size()!=2 || word[1]!="1")continue;
+   bits[i]="qcontrolbit("+indexableLabel(name)+")";
+   state="qcomputationalket(qoplus("+bits[0]+","+bits[1]+"))";return true;
+  }
+  return false;
+ }
+ static void prepareBitPhase(std::string &state,std::string &phase) {
+  if(state.find("qcomputationalket(qoplus")==std::string::npos)return;
+  for(const std::string op:{"qadjacent","qmul","qcenterdot"}) {
+   auto product=bitCall(phase,op);
+   if(product.size()!=2)continue;
+   for(size_t i=0;i<2;++i) {
+    bool negative=!product[i].empty() && product[i][0]=='-';
+    auto power=bitCall(negative ? product[i].substr(1) : product[i],"qpower");
+    if(power.size()!=2 || power[0]!="-1" || power[1].size()!=1 || power[1][0]<'a' || power[1][0]>'z')continue;
+    if(!bindPhaseBit(state,power[1]))continue;
+    product[i]=(negative ? "-qpower(-1,qcontrolbit(" : "qpower(-1,qcontrolbit(")+indexableLabel(power[1])+"))";
+    phase=op+"("+product[0]+","+product[1]+")";return;
+   }
+  }
+ }
  void prepareEquality(std::string &left,std::string &right) {
   prepareBitAction(left,right);prepareBitAction(right,left);
+  prepareBitPhase(left,right);prepareBitPhase(right,left);
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);

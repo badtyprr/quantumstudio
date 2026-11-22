@@ -1183,6 +1183,14 @@ class TeXReader {
    if(input.compare(at,size.size(),size)==0) {at=input.find_first_not_of(" \t\r\n",at+size.size());break;}
   return at!=std::string::npos && input[at]=='(' ? at : std::string::npos;
  }
+ bool barePowerBeforeGroup(std::string &result) {
+  size_t letter=input.find_first_not_of(" \t\r\n",pos+1);
+  if(letter==std::string::npos || !asciiLetter(input[letter]) ||
+     openingParenthesis(letter+1)==std::string::npos)return false;
+  // TeX ends an unbraced superscript after one token. A following group
+  // multiplies the power, even when the base is a scalar and the group a ket.
+  result+="^("+input.substr(letter,1)+")";pos=letter+1;return true;
+ }
  // The state is supplied by the surrounding lesson. Keep its distribution
  // as a free name until the caller supplies the probabilities.
  std::string eventProbability() {
@@ -2609,13 +2617,7 @@ class TeXReader {
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='^' && degreeSuffix())result+=" qtexdegrees ";
-   else if(input[pos]=='^' && pos+2<input.size() && asciiLetter(input[pos+1]) &&
-           !result.empty() && std::string("XYZ").find(result.back())!=std::string::npos &&
-           (result.size()==1 || !asciiLetter(result[result.size()-2])) &&
-           openingParenthesis(pos+2)!=std::string::npos) {
-    // A bare TeX superscript ends after one letter, before the grouped state.
-    result+="^("+input.substr(pos+1,1)+")";pos+=2;
-   }
+   else if(input[pos]=='^' && barePowerBeforeGroup(result))continue;
    else if(input[pos]=='_') {
     const size_t subscriptStart=pos;
     if(input.compare(pos,10,"_{\\mathsf{")==0) {

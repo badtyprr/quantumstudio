@@ -505,6 +505,11 @@ bool resolveBasisDimension(MathStructure &value,const MathStructure &dimension,u
  if(value.isFunction()) {
   const std::string &name=value.function()->referenceName();
   if(name=="qcomputationalket" && value.size()==1) {
+   // A word-valued XOR supplies its own ket width when its operands are
+   // bound. An ambient dimension cannot turn the word into a scalar index.
+   const MathStructure &label=value[0];
+   if(label.isFunction() && label.function()->referenceName()=="qoplus" &&
+      label.containsFunction(CALCULATOR->getFunction("qbitlabel")))return false;
    MathStructure index=value[0];value.set(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);return true;
   }
   if((name=="qadd" || name=="qsub") && value.size()==2) {
