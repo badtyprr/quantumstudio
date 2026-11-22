@@ -1161,6 +1161,13 @@ class TeXReader {
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setDepth=0;
+ size_t openingParenthesis(size_t start) const {
+  size_t at=input.find_first_not_of(" \t\r\n",start);
+  if(at==std::string::npos)return at;
+  for(const std::string size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})
+   if(input.compare(at,size.size(),size)==0) {at=input.find_first_not_of(" \t\r\n",at+size.size());break;}
+  return at!=std::string::npos && input[at]=='(' ? at : std::string::npos;
+ }
  // The state is supplied by the surrounding lesson. Keep its distribution
  // as a free name until the caller supplies the probabilities.
  std::string eventProbability() {
@@ -2196,11 +2203,8 @@ class TeXReader {
     std::string event=eventProbability();if(!event.empty())return event;
    }
    if(name=="operatorname" && a=="F") {
-    size_t at=input.find_first_not_of(" \t\r\n",pos);
+    size_t at=openingParenthesis(pos);
     if(at!=std::string::npos) {
-     for(const std::string size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})
-      if(input.compare(at,size.size(),size)==0) {at=input.find_first_not_of(" \t\r\n",at+size.size());break;}
-     if(at!=std::string::npos && input[at]=='(') {
       // Only the two-argument operator is the lesson's fidelity notation.
       int depth=1, commas=0;
       while(++at<input.size() && depth) {
@@ -2210,7 +2214,6 @@ class TeXReader {
        else if(c==',' && depth==1 && input[at-1]!='\\')++commas;
       }
       if(!depth && commas==1)a="qrootfidelity";
-     }
     }
    }
    if(name=="operatorname" && a=="lg")a="qbitlength";
@@ -2591,6 +2594,13 @@ class TeXReader {
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='^' && degreeSuffix())result+=" qtexdegrees ";
+   else if(input[pos]=='^' && pos+2<input.size() && asciiLetter(input[pos+1]) &&
+           !result.empty() && std::string("XYZ").find(result.back())!=std::string::npos &&
+           (result.size()==1 || !asciiLetter(result[result.size()-2])) &&
+           openingParenthesis(pos+2)!=std::string::npos) {
+    // A bare TeX superscript ends after one letter, before the grouped state.
+    result+="^("+input.substr(pos+1,1)+")";pos+=2;
+   }
    else if(input[pos]=='_') {
     const size_t subscriptStart=pos;
     if(input.compare(pos,10,"_{\\mathsf{")==0) {

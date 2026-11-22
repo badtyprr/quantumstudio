@@ -73,9 +73,25 @@ class QuantumBinaryFunction: public MathFunction {
  public:
  QuantumBinaryFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qcomparisonliteral")setArgumentDefinition(2,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumBinaryFunction(*this);}
+ bool representsScalar(const MathStructure &value) const {
+  return op=="qcontrolbit" || MathFunction::representsScalar(value);
+ }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qcontrolbit") {
+   if(a.isUnknown() || (a.representsScalar() && a.containsUnknowns()))return 0;
+   if(isQuantumBitLabel(a) && a.size()==2) {
+    MathStructure value=a[0],width=a[1];
+    const auto state=validateQuantumBitLabel(value,width,eo);
+    if(state==QuantumBitLabelState::Invalid)return 0;
+    if(width.isNumber() && !width.isOne()) {CALCULATOR->error(true,"A qubit control requires a one-bit word.",NULL);return 0;}
+    if(state!=QuantumBitLabelState::Concrete)return 0;
+    out=value;return 1;
+   }
+   if(a.isNumber() && !a.isApproximate() && (a.isZero() || a.isOne())) {out=a;return 1;}
+   CALCULATOR->error(true,"A qubit control requires zero, one or a one-bit word.",NULL);return 0;
+  }
   if(op=="qallbitdot") {
    MathStructure width=args[1],zero(0);
    if(validateQuantumBitLabel(zero,width,eo)==QuantumBitLabelState::Invalid)return 0;
@@ -408,5 +424,6 @@ void registerQuantumBinary(Calculator &calculator) {
  calculator.addFunction(new QuantumBinaryFunction("qbinarytail",2));
  calculator.addFunction(new QuantumBinaryFunction("qbinaryfraction",3));
  calculator.addFunction(new QuantumBinaryFunction("qbitword",1));
+ calculator.addFunction(new QuantumBinaryFunction("qcontrolbit",1));
  for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }
