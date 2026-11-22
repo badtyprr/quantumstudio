@@ -16,7 +16,7 @@ def search_probability(size, marked, iterations):
         mean = sum(phased) / size
         state = [2 * mean - a for a in phased]
     assert sum(a*a for a in state) == size
-    return sum(a*a for a in state[:marked]) / size
+    return sum((a*a for a in state[:marked]), Fraction(0)) / size
 
 
 def main():
@@ -26,8 +26,11 @@ def main():
     env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent / "data"))
     inventory = json.loads(Path(__file__).with_name("ibm034-inventory.json").read_bytes())
 
-    def evaluate(expression):
-        result = subprocess.run([worker, "--json"], input=("quantum:" + expression).encode(),
+    def evaluate(expression, approximate=False):
+        command = [worker, "--json"]
+        if approximate:
+            command.append("--approx")
+        result = subprocess.run(command, input=("quantum:" + expression).encode(),
                                 check=True, capture_output=True, env=env, timeout=30)
         return json.loads(result.stdout)["copy_text"]
 
@@ -74,9 +77,34 @@ def main():
                 if value < 0:
                     continue
                 check(index, [(call, value), ("'N'", size), ("'s'", marked)], value >= threshold)
+    schedule = inventory["rows"][119]
+    assert schedule["id"].endswith("-M120")
+    membership = evaluate(schedule["literal"])
+    assert evaluate(membership) == membership
+    randomized = []
+    for size, upper in [(2, 1), (4, 1), (8, 2), (16, 3), (32, 4)]:
+        bound = f"replace(({membership}),'N',{size})"
+        for iteration in range(-1, upper+3):
+            actual = evaluate(f"replace(({bound}),'t',{iteration})")
+            assert actual == str(int(1 <= iteration <= upper)), (size, iteration, actual)
+
+        failures = []
+        for marked in range(size+1):
+            trials = range(1, upper+1)
+            probability = sum(search_probability(size, marked, t) for t in trials)/upper
+            angle = f"asin(sqrt({marked}/{size}))"
+            terms = "+".join(f"sin({2*t+1}*{angle})^2" for t in trials)
+            value = evaluate(f"({terms})/{upper}", approximate=True)
+            observed = Fraction(value.replace(" ∕ ", "/"))
+            assert abs(observed-probability) < Fraction(1, 10**28), (size, marked, observed)
+            if marked and probability <= Fraction(2, 5):
+                failures.append(dict(marked=marked, probability=str(probability)))
+        randomized.append(dict(size=size, upper=upper, marked_counts=size+1,
+                               failures_of_strict_bound=failures))
+    assert dict(marked=3, probability="0") in randomized[1]["failures_of_strict_bound"]
     print(json.dumps(dict(source=inventory["source"], source_sha256=inventory["source_sha256"],
                           worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-                          simulations=simulations, checks_by_occurrence=checks,
+                          simulations=simulations, randomized_schedule=randomized, checks_by_occurrence=checks,
                           copy_reentries=len(copies)), indent=2))
 
 
