@@ -1169,6 +1169,21 @@ void bindStateEquationParameter(MathStructure &equation,const MathStructure &par
   equation.childrenUpdated();
  }
 }
+// A free subscript can also be part of an explicitly assigned channel name.
+bool exposeChannelName(MathStructure &value,const MathStructure &name,const std::string &index) {
+ bool changed=false;
+ int binder=quantumBinderPosition(value);
+ bool shadows=binder>=0 && scalarSymbolEqual(value[binder],MathStructure(index,true));
+ if(value.isFunction() && value.size() && (value.function()->referenceName()=="qkrausapply" ||
+    value.function()->referenceName()=="qchoi")) {
+  const MathStructure &ref=value[0];
+  if(ref.isFunction() && ref.function()->referenceName()=="qindexedlabel" && ref.size()==3 &&
+     ref[0].isSymbolic() && ref[2].isSymbolic() && ref[2].symbol().empty() &&
+     name.symbol()==ref[0].symbol()+index && scalarSymbolEqual(ref[1],MathStructure(index,true))) {value[0]=name;changed=true;}
+ }
+ for(size_t k=0;k<value.size();++k)if(k!=0 || !shadows)changed=exposeChannelName(value[k],name,index) || changed;
+ if(changed)value.childrenUpdated();return changed;
+}
 // Expose an implicit coefficient as a replaceable value. Coordinates stay
 // separate from values, so repeated substitutions never rewrite lookup keys.
 void prepareArrayEntry(MathStructure &term,const MathStructure &target) {
@@ -2222,6 +2237,11 @@ class QuantumIndexedFunction: public MathFunction {
     prepareFreeEntry(out,at->first);
     prepareArrayEntry(out,at->first);
     resolveIndexedLabels(out,eo,&at->first);
+    if(at->first.isSymbolic()) {
+     const std::string &label=at->first.symbol();
+     if(label.size()>=3 && label[label.size()-2]=='_' && std::isalpha((unsigned char)label.back()))
+      exposeChannelName(out,at->first,label.substr(label.size()-1));
+    }
     // Replace existing occurrences before storing a new assignment: otherwise
     // x_0 -> x_0+1 would be applied twice inside the newly stored value.
     bool replaced=out.replace(at->first,at->second,false,false,at->first.containsUnknowns());

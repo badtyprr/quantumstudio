@@ -1013,8 +1013,27 @@ class QuantumAlgebraFunction: public MathFunction {
   }
   if(op=="qkrausapply") {
    MathStructure operators=raw[0];operators.eval(eo);
-   MathStructure density=raw[1];density.eval(eo);
-   if(!operators.isVector() || !density.isMatrix())return 0;
+   if(!operators.isVector())return 0;
+   MathStructure density=raw[1];
+   if(operators.size() && operators[0].isVector() && density.isFunction() && density.size()==2 &&
+      (density.function()->referenceName()=="qadjacent" || density.function()->referenceName()=="qmul")) {
+    // Numeric basis labels take their dimension from the input columns of K.
+    // Named states remain editable until their actual vectors are supplied.
+    const auto &first=operators[0];
+    MathStructure dimension(static_cast<int>(first.isMatrix() ? first.columns() : first.size()));
+    auto resolve=[&](MathStructure &ket) {
+     if(!ket.isFunction() || ket.size()!=1 ||
+        (ket.function()->referenceName()!="qketstate" && ket.function()->referenceName()!="qnamedket"))return;
+     MathStructure index=ket[0];index.eval(eo);
+     if(index.isNumber())ket.set(CALCULATOR->getFunction("qbasis"),&index,&dimension,NULL);
+    };
+    resolve(density[0]);
+    if(density[1].isFunction() && density[1].size()==1 && density[1].function()->referenceName()=="qdag") {
+     resolve(density[1][0]);density[1].childrenUpdated();
+    }
+    density.childrenUpdated();
+   }
+   density.eval(eo);if(!density.isMatrix())return 0;
    out.set(CALCULATOR->getFunction("qchannel"),&density,&operators,NULL);return 1;
   }
   if(op=="qstateaction") {
