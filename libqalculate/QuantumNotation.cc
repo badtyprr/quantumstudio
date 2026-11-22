@@ -2605,8 +2605,6 @@ class Parser {
     size_t end=p;
     if(take(',') && (takeSetOperator("...") || takeSetOperator("…"))) {
      need(',');right="qindexrange("+right+","+setUnion()+")";relation="∈";equalities=false;
-     // In a declared range, c names an index even when the physical constant is available.
-     if(left=="c")left=indexableLabel(left);
     } else p=end;
    }
    // The column index in c = 0,...,n-1 or c in that integer range is a free variable.
