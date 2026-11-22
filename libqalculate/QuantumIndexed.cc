@@ -1200,6 +1200,43 @@ void prepareFreeEntry(MathStructure &term,const MathStructure &target) {
  MathStructure family(CALCULATOR->getFunction("qindexedentries"),&familyName,&index,&index,&history,NULL);
  term.set(CALCULATOR->getFunction(ket ? "qspectralket" : "qspectralentry"),&family,&index,NULL);
 }
+// Recognize the block expansion only when its matrix-unit row and column
+// indices agree with the corresponding roots and the middle factor is free.
+bool measurementBlockSum(MathStructure &out,const MathStructure &sum) {
+ auto call=[](const MathStructure &value,const char *name,size_t count) {
+  return value.isFunction() && value.function()->referenceName()==name && value.size()==count;
+ };
+ const MathStructure &inner=sum[0];
+ if(!call(inner,"qsum",4) || !sum[1].isZero() || !inner[1].isZero() ||
+    !sum[2].equals(inner[2]) || sum[3].equals(inner[3]) || inner[2].contains(sum[3]) ||
+    (!inner[3].isSymbolic() && !inner[3].isUnknown()))return false;
+ const MathStructure &term=inner[0];
+ if(!call(term,"qtensorchain",2) || !call(term[0],"qadjacent",2) ||
+    !term[1].isVector() || term[1].size()!=3)return false;
+ const MathStructure &ket=term[0][0],&bra=term[0][1],&factors=term[1];
+ if(!call(ket,"qketstate",1) || !ket[0].equals(sum[3]) || !call(bra,"qdag",1) ||
+    !call(bra[0],"qketstate",1) || !bra[0][0].equals(inner[3]) ||
+    factors[1].contains(sum[3]) || factors[1].contains(inner[3]))return false;
+ for(size_t k:{size_t(0),size_t(2)}) {
+  if(!call(factors[k],"qsqrt",1) || !call(factors[k][0],"qindexedlabel",3))return false;
+  const MathStructure &label=factors[k][0];
+  if(!label[0].isSymbolic() || !label[1].equals(k==0 ? sum[3] : inner[3]) ||
+     !label[2].isSymbolic() || !label[2].symbol().empty())return false;
+ }
+ if(!factors[0][0][0].equals(factors[2][0][0]))return false;
+ MathStructure bindings;bindings.clearVector();
+ MathStructure family(CALCULATOR->getFunction("qindexedentries"),&factors[0][0][0],&sum[1],&sum[2],&bindings,NULL);
+ out.set(CALCULATOR->getFunction("qmeasurementblocks"),&family,&factors[1],NULL);
+ return true;
+}
+void prepareMeasurementBlockSums(MathStructure &value) {
+ if(value.isFunction() && value.function()->referenceName()=="qsum" && value.size()==4) {
+  MathStructure blocks;
+  if(measurementBlockSum(blocks,value)) {value=blocks;return;}
+ }
+ for(size_t i=0;i<value.size();++i)prepareMeasurementBlockSums(value[i]);
+}
+
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
@@ -2141,6 +2178,8 @@ class QuantumIndexedFunction: public MathFunction {
    // An earlier replacement with a structured target owns its target and
    // replacement arguments. Apply it before rewriting any later free labels.
    if(out.isFunction() && out.function()==this && out.size()==3)out.eval(eo);
+   if(out.containsFunction(CALCULATOR->getFunction("qsum"),true,true))
+    prepareMeasurementBlockSums(out);
    prepareSpectralLookups(out);
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
@@ -2379,6 +2418,33 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qmeasurementblocks") {
+   if(!indexedSpectralFamily(raw[0]))return 0;
+   auto rootFunction=CALCULATOR->getFunction("qblockroots");
+   MathStructure request(rootFunction,&raw[0],NULL),roots;
+   // Generic evaluation flattens a one-entry list of matrices.
+   if(rootFunction->calculate(roots,request,eo)!=1 || !roots.size())return 0;
+   MathStructure density=raw[1];density.eval(eo);
+   if(!density.isMatrix() && density.containsUnknowns())return 0;
+   const size_t width=roots[0].rows(),count=roots.size();
+   if(!density.isMatrix() || density.rows()!=width || density.columns()!=width) {
+    CALCULATOR->error(true,"The middle matrix must have the same dimensions as the measurement effects.",NULL);return 0;
+   }
+   MathStructure column,row;column.clearMatrix();row.clearMatrix();
+   column.resizeMatrix(count*width,width,m_zero);row.resizeMatrix(width,count*width,m_zero);
+   for(size_t k=0;k<count;++k) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c) {
+     element(column,k*width+r,c)=element(roots[k],r,c);
+     element(row,r,k*width+c)=element(roots[k],r,c);
+    }
+   }
+   out=column;out*=density;out*=row;out.eval(eo);
+   if(width*count==1 && !out.isVector()) {
+    MathStructure scalar=out;out.clearMatrix();out.resizeMatrix(1,1,scalar);
+   }
+   return 1;
+  }
   if(op=="qmissingblock" || op=="qopenblockcolumn")return 0;
   if(op=="qblockroots" || op=="qblockcolumn" || op=="qmatchblockcolumn") {
    MathStructure blocks;
@@ -2544,6 +2610,7 @@ class QuantumIndexedFunction: public MathFunction {
    if((!raw[3].isSymbolic() && !raw[3].isVariable()) || (raw[3].isVariable() && raw[3].variable()->isKnown())) {
     CALCULATOR->error(true,"A finite sum index must be a symbolic variable.",NULL);return 0;
    }
+   if(measurementBlockSum(out,raw))return 1;
    EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
    MathStructure first=raw[1],last=raw[2];first.eval(exact);last.eval(exact);
    if(quantumBasisSum(raw[0],first,last,raw[3],out,eo))return 1;
@@ -3108,6 +3175,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qreverseindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qmeasurementblocks",2));
  calculator.addFunction(new QuantumIndexedFunction("qblockroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
  calculator.addFunction(new QuantumIndexedFunction("qopenblockcolumn",2));
