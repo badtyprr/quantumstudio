@@ -236,7 +236,7 @@ for angle in (r"\pi=180^{\circ}", r"2\pi=360^\circ", r"\cos(60^{\circ})=1/2",
 assert data(r"quantum:\pi=90^{\circ}")["copy_text"] == "0"
 
 matrix_unit = r"\vert 0\rangle\langle 1\vert"
-for channel_tex, name in [(r"\Delta", "Δ"), (r"\Lambda", "Λ"), (r"\Phi", "Φ"), (r"\Delta_{3}", "Δ_3")]:
+for channel_tex, name in [(r"\Delta", "Δ"), (r"\Lambda", "Λ"), (r"\Phi", "Φ"), (r"\Delta_{3}", "Δ_3"), (r"\Delta_{m}", "Δ_m")]:
     action = data("quantum:" + channel_tex + r"\bigl(" + matrix_unit + r"\bigr)")["copy_text"]
     assert data(f'quantum:replace(({action}),"{name}",vector(X))=[0,0;1,0]')["copy_text"] == "1"
     choi = data(f"quantum:J({channel_tex})")["copy_text"]
