@@ -504,7 +504,8 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm021-descending-column.json docs/le
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-copy-context.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm022-foundations.md docs/learning-evidence/aud01/ibm023-factoring-baseline.json docs/learning-evidence/aud01/ibm023-factoring-replay.json docs/learning-evidence/aud01/replay-ibm023.py
-EXTRA_DIST += docs/learning-evidence/IBM-128.md docs/learning-evidence/IBM-134.md docs/learning-evidence/IBM-135.md docs/learning-evidence/IBM-138.md
+EXTRA_DIST += docs/learning-evidence/IBM-128.md docs/learning-evidence/IBM-134.md docs/learning-evidence/IBM-135.md docs/learning-evidence/IBM-136.md docs/learning-evidence/IBM-138.md
+EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm136-staffing.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm001-018-inventory.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm018-semantics.py docs/learning-evidence/aud01/replay-ibm018-diagrams.py docs/learning-evidence/aud01/ibm018-diagrams.json
 EXTRA_DIST += docs/learning-evidence/aud01/indexed-tuple-endpoints.json docs/learning-evidence/aud01/partial-trace-operands.json docs/learning-evidence/aud01/deferred-named-trace.json docs/learning-evidence/aud01/replay-ibm005-trace-products.py docs/learning-evidence/aud01/weighted-projector-equations.json
