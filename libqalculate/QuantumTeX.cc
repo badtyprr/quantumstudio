@@ -553,6 +553,39 @@ std::string ungroupTeX(std::string text) {
  }
  return text;
 }
+// A displayed prose list has independent results, just like gathered rows.
+// Consume complete matrix environments so commas in their cells stay local.
+std::string gatheredMatrixList(const std::string &input) {
+ const std::string begin="\\begin{pmatrix}",end="\\end{pmatrix}";
+ static const std::regex separator(R"((,)?\s*(?:\\q?quad\s*)?(?:(\\text\{\s*and\s*\})\s*(?:\\q?quad\s*)?)?)");
+ size_t pos=input.find_first_not_of(" \t\r\n");
+ std::string rows;
+ bool last=false;
+ size_t count=0;
+ while(pos!=std::string::npos && input.compare(pos,begin.size(),begin)==0) {
+  size_t stop=pos+begin.size(),depth=1;
+  while(depth) {
+   stop=input.find('\\',stop);
+   if(stop==std::string::npos)return {};
+   if(input.compare(stop,begin.size(),begin)==0) {++depth;stop+=begin.size();}
+   else if(input.compare(stop,end.size(),end)==0) {--depth;stop+=end.size();}
+   else ++stop;
+  }
+  if(count++)rows+="\\\\";
+  rows.append(input,pos,stop-pos);
+  pos=input.find_first_not_of(" \t\r\n",stop);
+  if(pos==std::string::npos || (input[pos]=='.' && input.find_first_not_of(" \t\r\n",pos+1)==std::string::npos))
+   return count>1 ? "\\begin{gathered}"+rows+"\\end{gathered}" : "";
+  if(last)return {};
+  std::smatch match;
+  if(!std::regex_search(input.cbegin()+pos,input.cend(),match,separator,std::regex_constants::match_continuous))return {};
+  last=match[2].matched;
+  if(!match[1].matched && !last)return {};
+  pos+=match.length();
+ }
+ return {};
+}
+
 std::vector<std::string> indexedParts(const std::string &raw,const std::string &separator) {
  std::vector<std::string> parts;size_t start=0;unsigned nesting=0;char quote=0;
  for(size_t i=0;i<raw.size();++i) {
@@ -3022,6 +3055,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  if(s.find("\\end{pmatrix}")!=std::string::npos) {
+   std::string list=gatheredMatrixList(s);
+   if(!list.empty())s=std::move(list);
+  }
   static const std::regex dimensionOrder(R"(^\s*([a-z])'\s*([<>])\s*([a-z])\s*$)");
   std::smatch dimensions;
   if(std::regex_match(s,dimensions,dimensionOrder))return "\""+dimensions[1].str()+"_prime\""+dimensions[2].str()+"\""+dimensions[3].str()+"\"";

@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Expected an operand",
+  "lessons": [
+    {
+      "lesson": "IBM-002",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics.ipynb",
+      "source_sha256": "784e96f7c4b5b905384f91241a024c3828e2259f0f4d05f05bd4b2cca0cd2562",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 1336,
+          "end": 1670,
+          "literal_sha256": "157361ac079a063da07ec464cc4819f1d29dc0a7fa7b44061e34ad1fe95ba6e5",
+          "outcome": "result",
+          "copy_text": "\\begin{gathered}matrix(2,2,[1,0,0,0])\\\\matrix(2,2,[1 \u2215 2,1 \u2215 2,1 \u2215 2,1 \u2215 2])\\\\matrix(2,2,[3 \u2215 4,i \u2215 8,\u2212i \u2215 8,1 \u2215 4])\\\\matrix(2,2,[1 \u2215 2,0,0,1 \u2215 2])\\end{gathered}"
+        }
+      ]
+    }
+  ]
+}
