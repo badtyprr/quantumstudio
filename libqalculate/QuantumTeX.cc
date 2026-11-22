@@ -653,14 +653,19 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  // All later block columns are either explicitly zero or independently unspecified.
  const std::string &fill=cells.front()[1];
  if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {
-  const bool roots=tex && cells.front()[0].compare(0,6,"\\sqrt{")==0;
+  auto rootArgument=[](const std::string &cell) {
+   if(cell.compare(0,5,"\\sqrt")!=0)return std::string();
+   std::string argument=trim(cell.substr(5));
+   if(argument.size()<3 || argument.front()!='{' || argument.back()!='}')return std::string();
+   return trim(argument.substr(1,argument.size()-2));
+  };
+  const bool roots=tex && !rootArgument(cells.front()[0]).empty();
   if(roots) {
    for(size_t r=0;r<height;++r) {
     if(r==height-2)continue;
     if(cells[r].empty())invalid();
-    std::string &cell=cells[r][0];
-    if(cell.size()<8 || cell.compare(0,6,"\\sqrt{")!=0 || cell.back()!='}')invalid();
-    cell=trim(cell.substr(6,cell.size()-7));
+    cells[r][0]=rootArgument(cells[r][0]);
+    if(cells[r][0].empty())invalid();
    }
   }
   size_t sub=cells.front()[0].find('_');

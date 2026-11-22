@@ -64,8 +64,13 @@ measurement_column = block_column.replace("A_{0}", r"\sqrt{P_0}").replace(
     "A_{1}", r"\sqrt{P_1}").replace("A_{N-1}", r"\sqrt{P_{m-1}}")
 measurement_copy = data("quantum:" + measurement_column)["copy_text"]
 assert data("quantum:" + measurement_copy)["copy_text"] == measurement_copy
+assert data("quantum:" + measurement_column.replace(r"\sqrt{", r"\sqrt {"))["copy_text"] == measurement_copy
+scalar_effects = f"replace(replace(replace(({measurement_copy}),m,2),P_0,matrix(1,1,[9/25])),P_1,matrix(1,1,[16/25]))"
+assert data(f"quantum:replace(({scalar_effects}),U,[3,-4;4,3]/5)")["copy_text"] == "1"
+assert data(f"quantum:replace(({scalar_effects}),U,[-3,-4;4,3]/5)")["copy_text"] == "0"
 effects = f"replace(replace(replace(({measurement_copy}),m,2),P_0,[1/2,-7/50;-7/50,1/2]),P_1,[1/2,7/50;7/50,1/2])"
 for candidate, expected in [
+    ("[7/10,-1/10,-7/10,-1/10;-1/10,7/10,-1/10,-7/10;7/10,1/10,7/10,-1/10;1/10,7/10,-1/10,7/10]", "1"),
     ("[7/10,-1/10,0,0;-1/10,7/10,0,0;7/10,1/10,0,0;1/10,7/10,0,0]", "1"),
     ("[7/10,-1/10,1,0;-1/10,7/10,0,1;7/10,1/10,0,0;1/10,7/10,0,0]", "1"),
     # Negating the first root leaves its square unchanged.

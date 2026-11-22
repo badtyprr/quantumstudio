@@ -2421,6 +2421,7 @@ class QuantumIndexedFunction: public MathFunction {
       QuantumValidity positivity=quantumPositiveSemidefinite(proposed,eo);
       if(positivity==QuantumValidity::Valid) {
        MathStructure squared=proposed;squared*=proposed;squared.eval(eo);
+       if(width==1 && !squared.isVector()) {element(candidate,k,0)=squared;continue;}
        if(!squared.isMatrix())return 0;
        for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c)
         element(candidate,k*width+r,c)=element(squared,r,c);
