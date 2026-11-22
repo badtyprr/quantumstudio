@@ -224,6 +224,16 @@ for count, expected in ((73, "1"), (31, "0")):
 assert data("quantum:sets:replace(B_{k},k,7)")["copy_text"] == '"B_7"'
 assert data("quantum:C_n")["copy_text"] == '"C_n"'
 
+# A binary-oracle query and its surrounding predicate share the same search variable.
+search_graph = "qset(vector(qtuple(vector(qbitlabel(0,1),0)),qtuple(vector(qbitlabel(1,1),1))))"
+for search_symbol in "nxyz":
+    query = data(f"quantum:oracles:$f({search_symbol})=1$")["copy_text"]
+    for index in range(2):
+        bound = f"replace(replace(({query}),f,{search_graph}),{search_symbol},bitstring({index},1))"
+        assert data("quantum:" + bound)["copy_text"] == str(index)
+xor_ket = data(r"quantum:bitword:$\vert a \oplus f(x)\rangle$")["copy_text"]
+assert data(f"quantum:replace(replace(replace(({xor_ket}),a,1),f,{search_graph}),x,bitstring(1,1))")["cells"] == [["1"], ["0"]]
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

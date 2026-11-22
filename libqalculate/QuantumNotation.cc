@@ -965,6 +965,7 @@ class Parser {
     std::string index=expression();ws();basisXorContext=previousXor;
     if(p!=s.size())throw std::runtime_error("Invalid arithmetic basis index.");
     s=outer;p=outerPosition;
+    if(binaryWordNotation && wordXor)return "qbinaryket("+index+")";
     return "qcomputationalket("+index+")";
    }
    std::string outer=s;size_t outerPosition=p;s=label.substr(mark+1);p=0;
@@ -2072,7 +2073,8 @@ class Parser {
       if(key.size()>1024)throw std::runtime_error("A binary oracle key supports at most 1024 bits.");
       args[0]="qbitlabel("+binaryNumeral(key)+","+std::to_string(key.size())+")";
      } else if(binaryOracles && key.size()==1 && key[0]>='a' && key[0]<='z') {
-      args[0]=indexableLabel(key);
+      // Keep the calculator's ordinary unknowns bindable both inside and outside f(x).
+      args[0]=std::string("nxyz").find(key[0])==std::string::npos ? indexableLabel(key) : key;
      }
      args.insert(args.begin(),indexableLabel(name));
      name=!binaryOracles && key.size()==1 && std::isalpha(static_cast<unsigned char>(key[0])) ? "qnamedapplication" : "qgraphapply";
