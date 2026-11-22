@@ -1362,12 +1362,12 @@ mask bits from least significant to most significant and tries X, Z, then Y.
 Each result has positive Pauli sign. Matching a syndrome restores the code
 space; success on the logical information also depends on the actual error.
 
-`compact_distance(g,bound)` searches weights in ascending order through an
-explicit bound of 1–3. A returned integer is the exact minimum: every smaller
-weight was exhausted and the witness commutes with the checks but lies outside
-their span. If no witness is found, it reports that distance is undetermined;
-it never reports the bound as a distance. Stabilizer states with no logical
-qubit reject this distance convention. This is not a general decoder.
+`compact_distance(g,bound)` takes a weight bound from 1 to 25. It checks
+qubit subsets in increasing order of size and returns the first size that can
+support a logical Pauli operator. A bound equal to the number of qubits covers
+every support. If the bound is too small, the calculation reports that the
+distance is undetermined. A stabilizer state has no logical qubit and gives a
+diagnostic. The separate correction search accepts error weights up to three.
 
 Compact output uses normal vector serialization and can be copied/re-entered.
 Dense `pauli`, `qpauliword` and existing dense stabilizer APIs keep their
