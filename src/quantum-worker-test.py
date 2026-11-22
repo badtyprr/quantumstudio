@@ -163,6 +163,14 @@ aligned_hadamards = data(
 assert data(f'quantum:replace(replace(({aligned_hadamards}),"x_1",0),"x_0",1)')["copy_text"] == "1"
 assert data(r"quantum:oracles:$\sum_{a\in\Sigma}(-1)^a$")["copy_text"] == "0"
 
+zero_word = data(r"quantum:bitword:$0^n$")["copy_text"]
+assert data(f"quantum:replace(({zero_word}),n,4)")["copy_text"] == "qbitlabel(0,4)"
+assert data("quantum:$0^4$")["copy_text"] == "0"
+word_equality = data(r"quantum:bitword:$s\oplus y = 0^n$")["copy_text"]
+for y_value, expected in [(2, "1"), (0, "0")]:
+    expr = f'replace(replace(replace(({word_equality}),n,3),"s",qbitlabel(2,3)),y,qbitlabel({y_value},3))'
+    assert data("quantum:" + expr)["copy_text"] == expected
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
