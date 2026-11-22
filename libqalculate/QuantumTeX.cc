@@ -1954,7 +1954,16 @@ class TeXReader {
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if((a=="Tr" || a=="tr") && (name=="operatorname" || name=="mathrm")) {
     space();
-    if(directMatrixOperand())return "qtrace("+argument()+")";
+    if(directMatrixOperand()) {
+     std::string matrix=argument();space();
+     if(pos<input.size() && input[pos]=='^') {
+      ++pos;std::string exponent=trim(argument());
+      if(exponent=="~" || exponent=="T" || exponent=="`" || exponent=="*")
+       matrix="("+matrix+")"+(exponent=="T" ? "`" : exponent=="*" ? "?" : exponent);
+      else matrix="("+matrix+")^("+exponent+")";
+     }
+     return "qtrace("+matrix+")";
+    }
    }
    if(name=="operatorname" && a=="Pr") {
     std::string event=eventProbability();if(!event.empty())return event;
@@ -3776,14 +3785,17 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(s.find("\\cdots")!=std::string::npos) {
   // The two equal indices, family and endpoint must agree in every term.
-  static const std::regex diagonal(R"(^\s*(\\[A-Za-z]+|[A-Za-z])_\{\s*0\s*,\s*0\s*\}\s*\+\s*\1_\{\s*1\s*,\s*1\s*\}\s*\+\s*\\cdots\s*\+\s*\1_\{\s*([A-Za-z0-9]+(?:\s*[-+]\s*[0-9]+)?)\s*,\s*\2\s*\}\s*$)");
+  static const std::regex diagonal(R"(^\s*(\\[A-Za-z]+|[A-Za-z])_\{\s*0\s*,\s*0\s*\}\s*\+\s*\1_\{\s*1\s*,\s*1\s*\}\s*\+\s*\\cdots\s*\+\s*\1_\{\s*((?:[A-Za-z]|[0-9]+)(?:\s*[-+]\s*[0-9]+)?)\s*,\s*((?:[A-Za-z]|[0-9]+)(?:\s*[-+]\s*[0-9]+)?)\s*\}\s*$)");
   size_t start=s.rfind('=');
   start=start==std::string::npos ? 0 : start+1;
   std::string rhs=s.substr(start);
   std::smatch series;
   if(std::regex_match(rhs,series,diagonal)) {
    std::string family=trim(nestedTeX(series[1].str()));
-   s.replace(start,std::string::npos,"qdiagonalsum(\""+family+"_\",("+series[2].str()+"),1)");
+   auto compact=[](std::string index) {
+    index.erase(std::remove_if(index.begin(),index.end(),[](unsigned char ch){return asciiSpace(ch);}),index.end());return index;
+   };
+   if(compact(series[2])==compact(series[3]))s.replace(start,std::string::npos,"qdiagonalsum(\""+family+"_\",("+series[2].str()+"),1)");
   }
   static const std::regex monotone(R"(^\s*(\\?[A-Za-z]+)_1\s*([<>])\s*\1_2\s*\2\s*\\cdots\s*\2\s*\1_([a-z])\s*$)");
   std::smatch match;

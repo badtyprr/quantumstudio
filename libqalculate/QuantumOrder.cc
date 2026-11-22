@@ -462,7 +462,7 @@ class QuantumOrderFunction: public MathFunction {
    if(kind==4 || kind==5)for(unsigned k=0;k<2;++k) {
     if(!args[k].isFunction())continue;
     const auto &name=args[k].function()->referenceName();
-    if(name=="qresidues" || name=="qunitsmod" || name=="qfunctionrange" || name=="qpreimage" || (name=="qfiniteapply" && !args[0].equals(args[1])) || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qdiagonalsum" || name=="qnamedapplication" || name=="qcomparisonliteral" || name=="qcomparisonzero")return 0;
+    if(name=="qresidues" || name=="qunitsmod" || name=="qfunctionrange" || name=="qpreimage" || (name=="qfiniteapply" && !args[0].equals(args[1])) || name=="qregisterword" || name=="qsamplebitmatrix" || name=="qdiagonalsum" || name=="qbounddiagonalsum" || name=="qnamedapplication" || name=="qcomparisonliteral" || name=="qcomparisonzero")return 0;
    }
    // A free name can denote the entire matrix. Keep it available for
    // substitution instead of broadcasting it across the matrix entries.

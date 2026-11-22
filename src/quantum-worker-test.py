@@ -204,6 +204,11 @@ for dim in (2, 3, 4):
 assert data(r"quantum:\operatorname{Tr}\begin{pmatrix}1&i\\2&3i\end{pmatrix}=1+3i")["copy_text"] == "1"
 assert data(f'quantum:replace(({diagonal_copy}),n,2)=("A_0,0"+"A_1,1"+1)')["copy_text"] == "0"
 
+assert data("quantum:" + diagonal_series.replace("n-1,n-1", "n - 1,n-1"))["copy_text"] == diagonal_copy
+assert data(r"quantum:\operatorname{Tr}\begin{pmatrix}1&2\\3&4\end{pmatrix}^2")["copy_text"] == "29"
+bound_entry = data(f'quantum:replace(({diagonal_copy}),"A_0,0","A_1,1")')["copy_text"]
+assert data("quantum:" + bound_entry)["copy_text"] == bound_entry
+assert data(f'quantum:replace(replace(({bound_entry}),"A_1,1",2),n,2)')["copy_text"] == "4"
 for malformed in (diagonal_series.replace("1,1", "1,0"), "3-" + diagonal_series):
     run("quantum:" + malformed, "--json", success=False)
 for dim in (1, 1025):
