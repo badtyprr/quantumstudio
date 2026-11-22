@@ -707,3 +707,5 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/qb019.json windows/dev13-noteboo
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb020.json windows/dev13-notebooks/observers/qb020_simulator.py windows/dev13-notebooks/witnesses/qb020.py windows/dev13-notebooks/test_qb020.py windows/dev13-notebooks/profiles/ibm-runtime-win-py312.json windows/dev13-notebooks/ibm-runtime-requirements.lock docs/learning-evidence/dev13/qb020-public-run.json
 
 EXTRA_DIST += docs/learning-evidence/dev11/source-image-hashes.json docs/learning-evidence/dev11/pauli-measurement-results.json docs/learning-evidence/dev11/replay-pauli-measurement.py
+
+EXTRA_DIST += docs/learning-evidence/dev11/teleportation-controls.json docs/learning-evidence/dev11/replay-teleportation-controls.py
