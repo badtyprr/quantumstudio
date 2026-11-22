@@ -1062,6 +1062,17 @@ class TeXReader {
    if(size=="left" || size=="big" || size=="Big" || size=="bigl" || size=="Bigl" || size=="bigg" || size=="Bigg" || size=="biggl" || size=="Biggl") {pos=end;space();}
   }
  }
+ static bool matrixEnvironment(const std::string &name) {
+  return name=="matrix" || name=="pmatrix" || name=="bmatrix" || name=="Bmatrix";
+ }
+ bool directMatrixOperand() {
+  if(input.compare(pos,6,"\\begin")!=0 || (pos+6<input.size() && asciiLetter(input[pos+6])))return false;
+  const size_t saved=pos;
+  pos+=6;
+  std::string env=nameGroup();
+  pos=saved;
+  return matrixEnvironment(env);
+ }
  std::string argument() {
   space();
   if(pos==input.size()) throw std::runtime_error(error("Missing TeX argument"));
@@ -1965,7 +1976,7 @@ class TeXReader {
     }
     return read(0,true,env);
    }
-   if(env!="matrix" && env!="pmatrix" && env!="bmatrix" && env!="Bmatrix" && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
+   if(!matrixEnvironment(env) && env!="vmatrix" && env!="Vmatrix") throw std::runtime_error(error("Unsupported TeX environment: "+env));
    size_t bodyStart=pos;
    size_t bodyEnd=std::string::npos;
    auto body=read(0,true,env,false,"",false,&bodyEnd);
@@ -2292,8 +2303,7 @@ class TeXReader {
      space();skipOpeningSize();std::string body;
      if(pos<input.size() && input[pos]=='{') body=group();
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
-     else if(input.compare(pos,15,"\\begin{pmatrix}")==0 || input.compare(pos,15,"\\begin{bmatrix}")==0 ||
-             input.compare(pos,14,"\\begin{matrix}")==0)body=argument();
+     else if(directMatrixOperand())body=argument();
      else throw std::runtime_error(error("A subscripted trace requires a grouped operand or matrix"));
      result.resize(result.size()-2); result+="ptrace("+body+",vector("+index+"))";
     } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {

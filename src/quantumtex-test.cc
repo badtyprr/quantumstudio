@@ -298,6 +298,8 @@ int main() {
   equal("'QFT₄'","'QFT₄'");
   equal(R"(\Tr_{1}\bigl(X+Y\bigr)+Z)","ptrace(X+Y,vector(1))+Z");
   equal(R"(\Tr_{1}\begin{pmatrix}1&2\\3&4\end{pmatrix}+Z)","ptrace([1,2;3,4],vector(1))+Z");
+  equal(R"(\Tr_{0}\begin {Bmatrix}1&0\\0&2\end{Bmatrix})","ptrace([1,0;0,2],vector(0))");
+  rejects(R"(\Tr_{0}\begin{vmatrix}1&0\\0&2\end{vmatrix})");
   rejects(R"(\Tr_{1}\bigl)");
   equal(R"(\Tr_{1}{X})","ptrace(X,vector(1))");
   equal(R"(\hat{X+Y}^{2})","(X+Y)^(2)");
