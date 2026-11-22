@@ -1664,15 +1664,42 @@ class Parser {
      if(operation!="sumset"){args.push_back(expression());need(',');}
      // A new multi-letter binder is a declaration, even if its letters are
      // indices in an enclosing sum. Its body then shadows those spellings.
-     texIndexDeclaration=true;args.push_back(expression());texIndexDeclaration=false;
+     bool shared=(operation=="sum" || operation=="sumset") && take('[');
+     std::vector<std::string> indices;
+     texIndexDeclaration=true;
+     do {
+      std::string index=expression();
+      if(shared) {
+       std::string letter=withoutLabelMarkers(index);
+       if(letter.size()!=1 || !std::isalpha((unsigned char)letter[0]) ||
+          std::find(indices.begin(),indices.end(),index)!=indices.end())
+        throw std::runtime_error("Shared summation indices must be distinct letters.");
+      }
+      indices.push_back(index);
+     } while(shared && take(','));
+     texIndexDeclaration=false;
+     if(shared)need(']');
      need(grouped ? ',' : ')');
-     texIndices.push_back(withoutLabelMarkers(args.back()));
-     std::string body=grouped ? expression() : product();texIndices.pop_back();
+     for(const auto &index:indices)texIndices.push_back(withoutLabelMarkers(index));
+     std::string body=grouped ? expression() : product();
+     texIndices.resize(texIndices.size()-indices.size());
      if(grouped)need(')');
+     name=operation=="sum" ? "qsum" : operation=="prod" ? "product" : operation=="bigotimes" ? "qtensorproduct" : operation=="bigoplus" ? "qblocksum" : "qsumset";
      args.insert(args.begin(),body);
-     name=operation=="sum" ? "sum" : operation=="prod" ? "product" : operation=="bigotimes" ? "qtensorproduct" : operation=="bigoplus" ? "qblocksum" : "qsumset";
-     scopeIndex(name,args);if(name=="sum")name="qsum";
-     a=name+"(";for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
+     args.push_back("");
+     // Bind every index in the body before adding any bounds. A shared
+     // domain can reference a variable from an enclosing sum of the same name.
+     for(auto &index:indices) {
+      args.back()=index;
+      scopeIndex(name,args);
+      index=args.back();
+     }
+     a=args.front();
+     for(auto it=indices.rbegin();it!=indices.rend();++it) {
+      a=name+"("+a;
+      for(size_t k=1;k+1<args.size();++k)a+=","+args[k];
+      a+=","+*it+")";checkSize(a);
+     }
     } else if(name=="qnorm") {
      std::string operand=expression();
      if(take(','))a="qschatten("+operand+","+expression()+")";else a="qnorm("+operand+")";
