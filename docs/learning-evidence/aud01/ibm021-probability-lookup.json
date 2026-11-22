@@ -1,0 +1,47 @@
+{
+  "source_formulas": [
+    {
+      "id": 52,
+      "copy": "qfiniteapply('p',y)",
+      "source_sha256": "2f74c85b527049f7e3ed47ca2c71ac672ed55b5d3165ab45773ab360b669a00e"
+    },
+    {
+      "id": 54,
+      "copy": "qcompare(qfiniteapply('p',y),qpower(qnorm(qadjacent(1 ∕ qpower(2, n),qsumset(qadjacent(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qstatecall('f',\"qboundindex_0\")),qwordpower('Σ',n),\"qboundindex_0\"))),2),4)",
+      "source_sha256": "23e8e92a13a6f209d5a8383e81ff980d075912b55076023f5202d6c95501ff83"
+    },
+    {
+      "id": 70,
+      "copy": "qcompare(qfiniteapply('p',y),qpower(qnorm(qadjacent(1 ∕ qpower(2, n),qsumset(qadjacent(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\"),qketstate(\"qboundindex_1\")),qfunctionrange('f'),\"qboundindex_1\"))),2),4)",
+      "source_sha256": "745c1b9c19630294b6255e91d117d8ab56eaac5e1cfa818181a2d5dc0c8ea080"
+    },
+    {
+      "id": 74,
+      "copy": "qcompare(qfiniteapply('p',y),qadjacent(qpower(qpower(2,qadjacent(2,n)),−1),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),4)",
+      "source_sha256": "1f69c1142a18f914deaea0a7fea7ae2cbfe2ad85ba668cd77d5a5abcce184092"
+    },
+    {
+      "id": 95,
+      "copy": "qequalchain(vector(qfiniteapply('p',y),(1 ∕ 2)^n,(1 ∕ 2)^n))",
+      "source_sha256": "6c895ff9a10cd20e54aa95af72a4bc83518170200d9fff24660b4f72788d193e"
+    },
+    {
+      "id": 102,
+      "copy": "qequalchain(vector(qfiniteapply('p',y),qadjacent(qpower(qpower(2,qadjacent(2,n)),−1),qsumset(qpower(qbars(qsumset(qpower(−1,qcenterdot(\"qboundindex_0\",y)),qpreimage('f',qset(vector(\"qboundindex_1\"))),\"qboundindex_0\")),2),qfunctionrange('f'),\"qboundindex_1\")),if((qcenterdot(y,'s'))==(0),1 ∕ qpower(2, qsub(n, 1)),if(qcompare(qcenterdot(y,'s'),1,4),0,undefined,0),0)))",
+      "source_sha256": "d0df98c82cce056193bc3158bb9089fe7ce056104619313eb6ed5a6ef1d464f3"
+    }
+  ],
+  "distribution_graphs": 9,
+  "exact_lookup_checks": 72,
+  "control_checks": 2,
+  "windows": {
+    "passed": true,
+    "checks": 66,
+    "calls": 6,
+    "sessionsOnly": false,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "notation": "Set notation",
+  "source_notebook_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a"
+}
