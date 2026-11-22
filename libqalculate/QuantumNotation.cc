@@ -2056,6 +2056,9 @@ class Parser {
     }
     if(publicName=="O")name="qbigorder";
     if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
+    if(setNotation && name=="p" && args.size()==1 && !costContext) {
+     args.insert(args.begin(),indexableLabel(name));name="qfiniteapply";
+    }
     const bool oracleName=name=="f" || name=="g" || name=="h";
     if(binaryOracles && oracleName && args.size()!=1)throw std::runtime_error("A binary oracle requires one word argument.");
     if((basisXorContext || binaryOracles) && oracleName && args.size()==1) {

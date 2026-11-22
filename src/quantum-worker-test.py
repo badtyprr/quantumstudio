@@ -191,6 +191,16 @@ assert data("quantum:" + word_tuple)["copy_text"] == word_tuple
 run("quantum:bitword:$(001$", "--json", success=False)
 run("quantum:bitword:$(001$, and $1$, $10)$", "--json", success=False)
 
+# A probability function in Set notation maps each observed word to its weight.
+prob_lookup = data("quantum:sets:$p(y)$")["copy_text"]
+assert prob_lookup == "qfiniteapply('p',y)"
+distribution = "qset(vector(qtuple(vector(qbitlabel(0,1),1/4)),qtuple(vector(qbitlabel(1,1),3/4))))"
+for outcome, weight in enumerate(("1/4", "3/4")):
+    bound = prob_lookup.replace("'p'", distribution).replace(",y)", f",qbitlabel({outcome},1))")
+    assert data(f"quantum:({bound})-({weight})")["copy_text"] == "0"
+assert data("quantum:$p(y)$")["copy_text"] == "'p'y"
+assert data("quantum:sets:$p(x,y)$")["copy_text"] == "qprobabilitycall(x,y)"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
