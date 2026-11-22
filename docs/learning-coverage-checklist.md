@@ -52,7 +52,7 @@ The shared-index sum change replays the 31 occurrences that previously reported 
 | IBM-015 | 2 | 0 |
 | IBM-016 | 1 | 0 |
 
-A separate DEV-17 replay found 31 occurrences that rejected the operand of a partial trace. Accepting sized parentheses and a directly following matrix moved 28 past that syntax error. Of those, 25 need an explicit subsystem mapping, two encounter other unsupported notation and one returns a symbolic expression awaiting semantic verification. Three bare trace operators still lack an operand. Numerical checks on a two-qubit diagonal matrix distinguish tracing out the first subsystem from tracing out the second.
+The DEV-17 [source manifest](learning-evidence/aud01/partial-trace-operands.json) works with the same replay through its `--manifest` option. It identified 31 occurrences that rejected the operand of a partial trace. Accepting sized parentheses and a directly following matrix moved 28 past that syntax error. Of those, 25 need an explicit subsystem mapping, two encounter other unsupported notation and one returns a symbolic expression awaiting semantic verification. Three bare trace operators still lack an operand. Numerical checks on a two-qubit diagonal matrix distinguish tracing out the first subsystem from tracing out the second.
 
 ## Release queue
 

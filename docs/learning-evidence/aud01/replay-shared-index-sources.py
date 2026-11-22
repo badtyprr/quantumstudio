@@ -1,4 +1,4 @@
-"""Check all shared-index failures against a pinned Qiskit documentation checkout."""
+"""Replay classified formula occurrences from a pinned Qiskit documentation checkout."""
 import argparse
 from collections import Counter
 import hashlib
@@ -11,12 +11,14 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("source_root", type=Path, help="Directory containing the learning tree")
 parser.add_argument("worker", type=Path)
 parser.add_argument("--baseline", action="store_true", help="Expect the previous summation-index diagnostic")
+parser.add_argument("--manifest", type=Path, default=Path(__file__).with_name("shared-index-sources.json"))
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = os.environ.copy()
 if (worker.parent / "data").is_dir():
     env.setdefault("QALCULATE_DEFINITIONS_DIR", str(worker.parent / "data"))
-manifest = json.loads(Path(__file__).with_name("shared-index-sources.json").read_bytes())
+manifest = json.loads(args.manifest.read_bytes())
+previous_diagnostic = manifest.get("previous_diagnostic", "Invalid summation index").encode()
 counts = Counter()
 cache = {}
 for lesson in manifest["lessons"]:
@@ -38,13 +40,13 @@ for lesson in manifest["lessons"]:
                     raise ValueError("Worker returned an empty result")
                 outcome = "result"
             elif result.returncode == 2 and result.stderr.strip():
-                outcome = ("invalid index" if b"Invalid summation index" in result.stderr
+                outcome = ("previous diagnostic" if previous_diagnostic in result.stderr
                            else "diagnostic")
             else:
                 raise RuntimeError((result.returncode, result.stderr))
             cache[literal] = outcome
         actual = cache[literal]
-        expected = "invalid index" if args.baseline else row["outcome"]
+        expected = "previous diagnostic" if args.baseline else row["outcome"]
         if actual != expected:
             raise ValueError((lesson["lesson"], row["cell"], row["start"], actual, expected))
         counts[actual] += 1
