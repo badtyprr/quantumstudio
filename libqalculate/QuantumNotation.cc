@@ -872,7 +872,11 @@ class Parser {
   for(size_t k=0;k<label.size();++k) {
    if(label[k]=='(' || label[k]=='[' || label[k]=='{')++nesting;
    else if(label[k]==')' || label[k]==']' || label[k]=='}')--nesting;
-   else if((label[k]==',' || label[k]=='@') && nesting==0) {registers.push_back(label.substr(start,k-start));start=k+1;}
+   else if((label[k]==',' || label[k]=='@') && nesting==0) {
+    size_t previous=k ? label.find_last_not_of(" \t\r\n",k-1) : std::string::npos;
+    if(label[k]=='@' && previous!=std::string::npos && label[previous]=='^')continue;
+    registers.push_back(label.substr(start,k-start));start=k+1;
+   }
   }
   if(!registers.empty()) {
    if(!dimension.empty())throw std::runtime_error("A product register label cannot have one overall basis dimension; use separately dimensioned adjacent kets or bras.");
@@ -959,6 +963,8 @@ class Parser {
     return "qcomputationalket("+index+")";
    }
    std::string outer=s;size_t outerPosition=p;s=label.substr(mark+1);p=0;
+   // TeX retains the tensor sign in a repeated bit such as |0^{\otimes n}>.
+   take('@');
    std::string count=unary();ws();
    if(p!=s.size())throw std::runtime_error("Group a compound repeated-register count, for example |0^(n+1)>.");
    s=outer;p=outerPosition;

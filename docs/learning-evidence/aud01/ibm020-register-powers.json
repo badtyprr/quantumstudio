@@ -1,0 +1,52 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "formulas": {
+    "32": "$H\\otimes \\cdots \\otimes H$",
+    "49": "$\\vert 0^{\\otimes n} \\rangle$"
+  },
+  "reference": "Scale H tensor n by sqrt(2^n); element (y,x) equals (-1)^popcount(x AND y). The all-zero state has amplitude one only at index zero.",
+  "checks": [
+    {
+      "occurrence": 32,
+      "width": 1,
+      "entries": 4
+    },
+    {
+      "occurrence": 32,
+      "width": 2,
+      "entries": 16
+    },
+    {
+      "occurrence": 32,
+      "width": 3,
+      "entries": 64
+    },
+    {
+      "occurrence": 32,
+      "width": 4,
+      "entries": 256
+    },
+    {
+      "occurrence": 49,
+      "width": 1,
+      "entries": 2
+    },
+    {
+      "occurrence": 49,
+      "width": 2,
+      "entries": 4
+    },
+    {
+      "occurrence": 49,
+      "width": 3,
+      "entries": 8
+    },
+    {
+      "occurrence": 49,
+      "width": 4,
+      "entries": 16
+    }
+  ]
+}
