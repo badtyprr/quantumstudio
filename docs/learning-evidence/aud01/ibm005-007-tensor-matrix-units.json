@@ -1,0 +1,52 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Quantum operation has incompatible declared matrix dimensions",
+  "lessons": [
+    {
+      "lesson": "IBM-005",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems.ipynb",
+      "source_sha256": "6e2f80e297c2533cfd205ec2e9322f75df8d17e79081590940240b29baa54ef5",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 3364,
+          "end": 3698,
+          "literal_sha256": "bb2dec3dc45903274f4963a55af5a1ced8774d26f770cb454b6b9b262dd852fb",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 16396,
+          "end": 16566,
+          "literal_sha256": "e10e54607997fb8bf32e8af7382d56f4de086c04d95de9c6d12125e683b58472",
+          "outcome": "result",
+          "copy_text": "qcompare('\u03c1',matrix(4,4,[1 \u2215 2,0,0,0,0,0,0,0,0,0,1 \u2215 4,1 \u2215 4,0,0,1 \u2215 4,1 \u2215 4]),4)"
+        },
+        {
+          "cell": 0,
+          "start": 21320,
+          "end": 21659,
+          "literal_sha256": "7fc3d2637b1230f3ddc481d03893df4d80ad9020a7571a24490de7cccd15a306",
+          "outcome": "result",
+          "copy_text": "qequalchain(vector('\u03c1',matrix(4,4,[1 \u2215 2,0,0,0,0,0,0,0,0,0,1 \u2215 4,1 \u2215 4,0,0,1 \u2215 4,1 \u2215 4]),matrix(4,4,[1 \u2215 2,0,0,0,0,0,0,0,0,0,1 \u2215 4,1 \u2215 4,0,0,1 \u2215 4,1 \u2215 4])))"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-007",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 15942,
+          "end": 16331,
+          "literal_sha256": "548352e811456778f9096f7c4a0813608cec02c2b4f1c9621ef10b28e97bc29c",
+          "outcome": "result",
+          "copy_text": "1"
+        }
+      ]
+    }
+  ]
+}

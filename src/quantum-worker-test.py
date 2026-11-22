@@ -174,6 +174,27 @@ for incorrect in [corner_density.replace("0 & 0", "0 & 1"), measurement_row.repl
                   expanded_blocks.replace("P_{m-1}", "Q_{m-1}", 1)]:
     run("quantum:" + incorrect, "--json", success=False)
 
+# A ket followed by a bra on the right of a tensor forms a matrix unit.
+# Its row belongs to the ket and its column to the bra, even for complex states.
+for ket_state, bra_state, output in [
+    ("|0>", "<1|", "[0,1,0,0;0,0,0,0;0,0,0,0;0,0,0,0]"),
+    ("|1>", "<0|", "[0,0,0,0;1,0,0,0;0,0,0,0;0,0,0,0]"),
+    ("|+i>", "<+i|", "[1,-i,0,0;i,1,0,0;0,0,0,0;0,0,0,0]/2"),
+]:
+    tensor_unit = f"|0><0| @ {ket_state}{bra_state}"
+    assert data(f"quantum:({tensor_unit})=({output})")["copy_text"] == "1"
+    assert data(f"quantum:({tensor_unit})=tensor(|0><0|,({ket_state}{bra_state}))")["copy_text"] == "1"
+for unit in ("(|0>)<1|", "|0>(<1|)", "((|0>))((<1|))"):
+    assert data(f"quantum:(I @ {unit})=tensor(I,(|0><1|))")["copy_text"] == "1"
+assert data("quantum:(I @ (2|0>)<1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
+assert data("quantum:(I @ (|0>+|1>)<1|)=tensor(I,([1;1]*[0,1]))")["copy_text"] == "1"
+named_unit = data("quantum:I @ (2|0>)<ψ|")["copy_text"]
+assert data("quantum:" + named_unit)["copy_text"] == named_unit
+assigned_unit = f'replace(({named_unit}),qnamedket("ψ"),|1>)'
+assert data(f"quantum:({assigned_unit})=2*tensor(I,(|0><1|))")["copy_text"] == "1"
+assert data("quantum:(I @ 2|0><1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
+assert data("quantum:(H @ H |00>)=([1;1;1;1]/2)")["copy_text"] == "1"
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]

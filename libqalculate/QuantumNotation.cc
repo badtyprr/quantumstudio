@@ -2174,6 +2174,19 @@ class Parser {
   p=end;return true;
  }
  std::string product() {return productTail(diracFactor());}
+ // Parentheses around a single ket or bra preserve its orientation.
+ int tensorDiracKind(size_t start) const {
+  if(diracKind)return diracKind;
+  start=s.find_first_not_of(" \t\r\n",start);
+  if(start>=p || s[start]!='(')return 0;
+  std::string text=labelText(s.substr(start,p-start));
+  size_t lo=0,hi=text.size();
+  while(hi>lo+1 && text[lo]=='(' && text[hi-1]==')') {++lo;--hi;}
+  if(hi<=lo+2 || text.find_first_of("|<>",lo+1)!=hi-1)return 0;
+  if(text[lo]=='|' && text[hi-1]=='>')return 1;
+  if(text[lo]=='<' && text[hi-1]=='|')return 2;
+  return 0;
+ }
  std::string productTail(std::string a) {
   while(true) {
    if(takeWord("pmod")) {
@@ -2190,15 +2203,24 @@ class Parser {
     a=ringModulus.empty() ? "("+a+"/("+denominator+"))" : "qmul("+a+",qmodpower("+denominator+",-1,"+ringModulus+"))";
    }
    else if(take('@')) {
-    std::string right=diracFactor();
-    if(startsAtom()) {
-     // Scalar coefficients belong to the following tensor factor, whereas
-     // a tensor of operators may act on a following state. Preserve this
-     // unparenthesized run until evaluation can distinguish the two cases.
-     std::string factors="vector("+right;
-     while(startsAtom()) {factors+=","+diracFactor();checkSize(factors);}
-     a="qtensorchain("+a+","+factors+"))";
-    } else a="qtensor("+a+","+right+")";
+    size_t start=p;
+    std::string pending=diracFactor(),factors;
+    int orientation=tensorDiracKind(start);
+    while(startsAtom()) {
+     start=p;std::string next=diracFactor();
+     int nextOrientation=tensorDiracKind(start);
+     if(orientation==1 && nextOrientation==2) {
+      // A matrix unit is one factor even after a scalar coefficient.
+      pending="qadjacent("+pending+","+next+")";orientation=0;
+     } else {
+      factors+=pending+",";checkSize(factors);
+      pending=next;orientation=nextOrientation;
+     }
+    }
+    // A scalar may scale the next matrix, or a tensor of operators may
+    // act on the following state. Resolve that distinction during evaluation.
+    if(factors.empty())a="qtensor("+a+","+pending+")";
+    else a="qtensorchain("+a+",vector("+factors+pending+"))";
    }
    else if(take('#')) {
     std::string right=diracFactor();

@@ -1180,6 +1180,20 @@ class QuantumAlgebraFunction: public MathFunction {
     scaled.set(CALCULATOR->getFunction("qadjacent"),&right,&factors[next],NULL);
     scaled.eval(eo);right=scaled;++next;
    }
+   // A grouped expression such as (2|a>) also supplies the column
+   // of an outer product. The following row completes the tensor factor.
+   if(next<factors.size() && right.isMatrix() && right.columns()==1) {
+    MathStructure row=factors[next];row.eval(eo);
+    if(!row.isVector() && row.containsUnknowns()) {
+     MathStructure left=raw[0];left.eval(eo);
+     if(left.equals(raw[0]) || !left.isMatrix())return 0;
+     out.set(this,&left,&factors,NULL);return 1;
+    }
+    if(row.isVector() && row.size() && (!row.isMatrix() || row.rows()==1)) {
+     MathStructure column=right;
+     right.set(CALCULATOR->getFunction("qmul"),&column,&row,NULL);right.eval(eo);++next;
+    }
+   }
    out.set(CALCULATOR->getFunction("qtensor"),&raw[0],&right,NULL);
    while(next<factors.size()) {
     if(CALCULATOR->aborted())return 0;
