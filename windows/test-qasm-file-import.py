@@ -48,6 +48,22 @@ class FileImportTests(unittest.TestCase):
             self.assertIn("nested κ/entry.inc:2:", message)
             self.assertIn("Physical wire indices must be between 0 and 24", message)
 
+    def test_gate_modifier_errors_in_module(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "stdgates.inc"; include "nested κ/outer.inc";')
+        self.put("nested κ/outer.inc", 'include "gate.inc";')
+        cases = [
+            ("pow(1.5) @ x q;", "Power modifier argument must be an integer."),
+            ("ctrl(0) @ x q;", "Controlled modifier argument must be a positive integer."),
+            ("negctrl(0) @ gphase(pi/4) q;", "Controlled modifier argument must be a positive integer."),
+        ]
+        for gate, reason in cases:
+            self.put("nested κ/gate.inc", f"OPENQASM 3;\nqubit q;\n  {gate}")
+            for command in COMMANDS:
+                for mode in ([], ["--classical"]):
+                    with self.subTest(gate=gate, mode=mode, command=command):
+                        error = self.run_import(command, [*mode, "--module-headers", "--source-file", str(main)], success=False)
+                        self.assertEqual(error.splitlines()[-1], f"nested κ/gate.inc:3:3: {reason}")
+
     def test_dependency_parser_diagnostic(self):
         main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/helper.inc"; qubit q;')
         self.put("nested κ/helper.inc", '// comment\r\ngate bad a { x a }\r\n')

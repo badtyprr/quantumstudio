@@ -6,6 +6,7 @@ import re
 
 from antlr4.error.Errors import RecognitionException
 from openqasm3.parser import QASM3ParsingError
+from pyqasm.exceptions import ValidationError
 
 from qasm_source_bundle import SourceError
 
@@ -131,6 +132,13 @@ def compile_source(bundle, convert, **options):
             line, column, detail = parser
             label = _label(bundle, line, column)
             message = detail
+        elif isinstance(error, ValidationError):
+            # PyQASM appends repr(operation) to its gate-modifier errors. The
+            # AST contains expanded coordinates and duplicates the logged gate.
+            reason, _, operation = message.partition(" in gate operation ")
+            if reason.startswith(("Power modifier", "Controlled modifier")) and operation.startswith(
+                    ("QuantumGate(span=", "QuantumPhase(span=")):
+                message = reason + "."
         raise SourceError(f"{label or bundle.entry}: {message or 'OpenQASM compilation failed.'}") from error
     finally:
         logger.removeFilter(locations)
