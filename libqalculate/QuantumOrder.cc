@@ -525,6 +525,15 @@ class QuantumOrderFunction: public MathFunction {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;
    }
+   if(kind>=4)for(unsigned k=0;k<2;++k) {
+    if(!args[k].isFunction())continue;
+    const auto &name=args[k].function()->referenceName();
+    if(name!="qcartesian" && name!="qcartesianseries" && name!="qcartesianpower")continue;
+    if(args[0].equals(args[1])) {out=kind==4 ? 1 : 0;return 1;}
+    // Set subtraction is not a test for equality of two pending products.
+    if(args.equals(raw))return 0;
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
    // A later word binding can determine the width of an XOR ket or make
    // a centered dot the parity of a bitwise product. Retain both operands.
    if(kind>=4)for(unsigned k=0;k<2;++k) {
