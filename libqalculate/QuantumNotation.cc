@@ -1621,7 +1621,7 @@ class Parser {
      std::string function=general ? "matrixassume" : "operatorassume";
      if(gate)function="qgate"+function;
      a=function+"("+body+","+label+","+rows+","+(general ? columns : property)+")";
-    } else if(name=="qsubsystems") {
+    } else if(name=="qsubsystems" || name=="qptraceselect") {
      std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
      std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {

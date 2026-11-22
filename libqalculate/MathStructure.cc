@@ -3036,6 +3036,8 @@ bool MathStructure::replace(const MathStructure &mfrom, const MathStructure &mto
 	if(exclude_function_arguments && m_type == STRUCT_FUNCTION) return false;
 	bool b = false;
 	for(size_t i = 0; i < SIZE; i++) {
+		// Subsystem axes are metadata and can share a name with a free variable.
+		if(i == 1 && isFunction() && (function()->referenceName() == "qsubsystems" || function()->referenceName() == "qptraceselect")) continue;
 		if(CHILD(i).replace(mfrom, mto, once_only, exclude_function_arguments, replace_in_variables)) {
 			b = true;
 			CHILD_UPDATED(i);
