@@ -693,6 +693,10 @@ for labels, expected in [("[A,B]", "[3,0,0,7]"), ("[B,A]", "[4,0,0,6]")]:
     mapped = f"subsystems({diagonal},{labels},[2,2])"
     expression = f"quantum:replace(({pending_trace}),ρ,{mapped})"
     assert data(expression)["copy_text"] == f"matrix(2,2,{expected})"
+# The density matrix between grouped factors must remain a free matrix.
+for product, expected in [(r"(X)\rho(Z)", "[3,−4,1,−2]"), (r"(Z)\rho(X)", "[2,1,−4,−3]")]:
+    saved = data("quantum:" + product)["copy_text"]
+    assert data(f"quantum:replace({saved},ρ,[1,2;3,4])")["copy_text"] == f"matrix(2,2,{expected})"
 mapped_ab = f"subsystems({diagonal},[A,B],[2,2])"
 colliding = data("quantum:ptrace(B,[B])")["copy_text"]
 assert data(f"quantum:replace({colliding},B,{mapped_ab})")["copy_text"] == "matrix(2,2,[3,0,0,7])"
