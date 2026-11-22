@@ -693,6 +693,13 @@ for labels, expected in [("[A,B]", "[3,0,0,7]"), ("[B,A]", "[4,0,0,6]")]:
     mapped = f"subsystems({diagonal},{labels},[2,2])"
     expression = f"quantum:replace(({pending_trace}),ρ,{mapped})"
     assert data(expression)["copy_text"] == f"matrix(2,2,{expected})"
+mapped_ab = f"subsystems({diagonal},[A,B],[2,2])"
+colliding = data("quantum:ptrace(B,[B])")["copy_text"]
+assert data(f"quantum:replace({colliding},B,{mapped_ab})")["copy_text"] == "matrix(2,2,[3,0,0,7])"
+bound_selector = data(f"quantum:replace({pending_trace},B,0)")["copy_text"]
+for state, expected in [(mapped_ab, "[3,0,0,7]"), (diagonal, "[4,0,0,6]")]:
+    assert data(f"quantum:replace({bound_selector},ρ,{state})")["copy_text"] == f"matrix(2,2,{expected})"
+assert b"Duplicate traced subsystem" in run("quantum:ptrace(ρ,[A,A])", "--json", success=False).stderr
 assert b"explicit subsystems" in run(
     f"quantum:replace(({pending_trace}),ρ,{diagonal})", "--json", success=False).stderr
 assert b"Unknown subsystem label" in run(
