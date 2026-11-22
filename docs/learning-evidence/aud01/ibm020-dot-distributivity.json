@@ -1,0 +1,35 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 125,
+  "source_formula": "$$\n(s\\cdot x) \\oplus (y \\cdot x) = (s \\oplus y) \\cdot x\n$$",
+  "altered_formula": "$$\n(s\\cdot x) \\oplus (y \\cdot x) = (s \\oplus y) \\cdot y\n$$",
+  "copy": "qcompare(qoplus(qcenterdot('s',x),qcenterdot(y,x)),qcenterdot(qoplus('s',y),x),4)",
+  "checks": [
+    {
+      "altered": false,
+      "operands": "two-bit words",
+      "false_count": 0,
+      "true_count": 64
+    },
+    {
+      "altered": false,
+      "operands": "integers",
+      "false_count": 6,
+      "true_count": 58
+    },
+    {
+      "altered": true,
+      "operands": "two-bit words",
+      "false_count": 24,
+      "true_count": 40
+    },
+    {
+      "altered": true,
+      "operands": "integers",
+      "false_count": 38,
+      "true_count": 26
+    }
+  ]
+}
