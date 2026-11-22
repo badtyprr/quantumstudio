@@ -1,0 +1,14 @@
+{
+  "notebook_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "mode": "GF(2) matrix products",
+  "source_copies": {
+    "132": "qgf2mul('M','v')",
+    "135": "qequalchain(vector(qgf2mul('M','v'),qsampledotcolumn(\"y^\",'k','s',vector(),2),qzerocolumnlike(qsampledotcolumn(\"y^\",'k','s',vector(),2),2)))"
+  },
+  "fixtures": "For every three-bit row x and three-bit secret s, bind M to rows x and its complement, v to the bits of s, and the two sample words to those rows. Compare M v to independently computed row parities and the full equality chain to whether both parities are zero.",
+  "matrix_products": 64,
+  "equality_chains": 64,
+  "invalid_matrix_cases": 2,
+  "windows_checks": 55,
+  "session_storage_checks": 76
+}

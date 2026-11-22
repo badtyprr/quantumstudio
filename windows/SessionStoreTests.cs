@@ -43,7 +43,9 @@ class SessionStoreTests {
    var logs=SessionStore.Load(path);Require(logs.Mode==8 && logs.History[0].Mode==8,"Base-two logarithms mode was lost");
    expected.Mode=9;expected.History[0].Mode=9;SessionStore.Save(path,expected);
    var oracle=SessionStore.Load(path);Require(oracle.Mode==9 && oracle.History[0].Mode==9,"Binary oracles mode was lost");
-   expected.Mode=10;Reject(delegate {SessionStore.Validate(expected);});
+   expected.Mode=10;expected.History[0].Mode=10;SessionStore.Save(path,expected);
+   var gf2=SessionStore.Load(path);Require(gf2.Mode==10 && gf2.History[0].Mode==10,"GF(2) matrix products mode was lost");
+   expected.Mode=11;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.Evaluation=-1;Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Expression=" ";Reject(delegate {SessionStore.Validate(expected);});
    expected=Valid();expected.History[0].Result=new string('x',32769);Reject(delegate {SessionStore.Validate(expected);});

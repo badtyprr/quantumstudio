@@ -201,6 +201,14 @@ for outcome, weight in enumerate(("1/4", "3/4")):
 assert data("quantum:$p(y)$")["copy_text"] == "'p'y"
 assert data("quantum:sets:$p(x,y)$")["copy_text"] == "qprobabilitycall(x,y)"
 
+# Simon's post-processing uses matrix multiplication over the two-element field.
+assert data("quantum:gf2:$M v$")["copy_text"] == "qgf2mul('M','v')"
+assert data("quantum:gf2:A B C")["copy_text"] == "qgf2mul(qgf2mul('A','B'),'C')"
+binary_product = "matrix(2,3,[0,1,1,1,0,0]) * matrix(3,1,[0,1,1])"
+assert data("quantum:gf2:" + binary_product)["cells"] == [["0"], ["0"]]
+assert data("quantum:" + binary_product)["cells"] == [["2"], ["0"]]
+run("quantum:gf2:M matrix(2,1,[0,2])", "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

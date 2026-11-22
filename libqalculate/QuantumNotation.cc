@@ -434,7 +434,7 @@ class Parser {
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
- bool binaryOracles=false,binaryWordNotation=false;
+ bool binaryOracles=false,binaryWordNotation=false,gf2Products=false;
  size_t lastKetEnd=std::string::npos;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
@@ -2302,7 +2302,7 @@ class Parser {
     p+=3;const char *op=costContext && a.compare(0,11,"qcostparam(")==0 ? "qmul(" : "qcenterdot(";
     a=op+a+","+diracFactor()+")";
    }
-   else if(take('*')) a="qmul("+a+","+diracFactor()+")";
+   else if(take('*')) a=(gf2Products ? "qgf2mul(" : "qmul(")+a+","+diracFactor()+")";
    else if(take('/')) {
     auto denominator=diracFactor();
     a=ringModulus.empty() ? "("+a+"/("+denominator+"))" : "qmul("+a+",qmodpower("+denominator+",-1,"+ringModulus+"))";
@@ -2352,7 +2352,7 @@ class Parser {
       }
      }
     }
-    a="qadjacent("+a+","+right+")";
+    a=(gf2Products ? "qgf2mul(" : "qadjacent(")+a+","+right+")";
    }
    else break;
    checkSize(a);
@@ -3079,7 +3079,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false,bool oracles=false,bool words=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),binaryOracles(oracles),binaryWordNotation(words),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false,bool oracles=false,bool words=false,bool gf2=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),binaryOracles(oracles),binaryWordNotation(words),gf2Products(gf2),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -3148,11 +3148,12 @@ std::string translateQuantum(const std::string &expression) {
  const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
  const bool words=first!=std::string::npos && s.compare(first,8,"bitword:")==0;
  const bool oracles=first!=std::string::npos && s.compare(first,8,"oracles:")==0;
+ const bool gf2=first!=std::string::npos && s.compare(first,4,"gf2:")==0;
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets,scalars || modular,modular,oracles,words).run();
+ return Parser(s,spin,sets,scalars || modular,modular,oracles,words,gf2).run();
 }
