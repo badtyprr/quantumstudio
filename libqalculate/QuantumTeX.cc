@@ -2691,6 +2691,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ // A trailing lesson annotation gives the domain on which the displayed
+ // expression is defined. Leave an out-of-domain substitution undefined.
+ size_t note=s.rfind("\\text{");
+ if(note!=std::string::npos) {
+  static const std::regex domainNote(R"(\\text\{\s*\(\s*for\s+\$\s*((?:\\[A-Za-z]+|[A-Za-z])\s*\\in\s*(?:\[|\()[^$]+(?:\]|\)))\s*\$\s*\)\s*\}\s*)");
+  std::smatch match;
+  auto start=s.cbegin()+note;
+  if(std::regex_match(start,s.cend(),match,domainNote)) {
+   std::string body=trim(s.substr(0,note));
+   for(const std::string spacing:{"\\qquad","\\quad"}) {
+    if(body.size()>=spacing.size() && body.compare(body.size()-spacing.size(),spacing.size(),spacing)==0)
+     body=trim(body.substr(0,body.size()-spacing.size()));
+   }
+   if(body.empty())throw std::runtime_error("An interval qualification requires an expression.");
+   s="if(("+nestedTeX(match[1].str())+"),("+body+"),undefined)";
+  }
+ }
  if(modularPowers && (s.find('=')!=std::string::npos || s.find('^')!=std::string::npos || s.find("⁻¹")!=std::string::npos)) {
   // In a residue ring the prose may supply the modulus. Keep that
   // parameter editable when an isolated equation or inverse is pasted.

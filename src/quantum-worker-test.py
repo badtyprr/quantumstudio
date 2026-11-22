@@ -67,6 +67,16 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# A qualification limits the points at which a displayed equation is defined.
+for interval, allowed, excluded in [("[0,1)", "0", "1"), ("(0,1]", "1", "0")]:
+    qualified = r"quantum:$$x^2=x\qquad\text{(for $x \in " + interval + "$)}$$"
+    copied = data(qualified)["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    assert data(f"quantum:replace(({copied}),x,{allowed})")["copy_text"] == "1"
+    assert data(f"quantum:replace(({copied}),x,1/2)")["copy_text"] == "0"
+    rejected = run(f"quantum:replace(({copied}),x,{excluded})", "--json", success=False)
+    assert b"undefined" in rejected.stderr and not rejected.stdout
+
 # A textbook equation uses grouped digits. Commas in function calls and
 # between complete equations retain their existing meanings.
 for literal, integer in [("1,000,000", 1000000), ("-12,345", -12345), ("+987,654", 987654)]:

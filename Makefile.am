@@ -746,3 +746,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm010-media.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm002-density-list.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm003-spectral-endpoints.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm003-spectral-trace.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm004-interval-state.json
