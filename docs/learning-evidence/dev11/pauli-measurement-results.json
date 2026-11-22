@@ -1,0 +1,296 @@
+{
+  "row": "IBM-058",
+  "source_sha256": "327f3f6dc910b571e1d2bdd18028446a7b9e38855d030f3c37298bf174ea97cc",
+  "figures": [
+    "phase-estimation-Pauli.svg",
+    "phase-estimation-3-qubit-Pauli.svg",
+    "phase-estimation-ZZ.svg",
+    "simplified-ZZ.svg"
+  ],
+  "scope": "Manual transcriptions of the original figures with authored preparations and final data readouts. Top data wire is q[0]. The highest recorded bit is the measured ancilla. The reference computes the two projected data states (I ± P)|psi>/2.",
+  "compiler_sha256": "48407e3ae2e812698b3051f10ea986b0a3b51cf3fc8974a26cf01507464f6646",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "sampled_shots_per_case": 10000,
+  "cases": [
+    {
+      "pauli": "X",
+      "preparation": "+",
+      "readout": "X",
+      "simplified": false,
+      "expected": {
+        "00": 0.9999999999999996
+      },
+      "max_probability_error": {
+        "exact": 4.440892098500626e-16,
+        "sampled": 4.440892098500626e-16
+      }
+    },
+    {
+      "pauli": "Y",
+      "preparation": "i",
+      "readout": "Y",
+      "simplified": false,
+      "expected": {
+        "00": 0.9999999999999996
+      },
+      "max_probability_error": {
+        "exact": 4.440892098500626e-16,
+        "sampled": 4.440892098500626e-16
+      }
+    },
+    {
+      "pauli": "Z",
+      "preparation": "1",
+      "readout": "Z",
+      "simplified": false,
+      "expected": {
+        "11": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "XYZ",
+      "preparation": "+i1",
+      "readout": "XYZ",
+      "simplified": false,
+      "expected": {
+        "1100": 0.9999999999999991
+      },
+      "max_probability_error": {
+        "exact": 8.881784197001252e-16,
+        "sampled": 8.881784197001252e-16
+      }
+    },
+    {
+      "pauli": "YIX",
+      "preparation": "000",
+      "readout": "XYZ",
+      "simplified": false,
+      "expected": {
+        "0000": 0.06249999999999997,
+        "0001": 0.06249999999999997,
+        "0010": 0.06249999999999997,
+        "0011": 0.06249999999999997,
+        "0100": 0.06249999999999997,
+        "0101": 0.06249999999999997,
+        "0110": 0.06249999999999997,
+        "0111": 0.06249999999999997,
+        "1000": 0.06249999999999997,
+        "1001": 0.06249999999999997,
+        "1010": 0.06249999999999997,
+        "1011": 0.06249999999999997,
+        "1100": 0.06249999999999997,
+        "1101": 0.06249999999999997,
+        "1110": 0.06249999999999997,
+        "1111": 0.06249999999999997
+      },
+      "max_probability_error": {
+        "exact": 2.7755575615628914e-17,
+        "sampled": 0.004000000000000031
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "00",
+      "readout": "ZZ",
+      "simplified": false,
+      "expected": {
+        "000": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "01",
+      "readout": "ZZ",
+      "simplified": false,
+      "expected": {
+        "110": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "10",
+      "readout": "ZZ",
+      "simplified": false,
+      "expected": {
+        "101": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "11",
+      "readout": "ZZ",
+      "simplified": false,
+      "expected": {
+        "011": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "ZZ",
+      "simplified": false,
+      "expected": {
+        "000": 0.2499999999999999,
+        "011": 0.2499999999999999,
+        "101": 0.2499999999999999,
+        "110": 0.2499999999999999
+      },
+      "max_probability_error": {
+        "exact": 1.1102230246251565e-16,
+        "sampled": 0.0029999999999998916
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "XX",
+      "simplified": false,
+      "expected": {
+        "000": 0.24999999999999978,
+        "011": 0.24999999999999978,
+        "100": 0.24999999999999978,
+        "111": 0.24999999999999978
+      },
+      "max_probability_error": {
+        "exact": 2.220446049250313e-16,
+        "sampled": 0.0029999999999997806
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "YY",
+      "simplified": false,
+      "expected": {
+        "001": 0.24999999999999978,
+        "010": 0.24999999999999978,
+        "100": 0.24999999999999978,
+        "111": 0.24999999999999978
+      },
+      "max_probability_error": {
+        "exact": 2.220446049250313e-16,
+        "sampled": 0.0029999999999997806
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "00",
+      "readout": "ZZ",
+      "simplified": true,
+      "expected": {
+        "000": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "01",
+      "readout": "ZZ",
+      "simplified": true,
+      "expected": {
+        "110": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "10",
+      "readout": "ZZ",
+      "simplified": true,
+      "expected": {
+        "101": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "11",
+      "readout": "ZZ",
+      "simplified": true,
+      "expected": {
+        "011": 1.0
+      },
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.0
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "ZZ",
+      "simplified": true,
+      "expected": {
+        "000": 0.2499999999999999,
+        "011": 0.2499999999999999,
+        "101": 0.2499999999999999,
+        "110": 0.2499999999999999
+      },
+      "max_probability_error": {
+        "exact": 1.1102230246251565e-16,
+        "sampled": 0.0029999999999998916
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "XX",
+      "simplified": true,
+      "expected": {
+        "000": 0.24999999999999978,
+        "011": 0.24999999999999978,
+        "100": 0.24999999999999978,
+        "111": 0.24999999999999978
+      },
+      "max_probability_error": {
+        "exact": 2.220446049250313e-16,
+        "sampled": 0.0029999999999997806
+      }
+    },
+    {
+      "pauli": "ZZ",
+      "preparation": "++",
+      "readout": "YY",
+      "simplified": true,
+      "expected": {
+        "001": 0.24999999999999978,
+        "010": 0.24999999999999978,
+        "100": 0.24999999999999978,
+        "111": 0.24999999999999978
+      },
+      "max_probability_error": {
+        "exact": 2.220446049250313e-16,
+        "sampled": 0.0029999999999997806
+      }
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+[
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/binary-symmetric-error.svg",
+    "sha256": "434aaa15bf6f500d956953fc8e0cd892dd7859bd3d7b261934c09ee2f78ff7e6"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-encoder.svg",
+    "sha256": "16a27e7ad6144e48f749533dc902a0739720a492ec4d23918a05b1d07498cc97"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-error-detection.svg",
+    "sha256": "ea8e68791d579634b1457377b1b1e9d2481dfc31a104134a5f6280049dedcc50"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-no-error.svg",
+    "sha256": "c7deb87ea7c6350f5bfd1ebfc8bab2065f915fe88eb2a367b10f66763452b4d0"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e0.svg",
+    "sha256": "4494e8794deb71c1f2d6d2903c2df47dbc6a1c2295f9c6297b052649b793ece5"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e1.svg",
+    "sha256": "8d207d3492df78ad7d6a92a2d1e266cf5e67717d5799724f4911b935b11a4a59"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-decode-e2.svg",
+    "sha256": "fed456931b4c851f4a2233bb4b9f985898f1b35ac4bf546d61e437c5889faf36"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/repetition-encoder-modified.svg",
+    "sha256": "fcd299b6ed6a07dbdfbb5d78620544e0844f22d5d4b6c0cdc2102198a0eab3dd"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/three-bit-modified-error-detect.svg",
+    "sha256": "e624779229f1c35d4ca22fd9732961f402f121cf5659f860d6e70b2e725584d7"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/simplified-phase-error-detect.svg",
+    "sha256": "41fb65ab279093cdaece1119d59bc9a32233a67b955601d2605bf99485fa03fe"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-none.svg",
+    "sha256": "cfc6b8bc2053122f9a9d244b29625da718419097de081d2493be010ac055ec59"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-0.svg",
+    "sha256": "61fe39ed055617f1e3af2486845b6b9cc8d01264d54762387938998b4fbd7793"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-1.svg",
+    "sha256": "bf0c331dcaae181f122fa3760f0b7651a192ebfa7cec7bb0ab325674c637a86b"
+  },
+  {
+    "row": "IBM-054",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/phase-error-2.svg",
+    "sha256": "db40142a8dbbc78e91569338a5c6b5a31fa2accf91999c42fca5555cccd034cb"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-encoder.svg",
+    "sha256": "e353a4de1fc1801c67c698a6a19587e990a424a7b6b6bd3e1ea441610e3c4a05"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/X-and-CNOT.svg",
+    "sha256": "454fd852d490974823f2d72bc80dd529172bcaee2791234740f11a989c9feb62"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Z-and-CNOT.svg",
+    "sha256": "0d24f7f2ed9190ed2945294f8a7223826ccd698b6fd858daa75487663568e947"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-1.svg",
+    "sha256": "38f4f88e680c6819bf29825b8bab19e7128b5fceb95254f47db887afeccc3885"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-2.svg",
+    "sha256": "3abcd7b6f4494d041a386dd0d3fe004598907f3f042cee98a7c8b7a3399931f2"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-1.svg",
+    "sha256": "1bad98cc505d53c0e4f1e2fd32477c47fa273ca5f522aea143d968e76b0b21ea"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-phase-error-detect-2.svg",
+    "sha256": "836724208b9f1da2bccaf9336724088fa9c2e072fcf622b35ad0a7dd9cc4216b"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-XZ-error.svg",
+    "sha256": "e3373bacac6ca52c5b97e742c542fb7120a5983f52ef1e2b77219deafd2d1536"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error.svg",
+    "sha256": "0de98167853f4df3c75b9ac430553bc711fcc9af481dfec28f876fdcc0cca426"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/Shor-ZX-error-2.svg",
+    "sha256": "499e67fa9fd86d4fbbc1984d3da2a2f223076ccfaeaced7d6ad063d443c55ae5"
+  },
+  {
+    "row": "IBM-055",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/correcting-quantum-errors/breakeven-Shor.svg",
+    "sha256": "965187ee90742e70a82a67c550dbd781492907d7aa46f73d897d71bc783b1cc7"
+  },
+  {
+    "row": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-Pauli.svg",
+    "sha256": "3e1d6a41e08b15064c73f2e1a1bbb41a5746500ca0fcb48515dc1abf2ec5011d"
+  },
+  {
+    "row": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-3-qubit-Pauli.svg",
+    "sha256": "20de27ff64837de5b37accd8e312ddc82889c1b0f928005c3bca5d67ed83422d"
+  },
+  {
+    "row": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/phase-estimation-ZZ.svg",
+    "sha256": "d8a03d63c7d109a11791905490ac0ccd68cb4b038f2d4ed1ed657e4fd8474be2"
+  },
+  {
+    "row": "IBM-058",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/simplified-ZZ.svg",
+    "sha256": "5320efa75e83b717c1ea6dd5a6172261b79d15bb9b3f8dc9adc53e9f698ca47a"
+  },
+  {
+    "row": "IBM-059",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/3-bit-repetition-parity-checks.svg",
+    "sha256": "38ca740348f80d9f7c0458d00af904d700405016133838074cb5f791ab6876ac"
+  },
+  {
+    "row": "IBM-059",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/stabilizer-generator-table.svg",
+    "sha256": "07f1c48a9678258751fa4488968eaf97539b988f8f47989c82042343ed9da561"
+  },
+  {
+    "row": "IBM-060",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/Steane-encoder.svg",
+    "sha256": "321a18a3d76c391d35f62f1d4ebd3bfd14fe592440b08a10847945a6f1298db4"
+  },
+  {
+    "row": "IBM-060",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/stabilizer-formalism/lowest-weight-correction.svg",
+    "sha256": "ae37b73b30ed4dd301c1792a32efa71ba1a1163798ca43ba51fdc3fc63d06f79"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/9-by-9-lattice.svg",
+    "sha256": "1ca29814f0152d06725524c4d25ff3a799125412f652c15d5fc741d42bc1c48b"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/torus.svg",
+    "sha256": "848d2575341ad9ce54b764db0309be121827570c4f82c8181a417525e677752d"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/qubits-on-lattice-edges.svg",
+    "sha256": "143c1bf73368ae6970c17296ce57614a053d010f2e9123439914b3124dbc4da9"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code-stabilizer-generators.svg",
+    "sha256": "38219d8e43b90bb5db9c603357f5ec09fd2d50e4550021911719573cb64017e1"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/stabilizer-generator-examples.svg",
+    "sha256": "dd51db47a45d1240429901e7ffbeaa11c572aac4280455522e083acb778f9be1"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/stabilizer-generators-overlap.svg",
+    "sha256": "e772d390abc09f8b598edae851e0d53458c08441ff4abd9a6989e6fe50ce6e5b"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/toric-code-bit-flip.svg",
+    "sha256": "b83f7d5cb69d65ec9db4910b1c198c70100f7fdf3823792a21f7ad439635dbf5"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-chain.svg",
+    "sha256": "0984d0ed5721019c75d1ccae40ff2fd2f940931351631776f9ce8ac4f8b79f62"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-loop.svg",
+    "sha256": "b6e82655409a683d7e8771b8b3303bad132d08987e72c75307ac1c4da31ab6d8"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-loop-generated.svg",
+    "sha256": "d2445bd4e14453d8f10ceede8828d0a6fcbf45140e47c8e1d221b6f9207a6c28"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-logical.svg",
+    "sha256": "362dac866c1005279739e58022cc55c30093e4eebd16337fa12dafb5d26b61e9"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/X-error-correction.svg",
+    "sha256": "46c89e96c95be9ba7b89443cfa74e82caa36ea228dedbfd4b05a11ec8104dd83"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/correction-complete-error.svg",
+    "sha256": "51c6d9d371a615915d31c921dd2a60c453fa55fcd085b358a160d401844fcc74"
+  },
+  {
+    "row": "IBM-063",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/multiple-correction-chains.svg",
+    "sha256": "1e0a4efb18a6caa4c97b4bef665c2baa4edc3a4ea4ab77444021023df1ccfd28"
+  },
+  {
+    "row": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/surface-code.svg",
+    "sha256": "c52fd58d023e2576d7ac17376c075a065d2b27b31750c58f1284c0ff27e6a949"
+  },
+  {
+    "row": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/rotated-surface-code.svg",
+    "sha256": "cce291a6c1e315ffe4b2b8027910ea4bba5b51f96d9f6675d42844ddf50d0ade"
+  },
+  {
+    "row": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/Steane-color-code.svg",
+    "sha256": "d040d77606d2b0f8b4f8f1090d24fcc2de19fc8d8f26d4742fde91e61264c4ca"
+  },
+  {
+    "row": "IBM-064",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/quantum-code-constructions/color-code.svg",
+    "sha256": "1ff8ee86e92b3517eb18c10e3cd81f97d2df12104536b34aa8dc58b7bbce937c"
+  },
+  {
+    "row": "IBM-066",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/teleportation-circuit.svg",
+    "sha256": "1dc34bf1567d4663bf4fcc5d8a078be8ef89d5b04b12a46662ed791b4c71bbb5"
+  },
+  {
+    "row": "IBM-066",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/FT-teleportation-circuit.svg",
+    "sha256": "929b07b1bd85ca2d9f400c6bed5c6eff92697cda39e01ab702597087a3126cb1"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/CNOT-error-propagation.svg",
+    "sha256": "ef4760bc1d91e9f4cdf9d500fce86de1f1d54c07ced00b28a76cbf05c7a0394d"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/multiple-CNOT-error-propagation.svg",
+    "sha256": "c72ba93e9619833906c26eca6e301587794545f481463263288adea2b8a58f32"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/transversal-CNOT.svg",
+    "sha256": "fde5a171b671f6fa188b470e02b94275b9d39710035d690cafe8bf6d8bc7e46f"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/magic-state-injection.svg",
+    "sha256": "b913dae1870232b1b4823e569d2ca0818811b4810e8247fba92f182a3ab9fbdd"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/encoded-magic-state-injection.svg",
+    "sha256": "8794a40945f3bb29e5b2cd4f00da0e13a77f5709b88823ffc89f194a964d5ae0"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/encoded-magic-state-distillation.svg",
+    "sha256": "5f3195ca7ab3ce9a3a2a5aba62e0f79092ab8ea4fc0789a18b6affe67267f052"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Shor-error-detection.svg",
+    "sha256": "74dddf40e5b46df9e93bc0e00ce949f3dff498f6b0b1b997b878f56c1a2f1639"
+  },
+  {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Steane-error-detection.svg",
+    "sha256": "fa3e635644b2310f60280caf2998528697bc614483de8a242aa601dbb834fe67"
+  }
+]
