@@ -4125,6 +4125,12 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
  }
+ if(s.find("\\otimes")!=std::string::npos) {
+  // Standalone repeated gates have the same implicit width as |0 ... 0>.
+  static const std::regex repeatedGate(R"(^\s*([HIXYZST])\s*\\otimes(?![A-Za-z])\s*(?:\1\s*\\otimes(?![A-Za-z])\s*)?\\(?:cdots|ldots)(?![A-Za-z])\s*\\otimes(?![A-Za-z])\s*\1\s*$)");
+  std::smatch repeated;
+  if(std::regex_match(s,repeated,repeatedGate))s="qtensorpow("+repeated[1].str()+",\"register width\")";
+ }
  if(s.find("\\otimes")!=std::string::npos && s.find("\\text")!=std::string::npos) {
   // The annotation counts every factor, including those hidden by the ellipsis.
   static const std::regex counted(R"(^\s*(\\[A-Za-z]+|[A-Za-z])\s*\\otimes(?![A-Za-z])\s*\1\s*\\otimes(?![A-Za-z])\s*\\(?:cdots|ldots)\s*\\otimes(?![A-Za-z])\s*\1\s*(?:\\quad\s*)?\\text\{\s*\(\s*\$\s*([A-Za-z]|[0-9]+)\s*\$\s+times\s*\)\s*\}\s*$)");

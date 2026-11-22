@@ -79,6 +79,18 @@ run(f'quantum:replace(({phase}),"a",qbitlabel(1,2))', "--json", success=False)
 assert data("quantum:$2^ a (3)$")["copy_text"] == data("quantum:$3 \\cdot 2^{a}$")["copy_text"]
 assert data("quantum:$2^{a(3)}$")["copy_text"] != data("quantum:$2^a(3)$")["copy_text"]
 
+# Tensor powers inside a ket label and between repeated gates share the
+# same register-width rules as explicit tensor powers.
+zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
+assert data(f"quantum:replace(({zero_register}),n,2)")["copy_text"] == "matrix(4,1,[1,0,0,0])"
+assert data(r"quantum:$\bra{1^{\otimes 2}}$")["copy_text"] == "vector(0,0,0,1)"
+assert data(r"quantum:$\ket{0^{\otimes 2}\otimes 1}$")["copy_text"] == "matrix(8,1,[0,1,0,0,0,0,0,0])"
+gate_series = data(r"quantum:$H\otimes\cdots\otimes H$")["copy_text"]
+assert data("quantum:" + gate_series)["copy_text"] == gate_series
+assert data(f'quantum:replace(({gate_series}),"register width",2)=H@H')["copy_text"] == "1"
+run(r"quantum:$H\otimes\cdots\otimes X$", "--json", success=False)
+run(r"quantum:$\ket{1^{\otimes -1}}$", "--json", success=False)
+
 # A centered dot inside XOR can still become parity or an ordinary product.
 distributive = data(r"quantum:$(s\cdot x)\oplus(y\cdot x)=(s\oplus y)\cdot x$")["copy_text"]
 assert data("quantum:" + distributive)["copy_text"] == distributive
