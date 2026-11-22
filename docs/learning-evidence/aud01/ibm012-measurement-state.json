@@ -12,7 +12,7 @@
           "end": 6049,
           "literal_sha256": "7c233b47468094dcc8d73c7d7dbc2bfa1783c85ad2084b54fc612d872083ffce",
           "outcome": "result",
-          "copy_text": "qequalchain(vector('\u03c3',qadjacent(qmul('U',qtensor(qadjacent(matrix(2,1,vector(1,0)),qdag(matrix(2,1,vector(1,0)))),'\u03c1')),qdag('U')),qmeasurementblocks(qindexedentries(\"P_\",0,qsub('m',1),vector()),'\u03c1')))"
+          "copy_text": "qequalchain(vector('\u03c3',qadjacent(qmul('U',qinitialdensity('U','\u03c1')),qdag('U')),qmeasurementblocks(qindexedentries(\"P_\",0,qsub('m',1),vector()),'\u03c1')))"
         }
       ]
     }

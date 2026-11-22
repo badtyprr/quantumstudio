@@ -94,6 +94,23 @@ for equation, order in [(state_equation, assignments), (copied_state, reversed(a
         equation = f'replace(({equation}),"{label}",{value})'
     for value, truth in [(bell_density, "1"), ("[1,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0]", "0")]:
         assert data(f'quantum:replace(({equation}),"σ",{value})')["copy_text"] == truth
+# A three-outcome measurement initializes the first of three two-dimensional
+# blocks. A unitary permutation carries the first two columns to rows 0 and 3.
+for dim, unitary, sigma, effect_values in [
+    (1, "[1,0;0,1]", "[1,1;1,1]/2", ["[1,0;0,1]"]),
+    (3, "[1,0,0,0,0,0;0,0,0,1,0,0;0,0,1,0,0,0;0,1,0,0,0,0;0,0,0,0,1,0;0,0,0,0,0,1]",
+     "[1,0,0,1,0,0;0,0,0,0,0,0;0,0,0,0,0,0;1,0,0,1,0,0;0,0,0,0,0,0;0,0,0,0,0,0]/2",
+     ["[1,0;0,0]", "[0,0;0,1]", "[0,0;0,0]"]),
+]:
+    equation = copied_state
+    for index, effect in enumerate(effect_values):
+        equation = f'replace(({equation}),"P_{index}",{effect})'
+    for label, val in [("m", dim), ("U", unitary), ("ρ", "[1,1;1,1]/2"), ("σ", sigma)]:
+        equation = f'replace(({equation}),"{label}",{val})'
+    assert data("quantum:" + equation)["copy_text"] == "1"
+for fixed in [r"U (\vert 0\rangle_{2}\langle 0\vert_{2}\otimes\rho)",
+              r"U ([1;0][1,0]\otimes\rho)"]:
+    assert "qinitialdensity" not in data("quantum:" + fixed)["copy_text"]
 # Applying the two diagonal roots to (1,i)/sqrt(2) gives the column
 # (3,5i,4,0)/sqrt(50). Its outer product distinguishes the row and column indices.
 complex_output = f'replace(replace(replace(replace(({measurement_sum}),"P_0",[9/25,0;0,1]),"P_1",[16/25,0;0,0]),"ρ",[1,-i;i,1]/2),"m",2)'

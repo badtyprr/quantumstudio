@@ -2418,6 +2418,25 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qinitialdensity") {
+   MathStructure operation=raw[0],density=raw[1];operation.eval(eo);density.eval(eo);
+   if((operation.isMatrix() && (!operation.columns() || operation.columns()>1024)) ||
+      (!operation.isMatrix() && !operation.containsUnknowns()) ||
+      (density.isMatrix() && (!density.rows() || density.columns()!=density.rows())) ||
+      (!density.isMatrix() && !density.containsUnknowns())) {
+    CALCULATOR->error(true,"Ancilla initialization requires a matrix operator with at most 1024 input columns and a square density matrix.",NULL);return 0;
+   }
+   if(!operation.isMatrix() || !density.isMatrix())return 0;
+   if(operation.columns()%density.rows()!=0) {
+    CALCULATOR->error(true,"The input width must be a multiple of the density matrix dimension.",NULL);return 0;
+   }
+   out.clearMatrix();out.resizeMatrix(operation.columns(),operation.columns(),m_zero);
+   for(size_t r=0;r<density.rows();++r) {
+    if(CALCULATOR->aborted())return 0;
+    for(size_t c=0;c<density.columns();++c)element(out,r,c)=element(density,r,c);
+   }
+   return 1;
+  }
   if(op=="qmeasurementblocks") {
    if(!indexedSpectralFamily(raw[0]))return 0;
    auto rootFunction=CALCULATOR->getFunction("qblockroots");
@@ -3175,6 +3194,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qreverseindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qinitialdensity",2));
  calculator.addFunction(new QuantumIndexedFunction("qmeasurementblocks",2));
  calculator.addFunction(new QuantumIndexedFunction("qblockroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
