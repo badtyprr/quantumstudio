@@ -3783,6 +3783,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(start) {expanded.append(s,start,std::string::npos);s=expanded;}
  }
+ if(s.find("\\otimes")!=std::string::npos && s.find("\\text")!=std::string::npos) {
+  // The annotation counts every factor, including those hidden by the ellipsis.
+  static const std::regex counted(R"(^\s*(\\[A-Za-z]+|[A-Za-z])\s*\\otimes\s*\1\s*\\otimes\s*\\(?:cdots|ldots)\s*\\otimes\s*\1\s*(?:\\quad\s*)?\\text\{\s*\(\s*\$\s*([A-Za-z]|[0-9]+)\s*\$\s+times\s*\)\s*\}\s*$)");
+  size_t start=s.rfind('=');
+  start=start==std::string::npos ? 0 : start+1;
+  std::string rhs=s.substr(start);
+  std::smatch series;
+  if(std::regex_match(rhs,series,counted))
+   s.replace(start,std::string::npos,"qtensorpow("+nestedTeX(series[1].str())+","+series[2].str()+")");
+ }
  if(s.find("\\cdots")!=std::string::npos) {
   // The two equal indices, family and endpoint must agree in every term.
   static const std::regex diagonal(R"(^\s*(\\[A-Za-z]+|[A-Za-z])_\{\s*0\s*,\s*0\s*\}\s*\+\s*\1_\{\s*1\s*,\s*1\s*\}\s*\+\s*\\cdots\s*\+\s*\1_\{\s*((?:[A-Za-z]|[0-9]+)(?:\s*[-+]\s*[0-9]+)?)\s*,\s*((?:[A-Za-z]|[0-9]+)(?:\s*[-+]\s*[0-9]+)?)\s*\}\s*$)");
