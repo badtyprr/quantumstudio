@@ -443,6 +443,10 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
   return !index.empty();
  };
  std::string first,second,lastFirst,lastSecond,upperA,upperB,lowerA,lowerB;
+ const bool binaryDot=kind==ProductSeries::BinaryDot;
+ const bool grouped=binaryDot && token("(");
+ std::string xorFamily,xorIndex;
+
  if(!factor(first,upperA))return "";
  // Read a descending family of maps in application order: the map
  // with the lowest index acts first on the input column.
@@ -462,10 +466,18 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
   return "qcomposemaps(qindexedentries(\""+first+"_\",1,"+upperA+",vector()))";
  }
  at=afterFirst;
- const bool binaryDot=kind==ProductSeries::BinaryDot;
  const std::string separator=binaryDot ? "\\oplus" : "+";
- if(!factor(second,upperB) || !token(separator) || !token("\\cdots") || !token(separator) ||
-    !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
+ if(grouped && token("\\oplus")) {
+  if(!factor(xorFamily,xorIndex) || xorIndex!=upperA || !token(")"))return "";
+ }
+ if(!factor(second,upperB) || (grouped && xorFamily.empty() && !token(")")) ||
+    !token(separator) || !token("\\cdots") || !token(separator) ||
+    (grouped && !token("(")) || !factor(lastFirst,lowerA))return "";
+ if(!xorFamily.empty()) {
+  std::string lastXor,lastIndex;
+  if(!token("\\oplus") || !factor(lastXor,lastIndex) || lastXor!=xorFamily || lastIndex!="0" || !token(")"))return "";
+ }
+ if(!factor(lastSecond,lowerB) || (grouped && xorFamily.empty() && !token(")")))return "";
  if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
  space();if(binaryDot && at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
  bool odd=false;
@@ -477,7 +489,9 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
   space();
   if(input.compare(at,2,"\\\\")!=0 && input.compare(at,5,"\\end{")!=0)return "";
  } else {
-  space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+  space();
+  const bool continuation=binaryDot && (input.compare(at,6,"\\oplus")==0 || input.compare(at,2,"\\\\")==0 || input.compare(at,5,"\\end{")==0);
+  if(!continuation && at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
  }
  const bool symbolicWidth=upperA.size()==3 && asciiLetter(upperA[0]) && upperA.substr(1)=="-1";
  if(!symbolicWidth && (upperA.empty() || (upperA.size()>1 && upperA[0]=='0') ||
@@ -486,7 +500,9 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
  if(binaryDot || kind==ProductSeries::ParityCondition) {
   const std::string high=symbolicWidth ? "("+upperA+")" : upperA;
   auto word=[&](const std::string &name){return "qregisterword(\""+name+"_\","+high+",0,vector())";};
-  std::string dot="qcenterdot("+word(first)+","+word(second)+")";
+  std::string left=word(first);
+  if(!xorFamily.empty())left="qoplus("+left+","+word(xorFamily)+")";
+  std::string dot="qcenterdot("+left+","+word(second)+")";
   if(kind==ProductSeries::ParityCondition)return "("+dot+(odd ? "=1)" : "=0)");
   return dot;
  }
@@ -2545,6 +2561,15 @@ class TeXReader {
     std::string condition=indexedProduct(input,pos,end,ProductSeries::ParityCondition);
     if(!condition.empty()) {result+=condition;pos=end;continue;}
    }
+   if(binaryWords && (!matrixDepth || alignment) && !stateLabel && !setDepth && !setBound &&
+      (asciiLetter(input[pos]) || input[pos]=='(')) {
+    const std::string before=trim(result);
+    if(before.empty() || before.back()=='=' || before.back()=='#') {
+     size_t end=pos;
+     std::string product=indexedProduct(input,pos,end,ProductSeries::BinaryDot);
+     if(!product.empty()) {result+=product;pos=end;continue;}
+    }
+   }
    if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
     if(input.compare(pos,10,"\\overline{")==0 && input.find("\\cdots",pos)!=std::string::npos) {
@@ -2559,11 +2584,6 @@ class TeXReader {
     if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
      if(!series.empty()) {result+=series;continue;}
-    }
-    if(binaryWords && asciiLetter(input[pos]) && (preceding.empty() || preceding.back()=='=')) {
-     size_t end=pos;
-     std::string product=indexedProduct(input,pos,end,ProductSeries::BinaryDot);
-     if(!product.empty()) {result+=product;pos=end;continue;}
     }
     if(binaryWords && !preceding.empty() && preceding.back()=='+' && asciiLetter(input[pos])) {
      size_t end=pos;
