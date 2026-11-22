@@ -2,13 +2,14 @@
 #include "Calculator.h"
 #include "Function.h"
 #include "QuantumAlgebra.h"
+#include "QuantumInstruments.h"
 #include "QuantumMatrixPower.h"
 #include <cmath>
 #include <complex>
 #include <vector>
 
 namespace {
-enum class Verdict { Valid, Invalid, Unknown };
+using Verdict=QuantumValidity;
 Verdict combine(Verdict a,Verdict b) {
  if(a==Verdict::Invalid || b==Verdict::Invalid)return Verdict::Invalid;
  return a==Verdict::Unknown || b==Verdict::Unknown ? Verdict::Unknown : Verdict::Valid;
@@ -34,9 +35,11 @@ Verdict nonnegative(const MathStructure &a) {
  if(a.representsNegative())return Verdict::Invalid;
  return a.representsNonNegative() ? Verdict::Valid : Verdict::Unknown;
 }
+}
+
 // Exact Schur complements prove positivity without rounding a negative eigenvalue
 // to zero. Unknown signs stay unknown; a zero pivot requires a zero row.
-Verdict positiveSemidefinite(MathStructure a,const EvaluationOptions &eo) {
+QuantumValidity quantumPositiveSemidefinite(MathStructure a,const EvaluationOptions &eo) {
  Verdict result=Verdict::Valid;
  MathStructure adjoint=quantumAdjoint(a,eo);
  for(size_t r=0;r<a.rows();++r)for(size_t c=0;c<a.columns();++c) {
@@ -68,6 +71,7 @@ Verdict positiveSemidefinite(MathStructure a,const EvaluationOptions &eo) {
  }
  return result;
 }
+namespace {
 bool isKind(const MathStructure &a,const char *name) {return a.isFunction() && a.function()->referenceName()==name;}
 bool fail(const char *message) {CALCULATOR->error(true,message,NULL);return false;}
 Verdict labelsEqual(const MathStructure &left,const MathStructure &right,const EvaluationOptions &eo) {
@@ -161,7 +165,7 @@ bool readMeasurement(const MathStructure &value,Measurement &m,const EvaluationO
   if(deferredGroup) {m.effects.push_back(MathStructure());continue;}
   effect.eval(eo);if(input.isOne())preserveSingleton(effect);
   if(!effect.isMatrix())return fail("Measurement effects lost their matrix shape.");
-  m.validity=combine(m.validity,positiveSemidefinite(effect,eo));m.effects.push_back(effect);
+  m.validity=combine(m.validity,quantumPositiveSemidefinite(effect,eo));m.effects.push_back(effect);
  }
  if(m.validity==Verdict::Invalid)return fail("Invalid measurement: an effect is not positive semidefinite.");
  if(input.isNumber())m.input=input.number().intValue();if(output.isNumber())m.output=output.number().intValue();
@@ -199,7 +203,7 @@ bool stateDensity(MathStructure state,MathStructure &density,size_t &dimension,V
  if(dimension && dimension!=state.rows())return fail("Measurement state dimensions are incompatible.");
  dimension=state.rows();
  density=state.columns()==1 ? product(state,quantumAdjoint(state,eo),eo) : state;
- validity=combine(validity,positiveSemidefinite(density,eo));
+ validity=combine(validity,quantumPositiveSemidefinite(density,eo));
  MathStructure norm=trace(density,eo);norm-=1;validity=combine(validity,normalizedZero(norm,eo,approximate));
  if(validity==Verdict::Invalid)return fail("Measurement states must be positive semidefinite and normalized.");
  return true;
