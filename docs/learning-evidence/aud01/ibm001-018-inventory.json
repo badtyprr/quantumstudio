@@ -1,0 +1,345 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "published_worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "development_worker_sha256": "86e41e28ae263f4eb2f485eaf7f34bf99cf761a394cab1759071ae452e5b3f27",
+  "development_revision": "fd255e2e",
+  "replay": "replay-phase-estimation-inventory.py NOTEBOOK WORKER OUTPUT fd255e2e",
+  "lessons": [
+    {
+      "lesson": "IBM-001",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/density-matrices/introduction.ipynb",
+      "source_sha256": "cf11a27a0c9789af7a330d2eb80b59e84bfe8c26fe015c331c21261f414ee563",
+      "occurrences": 0,
+      "unique_literals": 0,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {},
+      "development": {},
+      "replay_sha256": "f1dbf4bf5014ab292126cd99df2da0caa658bbd5c3e4271bbf0133f9c98cffff"
+    },
+    {
+      "lesson": "IBM-002",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics.ipynb",
+      "source_sha256": "784e96f7c4b5b905384f91241a024c3828e2259f0f4d05f05bd4b2cca0cd2562",
+      "occurrences": 76,
+      "unique_literals": 51,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 71,
+        "diagnostic": 5
+      },
+      "development": {
+        "exact_label": 73,
+        "diagnostic": 3
+      },
+      "replay_sha256": "d64f1f5e4271334e92fa21b4ae4e4ed55f63af09fe0c2a61becf24cce52e854d"
+    },
+    {
+      "lesson": "IBM-003",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": 168,
+      "unique_literals": 96,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 3,
+      "published": {
+        "exact_label": 131,
+        "diagnostic": 37
+      },
+      "development": {
+        "exact_label": 159,
+        "diagnostic": 9
+      },
+      "replay_sha256": "6c305aab66bdfc74b48409e6324d188d690b93cd79a5403701465a809001635a"
+    },
+    {
+      "lesson": "IBM-004",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere.ipynb",
+      "source_sha256": "b604993a890e6d2f3d4e5ea470edd4b4ac1df361a9823f2c8a1c54dcd66b3c4b",
+      "occurrences": 103,
+      "unique_literals": 73,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 4,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 73,
+        "diagnostic": 30
+      },
+      "development": {
+        "exact_label": 100,
+        "diagnostic": 3
+      },
+      "replay_sha256": "61b4d487fb03f73a873c02fe24d929c6b5ec668bf540db1c2fb1fa25b57259c0"
+    },
+    {
+      "lesson": "IBM-005",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems.ipynb",
+      "source_sha256": "6e2f80e297c2533cfd205ec2e9322f75df8d17e79081590940240b29baa54ef5",
+      "occurrences": 145,
+      "unique_literals": 84,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 103,
+        "diagnostic": 42
+      },
+      "development": {
+        "exact_label": 123,
+        "diagnostic": 22
+      },
+      "replay_sha256": "645b4a498410f0adb517544c4c1b300a96538b98e853c9a4a664544e4a93de9b"
+    },
+    {
+      "lesson": "IBM-006",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/quantum-channels/introduction.ipynb",
+      "source_sha256": "156a5c1b6d0add6b0bae982b2722a99cb253f0c73e14a06607a32e126fa58d8f",
+      "occurrences": 0,
+      "unique_literals": 0,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {},
+      "development": {},
+      "replay_sha256": "5c197453f79428685ef76625739b908eee14ce31bae3454015885aef97ea62e1"
+    },
+    {
+      "lesson": "IBM-007",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrences": 193,
+      "unique_literals": 79,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 167,
+        "diagnostic": 26
+      },
+      "development": {
+        "exact_label": 184,
+        "diagnostic": 9
+      },
+      "replay_sha256": "8f046f22c685643e55dd472caffd2961ab9626fd5843a3dd8859b4fb980b6fe4"
+    },
+    {
+      "lesson": "IBM-008",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels.ipynb",
+      "source_sha256": "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7",
+      "occurrences": 166,
+      "unique_literals": 88,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 7,
+      "figure_panels": 1,
+      "published": {
+        "exact_label": 124,
+        "diagnostic": 42
+      },
+      "development": {
+        "exact_label": 138,
+        "diagnostic": 28
+      },
+      "replay_sha256": "109ad02a88fae2ab40fccfe8eb4be6b6505f6ed2bee648626407394975e93d85"
+    },
+    {
+      "lesson": "IBM-009",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence.ipynb",
+      "source_sha256": "e2a20c467250d1ec1e01454b882a1e182450230999c471767c57938990b03f3f",
+      "occurrences": 198,
+      "unique_literals": 101,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 140,
+        "diagnostic": 58
+      },
+      "development": {
+        "exact_label": 173,
+        "diagnostic": 25
+      },
+      "replay_sha256": "6d2999939621ff4460abb7825578f77cfa1450ffd2f8cc61df518a0e5fd7068b"
+    },
+    {
+      "lesson": "IBM-010",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/general-measurements/introduction.ipynb",
+      "source_sha256": "981fd84abc72f73d4d7d3cbed614527318d85888ac5f29b1d8733fd23321b493",
+      "occurrences": 0,
+      "unique_literals": 0,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {},
+      "development": {},
+      "replay_sha256": "bce256afa0dff6fe81ee6722361546225f4abb25fc7b2b46438cee89cae78c3f"
+    },
+    {
+      "lesson": "IBM-011",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements.ipynb",
+      "source_sha256": "f7a4df41bb0ba245b6e52a62b059703c376a9a5d695e6f33e8fb3dbecf7c6bf6",
+      "occurrences": 222,
+      "unique_literals": 115,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 1,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 161,
+        "diagnostic": 54,
+        "invalid_utf8": 7
+      },
+      "development": {
+        "exact_label": 199,
+        "diagnostic": 23
+      },
+      "replay_sha256": "7f611f57134a431abc83b6133cb6e034907469f0da2eda0cd25525e161d5ce30"
+    },
+    {
+      "lesson": "IBM-012",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": 126,
+      "unique_literals": 54,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 1,
+      "figure_panels": 1,
+      "published": {
+        "exact_label": 102,
+        "diagnostic": 24
+      },
+      "development": {
+        "exact_label": 117,
+        "diagnostic": 9
+      },
+      "replay_sha256": "1b5d2e80d214a7bd701b705448559b80e3c79d73627c243045b9f81bc6b6ec25"
+    },
+    {
+      "lesson": "IBM-013",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography.ipynb",
+      "source_sha256": "afd353deba6a4252c1cb7a50db286c74041ddaf3363bd95cb9f7b0c84e18c0a8",
+      "occurrences": 161,
+      "unique_literals": 83,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "diagnostic": 37,
+        "exact_label": 116,
+        "invalid_utf8": 8
+      },
+      "development": {
+        "exact_label": 147,
+        "diagnostic": 14
+      },
+      "replay_sha256": "5b083a35bb0d532ae1462ebdd6e7baec38e27b611ff0df6912a853ff5f88c49b"
+    },
+    {
+      "lesson": "IBM-014",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction.ipynb",
+      "source_sha256": "93f944ac1522d9ca2561b310b1c5812e25ad970761af9016601165ff88b97b51",
+      "occurrences": 3,
+      "unique_literals": 1,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 3
+      },
+      "development": {
+        "exact_label": 3
+      },
+      "replay_sha256": "7f937cded2add18703dde3ef8b5374d7395040912abd030f316afee0d30d8544"
+    },
+    {
+      "lesson": "IBM-015",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications.ipynb",
+      "source_sha256": "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e",
+      "occurrences": 334,
+      "unique_literals": 139,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 1,
+      "figure_panels": 4,
+      "published": {
+        "exact_label": 218,
+        "diagnostic": 116
+      },
+      "development": {
+        "exact_label": 307,
+        "diagnostic": 27
+      },
+      "replay_sha256": "d04ed3e3475533bbe92966da75be4697abc52c461fa175641fce72f530d5918d"
+    },
+    {
+      "lesson": "IBM-016",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+      "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+      "occurrences": 156,
+      "unique_literals": 88,
+      "markdown_cells": 2,
+      "code_cells": 0,
+      "markdown_images": 1,
+      "figure_panels": 3,
+      "published": {
+        "exact_label": 117,
+        "diagnostic": 39
+      },
+      "development": {
+        "exact_label": 136,
+        "diagnostic": 20
+      },
+      "replay_sha256": "c4ff6039f52955f5658c4deb89b2e605cf43b589e34148b4fc30c6fb3d6498bf"
+    },
+    {
+      "lesson": "IBM-017",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/introduction.ipynb",
+      "source_sha256": "eb5a193e298e9c65e694be6ae7b9d3c1e9d72ce1cdb031ca47d47fe28ef3cd68",
+      "occurrences": 0,
+      "unique_literals": 0,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 0,
+      "figure_panels": 0,
+      "published": {},
+      "development": {},
+      "replay_sha256": "8b149513a4ef51020a532764dc53e0d6b92df76bf2d123e4fcd898adb033dfcd"
+    },
+    {
+      "lesson": "IBM-018",
+      "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation.ipynb",
+      "source_sha256": "53ff87ea24a13657dc87d633abb0736efa5e18e87dbbec57a0e3414c6d895217",
+      "occurrences": 59,
+      "unique_literals": 31,
+      "markdown_cells": 1,
+      "code_cells": 0,
+      "markdown_images": 5,
+      "figure_panels": 0,
+      "published": {
+        "exact_label": 43,
+        "diagnostic": 16
+      },
+      "development": {
+        "exact_label": 58,
+        "diagnostic": 1
+      },
+      "replay_sha256": "3d0b74e7b27233694bb8ac7feddab91c27c0f0038c6a14c3657343b143ebc7a9"
+    }
+  ]
+}

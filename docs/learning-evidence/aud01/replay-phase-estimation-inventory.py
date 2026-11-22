@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -39,9 +40,36 @@ parser.add_argument("revision", help="Revision used to build the worker")
 parser.add_argument("--lesson", help="Require this pinned lesson")
 args = parser.parse_args()
 worker = args.worker.resolve()
+env = os.environ.copy()
+if (worker.parent / "data").is_dir():
+    env.setdefault("QALCULATE_DEFINITIONS_DIR", str(worker.parent / "data"))
+# A missing definitions directory makes ordinary expressions look like
+# lesson failures. Check a known expression before classifying notebook rows.
+control = subprocess.run([worker, "--json"], input=b"quantum:2+2", capture_output=True,
+                         timeout=60, env=env)
+if control.returncode != 0 or json.loads(control.stdout)["copy_text"] != "4":
+    raise RuntimeError(f"Worker control failed. Check QALCULATE_DEFINITIONS_DIR. {control.stderr.decode(errors='replace')}")
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
+    "cf11a27a0c9789af7a330d2eb80b59e84bfe8c26fe015c331c21261f414ee563": ("IBM001", "introduction", 0, 0),
+    "784e96f7c4b5b905384f91241a024c3828e2259f0f4d05f05bd4b2cca0cd2562": ("IBM002", "density-matrix-basics", 76, 0),
+    "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd": ("IBM003", "convex-combinations", 168, 0),
+    "b604993a890e6d2f3d4e5ea470edd4b4ac1df361a9823f2c8a1c54dcd66b3c4b": ("IBM004", "bloch-sphere", 103, 4),
+    "6e2f80e297c2533cfd205ec2e9322f75df8d17e79081590940240b29baa54ef5": ("IBM005", "multiple-systems", 145, 0),
+    "156a5c1b6d0add6b0bae982b2722a99cb253f0c73e14a06607a32e126fa58d8f": ("IBM006", "introduction", 0, 0),
+    "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd": ("IBM007", "quantum-channel-basics", 193, 0),
+    "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7": ("IBM008", "representations-of-channels", 166, 7),
+    "e2a20c467250d1ec1e01454b882a1e182450230999c471767c57938990b03f3f": ("IBM009", "representation-equivalence", 198, 0),
+    "981fd84abc72f73d4d7d3cbed614527318d85888ac5f29b1d8733fd23321b493": ("IBM010", "introduction", 0, 0),
+    "f7a4df41bb0ba245b6e52a62b059703c376a9a5d695e6f33e8fb3dbecf7c6bf6": ("IBM011", "formulations-of-measurements", 222, 1),
+    "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62": ("IBM012", "naimark-theorem", 126, 1),
+    "afd353deba6a4252c1cb7a50db286c74041ddaf3363bd95cb9f7b0c84e18c0a8": ("IBM013", "discrimination-and-tomography", 161, 0),
+    "93f944ac1522d9ca2561b310b1c5812e25ad970761af9016601165ff88b97b51": ("IBM014", "introduction", 3, 0),
+    "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e": ("IBM015", "purifications", 334, 1),
+    "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7": ("IBM016", "fidelity", 156, 1),
+    "eb5a193e298e9c65e694be6ae7b9d3c1e9d72ce1cdb031ca47d47fe28ef3cd68": ("IBM017", "introduction", 0, 0),
+    "53ff87ea24a13657dc87d633abb0736efa5e18e87dbbec57a0e3414c6d895217": ("IBM018", "query-model-of-computation", 59, 5),
     "057fe876a3ed23e7bea2c8cea8370c76631577b94141189d65149584c86be2f4": ("MOD013", "nmr-with-qiskit", 285, 1),
     "f6f8b127487d5050ed7b527bfec52fca4acdcdf4db09451458c6acb014aa3f25": ("IBM139", "modern-workflows", 14, 14),
     "4db046cc51517d9089ca660d5fb9916ebd6a054cbba3dee376918a4ff2d7f4bc": ("IBM138", "introduction", 0, 0),
@@ -204,6 +232,7 @@ single_systems = lesson in {"IBM036","IBM037","IBM038","IBM039"}
 multiple_systems = lesson in {"IBM040","IBM041","IBM042","IBM043"}
 # Most lessons consist of a single Markdown cell.
 expected_cells = {
+    "IBM016": (2,0),
     "MOD013": (35,17),
     "IBM139": (1,0),
     "IBM138": (11,0),
@@ -284,7 +313,7 @@ for index, cell in enumerate(cells):
         literal = match.group()
         if literal not in cache:
             result = subprocess.run([worker, "--json"], input=("quantum:" + literal).encode(),
-                                    capture_output=True, timeout=60)
+                                    capture_output=True, timeout=60, env=env)
             if result.returncode == 0:
                 try:
                     value = json.loads(result.stdout)
@@ -309,6 +338,21 @@ for index, cell in enumerate(cells):
 assert len(rows) == math_count and len(figures) == image_count
 chapter = "phase-estimation-and-factoring" if lesson in ("IBM028", "IBM029") else "grover-algorithm"
 course = "fundamentals-of-quantum-algorithms"
+source_revision = "f842259423a7adc9adeafd54153cdb5d3c5b680b"
+if "IBM001" <= lesson <= "IBM018":
+    source_revision = "079769d205eb3b60e077820060274c7b0359c123"
+    course = "general-formulation-of-quantum-information"
+    if lesson <= "IBM005":
+        chapter = "density-matrices"
+    elif lesson <= "IBM009":
+        chapter = "quantum-channels"
+    elif lesson <= "IBM013":
+        chapter = "general-measurements"
+    elif lesson <= "IBM016":
+        chapter = "purifications-and-fidelity"
+    elif lesson <= "IBM018":
+        chapter = "quantum-query-algorithms"
+        course = "fundamentals-of-quantum-algorithms"
 if single_systems:
     course,chapter = "basics-of-quantum-information","single-systems"
 if multiple_systems:
@@ -355,7 +399,7 @@ elif lesson == "MOD013":
     course,chapter = "quantum-mechanics",""
 section = "modules" if lesson == "MOD013" else "courses"
 path = "/".join(part for part in (course,chapter,slug) if part)
-source = ("https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/"
+source = (f"https://github.com/Qiskit/documentation/blob/{source_revision}/"
           f"learning/{section}/{path}.{extension}")
 counts = Counter(row["status"] for row in rows)
 report = dict(source=source, source_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
