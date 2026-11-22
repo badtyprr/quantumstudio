@@ -1055,6 +1055,13 @@ class TeXReader {
   ++pos;
   return read('}');
  }
+ void skipOpeningSize() {
+  if(pos<input.size() && input[pos]=='\\') {
+   size_t end=pos+1;while(end<input.size() && asciiLetter((unsigned char)input[end]))++end;
+   std::string size=input.substr(pos+1,end-pos-1);
+   if(size=="left" || size=="big" || size=="Big" || size=="bigl" || size=="Bigl" || size=="bigg" || size=="Bigg" || size=="biggl" || size=="Biggl") {pos=end;space();}
+  }
+ }
  std::string argument() {
   space();
   if(pos==input.size()) throw std::runtime_error(error("Missing TeX argument"));
@@ -1635,11 +1642,7 @@ class TeXReader {
     ++pos;std::string power=trim(argument());
     if(power.empty())throw std::runtime_error(error("Empty trigonometric power"));
     space();
-    if(pos<input.size() && input[pos]=='\\') {
-     size_t end=pos+1;while(end<input.size() && asciiLetter((unsigned char)input[end]))++end;
-     std::string size=input.substr(pos+1,end-pos-1);
-     if(size=="left" || size=="big" || size=="Big" || size=="bigl" || size=="Bigl" || size=="bigg" || size=="Bigg" || size=="biggl" || size=="Biggl") {pos=end;space();}
-    }
+    skipOpeningSize();
     std::string operand;
     if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
     else if(pos<input.size() && input[pos]=='{')operand=group();
@@ -2286,10 +2289,12 @@ class TeXReader {
      (result.size()==2 || !std::isalnum((unsigned char)result[result.size()-3]));
     if(fourier) {result.resize(result.size()-3);result+="qfourier("+index+")";}
     else if(trace) {
-     space(); std::string body;
+     space();skipOpeningSize();std::string body;
      if(pos<input.size() && input[pos]=='{') body=group();
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
-     else throw std::runtime_error(error("A subscripted trace requires a parenthesized or braced operand"));
+     else if(input.compare(pos,15,"\\begin{pmatrix}")==0 || input.compare(pos,15,"\\begin{bmatrix}")==0 ||
+             input.compare(pos,14,"\\begin{matrix}")==0)body=argument();
+     else throw std::runtime_error(error("A subscripted trace requires a grouped operand or matrix"));
      result.resize(result.size()-2); result+="ptrace("+body+",vector("+index+"))";
     } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {
      auto pair=indexedParts(index,",");

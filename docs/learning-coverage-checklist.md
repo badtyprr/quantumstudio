@@ -52,6 +52,8 @@ The shared-index sum change replays the 31 occurrences that previously reported 
 | IBM-015 | 2 | 0 |
 | IBM-016 | 1 | 0 |
 
+A separate DEV-17 replay found 31 occurrences that rejected the operand of a partial trace. Accepting sized parentheses and a directly following matrix moved 28 past that syntax error. Of those, 25 need an explicit subsystem mapping, two encounter other unsupported notation and one returns a symbolic expression awaiting semantic verification. Three bare trace operators still lack an operand. Numerical checks on a two-qubit diagonal matrix distinguish tracing out the first subsystem from tracing out the second.
+
 ## Release queue
 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.
