@@ -769,3 +769,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm016-root-fidelity.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm034-probability-bounds.json docs/learning-evidence/aud01/replay-ibm034-probability-bounds.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-indexed-oracle-actions.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-tables.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-xor.json
