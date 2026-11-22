@@ -776,4 +776,5 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm019-controlled-flip.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-word.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-xor-phase.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-binary-oracles.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-dot-distributivity.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-full-lesson.md docs/learning-evidence/aud01/ibm019-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm019-formulas.py

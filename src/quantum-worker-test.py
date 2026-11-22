@@ -79,6 +79,17 @@ run(f'quantum:replace(({phase}),"a",qbitlabel(1,2))', "--json", success=False)
 assert data("quantum:$2^ a (3)$")["copy_text"] == data("quantum:$3 \\cdot 2^{a}$")["copy_text"]
 assert data("quantum:$2^{a(3)}$")["copy_text"] != data("quantum:$2^a(3)$")["copy_text"]
 
+# A centered dot inside XOR can still become parity or an ordinary product.
+distributive = data(r"quantum:$(s\cdot x)\oplus(y\cdot x)=(s\oplus y)\cdot x$")["copy_text"]
+assert data("quantum:" + distributive)["copy_text"] == distributive
+for values, truth in [(("qbitlabel(1,2)", "qbitlabel(2,2)", "qbitlabel(3,2)"), "1"),
+                      (("1", "2", "3"), "0")]:
+    expr = distributive
+    for symbol, value in zip(('"s"', 'y', 'x'), values):
+        expr = f"replace(({expr}),{symbol},{value})"
+    assert data("quantum:" + expr)["copy_text"] == truth
+run(r"quantum:$(s\cdot x)\oplus(-1)$", "--json", success=False)
+
 # Binary oracles keep a query until a truth table and a word are supplied.
 oracle_graph = 'qset(vector(qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(1,1),0))))'
 for oracle in "fgh":

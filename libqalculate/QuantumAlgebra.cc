@@ -1519,7 +1519,8 @@ class QuantumAlgebraFunction: public MathFunction {
    // Keep the operator until the binding determines which operation applies.
    auto pending=[](const MathStructure &v) {
     return v.isSymbolic() || v.isUnknown() || (v.containsUnknowns() && (v.representsScalar() ||
-     (v.isFunction() && (v.function()->referenceName()=="qnamedapplication" || v.function()->referenceName()=="qgraphapply" || v.function()->referenceName()=="qoplus"))));
+     (v.isFunction() && (v.function()->referenceName()=="qnamedapplication" || v.function()->referenceName()=="qgraphapply" ||
+       v.function()->referenceName()=="qcenterdot" || v.function()->referenceName()=="qbitdot" || v.function()->referenceName()=="qoplus"))));
    };
    if(pending(a) || pending(args[1])) {
     for(size_t j=0;j<2;++j) {

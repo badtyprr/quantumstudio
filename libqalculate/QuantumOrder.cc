@@ -507,11 +507,12 @@ class QuantumOrderFunction: public MathFunction {
     if(!compareQuantumSets(args[0],args[1],equal,eo))return 0;
     out=(kind==4)==equal ? 1 : 0;return 1;
    }
-   // A computed XOR ket may acquire its width from a later word binding.
-   // Preserve the two operator/state expressions until that ket is resolved.
+   // A later word binding can determine the width of an XOR ket or make
+   // a centered dot the parity of a bitwise product. Retain both operands.
    if(kind>=4)for(unsigned k=0;k<2;++k) {
-    if(args[k].containsFunction(CALCULATOR->getFunction("qcomputationalket")) &&
-       args[k].containsFunction(CALCULATOR->getFunction("qoplus"))) {
+    if(args[k].containsFunction(CALCULATOR->getFunction("qoplus")) &&
+       (args[k].containsFunction(CALCULATOR->getFunction("qcomputationalket")) ||
+        (!args[0].equals(args[1]) && args[k].containsFunction(CALCULATOR->getFunction("qcenterdot"))))) {
      if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
      out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
     }
