@@ -1,0 +1,611 @@
+{
+  "release": "checkpoint-c5a456cd",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "gui": {
+    "passed": true,
+    "checks": 132,
+    "calls": 12,
+    "sessionsOnly": false,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "checks": [
+    {
+      "anchor": "400 minutes",
+      "expression": "400",
+      "expected": "400",
+      "label": "EXACT RESULT",
+      "copy": "400",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "400"
+    },
+    {
+      "anchor": "400 minutes",
+      "expression": "400/60",
+      "expected": "20/3",
+      "label": "EXACT RESULT",
+      "copy": "20 ∕ 3",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "20 ∕ 3"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "30/60",
+      "expected": "1/2",
+      "label": "EXACT RESULT",
+      "copy": "1 ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 2"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "120/60",
+      "expected": "2",
+      "label": "EXACT RESULT",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "floor(400/30)",
+      "expected": "13",
+      "label": "EXACT RESULT",
+      "copy": "13",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "13"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "400-13*30",
+      "expected": "10",
+      "label": "EXACT RESULT",
+      "copy": "10",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "10"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "floor(400/120)",
+      "expected": "3",
+      "label": "EXACT RESULT",
+      "copy": "3",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "3"
+    },
+    {
+      "anchor": "30-120 minutes",
+      "expression": "400-3*120",
+      "expected": "40",
+      "label": "EXACT RESULT",
+      "copy": "40",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "40"
+    },
+    {
+      "anchor": "120 qubits",
+      "expression": "120",
+      "expected": "120",
+      "label": "EXACT RESULT",
+      "copy": "120",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "120"
+    },
+    {
+      "anchor": "two-qubit depths around 30",
+      "expression": "30",
+      "expected": "30",
+      "label": "EXACT RESULT",
+      "copy": "30",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "30"
+    },
+    {
+      "anchor": "~30% more complex",
+      "expression": "100*(1+30/100)",
+      "expected": "130",
+      "label": "EXACT RESULT",
+      "copy": "130",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "130"
+    },
+    {
+      "anchor": "~10× improved error rates",
+      "expression": "(1/100)/10",
+      "expected": "1/1000",
+      "label": "EXACT RESULT",
+      "copy": "1 ∕ 1000",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 1000"
+    }
+  ],
+  "link_observations": [
+    {
+      "line": 49,
+      "label": "section below",
+      "target": "#resources",
+      "url": "https://quantum.cloud.ibm.com/learning/en/courses/designing-and-leading-quantum-projects/grant-writing#resources",
+      "annotation": false,
+      "status": "source anchor",
+      "verified": true
+    },
+    {
+      "line": 57,
+      "label": "IBM Quantum access plans",
+      "target": "https://www.ibm.com/quantum/products",
+      "url": "https://www.ibm.com/quantum/products",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.ibm.com/quantum/products",
+      "title": "IBM Quantum Computing | IBM Quantum products & services"
+    },
+    {
+      "line": 60,
+      "label": "Quantum Credits program",
+      "target": "http://ibm.biz/IBMQuantumCredits",
+      "url": "http://ibm.biz/IBMQuantumCredits",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.ibm.com/quantum/quantum-credits",
+      "title": "IBM Quantum Computing | IBM Quantum Credits"
+    },
+    {
+      "line": 67,
+      "label": "Flex offering",
+      "target": "https://www.ibm.com/quantum/products",
+      "url": "https://www.ibm.com/quantum/products",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.ibm.com/quantum/products",
+      "title": "IBM Quantum Computing | IBM Quantum products & services"
+    },
+    {
+      "line": 71,
+      "label": "advantage tracker",
+      "target": "https://quantum-advantage-tracker.github.io/",
+      "url": "https://quantum-advantage-tracker.github.io/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://quantum-advantage-tracker.github.io/",
+      "title": "Quantum Advantage Tracker"
+    },
+    {
+      "line": 106,
+      "label": "compute resources page",
+      "target": "https://quantum.cloud.ibm.com/computers",
+      "url": "https://quantum.cloud.ibm.com/computers",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/computers",
+      "title": "Compute resources | IBM Quantum Platform"
+    },
+    {
+      "line": 106,
+      "label": "IBM Quantum Platform",
+      "target": "https://quantum.cloud.ibm.com/",
+      "url": "https://quantum.cloud.ibm.com/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/",
+      "title": "IBM Quantum Platform"
+    },
+    {
+      "line": 121,
+      "label": "NSF Access Allocations",
+      "target": "https://allocations.access-ci.org",
+      "url": "https://allocations.access-ci.org",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://allocations.access-ci.org",
+      "title": "ACCESS Allocations: \n  ACCESS"
+    },
+    {
+      "line": 122,
+      "label": "Quantum Leap Challenge Institutes, ExpandQISE",
+      "target": "https://www.nsf.gov/focus-areas/quantum",
+      "url": "https://www.nsf.gov/focus-areas/quantum",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.nsf.gov/focus-areas/quantum",
+      "title": "Quantum Information Science | NSF - U.S. National Science Foundation"
+    },
+    {
+      "line": 124,
+      "label": "Quantum Benchmarking Initiative",
+      "target": "https://www.darpa.mil/research/programs/quantum-benchmarking-initiative",
+      "url": "https://www.darpa.mil/research/programs/quantum-benchmarking-initiative",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.darpa.mil/research/programs/quantum-benchmarking-initiative",
+      "title": "QBI | DARPA"
+    },
+    {
+      "line": 126,
+      "label": "NQCC funding opportunities",
+      "target": "https://www.nqcc.ac.uk/engage/funding-opportunities/",
+      "url": "https://www.nqcc.ac.uk/engage/funding-opportunities/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.nqcc.ac.uk/engage/funding-opportunities/",
+      "title": "Funding opportunities - NQCC"
+    },
+    {
+      "line": 127,
+      "label": "Applied Quantum Technologies",
+      "target": "https://www.eurekanetwork.org/programmes-and-calls/network-projects/network-projects-applied-quantum-technologies-2025/",
+      "url": "https://www.eurekanetwork.org/programmes-and-calls/network-projects/network-projects-applied-quantum-technologies-2025/",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 137,
+      "label": "Quantum Computing Report",
+      "target": "https://quantumcomputingreport.com",
+      "url": "https://quantumcomputingreport.com",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://quantumcomputingreport.com",
+      "title": "Quantum Computing Report - Market Analysis, News & Resources"
+    },
+    {
+      "line": 138,
+      "label": "Qureca",
+      "target": "https://qureca.com/quantum-initiatives-worldwide",
+      "url": "https://qureca.com/quantum-initiatives-worldwide",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.qureca.com/quantum-initiatives-worldwide/",
+      "title": "Quantum Initiatives Worldwide 2026 - Qureca"
+    },
+    {
+      "line": 139,
+      "label": "UConn",
+      "target": "https://ovpr.uconn.edu/services/research-development/grantwriting/quantum-resources/",
+      "url": "https://ovpr.uconn.edu/services/research-development/grantwriting/quantum-resources/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://ovpr.uconn.edu/services/research-development/grantwriting/quantum-resources/",
+      "title": "Quantum-related Funding Opportunities and Resources | Office of the Vice President for Research | University of Connecticut"
+    },
+    {
+      "line": 140,
+      "label": "Grants.gov",
+      "target": "https://grants.gov",
+      "url": "https://grants.gov",
+      "annotation": false,
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)>",
+      "retry": {
+        "http_status": 0,
+        "destination": "https://grants.gov/",
+        "exit_code": 60,
+        "error": "curl: (60) SSL certificate OpenSSL verify result: unable to get local issuer certificate (20)\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legit"
+      },
+      "system_head": {
+        "result": "200 https://grants.gov/",
+        "exit_code": 0
+      }
+    },
+    {
+      "line": 141,
+      "label": "NSF SBIR/STTR Site",
+      "target": "https://seedfund.nsf.gov/topics/quantum-information-technologies",
+      "url": "https://seedfund.nsf.gov/topics/quantum-information-technologies",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://seedfund.nsf.gov/topics/quantum-information-technologies/",
+      "title": "Quantum Information Technologies Grant – Apply Today | NSF SBIR"
+    },
+    {
+      "line": 142,
+      "label": "Paper Digest",
+      "target": "https://paperdigest.org",
+      "url": "https://paperdigest.org",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://paperdigest.org",
+      "title": "Paper Digest – AI-Powered Research Platform"
+    },
+    {
+      "line": 143,
+      "label": "Unitary Foundation",
+      "target": "https://unitary.foundation",
+      "url": "https://unitary.foundation",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://unitary.foundation",
+      "title": "Home - Unitary Foundation"
+    },
+    {
+      "line": 156,
+      "label": "NSF awards search",
+      "target": "https://www.nsf.gov/awardsearch/simple-search/",
+      "url": "https://www.nsf.gov/awardsearch/simple-search/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.nsf.gov/awardsearch/simple-search/",
+      "title": "NSF Award Search - Simple Search"
+    },
+    {
+      "line": 157,
+      "label": "science.osti.gov",
+      "target": "https://science.osti.gov/",
+      "url": "https://science.osti.gov/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://science.osti.gov/",
+      "title": "Home | U.S. DOE Office of Science (SC)"
+    },
+    {
+      "line": 161,
+      "label": "SBIR.gov Portfolio filtered by \"quantum\" keyword",
+      "target": "https://www.sbir.gov/awards?keywords=quantum",
+      "url": "https://www.sbir.gov/awards?keywords=quantum",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.sbir.gov/awards?keywords=quantum",
+      "title": "Awards | SBIR"
+    },
+    {
+      "line": 162,
+      "label": "Grants.gov",
+      "target": "https://simpler.grants.gov/search?status=archived&query=quantum",
+      "url": "https://simpler.grants.gov/search?status=archived&query=quantum",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://simpler.grants.gov/search?status=archived&query=quantum",
+      "title": "Search | Simpler.Grants.gov"
+    },
+    {
+      "line": 193,
+      "label": "Quantum Computing and Communications: Status and Prospects (Technology Assessment)",
+      "target": "https://www.gao.gov/assets/gao-22-104422.pdf",
+      "url": "https://www.gao.gov/assets/gao-22-104422.pdf",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 194,
+      "label": "ASCR Report on Quantum Computing for Science (Workshop Report)",
+      "target": "https://science.osti.gov/-/media/ascr/pdf/programdocuments/docs/ASCRQuantumReport-final.pdf",
+      "url": "https://science.osti.gov/-/media/ascr/pdf/programdocuments/docs/ASCRQuantumReport-final.pdf",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://science.osti.gov/-/media/ascr/pdf/programdocuments/docs/ASCRQuantumReport-final.pdf",
+      "title": ""
+    },
+    {
+      "line": 198,
+      "label": "Quantum Computing: Progress and Prospects (Consensus Study Report)",
+      "target": "https://doi.org/10.17226/25196",
+      "url": "https://doi.org/10.17226/25196",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 202,
+      "label": "A Quantum Technologies Policy Primer (Digital Economy Papers No. 371)",
+      "target": "https://www.oecd.org/en/publications/a-quantum-technologies-policy-primer_fd1153c3-en.html",
+      "url": "https://www.oecd.org/en/publications/a-quantum-technologies-policy-primer_fd1153c3-en.html",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 208,
+      "label": "Quantum Computing for Computational Chemistry (QC3) Program",
+      "target": "https://arpa-e.energy.gov/programs-and-initiatives/view-all-programs/qc3 (program overview) and announcement summary at quantum.gov",
+      "url": "https://arpa-e.energy.gov/programs-and-initiatives/view-all-programs/qc3",
+      "annotation": true,
+      "status": 200,
+      "destination": "https://arpa-e.energy.gov/programs-and-initiatives/view-all-programs/qc3",
+      "title": "QC3 | ARPA-E"
+    },
+    {
+      "line": 209,
+      "label": "Quantum Networking: Findings and Recommendations (Report)",
+      "target": "https://www.quantum.gov/wp-content/uploads/2024/09/NQIAC-Report-Quantum-Networking.pdf",
+      "url": "https://www.quantum.gov/wp-content/uploads/2024/09/NQIAC-Report-Quantum-Networking.pdf",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.quantum.gov/wp-content/uploads/2024/09/NQIAC-Report-Quantum-Networking.pdf",
+      "title": ""
+    },
+    {
+      "line": 210,
+      "label": "Program—designations & awards",
+      "target": "https://www.eda.gov/funding/programs/regional-technology-and-innovation-hubs",
+      "url": "https://www.eda.gov/funding/programs/regional-technology-and-innovation-hubs",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 214,
+      "label": "Quantum technologies surge five‑fold...yet market adoption remains slow",
+      "target": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "url": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "title": "Quantum technologies surge five-fold over the past decade, yet market adoption remains slow | epo.org"
+    },
+    {
+      "line": 218,
+      "label": "\"A hybrid quantum computing pipeline for real‑world drug discovery,\"",
+      "target": "https://www.nature.com/articles/s41598-024-67897-8.pdf",
+      "url": "https://www.nature.com/articles/s41598-024-67897-8.pdf",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.nature.com/articles/s41598-024-67897-8.pdf?error=cookies_not_supported&code=01275799-4f6b-44a9-97a3-80e9f8976687",
+      "title": ""
+    },
+    {
+      "line": 219,
+      "label": "\"A Quantum Computing Pipeline for Real World Drug Discovery\"",
+      "target": "https://www.biorxiv.org/content/early/2024/02/17/2024.01.08.574600.full.pdf",
+      "url": "https://www.biorxiv.org/content/early/2024/02/17/2024.01.08.574600.full.pdf",
+      "annotation": false,
+      "error": "HTTP Error 429: Too Many Requests"
+    },
+    {
+      "line": 223,
+      "label": "Quantum Technology Monitor 2025—market/value pools",
+      "target": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-year-of-quantum-from-concept-to-reality-in-2025 and full PDF",
+      "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-year-of-quantum-from-concept-to-reality-in-2025",
+      "annotation": true,
+      "error": "The read operation timed out",
+      "retry": {
+        "http_status": 0,
+        "destination": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-year-of-quantum-from-concept-to-reality-in-2025",
+        "exit_code": 92,
+        "error": "curl: (92) HTTP/2 stream 1 reset by server (error 0x2 INTERNAL_ERROR)"
+      },
+      "system_head": {
+        "result": "000 https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-year-of-quantum-from-concept-to-reality-in-2025",
+        "exit_code": 28
+      }
+    },
+    {
+      "line": 224,
+      "label": "\"Quantum computing in chemicals: advancing materials discovery,”",
+      "target": "https://www.mckinsey.com/capabilities/mckinsey-technology/our-insights/solving-chemistrys-toughest-problems-the-quantum-computing-advantage",
+      "url": "https://www.mckinsey.com/capabilities/mckinsey-technology/our-insights/solving-chemistrys-toughest-problems-the-quantum-computing-advantage",
+      "annotation": false,
+      "error": "The read operation timed out",
+      "retry": {
+        "http_status": 0,
+        "destination": "https://www.mckinsey.com/capabilities/mckinsey-technology/our-insights/solving-chemistrys-toughest-problems-the-quantum-computing-advantage",
+        "exit_code": 92,
+        "error": "curl: (92) HTTP/2 stream 1 reset by server (error 0x2 INTERNAL_ERROR)"
+      },
+      "system_head": {
+        "result": "000 https://www.mckinsey.com/capabilities/mckinsey-technology/our-insights/solving-chemistrys-toughest-problems-the-quantum-computing-advantage",
+        "exit_code": 28
+      }
+    },
+    {
+      "line": 225,
+      "label": "Embracing the Quantum Economy: A Pathway for Business Leaders",
+      "target": "https://reports.weforum.org/docs/WEF_Embracing_the_Quantum_Economy_2024.pdf",
+      "url": "https://reports.weforum.org/docs/WEF_Embracing_the_Quantum_Economy_2024.pdf",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://reports.weforum.org/docs/WEF_Embracing_the_Quantum_Economy_2024.pdf",
+      "title": ""
+    },
+    {
+      "line": 231,
+      "label": "A Quantum Technologies Policy Primer—sections on skills, workforce, governance, and standards",
+      "target": "https://www.oecd.org/en/publications/a-quantum-technologies-policy-primer_fd1153c3-en.html",
+      "url": "https://www.oecd.org/en/publications/a-quantum-technologies-policy-primer_fd1153c3-en.html",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 232,
+      "label": "Patent/firm landscape showing rapid growth and scale‑up/skills gaps; market context for workforce planning",
+      "target": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "url": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.epo.org/en/news-events/press-centre/press-release/2025/1361562",
+      "title": "Quantum technologies surge five-fold over the past decade, yet market adoption remains slow | epo.org"
+    },
+    {
+      "line": 236,
+      "label": "Workforce & regional capacity‑building as part of implementation awards and consortia development",
+      "target": "https://www.eda.gov/funding/programs/regional-technology-and-innovation-hubs",
+      "url": "https://www.eda.gov/funding/programs/regional-technology-and-innovation-hubs",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "line": 240,
+      "label": "Strategic Research & Industry Agenda 2030, and KPI reports (skills frameworks & training)",
+      "target": "https://qt.eu/publications",
+      "url": "https://qt.eu/publications",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://qt.eu/publications",
+      "title": "Quantum Flagship"
+    },
+    {
+      "line": 246,
+      "label": "Scaling for quantum advantage and beyond—roadmap, advantage framework, community tracker",
+      "target": "https://www.ibm.com/quantum/blog/qdc-2025",
+      "url": "https://www.ibm.com/quantum/blog/qdc-2025",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.ibm.com/quantum/blog/qdc-2025",
+      "title": "Scaling for quantum advantage and beyond | IBM Quantum Computing Blog"
+    },
+    {
+      "line": 247,
+      "label": "IBM Quantum System Two: the era of quantum utility is here—modular, hybrid architecture vision",
+      "target": "https://www.ibm.com/quantum/blog/quantum-roadmap-2033",
+      "url": "https://www.ibm.com/quantum/blog/quantum-roadmap-2033",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.ibm.com/quantum/blog/quantum-roadmap-2033",
+      "title": "IBM Quantum System Two: the era of quantum utility is here | IBM Quantum Computing Blog"
+    },
+    {
+      "line": 251,
+      "label": "\"IBM has unveiled two unprecedentedly complex quantum computers (Nighthawk, Loon)—enhanced connectivity; ~30% more complex circuits,\"",
+      "target": "https://www.newscientist.com/article/2503799-ibm-has-unveiled-two-unprecedentedly-complex-quantum-computers/",
+      "url": "https://www.newscientist.com/article/2503799-ibm-has-unveiled-two-unprecedentedly-complex-quantum-computers/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://www.newscientist.com/article/2503799-ibm-has-unveiled-two-unprecedentedly-complex-quantum-computers/",
+      "title": "IBM has unveiled two unprecedentedly complex quantum computers | New Scientist"
+    },
+    {
+      "line": 255,
+      "label": "\"Superconducting quantum computers: who is leading the future?\"",
+      "target": "https://link.springer.com/article/10.1140/epjqt/s40507-025-00405-7",
+      "url": "https://link.springer.com/article/10.1140/epjqt/s40507-025-00405-7",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://link.springer.com/article/10.1140/epjqt/s40507-025-00405-7?error=cookies_not_supported&code=b3f517e6-9d40-4286-a53f-68da9b9ac529",
+      "title": "Superconducting quantum computers: who is leading the future? | EPJ Quantum Technology | Springer Nature Link"
+    },
+    {
+      "line": 256,
+      "label": "IBM Quantum Computers: Evolution, Performance, and Future Directions",
+      "target": "https://arxiv.org/html/2410.00916v1",
+      "url": "https://arxiv.org/html/2410.00916v1",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://arxiv.org/html/2410.00916v1",
+      "title": "IBM Quantum Computers: Evolution, Performance, and Future Directions"
+    },
+    {
+      "line": 260,
+      "label": "The Quantum Insider. IBM Quantum Roadmap Guide—Scaling and Expanding the Usefulness of Quantum Computing",
+      "target": "https://thequantuminsider.com/2024/10/12/ibm-quantum-roadmap-guide-scaling-and-expanding-the-usefulness-of-quantum-computing/",
+      "url": "https://thequantuminsider.com/2024/10/12/ibm-quantum-roadmap-guide-scaling-and-expanding-the-usefulness-of-quantum-computing/",
+      "annotation": false,
+      "status": 200,
+      "destination": "https://thequantuminsider.com/2024/10/12/ibm-quantum-roadmap-guide-scaling-and-expanding-the-usefulness-of-quantum-computing/",
+      "title": "IBM Quantum Roadmap Guide -- Scaling And Expanding The Usefulness of Quantum Computing"
+    },
+    {
+      "line": 264,
+      "label": "\"IBM’s Quantum System Two & hybrid integration at RIKEN,\"",
+      "target": "https://www.ainvest.com/news/ibm-quantum-computing-leap-system-implications-ai-enterprise-tech-2507/",
+      "url": "https://www.ainvest.com/news/ibm-quantum-computing-leap-system-implications-ai-enterprise-tech-2507/",
+      "annotation": false,
+      "error": "HTTP Error 403: Forbidden"
+    }
+  ]
+}
