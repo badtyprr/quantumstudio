@@ -8,6 +8,9 @@ import os
 from pathlib import Path
 import subprocess
 
+if not __debug__:
+    raise SystemExit("The source replay requires enabled assertions. Run without -O or PYTHONOPTIMIZE.")
+
 import numpy as np
 
 parser = argparse.ArgumentParser()
