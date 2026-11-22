@@ -1254,13 +1254,13 @@ class TeXReader {
  }
  std::string error(const std::string &message) const { return message+" at byte "+std::to_string(pos+1); }
  // Spacing takes a literal dimension. Its contents never become expression tokens.
- void spacingDimension(char close) {
+ bool spacingDimension(char close) {
   ++pos;space();
   if(pos<input.size() && (input[pos]=='+' || input[pos]=='-'))++pos;
-  bool digit=false,dot=false;
+  bool digit=false,dot=false,zero=true;
   while(pos<input.size()) {
    char d=input[pos];
-   if(d>='0' && d<='9')digit=true;
+   if(d>='0' && d<='9') {digit=true;if(d!='0')zero=false;}
    else if(d=='.' && !dot)dot=true;
    else break;
    ++pos;
@@ -1273,7 +1273,7 @@ class TeXReader {
      unit!="dd" && unit!="cc" && unit!="sp" && unit!="em" && unit!="ex" && unit!="mu")
    throw std::runtime_error(error("Unsupported TeX spacing unit"));
   space();if(pos==input.size() || input[pos]!=close)throw std::runtime_error(error("Invalid TeX spacing"));
-  ++pos;
+  ++pos;return zero;
  }
  // Match only the text label that introduces a parenthesized modulus.
  bool takeModulusLabel(bool &roman) {
@@ -1806,12 +1806,17 @@ class TeXReader {
   }
   std::string values;
   size_t rows=0;
+  bool functionWords=false;
   while(pos<end) {
    size_t rowEnd=input.find("\\\\",pos);
    if(rowEnd==std::string::npos || rowEnd>end)rowEnd=end;
    std::string row=trim(input.substr(pos,rowEnd-pos));
    pos=rowEnd==end ? end : rowEnd+2;
    if(row.empty() && pos==end)break;
+   if(!rows && alignment.size()==2) {
+    static const std::regex wordHeaders(R"(\s*\\mathsf\s*\{function\}\s*&\s*\\mathsf\s*\{string\}\s*)");
+    functionWords=std::regex_match(row,wordHeaders);
+   }
    if(rows==1) {
     if(row.compare(0,6,"\\hline")!=0)throw std::runtime_error(error("A numeric table requires a horizontal rule below the labels"));
     row=trim(row.substr(6));
@@ -1821,12 +1826,24 @@ class TeXReader {
     size_t separator=row.find('&',start);
     std::string cell=trim(row.substr(start,separator==std::string::npos ? std::string::npos : separator-start));
     if(!rows) {
+     if(functionWords)cell=column==0 ? "function" : "string";
      if(cell.compare(0,6,"\\text{")==0 && cell.back()=='}')cell=trim(cell.substr(6,cell.size()-7));
      if(!column && (cell=="\\cdot" || cell=="*"))cell="·";
      const bool operation=!column && (cell=="+" || cell=="·");
      if(!operation && (cell.empty() || cell.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_ (),-")!=std::string::npos))
       throw std::runtime_error(error("Unsupported column label in numeric table"));
      cell="\""+cell+"\"";
+    } else if(functionWords) {
+     if(!column) {
+      static const std::regex label(R"(([a-zA-Z])\s*_\s*(?:([0-9])|\{([0-9]+)\}))");
+      std::smatch index;
+      if(!std::regex_match(cell,index,label))throw std::runtime_error(error("Expected an indexed function name"));
+      cell="\""+index[1].str()+"_"+(index[2].matched ? index[2].str() : index[3].str())+"\"";
+     } else {
+      if(cell.empty() || cell.size()>1024 || cell.find_first_not_of("01")!=std::string::npos)
+       throw std::runtime_error(error("Expected a binary word of 1 to 1024 bits"));
+      cell="bitstring(\""+cell+"\")";
+     }
     } else {
      size_t digit=!cell.empty() && (cell[0]=='+' || cell[0]=='-') ? 1 : 0;
      const size_t point=cell.find('.',digit);
@@ -1884,6 +1901,15 @@ class TeXReader {
    space();
    if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced spacing dimension"));
    spacingDimension('}');return " ";
+  }
+  if(name=="rule") {
+   space();if(pos<input.size() && input[pos]=='[') {spacingDimension(']');space();}
+   if(pos==input.size() || input[pos]!='{' || !spacingDimension('}'))
+    throw std::runtime_error(error("Expected a zero-width layout rule before a table"));
+   space();if(pos==input.size() || input[pos]!='{')throw std::runtime_error(error("Expected a braced rule height"));
+   spacingDimension('}');space();
+   if(input.compare(pos,13,"\\begin{array}")!=0)throw std::runtime_error(error("Expected a table after a layout rule"));
+   return " ";
   }
   if(name=="log") {
    size_t afterName=pos;space();
