@@ -715,3 +715,5 @@ EXTRA_DIST += docs/learning-evidence/dev11/steane-block-readout.json docs/learni
 EXTRA_DIST += docs/learning-evidence/dev11/shor-nine-wire-instrument.json docs/learning-evidence/dev11/replay-shor-instrument.py
 
 EXTRA_DIST += docs/learning-evidence/dev11/compact-correction.json
+
+EXTRA_DIST += docs/learning-evidence/aud01/ibm063-worker.json docs/learning-evidence/aud01/replay-ibm063-worker.py
