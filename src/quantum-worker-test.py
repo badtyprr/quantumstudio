@@ -137,6 +137,15 @@ for last_bit, expected in [(0, "7"), (1, "5")]:
     assert data("quantum:" + expr)["copy_text"] == expected
 run(parity_cases.replace("is odd", "is prime"), "--json", success=False)
 
+component_xor = data(
+    r"quantum:bitword:$(a_0 \oplus b_0)c_0 \oplus \cdots \oplus (a_0 \oplus b_0)c_0$"
+)["copy_text"]
+for key, value in [("a_0", 1), ("b_0", 0), ("c_0", 1)]:
+    component_xor = f'replace(({component_xor}),"{key}",{value})'
+assert data("quantum:" + component_xor)["copy_text"] == "1"
+run(r"quantum:bitword:$(a_1 \oplus b_1)c_1 \oplus \cdots \oplus (a_0 \oplus d_0)c_0$",
+    "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

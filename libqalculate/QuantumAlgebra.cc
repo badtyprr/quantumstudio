@@ -1518,6 +1518,7 @@ class QuantumAlgebraFunction: public MathFunction {
    // A free operand can later be bound to an integer, a word or a matrix.
    // Keep the operator until the binding determines which operation applies.
    auto pending=[](const MathStructure &v) {
+    if(v.isFunction() && v.function()->referenceName()=="qregisterword")return true;
     return v.isSymbolic() || v.isUnknown() || (v.containsUnknowns() && (v.representsScalar() ||
      (v.isFunction() && (v.function()->referenceName()=="qnamedapplication" || v.function()->referenceName()=="qgraphapply" ||
        v.function()->referenceName()=="qcenterdot" || v.function()->referenceName()=="qbitdot" || v.function()->referenceName()=="qoplus"))));
