@@ -1,0 +1,11 @@
+{
+  "worker_sha256": "6e505cfab0c3ccd8fa6a077afe66f400732ddbc521d9c75ba5ea7a4c5c68b4c6",
+  "source_sha256": {
+    "041": "624fe895b052089a6afaf5a2ca6849918cd7291dba8932b444827ac042494249",
+    "042": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5"
+  },
+  "original_occurrences": 9,
+  "application_sha256": "d7f800538fe1f3706204e5d2c5a526cf30a0baabda8d397efa9ad104bb5da59b",
+  "clipboard_sessions": 44,
+  "windows_checks": 484
+}
