@@ -1,0 +1,89 @@
+{
+  "version": 2,
+  "id": "qb029",
+  "route": "selected-cells/direct-native-execution",
+  "profile": "autoqasm-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/Provider-Jobs/qbraid_runtime_oqc_provider.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "0ff92bc140fe4b7f28745203e63b34d8bc47fcf6bf8fb92ccf4699797ff40642"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "125183f5e008e1191d7c3461c007adbd69074a2df887479ba34b47abd662291e"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "022cbf9437caf42aafae909d28450e91705e39ef050517bbdcf6a1c53c0890e3"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "2dd03cc1e879bf007966d620f5cb7f879eab8a543032c0364aa8d5bdd297abb7"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "46e3ac1dc654efbdc95de068a5e78c663e7a9c4caf64ec5fcb413da9a0ca6791"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "f74d176a43085a05113f7bdb10b29ccf40dc528465162971a1c858b0de548f3f"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "7623e1ca346a25365f40ef070fba647b2b5ecd0e59d5cdd07774a3b48fc5f79b"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "4a09baa914d70b53f3937847b5c2f7a014337d75e5ca46f54af3ff8d9c8a57e9"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "b72aaa50f396d57fb9bd70c03767cc125b5e61400c1ed00dca7ed89f111c1785"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "selected_cells": [
+    6
+  ],
+  "code_cells": [
+    6
+  ],
+  "excluded_code_cells": {
+    "1": "Environment installation",
+    "3": "Provider authentication",
+    "4": "Remote device discovery",
+    "7": "Remote job submission",
+    "8": "Histogram requires remote counts"
+  },
+  "preamble": null,
+  "required_images": [],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "witness": {
+    "path": "witnesses/provider_qasm.py",
+    "sha256": "cbb2879182317ffa04b347105b2c6f99b228d0ee7f9123f1a44ed78633c229de",
+    "hash_encoding": "UTF-8 with LF; authored witness only"
+  },
+  "output_artifacts": [],
+  "limits": [
+    "The selected cell defines the original program. A separate local check corrects its version header and measures the Bell state. Provider jobs and remote results remain open."
+  ]
+}
