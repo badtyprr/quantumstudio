@@ -2462,6 +2462,28 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
+  if(op=="qamplitudeprojector") {
+   MathStructure entries;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
+   if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(entries.size())) {
+    CALCULATOR->error(true,"An amplitude projector must contain its displayed coefficients.",NULL);return 0;
+   }
+   bool pending=false;
+   for(size_t i=0;i<entries.size();++i) {
+    entries[i].eval(eo);
+    if(entries[i].isSymbolic() || entries[i].isUnknown() || entries[i].containsUnknowns())pending=true;
+    else if(!entries[i].representsScalar()) {
+     CALCULATOR->error(true,"An amplitude projector requires scalar coefficients.",NULL);return 0;
+    }
+   }
+   // A later assignment can be complex. Keep its conjugation intact until
+   // all coefficient labels have values.
+   if(pending)return 0;
+   MathStructure ket;ket.clearMatrix();ket.resizeMatrix(entries.size(),1,m_zero);
+   for(size_t i=0;i<entries.size();++i)element(ket,i,0)=entries[i];
+   MathStructure bra(CALCULATOR->getFunction("qdag"),&ket,NULL);
+   out.set(CALCULATOR->getFunction("qmul"),&ket,&bra,NULL);return 1;
+  }
   if(op=="qindexeddiagonal") {
    MathStructure values;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(values,raw[0],eo))return 0;
@@ -3347,6 +3369,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexeddiagonal",2));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
