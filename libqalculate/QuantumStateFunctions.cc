@@ -24,6 +24,7 @@ class QuantumStateFunction: public MathFunction {
   if(op=="qtracedistance" || op=="qfidelity" || op=="qrootfidelity") {
    if(!quantumTraceDistance(out,state,args[1],eo,op!="qtracedistance"))return 0;
    if(op=="qrootfidelity") {
+    if(!out.isApproximate()) {out.raise(Number(1,2));out.eval(eo);return 1;}
     // Do not round a tiny squared fidelity to double before taking its root.
     Number value=out.number();if(!value.sqrt())return 0;
     value.intervalToMidValue();value.setApproximate(true);value.setPrecision(12);out=value;

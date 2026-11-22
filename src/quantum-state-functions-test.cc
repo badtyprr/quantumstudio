@@ -24,6 +24,17 @@ int main(){try {
   Number ratio=value.number();if(!ratio.divide(expected.number()) || !std::isfinite(ratio.floatValue()) || std::abs(ratio.floatValue()-1)>1e-9)throw std::runtime_error(std::string("Incorrect result: ")+test.first);
   ++checks;
  }
+ EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+ for(const auto &expression:{
+   "qrootfidelity([3,sqrt(3);sqrt(3),1],[1,0;0,0])^2=3/4",
+   "qfidelity([0,0;0,2],[3,0;0,1])=1/4",
+   "qfidelity([1,i;-i,1],[1,-i;i,1])=0",
+   "qtracedistance([1,0;0,0],[1,1;1,1])=sqrt(1/2)",
+   "qrootfidelity([0,0,0;0,0,0;0,0,2],[1,0,i;0,0,0;-i,0,1])=sqrt(1/2)"}) {
+  MathStructure value=calculator.calculate(expression,exact);
+  if(value.isApproximate() || !value.isOne())throw std::runtime_error(std::string("Incorrect exact metric: ")+expression);
+  ++checks;
+ }
  for(const auto &expression:{"qschmidt([1;0;0;1],0)","qschmidtdim([1;0;0;0;1;0],0,[2,3])"}) {
   MathStructure value=calculator.calculate(expression,eo);
   if(!value.isMatrix() || value.rows()!=2 || value.columns()!=1)throw std::runtime_error("Schmidt shape mismatch");
