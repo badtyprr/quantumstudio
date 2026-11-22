@@ -1,0 +1,87 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/approach-to-fault-tolerance.ipynb",
+  "figures": [
+    {
+      "row": "IBM-066",
+      "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/teleportation-circuit.svg",
+      "sha256": "1dc34bf1567d4663bf4fcc5d8a078be8ef89d5b04b12a46662ed791b4c71bbb5"
+    },
+    {
+      "row": "IBM-066",
+      "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/FT-teleportation-circuit.svg",
+      "sha256": "929b07b1bd85ca2d9f400c6bed5c6eff92697cda39e01ab702597087a3126cb1"
+    }
+  ],
+  "wire_order": "Top to bottom: input, middle Bell wire, output. Each joint bitstring ends in the middle and top measurement bits, in that order.",
+  "drawing": "The top measurement controls X and the middle measurement controls Z in both pinned diagrams. Unequal measurement outcomes therefore leave a Pauli Y on the output up to global phase. The two equal outcomes transfer every tested state correctly.",
+  "comparison": "The independent teleportation control uses the middle measurement for X and the top for Z. All four outcomes transfer all six Pauli eigenstates and preserve entanglement with a reference qubit.",
+  "scope": "The fault-tolerant drawing is evaluated as an ideal logical circuit. Logical gates implement their displayed operators and error correction acts as identity in the code space. Physical faults and syndrome recovery are outside these checks.",
+  "exact_runs": 28,
+  "sampled_runs": 28,
+  "shots_per_run": 10000,
+  "max_exact_error": 0.0,
+  "max_sampled_error": 0.0050000000000000044,
+  "reference_bell_cases": [
+    {
+      "ideal_logical": false,
+      "wiring": "diagram",
+      "input": "Bell",
+      "joint": {
+        "0000": 0.25,
+        "1101": 0.25,
+        "1110": 0.25,
+        "0011": 0.25
+      },
+      "errors": {
+        "exact": 0.0,
+        "sampled": 0.0050000000000000044
+      }
+    },
+    {
+      "ideal_logical": false,
+      "wiring": "teleportation-control",
+      "input": "Bell",
+      "joint": {
+        "0000": 0.25,
+        "0001": 0.25,
+        "0010": 0.25,
+        "0011": 0.25
+      },
+      "errors": {
+        "exact": 0.0,
+        "sampled": 0.0050000000000000044
+      }
+    },
+    {
+      "ideal_logical": true,
+      "wiring": "diagram",
+      "input": "Bell",
+      "joint": {
+        "0000": 0.25,
+        "1101": 0.25,
+        "1110": 0.25,
+        "0011": 0.25
+      },
+      "errors": {
+        "exact": 0.0,
+        "sampled": 0.0050000000000000044
+      }
+    },
+    {
+      "ideal_logical": true,
+      "wiring": "teleportation-control",
+      "input": "Bell",
+      "joint": {
+        "0000": 0.25,
+        "0001": 0.25,
+        "0010": 0.25,
+        "0011": 0.25
+      },
+      "errors": {
+        "exact": 0.0,
+        "sampled": 0.0050000000000000044
+      }
+    }
+  ],
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33"
+}
