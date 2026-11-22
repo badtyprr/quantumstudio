@@ -67,6 +67,22 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# A qualification limits the points at which a displayed equation is defined.
+for interval, allowed, excluded in [("[0,1)", "0", "1"), ("(0,1]", "1", "0")]:
+    qualified = r"quantum:$$x^2=x\qquad\text{(for $x \in " + interval + "$)}$$"
+    copied = data(qualified)["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    assert data(f"quantum:replace(({copied}),x,{allowed})")["copy_text"] == "1"
+    assert data(f"quantum:replace(({copied}),x,1/2)")["copy_text"] == "0"
+    rejected = run(f"quantum:replace(({copied}),x,{excluded})", "--json", success=False)
+    assert b"undefined" in rejected.stderr and not rejected.stdout
+
+for parameter in ("i", "c", "H"):
+    equation = "$$" + parameter + r"+1\quad\text{(for $" + parameter + r" \in [0,1)$)}$$"
+    copied = data("quantum:" + equation)["copy_text"]
+    assert data(f'quantum:replace(({copied}),"{parameter}",0)')["copy_text"] == "1"
+assert b"two endpoints" in run(r"quantum:$$x\quad\text{(for $x \in [0,1,2]$)}$$", "--json", success=False).stderr
+
 # A textbook equation uses grouped digits. Commas in function calls and
 # between complete equations retain their existing meanings.
 for literal, integer in [("1,000,000", 1000000), ("-12,345", -12345), ("+987,654", 987654)]:
@@ -2295,6 +2311,15 @@ def state_request(definitions, expression):
     for name, definition in definitions:
         value += f"{len(name.encode('utf-8'))}\n{len(definition.encode('utf-8'))}\n{name}{definition}"
     return value + expression
+
+for parameter, symbol in [(r"\alpha", '"α"'), ("x", "x"), ("i", '"i"')]:
+    for subscript in ["_" + parameter, "_{" + parameter + "}"]:
+        equation = (r"$$\vert \psi" + subscript + r"\rangle=\cos(" + parameter +
+                    r")|0>+\sin(" + parameter + r")|1>\quad\text{(for $" + parameter + r" \in [0,\pi)$)}$$")
+        copied = data("quantum:" + equation)["copy_text"]
+        for family, truth in [("cos(t)|0>+sin(t)|1>", "1"), ("|1>", "0")]:
+            request = state_request([("ψ(t)", family)], f"quantum:replace(({copied}),{symbol},0)")
+            assert data(request, "--states")["copy_text"] == truth
 
 for definitions,expression in [
     ([("red","2|0>")],"orthobasis(<red|red>,B,[|red>])"),

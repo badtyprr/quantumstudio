@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Unsupported text",
+  "lessons": [
+    {
+      "lesson": "IBM-004",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere.ipynb",
+      "source_sha256": "b604993a890e6d2f3d4e5ea470edd4b4ac1df361a9823f2c8a1c54dcd66b3c4b",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 8680,
+          "end": 8814,
+          "literal_sha256": "8d68018f5be4820e91dfdcece25f2aa5d92ac601dde709e15de45c96fdef9a84",
+          "outcome": "result",
+          "copy_text": "if(qmember('\u03b1',qhalfopen(0,\u03c0,1)),qcompare(qstatecall('\u03c8','\u03b1'),qadd(qadjacent(qcos('\u03b1'),matrix(2,1,vector(1,0))),qadjacent(qsin('\u03b1'),matrix(2,1,vector(0,1)))),4),undefined,0)"
+        }
+      ]
+    }
+  ]
+}

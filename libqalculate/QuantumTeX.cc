@@ -553,6 +553,38 @@ std::string ungroupTeX(std::string text) {
  }
  return text;
 }
+// Quote a declared scalar independently of constants or gates with the same
+// spelling. A quoted TeX subscript also keeps its state-family argument.
+std::string bindIntervalParameter(const std::string &text,const std::string &parameter,const std::string &value) {
+ std::string result;
+ for(size_t at=0;at<text.size();) {
+  size_t first=at;
+  char ch=text[at++];
+  if(ch=='"' || ch=='\'') {
+   size_t close=text.find(ch,at);at=close==std::string::npos ? text.size() : close+1;
+  } else if(ch=='\\' || asciiLetter(ch)) {
+   if(ch=='\\' && at<text.size() && !asciiLetter(text[at]))++at;
+   else while(at<text.size() && asciiLetter(text[at]))++at;
+   std::string word=text.substr(first,at-first);
+   if(word==parameter) {
+    size_t previous=result.find_last_not_of(" \t\r\n");
+    size_t beforeGroup=previous!=std::string::npos && previous ? result.find_last_not_of(" \t\r\n",previous-1) : std::string::npos;
+    if(previous!=std::string::npos && result[previous]=='_')result+="{("+value+")}";
+    else if(previous!=std::string::npos && result[previous]=='{' && beforeGroup!=std::string::npos && result[beforeGroup]=='_')result+="("+value+")";
+    else result+=value;
+    continue;
+   }
+   if((word=="\\text" || word=="\\operatorname" || word=="\\mathrm" || word=="\\begin" || word=="\\end") &&
+      at<text.size() && text[at]=='{') {
+    unsigned depth=0;
+    do {if(text[at]=='{')++depth;else if(text[at]=='}')--depth;++at;}while(at<text.size() && depth);
+   }
+  }
+  result.append(text,first,at-first);
+ }
+ return result;
+}
+
 // A displayed prose list has independent results, just like gathered rows.
 // Consume complete matrix environments so commas in their cells stay local.
 std::string gatheredMatrixList(const std::string &input) {
@@ -2691,6 +2723,30 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ // A trailing lesson annotation gives the domain on which the displayed
+ // expression is defined. Leave an out-of-domain substitution undefined.
+ size_t note=s.rfind("\\text{");
+ if(note!=std::string::npos) {
+  static const std::regex domainNote(R"(\\text\{\s*\(\s*for\s+\$\s*(\\[A-Za-z]+|[A-Za-z])\s*\\in\s*((?:\[|\()[^$]+(?:\]|\)))\s*\$\s*\)\s*\}\s*)");
+  std::smatch match;
+  auto start=s.cbegin()+note;
+  if(std::regex_match(start,s.cend(),match,domainNote)) {
+   std::string body=trim(s.substr(0,note));
+   for(const std::string spacing:{"\\qquad","\\quad"}) {
+    if(body.size()>=spacing.size() && body.compare(body.size()-spacing.size(),spacing.size(),spacing)==0)
+     body=trim(body.substr(0,body.size()-spacing.size()));
+   }
+   if(body.empty())throw std::runtime_error("An interval qualification requires an expression.");
+   std::string parameter=match[1].str(),interval=match[2].str();
+   auto endpoints=indexedParts(interval.substr(1,interval.size()-2),",");
+   if(endpoints.size()!=2 || endpoints[0].empty() || endpoints[1].empty())
+    throw std::runtime_error("An interval qualification requires two endpoints.");
+   std::string name=trim(nestedTeX(parameter));
+   std::string value=name.size()==1 && std::string("nxyz").find(name)!=std::string::npos ? name : "\""+name+"\"";
+   std::string guard=value+" \\in "+bindIntervalParameter(interval,parameter,value);
+   s="if(("+nestedTeX(guard)+"),("+bindIntervalParameter(body,parameter,value)+"),undefined)";
+  }
+ }
  if(modularPowers && (s.find('=')!=std::string::npos || s.find('^')!=std::string::npos || s.find("⁻¹")!=std::string::npos)) {
   // In a residue ring the prose may supply the modulus. Keep that
   // parameter editable when an isolated equation or inverse is pasted.

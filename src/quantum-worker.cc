@@ -512,7 +512,8 @@ int main(int argc,char **argv) {
   if(calculator.message()->type()==MESSAGE_ERROR) failed=true;
   std::cerr << calculator.message()->message() << '\n'; calculator.nextMessage();
  }
- if(failed || result.isUndefined()) return 2;
+ if(failed)return 2;
+ if(result.isUndefined()) {std::cerr << "The expression is undefined for the supplied values.\n";return 2;}
  bool multipleLines=independentLines.size()>1;
  if(multipleLines && (!result.isVector() || result.size()!=independentLines.size())) {
   std::cerr << "The calculation did not preserve the independent expressions.";return 2;
