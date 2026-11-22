@@ -29,6 +29,7 @@ matrix_rows = [r"\begin{pmatrix}1&0\\0&0\end{pmatrix}", r"\begin{pmatrix}2&3\\4&
 matrix_list = r"$$" + r",\quad\text{and}\quad".join(matrix_rows) + ".$$"
 expected_rows = data(r"quantum:\begin{gathered}" + r"\\".join(matrix_rows) + r"\end{gathered}")
 assert data("quantum:" + matrix_list) == expected_rows
+assert data("quantum:" + matrix_list.replace(",", "")) == expected_rows
 assert data("quantum:" + expected_rows["copy_text"]) == expected_rows
 assert data("quantum:$$" + "+".join(matrix_rows) + "$$")["cells"] == [["3", "3"], ["4", "5"]]
 

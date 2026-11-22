@@ -557,7 +557,7 @@ std::string ungroupTeX(std::string text) {
 // Consume complete matrix environments so commas in their cells stay local.
 std::string gatheredMatrixList(const std::string &input) {
  const std::string begin="\\begin{pmatrix}",end="\\end{pmatrix}";
- static const std::regex separator(R"(\s*,\s*(?:\\q?quad\s*)?(?:(\\text\{\s*and\s*\})\s*(?:\\q?quad\s*)?)?)");
+ static const std::regex separator(R"((,)?\s*(?:\\q?quad\s*)?(?:(\\text\{\s*and\s*\})\s*(?:\\q?quad\s*)?)?)");
  size_t pos=input.find_first_not_of(" \t\r\n");
  std::string rows;
  bool last=false;
@@ -574,7 +574,8 @@ std::string gatheredMatrixList(const std::string &input) {
   if(last)return {};
   std::smatch match;
   if(!std::regex_search(input.cbegin()+pos,input.cend(),match,separator,std::regex_constants::match_continuous))return {};
-  last=match[1].matched;
+  last=match[2].matched;
+  if(!match[1].matched && !last)return {};
   pos+=match.length();
  }
  return {};
@@ -3049,7 +3050,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
-  if(s.find("\\end{pmatrix}")!=std::string::npos && s.find(',')!=std::string::npos) {
+  if(s.find("\\end{pmatrix}")!=std::string::npos) {
    std::string list=gatheredMatrixList(s);
    if(!list.empty())s=std::move(list);
   }
