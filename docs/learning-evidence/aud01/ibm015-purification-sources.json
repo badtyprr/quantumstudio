@@ -1,0 +1,151 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-003",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": {
+        "156": {
+          "cell": 0,
+          "start": 16380,
+          "end": 16615,
+          "literal_sha256": "187cf1677c1047d011312f075ee3a75efee785b2b2967bd121da404763831942"
+        },
+        "157": {
+          "cell": 0,
+          "start": 16623,
+          "end": 16710,
+          "literal_sha256": "58bd07e0c78186a68015e4fc3ec0ad97df19bb556986a1bf7c106d08f650fbad"
+        },
+        "159": {
+          "cell": 0,
+          "start": 16957,
+          "end": 17248,
+          "literal_sha256": "3c246e0325e508422efbff11b599418401186b84c118bc8c9f96d9261ff56d00"
+        }
+      }
+    },
+    {
+      "lesson": "IBM-015",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications.ipynb",
+      "source_sha256": "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e",
+      "occurrences": {
+        "78": {
+          "cell": 0,
+          "start": 5804,
+          "end": 5905,
+          "literal_sha256": "5cb60c5b092f3d2756bdf47fed4695ab9258d44c92ac34f773c395c0d77ef86e"
+        },
+        "81": {
+          "cell": 0,
+          "start": 6020,
+          "end": 6165,
+          "literal_sha256": "4a0afe43060c07268c86b0e87e92b24ed580c820d5005862898bdec7f563631d"
+        },
+        "82": {
+          "cell": 0,
+          "start": 6173,
+          "end": 6261,
+          "literal_sha256": "9151da78fe67817199a71942068654228a5173409647f3ec8c49c96ff056eb2f"
+        },
+        "83": {
+          "cell": 0,
+          "start": 6289,
+          "end": 6419,
+          "literal_sha256": "77fe14c542521e53d04a24f19c3289f7a48d809dca56e78e78e258bee89fbfb6"
+        },
+        "86": {
+          "cell": 0,
+          "start": 6558,
+          "end": 6655,
+          "literal_sha256": "dd77e644810db2048125df7f62bd70ebb07a8c0d7df8b041943ba05317d3bd19"
+        },
+        "91": {
+          "cell": 0,
+          "start": 6881,
+          "end": 7004,
+          "literal_sha256": "c9259d271162592c4582e3da733bcde35d82be0b66290d53101d310a6855f080"
+        }
+      }
+    }
+  ],
+  "windows": {
+    "inputs": "Evaluated state columns and reductions of those columns. The source replay supplies the state family separately.",
+    "worker_sha256": "ef982addd0ef8d676708f76e5d7e73396610200c7901ed3c0efe2d0ff933e1ec",
+    "sessions": [
+      {
+        "id": "M083-state",
+        "expected": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])",
+        "label": "EXACT RESULT",
+        "copy": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])"
+      },
+      {
+        "id": "M083-X",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M083-Y",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M083-wrong-axis",
+        "expected": "0",
+        "label": "EXACT RESULT",
+        "copy": "0",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "0"
+      },
+      {
+        "id": "M091-state",
+        "expected": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])",
+        "label": "EXACT RESULT",
+        "copy": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])"
+      },
+      {
+        "id": "M091-X",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M091-Y",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M091-wrong-axis",
+        "expected": "0",
+        "label": "EXACT RESULT",
+        "copy": "0",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "0"
+      }
+    ]
+  }
+}
