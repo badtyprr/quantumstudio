@@ -1589,6 +1589,20 @@ class QuantumAlgebraFunction: public MathFunction {
   // Keep the wrapper so a later substitution is checked for square shape.
   // Returning without a replacement retains the original ordered quantum AST,
   // including during clipboard serialization and subsequent substitutions.
+  // The norm-defining trace can receive a scalar after evaluating a
+  // one-by-one Gram matrix. Verify the original matrix dimensions before
+  // returning that scalar as the trace.
+  if(op=="qtrace" && a.isNumber() && raw[0].isFunction() && raw[0].function()->referenceName()=="qsqrt" && raw[0].size()==1) {
+   const MathStructure &radicand=raw[0][0];
+   MathStructure rows,columns;
+   if(matrixShape(radicand,rows,columns,eo) && rows.isOne() && columns.isOne()) {out=a;return 1;}
+   if(radicand.isFunction() && radicand.size()==2 &&
+      (radicand.function()->referenceName()=="qadjacent" || radicand.function()->referenceName()=="qmul")) {
+    MathStructure innerLeft,innerRight;
+    if(matrixShape(radicand[0],rows,innerLeft,eo) && matrixShape(radicand[1],innerRight,columns,eo) &&
+       rows.isOne() && columns.isOne() && innerLeft.equals(innerRight)) {out=a;return 1;}
+   }
+  }
   if(op=="qtrace" && !a.isVector() && unresolvedMatrixOperand(a)) {
    MathStructure rows,columns;
    if(a.isFunction() && a.size()==2 && matrixShape(a,rows,columns,eo) && rows.equals(columns)) {

@@ -67,6 +67,24 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Preserve an unresolved norm and bind the whole following radical to Tr.
+norm_definition = r"""$$
+\| M \|_1 = \operatorname{Tr}\sqrt{M^{\dagger} M},
+$$"""
+norm_copy = data("quantum:" + norm_definition)["copy_text"]
+assert "qtrace(qsqrt(" in norm_copy and data("quantum:" + norm_copy)["copy_text"] == norm_copy
+assert data(f'quantum:replace(({norm_copy}),"M",[0,2i;1,0])')["copy_text"] == "1"
+distance = data(r"quantum:$\frac{1}{2}\|\rho-\sigma\|_1$")["copy_text"]
+assert data(f'quantum:replace(replace(({distance}),"σ",[1/2,0;0,1/2]),"ρ",[1,0;0,0])')["copy_text"] == "1 ∕ 2"
+for column in ("matrix(2,1,[3,4])", "matrix(1,1,[2i])"):
+    assert data(f'quantum:replace(({norm_copy}),"M",{column})')["copy_text"] == "1"
+powered_root = r"quantum:\operatorname{Tr}\sqrt{\begin{pmatrix}4&0\\0&9\end{pmatrix}}^2"
+assert data(powered_root)["copy_text"] == "13"
+entry_norm = data("quantum:qschatten([x,0;0,0],1)")["copy_text"]
+assert data(f"quantum:replace(({entry_norm}),x,-3)")["copy_text"] == "3"
+run("quantum:qtrace(qsqrt(4))", "--json", success=False)
+run('quantum:qschatten("M",0)', "--json", success=False)
+
 # Conjugate each amplitude while retaining the original column orientation.
 for label in ("u", "v"):
     ket_list = r"$\vert \overline{@_0} \rangle,\ldots,\vert \overline{@_{n-1}}\rangle$".replace("@", label)
