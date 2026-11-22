@@ -711,3 +711,5 @@ EXTRA_DIST += docs/learning-evidence/dev11/source-image-hashes.json docs/learnin
 EXTRA_DIST += docs/learning-evidence/dev11/teleportation-controls.json docs/learning-evidence/dev11/replay-teleportation-controls.py
 
 EXTRA_DIST += docs/learning-evidence/dev11/steane-block-readout.json docs/learning-evidence/dev11/replay-steane-block-readout.py
+
+EXTRA_DIST += docs/learning-evidence/dev11/shor-nine-wire-instrument.json docs/learning-evidence/dev11/replay-shor-instrument.py
