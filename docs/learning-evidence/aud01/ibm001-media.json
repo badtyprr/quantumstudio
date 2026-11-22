@@ -67,8 +67,8 @@
     "release": {
       "revision": "c5a456cd",
       "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
-      "checks": 27,
-      "passed": 25,
+      "checks": 30,
+      "passed": 28,
       "unresolved": [
         {
           "page": 21,
@@ -79,17 +79,59 @@
           "label": "rotation in XZ plane"
         }
       ],
-      "windows_sessions": 27,
-      "stable_copy_and_reentry": 27
+      "windows_sessions": 30,
+      "stable_copy_and_reentry": 30
     },
     "candidate": {
       "revision": "73e61223",
       "worker_sha256": "1e9b450dd4c89c450457ae512e25996de136af253295c1f48c14c9d8b3b047c1",
-      "checks": 27,
-      "passed": 27,
+      "checks": 30,
+      "passed": 30,
       "unresolved": [],
-      "windows_sessions": 27,
-      "stable_copy_and_reentry": 27
+      "windows_sessions": 30,
+      "stable_copy_and_reentry": 30
     }
-  }
+  },
+  "numerical_adaptations": [
+    {
+      "page": 4,
+      "label": "diagonal trace"
+    },
+    {
+      "page": 19,
+      "label": "classical distribution"
+    },
+    {
+      "page": 30,
+      "label": "rotation in XZ plane"
+    },
+    {
+      "page": 32,
+      "label": "Bloch center"
+    },
+    {
+      "page": 35,
+      "label": "classical correlation"
+    },
+    {
+      "page": 42,
+      "label": "nonorthogonal components"
+    },
+    {
+      "page": 44,
+      "label": "complementary reduction"
+    },
+    {
+      "page": 44,
+      "label": "trace B from ABC"
+    },
+    {
+      "page": 44,
+      "label": "trace AB from ABC"
+    },
+    {
+      "page": 44,
+      "label": "wrong subsystem control"
+    }
+  ]
 }

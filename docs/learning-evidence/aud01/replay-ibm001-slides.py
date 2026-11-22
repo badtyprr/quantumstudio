@@ -24,6 +24,9 @@ pair = "[2,0,0,0;0,0,0,0;0,0,1,1;0,0,1,1]/4"
 pure_pair = "(|00>+tensor(|+>,|1>))/sqrt(2)"
 
 
+three_registers = "density((|000>+|101>+i*|111>)/sqrt(3))"
+
+
 def rotated(a):
     return f"[cos({a});sin({a})]"
 
@@ -52,6 +55,9 @@ checks = [
     (38, "Bob projects onto one", "tensor(I,density(|1>))*((|00>+|11>)/sqrt(2))=|11>/sqrt(2)", "1"),
     (42, "nonorthogonal components", f"ptrace(density({pure_pair}),[1])=({mixed})", "1"),
     (44, "complementary reduction", f"ptrace(density({pure_pair}),[0])=[1,1/sqrt(2);1/sqrt(2),1]/2", "1"),
+    (44, "trace B from ABC", f"ptrace({three_registers},[1])=[1,0,0,1;0,0,0,0;0,0,0,0;1,0,0,2]/3", "1"),
+    (44, "trace AB from ABC", f"ptrace({three_registers},[0,1])=[1,0;0,2]/3", "1"),
+    (44, "wrong subsystem control", f"ptrace({three_registers},[0,2])=[1,0;0,2]/3", "0"),
     (45, "first marginal", f"ptrace(({pair}),[1])=I/2", "1"),
     (45, "second marginal", f"ptrace(({pair}),[0])=({mixed})", "1"),
     (45, "swapped marginal control", f"ptrace(({pair}),[0])=I/2", "0"),
@@ -62,7 +68,8 @@ for page, label, equation, expected in checks:
     run = subprocess.run([worker, "--json"], input=("quantum:" + equation).encode(),
                          capture_output=True, timeout=30, env=env)
     value = json.loads(run.stdout)["copy_text"] if run.returncode == 0 else run.stderr.decode().strip()
-    records.append(dict(page=page, label=label, equation=equation, expected=expected, actual=value))
+    adapted = page in (4, 19, 42, 44) or label in ("Bloch center", "classical correlation", "rotation in XZ plane")
+    records.append(dict(page=page, label=label, numerical_adaptation=adapted, equation=equation, expected=expected, actual=value))
 args.report.write_text(json.dumps(dict(slides_sha256=slides_hash, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
                                       checks=records), indent=2) + "\n", encoding="utf8")
 failed = [(r["label"], r["actual"]) for r in records if r["actual"] != r["expected"]]
