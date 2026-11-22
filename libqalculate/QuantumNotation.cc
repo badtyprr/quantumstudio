@@ -3115,7 +3115,6 @@ std::string translateQuantum(const std::string &expression) {
  const size_t first=s.find_first_not_of(" \t\r\n");
  const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
  const bool oracles=first!=std::string::npos && s.compare(first,8,"oracles:")==0;
- if(oracles)s.erase(first,8);
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);

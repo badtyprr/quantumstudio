@@ -1166,6 +1166,7 @@ class TeXReader {
  const std::string &input;
  bool modularTables=false;
  bool binaryLogs=false;
+ bool binaryWords=false;
  size_t pos=0;
  unsigned depth=0;
  std::string rootAlignment;
@@ -1182,6 +1183,42 @@ class TeXReader {
   for(const std::string size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})
    if(input.compare(at,size.size(),size)==0) {at=input.find_first_not_of(" \t\r\n",at+size.size());break;}
   return at!=std::string::npos && input[at]=='(' ? at : std::string::npos;
+ }
+ bool readRegisterWord(std::string &result) {
+  if((input.compare(pos,6,"\\cdots")!=0 && input.compare(pos,6,"\\ldots")!=0) ||
+     (pos+6<input.size() && asciiLetter(input[pos+6])))return false;
+  const size_t equals=result.find('=');
+  if(equals==std::string::npos && !binaryWords)return false;
+  std::string first=trim(equals==std::string::npos ? result : result.substr(equals+1));
+  const std::string word=equals==std::string::npos ? first.substr(0,first.find('_')) : trim(result.substr(0,equals));
+  if(word.empty() || !std::all_of(word.begin(),word.end(),asciiLetter) ||
+     first.compare(0,word.size()+1,word+"_")!=0)return false;
+  first=trim(first.substr(word.size()+1));
+  const bool grouped=first.size()>2 && first.front()=='{' && first.back()=='}';
+  if(grouped)first=first.substr(1,first.size()-2);
+  if(first.empty())return false;
+  for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (asciiSpace(c) || c=='+' || c=='-' || c=='*' || c=='/')))return false;
+
+  size_t endpoint=input.find_first_not_of(" \t\r\n",pos+6);
+  if(endpoint==std::string::npos || input.compare(endpoint,word.size()+1,word+"_")!=0)return false;
+  pos=endpoint+word.size()+1;
+  std::string last=trim(argument()),bindings;
+  // Explicit intermediate bits must exist when the width is later supplied.
+  while((endpoint=input.find_first_not_of(" \t\r\n",pos))!=std::string::npos &&
+        input.compare(endpoint,word.size()+1,word+"_")==0) {
+   pos=endpoint+word.size()+1;
+   std::string next=trim(argument());
+   auto numeric=[](const std::string &index) {
+    return !index.empty() && index.size()<=7 && index.find_first_not_of("0123456789")==std::string::npos;
+   };
+   if(!numeric(last) || !numeric(next) || std::stoi(last)!=std::stoi(next)+1)
+    throw std::runtime_error(error("Explicit trailing word indices must be consecutive descending integers"));
+   if(!bindings.empty())bindings+=",";
+   bindings+=last+",\""+word+"_"+std::to_string(std::stoi(last))+"\"";
+   last=next;
+  }
+  result=(equals==std::string::npos ? "" : word+"=")+"qregisterword(\""+word+"_\",("+first+"),("+last+"),vector("+bindings+"))";
+  return true;
  }
  bool barePowerBeforeGroup(std::string &result) {
   size_t letter=input.find_first_not_of(" \t\r\n",pos+1);
@@ -2520,29 +2557,7 @@ class TeXReader {
     if(!ended)throw std::runtime_error(error("Unclosed quoted label"));
    }
    else if(input[pos]=='\\') {
-    // In a word definition the matching base name disambiguates
-    // concatenation of indexed bits from an ellipsis in a scalar product.
-    if((input.compare(pos,6,"\\cdots")==0 || input.compare(pos,6,"\\ldots")==0) &&
-       (pos+6==input.size() || !asciiLetter((unsigned char)input[pos+6]))) {
-     size_t equals=result.find('=');
-     if(equals!=std::string::npos) {
-      std::string word=trim(result.substr(0,equals)),first=trim(result.substr(equals+1));
-      if(!word.empty() && std::all_of(word.begin(),word.end(),asciiLetter) &&
-         first.compare(0,word.size()+1,word+"_")==0) {
-       first=trim(first.substr(word.size()+1));
-       bool grouped=first.size()>2 && first.front()=='{' && first.back()=='}';
-       if(grouped)first=first.substr(1,first.size()-2);
-       bool valid=!first.empty();
-       for(unsigned char c:first)if(!std::isalnum(c) && !(grouped && (asciiSpace(c) || c=='+' || c=='-' || c=='*' || c=='/')))valid=false;
-       size_t endpoint=input.find_first_not_of(" \t\r\n",pos+6);
-       if(valid && endpoint!=std::string::npos && input.compare(endpoint,word.size()+1,word+"_")==0) {
-        pos=endpoint+word.size()+1;
-        std::string last=argument();
-        result=word+"=qregisterword(\""+word+"_\",("+first+"),("+last+"),vector())";continue;
-       }
-      }
-     }
-    }
+    if(readRegisterWord(result))continue;
     // A trailing equation tag labels the display or alignment row.
     if((depth==1 || alignment) && input.compare(pos,4,"\\tag")==0 &&
        (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
@@ -2783,7 +2798,7 @@ class TeXReader {
   --depth; return result;
  }
  public:
- explicit TeXReader(const std::string &s,bool modular=false,bool logs=false):input(s),modularTables(modular),binaryLogs(logs) {}
+ explicit TeXReader(const std::string &s,bool modular=false,bool logs=false,bool words=false):input(s),modularTables(modular),binaryLogs(logs),binaryWords(words) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
   if(conjugatedStateLabel) {
@@ -2831,9 +2846,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  const bool sets=input.compare(first,5,"sets:")==0;
  const bool scalars=input.compare(first,8,"scalars:")==0;
  const bool modularPowers=input.compare(first,10,"modpowers:")==0;
+ const bool binaryOracles=input.compare(first,8,"oracles:")==0;
  const bool binaryLogs=input.compare(first,11,"binarylogs:")==0;
  if(scalarNotation)*scalarNotation=scalars;
- if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers || binaryLogs) {
+ if(dimensions || fractionBits || bitWord || spinNumber || scalars || modularPowers || binaryLogs || binaryOracles) {
   first=input.find_first_not_of(" \t\r\n",first+(dimensions || binaryLogs ? 11 : fractionBits ? 13 : spinNumber ? 5 : modularPowers ? 10 : 8));
   if(first==std::string::npos)return "";
  } else if(sets) {
@@ -4303,7 +4319,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!matched)normalized+=s[k++];
  }
  if(splitDimensions)normalized+="))";
- std::string result=TeXReader(normalized,modularPowers,binaryLogs).run(lines);
+ std::string result=TeXReader(normalized,modularPowers,binaryLogs,bitWord || binaryOracles).run(lines);
  if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
   std::string value=trim(result),order;
   static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");

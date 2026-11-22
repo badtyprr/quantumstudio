@@ -1,0 +1,45 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "formulas": {
+    "38": "$x_{n-1}\\cdots x_0$",
+    "39": "$y_{n-1}\\cdots y_0$",
+    "56": "$f(x_{n-1}\\cdots x_0) = 0$",
+    "57": "$x_{n-1}\\cdots x_0$",
+    "59": "$f(x_{n-1}\\cdots x_0) = 1$",
+    "60": "$x_{n-1}\\cdots x_0$",
+    "67": "$x_{n-1}\\cdots x_0$"
+  },
+  "checks": [
+    [
+      38,
+      15
+    ],
+    [
+      39,
+      15
+    ],
+    [
+      56,
+      72
+    ],
+    [
+      57,
+      15
+    ],
+    [
+      59,
+      72
+    ],
+    [
+      60,
+      15
+    ],
+    [
+      67,
+      15
+    ]
+  ],
+  "reference": "For the five register occurrences, bit k has place value 2^k and width n is preserved, including leading zeros. For the two oracle predicates, bit v of the truth-table mask is compared to the printed target."
+}
