@@ -108,3 +108,19 @@ CUDA-Q compatibility remain required before the wider checklist can close.
 The [rotation checks](dev14-qir-rotations.json) compare exact and sampled
 execution with the analytic energy of the QB-035 cell 17 ansatz at 0.59 radians.
 They use an authored static QIR translation and separate RX and RZ phase checks.
+
+## CUDA-Q base exports
+
+Pass `--cudaq-base` to import text produced by CUDA-Q 0.17 with
+`cudaq.translate(kernel, ..., format="qir-base:1.0")` or `qir-base:0.1`.
+Add `--bitcode` for the serialized LLVM module. These compiler outputs omit
+the QIR module flags. The explicit mode checks the NVIDIA entry point,
+base-profile attributes, fixed resources, and static instruction operands.
+It accepts specialized `double` and `i64` parameters when the body no longer
+uses them. An omitted result count allows zero result slots.
+
+The supported output shape is a single terminal array of 1–64 measured bits,
+or no recorded outputs. The importer verifies the constant array and result
+labels against the record calls and entry-point output map. The JSON report
+includes the result slot, measured wire and label for each output in order.
+The native output register holds the corresponding bits. [Compiler export tests](dev14-cudaq-base.json).
