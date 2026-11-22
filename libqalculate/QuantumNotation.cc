@@ -2327,6 +2327,26 @@ class Parser {
  }
  // Resolve the operand before saving it in a comparison chain: the same
  // endpoint may serve as an upper bound and then as the cost in f = O(h).
+ // A complete integer on the right of an equation may use commas to
+ // separate thousands. Require the whole operand before committing, so
+ // argument lists, simultaneous equations and malformed groups keep their grammar.
+ bool groupedEquationInteger(std::string &value) {
+  ws();size_t start=p,at=start;
+  if(at<s.size() && (s[at]=='-' || s[at]=='+'))++at;
+  size_t first=at;
+  while(at<s.size() && s[at]>='0' && s[at]<='9')++at;
+  if(at==first || at-first>3 || at==s.size() || s[at]!=',')return false;
+  std::string integer=s.substr(start,at-start);
+  while(at<s.size() && s[at]==',') {
+   size_t digits=++at;
+   while(at<s.size() && s[at]>='0' && s[at]<='9')++at;
+   if(at-digits!=3)return false;
+   integer+=s.substr(digits,3);
+  }
+  size_t end=s.find_first_not_of(" \t\r\n",at);
+  if(end!=std::string::npos && s[end]!=')')return false;
+  p=at;value=integer;return true;
+ }
  std::string comparisonOperand() {
   size_t start=p;
   std::string value=setUnion();
@@ -2535,8 +2555,10 @@ class Parser {
     need('(');std::string minimum=setUnion();need(')');
     right="qzerocolumnlike("+left+","+minimum+")";
    } else {
-    size_t negations=logicalNotCount();
-    right=applyLogicalNot(comparisonOperand(),negations);
+    if(!(allowSharedOperands && equality && groupedEquationInteger(right))) {
+     size_t negations=logicalNotCount();
+     right=applyLogicalNot(comparisonOperand(),negations);
+    }
    }
    if(leadingSign || (equality && takeSetOperator("±"))) {
     // The additive tail belongs to both branches in a ± b + c.
