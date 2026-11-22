@@ -709,3 +709,5 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/qb020.json windows/dev13-noteboo
 EXTRA_DIST += docs/learning-evidence/dev11/source-image-hashes.json docs/learning-evidence/dev11/pauli-measurement-results.json docs/learning-evidence/dev11/shor-cat-measurement.json docs/learning-evidence/dev11/replay-pauli-measurement.py
 
 EXTRA_DIST += docs/learning-evidence/dev11/teleportation-controls.json docs/learning-evidence/dev11/replay-teleportation-controls.py
+
+EXTRA_DIST += docs/learning-evidence/dev11/steane-block-readout.json docs/learning-evidence/dev11/replay-steane-block-readout.py
