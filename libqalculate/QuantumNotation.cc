@@ -2506,6 +2506,19 @@ class Parser {
    if((end.size()>1 && end[0]=='0') || (end.find_first_not_of("0123456789")!=std::string::npos &&
       !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
   }
+  if(operation=="qindexedentries") {
+   // Free dimensions in indexed lists can share names with built-in
+   // constants. Keep lexical binder markers intact in nested expressions.
+   auto formal=[](const std::string &symbol) {
+    return symbol.size()==1 && std::isalpha((unsigned char)symbol[0]) &&
+           std::string("nxyz").find(symbol[0])==std::string::npos ? indexableLabel(symbol) : symbol;
+   };
+   std::string plain=withoutLabelMarkers(end);
+   if(plain.size()==1)end=formal(plain);
+   else if(plain.size()>8 && (plain.compare(0,5,"qsub(")==0 || plain.compare(0,5,"qadd(")==0) &&
+           plain[6]==',' && plain.back()==')' && plain.find_first_not_of("0123456789",7)==plain.size()-1)
+    end=plain.substr(0,5)+formal(plain.substr(5,1))+plain.substr(6);
+  }
   list=operation+"("+prefix+","+start+","+end+",vector())";return true;
  }
  static bool transformedIndexedList(const std::string &first,const std::string &last,std::string &list) {

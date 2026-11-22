@@ -77,6 +77,13 @@ for displayed, expected in [
     for key, value in [('"P_1"', "[4,0;0,9]"), ('"m"', "2"), ('"P_0"', first)]:
         mapped = data(f"quantum:replace(({mapped}),{key},{value})")["copy_text"]
     assert mapped == expected and data("quantum:" + mapped)["copy_text"] == mapped
+for symbol in ("i", "c"):
+    extent = r"quantum:$\sqrt{P_0},\ldots,\sqrt{P_{" + symbol + r"-1}}$"
+    single = data(extent)["copy_text"]
+    for value, expected in [("4", "vector(2)"), ("[4,0;0,9]", "vector(matrix(2,2,[2,0,0,3]))")]:
+        bound = data(f'quantum:replace(replace(({single}),"P_0",{value}),"{symbol}",1)')["copy_text"]
+        assert bound == expected and data("quantum:" + bound)["copy_text"] == bound
+run(r"quantum:$\sqrt{P_2},\ldots,\sqrt{P_1}$", "--json", success=False)
 run(r"quantum:$\sqrt{P_0},\ldots,Q_{m-1}^{T}$", "--json", success=False)
 
 # Keep the complex conjugate until the last named amplitude is assigned.
