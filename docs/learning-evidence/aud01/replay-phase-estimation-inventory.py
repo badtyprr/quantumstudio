@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -39,6 +40,15 @@ parser.add_argument("revision", help="Revision used to build the worker")
 parser.add_argument("--lesson", help="Require this pinned lesson")
 args = parser.parse_args()
 worker = args.worker.resolve()
+env = os.environ.copy()
+if (worker.parent / "data").is_dir():
+    env.setdefault("QALCULATE_DEFINITIONS_DIR", str(worker.parent / "data"))
+# A missing definitions directory makes ordinary expressions look like
+# lesson failures. Check a known expression before classifying notebook rows.
+control = subprocess.run([worker, "--json"], input=b"quantum:2+2", capture_output=True,
+                         timeout=60, env=env)
+if control.returncode != 0 or json.loads(control.stdout)["copy_text"] != "4":
+    raise RuntimeError(f"Worker control failed. Check QALCULATE_DEFINITIONS_DIR. {control.stderr.decode(errors='replace')}")
 data = args.notebook.read_bytes()
 digest = hashlib.sha256(data).hexdigest()
 lessons = {
@@ -303,7 +313,7 @@ for index, cell in enumerate(cells):
         literal = match.group()
         if literal not in cache:
             result = subprocess.run([worker, "--json"], input=("quantum:" + literal).encode(),
-                                    capture_output=True, timeout=60)
+                                    capture_output=True, timeout=60, env=env)
             if result.returncode == 0:
                 try:
                     value = json.loads(result.stdout)
