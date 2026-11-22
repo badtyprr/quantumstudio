@@ -747,3 +747,9 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm002-density-list.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm003-spectral-endpoints.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm003-spectral-trace.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm004-interval-state.json
+
+EXTRA_DIST += windows/dev15-provider/offline_adapter.py windows/dev15-provider/test_offline_adapter.py \
+  windows/dev15-provider/fixtures.json docs/learning-evidence/dev15/provider-offline.md
+TEST_EXTENSIONS = .py
+PY_LOG_COMPILER = python3 -B
+TESTS = windows/dev15-provider/test_offline_adapter.py

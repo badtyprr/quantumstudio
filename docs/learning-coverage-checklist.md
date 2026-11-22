@@ -26,7 +26,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [DEV-12](#dev-12) | P2 | L | Partial | DEV-04 | Variational and numerical operator coverage |
 | [DEV-13](#dev-13) | P2 | L | Partial | AUD-02 | Python/SDK notebook execution route |
 | [DEV-14](#dev-14) | P3 | L | Partial | DEV-13 | QIR and CUDA-Q compatibility |
-| [DEV-15](#dev-15) | P3 | L | Not implemented | DEV-13 | Cloud/provider and pulse workflows |
+| [DEV-15](#dev-15) | P3 | L | Offline adapter tested; external workflows open | DEV-13 | Cloud/provider and pulse workflows |
 | [DEV-16](#dev-16) | P1 | M | Partial | None | Local OpenQASM include dependencies |
 | [DEV-17](#dev-17) | P2 | M | Partial | Candidate Clipboard passed; release open | Named subsystem partial traces |
 | [DEV-18](#dev-18) | P1 | M | Implemented and reviewed; release pending | AUD-01 | Integer factorization in the IBM number-theory lesson |
@@ -256,7 +256,8 @@ DEV-17 now retains a named partial trace of an unbound state variable. Supplying
 
 ### DEV-15
 
-- [ ] **Cloud/provider and pulse workflows** — P3; Not implemented; size L; dependencies: DEV-13.
+- [ ] **Cloud/provider and pulse workflows** — P3; offline adapter tested; size L; dependencies: DEV-13.
+- The [offline qBraid provider adapter](learning-evidence/dev15/provider-offline.md) reproduces job status, cancellation and measurement-count handling in 40 deterministic scenarios from [PR #456](https://github.com/badtyprr/quantumstudio/pull/456). The normal project test command now includes these scenarios. Live submission, credentials, hardware, dynamic pulse timing and release verification remain open.
 - Local evidence: [all eight cells of the static timing guide](learning-evidence/dev13/ibm-timing-source-audit.md), including two original figures, recomputed schedules and six authored layout controls. Provider/dynamic timing and delivery gates remain open.
 - Source focus: qBraid Runtime/Provider-Jobs; IBM utility-scale courses. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Separate local mathematical semantics from credentials, hardware jobs and pulse/timing dependencies. Define tested adapters and observable unsupported cases; use deterministic offline fixtures, and record any required external verification.

@@ -1,0 +1,162 @@
+{
+  "payload_sha256": "704b22b2cec12857518b217c9fc47c423eb0d285f0b30410a83d6d5ca2a34361",
+  "payload": {
+    "kind": "authored synthetic fixtures; not captured service responses",
+    "versions": {
+      "qbraid": "0.13.0",
+      "qbraid-core": "0.6.42"
+    },
+    "source_hashes": [
+      {
+        "path": "F:\\src\\libqalculate\\.tools\\dev14-qir-prereq-20261104\\Lib\\site-packages\\qbraid\\runtime\\native\\job.py",
+        "sha256": "97fefd4974818428534cd3df7db8e47fce2c5098897434c7be99da7922aaa9e6"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\.tools\\dev14-qir-prereq-20261104\\Lib\\site-packages\\qbraid\\runtime\\native\\device.py",
+        "sha256": "e57e38c9cd4c14e8bf0599dab9433ba2ae8880d78518c73091201c8fa56c530e"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\.tools\\dev14-qir-prereq-20261104\\Lib\\site-packages\\qbraid\\runtime\\job.py",
+        "sha256": "084cd3a355bb03eac03e2c4a7535b21c368261e60e94894a508d8f91d2b76dd7"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\.tools\\dev14-qir-prereq-20261104\\Lib\\site-packages\\qbraid\\runtime\\result_data.py",
+        "sha256": "5f6442eaab6bedde52c36e36687f2d5d16ade079e13eb838ab423532dec2a34b"
+      },
+      {
+        "path": "F:\\src\\libqalculate\\.tools\\dev14-qir-prereq-20261104\\Lib\\site-packages\\qbraid_core\\services\\runtime\\schemas\\enums.py",
+        "sha256": "ad480477ff25499a76ea8e933c0ab8a700010b4931cca4660272f8bacd89f553"
+      }
+    ],
+    "handle": {
+      "schema": 1,
+      "source_id": "QB-SYNTHETIC",
+      "provider": "qbraid-sdk",
+      "device_id": "fixture-device",
+      "job_id": "fixture-job",
+      "client_correlation_id": "fixture-correlation",
+      "submission_state": "submitted"
+    },
+    "statuses": [
+      [
+        "S01",
+        "INITIALIZING",
+        "deadline"
+      ],
+      [
+        "S02",
+        "QUEUED",
+        "deadline"
+      ],
+      [
+        "S03",
+        "VALIDATING",
+        "deadline"
+      ],
+      [
+        "S04",
+        "RUNNING",
+        "deadline"
+      ],
+      [
+        "S05",
+        "CANCELLING",
+        "deadline"
+      ],
+      [
+        "S06",
+        "CANCELLED",
+        "finished"
+      ],
+      [
+        "S07",
+        "COMPLETED",
+        "finished"
+      ],
+      [
+        "S08",
+        "FAILED",
+        "finished"
+      ],
+      [
+        "S09",
+        "UNKNOWN",
+        "deadline"
+      ],
+      [
+        "S10",
+        "HOLD",
+        "attention"
+      ]
+    ],
+    "binary_counts": {
+      "01": 7,
+      "10": 3,
+      "00": 0
+    },
+    "errors": [
+      [
+        "E01",
+        401,
+        "authentication"
+      ],
+      [
+        "E02",
+        403,
+        "access"
+      ],
+      [
+        "E03",
+        404,
+        "not_found"
+      ],
+      [
+        "E04",
+        429,
+        "throttled"
+      ]
+    ],
+    "scenario_ids": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10",
+      "L01",
+      "L02",
+      "L03",
+      "L04",
+      "L05",
+      "L06",
+      "L07",
+      "L08",
+      "L09",
+      "L10",
+      "C01",
+      "C02",
+      "C03",
+      "C04",
+      "C05",
+      "C06",
+      "C07",
+      "C08",
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07"
+    ]
+  }
+}
