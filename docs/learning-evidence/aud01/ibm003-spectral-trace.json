@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Invalid decimal number",
+  "lessons": [
+    {
+      "lesson": "IBM-003",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 14872,
+          "end": 15314,
+          "literal_sha256": "9afb06096649287bdc0441aa31fe3f0aa0aa6d8ce6b5ca44077090c519a5c200",
+          "outcome": "result",
+          "copy_text": "qequalchain(vector(1,qtrace('\u03c1'),qtrace(qspectralsum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector()))),qtrace(qspectralsum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector()))),qindexedsum(\"\u03bb_\",0,qsub(n,1),vector())))"
+        }
+      ]
+    }
+  ]
+}

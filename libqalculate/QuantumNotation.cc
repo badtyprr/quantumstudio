@@ -1020,17 +1020,23 @@ class Parser {
    }
    return value;
   };
-  auto projector=[&](std::string &weight,std::string &state,std::string &slot) {
+  enum class Term {Scalar, Projector, Trace};
+  auto readTerm=[&](std::string &weight,std::string &state,std::string &slot,Term &kind) {
    weight=name();if(weight.empty() || !token("_"))return false;
-   slot=index(true);if(slot.empty() || !token("|"))return false;
+   slot=index(true);if(slot.empty())return false;
+   bool traced=token("Tr");
+   if(traced && !token("("))return false;
+   if(!token("|")) {kind=Term::Scalar;return !traced;}
+   kind=traced ? Term::Trace : Term::Projector;
    state=name();return !state.empty() && token("_") && index(true)==slot && token(">") &&
-    token("<") && name()==state && token("_") && index(true)==slot && token("|");
+    token("<") && name()==state && token("_") && index(true)==slot && token("|") && (!traced || token(")"));
   };
   std::string start,end,weight,state,slot,probe;
+  Term kind=Term::Projector;
   if(token("qtexsum(")) {
    start=index();if(!token(","))return "";end=index();if(!token(","))return "";
    std::string binder=name();
-   if(binder.empty() || !token(")") || !projector(weight,state,slot) || slot!=binder)return "";
+   if(binder.empty() || !token(")") || !readTerm(weight,state,slot,kind) || kind!=Term::Projector || slot!=binder)return "";
    // The final bar may also start the fixed ket in an inner product.
    std::string probeFamily=name();
    if(!probeFamily.empty()) {
@@ -1042,9 +1048,10 @@ class Parser {
   } else {
    at=p;size_t before=s.find_last_not_of(" \t\r\n",p ? p-1 : 0);
    if(p && before!=std::string::npos && s[before]!='=' && s[before]!='(' && s[before]!=',')return "";
-   if(!projector(weight,state,start) || !token("+") || !(token("...") || token("…")) || !token("+"))return "";
+   if(!readTerm(weight,state,start,kind) || !token("+") || !(token("...") || token("…") || token("⋯")) || !token("+"))return "";
    std::string finalWeight,finalState;
-   if(!projector(finalWeight,finalState,end) || weight!=finalWeight || state!=finalState)return "";
+   Term finalKind;
+   if(!readTerm(finalWeight,finalState,end,finalKind) || kind!=finalKind || weight!=finalWeight || state!=finalState)return "";
   }
   if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || end.empty())return "";
   if(end.find_first_not_of("0123456789")!=std::string::npos) {
@@ -1062,7 +1069,9 @@ class Parser {
   p=at;
   auto family=[&](const std::string &prefix){return "qindexedentries("+indexableLabel(prefix+"_")+","+start+","+end+",vector())";};
   if(!probe.empty())return "qspectralaction("+family(weight)+","+family(state)+","+probe+")";
-  return "qspectralsum("+family(weight)+","+family(state)+")";
+  if(kind==Term::Scalar)return "qindexedsum("+indexableLabel(weight+"_")+","+start+","+end+",vector())";
+  std::string sum="qspectralsum("+family(weight)+","+family(state)+")";
+  return kind==Term::Trace ? "qtrace("+sum+")" : sum;
  }
  std::string atom() {
   if(++depth > 256 || ++nodes > nodeLimit) throw std::runtime_error("Quantum expression exceeds the nesting or complexity limit.");

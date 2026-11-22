@@ -1838,7 +1838,7 @@ class TeXReader {
    size_t before=input.find_last_not_of(" \t\r\n",pos-name.size()-2),after=input.find_first_not_of(" \t\r\n",pos);
    if(before!=std::string::npos && before>0 && after!=std::string::npos && input[before]=='+' && input[after]=='+') {
     size_t end=input.find_last_not_of(" \t\r\n",before-1);
-    if(end!=std::string::npos && (input[end]=='|' ||
+    if(end!=std::string::npos && (input[end]=='|' || input[end]==')' ||
        (end>=4 && input.compare(end-4,5,"\\vert")==0) ||
        (end>=5 && input.compare(end-5,6,"\\rvert")==0)))return "...";
    }
