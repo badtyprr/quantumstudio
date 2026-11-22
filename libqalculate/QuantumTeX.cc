@@ -700,6 +700,27 @@ std::string sampleWordDefinitions(const std::vector<std::string> &lines) {
  return sampleArray(cells,"⋯","⋮","⋱",true);
 }
 std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation,bool formalEndpoint=false);
+// Read the row coefficient and the conjugated column coefficient. A
+// squared modulus is the alternate notation for their diagonal entry.
+bool amplitudePair(const std::string &cell,std::string &row,std::string &column) {
+ const std::string overline="\\overline",bar="\\vert";
+ size_t at=cell.find(overline);
+ if(at!=std::string::npos) {
+  std::string group=trim(cell.substr(at+overline.size()));
+  if(group.size()<3 || group.front()!='{' || group.back()!='}')return false;
+  row=trim(cell.substr(0,at));column=trim(group.substr(1,group.size()-2));
+  return !row.empty() && !column.empty();
+ }
+ if(cell.compare(0,bar.size(),bar)!=0)return false;
+ at=cell.find(bar,bar.size());
+ if(at==std::string::npos)return false;
+ std::string power=trim(cell.substr(at+bar.size()));
+ if(power.empty() || power.front()!='^')return false;
+ power=trim(power.substr(1));
+ if(power.size()>2 && power.front()=='{' && power.back()=='}')power=trim(power.substr(1,power.size()-2));
+ if(power!="2")return false;
+ row=trim(cell.substr(bar.size(),at-bar.size()));column=row;return true;
+}
 std::string indexedMatrix(const std::string &raw,bool tex) {
  const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
  auto rows=indexedParts(raw,tex ? "\\\\" : ";");
@@ -732,6 +753,33 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
      (bound.size()==1 && asciiLetter(bound[0]))))return cell.substr(0,sub+1)+bound;
   return cell;
  };
+ if(tex && height==width && height>=3) {
+  std::string first,other;
+  if(amplitudePair(cells[0][0],first,other)) {
+   for(const auto &row:cells)if(row.size()!=width)invalid();
+   std::string last;
+   first=normalizeLabel(first);
+   if(first!=normalizeLabel(other) || !amplitudePair(cells.back().back(),last,other))invalid();
+   last=normalizeLabel(last);
+   if(last!=normalizeLabel(other))invalid();
+   size_t split=first.rfind('_');
+   if(split==std::string::npos || first.substr(split+1)!="0" || last.compare(0,split+1,first,0,split+1)!=0)invalid();
+   const std::string prefix=first.substr(0,split+1);
+   auto label=[&](size_t i){return i==height-1 ? last : prefix+std::to_string(i);};
+   for(size_t r=0;r<height;++r)for(size_t c=0;c<width;++c) {
+    if(r==height-2 || c==width-2) {
+     if(cells[r][c]!=(r==height-2 ? (c==width-2 ? diagonal : vertical) : horizontal))invalid();
+    } else {
+     std::string left,right;
+     if(!amplitudePair(cells[r][c],left,right) || normalizeLabel(left)!=label(r) || normalizeLabel(right)!=label(c))invalid();
+    }
+   }
+   const std::string name=quantumTeX(first.substr(0,split))+"_";
+   std::string family=indexedLabelRange(name+"0",name+last.substr(split+1),"qindexedentries(",true);
+   if(family.empty())invalid();
+   return "qamplitudeprojector("+family+","+std::to_string(height-1)+")";
+  }
+ }
  // The four corners of the expanded measurement matrix specify its
  // block row and block column independently.
  if(tex && height==3 && width==3 && cells[1].size()==3 && cells[2].size()==3 &&

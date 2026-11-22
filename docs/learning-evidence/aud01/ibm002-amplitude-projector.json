@@ -1,0 +1,20 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-002",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/density-matrix-basics.ipynb",
+      "source_sha256": "784e96f7c4b5b905384f91241a024c3828e2259f0f4d05f05bd4b2cca0cd2562",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 10971,
+          "end": 11845,
+          "literal_sha256": "42d7161e8c75221d8ad9b1ebd9103009fdb37bee6e6962a4a401a5f004645813",
+          "outcome": "result",
+          "copy_text": "qequalchain(vector(qadjacent(qnamedket('\u03c8'),qdag(qnamedket('\u03c8'))),qamplitudeprojector(qindexedentries(\"\u03b1_\",0,qsub(n,1),vector()),3),qamplitudeprojector(qindexedentries(\"\u03b1_\",0,qsub(n,1),vector()),3)))"
+        }
+      ]
+    }
+  ]
+}
