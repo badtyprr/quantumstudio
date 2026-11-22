@@ -2,6 +2,7 @@
 #include "QuantumIndexed.h"
 #include <map>
 #include "QuantumBasisDomain.h"
+#include "QuantumBinary.h"
 #include "Calculator.h"
 #include "Function.h"
 #include "Variable.h"
@@ -2740,7 +2741,14 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure probe=raw[0];
    if(op=="qmember") {
     probe.eval(exact);
-    if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
+    // A named function can be bound to a graph later. Its result type is
+    // unknown until the application evaluates, while its domain is still
+    // subject to the usual collection validation below.
+    if(probe.isFunction() && probe.size()==2 &&
+       ((probe.function()->referenceName()=="qnamedapplication" && probe[0].isUnknown()) ||
+        (probe.function()->referenceName()=="qgraphapply" && pendingQuantumGraphLookup(probe[0],probe[1],exact))))
+     deferredLabels=true;
+    else if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
    }
    // Validate the probe even when its domain is not yet specified.
    // Count a concrete binary-string domain without enumerating its elements.

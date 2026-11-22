@@ -685,6 +685,26 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 # Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
+# IBM-018 uses the output of a function as the membership probe. The
+# graph and its input can be supplied independently after Copy and re-entry.
+query_membership = data(r"quantum:$f(x)\in\Sigma^m$")["copy_text"]
+assert data("quantum:" + query_membership)["copy_text"] == query_membership
+for width, expected in [(3, "1"), (2, "0")]:
+    arguments = [("f", word_graph), ("x", "bitstring(1,2)"),
+                 ("Σ", r"\{0,1\}"), ("m", str(width))]
+    for bindings in (arguments, reversed(arguments)):
+        value = query_membership
+        for symbol, replacement in bindings:
+            value = data(f"quantum:replace(({value}),{symbol},{replacement})")["copy_text"]
+        assert value == expected, (width, value)
+for first, second in [(("f", word_graph), ("x", "bitstring(y,2)")),
+                      (("x", "bitstring(y,2)"), ("f", word_graph))]:
+    value = "member(f(x),bitstrings(3))"
+    for symbol, replacement in (first, second, ("y", "1")):
+        value = data(f"quantum:replace(({value}),{symbol},{replacement})")["copy_text"]
+    assert value == "1", value
+for invalid_graph in ("42", "[1,2]", "qset(vector(1,2))"):
+    run(f"quantum:qmember(qgraphapply({invalid_graph},x),vector(1,2))", "--json", success=False)
 assert data("quantum:" + word_graph)["copy_text"] == word_graph
 image = data(r"quantum:\operatorname{range}(f)")["copy_text"]
 assert data(f"quantum:replace({image},f,{word_graph})")["copy_text"] == "qset(vector(qbitlabel(1,3),qbitlabel(4,3),qbitlabel(0,3)))"

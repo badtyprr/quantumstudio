@@ -10,6 +10,26 @@
 bool isQuantumBitLabel(const MathStructure &value) {
  return value.isFunction() && (value.function()->referenceName()=="qbitlabel" || value.function()->referenceName()=="qbits");
 }
+static bool binaryGraphPair(const MathStructure &pair) {
+ return pair.isFunction() && pair.function()->referenceName()=="qtuple" && pair.size()==1 &&
+        pair[0].isVector() && pair[0].size()==2 && isQuantumBitLabel(pair[0][0]) && pair[0][0].size()==2;
+}
+bool pendingQuantumGraphLookup(const MathStructure &graph,const MathStructure &input,const EvaluationOptions &eo) {
+ if(!graph.isFunction() || graph.function()->referenceName()!="qset" || graph.size()!=1 || !graph[0].isVector())return false;
+ if(!input.isUnknown()) {
+  if(!isQuantumBitLabel(input) || input.size()!=2)return false;
+  MathStructure index=input[0],width=input[1];
+  if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Symbolic)return false;
+ }
+ for(size_t i=0;i<graph[0].size();++i) {
+  const auto &pair=graph[0][i];
+  if(!binaryGraphPair(pair))return false;
+  const auto &key=pair[0][0];
+  MathStructure index=key[0],width=key[1];
+  if(validateQuantumBitLabel(index,width,eo)==QuantumBitLabelState::Invalid)return false;
+ }
+ return true;
+}
 // Apply the finite relation at one input. Both the width and the bits
 // identify the input, so an entry for 01 cannot answer a query for 1.
 int applyQuantumBinaryGraph(MathStructure &out,const MathStructure &graph,const MathStructure &input,const EvaluationOptions &eo) {
@@ -19,8 +39,7 @@ int applyQuantumBinaryGraph(MathStructure &out,const MathStructure &graph,const 
  const MathStructure *answer=nullptr;
  for(size_t i=0;i<graph[0].size();++i) {
   const MathStructure &pair=graph[0][i];
-  if(!pair.isFunction() || pair.function()->referenceName()!="qtuple" || pair.size()!=1 ||
-     !pair[0].isVector() || pair[0].size()!=2 || !isQuantumBitLabel(pair[0][0]) || pair[0][0].size()!=2) {
+  if(!binaryGraphPair(pair)) {
    CALCULATOR->error(true,"A binary function graph requires pairs with bit-string inputs.",NULL);return 0;
   }
   const MathStructure &key=pair[0][0];
