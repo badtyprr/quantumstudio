@@ -1,0 +1,33 @@
+{
+  "source_url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-CUDAQ/cuda_quantum_quickstart.ipynb",
+  "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+  "source_cell": 17,
+  "scope": "Authored static QIR rendering of the source ansatz at theta=0.59 and separate RX and RZ phase controls. CUDA-Q compilation and provider execution remain open.",
+  "unit_tests": 23,
+  "native_checks": 20,
+  "analytical_energy": -1.748794861147215,
+  "energy_checks": [
+    {
+      "source_format": "ir",
+      "engine": "exact",
+      "energy": -1.7487948611472146
+    },
+    {
+      "source_format": "ir",
+      "engine": "sampled",
+      "energy": -1.7607605420000003
+    },
+    {
+      "source_format": "bitcode",
+      "engine": "exact",
+      "energy": -1.7487948611472146
+    },
+    {
+      "source_format": "bitcode",
+      "engine": "sampled",
+      "energy": -1.7607605420000003
+    }
+  ],
+  "max_exact_probability_error": 1.3877787807814457e-17,
+  "max_sampled_probability_error": 0.010309744271804033
+}

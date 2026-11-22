@@ -58,6 +58,31 @@ class ImportTests(unittest.TestCase):
             with self.subTest(flag=new), self.assertRaisesRegex(ValueError, "QIR_UNSUPPORTED_PROFILE"):
                 import_qir(static.replace(old, new))
 
+    def test_constant_rotation_signatures_and_angles(self):
+        for gate in ("rx", "ry", "rz"):
+            name = "__quantum__qis__" + gate + "__body"
+            for kind, literal, error in [("double", "-5.900000e-01", None),
+                                         ("float", "5.000000e-01", "QIR_ROTATION_SIGNATURE"),
+                                         ("double", "0x7FF0000000000000", "QIR_NONFINITE_ROTATION"),
+                                         ("double", "0x7FF8000000000000", "QIR_NONFINITE_ROTATION"),
+                                         ("double", "undef", "QIR_ROTATION_SIGNATURE")]:
+                raw = fixture(f"  call void @{name}({kind} {literal}, ptr null)")
+                raw = raw.replace(b"attributes #0", f"declare void @{name}({kind}, ptr)\nattributes #0".encode())
+                bc = pyqir.Module.from_ir(pyqir.Context(), raw.decode()).bitcode
+                for data, bitcode in [(raw, False), (bc, True)]:
+                    with self.subTest(gate=gate, literal=literal, bitcode=bitcode):
+                        if error:
+                            with self.assertRaisesRegex(ValueError, error):
+                                import_qir(data, bitcode=bitcode)
+                        else:
+                            self.assertIn(f"{gate}(-0.59) q[0];", import_qir(data, bitcode=bitcode)["openqasm"])
+
+    def test_variadic_rotation_rejected_even_without_extra_arguments(self):
+        raw = fixture("  call void (double, ptr, ...) @__quantum__qis__ry__body(double 0.5, ptr null)")
+        raw = raw.replace(b"attributes #0", b"declare void @__quantum__qis__ry__body(double, ptr, ...)\nattributes #0")
+        with self.assertRaisesRegex(ValueError, "QIR_UNSUPPORTED_CALLEE"):
+            import_qir(raw)
+
     def test_terminal_output_permutation_uses_direct_measurement_targets(self):
         report = import_qir(fixture(H, CX, M0, M1, O1, O0))
         self.assertEqual(report['output_lowering'], 'terminal-measurement-aliases')

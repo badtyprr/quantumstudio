@@ -2,6 +2,8 @@
 import argparse
 import hashlib
 import json
+import math
+import re
 from pathlib import Path
 
 import pyqir
@@ -101,11 +103,27 @@ def import_qir(raw, *, bitcode=False):
             raise ValueError("QIR_UNSUPPORTED_INSTRUCTION:" + str(ordinal))
         callee = instruction.callee
         if (not isinstance(callee, pyqir.Function) or callee.basic_blocks
-                or not callee.type.ret.is_void or "..." in str(callee.type)):
+                or not callee.type.ret.is_void
+                # PyQIR 0.12 exposes varargs only in the printed LLVM declaration.
+                or re.search(r"^declare [^\n]*?@__quantum__\w+\([^\n\"]*?\.\.\.\)", str(callee), re.MULTILINE)):
             raise ValueError("QIR_UNSUPPORTED_CALLEE:" + str(ordinal))
         name = callee.name
         args = instruction.args
-        if len(args) != len(callee.params) or any(not isinstance(a.type, pyqir.PointerType) for a in args):
+        if len(args) != len(callee.params):
+            raise ValueError("QIR_CALL_SIGNATURE:" + name)
+        if name in ("__quantum__qis__rx__body", "__quantum__qis__ry__body", "__quantum__qis__rz__body"):
+            if (len(args) != 2 or not callee.params[0].type.is_double
+                    or not isinstance(callee.params[1].type, pyqir.PointerType)
+                    or not isinstance(args[0], pyqir.FloatConstant) or not args[0].type.is_double):
+                raise ValueError("QIR_ROTATION_SIGNATURE:" + name)
+            angle = args[0].value
+            if not math.isfinite(angle):
+                raise ValueError("QIR_NONFINITE_ROTATION")
+            target = static_id(args[1], qubits, "qubit")
+            gate = name.split("__")[-2]
+            statements.append(f"{gate}({angle!r}) q[{target}];")
+            continue
+        if any(not isinstance(a.type, pyqir.PointerType) for a in args):
             raise ValueError("QIR_CALL_SIGNATURE:" + name)
         if name == "__quantum__rt__initialize":
             if initialized or ordinal != 0 or len(args) != 1 or pyqir.ptr_id(args[0]) != 0:
