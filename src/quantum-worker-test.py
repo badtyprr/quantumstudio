@@ -693,6 +693,8 @@ diagonal = "[1,0,0,0;0,2,0,0;0,0,3,0;0,0,0,4]"
 # the mapped axes provide the individual letters, in any physical order.
 group_trace = data(r"quantum:\operatorname{Tr}_{\mathsf{AB}}(ρ)")["copy_text"]
 assert data("quantum:" + group_trace)["copy_text"] == group_trace
+assert data(r"quantum:\operatorname{Tr}_\mathsf{AB}(ρ)")["copy_text"] == group_trace
+assert data(f"quantum:replace(replace({group_trace},AB,0),ρ,{diagonal})")["copy_text"] == "matrix(2,2,[4,0,0,6])"
 for axes, dimensions, expected in [("[A,B]", "[2,2]", "10"), ("[AB,C]", "[2,2]", "matrix(2,2,[4,0,0,6])"),
                                     ("[B,AB,A]", "[2,1,2]", "matrix(4,4,[1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,4])")]:
     mapping = f"subsystems({diagonal},{axes},{dimensions})"

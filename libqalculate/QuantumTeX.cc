@@ -2311,7 +2311,7 @@ class TeXReader {
      result.resize(result.size()-2);
      const std::string names=trim(index);
      if(names.size()>1 && names.size()<=32 && names.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos &&
-        subscript=="_{\\mathsf{"+names+"}}")
+        (subscript=="_{\\mathsf{"+names+"}}" || subscript=="_\\mathsf{"+names+"}"))
       result+="qptraceregisters("+body+",\""+names+"\",vector("+index+"))";
      else result+="ptrace("+body+",vector("+index+"))";
     } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {
