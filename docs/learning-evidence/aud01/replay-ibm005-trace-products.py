@@ -83,4 +83,13 @@ for line, size in zip(lines, (4, 2)):
     for product in (right, copied(right)):
         body = f'replace(replace(replace(({product}),ρ,{matrix}),"I_A",I),"I_C",I)'
         verify(f"replace(replace({body},Γ,qset(vector(0,1))),Σ,qset(vector(0,1)))", expected)
-print("All four source definitions matched the independent reductions.")
+# The lesson mixes |00> and |1+> with equal weights. Supply both the
+# joint state and the proposed marginal to exercise each complete equality.
+mixture = "([2,0,0,0;0,0,0,0;0,0,1,1;0,0,1,1]/4)"
+for start, axis, marginal in [(16764, "A", "(I/2)"), (17185, "B", "([3,1;1,1]/4)")]:
+    formula = source_at(start).strip().strip("$").strip()
+    for form in (formula, copied(formula)):
+        joint = f"replace(({form}),ρ,subsystems({mixture},[A,B],[2,2]))"
+        for proposal, expected in [(marginal, "1"), ("X", "0")]:
+            verify(f'replace(({joint}),"ρ_{axis}",{proposal})', expected)
+print("All four trace definitions and both worked marginal equations passed.")

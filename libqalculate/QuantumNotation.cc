@@ -434,6 +434,7 @@ class Parser {
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
+ size_t lastKetEnd=std::string::npos;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned literalEntryNodes=0;
@@ -1180,6 +1181,7 @@ class Parser {
    }
   }
   else if(take('<')) {
+   bool followsKet=p-1==lastKetEnd;
    bool vectorized=take('<');
    size_t b=p; p=labelEnd('|',p); if(p==std::string::npos) throw std::runtime_error("Unclosed bra.");
    std::string left=s.substr(b,p-b); ++p; std::string dimension=vectorized ? "" : dimensionSuffix(); bool compact=false;
@@ -1258,7 +1260,10 @@ class Parser {
     // operator between this bra and that ket; leave it to product/additive.
     bool unfinishedOperator=!body.empty() && std::string("+-*/@#^").find(body.back())!=std::string::npos;
     if(body.size()>=2 && body.compare(body.size()-2,2,"^*")==0)unfinishedOperator=false; // Conjugation is postfix.
-    if(!body.empty() && !unfinishedOperator && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
+    // After a dyad, a leading additive sign starts the next summand.
+    // In a standalone matrix element it may instead sign the operator.
+    bool nextSummand=followsKet && !body.empty() && (body.front()=='+' || body.front()=='-');
+    if(!body.empty() && !nextSummand && !unfinishedOperator && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
      // Use this parser (and its shared nesting/node budget), with a temporary
      // terminator, instead of recursively creating an unrestricted parser.
      s[closing]=')';std::string op=expression();
@@ -2026,6 +2031,7 @@ class Parser {
    else if(take('?')) a="qconj("+a+")";
    else break;
   }
+  if(kind==1)lastKetEnd=p;
   --depth;diracKind=kind;checkSize(a);return a;
  }
  // Inspect the original base so a matrix equal to S keeps its matrix meaning.

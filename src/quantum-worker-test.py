@@ -685,6 +685,14 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 # Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
+for expression, expected in [
+    (r"\frac{1}{2} |0><0| + \frac{1}{2} |1><1|", "matrix(2,2,[1 ∕ 2,0,0,1 ∕ 2])"),
+    ("|0><0| - (1/2) |+><+|", "matrix(2,2,[3 ∕ 4,−1 ∕ 4,−1 ∕ 4,−1 ∕ 4])"),
+    ("|0>_2<0|_2 + (1/2)|1>_2<1|_2", "matrix(2,2,[1,0,0,1 ∕ 2])"),
+    ("<0|-Z|0>", "−1"),
+]:
+    assert data("quantum:" + expression)["copy_text"] == expected
+
 # The missing operand can receive either ordering of the same labelled axes.
 pending_trace = data(r"quantum:\operatorname{Tr}_{\mathsf{B}}(\rho)")["copy_text"]
 assert data("quantum:" + pending_trace)["copy_text"] == pending_trace
