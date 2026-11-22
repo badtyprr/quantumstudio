@@ -1,0 +1,65 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/fundamentals-of-quantum-algorithms/grover-algorithm/number-of-iterations.ipynb",
+  "source_sha256": "94ee62dd84ab644d5ba22ba1675fdb29afb0ddc777505af0461f469c9649077b",
+  "worker_sha256": "1304848f6697d2ad7d0b91ec1fcd0ed70e524871681bc88ac55b389d41f656ee",
+  "simulations": [
+    {
+      "size": 2,
+      "marked": 1,
+      "iterations": 1,
+      "probability": "1/2"
+    },
+    {
+      "size": 4,
+      "marked": 1,
+      "iterations": 1,
+      "probability": "1"
+    },
+    {
+      "size": 8,
+      "marked": 1,
+      "iterations": 2,
+      "probability": "121/128"
+    },
+    {
+      "size": 16,
+      "marked": 1,
+      "iterations": 3,
+      "probability": "63001/65536"
+    },
+    {
+      "size": 16,
+      "marked": 4,
+      "iterations": 1,
+      "probability": "1"
+    },
+    {
+      "size": 8,
+      "marked": 4,
+      "iterations": 1,
+      "probability": "1/2"
+    },
+    {
+      "size": 16,
+      "marked": 12,
+      "iterations": 0,
+      "probability": "3/4"
+    },
+    {
+      "size": 8,
+      "marked": 8,
+      "iterations": 0,
+      "probability": "1"
+    }
+  ],
+  "checks_by_occurrence": {
+    "60": 11,
+    "69": 12,
+    "73": 12,
+    "74": 11,
+    "76": 12,
+    "97": 21,
+    "106": 20
+  },
+  "copy_reentries": 7
+}
