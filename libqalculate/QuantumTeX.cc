@@ -563,9 +563,14 @@ std::string gatheredMatrixList(const std::string &input) {
  bool last=false;
  size_t count=0;
  while(pos!=std::string::npos && input.compare(pos,begin.size(),begin)==0) {
-  size_t stop=input.find(end,pos+begin.size());
-  if(stop==std::string::npos)return {};
-  stop+=end.size();
+  size_t stop=pos+begin.size(),depth=1;
+  while(depth) {
+   stop=input.find('\\',stop);
+   if(stop==std::string::npos)return {};
+   if(input.compare(stop,begin.size(),begin)==0) {++depth;stop+=begin.size();}
+   else if(input.compare(stop,end.size(),end)==0) {--depth;stop+=end.size();}
+   else ++stop;
+  }
   if(count++)rows+="\\\\";
   rows.append(input,pos,stop-pos);
   pos=input.find_first_not_of(" \t\r\n",stop);

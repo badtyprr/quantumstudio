@@ -33,6 +33,10 @@ assert data("quantum:" + matrix_list.replace(",", "")) == expected_rows
 assert data("quantum:" + expected_rows["copy_text"]) == expected_rows
 assert data("quantum:$$" + "+".join(matrix_rows) + "$$")["cells"] == [["3", "3"], ["4", "5"]]
 
+nested_matrix = matrix_rows[1].replace("2&", r"\operatorname{Tr}(" + matrix_rows[0] + ")&")
+nested_copy = data(r"quantum:$$" + nested_matrix + r",\quad" + matrix_rows[0] + "$$")["copy_text"]
+assert nested_copy == data(r"quantum:\begin{gathered}" + nested_matrix + r"\\" + matrix_rows[0] + r"\end{gathered}")["copy_text"]
+
 # A textbook equation uses grouped digits. Commas in function calls and
 # between complete equations retain their existing meanings.
 for literal, integer in [("1,000,000", 1000000), ("-12,345", -12345), ("+987,654", 987654)]:
