@@ -9,6 +9,76 @@ namespace {
 const MathStructure &entry(const MathStructure &m,size_t r,size_t c) {return *m.getElement(r+1,c+1);}
 }
 namespace {
+// The two-dimensional fidelity identity and the traceless difference spectrum
+// avoid taking numerical square roots of nearly zero eigenvalues.
+bool exactQubitInvariants(const MathStructure &state,MathStructure &trace,MathStructure &det,const EvaluationOptions &eo) {
+ if(state.isApproximate() || state.containsInterval())return false;
+ const auto &a=entry(state,0,0),&b=entry(state,0,1),&c=entry(state,1,0),&d=entry(state,1,1);
+ if(!a.representsNonNegative() || !d.representsNonNegative())return false;
+ MathStructure conjugate(CALCULATOR->getFunction("conj"),&b,NULL);
+ conjugate-=c;conjugate.eval(eo);
+ if(!conjugate.isZero())return false;
+ trace=a;trace+=d;trace.eval(eo);
+ det=a*d-b*c;det.eval(eo);
+ return trace.representsPositive() && det.representsNonNegative();
+}
+
+bool exactQubitMetric(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &options,bool fidelity) {
+ EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
+ MathStructure t,u,d,e;
+ if(!exactQubitInvariants(first,t,d,exact) || !exactQubitInvariants(second,u,e,exact))return false;
+ MathStructure value;
+ if(fidelity) {
+  value=d*e;value.raise(Number(1,2));value*=2;
+  for(size_t r=0;r<2;++r)for(size_t c=0;c<2;++c)value+=entry(first,r,c)*entry(second,c,r);
+  value/=t*u;
+ } else {
+  auto difference=[&](size_t r,size_t c) {return entry(first,r,c)/t-entry(second,r,c)/u;};
+  value=difference(0,1)*difference(1,0)-difference(0,0)*difference(1,1);
+  value.eval(exact);value.raise(Number(1,2));
+ }
+ value.eval(exact);
+ if(value.isApproximate() || !value.representsNonNegative())return false;
+ out=value;return true;
+}
+
+// Recover a ket from one nonzero column only when its outer product
+// reconstructs the density matrix exactly, including its normalization.
+bool pureDensityColumn(const MathStructure &state,std::vector<MathStructure> &column,const EvaluationOptions &eo) {
+ if(state.isApproximate() || state.containsInterval())return false;
+ const size_t n=state.rows();
+ size_t pivot=0;
+ while(pivot<n && !entry(state,pivot,pivot).representsPositive())++pivot;
+ if(pivot==n)return false;
+ for(size_t r=0;r<n;++r)column.push_back(entry(state,r,pivot));
+ for(size_t c=0;c<n;++c) {
+  if(CALCULATOR->aborted())return false;
+  MathStructure conjugate(CALCULATOR->getFunction("conj"),&column[c],NULL);conjugate.eval(eo);
+  for(size_t r=0;r<n;++r) {
+   MathStructure difference=column[r]*conjugate-entry(state,r,c)*entry(state,pivot,pivot);
+   difference.eval(eo);
+   if(!difference.isZero())return false;
+  }
+ }
+ return true;
+}
+
+bool exactPureDensityFidelity(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &options) {
+ EvaluationOptions exact=options;exact.approximation=APPROXIMATION_EXACT;
+ std::vector<MathStructure> a,b;
+ if(!pureDensityColumn(first,a,exact) || !pureDensityColumn(second,b,exact))return false;
+ MathStructure overlap(0),weightA(0),weightB(0);
+ for(size_t i=0;i<a.size();++i) {
+  MathStructure ca(CALCULATOR->getFunction("conj"),&a[i],NULL),cb(CALCULATOR->getFunction("conj"),&b[i],NULL);
+  overlap+=ca*b[i];weightA+=ca*a[i];weightB+=cb*b[i];
+ }
+ overlap.eval(exact);
+ MathStructure squared(CALCULATOR->getFunction("conj"),&overlap,NULL);
+ squared*=overlap;squared/=weightA*weightB;squared.eval(exact);
+ if(squared.isApproximate() || !squared.representsNonNegative())return false;
+ out=squared;return true;
+}
+
 bool hermitianEigenvalues(std::vector<double> a,size_t size,std::vector<double> &values,std::vector<double> *vectors=nullptr) {
  if(vectors) {vectors->assign(size*size,0);for(size_t k=0;k<size;++k)(*vectors)[k*size+k]=1;}
  bool converged=false;
@@ -91,6 +161,10 @@ bool quantumEntropy(MathStructure &out,const MathStructure &state,const Evaluati
 }
 
 bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &eo,bool fidelity) {
+ return quantumStateMetric(out,first,second,eo,fidelity,false);
+}
+
+bool quantumStateMetric(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &eo,bool fidelity,bool allowExactExpressions) {
  if(!first.isMatrix() || !second.isMatrix() || first.rows()!=second.rows() || first.rows()<2 || first.rows()>64) {
   CALCULATOR->error(true,"State distance and fidelity require two states of matching dimension from 2 to 64.",NULL);return false;
  }
@@ -98,6 +172,10 @@ bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const Ma
  MathStructure validation;
  if(!quantumEntropy(validation,first,eo) || !quantumEntropy(validation,second,eo))return false;
  size_t n=first.rows();EvaluationOptions numeric=eo;numeric.approximation=APPROXIMATION_APPROXIMATE;
+ if(allowExactExpressions && first.columns()==n && second.columns()==n && eo.approximation!=APPROXIMATION_APPROXIMATE && CALCULATOR->getFunction("conj")) {
+  if(n==2 && exactQubitMetric(out,first,second,eo,fidelity))return true;
+  if(n>2 && fidelity && exactPureDensityFidelity(out,first,second,eo))return true;
+ }
  // For two kets, form the inner product before squaring. Density matrices
  // introduce cancellation and double underflow for nearly orthogonal states.
  if(fidelity && first.columns()==1 && second.columns()==1) {

@@ -22,8 +22,9 @@ class QuantumStateFunction: public MathFunction {
   const MathStructure &state=args[0];
   if(op=="qentropy")return quantumEntropy(out,state,eo) ? 1 : 0;
   if(op=="qtracedistance" || op=="qfidelity" || op=="qrootfidelity") {
-   if(!quantumTraceDistance(out,state,args[1],eo,op!="qtracedistance"))return 0;
+   if(!quantumStateMetric(out,state,args[1],eo,op!="qtracedistance",true))return 0;
    if(op=="qrootfidelity") {
+    if(!out.isApproximate()) {out.raise(Number(1,2));out.eval(eo);return 1;}
     // Do not round a tiny squared fidelity to double before taking its root.
     Number value=out.number();if(!value.sqrt())return 0;
     value.intervalToMidValue();value.setApproximate(true);value.setPrecision(12);out=value;

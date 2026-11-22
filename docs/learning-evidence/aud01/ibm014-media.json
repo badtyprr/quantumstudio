@@ -1,0 +1,258 @@
+{
+  "notebook": {
+    "revision": "079769d205eb3b60e077820060274c7b0359c123",
+    "path": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/introduction.ipynb",
+    "sha256": "93f944ac1522d9ca2561b310b1c5812e25ad970761af9016601165ff88b97b51"
+  },
+  "slides": {
+    "url": "https://ibm.box.com/public/static/wt8dkrbjdft267ouym92rg53cimodr4c.pdf",
+    "sha256": "7b1a30e37bfa50e712e28487d4708294b7889172e83b9ba8ff9f405f6bf27e36",
+    "pages": 27
+  },
+  "checks": [
+    {
+      "page": 4,
+      "label": "partial trace of printed purification",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "ptrace(density(((|00>+tensor(|+>,|1>))/sqrt(2))),[1])=([3,1;1,1]/4)",
+      "expected": "1"
+    },
+    {
+      "page": 4,
+      "label": "opposite marginal differs",
+      "numerical_adaptation": true,
+      "negative_control": true,
+      "equation": "ptrace(density(((|00>+tensor(|+>,|1>))/sqrt(2))),[0])=([3,1;1,1]/4)",
+      "expected": "0"
+    },
+    {
+      "page": 6,
+      "label": "Schmidt probabilities sum to one",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "cos(pi/8)^2+sin(pi/8)^2=1",
+      "expected": "1"
+    },
+    {
+      "page": 7,
+      "label": "printed Schmidt vector",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "((|00>+tensor(|+>,|1>))/sqrt(2))=cos(pi/8)*tensor([cos(pi/8);sin(pi/8)],|+>)-sin(pi/8)*tensor([cos(5*pi/8);sin(5*pi/8)],|->)",
+      "expected": "1"
+    },
+    {
+      "page": 7,
+      "label": "Schmidt relative phase control",
+      "numerical_adaptation": true,
+      "negative_control": true,
+      "equation": "((|00>+tensor(|+>,|1>))/sqrt(2))=cos(pi/8)*tensor([cos(pi/8);sin(pi/8)],|+>)+sin(pi/8)*tensor([cos(5*pi/8);sin(5*pi/8)],|->)",
+      "expected": "0"
+    },
+    {
+      "page": 8,
+      "label": "purifying unitary preserves reduced state",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(density(tensor(I,Y)*((|00>+tensor(|+>,|1>))/sqrt(2))),[1])=([3,1;1,1]/4)",
+      "expected": "1"
+    },
+    {
+      "page": 10,
+      "label": "Bob marginal with Alice I",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(density(tensor(I,I)*((|00>+|11>)/sqrt(2))),[0])=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 10,
+      "label": "Bob marginal with Alice X",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(density(tensor(X,I)*((|00>+|11>)/sqrt(2))),[0])=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 10,
+      "label": "Bob marginal with Alice Y",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(density(tensor(Y,I)*((|00>+|11>)/sqrt(2))),[0])=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 10,
+      "label": "Bob marginal with Alice Z",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(density(tensor(Z,I)*((|00>+|11>)/sqrt(2))),[0])=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 12,
+      "label": "HJW Z ensemble",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(density(|0>)+density(|1>))/2=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 12,
+      "label": "HJW X ensemble",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(density(|+>)+density(|->))/2=I/2",
+      "expected": "1"
+    },
+    {
+      "page": 15,
+      "label": "HJW conditioned plus state",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "2*ptrace(tensor(I,density(|+>))*density(((|00>+|11>)/sqrt(2))),[1])=density(|+>)",
+      "expected": "1"
+    },
+    {
+      "page": 18,
+      "label": "root fidelity for pure states",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "root_fidelity(density(|0>),density(|+>))=1/sqrt(2)",
+      "expected": "1"
+    },
+    {
+      "page": 19,
+      "label": "orthogonal ranges",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "root_fidelity(density(|0>),density(|1>))=0",
+      "expected": "1"
+    },
+    {
+      "page": 19,
+      "label": "identical mixed states",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "root_fidelity(([3,1;1,1]/4),([3,1;1,1]/4))=1",
+      "expected": "1"
+    },
+    {
+      "page": 19,
+      "label": "product fidelity",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "root_fidelity(density(|00>),density(tensor(|+>,|+>)))=1/2",
+      "expected": "1"
+    },
+    {
+      "page": 20,
+      "label": "trace distance upper bound",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "tracedistance(density(|0>),density(|+>))=sqrt(1-root_fidelity(density(|0>),density(|+>))^2)",
+      "expected": "1"
+    },
+    {
+      "page": 21,
+      "label": "gentle measurement disturbance",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "root_fidelity(density([sqrt(3);1]/2),density(|0>))^2=3/4",
+      "expected": "1"
+    },
+    {
+      "page": 24,
+      "label": "overlap of aligned purifications",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "abs(<00|*((|00>+|11>)/sqrt(2)))=root_fidelity(density(|0>),I/2)",
+      "expected": "1"
+    },
+    {
+      "page": 27,
+      "label": "canonical purifications of diagonal states",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "abs(([sqrt(3),0,0,1]/2)*([1;0;0;sqrt(3)]/2))=root_fidelity([3,0;0,1]/4,[1,0;0,3]/4)",
+      "expected": "1"
+    }
+  ],
+  "lecture": {
+    "player_id": "134063424",
+    "track": "Generated English (US)",
+    "segments": 125,
+    "digest_method": "SHA-256 over concatenated binary segment SHA-256 values in playlist order",
+    "sha256": "1dcf18a2c1488cecc4062d76d709ccbefcd656759a52fa8dd870ef9a02a0d8c5",
+    "distinct_cues": 1114,
+    "first_cue_seconds": 0.74,
+    "last_cue_end_seconds": 2646.779,
+    "player_url": "https://video.ibm.com/embed/recorded/134063424",
+    "duration_seconds": 2655.666
+  },
+  "runs": {
+    "release": {
+      "revision": "c5a456cd",
+      "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "exact_checks": 12,
+      "unresolved": [
+        {
+          "label": "printed Schmidt vector",
+          "actual": "(matrix(4,1,[(sin((\u03c0 rad) \u2215 8)\u00b2 \u2212 cos((3 \u2215 8) \u22c5 \u03c0 rad) \u22c5 sin((\u03c0 rad) \u2215 8)) \u2215 \u221a(2),1 \u2215 2 + (cos((3 \u2215 8) \u22c5 \u03c0 rad) \u22c5 sin((\u03c0 rad) \u2215 8) \u2212 cos((\u03c0 rad) \u2215 8)\u00b2) \u2215 \u221a(2),(2 \u22c5 sin((\u03c0 rad) \u2215 8) \u22c5 sin((3 \u2215 8) \u22c5 \u03c0 rad) \u2212 1 \u2215 \u221a(2)) \u2215 (2 \u22c5 \u221a(2)),(1 \u2215 (2 \u22c5 \u221a(2)) \u2212 sin((\u03c0 rad) \u2215 8) \u22c5 sin((3 \u2215 8) \u22c5 \u03c0 rad)) \u2215 \u221a(2)]))==(matrix(4,1,[0,0,0,0]))",
+          "exact": true
+        },
+        {
+          "label": "root fidelity for pure states",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "orthogonal ranges",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "identical mixed states",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "product fidelity",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "trace distance upper bound",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "gentle measurement disturbance",
+          "actual": "0.00000000000",
+          "exact": false
+        },
+        {
+          "label": "overlap of aligned purifications",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "canonical purifications of diagonal states",
+          "actual": "1",
+          "exact": false
+        }
+      ],
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 13
+    },
+    "candidate": {
+      "revision": "68223686",
+      "worker_sha256": "d8278f1d909b4a55af32b66855583f2cd54ae9105077b9a78f11c13e0e24d3cb",
+      "exact_checks": 21,
+      "unresolved": [],
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 21
+    }
+  }
+}
