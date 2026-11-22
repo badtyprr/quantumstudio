@@ -9,7 +9,7 @@ struct EvaluationOptions;
 // The first argument of these operations names a coefficient or register family.
 inline bool quantumHasIndexedNameArgument(const std::string &name) {
  return name=="qstatecall" || name=="qstatecalls" || name=="qindexedcolumn" ||
-        name=="qonebasedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qsamplebitmatrix" ||
+        name=="qonebasedcolumn" || name=="qdescendingcolumn" || name=="qindexedmatrix" || name=="qdiagonalsum" || name=="qbounddiagonalsum" || name=="qboundindexedmatrix" || name=="qsamplebitmatrix" ||
         name=="qsampledotcolumn" || name=="qsamplewordrows" || name=="qindexedcoefficient" ||
         name=="qregisterfamily" || name=="qregisterword" || name=="qfamilymembers";
 }

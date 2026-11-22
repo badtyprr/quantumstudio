@@ -1169,6 +1169,41 @@ void bindStateEquationParameter(MathStructure &equation,const MathStructure &par
   equation.childrenUpdated();
  }
 }
+// Expose an implicit coefficient as a replaceable value. Coordinates stay
+// separate from values, so repeated substitutions never rewrite lookup keys.
+void prepareArrayEntry(MathStructure &term,const MathStructure &target) {
+ if(!target.isSymbolic() || target.symbol().find(',')==std::string::npos)return;
+ if(term.isFunction()) {
+  const auto &op=term.function()->referenceName();
+  const bool diagonal=op=="qdiagonalsum" || op=="qbounddiagonalsum";
+  const bool matrix=op=="qindexedmatrix" || op=="qboundindexedmatrix";
+  if((diagonal || matrix) && term.size()>0 && term[0].isSymbolic()) {
+   const std::string &prefix=term[0].symbol(),name=target.symbol();
+   if(name.compare(0,prefix.size(),prefix)!=0)return;
+   std::string coordinates=name.substr(prefix.size());size_t comma=coordinates.find(',');
+   if(comma==std::string::npos)return;
+   auto coordinate=[](const std::string &s) {
+    return !s.empty() && s.size()<=4 && s.find_first_not_of("0123456789")==std::string::npos &&
+           (s=="0" || s[0]!='0') && std::stoi(s)<=1023;
+   };
+   std::string row=coordinates.substr(0,comma),col=coordinates.substr(comma+1);
+   if(!coordinate(row) || !coordinate(col) || (diagonal && row!=col))return;
+   size_t slot=diagonal ? 3 : 5;
+   MathStructure history;history.clearVector();
+   if(term.size()==slot+1 && !tensorReplacementHistory(term[slot],history))return;
+   for(size_t i=0;i<history.size();i+=2)if(history[i].isSymbolic() && history[i].symbol()==coordinates)return;
+   if(history.size()>=4096){CALCULATOR->error(true,"An indexed array supports at most 2048 assigned coefficients.",NULL);return;}
+   history.addChild(MathStructure(coordinates,true));history.addChild(target);
+   if(term.size()==slot) {
+    term.setFunction(CALCULATOR->getFunction(diagonal ? "qbounddiagonalsum" : "qboundindexedmatrix"));
+    term.addChild(history);
+   } else term[slot]=history;
+   term.childrenUpdated();return;
+  }
+ }
+ for(size_t i=0;i<term.size();++i)prepareArrayEntry(term[i],target);
+ if(term.size())term.childrenUpdated();
+}
 // A free subscript in a single entry has a singleton index range. Prepare
 // the lookup only for an assignment to the selector or a concrete member.
 // This also retains assignments made before the selector is known.
@@ -2185,6 +2220,7 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     bindStateEquationParameter(out,at->first);
     prepareFreeEntry(out,at->first);
+    prepareArrayEntry(out,at->first);
     resolveIndexedLabels(out,eo,&at->first);
     // Replace existing occurrences before storing a new assignment: otherwise
     // x_0 -> x_0+1 would be applied twice inside the newly stored value.
@@ -2243,9 +2279,9 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
+  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qdiagonalsum" || op=="qbounddiagonalsum" || op=="qboundindexedmatrix") {
    const bool samples=op=="qsamplebitmatrix";
-   const bool matrix=samples || op=="qindexedmatrix";
+   const bool matrix=samples || op=="qindexedmatrix" || op=="qboundindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>=2 && prefix.size()<=128 && prefix.back()=='_';
@@ -2268,13 +2304,39 @@ class QuantumIndexedFunction: public MathFunction {
     }
     dimensions[axis]=last.number().intValue()+1-offset;
    }
+   std::map<std::string,MathStructure> assigned;
+   if(op=="qboundindexedmatrix" || op=="qbounddiagonalsum") {
+    MathStructure pairs;
+    if(!tensorReplacementHistory(raw[matrix ? 5 : 3],pairs)) {
+     CALCULATOR->error(true,"Invalid indexed coefficient assignments.",NULL);return 0;
+    }
+    for(size_t i=0;i<pairs.size();i+=2) {
+     if(!pairs[i].isSymbolic() || !assigned.emplace(pairs[i].symbol(),pairs[i+1]).second) {
+      CALCULATOR->error(true,"Expected unique indexed coefficient coordinates.",NULL);return 0;
+     }
+    }
+   }
+   auto coefficient=[&](const std::string &coordinates) {
+    auto entry=assigned.find(coordinates);
+    return entry!=assigned.end() ? entry->second : MathStructure(prefix+coordinates,true);
+   };
    if(deferred)return 0;
+   if(op=="qdiagonalsum" || op=="qbounddiagonalsum") {
+    out.clear();
+    for(int index=0;index<dimensions[0];++index) {
+     if(CALCULATOR->aborted())return 0;
+     std::string label=std::to_string(index);
+     out.add(coefficient(label+","+label));
+    }
+    return 1;
+   }
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
     int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row+(op=="qonebasedcolumn" ? 1 : 0);
     if(samples)element(out,row,col).set(prefix+std::to_string(row+1)+"_"+std::to_string(dimensions[1]-1-col),true);
-    else element(out,row,col).set(prefix+std::to_string(index)+(matrix ? ","+std::to_string(col) : ""),true);
+    else if(matrix)element(out,row,col)=coefficient(std::to_string(index)+","+std::to_string(col));
+    else element(out,row,col).set(prefix+std::to_string(index),true);
    }
    return 1;
   }
@@ -3244,6 +3306,9 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
  calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
+ calculator.addFunction(new QuantumIndexedFunction("qdiagonalsum",3));
+ calculator.addFunction(new QuantumIndexedFunction("qbounddiagonalsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qboundindexedmatrix",6));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qfamilymembers",4));

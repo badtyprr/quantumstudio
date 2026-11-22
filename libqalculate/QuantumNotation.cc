@@ -340,7 +340,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qphaseoracle",2},
  {"qphasefunction",3},
  {"qsequence",3},
- {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qonebasedcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qindexedcoefficient",3},
+ {"orthobasis",3},{"qorthoket",3},{"orthofamily",4},{"qorthofamilyket",4},{"qorthodelta",3},{"qorthoidentity",1},{"matrixassume",4},{"qgatematrixassume",4},{"qgateoperatorassume",4},{"matrixparam",3},{"qmatrix",3},{"qidentity",1},{"qimplicitidentity",0},{"qidentitylike",1},{"qmatrixdimensions",2},{"qindexedcolumn",3},{"qdescendingcolumn",3},{"qonebasedcolumn",3},{"qzerocolumnlike",2},{"qsamplewordrows",5},{"qsampledotcolumn",5},{"qsamplebitmatrix",5},{"qindexedmatrix",5},{"qdiagonalsum",3},{"qbounddiagonalsum",4},{"qboundindexedmatrix",6},{"qindexedcoefficient",3},
  {"qsumset",3},{"qmember",2},{"qbars",1},
  {"qbitstrings",1},{"qbitlabel",2},
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
