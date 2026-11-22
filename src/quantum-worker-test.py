@@ -79,6 +79,20 @@ run(f'quantum:replace(({phase}),"a",qbitlabel(1,2))', "--json", success=False)
 assert data("quantum:$2^ a (3)$")["copy_text"] == data("quantum:$3 \\cdot 2^{a}$")["copy_text"]
 assert data("quantum:$2^{a(3)}$")["copy_text"] != data("quantum:$2^a(3)$")["copy_text"]
 
+# Descending words retain the place values and the explicitly printed bits.
+word_range = data(r"quantum:bitword:$x_{n-1}\ldots x_1 x_0$")["copy_text"]
+assert data("quantum:" + word_range)["copy_text"] == word_range
+word_input = f"replace(({word_range}),n,3)"
+for index, bit in [(2, 0), (0, 1), (1, 0)]:
+    word_input = f'replace(({word_input}),"x_{index}",{bit})'
+assert data("quantum:" + word_input)["copy_text"] == "qbitlabel(1,3)"
+run(f"quantum:replace(({word_range}),n,1)", "--json", success=False)
+run(r"quantum:bitword:$x_4\cdots x_2 x_0$", "--json", success=False)
+run(r"quantum:bitword:$x_4\cdots y_0$", "--json", success=False)
+range_query = data(r"quantum:oracles:$f(x_{1}\cdots x_0)=1$")["copy_text"]
+range_query = f'replace(replace(({range_query}),"x_0",1),"x_1",0)'
+assert data(f'quantum:replace(({range_query}),"f",qset(vector(qtuple(vector(qbitlabel(1,2),1)))) )')["copy_text"] == "1"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
