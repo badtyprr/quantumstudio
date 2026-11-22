@@ -45,8 +45,17 @@ def replay_lesson(description, inventory_name, total, mode, cases):
     checks = list(cases())
 
     def check(case):
-        i, bindings, expected = case
-        expr = copies[i]
+        occurrence, bindings, expected = case
+        if isinstance(occurrence, tuple):
+            i, line = occurrence
+            expr = copies[i]
+            begin, end = r"\begin{gathered}", r"\end{gathered}"
+            if not (expr.startswith(begin) and expr.endswith(end)):
+                raise ValueError(f"M{i:03} lost its equation group")
+            expr = expr[len(begin):-len(end)].split(r"\\")[line]
+        else:
+            i = occurrence
+            expr = copies[i]
         for key,value in bindings:
             expr = f"replace(({expr}),{key},{value})"
         actual = evaluate(expr)

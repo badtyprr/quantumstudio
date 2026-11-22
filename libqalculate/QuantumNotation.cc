@@ -1996,8 +1996,7 @@ class Parser {
     const bool protectPrefixes=compact || scalarProductDepth;
     if(compact)++scalarProductDepth;
     if(!take(')')) {
-     args.push_back(expression());
-     while(take(',')) {
+     do {
       ws();
       if(name=="qmatrix" && args.size()==2 && p<s.size() && s[p]=='[' && !parsingMatrixEntries)nextMatrixEntries=true;
       // Match a formal cost or parameter using the same spelling as the
@@ -2005,8 +2004,13 @@ class Parser {
       costContext=costScope || (name=="replace" && args.size()==1 &&
        (args[0].find("qbigorder(")!=std::string::npos || args[0].find("qcostcall(")!=std::string::npos ||
         args[0].find("qcostparam(")!=std::string::npos));
-      args.push_back(expression());
-     }
+      size_t start=p;
+      std::string argument=expression();
+      // A bare S used as a set binding matches the label in |S>.
+      if(setNotation && (name=="replace" || name=="qreplace") && groupedToken(s,start,p,"S"))
+       argument=indexableLabel("S");
+      args.push_back(argument);
+     } while(take(','));
      need(')');
     }
     costContext=previousCostContext;
