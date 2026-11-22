@@ -1274,7 +1274,7 @@ class Parser {
         while(next<s.size() && level) {if(s[next]=='(')++level;else if(s[next]==')')--level;++next;}
        } else while(next<s.size() && (std::isalnum((unsigned char)s[next]) || (unsigned char)s[next]>=128))++next;
       }
-      next=s.find_first_not_of(" \t\r\n*",next);
+      next=s.find_first_not_of(" \t\r\n*(",next);
       nextSummand=next!=std::string::npos && s[next]=='<';
      }
     }

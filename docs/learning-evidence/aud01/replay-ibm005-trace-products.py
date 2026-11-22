@@ -42,15 +42,21 @@ def source_at(start):
 # Off-diagonal entries distinguish extracting blocks from summing the wrong rows.
 # Density matrix of the normalized pure state (1, 2, 3, 4) / sqrt(30).
 matrix = "([1,2,3,4;2,4,6,8;3,6,9,12;4,8,12,16]/30)"
-for start, identity, domain, expected in [(12921, "I_A", "Γ", "matrix(2,2,[1 ∕ 6,11 ∕ 30,11 ∕ 30,5 ∕ 6])"),
-                                          (13259, "I_B", "Σ", "matrix(2,2,[1 ∕ 3,7 ∕ 15,7 ∕ 15,2 ∕ 3])")]:
-    text = source_at(start)
-    left, right = text.strip().removeprefix("$$").removesuffix("$$").strip().removesuffix(".").split("=")
-    mapped = f"subsystems({matrix},[A,B],[2,2])"
-    verify(f"replace(({left}),ρ,{mapped})", expected)
-    for product in (right, copied(right)):
-        bound = f'replace(replace(replace(({product}),ρ,{matrix}),"{identity}",I),{domain},qset(vector(0,1)))'
-        verify(bound, expected)
+aligned_two = source_at(13816).split(r"\begin{aligned}")[1].split(r"\end{aligned}")[0].split(r"\\[2mm]")
+if len(aligned_two) != 2:
+    raise ValueError("Expected two named marginals in the two-register derivation")
+for idx, (start, identity, domain, expected) in enumerate([
+        (12921, "I_A", "Γ", "matrix(2,2,[1 ∕ 6,11 ∕ 30,11 ∕ 30,5 ∕ 6])"),
+        (13259, "I_B", "Σ", "matrix(2,2,[1 ∕ 3,7 ∕ 15,7 ∕ 15,2 ∕ 3])")]):
+    definition = source_at(start).strip().removeprefix("$$").removesuffix("$$").strip().removesuffix(".")
+    name, trace, contraction = aligned_two[idx].split("=")
+    verify(f'replace(({name.replace("&", "")}),"ρ_{identity[-1]}",{expected})', expected)
+    for left, right in (definition.split("="), (trace, contraction)):
+        mapped = f"subsystems({matrix},[A,B],[2,2])"
+        verify(f"replace(({left}),ρ,{mapped})", expected)
+        for product in (right, copied(right)):
+            bound = f'replace(replace(replace(({product}),ρ,{matrix}),"{identity}",I),{domain},qset(vector(0,1)))'
+            verify(bound, expected)
 
 # The pure state with amplitudes (1,...,8) / sqrt(204) has coherences across
 # all three registers. Compute each retained entry by summing matching axes.
