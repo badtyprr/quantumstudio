@@ -27,6 +27,7 @@ int main(){try {
  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
  for(const auto &expression:{
    "qtracenorm([0,0;0,0])=0",
+   "qtracenorm([1,i;2,0])=sqrt(10)",
    "qtracenorm([1,i;0,1])=sqrt(5)",
    "qschatten([1,i;i,-1],1)=2",
    "qrootfidelity([3,sqrt(3);sqrt(3),1],[1,0;0,0])^2=3/4",

@@ -71,7 +71,7 @@
       "label": "remote outcome probability",
       "numerical_adaptation": true,
       "negative_control": false,
-      "equation": "Tr((tensor(I,density(|1>)))*(density((|00>+|11>)/sqrt(2))))=1/2",
+      "equation": "Tr((tensor(density(|1>),I))*(density((|00>+|11>)/sqrt(2))))=1/2",
       "expected": "1"
     },
     {
@@ -79,7 +79,7 @@
       "label": "remote state after outcome one",
       "numerical_adaptation": true,
       "negative_control": false,
-      "equation": "2*ptrace(tensor(I,density(|1>))*density((|00>+|11>)/sqrt(2)),[1])=density(|1>)",
+      "equation": "2*ptrace(tensor(density(|1>),I)*density((|00>+|11>)/sqrt(2)),[0])=density(|1>)",
       "expected": "1"
     },
     {
@@ -87,8 +87,16 @@
       "label": "wrong conditional state",
       "numerical_adaptation": true,
       "negative_control": true,
-      "equation": "2*ptrace(tensor(I,density(|1>))*density((|00>+|11>)/sqrt(2)),[1])=density(|0>)",
+      "equation": "2*ptrace(tensor(density(|1>),I)*density((|00>+|11>)/sqrt(2)),[0])=density(|0>)",
       "expected": "0"
+    },
+    {
+      "page": 13,
+      "label": "first-register outcome leaves the second register in zero",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(tensor(density(|1>),I)*density(|10>),[0])=density(|0>)",
+      "expected": "1"
     },
     {
       "page": 17,
@@ -187,7 +195,7 @@
     "release": {
       "revision": "c5a456cd",
       "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
-      "exact_checks": 18,
+      "exact_checks": 19,
       "unresolved": [
         {
           "label": "Helstrom orthogonal states",
@@ -200,16 +208,16 @@
           "exact": false
         }
       ],
-      "windows_evaluations": 20,
-      "stable_copy_and_reentry": 18
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 19
     },
     "candidate": {
       "revision": "92dd134b",
       "worker_sha256": "e71b99c195496687eaed8c055282af15769bd6de71b34bcab3245a924eb3a512",
-      "exact_checks": 20,
+      "exact_checks": 21,
       "unresolved": [],
-      "windows_evaluations": 20,
-      "stable_copy_and_reentry": 20
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 21
     }
   }
 }
