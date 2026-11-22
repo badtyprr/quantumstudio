@@ -434,6 +434,7 @@ class Parser {
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
+ size_t lastKetEnd=std::string::npos;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
  unsigned literalEntryNodes=0;
@@ -1180,6 +1181,7 @@ class Parser {
    }
   }
   else if(take('<')) {
+   bool followsKet=lastKetEnd<=p-1 && s.find_first_not_of(" \t\r\n)*",lastKetEnd)==p-1;
    bool vectorized=take('<');
    size_t b=p; p=labelEnd('|',p); if(p==std::string::npos) throw std::runtime_error("Unclosed bra.");
    std::string left=s.substr(b,p-b); ++p; std::string dimension=vectorized ? "" : dimensionSuffix(); bool compact=false;
@@ -1258,7 +1260,25 @@ class Parser {
     // operator between this bra and that ket; leave it to product/additive.
     bool unfinishedOperator=!body.empty() && std::string("+-*/@#^").find(body.back())!=std::string::npos;
     if(body.size()>=2 && body.compare(body.size()-2,2,"^*")==0)unfinishedOperator=false; // Conjugation is postfix.
-    if(!body.empty() && !unfinishedOperator && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
+    // After a dyad, a leading additive sign starts the next summand.
+    // In a standalone matrix element it may instead sign the operator.
+    bool nextSummand=false;
+    if(followsKet && !body.empty() && (body.front()=='+' || body.front()=='-')) {
+     size_t end=labelEnd('>',closing+1);
+     if(end!=std::string::npos) {
+      size_t next=s.find_first_not_of(" \t\r\n",end+1);
+      if(next!=std::string::npos && s[next]=='_') {
+       ++next;
+       if(next<s.size() && s[next]=='(') {
+        size_t level=1;++next;
+        while(next<s.size() && level) {if(s[next]=='(')++level;else if(s[next]==')')--level;++next;}
+       } else while(next<s.size() && (std::isalnum((unsigned char)s[next]) || (unsigned char)s[next]>=128))++next;
+      }
+      next=s.find_first_not_of(" \t\r\n*(",next);
+      nextSummand=next!=std::string::npos && s[next]=='<';
+     }
+    }
+    if(!body.empty() && !nextSummand && !unfinishedOperator && body!="+" && body!="-" && std::string("*/@#~`?^").find(body[0])==std::string::npos) {
      // Use this parser (and its shared nesting/node budget), with a temporary
      // terminator, instead of recursively creating an unrestricted parser.
      s[closing]=')';std::string op=expression();
@@ -2026,6 +2046,7 @@ class Parser {
    else if(take('?')) a="qconj("+a+")";
    else break;
   }
+  if(kind==1)lastKetEnd=p;
   --depth;diracKind=kind;checkSize(a);return a;
  }
  // Inspect the original base so a matrix equal to S keeps its matrix meaning.
