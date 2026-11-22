@@ -32,7 +32,10 @@ def verify(source):
     expected = (math.sqrt(0.5), 0, 0, math.sqrt(0.5))
     if len(vector) != 4:
         raise AssertionError("Expected a two-qubit state")
-    residual = float(max(abs(value - target) for value, target in zip(vector, expected)))
+    errors = [float(abs(value - target)) for value, target in zip(vector, expected)]
+    if not all(math.isfinite(error) for error in errors):
+        raise AssertionError("Expected finite Bell-state amplitudes")
+    residual = max(errors)
     if not residual <= 1e-12:
         raise AssertionError(residual)
     return dict(accepted=True, original_diagnostic=diagnostic, corrected_header="OPENQASM 3.0;",

@@ -79,7 +79,7 @@
   "acceptance_field": "accepted",
   "witness": {
     "path": "witnesses/provider_qasm.py",
-    "sha256": "0b00589dda5693c0184375f0637b4dc5addcf5de410c1543f892766b0989311e",
+    "sha256": "cbb2879182317ffa04b347105b2c6f99b228d0ee7f9123f1a44ed78633c229de",
     "hash_encoding": "UTF-8 with LF; authored witness only"
   },
   "output_artifacts": [],
