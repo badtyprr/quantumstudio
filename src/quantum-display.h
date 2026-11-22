@@ -429,6 +429,17 @@ class Printer {
    return Fragment(render(value[0],depth+1).text+" ∈ indexrange("+render(value[1][0],depth+1).text+", "+render(value[1][1],depth+1).text+")",10);
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if(name=="qcartesian" && value.size()==2)
+   return Fragment("("+render(value[0],depth+1).text+" × "+render(value[1],depth+1).text+")");
+  if(name=="qcartesianseries" && value.size()==2 && value[0].isFunction() &&
+     value[0].function()->referenceName()=="qindexedentries" && value[0].size()==4 &&
+     value[0][0].isSymbolic() && value[0][3].isVector() && !value[0][3].size()) {
+   const auto &family=value[0];
+   const std::string prefix=family[0].symbol();
+   bool reverse=value[1].isOne();
+   return Fragment("("+prefix+"{"+render(family[reverse ? 2 : 1],depth+1).text+"} × ⋯ × "+
+                        prefix+"{"+render(family[reverse ? 1 : 2],depth+1).text+"})");
+  }
   if((name=="qjointprob" || name=="qconditionalprob") && value.size()==3 && value[0].isSymbolic()) {
    const std::string &systems=value[0].symbol();
    size_t comma=systems.find(',');

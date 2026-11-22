@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# The first coordinate belongs to the first printed alphabet, including
+# when indices count down. Set literals can be supplied before the width.
+alphabets = data(r"quantum:$\Sigma_{n-1}\times\cdots\times\Sigma_0$")["copy_text"]
+assert data("quantum:"+alphabets)["copy_text"] == alphabets
+pairs = f'quantum:replace(replace(replace(({alphabets}),"Σ_0",qset(vector(2,3))),"Σ_1",qset(vector(7))),n,2)'
+assert data(pairs)["copy_text"] == "qset(vector(qtuple(vector(7,2)),qtuple(vector(7,3))))"
+member = data(r"quantum:$(a,b)\in\Sigma\times\Gamma$")["copy_text"]
+assert data(f'quantum:replace(replace(replace(replace(({member}),"Σ",qset(vector(3))),"Γ",qset(vector(9))),"a",3),"b",9)')["copy_text"] == "1"
+assert data("quantum:qcartesianseries(vector(qset(vector(1)),qset(vector())),1)")["copy_text"] == "qset(vector())"
+assert b"32 tuple coordinates" in run("quantum:qcartesianseries(qindexedentries('A_',0,32,vector()),1)","--json",success=False).stderr
+
 # Joint events keep the system order. Conditional probabilities divide by
 # the marginal of the system after the bar, including on rectangular tables.
 event = data(r"quantum:$\operatorname{Pr}(\mathsf{Y}=b\mid\mathsf{X}=a)$")

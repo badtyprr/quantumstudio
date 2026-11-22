@@ -1618,6 +1618,16 @@ class TeXReader {
    std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
    if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
+   // Comprehension of an ordered pair with independent domain clauses.
+   // Keep the two domains in the order of the coordinates in the image.
+   static const std::regex independent(R"(^\s*(Σ|Γ|[A-Za-z]+)\s+(?:and|&&)\s+([a-z])\s*∈\s*(Σ|Γ|[A-Za-z]+)\s*$)");
+   std::smatch pair;
+   if(std::regex_match(collection,pair,independent) && index!=pair[2].str()) {
+    std::string compact=body;compact.erase(std::remove_if(compact.begin(),compact.end(),asciiSpace),compact.end());
+    const std::string a=pair[1],b=pair[3],other=pair[2];
+    if(compact=="("+index+","+other+")")return "qcartesian("+a+","+b+")";
+    if(compact=="("+other+","+index+")")return "qcartesian("+b+","+a+")";
+   }
    auto domains=indexedParts(collection,",");
    if(domains.size()==2) {
     size_t second=domains[1].find("∈");
@@ -3263,6 +3273,36 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    decimal=decimal || m[2].str().find_first_of("23456789")!=std::string::npos || m[3].str().find_first_of("23456789")!=std::string::npos;
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
+ }
+ // In an alphabet domain the cross denotes an ordered Cartesian product.
+ // Preserve the printed direction so the first alphabet supplies the
+ // first tuple coordinate even when the register indices count down.
+ if(s.find("\\times")!=std::string::npos && (s.find("\\Sigma")!=std::string::npos || s.find("\\Gamma")!=std::string::npos)) {
+  auto alphabet=[](const std::string &name){return name=="Sigma" ? "Σ" : "Γ";};
+  static const std::regex indexed(R"(\\(Sigma|Gamma)_\{([a-z])-1\}\s*\\times\s*\\(?:cdots|ldots)\s*\\times\s*\\\1_0\b)");
+  std::smatch m;
+  if(std::regex_search(s,m,indexed)) {
+   std::string n=m[2],prefix=alphabet(m[1]);
+   if(std::string("nxyz").find(n)==std::string::npos)n="\""+n+"\"";
+   s.replace(m.position(),m.length()," qcartesianseries(qindexedentries(\""+prefix+"_\",0,"+n+"-1,vector()),1)");
+  }
+  // A pair-membership statement or an explicit set builder supplies the
+  // domain context for a binary product with adjacent alphabet names.
+  if(sets || s.find("\\in")!=std::string::npos || s.find("\\notin")!=std::string::npos) {
+   static const std::regex binary(R"(\\(Sigma|Gamma)\s*\\times\s*\\(Sigma|Gamma)\b(?!_))");
+   size_t start=0;
+   while(std::regex_search(s.cbegin()+start,s.cend(),m,binary)) {
+    const size_t at=start+m.position();
+    const std::string before=trim(s.substr(0,at)),after=trim(s.substr(at+m.length()));
+    const bool domain=(before.size()>=3 && before.compare(before.size()-3,3,"\\in")==0) ||
+                      (before.size()>=6 && before.compare(before.size()-6,6,"\\notin")==0);
+    const bool definition=before.empty() && !after.empty() && after.front()=='=' && after.find("\\{")!=std::string::npos;
+    if(sets || domain || definition) {
+     std::string product=" qcartesian(\""+std::string(alphabet(m[1]))+"\",\""+alphabet(m[2])+"\")";
+     s.replace(at,m.length(),product);start=at+product.size();
+    } else start=at+m.length();
+   }
+  }
  }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {

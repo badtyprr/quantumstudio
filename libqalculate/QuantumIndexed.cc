@@ -206,7 +206,7 @@ bool unitModulus(const MathStructure &predicate,const MathStructure &index) {
 bool domainExpression(const MathStructure &value) {
  if(!value.isFunction())return false;
  const std::string &name=value.function()->referenceName();
- return quantumComplexDomain(value) || name=="qregistermultipliergraph" || name=="qindexedset" || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
+ return quantumComplexDomain(value) || name=="qregistermultipliergraph" || name=="qindexedset" || name=="qset" || name=="qbasisketset" || name=="qindexedketset" || name=="qfunctionrange" || name=="qpreimage" || name=="qbitstrings" || name=="qresidues" || name=="qunitsmod" || name=="qrecoverphase" || name=="qindexrange" || name=="qindexedfamily" || name=="qcartesian" || name=="qcartesianseries" || name=="qcartesianpower" || name=="qwordpower" || name=="qsetimage" || name=="qsetfilter" || name=="qsetunion" || name=="qsetintersect" || name=="qsetdiff";
 }
 bool collectionExpression(const MathStructure &value) {
  if(value.isVector() || domainExpression(value))return true;
@@ -277,6 +277,28 @@ DomainState finiteDomain(const MathStructure &raw,MathStructure &members,const E
  bool pending=false;
  if(!normalizeSetEntries(members,eo,pending,explicitSet))return DomainState::Invalid;
  return pending ? DomainState::Pending : DomainState::Finite;
+}
+int cartesianTuples(MathStructure &out,const std::vector<const MathStructure*> &domains) {
+ MathStructure tuples;tuples.clearVector();MathStructure empty;empty.clearVector();
+ MathStructure initial(CALCULATOR->getFunction("qtuple"),&empty,NULL);tuples.addChild(initial);
+ for(const auto *domain:domains)if(!domain->size()) {
+  out.set(CALCULATOR->getFunction("qset"),&empty,NULL);return 1;
+ }
+ for(const auto *domain:domains) {
+  const MathStructure &factor=*domain;
+  if(factor.size() && tuples.size()>1024/factor.size()) {
+   for(const auto *d:domains)if(unresolvedSetEquality(*d))return 0;
+   CALCULATOR->error(true,"Cartesian materialization supports at most 1024 tuples.",NULL);return 0;
+  }
+  MathStructure next;next.clearVector();
+  for(size_t a=0;a<tuples.size();++a)for(size_t b=0;b<factor.size();++b) {
+   if(CALCULATOR->aborted())return 0;
+   MathStructure fields=tuples[a][0];fields.addChild(factor[b]);
+   MathStructure tuple(CALCULATOR->getFunction("qtuple"),&fields,NULL);next.addChild(tuple);
+  }
+  tuples=next;
+ }
+ out.set(CALCULATOR->getFunction("qset"),&tuples,NULL);return 1;
 }
 // A register family retains bit assignments made before its width is known.
 // The flat binding list contains alternating numeric indices and bit values.
@@ -1998,23 +2020,30 @@ class QuantumIndexedFunction: public MathFunction {
    if(first==DomainState::Invalid || second==DomainState::Invalid) {CALCULATOR->error(true,"Cartesian factors must be finite sets of at most 1024 valid entries.",NULL);return 0;}
    if(pendingCount || first==DomainState::Pending || second==DomainState::Pending)return 0;
    int repetitions=op=="qcartesianpower" ? count.number().intValue() : 2;
-   MathStructure tuples;tuples.clearVector();MathStructure empty;empty.clearVector();
-   MathStructure initial(CALCULATOR->getFunction("qtuple"),&empty,NULL);tuples.addChild(initial);
-   for(int axis=0;axis<repetitions;++axis) {
-    const MathStructure &factor=op=="qcartesian" && axis==1 ? right : left;
-    if(factor.size() && tuples.size()>1024/factor.size()) {
-     if(unresolvedSetEquality(left) || (op=="qcartesian" && unresolvedSetEquality(right)))return 0;
-     CALCULATOR->error(true,"Cartesian materialization supports at most 1024 tuples.",NULL);return 0;
-    }
-    MathStructure next;next.clearVector();
-    for(size_t a=0;a<tuples.size();++a)for(size_t b=0;b<factor.size();++b) {
-     if(CALCULATOR->aborted())return 0;
-     MathStructure fields=tuples[a][0];fields.addChild(factor[b]);
-     MathStructure tuple(CALCULATOR->getFunction("qtuple"),&fields,NULL);next.addChild(tuple);
-    }
-    tuples=next;
+   std::vector<const MathStructure*> domains(repetitions,&left);
+   if(op=="qcartesian")domains[1]=&right;
+   return cartesianTuples(out,domains);
+  }
+  if(op=="qcartesianseries") {
+   MathStructure factors;
+   if(indexedSpectralFamily(raw[0])) {
+    if(!indexedEntries(factors,raw[0],eo))return 0;
+   } else {
+    factors=raw[0];factors.eval(eo);
+    if(!factors.isVector())return 0;
    }
-   out.set(CALCULATOR->getFunction("qset"),&tuples,NULL);return 1;
+   if(factors.size()>32) {CALCULATOR->error(true,"Cartesian products support at most 32 tuple coordinates.",NULL);return 0;}
+   if(!raw[1].isZero() && !raw[1].isOne()) {CALCULATOR->error(true,"Cartesian index order must be zero or one.",NULL);return 0;}
+   std::vector<MathStructure> sets(factors.size());
+   std::vector<const MathStructure*> domains;
+   for(size_t k=0;k<factors.size();++k) {
+    const size_t axis=raw[1].isOne() ? factors.size()-1-k : k;
+    const DomainState state=finiteDomain(factors[axis],sets[k],eo);
+    if(state==DomainState::Invalid) {CALCULATOR->error(true,"Cartesian factors must be finite sets of at most 1024 valid entries.",NULL);return 0;}
+    if(state==DomainState::Pending)return 0;
+    domains.push_back(&sets[k]);
+   }
+   return cartesianTuples(out,domains);
   }
   if(op=="qsetimage" || op=="qsetfilter") {
    if((!raw[2].isSymbolic() && !raw[2].isVariable()) || (raw[2].isVariable() && raw[2].variable()->isKnown())) {
@@ -3168,6 +3197,8 @@ class QuantumIndexedFunction: public MathFunction {
        ((probe.function()->referenceName()=="qnamedapplication" && probe[0].isUnknown()) ||
         (probe.function()->referenceName()=="qgraphapply" && pendingQuantumGraphLookup(probe[0],probe[1],exact))))
      deferredLabels=true;
+    else if(probe.isFunction() && (probe.function()->referenceName()=="qindexedlist" ||
+            probe.function()->referenceName()=="qreverseindexedlist"))deferredLabels=true;
     else if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
    }
    // Validate the probe even when its domain is not yet specified.
@@ -3569,6 +3600,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qdomainvector",1));
  calculator.addFunction(new QuantumIndexedFunction("qdomainresult",2));
  calculator.addFunction(new QuantumIndexedFunction("qcartesian",2));
+ calculator.addFunction(new QuantumIndexedFunction("qcartesianseries",2));
  calculator.addFunction(new QuantumIndexedFunction("qcartesianpower",2));
  calculator.addFunction(new QuantumIndexedFunction("qsetimage",3));
  calculator.addFunction(new QuantumIndexedFunction("qsetfilter",3));
