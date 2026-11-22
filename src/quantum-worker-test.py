@@ -236,11 +236,21 @@ for angle in (r"\pi=180^{\circ}", r"2\pi=360^\circ", r"\cos(60^{\circ})=1/2",
 assert data(r"quantum:\pi=90^{\circ}")["copy_text"] == "0"
 
 matrix_unit = r"\vert 0\rangle\langle 1\vert"
-for channel_tex, name in [(r"\Delta", "Δ"), (r"\Lambda", "Λ"), (r"\Phi", "Φ"), (r"\Delta_{m}", "Δ_m")]:
+for channel_tex, name in [(r"\Delta", "Δ"), (r"\Lambda", "Λ"), (r"\Phi", "Φ"), (r"\Delta_{3}", "Δ_3")]:
     action = data("quantum:" + channel_tex + r"\bigl(" + matrix_unit + r"\bigr)")["copy_text"]
     assert data(f'quantum:replace(({action}),"{name}",vector(X))=[0,0;1,0]')["copy_text"] == "1"
     choi = data(f"quantum:J({channel_tex})")["copy_text"]
     assert data(f'quantum:replace(({choi}),"{name}",vector([1,0]))=[1,0;0,0]')["copy_text"] == "1"
+
+dimensioned = data(r"quantum:\Phi(\vert 2\rangle_{3}\langle 0\vert_{3})")["copy_text"]
+assert data(f'quantum:replace(({dimensioned}),"Φ",vector(identity(3)))=[0,0,0;0,0,0;1,0,0]')["copy_text"] == "1"
+summed = data(r"quantum:\sum_{a=0}^{1}\Phi_a(\vert a\rangle\langle a\vert)")["copy_text"]
+assert data(f'quantum:replace(replace(({summed}),"Φ_0",vector(I)),"Φ_1",vector(X))=[2,0;0,0]')["copy_text"] == "1"
+symbolic_unit = data(r"quantum:\Phi(\vert a\rangle\langle b\vert)")["copy_text"]
+for assigned in (f'replace(replace(replace(({symbolic_unit}),"a",0),"b",1),"Φ",vector(X))',
+                 f'replace(replace(replace(({symbolic_unit}),"Φ",vector(X)),"a",0),"b",1)'):
+    assert data(f"quantum:({assigned})=[0,0;1,0]")["copy_text"] == "1"
+assert data(r"quantum:J(\Lambda)J(\Delta)")["copy_text"] == data(r"quantum:J(\Lambda) J(\Delta)")["copy_text"]
 
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):

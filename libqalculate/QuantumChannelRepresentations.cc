@@ -33,7 +33,7 @@ class QuantumChannelRepresentationFunction: public MathFunction {
  ExpressionItem *copy() const {return new QuantumChannelRepresentationFunction(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure a=raw[0];a.eval(eo);
-  if(op=="qchoi" && a.isSymbolic())return 0;
+  if(op=="qchoi" && (a.isSymbolic() || (a.isFunction() && a.function()->referenceName()=="qindexedlabel")))return 0;
   if(op=="qsuperop" || op=="qchoi" || op=="qptm" || op=="qchi") {
    if(!CALCULATOR->getFunction("conj")) { CALCULATOR->error(true,"Load global functions before converting a quantum channel.",NULL); return 0; }
    if(!a.isVector() || a.size()==0 || a.size()>256) { CALCULATOR->error(true,"Channel conversion requires a list of 1 to 256 Kraus matrices; use vector(K0,K1,...).",NULL); return 0; }

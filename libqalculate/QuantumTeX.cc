@@ -3753,32 +3753,31 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   marked.append(s,start,std::string::npos);s=marked;
  }
- // J takes the same named Kraus family as its matrix-unit action.
- if(s.find("J(")!=std::string::npos) {
-  static const std::regex choiName(R"((^|[^A-Za-z0-9_\\])J\(\s*\\(Lambda|Delta|Phi|Omega)(?:_(?:([A-Za-z0-9])|\{([A-Za-z0-9])\}))?\s*\))");
-  std::string converted;size_t start=0;
-  for(std::sregex_iterator it(s.begin(),s.end(),choiName),end;it!=end;++it) {
-   const auto &call=*it;std::string name=trim(nestedTeX("\\"+call[2].str()));
-   if(call[3].matched || call[4].matched)name+="_"+call[3].str()+call[4].str();
-   converted.append(s,start,call.position()-start);
-   converted+=call[1].str()+"qchoi(\""+name+"\")";start=call.position()+call.length();
+ // Matrix-unit actions and Choi matrices use the same family name. Keep
+ // symbolic subscripts as expressions so surrounding sums can bind them.
+ if(s.find("\\Lambda")!=std::string::npos || s.find("\\Delta")!=std::string::npos ||
+    s.find("\\Phi")!=std::string::npos || s.find("\\Omega")!=std::string::npos) {
+  static const std::string family=R"(\\(Lambda|Delta|Phi|Omega)(?:_(?:([A-Za-z0-9])|\{([A-Za-z0-9]+)\}))?)";
+  static const std::string open=R"(\s*(?:\\(?:left|bigl|Bigl)\s*)?\(\s*)";
+  static const std::string close=R"(\s*(?:\\(?:right|bigr|Bigr)\s*)?\))";
+  static const std::string dimension=R"((?:\s*_\s*(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]))?)";
+  static const std::regex choi("J"+open+family+close);
+  static const std::regex action(family+open+R"(((?:\\(?:l?vert)(?![A-Za-z])|\|)\s*[A-Za-z0-9]+\s*\\rangle)"+
+   dimension+R"(\s*\\langle(?![A-Za-z])\s*[A-Za-z0-9]+\s*(?:\\(?:r?vert)(?![A-Za-z])|\|))"+dimension+")"+close);
+  for(bool isChoi:{false,true}) {
+   std::string converted;size_t start=0;
+   for(std::sregex_iterator it(s.begin(),s.end(),isChoi ? choi : action),end;it!=end;++it) {
+    const auto &call=*it;size_t pos=call.position();
+    if(isChoi && pos && (std::isalnum((unsigned char)s[pos-1]) || s[pos-1]=='_' || s[pos-1]=='\\'))continue;
+    std::string name=trim(nestedTeX("\\"+call[1].str()));
+    std::string index=call[2].str()+call[3].str();
+    std::string ref=index.empty() ? "\""+name+"\"" : "qindexedlabel(\""+name+"_\",("+index+"),\"\")";
+    converted.append(s,start,pos-start);
+    converted+=isChoi ? "qchoi("+ref+")" : "qkrausapply("+ref+","+call[4].str()+")";
+    start=pos+call.length();
+   }
+   if(start){converted.append(s,start,std::string::npos);s=converted;}
   }
-  if(start){converted.append(s,start,std::string::npos);s=converted;}
- }
- // Preserve application of a named channel to a basis matrix unit. The
- // two labels stay inside the call so surrounding sums can bind their indices.
- if(s.find("\\rangle")!=std::string::npos && s.find("\\langle")!=std::string::npos) {
-  static const std::regex matrixUnitCall(R"(\\(Lambda|Delta|Phi|Omega)(?:_(?:([A-Za-z0-9])|\{([A-Za-z0-9])\}))?\s*(?:\\(?:left|bigl|Bigl)\s*)?\(\s*((?:\\(?:l?vert)(?![A-Za-z])|\|)\s*[A-Za-z0-9]+\s*\\rangle\s*\\langle(?![A-Za-z])\s*[A-Za-z0-9]+\s*(?:\\(?:r?vert)(?![A-Za-z])|\|))\s*(?:\\(?:right|bigr|Bigr)\s*)?\))");
-  std::string converted;size_t start=0;
-  for(std::sregex_iterator it(s.begin(),s.end(),matrixUnitCall),end;it!=end;++it) {
-   const auto &call=*it;
-   std::string name=trim(nestedTeX("\\"+call[1].str()));
-   if(call[2].matched || call[3].matched)name+="_"+call[2].str()+call[3].str();
-   converted.append(s,start,call.position()-start);
-   converted+="qkrausapply(\""+name+"\","+call[4].str()+")";
-   start=call.position()+call.length();
-  }
-  if(start) {converted.append(s,start,std::string::npos);s=converted;}
  }
  // A channel defined by a Kraus sum acts on the entire density operator.
  if(s.find("\\Phi")!=std::string::npos && s.find("\\sum")!=std::string::npos) {
