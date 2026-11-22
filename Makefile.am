@@ -710,6 +710,7 @@ EXTRA_DIST += docs/learning-evidence/aud01/learning_clipboard_checks.py docs/lea
 EXTRA_DIST += docs/learning-evidence/aud01/ibm037-038-probability-windows.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-quantified-dot.json docs/learning-evidence/aud01/replay-ibm020-quantified-dot.py
 EXTRA_DIST += docs/learning-evidence/dev13/deutsch-notebook-revisions.json
+EXTRA_DIST += docs/learning-evidence/dev13/deutsch-linux-runs.json
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb036.json windows/dev13-notebooks/contracts/qb038.json windows/dev13-notebooks/witnesses/qb_ghz.py
 EXTRA_DIST += windows/dev13-notebooks/test_qb_ghz.py docs/learning-evidence/dev13/qb036-qb038-ghz-routes.json
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb026.json windows/dev13-notebooks/witnesses/qb026.py windows/dev13-notebooks/fixtures/qb026/quobly_ghz_bench.json
