@@ -758,3 +758,4 @@ PY_LOG_COMPILER = python3 -B
 TESTS = windows/dev15-provider/test_offline_adapter.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb028-qb029-header-controls.json
 EXTRA_DIST += windows/dev13-notebooks/test_provider_qasm.py
+EXTRA_DIST += docs/learning-evidence/aud01/ibm003-indexed-diagonal.json

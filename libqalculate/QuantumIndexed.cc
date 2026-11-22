@@ -1279,12 +1279,45 @@ bool measurementBlockSum(MathStructure &out,const MathStructure &sum) {
  out.set(CALCULATOR->getFunction("qmeasurementblocks"),&family,&factors[1],NULL);
  return true;
 }
-void prepareMeasurementBlockSums(MathStructure &value) {
+// The generic zero-based finite sum infers a computational basis of
+// last+1 states. Retain coefficient assignments while its upper bound is free.
+bool indexedDiagonalSum(MathStructure &out,const MathStructure &sum,const MathStructure &diagonal) {
+ auto call=[](const MathStructure &v,const char *name,size_t count) {
+  return v.isFunction() && v.function()->referenceName()==name && v.size()==count;
+ };
+ const MathStructure &term=sum[0];
+ if(!sum[1].isZero() || !call(term,"qadjacent",2) || !call(term[0],"qadjacent",2))return false;
+ const MathStructure &label=term[0][0],&ket=term[0][1],&bra=term[1];
+ if(!call(label,"qindexedlabel",3) || !label[0].isSymbolic() || !label[1].equals(sum[3]) ||
+    !label[2].isSymbolic() || !label[2].symbol().empty() || !call(ket,"qketstate",1) ||
+    !ket[0].equals(sum[3]) || !call(bra,"qdag",1) || !bra[0].equals(ket))return false;
+ if(!call(diagonal,"qindexeddiagonal",2) || !call(diagonal[0],"qindexedentries",4))return false;
+ const MathStructure &entries=diagonal[0];
+ if(!entries[0].equals(label[0]) || !entries[1].equals(sum[1]) || !entries[2].equals(sum[2]) ||
+    !entries[3].isVector() || entries[3].size()!=0)return false;
+ out.set(CALCULATOR->getFunction("qindexeddiagonal"),&entries,&m_one,NULL);
+ return true;
+}
+void prepareIndexedMatrixSums(MathStructure &value) {
+ auto preparePair=[](MathStructure &left,MathStructure &right) {
+  const bool first=left.isFunction() && left.function()->referenceName()=="qsum";
+  MathStructure &sum=first ? left : right;
+  const MathStructure &diagonal=first ? right : left;
+  MathStructure replacement;
+  if(sum.isFunction() && sum.function()->referenceName()=="qsum" && sum.size()==4 &&
+     indexedDiagonalSum(replacement,sum,diagonal))sum=replacement;
+ };
+ if(value.isFunction() && value.function()->referenceName()=="qequalchain" && value.size()==1 && value[0].isVector()) {
+  MathStructure &terms=value[0];
+  for(size_t i=1;i<terms.size();++i)preparePair(terms[i-1],terms[i]);
+ } else if(value.isFunction() && value.function()->referenceName()=="qcompare" && value.size()==3) {
+  preparePair(value[0],value[1]);
+ }
  if(value.isFunction() && value.function()->referenceName()=="qsum" && value.size()==4) {
   MathStructure blocks;
   if(measurementBlockSum(blocks,value)) {value=blocks;return;}
  }
- for(size_t i=0;i<value.size();++i)prepareMeasurementBlockSums(value[i]);
+ for(size_t i=0;i<value.size();++i)prepareIndexedMatrixSums(value[i]);
 }
 
 class QuantumIndexedFunction: public MathFunction {
@@ -2229,7 +2262,7 @@ class QuantumIndexedFunction: public MathFunction {
    // replacement arguments. Apply it before rewriting any later free labels.
    if(out.isFunction() && out.function()==this && out.size()==3)out.eval(eo);
    if(out.containsFunction(CALCULATOR->getFunction("qsum"),true,true))
-    prepareMeasurementBlockSums(out);
+    prepareIndexedMatrixSums(out);
    prepareSpectralLookups(out);
    for(auto at=replacements.rbegin();at!=replacements.rend();++at) {
     if(CALCULATOR->aborted())return 0;
@@ -2428,6 +2461,22 @@ class QuantumIndexedFunction: public MathFunction {
     if(i==0)sum=term;else sum.add(term);
    }
    sum.eval(eo);out=sum;return 1;
+  }
+  if(op=="qindexeddiagonal") {
+   MathStructure values;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(values,raw[0],eo))return 0;
+   if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(values.size()) || values.size()>1024) {
+    CALCULATOR->error(true,"An indexed diagonal must contain its displayed entries within the 1024-axis limit.",NULL);return 0;
+   }
+   for(size_t i=0;i<values.size();++i) {
+    values[i].eval(eo);
+    if(!values[i].representsScalar() && !values[i].isSymbolic() && !values[i].isUnknown()) {
+     CALCULATOR->error(true,"An indexed diagonal requires scalar entries.",NULL);return 0;
+    }
+   }
+   out.clearMatrix();out.resizeMatrix(values.size(),values.size(),m_zero);
+   for(size_t i=0;i<values.size();++i)element(out,i,i)=values[i];
+   return 1;
   }
   if(op=="qbasiskets" || op=="qbasisketset") {
    MathStructure dimension=raw[0];dimension.eval(eo);
@@ -3298,6 +3347,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexeddiagonal",2));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));
  calculator.addFunction(new QuantumIndexedFunction("qbasisketset",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedlist",4));
