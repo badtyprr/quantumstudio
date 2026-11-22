@@ -420,7 +420,8 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 }
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
-std::string indexedProduct(const std::string &input,size_t start,size_t &end,bool scalarOnly=false) {
+enum class ProductSeries {Any,ScalarSum,BinaryDot};
+std::string indexedProduct(const std::string &input,size_t start,size_t &end,ProductSeries kind=ProductSeries::Any) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
@@ -447,7 +448,7 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,boo
  token("\\,");
  if(token("\\cdots")) {
   token("\\,");
-  if(scalarOnly)return "";
+  if(kind!=ProductSeries::Any)return "";
   if(!factor(lastFirst,lowerA) || first!=lastFirst || lowerA!="1" ||
      first.size()!=1 || first[0]<'A' || first[0]>'Z')return "";
   if(!(upperA.size()==1 && asciiLetter(upperA[0])) &&
@@ -459,9 +460,12 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,boo
   return "qcomposemaps(qindexedentries(\""+first+"_\",1,"+upperA+",vector()))";
  }
  at=afterFirst;
- if(!factor(second,upperB) || !token("+") || !token("\\cdots") || !token("+") ||
+ const bool binaryDot=kind==ProductSeries::BinaryDot;
+ const std::string separator=binaryDot ? "\\oplus" : "+";
+ if(!factor(second,upperB) || !token(separator) || !token("\\cdots") || !token(separator) ||
     !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
  if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
+ space();if(binaryDot && at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
  space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
  std::string width;
  if(upperA.size()==3 && asciiLetter((unsigned char)upperA[0]) && upperA.substr(1)=="-1")width="\""+upperA.substr(0,1)+"\"";
@@ -472,6 +476,11 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,boo
   width=upperA;size_t digit=width.size();
   while(digit && width[digit-1]=='9')width[--digit]='0';
   if(digit)++width[digit-1];else width.insert(width.begin(),'1');
+ }
+ if(binaryDot) {
+  const std::string high=upperA.size()==3 && asciiLetter(upperA[0]) ? "("+upperA+")" : upperA;
+  auto word=[&](const std::string &name){return "qregisterword(\""+name+"_\","+high+",0,vector())";};
+  end=at;return "qcenterdot("+word(first)+","+word(second)+")";
  }
  end=at;return "qscalarproductsum(\""+first+"_\",\""+second+"_\","+width+",vector())";
 }
@@ -2530,9 +2539,14 @@ class TeXReader {
      std::string series=geometricSum();
      if(!series.empty()) {result+=series;continue;}
     }
+    if(binaryWords && asciiLetter(input[pos]) && (preceding.empty() || preceding.back()=='=')) {
+     size_t end=pos;
+     std::string product=indexedProduct(input,pos,end,ProductSeries::BinaryDot);
+     if(!product.empty()) {result+=product;pos=end;continue;}
+    }
     if(binaryWords && !preceding.empty() && preceding.back()=='+' && asciiLetter(input[pos])) {
      size_t end=pos;
-     std::string product=indexedProduct(input,pos,end,true);
+     std::string product=indexedProduct(input,pos,end,ProductSeries::ScalarSum);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
     if(preceding.empty() || preceding.back()==',') {

@@ -779,6 +779,7 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm019-binary-oracles.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-dot-distributivity.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-bound-oracle-sums.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-register-powers.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm020-expanded-dot.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-sampled-oracle-list.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-phase-register-sum.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-register-word-ranges.json

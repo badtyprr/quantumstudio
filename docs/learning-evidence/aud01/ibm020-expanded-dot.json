@@ -1,0 +1,15 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 91,
+  "mode": "Binary word",
+  "literal": "$$\nx \\cdot y = x_{n-1} y_{n-1} \\oplus \\cdots \\oplus x_0 y_0.\n$$",
+  "copy": "(qcenterdot(x,y))==(qcenterdot(qregisterword(\"x_\",qsub(n,1),0,vector()),qregisterword(\"y_\",qsub(n,1),0,vector())))",
+  "checks_by_width": {
+    "1": 8,
+    "2": 32,
+    "3": 128
+  },
+  "negative_controls": "Repeat every pair with just the low bit of the expanded right-hand y word flipped. Expected truth is equality of the two independently calculated bit-product parities."
+}
