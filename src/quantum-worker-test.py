@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# A tuple with descending indices keeps its order and substitution history.
+reverse = data(r"quantum:$(a_{n-1},\ldots,a_0)$")["copy_text"]
+assert data("quantum:" + reverse)["copy_text"] == reverse
+assert data(f'quantum:replace(replace(({reverse}),"a_1",7),n,3)')["copy_text"] == 'qtuple(vector("a_2",7,"a_0"))'
+for first, last, expected in [(12,9,range(12,8,-1)), (9,12,range(9,13))]:
+    source = rf"quantum:$(a_{{{first}}},\ldots,a_{{{last}}})$"
+    assert data(source)["copy_text"] == "qtuple(vector(" + ",".join(f'"a_{i}"' for i in expected) + "))"
+run(r"quantum:$(a_{n-1},\ldots,b_0)$", "--json", success=False)
+
 # A free matrix name remains bindable anywhere in an equality chain.
 for expression in ("R=H*S*H=H*S*H", "H*S*H=R=H*S*H", "H*S*H=H*S*H=R"):
     chain = data("quantum:" + expression)["copy_text"]

@@ -2617,7 +2617,12 @@ class Parser {
    if((end.size()>1 && end[0]=='0') || (end.find_first_not_of("0123456789")!=std::string::npos &&
       !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
   }
-  if(operation=="qindexedentries") {
+  std::string order=operation;
+  if(operation=="qindexedlist" && end.find_first_not_of("0123456789")==std::string::npos &&
+     (start.size()>end.size() || (start.size()==end.size() && start>end))) {
+   std::swap(start,end);order="qreverseindexedlist";
+  }
+  if(operation=="qindexedentries" || order=="qreverseindexedlist") {
    // Free dimensions in indexed lists can share names with built-in
    // constants. Keep lexical binder markers intact in nested expressions.
    auto formal=[](const std::string &symbol) {
@@ -2630,7 +2635,7 @@ class Parser {
            plain[6]==',' && plain.back()==')' && plain.find_first_not_of("0123456789",7)==plain.size()-1)
     end=plain.substr(0,5)+formal(plain.substr(5,1))+plain.substr(6);
   }
-  list=operation+"("+prefix+","+start+","+end+",vector())";return true;
+  list=order+"("+prefix+","+start+","+end+",vector())";return true;
  }
  static bool transformedIndexedList(const std::string &first,const std::string &last,std::string &list) {
   // In a list of traces the indexed left factor varies, while the
@@ -2796,7 +2801,8 @@ class Parser {
      if(takeSetOperator("∈") || takeSetOperator("∉"))
       throw std::runtime_error("Group the integer range before testing it as one set member.");
      left="qindexrange("+left+",floor("+last+"))";
-    } else if(!transformedIndexedList(left,last,left) && !indexedList(left,last,left)) {
+    } else if(!transformedIndexedList(left,last,left) && !indexedList(left,last,left) &&
+              !indexedList(last,left,left,"qreverseindexedlist")) {
      // Only a named, one-based list in a membership statement assigns
      // superscripts to samples. Ordinary powers keep their usual meaning.
      if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
