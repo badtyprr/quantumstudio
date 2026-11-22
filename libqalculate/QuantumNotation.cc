@@ -1383,6 +1383,9 @@ class Parser {
    }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.
+   // In quantum notation rho is a density-matrix symbol. Let product()
+   // read the following group so the library cannot resolve rho as the plastic constant.
+   else if(a=="ρ" && p<s.size() && s[p]=='(')a="qoperatorref("+indexableLabel(a)+")";
    else if(!numericToken && !indexedScalar && !groupedFactor && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     // A copied integer list can have 1,024 entries. Read flat literal data
