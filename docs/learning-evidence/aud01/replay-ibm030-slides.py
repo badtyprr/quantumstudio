@@ -1,4 +1,4 @@
-"""Check the plotted Grover iterates on pages 24 and 26 of the IBM lesson slides."""
+"""Verify the Grover lecture query circuit, plotted iterates and success probabilities."""
 import argparse
 from decimal import Decimal, localcontext
 from fractions import Fraction
@@ -48,5 +48,48 @@ for page, marked, optimum, plotted in [(24, 1, 8, {0, 1, 2, 8, 12}), (26, 4, 4, 
         amplitudes = [2*mean - a for a in reflected]
     reports.append(dict(page=page, marked=marked, iterations=optimum, probabilities=probabilities))
 
+# Page 4 asks for the inverse of the phase-kickback construction.
+query_checks = 0
+for mask in range(16):
+    entries = [str(1-2*((mask >> c) & 1) if r == c else 0) for r in range(4) for c in range(4)]
+    phase = "matrix(4,4,[" + ",".join(entries) + "])"
+    circuit = f"(H @ identity(4))*controlled({phase})*(H @ identity(4))"
+    for state in range(8):
+        target = state ^ (((mask >> (state % 4)) & 1) << 2)
+        assert evaluate(f"norm(({circuit})*basis({state},8)-basis({target},8))") == "0"
+        query_checks += 1
+
+# The page 25 table prints at most seven decimal places. Independently rotate
+# the two amplitude classes using the mean after the marked amplitude flips.
+displayed = [".5", "1.0", ".9453125", ".9613190", ".9991823", ".9965857",
+             ".9956199", ".9999470", ".9994480", ".9994612", ".9999968", ".9999453"]
+table = []
+for k, printed in enumerate(displayed, 1):
+    size = 2**k
+    angle = f"asin(sqrt(1/{size}))"
+    iterations = int(evaluate(f"floor(pi/(4*{angle}))"))
+    marked, unmarked = Fraction(1), Fraction(1)
+    for _ in range(iterations):
+        mean = ((size-1)*unmarked-marked)/size
+        marked, unmarked = 2*mean+marked, 2*mean-unmarked
+    probability = marked**2/size
+    assert probability >= 1-Fraction(1,size)
+    with localcontext() as ctx:
+        ctx.prec = 50
+        exact = Decimal(probability.numerator)/Decimal(probability.denominator)
+        assert abs(exact-Decimal(printed)) <= Decimal("0.00000005")
+        numeric = Decimal(evaluate(f"sin((2*{iterations}+1)*{angle})^2", True))
+        assert abs(numeric-exact) < Decimal("1e-28")
+    table.append(dict(inputs=size, iterations=iterations, printed=printed))
+
+# Page 29 samples from 1 through floor(pi*sqrt(N)/4), inclusive.
+# For N=4 and three marked inputs, that distribution contains only t=1.
+assert evaluate("floor(pi*sqrt(4)/4)") == "1"
+assert evaluate("sin(3*asin(sqrt(3/4)))^2") == "0"
+diffusion = "matrix(4,4,[" + ",".join(str(Fraction(1,2)-int(r==c)) for r in range(4) for c in range(4)) + "])"
+oracle = "matrix(4,4,[1,0,0,0,0,-1,0,0,0,0,-1,0,0,0,0,-1])"
+assert evaluate(f"norm({diffusion}*{oracle}*matrix(4,1,[1,1,1,1])/2+basis(0,4))") == "0"
 print(json.dumps(dict(slides_sha256=slides_hash, worker_sha256=sha256(worker.read_bytes()).hexdigest(),
-                      search_space=128, cases=reports), indent=2))
+                      search_space=128, cases=reports, controlled_query_checks=query_checks,
+                      unique_search_table=table,
+                      printed_random_schedule=dict(inputs=4, marked=3, iterations=[1], success=0)), indent=2))
