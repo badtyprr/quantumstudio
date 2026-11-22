@@ -40,7 +40,7 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 
 The first 18 notebooks at IBM source revision `079769d205eb3b60e077820060274c7b0359c123` contain 2,110 dollar-delimited math occurrences in Markdown prose, with 847 distinct inputs. The published calculator returned 1,569 exact-labelled results, 526 diagnostics and 15 outputs with invalid UTF-8. Development worker `86e41e28ae263f4eb2f485eaf7f34bf99cf761a394cab1759071ae452e5b3f27` returned 1,917 exact-labelled results and 193 diagnostics. These counts measure parser and output behavior. Mathematical correctness, video content and whole-lesson acceptance require separate checks.
 
-The shared-index sum change replays the 31 occurrences that previously reported an invalid summation index. Eighteen now return results and 13 reach other diagnostics. The source counts below include repeated occurrences.
+The shared-index sum change replays the 31 occurrences that previously reported an invalid summation index. Eighteen now return results and 13 reach other diagnostics. The [occurrence manifest](learning-evidence/aud01/shared-index-sources.json) lists every cell and source span. Run the [replay](learning-evidence/aud01/replay-shared-index-sources.py) with the pinned documentation checkout and the worker executable. Add `--baseline` to check the previous worker. Counts include repeated occurrences. One IBM-007 channel equation still copies as multiplication where the source applies a map. Its Windows session reopened successfully, but its copied product changed spelling on re-entry and its mathematical interpretation remains open.
 
 | Lesson | Shared-index diagnostics before | Results after |
 |---|---:|---:|

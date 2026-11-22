@@ -1373,7 +1373,10 @@ class Parser {
     a="qsumgate("+dimension+","+dimension+")";
    }
    else if(gates.find(a)!=gates.end()) {
-    a=std::find(declaredGates.begin(),declaredGates.end(),a)!=declaredGates.end() ? "'"+a+"'" : gates.at(a);
+    bool boundLetter=a.size()==1 && (texIndexDeclaration ||
+     std::find(texIndices.begin(),texIndices.end(),a)!=texIndices.end());
+    if(!boundLetter)
+     a=std::find(declaredGates.begin(),declaredGates.end(),a)!=declaredGates.end() ? "'"+a+"'" : gates.at(a);
    }
    // A numeric token followed by parentheses is an adjacent factor, not a
    // function call. Let product() bind it after any power of that token.

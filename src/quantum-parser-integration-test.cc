@@ -117,6 +117,8 @@ int main(){try {
  equal(R"(quantum:\sum_{a,b=0}^{2} ab+1)","10");
  equal(R"(quantum:\sum_{s,t\in\{0,1\}}{s+2t})","6");
  equal(R"(quantum:\sum_{a=1}^{2}{\sum_{a,b=1}^{a}{1}})","5");
+ equal(R"(quantum:\sum_{X,Y=1}^{2}{X+Y})","12");
+ equal(R"(quantum:(\sum_{X,Y=1}^{2}{XY}) X|0>)","[0;9]");
  equal(R"(quantum:\sum_{i,j=1}^{2}{ij})","9");
  equal(R"(quantum:replace((\sum_{v=0}^1 uv),u,2))","2");
  equal(R"(quantum:replace((\sum_{v=0}^1 u v),u,2))","2");
