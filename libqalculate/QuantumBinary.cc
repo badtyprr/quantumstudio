@@ -68,6 +68,22 @@ bool binaryMatrix(const MathStructure &a,std::vector<std::vector<unsigned char>>
  }
  return true;
 }
+// In a binary phase a one-bit word has the same exponent as its numeric bit.
+bool phaseExponent(MathStructure &value,const EvaluationOptions &eo) {
+ if(CALCULATOR->aborted())return false;
+ if(value.isMultiplication() || (value.isFunction() &&
+    (value.function()->referenceName()=="qmul" || value.function()->referenceName()=="qadjacent"))) {
+  for(size_t i=0;i<value.size();++i)if(!phaseExponent(value[i],eo))return false;
+  value.childrenUpdated();
+ }
+ value.eval(eo);
+ if(isQuantumBitLabel(value)) {
+  MathStructure bit(CALCULATOR->getFunction("qcontrolbit"),&value,NULL);bit.eval(eo);
+  if(!bit.isNumber())return false;
+  value=bit;
+ }
+ return value.isNumber();
+}
 class QuantumBinaryFunction: public MathFunction {
  std::string op;
  public:
@@ -77,6 +93,11 @@ class QuantumBinaryFunction: public MathFunction {
   return op=="qcontrolbit" || MathFunction::representsScalar(value);
  }
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
+  if(op=="qbinaryphase") {
+   MathStructure exponent=raw[0];
+   if(!phaseExponent(exponent,eo))return 0;
+   out=MathStructure(-1);out.raise(exponent);out.eval(eo);return 1;
+  }
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
   if(op=="qconstantoracle" || op=="qbalancedoracle") {
@@ -111,6 +132,13 @@ class QuantumBinaryFunction: public MathFunction {
    }
    const bool holds=op=="qconstantoracle" ? ones==0 || ones==count : ones==count-ones;
    out=holds ? m_one : m_zero;return 1;
+  }
+  if(op=="qbinaryket") {
+   if(a.isUnknown() || a.isSymbolic())return 0;
+   if(a.isNumber() && !a.isApproximate() && (a.isZero() || a.isOne())) {
+    MathStructure dimension(2);out.set(CALCULATOR->getFunction("qbasis"),&a,&dimension,NULL);
+   } else out.set(CALCULATOR->getFunction("qketstate"),&a,NULL);
+   return 1;
   }
   if(op=="qcontrolbit") {
    if(a.isUnknown() || (a.containsUnknowns() && (a.representsScalar() ||
@@ -461,6 +489,8 @@ void registerQuantumBinary(Calculator &calculator) {
  calculator.addFunction(new QuantumBinaryFunction("qbitword",1));
  calculator.addFunction(new QuantumBinaryFunction("qconstantoracle",1));
  calculator.addFunction(new QuantumBinaryFunction("qbalancedoracle",1));
+ calculator.addFunction(new QuantumBinaryFunction("qbinaryphase",1));
+ calculator.addFunction(new QuantumBinaryFunction("qbinaryket",1));
  calculator.addFunction(new QuantumBinaryFunction("qcontrolbit",1));
  for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }

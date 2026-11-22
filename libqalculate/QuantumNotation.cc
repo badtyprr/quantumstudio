@@ -249,7 +249,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssgenerators",2},
  {"qcssstate",3},
  {"qcssencoder",2},
- {"qbitvalue",1},{"qcontrolbit",1},{"qconstantoracle",1},{"qbalancedoracle",1},{"qoraclequeries",2},{"qbinaryfraction",3},{"qbinarytail",2},
+ {"qbitvalue",1},{"qcontrolbit",1},{"qbinaryphase",1},{"qbinaryket",1},{"qconstantoracle",1},{"qbalancedoracle",1},{"qoraclequeries",2},{"qbinaryfraction",3},{"qbinarytail",2},
  {"qbitword",1},{"qallbitdot",3},
  {"qbloch",1},
  {"qblochsub",2},
@@ -954,7 +954,12 @@ class Parser {
      compact.find_first_not_of("01+-")!=std::string::npos &&
      compact!="+i" && compact!="-i" && bellState(compact).empty();
     bool wordXor=compact.find('#')!=std::string::npos && compact.find_first_not_of("01#")!=std::string::npos;
-    if(!arithmetic && !wordXor)return ket(label);
+    if(!arithmetic && !wordXor) {
+     std::string state=ket(label);
+     if(binaryWordNotation && state.compare(0,10,"qketstate(")==0 && state.size()==12 &&
+        state[10]>='a' && state[10]<='z')return "qbinaryket("+state.substr(10);
+     return state;
+    }
     std::string outer=s;size_t outerPosition=p;s=label;p=0;
     const bool previousXor=basisXorContext;basisXorContext=wordXor;
     std::string index=expression();ws();basisXorContext=previousXor;
@@ -2230,6 +2235,7 @@ class Parser {
     } else {
      p=start;
      if(sphere && groupedToken(exponent,0,exponent.size(),"1"))a="qunitcircle()";
+     else if(binaryWordNotation && bitOperand(a)=="-1")a="qbinaryphase("+exponent+")";
      else if(zeroWord)a="qbitlabel(0,"+exponent+")";
      else if(binaryAlphabet)
       a="qbitstrings("+exponent+")";
