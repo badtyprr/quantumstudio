@@ -218,6 +218,11 @@ counted_product = r"\rho \otimes \rho \otimes \cdots \otimes \rho \quad \text{($
 counted_copy = data("quantum:" + counted_product)["copy_text"]
 assert data("quantum:" + counted_copy)["copy_text"] == counted_copy
 assert data(r"quantum:\rho^{\otimes N}=" + counted_product)["copy_text"] == "1"
+for count_name in ("c", "i", "X"):
+    annotated = counted_product.replace("$N$", f"${count_name}$")
+    assert data(r"quantum:\rho^{\otimes " + count_name + "}=" + annotated)["copy_text"] == "1"
+    held = data("quantum:" + annotated)["copy_text"]
+    assert data(f'quantum:replace(replace(({held}),"ρ",X),"{count_name}",2)=tensor(X,X)')["copy_text"] == "1"
 counted_matrix = f'replace(({counted_copy}),"ρ",[0,1;1,0])'
 for count, product in ((1, "X"), (2, "tensor(X,X)"), (3, "tensor(X,tensor(X,X))")):
     assert data(f"quantum:replace(({counted_matrix}),N,{count})=({product})")["copy_text"] == "1"

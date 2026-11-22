@@ -3785,13 +3785,23 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(s.find("\\otimes")!=std::string::npos && s.find("\\text")!=std::string::npos) {
   // The annotation counts every factor, including those hidden by the ellipsis.
-  static const std::regex counted(R"(^\s*(\\[A-Za-z]+|[A-Za-z])\s*\\otimes\s*\1\s*\\otimes\s*\\(?:cdots|ldots)\s*\\otimes\s*\1\s*(?:\\quad\s*)?\\text\{\s*\(\s*\$\s*([A-Za-z]|[0-9]+)\s*\$\s+times\s*\)\s*\}\s*$)");
+  static const std::regex counted(R"(^\s*(\\[A-Za-z]+|[A-Za-z])\s*\\otimes(?![A-Za-z])\s*\1\s*\\otimes(?![A-Za-z])\s*\\(?:cdots|ldots)\s*\\otimes(?![A-Za-z])\s*\1\s*(?:\\quad\s*)?\\text\{\s*\(\s*\$\s*([A-Za-z]|[0-9]+)\s*\$\s+times\s*\)\s*\}\s*$)");
   size_t start=s.rfind('=');
   start=start==std::string::npos ? 0 : start+1;
   std::string rhs=s.substr(start);
   std::smatch series;
-  if(std::regex_match(rhs,series,counted))
-   s.replace(start,std::string::npos,"qtensorpow("+nestedTeX(series[1].str())+","+series[2].str()+")");
+  if(std::regex_match(rhs,series,counted)) {
+   std::string count=series[2].str();
+   // Keep native free variables bindable as usual. Other annotated letters
+   // denote a count even when their ordinary spelling is a gate or constant.
+   if(asciiLetter(count[0]) && count.find_first_not_of("nxyz")!=std::string::npos) {
+    std::regex exponent("\\^\\s*\\{\\s*\\\\otimes\\s+"+count+"\\s*\\}");
+    count="\""+count+"\"";
+    std::string left=std::regex_replace(s.substr(0,start),exponent,"^{\\otimes "+count+"}");
+    s=left+rhs;start=left.size();
+   }
+   s.replace(start,std::string::npos,"qtensorpow("+nestedTeX(series[1].str())+","+count+")");
+  }
  }
  if(s.find("\\cdots")!=std::string::npos) {
   // The two equal indices, family and endpoint must agree in every term.
