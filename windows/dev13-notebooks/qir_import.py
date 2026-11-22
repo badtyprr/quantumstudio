@@ -47,8 +47,40 @@ def terminal_output_targets(statements):
     return {result: len(recorded)-1-ordinal for ordinal, result in enumerate(recorded)}
 
 
-def import_qir(raw, *, bitcode=False):
-    """Translate one void, argument-free, static entry point to OpenQASM3.
+def cudaq_resources(module, entry):
+    flags = ("qir_major_version", "qir_minor_version", "dynamic_qubit_management", "dynamic_result_management")
+    attrs = {a.string_kind: a.string_value for a in entry.attributes.func}
+    if (any(module.get_flag(key) is not None for key in flags)
+            or not entry.name.startswith("__nvqpp__mlirgen__")
+            or attrs.get("qir_profiles") != "base_profile" or attrs.get("output_labeling_schema") != "schema_id"):
+        raise ValueError("CUDAQ_BASE_PROFILE")
+    # CUDA-Q may retain a specialized argument in the ABI. Every accepted
+    # instruction below requires its operands to be static constants.
+    for param in entry.params:
+        if not (param.type.is_double or isinstance(param.type, pyqir.IntType) and param.type.width == 64):
+            raise ValueError("QIR_ENTRY_POINT_SHAPE")
+    modern = "required_num_qubits" in attrs
+    qubits, results = ("required_num_qubits", "required_num_results") if modern else ("requiredQubits", "requiredResults")
+    other = ("requiredQubits", "requiredResults") if modern else ("required_num_qubits", "required_num_results")
+    if any(key in attrs for key in other):
+        raise ValueError("CUDAQ_RESOURCE_DECLARATION")
+    counts = [attrs.get(qubits, ""), attrs.get(results, "0")]
+    if not all(re.fullmatch(r"[0-9]{1,3}", count) for count in counts):
+        raise ValueError("CUDAQ_RESOURCE_DECLARATION")
+    return int(counts[0]), int(counts[1]), attrs.get("output_names")
+
+
+def cudaq_label(value):
+    if not isinstance(value, pyqir.GlobalVariable) or not value.is_constant:
+        raise ValueError("CUDAQ_OUTPUT_LABEL")
+    raw = pyqir.extract_byte_string(value)
+    if not raw or not raw.endswith(b"\0") or b"\0" in raw[:-1]:
+        raise ValueError("CUDAQ_OUTPUT_LABEL")
+    return raw[:-1].decode("utf-8")
+
+
+def import_qir(raw, *, bitcode=False, cudaq_base=False):
+    """Translate a static QIR entry point, optionally using the CUDA-Q base ABI.
 
     Preserve measurement writes and output snapshots in instruction order.
     Unsupported features reject the entire input before any output is written.
@@ -64,7 +96,7 @@ def import_qir(raw, *, bitcode=False):
     if module.verify() is not None:
         raise ValueError("QIR_INVALID_LLVM")
     version = (pyqir.qir_major_version(module), pyqir.qir_minor_version(module))
-    if (version not in {(1, 0), (1, 1), (2, 0)}
+    if not cudaq_base and (version not in {(1, 0), (1, 1), (2, 0)}
             or pyqir.dynamic_qubit_management(module) is not False
             or pyqir.dynamic_result_management(module) is not False):
         raise ValueError("QIR_UNSUPPORTED_PROFILE")
@@ -72,10 +104,16 @@ def import_qir(raw, *, bitcode=False):
     if len(entries) != 1:
         raise ValueError("QIR_ENTRY_POINT_COUNT")
     entry = entries[0]
-    if entry.params or not entry.type.ret.is_void or len(entry.basic_blocks) != 1:
+    if (entry.params and not cudaq_base) or not entry.type.ret.is_void or len(entry.basic_blocks) != 1:
         raise ValueError("QIR_ENTRY_POINT_SHAPE")
-    qubits = pyqir.required_num_qubits(entry)
-    results = pyqir.required_num_results(entry)
+    if cudaq_base:
+        qubits, results, output_names = cudaq_resources(module, entry)
+    else:
+        qubits = pyqir.required_num_qubits(entry)
+        results = pyqir.required_num_results(entry)
+    array_size = None
+    record_layout = []
+    measurement_wires = {}
     if type(qubits) is not int or not 1 <= qubits <= MAX_QUBITS:
         raise ValueError("QIR_QUBIT_LIMIT")
     if type(results) is not int or not 0 <= results <= 64:
@@ -111,6 +149,16 @@ def import_qir(raw, *, bitcode=False):
         args = instruction.args
         if len(args) != len(callee.params):
             raise ValueError("QIR_CALL_SIGNATURE:" + name)
+        if array_size is not None and name != "__quantum__rt__result_record_output":
+            raise ValueError("CUDAQ_OUTPUT_ARRAY")
+        if cudaq_base and name == "__quantum__rt__array_record_output":
+            if (len(args) != 2 or not isinstance(callee.params[0].type, pyqir.IntType)
+                    or callee.params[0].type.width != 64 or not isinstance(callee.params[1].type, pyqir.PointerType)
+                    or not isinstance(args[0], pyqir.IntConstant) or args[0].type.width != 64
+                    or not 1 <= args[0].value <= 64 or cudaq_label(args[1]) != f"array<i1 x {args[0].value}>"):
+                raise ValueError("CUDAQ_OUTPUT_ARRAY")
+            array_size = args[0].value
+            continue
         if name in ("__quantum__qis__rx__body", "__quantum__qis__ry__body", "__quantum__qis__rz__body"):
             if (len(args) != 2 or not callee.params[0].type.is_double
                     or not isinstance(callee.params[1].type, pyqir.PointerType)
@@ -123,20 +171,24 @@ def import_qir(raw, *, bitcode=False):
             gate = name.split("__")[-2]
             statements.append(f"{gate}({angle!r}) q[{target}];")
             continue
-        if any(not isinstance(a.type, pyqir.PointerType) for a in args):
+        if any(not isinstance(a.type, pyqir.PointerType) for a in (*args, *callee.params)):
             raise ValueError("QIR_CALL_SIGNATURE:" + name)
         if name == "__quantum__rt__initialize":
             if initialized or ordinal != 0 or len(args) != 1 or pyqir.ptr_id(args[0]) != 0:
                 raise ValueError("QIR_INITIALIZE")
             initialized = True
         elif name == "__quantum__rt__result_record_output":
-            if len(args) != 2 or pyqir.ptr_id(args[1]) != 0:
+            if len(args) != 2 or (not cudaq_base and pyqir.ptr_id(args[1]) != 0):
                 raise ValueError("QIR_OUTPUT_SIGNATURE")
             result = static_id(args[0], results, "result")
             if result not in measured:
                 raise ValueError("QIR_UNMEASURED_OUTPUT:" + str(result))
             if outputs >= 64:
                 raise ValueError("QIR_OUTPUT_LIMIT")
+            if cudaq_base:
+                if array_size is None or outputs >= array_size:
+                    raise ValueError("CUDAQ_OUTPUT_ARRAY")
+                record_layout.append([result, [measurement_wires[result], cudaq_label(args[1])]])
             statements.append(("output", outputs, result))
             outputs += 1
         elif name == "__quantum__qis__mz__body":
@@ -146,6 +198,7 @@ def import_qir(raw, *, bitcode=False):
             result = static_id(args[1], results, "result")
             statements.append(("measure", qubit, result))
             measured.add(result)
+            measurement_wires[result] = qubit
         elif name.startswith("__quantum__qis__") and name[len("__quantum__qis__"):] in GATES:
             gate, arity = GATES[name[len("__quantum__qis__"):]]
             if len(args) != arity:
@@ -156,6 +209,12 @@ def import_qir(raw, *, bitcode=False):
             statements.append(gate + " " + ", ".join(f"q[{q}]" for q in targets) + ";")
         else:
             raise ValueError("QIR_UNSUPPORTED_CALL:" + name)
+    if cudaq_base:
+        if array_size != (outputs or None):
+            raise ValueError("CUDAQ_OUTPUT_ARRAY")
+        expected = [record_layout] if outputs else None
+        if json.dumps(json.loads(output_names) if output_names is not None else None) != json.dumps(expected):
+            raise ValueError("CUDAQ_OUTPUT_NAMES")
     targets = terminal_output_targets(statements)
     if targets is None and outputs and results + outputs > 64:
         raise ValueError("QIR_CLASSICAL_STORAGE_LIMIT")
@@ -179,23 +238,27 @@ def import_qir(raw, *, bitcode=False):
             if targets is None:
                 lines.append(f"out[{outputs - 1 - ordinal}] = result[{result}];")
     qasm = "\n".join(lines) + "\n"
-    return dict(route="qir-to-openqasm3", source_sha256=hashlib.sha256(raw).hexdigest(),
+    report = dict(route="qir-to-openqasm3", source_sha256=hashlib.sha256(raw).hexdigest(),
                 source_format="bitcode" if bitcode else "llvm-ir", entry_point=entry.name,
                 qubits=qubits, result_slots=results, output_slots=outputs,
                 output_order="QIR record order, leftmost bit first",
                 output_lowering="terminal-measurement-aliases" if targets is not None else "record-snapshots",
                 openqasm=qasm, execution_performed=False)
+    if cudaq_base:
+        report.update(input_profile="cudaq-base", output_array_size=array_size, output_records=record_layout)
+    return report
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
+    parser.add_argument("--cudaq-base", action="store_true", help="Read unversioned CUDA-Q base-profile compiler exports")
     parser.add_argument("--bitcode", action="store_true")
     parser.add_argument("--output", type=Path, help="New OpenQASM file; existing files are refused")
     args = parser.parse_args()
     with args.source.open("rb") as stream:
         raw = stream.read(MAX_BYTES + 1)
-    result = import_qir(raw, bitcode=args.bitcode)
+    result = import_qir(raw, bitcode=args.bitcode, cudaq_base=args.cudaq_base)
     if args.output:
         with args.output.open("xb") as stream:
             stream.write(result["openqasm"].encode("utf-8"))

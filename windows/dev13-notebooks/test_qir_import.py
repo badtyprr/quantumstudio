@@ -1,4 +1,5 @@
 """Real LLVM parsing tests for the explicit finite importer."""
+from pathlib import Path
 import unittest
 import pyqir
 from qir_import import import_qir
@@ -82,6 +83,50 @@ class ImportTests(unittest.TestCase):
         raw = raw.replace(b"attributes #0", b"declare void @__quantum__qis__ry__body(double, ptr, ...)\nattributes #0")
         with self.assertRaisesRegex(ValueError, "QIR_UNSUPPORTED_CALLEE"):
             import_qir(raw)
+
+    def test_cudaq_compiler_outputs(self):
+        fixtures = Path(__file__).parent / "fixtures" / "cudaq-base"
+        for name, records in [("bell", [[0, [0, "r00000"]], [1, [1, "r00001"]]]), ("ansatz", [])]:
+            raw = (fixtures / (name + "-1.0.ll")).read_bytes()
+            for text in (raw, raw.replace(b"required_num_qubits", b"requiredQubits")
+                                 .replace(b"required_num_results", b"requiredResults")):
+                binary = pyqir.Module.from_ir(pyqir.Context(), text.decode()).bitcode
+                for data, bc in ((text, False), (binary, True)):
+                    with self.assertRaisesRegex(ValueError, "QIR_UNSUPPORTED_PROFILE"):
+                        import_qir(data, bitcode=bc)
+                    report = import_qir(data, bitcode=bc, cudaq_base=True)
+                    self.assertEqual(report["output_records"], records)
+                    self.assertEqual(report["output_slots"], len(records))
+                    self.assertEqual(report["output_array_size"], len(records) or None)
+
+    def test_cudaq_labels_track_source_wires_independently_of_result_slots(self):
+        raw = (Path(__file__).parent / "fixtures/cudaq-base/bell-1.0.ll").read_bytes()
+        one = b"ptr inttoptr (i64 1 to ptr)"
+        raw = raw.replace(b"mz__body(ptr null, ptr null)", b"mz__body(" + one + b", ptr null)")
+        raw = raw.replace(b"mz__body(" + one + b", " + one + b")", b"mz__body(ptr null, " + one + b")")
+        raw = raw.replace(b"[[[0,[0,", b"[[[0,[1,").replace(b",[1,[1,", b",[1,[0,")
+        report = import_qir(raw, cudaq_base=True)
+        self.assertEqual(report["output_records"], [[0, [1, "r00000"]], [1, [0, "r00001"]]])
+        self.assertIn("out[1] = measure q[1];\nout[0] = measure q[0];", report["openqasm"])
+
+    def test_cudaq_base_rejects_inconsistent_exports(self):
+        fixtures = Path(__file__).parent / "fixtures" / "cudaq-base"
+        bell = (fixtures / "bell-1.0.ll").read_bytes()
+        ansatz = (fixtures / "ansatz-1.0.ll").read_bytes()
+        cases = [
+            (bell, b"array_record_output(i64 2", b"array_record_output(i64 1", "CUDAQ_OUTPUT_ARRAY"),
+            (bell, b"private constant", b"private global", "CUDAQ_OUTPUT_LABEL"),
+            (bell, b'c"r00001', b'c"r00002', "CUDAQ_OUTPUT_NAMES"),
+            (bell, b"base_profile", b"adaptive_profile", "CUDAQ_BASE_PROFILE"),
+            (bell, b'"required_num_results"', b'"requiredResults"', "CUDAQ_RESOURCE_DECLARATION"),
+            (bell, b'!llvm.module.flags = !{!0}', b'!llvm.module.flags = !{!0,!1}\n!1 = !{i32 1, !"dynamic_qubit_management", i1 true}', "CUDAQ_BASE_PROFILE"),
+            (ansatz, b"double 5.900000e-01", b"double %0", "QIR_ROTATION_SIGNATURE"),
+        ]
+        for source, old, new, error in cases:
+            with self.subTest(error=error):
+                self.assertIn(old, source)
+                with self.assertRaisesRegex(ValueError, error):
+                    import_qir(source.replace(old, new), cudaq_base=True)
 
     def test_terminal_output_permutation_uses_direct_measurement_targets(self):
         report = import_qir(fixture(H, CX, M0, M1, O1, O0))

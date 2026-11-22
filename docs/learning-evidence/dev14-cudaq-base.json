@@ -1,0 +1,520 @@
+{
+  "source": "NVIDIA CUDA-Q 0.17.0 exports of QB-035 cells 9 and 17, QB-034 cell 4 at width 4; the ansatz was specialized at 0.59 radians.",
+  "formats": [
+    "qir-base:0.1",
+    "qir-base:1.0"
+  ],
+  "unit_tests": 26,
+  "unchanged_native_checks": 24,
+  "authored_ansatz_measurement_checks": 8,
+  "runs": [
+    {
+      "source": "ansatz-0.1.ll",
+      "format": "llvm-ir",
+      "sha256": "33e7e0b3d71a4f11fe02c7c6404424f167034a47cc670d48315d8485e74ea9ef",
+      "output_array_size": null,
+      "output_records": [],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": "1"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": 10000
+          }
+        }
+      },
+      "authored_measurements": {
+        "exact": {
+          "max_probability_error": 1.3877787911212033e-17,
+          "result": {
+            "01": "(1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(1/4)*exp(i*(58999999999999997/100000000000000000))",
+            "10": "(-1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(-1/4)*exp(i*(58999999999999997/100000000000000000))"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0015703395500817618,
+          "result": {
+            "01": 9139,
+            "10": 861
+          }
+        }
+      }
+    },
+    {
+      "source": "ansatz-0.1.ll",
+      "format": "bitcode",
+      "sha256": "b6ff2ebf34479fb24391cf26317d658c069b14f3d0eebe3d33eab6292f4abb95",
+      "output_array_size": null,
+      "output_records": [],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": "1"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": 10000
+          }
+        }
+      },
+      "authored_measurements": {
+        "exact": {
+          "max_probability_error": 1.3877787911212033e-17,
+          "result": {
+            "01": "(1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(1/4)*exp(i*(58999999999999997/100000000000000000))",
+            "10": "(-1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(-1/4)*exp(i*(58999999999999997/100000000000000000))"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0015703395500817618,
+          "result": {
+            "01": 9139,
+            "10": 861
+          }
+        }
+      }
+    },
+    {
+      "source": "ansatz-1.0.ll",
+      "format": "llvm-ir",
+      "sha256": "19d1af038a81809dc46d1e562931b29a60c3688ab3a08a87d218741e480b2f3d",
+      "output_array_size": null,
+      "output_records": [],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": "1"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": 10000
+          }
+        }
+      },
+      "authored_measurements": {
+        "exact": {
+          "max_probability_error": 1.3877787911212033e-17,
+          "result": {
+            "01": "(1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(1/4)*exp(i*(58999999999999997/100000000000000000))",
+            "10": "(-1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(-1/4)*exp(i*(58999999999999997/100000000000000000))"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0015703395500817618,
+          "result": {
+            "01": 9139,
+            "10": 861
+          }
+        }
+      }
+    },
+    {
+      "source": "ansatz-1.0.ll",
+      "format": "bitcode",
+      "sha256": "33e55e955d27026924ca6f9b73289bb117f9a3ee4171f0a32c54c7708844c625",
+      "output_array_size": null,
+      "output_records": [],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": "1"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": 10000
+          }
+        }
+      },
+      "authored_measurements": {
+        "exact": {
+          "max_probability_error": 1.3877787911212033e-17,
+          "result": {
+            "01": "(1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(1/4)*exp(i*(58999999999999997/100000000000000000))",
+            "10": "(-1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(-1/4)*exp(i*(58999999999999997/100000000000000000))"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0015703395500817618,
+          "result": {
+            "01": 9139,
+            "10": 861
+          }
+        }
+      }
+    },
+    {
+      "source": "bell-0.1.ll",
+      "format": "llvm-ir",
+      "sha256": "bb94e4af6b477f28c394ad8c13bf9fa6002b5515fa549f7f150ae092321d5a73",
+      "output_array_size": 2,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    {
+      "source": "bell-0.1.ll",
+      "format": "bitcode",
+      "sha256": "bbdbb15db0f8166051b49dfbc194d2e75231804531edfa0d534c609e99d10ffa",
+      "output_array_size": 2,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    {
+      "source": "bell-1.0.ll",
+      "format": "llvm-ir",
+      "sha256": "caa70b14f84290236e8e18eedb295de0050ed9b97cd3ed16fa0ca74c402b88b4",
+      "output_array_size": 2,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    {
+      "source": "bell-1.0.ll",
+      "format": "bitcode",
+      "sha256": "13e1a57fc41fd8439c9666cbe7e74a3e7467f8ecc7167c7f9ce2985f4f36d83a",
+      "output_array_size": 2,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    {
+      "source": "ghz-0.1.ll",
+      "format": "llvm-ir",
+      "sha256": "d1a46a23d5ed23411cf2adfd9b1aff296696d24390a0004c239f71b1cb74976e",
+      "output_array_size": 4,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ],
+        [
+          2,
+          [
+            2,
+            "r00002"
+          ]
+        ],
+        [
+          3,
+          [
+            3,
+            "r00003"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 9.999999999998899e-05,
+          "result": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      }
+    },
+    {
+      "source": "ghz-0.1.ll",
+      "format": "bitcode",
+      "sha256": "82478672b656e237c38cc7f19787386b70af670d584146344ba486c771960b2e",
+      "output_array_size": 4,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ],
+        [
+          2,
+          [
+            2,
+            "r00002"
+          ]
+        ],
+        [
+          3,
+          [
+            3,
+            "r00003"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 9.999999999998899e-05,
+          "result": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      }
+    },
+    {
+      "source": "ghz-1.0.ll",
+      "format": "llvm-ir",
+      "sha256": "58da02c1cc6d538a2b2c0c2c7fe638297485348cc2485a26c4315c7a53fdc2d3",
+      "output_array_size": 4,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ],
+        [
+          2,
+          [
+            2,
+            "r00002"
+          ]
+        ],
+        [
+          3,
+          [
+            3,
+            "r00003"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 9.999999999998899e-05,
+          "result": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      }
+    },
+    {
+      "source": "ghz-1.0.ll",
+      "format": "bitcode",
+      "sha256": "eb78cb410ac4f1f8f17cc7be777703f8b133b567adbab88eede200f0578afed9",
+      "output_array_size": 4,
+      "output_records": [
+        [
+          0,
+          [
+            0,
+            "r00000"
+          ]
+        ],
+        [
+          1,
+          [
+            1,
+            "r00001"
+          ]
+        ],
+        [
+          2,
+          [
+            2,
+            "r00002"
+          ]
+        ],
+        [
+          3,
+          [
+            3,
+            "r00003"
+          ]
+        ]
+      ],
+      "native": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 9.999999999998899e-05,
+          "result": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      }
+    }
+  ]
+}
