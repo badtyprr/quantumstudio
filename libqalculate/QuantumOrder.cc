@@ -476,7 +476,7 @@ class QuantumOrderFunction: public MathFunction {
    bool equal=false;
    // A state family can be defined later. Keep each matrix on its own
    // side of the comparison and retain evaluated arguments for re-entry.
-   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate","qnamedket"}) {
+   if(kind>=4 && !args[0].equals(args[1]))for(const char *state:{"qstatecall","qstatecalls","qspectralket","qspectralentry","qketstate","qnamedket","qbinaryket","qregisterfamily"}) {
     const auto function=CALCULATOR->getFunction(state);
     if(!args[0].containsFunction(function) && !args[1].containsFunction(function))continue;
     if(args[0].equals(raw[0]) && args[1].equals(raw[1]))return 0;
