@@ -1,0 +1,203 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Expected a measurement list from the first sample to the final sample in a shared domain.",
+  "lessons": [
+    {
+      "lesson": "IBM-003",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 955,
+          "end": 977,
+          "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 11786,
+          "end": 11808,
+          "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 13243,
+          "end": 13277,
+          "literal_sha256": "0b71df210cfcc3ed90d93ff1c8d249f859ad90f74173eec3672abe475b45d066",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 13331,
+          "end": 13353,
+          "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-005",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/multiple-systems.ipynb",
+      "source_sha256": "6e2f80e297c2533cfd205ec2e9322f75df8d17e79081590940240b29baa54ef5",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 3930,
+          "end": 3952,
+          "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 4126,
+          "end": 4148,
+          "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-007",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 13624,
+          "end": 13647,
+          "literal_sha256": "cd34fd61a2986250e9057486b06e3b056176e8acd9074121b4316f3b880c423f",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-011",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements.ipynb",
+      "source_sha256": "f7a4df41bb0ba245b6e52a62b059703c376a9a5d695e6f33e8fb3dbecf7c6bf6",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 5587,
+          "end": 5671,
+          "literal_sha256": "4b3f820b6f5518189ba0a8ffc1054eedbb7d9a020ce690f024909945815a2cdb",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "cell": 0,
+          "start": 19504,
+          "end": 19532,
+          "literal_sha256": "4c6531646421cfd0f0292523034e8e456673af795b435a7f93dba9fde055e7e7",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "cell": 0,
+          "start": 27873,
+          "end": 27950,
+          "literal_sha256": "1dc7e357a461b45dcc7610f9d40c46dd2c3cd4f5e028acda1ee775e75b4efd5b",
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Expected ')'"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-012",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 4401,
+          "end": 4435,
+          "literal_sha256": "cb11f0e477e3cf8b04cc4ac85233da9b495c0e53f1753cf7d89a84019c025bab",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-013",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography.ipynb",
+      "source_sha256": "afd353deba6a4252c1cb7a50db286c74041ddaf3363bd95cb9f7b0c84e18c0a8",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 841,
+          "end": 863,
+          "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-015",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications.ipynb",
+      "source_sha256": "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 3084,
+          "end": 3106,
+          "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 8050,
+          "end": 8088,
+          "literal_sha256": "afcc09cca088c0134fce56b54356aadf04415d9ec5b9ae3687163b0a5639ae1e",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "cell": 0,
+          "start": 11981,
+          "end": 12003,
+          "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 13788,
+          "end": 13812,
+          "literal_sha256": "2f5b23f15fe0f0fdbcaaa434ad26f10a70cdbd0328b45c818a64ef082dbf15e6",
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Matrix order requires square matrices of matching dimension, at most 64."
+        },
+        {
+          "cell": 0,
+          "start": 26456,
+          "end": 26478,
+          "literal_sha256": "d3f596f24fbaee06a51412ddafcfe9ccffc522720af06b3db5cba58bcc62a4c5",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-016",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+      "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 14156,
+          "end": 14225,
+          "literal_sha256": "f1f58098f63b9127cd67baa76d41a6ee196583903314d99b36f83438ae691c70",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        },
+        {
+          "cell": 0,
+          "start": 14230,
+          "end": 14299,
+          "literal_sha256": "25aec01526a753cb34f3294408d14e933bf9d24b8971a77187580c2779045445",
+          "outcome": "previous diagnostic",
+          "diagnostic_contains": "Expected a measurement list from the first sample to the final sample in a shared domain."
+        }
+      ]
+    }
+  ]
+}
