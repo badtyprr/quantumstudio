@@ -1,0 +1,338 @@
+{
+  "release": "checkpoint-c5a456cd",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "gui": {
+    "passed": true,
+    "checks": 264,
+    "calls": 24,
+    "sessionsOnly": false,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "cases": [
+    {
+      "id": "table-1-row-1-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-1-row-1-value-2",
+      "expression": "1.5",
+      "expected_fraction": "3/2",
+      "label": "EXACT RESULT",
+      "copy": "3 ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "3 ∕ 2"
+    },
+    {
+      "id": "table-1-row-2-value-1",
+      "expression": "1.5",
+      "expected_fraction": "3/2",
+      "label": "EXACT RESULT",
+      "copy": "3 ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "3 ∕ 2"
+    },
+    {
+      "id": "table-1-row-3-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-1-row-4-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-1-sum-0",
+      "expression": "1.0+1.5+1.0+1.0",
+      "expected_fraction": "9/2",
+      "label": "EXACT RESULT",
+      "copy": "9 ∕ 2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "9 ∕ 2"
+    },
+    {
+      "id": "table-1-sum-1",
+      "expression": "1.5+1.5+1.0+1.0",
+      "expected_fraction": "5",
+      "label": "EXACT RESULT",
+      "copy": "5",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "5"
+    },
+    {
+      "id": "table-2-row-1-value-1",
+      "expression": "0.25",
+      "expected_fraction": "1/4",
+      "label": "EXACT RESULT",
+      "copy": "1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 4"
+    },
+    {
+      "id": "table-2-row-2-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-2-row-3-value-1",
+      "expression": "2.0",
+      "expected_fraction": "2",
+      "label": "EXACT RESULT",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "table-2-row-4-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-2-sum-0",
+      "expression": "0.25+1.0+2.0+1.0",
+      "expected_fraction": "17/4",
+      "label": "EXACT RESULT",
+      "copy": "17 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "17 ∕ 4"
+    },
+    {
+      "id": "table-2-sum-1",
+      "expression": "0.25+1.0+2.0+1.0",
+      "expected_fraction": "17/4",
+      "label": "EXACT RESULT",
+      "copy": "17 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "17 ∕ 4"
+    },
+    {
+      "id": "table-3-row-1-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-3-row-2-value-1",
+      "expression": "2.0",
+      "expected_fraction": "2",
+      "label": "EXACT RESULT",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "table-3-row-3-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-3-sum-0",
+      "expression": "1.0+2.0+1.0",
+      "expected_fraction": "4",
+      "label": "EXACT RESULT",
+      "copy": "4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "4"
+    },
+    {
+      "id": "table-3-sum-1",
+      "expression": "1.0+2.0+1.0",
+      "expected_fraction": "4",
+      "label": "EXACT RESULT",
+      "copy": "4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "4"
+    },
+    {
+      "id": "table-4-row-1-value-1",
+      "expression": "0.25",
+      "expected_fraction": "1/4",
+      "label": "EXACT RESULT",
+      "copy": "1 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1 ∕ 4"
+    },
+    {
+      "id": "table-4-row-2-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-4-row-3-value-1",
+      "expression": "2.0",
+      "expected_fraction": "2",
+      "label": "EXACT RESULT",
+      "copy": "2",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "2"
+    },
+    {
+      "id": "table-4-row-4-value-1",
+      "expression": "1.0",
+      "expected_fraction": "1",
+      "label": "EXACT RESULT",
+      "copy": "1",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "1"
+    },
+    {
+      "id": "table-4-sum-0",
+      "expression": "0.25+1.0+2.0+1.0",
+      "expected_fraction": "17/4",
+      "label": "EXACT RESULT",
+      "copy": "17 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "17 ∕ 4"
+    },
+    {
+      "id": "table-4-sum-1",
+      "expression": "0.25+1.0+2.0+1.0",
+      "expected_fraction": "17/4",
+      "label": "EXACT RESULT",
+      "copy": "17 ∕ 4",
+      "restored_same": true,
+      "reentry_label": "EXACT RESULT",
+      "second_copy": "17 ∕ 4"
+    }
+  ],
+  "resource_links": [
+    {
+      "label": "documentation",
+      "url": "https://quantum.cloud.ibm.com/docs/ibm-quantum-platform/cloud-account-structure",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/ibm-quantum-platform/cloud-account-structure",
+      "title": "IBM Cloud account structure | IBM Quantum Documentation"
+    },
+    {
+      "label": "Quantum business foundations",
+      "url": "https://quantum.cloud.ibm.com/learning/courses/quantum-business-foundations",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-business-foundations",
+      "title": "Overview | IBM Quantum Learning"
+    },
+    {
+      "label": "Basics of quantum information",
+      "url": "https://quantum.cloud.ibm.com/learning/courses/basics-of-quantum-information",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/learning/en/courses/basics-of-quantum-information",
+      "title": "Overview | IBM Quantum Learning"
+    },
+    {
+      "label": "Quantum diagonalization algorithms",
+      "url": "https://quantum.cloud.ibm.com/learning/courses/quantum-diagonalization-algorithms",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/learning/en/courses/quantum-diagonalization-algorithms",
+      "title": "Overview | IBM Quantum Learning"
+    },
+    {
+      "label": "CHSH inequality",
+      "url": "https://quantum.cloud.ibm.com/docs/tutorials/chsh-inequality",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/tutorials/chsh-inequality",
+      "title": "CHSH inequality | IBM Quantum Documentation"
+    },
+    {
+      "label": "Sample-based quantum diagonalization of a chemistry Hamiltonian",
+      "url": "https://quantum.cloud.ibm.com/docs/tutorials/sample-based-quantum-diagonalization",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-quantum-diagonalization",
+      "title": "Sample-based quantum diagonalization of a chemistry Hamiltonian | IBM Quantum Documentation"
+    },
+    {
+      "label": "Sample-based Krylov quantum diagonalization of a fermionic lattice model",
+      "url": "https://quantum.cloud.ibm.com/docs/tutorials/sample-based-krylov-quantum-diagonalization",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/tutorials/sample-based-krylov-quantum-diagonalization",
+      "title": "Sample-based Krylov quantum diagonalization of a fermionic lattice model | IBM Quantum Documentation"
+    },
+    {
+      "label": "IBM Quantum Platform",
+      "url": "https://quantum.cloud.ibm.com/",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/",
+      "title": "IBM Quantum Platform"
+    },
+    {
+      "label": "IBM Quantum Technical support",
+      "url": "https://quantum.cloud.ibm.com/docs/guides/support",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/guides/support",
+      "title": "Support | IBM Quantum Documentation"
+    },
+    {
+      "label": "IBM Cloud&reg; Support Center",
+      "url": "https://cloud.ibm.com/unifiedsupport/cases/form",
+      "error": "HTTP Error 401: Unauthorized"
+    },
+    {
+      "label": "Qiskit addons",
+      "url": "https://quantum.cloud.ibm.com/docs/guides/hamiltonian-simulation",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/docs/en/guides/hamiltonian-simulation",
+      "title": "Hamiltonian simulation | IBM Quantum Documentation"
+    },
+    {
+      "label": "quantum functions",
+      "url": "https://quantum.cloud.ibm.com/functions",
+      "status": 200,
+      "destination": "https://quantum.cloud.ibm.com/functions",
+      "title": "Functions | IBM Quantum Platform"
+    }
+  ]
+}
