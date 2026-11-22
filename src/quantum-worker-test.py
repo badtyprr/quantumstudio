@@ -171,6 +171,13 @@ for y_value, expected in [(2, "1"), (0, "0")]:
     expr = f'replace(replace(replace(({word_equality}),n,3),"s",qbitlabel(2,3)),y,qbitlabel({y_value},3))'
     assert data("quantum:" + expr)["copy_text"] == expected
 
+bit_action = data(r"quantum:bitword:$H\vert a\rangle=(\vert0\rangle+(-1)^a\vert1\rangle)/\sqrt{2}$")["copy_text"]
+for bit in ["0", "1", "qbitlabel(0,1)", "qbitlabel(1,1)"]:
+    assert data(f'quantum:replace(({bit_action}),"a",{bit})')["copy_text"] == "1"
+phase_product = data(r"quantum:bitword:$(-1)^{ab}$")["copy_text"]
+assert data(f'quantum:replace(replace(({phase_product}),"a",qbitlabel(1,1)),"b",1)')["copy_text"] == "−1"
+run(f'quantum:replace(replace(({phase_product}),"a",1),"b",qbitlabel(1,2))', "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

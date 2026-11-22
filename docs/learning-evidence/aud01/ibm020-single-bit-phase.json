@@ -1,0 +1,11 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 28,
+  "literal": "$$\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (-1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n$$",
+  "mode": "Binary word",
+  "altered_literal": "$$\nH \\vert a \\rangle = \\frac{1}{\\sqrt{2}} \\vert 0 \\rangle + \\frac{1}{\\sqrt{2}} (1)^a \\vert 1 \\rangle\n= \\frac{1}{\\sqrt{2}} \\sum_{b\\in\\{0,1\\}} (-1)^{ab} \\vert b\\rangle,\n$$",
+  "checks": 39,
+  "method": "Supply both computational-basis inputs as integers and as one-bit words. Compare each of the three scaled columns to [1,(-1)^a], and repeat the chained equality after reversing the sign for input one in its middle expression. Check all combinations of scalar and one-bit product exponents, integer phases outside the bit range, and reject multi-bit phase operands."
+}
