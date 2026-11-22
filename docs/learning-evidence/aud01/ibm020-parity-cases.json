@@ -1,0 +1,16 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 92,
+  "mode": "Binary word",
+  "literal": "$$\nx \\cdot y =\n\\begin{cases}\n1 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is odd}\\\\[0.5mm]\n0 & x_{{n-1}} y_{n-1} + \\cdots + x_0 y_0 \\text{ is even}\n\\end{cases}\n$$",
+  "copy": "(((qcenterdot(qregisterword(\"x_\",qsub(n,1),0,vector()),qregisterword(\"y_\",qsub(n,1),0,vector())))==(0) and (qcenterdot(x,y))==(0)) or ((qcenterdot(qregisterword(\"x_\",qsub(n,1),0,vector()),qregisterword(\"y_\",qsub(n,1),0,vector())))==(1) and (qcenterdot(x,y))==(1)))",
+  "widths": [
+    1,
+    2,
+    3
+  ],
+  "numeric_checks": 336,
+  "controls": "Every x,y pair is tested with matching components and with one altered component. Repeat all checks with the odd and even branch conditions exchanged."
+}

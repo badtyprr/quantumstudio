@@ -420,7 +420,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 }
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
-enum class ProductSeries {Any,ScalarSum,BinaryDot};
+enum class ProductSeries {Any,ScalarSum,BinaryDot,ParityCondition};
 std::string indexedProduct(const std::string &input,size_t start,size_t &end,ProductSeries kind=ProductSeries::Any) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
@@ -431,11 +431,13 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
   family=input.substr(begin,at-begin);if(!token("_"))return false;
   space();if(at==input.size())return false;
   if(input[at]=='{') {
-   ++at;while(at<input.size() && input[at]!='}') {
+   unsigned groups=0;
+   do {++at;++groups;space();}while(at<input.size() && input[at]=='{' && groups<32);
+   while(at<input.size() && input[at]!='}') {
     if(!asciiSpace((unsigned char)input[at]))index+=input[at];
     if(index.size()>32)return false;++at;
    }
-   if(at==input.size())return false;++at;
+   while(groups--)if(!token("}"))return false;
   } else if(std::isalnum((unsigned char)input[at]))index+=input[at++];
   else return false;
   return !index.empty();
@@ -466,23 +468,37 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end,Pro
     !factor(lastFirst,lowerA) || !factor(lastSecond,lowerB))return "";
  if(first!=lastFirst || second!=lastSecond || upperA!=upperB || lowerA!="0" || lowerB!="0")return "";
  space();if(binaryDot && at<input.size() && input[at]=='.' && input.find_first_not_of(" \t\r\n",at+1)==std::string::npos)++at;
- space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+ bool odd=false;
+ if(kind==ProductSeries::ParityCondition) {
+  if(!token("\\text") || !token("{") || !token("is") || at>=input.size() || !asciiSpace(input[at]))return "";
+  if(token("odd"))odd=true;
+  else if(!token("even"))return "";
+  if(!token("}"))return "";
+  space();
+  if(input.compare(at,2,"\\\\")!=0 && input.compare(at,5,"\\end{")!=0)return "";
+ } else {
+  space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+ }
+ const bool symbolicWidth=upperA.size()==3 && asciiLetter(upperA[0]) && upperA.substr(1)=="-1";
+ if(!symbolicWidth && (upperA.empty() || (upperA.size()>1 && upperA[0]=='0') ||
+    upperA.find_first_not_of("0123456789")!=std::string::npos))return "";
+ end=at;
+ if(binaryDot || kind==ProductSeries::ParityCondition) {
+  const std::string high=symbolicWidth ? "("+upperA+")" : upperA;
+  auto word=[&](const std::string &name){return "qregisterword(\""+name+"_\","+high+",0,vector())";};
+  std::string dot="qcenterdot("+word(first)+","+word(second)+")";
+  if(kind==ProductSeries::ParityCondition)return "("+dot+(odd ? "=1)" : "=0)");
+  return dot;
+ }
  std::string width;
- if(upperA.size()==3 && asciiLetter((unsigned char)upperA[0]) && upperA.substr(1)=="-1")width="\""+upperA.substr(0,1)+"\"";
+ if(symbolicWidth)width="\""+upperA.substr(0,1)+"\"";
  else {
-  if(upperA.empty() || (upperA.size()>1 && upperA[0]=='0') || upperA.find_first_not_of("0123456789")!=std::string::npos)return "";
-  // Decimal increment avoids converting an arbitrary-precision endpoint to a
-  // machine integer merely to preserve the symbolic scalar-product width.
+  // Increment the decimal endpoint without narrowing an arbitrary-width index.
   width=upperA;size_t digit=width.size();
   while(digit && width[digit-1]=='9')width[--digit]='0';
   if(digit)++width[digit-1];else width.insert(width.begin(),'1');
  }
- if(binaryDot) {
-  const std::string high=upperA.size()==3 && asciiLetter(upperA[0]) ? "("+upperA+")" : upperA;
-  auto word=[&](const std::string &name){return "qregisterword(\""+name+"_\","+high+",0,vector())";};
-  end=at;return "qcenterdot("+word(first)+","+word(second)+")";
- }
- end=at;return "qscalarproductsum(\""+first+"_\",\""+second+"_\","+width+",vector())";
+ return "qscalarproductsum(\""+first+"_\",\""+second+"_\","+width+",vector())";
 }
 // Infer only a contiguous, zero-based column family. Keep the raw subscript
 // groups: flattening alpha_{n-1} first would confuse it with alpha_n - 1.
@@ -2523,6 +2539,11 @@ class TeXReader {
    if(close && (input[pos]==close || (membershipGroup && (input[pos]==')' || input[pos]==']')))) { ++pos; closed=true; break; }
    if(matrix && input.compare(pos,4,"\\end")==0 && (pos+4==input.size() || !asciiLetter((unsigned char)input[pos+4]))) {
     pos+=4; if(nameGroup()!=environment) throw std::runtime_error(error("Mismatched matrix environment")); closed=true; break;
+   }
+   if(binaryWords && caseColumn && asciiLetter(input[pos]) && trim(result).empty()) {
+    size_t end=pos;
+    std::string condition=indexedProduct(input,pos,end,ProductSeries::ParityCondition);
+    if(!condition.empty()) {result+=condition;pos=end;continue;}
    }
    if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
