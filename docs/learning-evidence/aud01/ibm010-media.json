@@ -1,0 +1,223 @@
+{
+  "notebook": {
+    "revision": "079769d205eb3b60e077820060274c7b0359c123",
+    "path": "learning/courses/general-formulation-of-quantum-information/general-measurements/introduction.ipynb",
+    "sha256": "981fd84abc72f73d4d7d3cbed614527318d85888ac5f29b1d8733fd23321b493"
+  },
+  "slides": {
+    "url": "https://ibm.box.com/public/static/plp9gokjjpvktdsclrex0pg3q2n8f3op.pdf",
+    "sha256": "143b4a60ab1520f7f481f1f14c35edf01d5b8550ae75767813ed52713882c13c",
+    "pages": 30
+  },
+  "checks": [
+    {
+      "page": 6,
+      "label": "standard zero probability",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr((density(|0>))*(([2,i;-i,1]/3)))=2/3",
+      "expected": "1"
+    },
+    {
+      "page": 6,
+      "label": "standard one probability",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr((density(|1>))*(([2,i;-i,1]/3)))=1/3",
+      "expected": "1"
+    },
+    {
+      "page": 7,
+      "label": "two effects sum to identity",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "([2,1;1,1]/3)+([1,-1;-1,2]/3)=I",
+      "expected": "1"
+    },
+    {
+      "page": 7,
+      "label": "first plus outcome",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "Tr((([2,1;1,1]/3))*(density(|+>)))=5/6",
+      "expected": "1"
+    },
+    {
+      "page": 7,
+      "label": "second plus outcome",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "Tr((([1,-1;-1,2]/3))*(density(|+>)))=1/6",
+      "expected": "1"
+    },
+    {
+      "page": 8,
+      "label": "tetrahedral POVM completeness",
+      "numerical_adaptation": false,
+      "negative_control": false,
+      "equation": "(density(|0>)+density([1;sqrt(2)]/sqrt(3))+density([1;sqrt(2)*(-1+i*sqrt(3))/2]/sqrt(3))+density([1;sqrt(2)*(-1-i*sqrt(3))/2]/sqrt(3)))/2=I",
+      "expected": "1"
+    },
+    {
+      "page": 9,
+      "label": "classical result removes phase",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "channel(([2,i;-i,1]/3),vector(density(|0>),density(|1>)))=[2,0;0,1]/3",
+      "expected": "1"
+    },
+    {
+      "page": 11,
+      "label": "remote outcome probability",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr((tensor(density(|1>),I))*(density((|00>+|11>)/sqrt(2))))=1/2",
+      "expected": "1"
+    },
+    {
+      "page": 13,
+      "label": "remote state after outcome one",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "2*ptrace(tensor(density(|1>),I)*density((|00>+|11>)/sqrt(2)),[0])=density(|1>)",
+      "expected": "1"
+    },
+    {
+      "page": 13,
+      "label": "wrong conditional state",
+      "numerical_adaptation": true,
+      "negative_control": true,
+      "equation": "2*ptrace(tensor(density(|1>),I)*density((|00>+|11>)/sqrt(2)),[0])=density(|0>)",
+      "expected": "0"
+    },
+    {
+      "page": 13,
+      "label": "first-register outcome leaves the second register in zero",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "ptrace(tensor(density(|1>),I)*density(|10>),[0])=density(|0>)",
+      "expected": "1"
+    },
+    {
+      "page": 17,
+      "label": "Naimark isometry",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "dagger(([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2))*([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2)=I",
+      "expected": "1"
+    },
+    {
+      "page": 19,
+      "label": "Naimark outcome probability",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr((tensor(density(|0>),I))*(((([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2))*([2,i;-i,1]/3)*dagger(([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2)))))=7/12",
+      "expected": "1"
+    },
+    {
+      "page": 20,
+      "label": "Naimark projected probability equals Born rule",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr((tensor(density(|0>),I))*(((([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2))*([2,i;-i,1]/3)*dagger(([sqrt(3),0;0,1;1,0;0,sqrt(3)]/2)))))=Tr(([3,0;0,1]/4)*(([2,i;-i,1]/3)))",
+      "expected": "1"
+    },
+    {
+      "page": 21,
+      "label": "conditional state trace",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "Tr(([sqrt(3),0;0,1]/2)*([2,i;-i,1]/3)*([sqrt(3),0;0,1]/2)/(7/12))=1",
+      "expected": "1"
+    },
+    {
+      "page": 22,
+      "label": "instrument completeness",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "dagger([sqrt(3),0;0,1]/2)*([sqrt(3),0;0,1]/2)+dagger([1,0;0,sqrt(3)]/2)*([1,0;0,sqrt(3)]/2)=I",
+      "expected": "1"
+    },
+    {
+      "page": 25,
+      "label": "Helstrom orthogonal states",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(1+tracenorm((density(|0>)-density(|1>))/2))/2=1",
+      "expected": "1"
+    },
+    {
+      "page": 25,
+      "label": "Helstrom identical states",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(1+tracenorm((density(|0>)-density(|0>))/2))/2=1/2",
+      "expected": "1"
+    },
+    {
+      "page": 27,
+      "label": "uniform tetrahedral success probability",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(Tr((density(|0>)/2)*(density(|0>)))+Tr((density([1;sqrt(2)]/sqrt(3))/2)*(density([1;sqrt(2)]/sqrt(3))))+Tr((density([1;sqrt(2)*(-1+i*sqrt(3))/2]/sqrt(3))/2)*(density([1;sqrt(2)*(-1+i*sqrt(3))/2]/sqrt(3))))+Tr((density([1;sqrt(2)*(-1-i*sqrt(3))/2]/sqrt(3))/2)*(density([1;sqrt(2)*(-1-i*sqrt(3))/2]/sqrt(3)))))/4=1/2",
+      "expected": "1"
+    },
+    {
+      "page": 29,
+      "label": "Pauli tomography",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(I+Tr(X*([2,i;-i,1]/3))*X+Tr(Y*([2,i;-i,1]/3))*Y+Tr(Z*([2,i;-i,1]/3))*Z)/2=([2,i;-i,1]/3)",
+      "expected": "1"
+    },
+    {
+      "page": 30,
+      "label": "tetrahedral tomography",
+      "numerical_adaptation": true,
+      "negative_control": false,
+      "equation": "(3*Tr((density(|0>)/2)*(([2,i;-i,1]/3)))-1/2)*density(|0>)+(3*Tr((density([1;sqrt(2)]/sqrt(3))/2)*(([2,i;-i,1]/3)))-1/2)*density([1;sqrt(2)]/sqrt(3))+(3*Tr((density([1;sqrt(2)*(-1+i*sqrt(3))/2]/sqrt(3))/2)*(([2,i;-i,1]/3)))-1/2)*density([1;sqrt(2)*(-1+i*sqrt(3))/2]/sqrt(3))+(3*Tr((density([1;sqrt(2)*(-1-i*sqrt(3))/2]/sqrt(3))/2)*(([2,i;-i,1]/3)))-1/2)*density([1;sqrt(2)*(-1-i*sqrt(3))/2]/sqrt(3))=([2,i;-i,1]/3)",
+      "expected": "1"
+    }
+  ],
+  "lecture": {
+    "player_id": "134063423",
+    "track": "Generated English (US)",
+    "segments": 128,
+    "digest_method": "SHA-256 over concatenated binary segment SHA-256 values in playlist order",
+    "sha256": "ac10bab536df935f064c345e3c817b1e7811836749fd38a5c06f444dce7b6dc3",
+    "distinct_cues": 1175,
+    "first_cue_seconds": 0.24,
+    "last_cue_end_seconds": 2729.239,
+    "player_url": "https://video.ibm.com/embed/recorded/134063423",
+    "duration_seconds": 2734.405
+  },
+  "runs": {
+    "release": {
+      "revision": "c5a456cd",
+      "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "exact_checks": 19,
+      "unresolved": [
+        {
+          "label": "Helstrom orthogonal states",
+          "actual": "1",
+          "exact": false
+        },
+        {
+          "label": "Helstrom identical states",
+          "actual": "1",
+          "exact": false
+        }
+      ],
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 19
+    },
+    "candidate": {
+      "revision": "92dd134b",
+      "worker_sha256": "e71b99c195496687eaed8c055282af15769bd6de71b34bcab3245a924eb3a512",
+      "exact_checks": 21,
+      "unresolved": [],
+      "windows_evaluations": 21,
+      "stable_copy_and_reentry": 21
+    }
+  }
+}
