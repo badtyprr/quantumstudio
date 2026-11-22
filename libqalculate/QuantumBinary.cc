@@ -134,7 +134,8 @@ class QuantumBinaryFunction: public MathFunction {
    out=holds ? m_one : m_zero;return 1;
   }
   if(op=="qbinaryket") {
-   if(a.isUnknown() || a.isSymbolic())return 0;
+   if(a.isUnknown() || a.isSymbolic() || (a.isFunction() && a.containsUnknowns() &&
+      (a.function()->referenceName()=="qoplus" || a.function()->referenceName()=="qbitxor")))return 0;
    if(a.isNumber() && !a.isApproximate() && (a.isZero() || a.isOne())) {
     MathStructure dimension(2);out.set(CALCULATOR->getFunction("qbasis"),&a,&dimension,NULL);
    } else out.set(CALCULATOR->getFunction("qketstate"),&a,NULL);
