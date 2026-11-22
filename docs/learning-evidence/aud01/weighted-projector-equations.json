@@ -1,0 +1,67 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-003",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 1722,
+          "end": 2071,
+          "literal_sha256": "e42aecd750ab2dac9ff7e2c2648e8967d985052df8a95777f04c3a565821ced6",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 3230,
+          "end": 3541,
+          "literal_sha256": "4abbb935e2e1bd2587a03a790849258e234677502cb354780671cff1c061ec6e",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 4069,
+          "end": 4462,
+          "literal_sha256": "ba830d339c51359e734e0036e6fa8d42ec0cf99b1804e668c719b8dee7544da5",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 16043,
+          "end": 16225,
+          "literal_sha256": "bcb9c042f31a6bbe71df23b12c3a6b30d0146a2004f5bbb03fc66e89dd3cc884",
+          "outcome": "result",
+          "copy_text": "1"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-004",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere.ipynb",
+      "source_sha256": "b604993a890e6d2f3d4e5ea470edd4b4ac1df361a9823f2c8a1c54dcd66b3c4b",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 10135,
+          "end": 10380,
+          "literal_sha256": "3c1d833a8a5f1316e8a370daa2325abba2c3579714a3444f50a9864731c4674e",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 10396,
+          "end": 10525,
+          "literal_sha256": "edd51137c792921334655481c2a98044a444797d6a9ef9f66045c42f6fced8b3",
+          "outcome": "result",
+          "copy_text": "1"
+        }
+      ]
+    }
+  ]
+}
