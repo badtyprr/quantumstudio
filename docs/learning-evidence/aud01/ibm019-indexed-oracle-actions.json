@@ -1,0 +1,122 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "actions": [
+    {
+      "occurrence": 50,
+      "cell": 0,
+      "start": 7770,
+      "end": 7816,
+      "source_action": "$U_f \\bigl(\\vert b\\rangle \\vert a \\rangle\\bigr)$",
+      "copy": "qmul(qoperatorref(\"U_f\"),qtensor(qketstate('b'),qketstate('a')))",
+      "scale": 1,
+      "controls": [
+        {"truth_table": [0, 0], "scaled_input": [1, 0, 0, 0], "scaled_output": [1, 0, 0, 0]},
+        {"truth_table": [0, 0], "scaled_input": [0, 0, 1, 0], "scaled_output": [0, 0, 1, 0]},
+        {"truth_table": [0, 0], "scaled_input": [0, 1, 0, 0], "scaled_output": [0, 1, 0, 0]},
+        {"truth_table": [0, 0], "scaled_input": [0, 0, 0, 1], "scaled_output": [0, 0, 0, 1]},
+        {"truth_table": [0, 1], "scaled_input": [1, 0, 0, 0], "scaled_output": [1, 0, 0, 0]},
+        {"truth_table": [0, 1], "scaled_input": [0, 0, 1, 0], "scaled_output": [0, 0, 1, 0]},
+        {"truth_table": [0, 1], "scaled_input": [0, 1, 0, 0], "scaled_output": [0, 0, 0, 1]},
+        {"truth_table": [0, 1], "scaled_input": [0, 0, 0, 1], "scaled_output": [0, 1, 0, 0]},
+        {"truth_table": [1, 0], "scaled_input": [1, 0, 0, 0], "scaled_output": [0, 0, 1, 0]},
+        {"truth_table": [1, 0], "scaled_input": [0, 0, 1, 0], "scaled_output": [1, 0, 0, 0]},
+        {"truth_table": [1, 0], "scaled_input": [0, 1, 0, 0], "scaled_output": [0, 1, 0, 0]},
+        {"truth_table": [1, 0], "scaled_input": [0, 0, 0, 1], "scaled_output": [0, 0, 0, 1]},
+        {"truth_table": [1, 1], "scaled_input": [1, 0, 0, 0], "scaled_output": [0, 0, 1, 0]},
+        {"truth_table": [1, 1], "scaled_input": [0, 0, 1, 0], "scaled_output": [1, 0, 0, 0]},
+        {"truth_table": [1, 1], "scaled_input": [0, 1, 0, 0], "scaled_output": [0, 0, 0, 1]},
+        {"truth_table": [1, 1], "scaled_input": [0, 0, 0, 1], "scaled_output": [0, 1, 0, 0]}
+      ]
+    },
+    {
+      "occurrence": 54,
+      "cell": 0,
+      "start": 8041,
+      "end": 8093,
+      "source_action": "$U_f \\bigl( \\vert \\psi \\rangle \\vert a \\rangle \\bigr)$",
+      "copy": "qmul(qoperatorref(\"U_f\"),qtensor(qnamedket('ψ'),qketstate('a')))",
+      "scale": "sqrt(2)",
+      "controls": [
+        {"truth_table": [0, 0], "scaled_input": [1, 0, 1, 0], "scaled_output": [1, 0, 1, 0]},
+        {"truth_table": [0, 0], "scaled_input": [0, 1, 0, 1], "scaled_output": [0, 1, 0, 1]},
+        {"truth_table": [0, 1], "scaled_input": [1, 0, 1, 0], "scaled_output": [1, 0, 1, 0]},
+        {"truth_table": [0, 1], "scaled_input": [0, 1, 0, 1], "scaled_output": [0, 1, 0, 1]},
+        {"truth_table": [1, 0], "scaled_input": [1, 0, 1, 0], "scaled_output": [1, 0, 1, 0]},
+        {"truth_table": [1, 0], "scaled_input": [0, 1, 0, 1], "scaled_output": [0, 1, 0, 1]},
+        {"truth_table": [1, 1], "scaled_input": [1, 0, 1, 0], "scaled_output": [1, 0, 1, 0]},
+        {"truth_table": [1, 1], "scaled_input": [0, 1, 0, 1], "scaled_output": [0, 1, 0, 1]}
+      ]
+    },
+    {
+      "occurrence": 56,
+      "cell": 0,
+      "start": 8222,
+      "end": 8271,
+      "source_action": "$U_f \\bigl( \\vert - \\rangle \\vert a \\rangle \\bigr)$",
+      "copy": "qmul(qoperatorref(\"U_f\"),qtensor(qmul(qpower(2,−1 ∕ 2),matrix(2,1,vector(1,−1))),qketstate('a')))",
+      "scale": "sqrt(2)",
+      "controls": [
+        {"truth_table": [0, 0], "scaled_input": [1, 0, -1, 0], "scaled_output": [1, 0, -1, 0]},
+        {"truth_table": [0, 0], "scaled_input": [0, 1, 0, -1], "scaled_output": [0, 1, 0, -1]},
+        {"truth_table": [0, 1], "scaled_input": [1, 0, -1, 0], "scaled_output": [1, 0, -1, 0]},
+        {"truth_table": [0, 1], "scaled_input": [0, 1, 0, -1], "scaled_output": [0, -1, 0, 1]},
+        {"truth_table": [1, 0], "scaled_input": [1, 0, -1, 0], "scaled_output": [-1, 0, 1, 0]},
+        {"truth_table": [1, 0], "scaled_input": [0, 1, 0, -1], "scaled_output": [0, 1, 0, -1]},
+        {"truth_table": [1, 1], "scaled_input": [1, 0, -1, 0], "scaled_output": [-1, 0, 1, 0]},
+        {"truth_table": [1, 1], "scaled_input": [0, 1, 0, -1], "scaled_output": [0, -1, 0, 1]}
+      ]
+    },
+    {
+      "occurrence": 64,
+      "cell": 0,
+      "start": 9035,
+      "end": 9084,
+      "source_action": "$U_f \\bigl( \\vert - \\rangle \\vert + \\rangle \\bigr)$",
+      "copy": "qmul(qoperatorref(\"U_f\"),qtensor(qmul(qpower(2,−1 ∕ 2),matrix(2,1,vector(1,−1))),qmul(qpower(2,−1 ∕ 2),matrix(2,1,vector(1,1)))))",
+      "scale": 2,
+      "controls": [
+        {"truth_table": [0, 0], "scaled_input": [1, 1, -1, -1], "scaled_output": [1, 1, -1, -1]},
+        {"truth_table": [0, 1], "scaled_input": [1, 1, -1, -1], "scaled_output": [1, -1, -1, 1]},
+        {"truth_table": [1, 0], "scaled_input": [1, 1, -1, -1], "scaled_output": [-1, 1, 1, -1]},
+        {"truth_table": [1, 1], "scaled_input": [1, 1, -1, -1], "scaled_output": [-1, -1, 1, 1]}
+      ]
+    }
+  ],
+  "identity_controls": [
+    {"occurrence": 54, "oracle_values": [0, 0], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [0, 0], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [0, 0], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [0, 0], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [0, 1], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [0, 1], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [0, 1], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [0, 1], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [1, 0], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [1, 0], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [1, 0], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [1, 0], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [1, 1], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [1, 1], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 54, "oracle_values": [1, 1], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 54, "oracle_values": [1, 1], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [0, 0], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [0, 0], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [0, 0], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [0, 0], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [0, 1], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [0, 1], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [0, 1], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [0, 1], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [1, 0], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [1, 0], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [1, 0], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [1, 0], "input_bit": 1, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [1, 1], "input_bit": 0, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [1, 1], "input_bit": 0, "complement_gate": true, "expected": 0},
+    {"occurrence": 56, "oracle_values": [1, 1], "input_bit": 1, "complement_gate": false, "expected": 1},
+    {"occurrence": 56, "oracle_values": [1, 1], "input_bit": 1, "complement_gate": true, "expected": 0}
+  ],
+  "identity_binding": "Bind f(a) to the specified truth-table value and a to a one-bit label. Use |0> for psi in M054. Compare the full copied equation with both the correct oracle matrix and the matrix for its complement."
+}

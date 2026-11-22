@@ -1439,6 +1439,7 @@ class Parser {
    // read the following group so the library cannot resolve rho as the plastic constant.
    else if(a=="ρ" && p<s.size() && s[p]=='(')a="qoperatorref("+indexableLabel(a)+")";
    else if(!numericToken && !indexedScalar && !groupedFactor && !(costContext && (a=="n" || a=="m" || a=="k")) && take('(')) {
+    const size_t operandStart=p;
     std::string publicName=a, name=a; if(name=="dagger" || name=="adjoint") name="qdag";
     // A copied integer list can have 1,024 entries. Read flat literal data
     // directly and retain the normal expression budget for computed entries.
@@ -2002,9 +2003,13 @@ class Parser {
      size_t start=args[0].find('(')+1;
      args[0]=args[0].substr(start,args[0].size()-start-1);name="qfloorlog2";
     }
-    if(name!="O" && name.size()==1 && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
-       (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos)) {
-     args.insert(args.begin(),indexableLabel(name));name="qmul";
+    const bool indexedOperator=name.size()==3 && name[1]=='_' && std::isalpha(static_cast<unsigned char>(name[2])) &&
+     (!CALCULATOR || !CALCULATOR->getActiveFunction(name));
+    if(name!="O" && (name.size()==1 || indexedOperator) && name[0]>='A' && name[0]<='Z' && args.size()==1 &&
+       (args[0].find("qketstate(")!=std::string::npos || args[0].find("qcomputationalket(")!=std::string::npos ||
+        (indexedOperator && lastKetEnd!=std::string::npos && lastKetEnd>operandStart))) {
+     auto operand=indexableLabel(name);
+     args.insert(args.begin(),indexedOperator ? "qoperatorref("+operand+")" : operand);name="qmul";
     }
     if(args.size()==1 && name.size()>2 && (name[0]=='f' || name[0]=='g' || name[0]=='h') &&
        name[1]=='_' && name.find_first_not_of("0123456789",2)==std::string::npos) {

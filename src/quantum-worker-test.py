@@ -67,6 +67,15 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# A parenthesized Deutsch state remains the operand of the whole indexed oracle.
+oracle_action = data(r"quantum:$U_f\bigl(\vert 0\rangle\bigr)$")["copy_text"]
+assert data("quantum:" + oracle_action)["copy_text"] == oracle_action
+assert data(f'quantum:replace(({oracle_action}),"U_f",X)')["copy_text"] == "matrix(2,1,[0,1])"
+assert data('quantum:replace(U_f((2|0>)),"U_f",X)')["copy_text"] == "matrix(2,1,[0,2])"
+assert "qoperatorref" not in data("quantum:U_f(|-1|)")["copy_text"]
+ket_action = data(r"quantum:$V_{g}(\vert\psi\rangle)$")["copy_text"]
+assert data(f'''quantum:replace(replace(({ket_action}),'ψ',[0;1]),"V_g",Y)''')["copy_text"] == "matrix(2,1,[−i,0])"
+
 # IBM-016 defines F as root fidelity. Its square for this pair is 3/4.
 fidelity = data(r"quantum:$\operatorname{F}\bigl(\rho,\sigma\bigr)$")["copy_text"]
 assert "qrootfidelity(" in fidelity and data("quantum:" + fidelity)["copy_text"] == fidelity
