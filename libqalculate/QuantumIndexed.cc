@@ -2243,7 +2243,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix") {
+  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qdiagonalsum") {
    const bool samples=op=="qsamplebitmatrix";
    const bool matrix=samples || op=="qindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
@@ -2269,6 +2269,15 @@ class QuantumIndexedFunction: public MathFunction {
     dimensions[axis]=last.number().intValue()+1-offset;
    }
    if(deferred)return 0;
+   if(op=="qdiagonalsum") {
+    out.clear();
+    for(int index=0;index<dimensions[0];++index) {
+     if(CALCULATOR->aborted())return 0;
+     std::string label=std::to_string(index);
+     out.add(MathStructure(prefix+label+","+label,true));
+    }
+    return 1;
+   }
    out.clearMatrix();out.resizeMatrix(dimensions[0],dimensions[1],m_zero);
    for(int row=0;row<dimensions[0];++row)for(int col=0;col<dimensions[1];++col) {
     if(CALCULATOR->aborted())return 0;
@@ -3244,6 +3253,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
  calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
+ calculator.addFunction(new QuantumIndexedFunction("qdiagonalsum",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedcoefficient",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedket",1));
  calculator.addFunction(new QuantumIndexedFunction("qfamilymembers",4));

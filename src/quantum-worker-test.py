@@ -195,6 +195,20 @@ assert data(f"quantum:({assigned_unit})=2*tensor(I,(|0><1|))")["copy_text"] == "
 assert data("quantum:(I @ 2|0><1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(H @ H |00>)=([1;1;1;1]/2)")["copy_text"] == "1"
 
+diagonal_series = r"A_{0,0}+A_{1,1}+\cdots+A_{n-1,n-1}"
+diagonal_copy = data("quantum:" + diagonal_series)["copy_text"]
+assert data("quantum:" + diagonal_copy)["copy_text"] == diagonal_copy
+for dim in (2, 3, 4):
+    entries = "+".join(f'"A_{i},{i}"' for i in range(dim))
+    assert data(f"quantum:replace(({diagonal_copy}),n,{dim})=({entries})")["copy_text"] == "1"
+assert data(r"quantum:\operatorname{Tr}\begin{pmatrix}1&i\\2&3i\end{pmatrix}=1+3i")["copy_text"] == "1"
+assert data(f'quantum:replace(({diagonal_copy}),n,2)=("A_0,0"+"A_1,1"+1)')["copy_text"] == "0"
+
+for malformed in (diagonal_series.replace("1,1", "1,0"), "3-" + diagonal_series):
+    run("quantum:" + malformed, "--json", success=False)
+for dim in (1, 1025):
+    run(f"quantum:replace(({diagonal_copy}),n,{dim})", "--json", success=False)
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]
