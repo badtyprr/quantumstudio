@@ -39,11 +39,11 @@ assert nested_copy == data(r"quantum:\begin{gathered}" + nested_matrix + r"\\" +
 
 # The weights and both sides of each projector share the same endpoint.
 spectral = r"$$M = w_0 |v_0><v_0| + \cdots + w_{n-1} |v_{n-1}><v_{n-1}|$$"
-for extent, count in [("n-1", "n"), ("k+1", '"k"'), ("i+1", '"i"')]:
+for extent, count, bound in [("n-1", "n", "2"), ("k+1", '"k"', "0"), ("i+1", '"i"', "0"), ("i", '"i"', "1"), ("c", '"c"', "1")]:
     copied = data("quantum:" + spectral.replace("n-1", extent))["copy_text"]
     assert "qspectralsum" in copied and data("quantum:" + copied)["copy_text"] == copied
     expr = copied
-    for symbol, value in [('"w_0"', "3"), ('"v_0"', "|+i>"), (count, "2" if extent=="n-1" else "0"),
+    for symbol, value in [('"w_0"', "3"), ('"v_0"', "|+i>"), (count, bound),
                           ('"w_1"', "1"), ('"v_1"', "|-i>")]:
         expr = f"replace(({expr}),{symbol},{value})"
     for candidate, truth in [("[2,-i;i,2]", "1"), ("[2,i;-i,2]", "0")]:

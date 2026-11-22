@@ -1050,10 +1050,11 @@ class Parser {
   if(end.find_first_not_of("0123456789")!=std::string::npos) {
    if(!std::isalpha((unsigned char)end[0]))return "";
    // index() admits offsets only after a single letter inside braces.
-   if(end.size()>1) {
+   std::string dimension=end.substr(0,1);
+   if(std::string("nxyz").find(end[0])==std::string::npos)dimension=indexableLabel(dimension);
+   if(end.size()==1)end=dimension;
+   else {
     if(end[1]!='+' && end[1]!='-')return "";
-    std::string dimension=end.substr(0,1);
-    if(std::string("nxyz").find(end[0])==std::string::npos)dimension=indexableLabel(dimension);
     end=std::string(end[1]=='-' ? "qsub(" : "qadd(")+dimension+","+end.substr(2)+")";
    }
   }
