@@ -36,6 +36,22 @@ Recommended order: Run AUD-01 and AUD-02 alongside development and select the fi
 | [AUD-03](#aud-03) | P2 | M | Pending | AUD-01 | Audit remaining mathematical lessons |
 | [AUD-04](#aud-04) | P2 | M | Pending | AUD-02 | Audit remaining notebooks end to end |
 
+### IBM-001 through IBM-018 formula screen
+
+The first 18 notebooks at IBM source revision `079769d205eb3b60e077820060274c7b0359c123` contain 2,110 dollar-delimited math occurrences in Markdown prose, with 847 distinct inputs. The published calculator returned 1,569 exact-labelled results, 526 diagnostics and 15 outputs with invalid UTF-8. Development worker `86e41e28ae263f4eb2f485eaf7f34bf99cf761a394cab1759071ae452e5b3f27` returned 1,917 exact-labelled results and 193 diagnostics. These counts measure parser and output behavior. Mathematical correctness, video content and whole-lesson acceptance require separate checks.
+
+The shared-index sum change replays the 31 occurrences that previously reported an invalid summation index. Eighteen now return results and 13 reach other diagnostics. The [occurrence manifest](learning-evidence/aud01/shared-index-sources.json) lists every cell and source span. Run the [replay](learning-evidence/aud01/replay-shared-index-sources.py) with the pinned documentation checkout and the worker executable. Add `--baseline` to check the previous worker. Counts include repeated occurrences. One IBM-007 channel equation still copies as multiplication where the source applies a map. Its Windows session reopened successfully, but its copied product changed spelling on re-entry and its mathematical interpretation remains open.
+
+| Lesson | Shared-index diagnostics before | Results after |
+|---|---:|---:|
+| IBM-007 | 3 | 2 |
+| IBM-008 | 8 | 4 |
+| IBM-009 | 9 | 6 |
+| IBM-011 | 3 | 2 |
+| IBM-012 | 5 | 4 |
+| IBM-015 | 2 | 0 |
+| IBM-016 | 1 | 0 |
+
 ## Release queue
 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.

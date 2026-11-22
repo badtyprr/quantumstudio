@@ -274,6 +274,11 @@ int main() {
   equal(R"(\norm{X}_1)","norm(X,1)");
   equal(R"(\norm{X}^{2}_F)","norm(X,2)^(2)");
   equal(R"(\lVert X\rVert_2)","norm( X,2)");
+  equal(R"(\sum_{a,b=0}^{2}{a+b})","qtexgroupsum(0,2,[a,b],a+b)");
+  equal(R"(\sum_{a,b\in S} ab+1)","qtexsumset( S,[a,b]) ab+1");
+  rejects(R"(\sum_{a,a=0}^{2}{a})");
+  rejects(R"(\sum_{a,,b=0}^{2}{b})");
+  equal(R"(\sum_{a,b=0}^{a}{b})","qtexgroupsum(0,a,[a,b],b)");
   equal(R"(\sum_{k=0}^{2}{k})","qtexgroupsum(0,2,k,k)");
   equal(R"(\sum_{a_0=0}^{2}{a_0})","qtexgroupsum(0,2,a_0,a_0)");
   equal(R"(\sum_{a_{10}=0}^{2}{a_{10}})","qtexgroupsum(0,2,a_10,a_10)");

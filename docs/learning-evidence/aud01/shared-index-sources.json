@@ -1,0 +1,271 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-007",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 5106,
+          "end": 5426,
+          "literal_sha256": "26425b8e9cbebe141b842b5a1f12e51bb4b8eab61cb4e7cd3d934c36474cd24f",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 6299,
+          "end": 6672,
+          "literal_sha256": "ab96031f34831cdcf34e4d665e7fcbf95539ebe0a46e9d10b7fd9284c207cbc3",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 8639,
+          "end": 8781,
+          "literal_sha256": "3f67c4b68fe98292f31a0a0b1ec5ee735aa419eee591b142dcb2351990e02d0c",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-008",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels.ipynb",
+      "source_sha256": "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 28596,
+          "end": 28716,
+          "literal_sha256": "cd167a21ae8484094671c6c82681dbdb9f48939057b1d2cc794372696c5bdfb0",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 30399,
+          "end": 30545,
+          "literal_sha256": "5fbd3045b2de980152d73ec9eb443db859353c548cead9a68973823a7a926bd3",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 30661,
+          "end": 30889,
+          "literal_sha256": "e987f8f916daf36ce4b6c097d223efffcdf1aee055f115782afcb53da1b18431",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 31987,
+          "end": 32392,
+          "literal_sha256": "196f5ad833beed6a9a5221f19f0645651d333e070b47674e4e3413b58e2d9f0e",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 32928,
+          "end": 33294,
+          "literal_sha256": "3a8d92534248bcd7c4f5d5f15d6c50b80e55c4d57f9b8e03120fe1832f091f9b",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 33400,
+          "end": 33851,
+          "literal_sha256": "3f43190c705a6e7faebeb2c37fc110a569f27c307f455f9e690c97ac89663988",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 33940,
+          "end": 34366,
+          "literal_sha256": "0d4802cc292e87b84fec81610513adc21d771ae61c6727740053199462314b87",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 34472,
+          "end": 34867,
+          "literal_sha256": "1a0e0281c6b8efc4137283d2f094a057d91063149298048c2c80198215693c8d",
+          "outcome": "diagnostic"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-009",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence.ipynb",
+      "source_sha256": "e2a20c467250d1ec1e01454b882a1e182450230999c471767c57938990b03f3f",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 4038,
+          "end": 4186,
+          "literal_sha256": "09c28bb5169355aa4ed305999ce4fe66d3b75fb921b8579d435d8468d870dbb2",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 4218,
+          "end": 4447,
+          "literal_sha256": "acc2ffdcc7045eda0a1f9d152bc9b176fb8bcbe29a67c58727c5add98f31e606",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 4834,
+          "end": 5236,
+          "literal_sha256": "83f6093efdbd6dec8c36a6820a9e314174c8b85135a7f334819070d96b53d422",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 11486,
+          "end": 12085,
+          "literal_sha256": "09bd1221cffb29234c0c85efce9d434778e7ccbfd0eb4e3d4308205120a3dba8",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 12630,
+          "end": 12976,
+          "literal_sha256": "d4ffeffc3006abb32062fb7b2dee63e94e3f1c0a09f63b7c0abccfc1406f5ddb",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 13181,
+          "end": 13381,
+          "literal_sha256": "bd288bbdce30e89301e5b7104702489e1544725917caf1ab0737534ba3896c86",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 13398,
+          "end": 13749,
+          "literal_sha256": "9d72be23d6343b4b7aa500b54046c0b891d2fbe8b796a3af11da1f9261271330",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 17635,
+          "end": 17781,
+          "literal_sha256": "5eb619f860cd3d816d590abc5f183f307e8b5302dbfd0b6393f6ab86ba388262",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 18961,
+          "end": 19193,
+          "literal_sha256": "58b9af7f333a8ad921b3e0ba325f3af8af5f9e5e4299b1f9a49db200da4a1784",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-011",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements.ipynb",
+      "source_sha256": "f7a4df41bb0ba245b6e52a62b059703c376a9a5d695e6f33e8fb3dbecf7c6bf6",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 18509,
+          "end": 19065,
+          "literal_sha256": "c5ec7d0ca561bed546527014adaed17cc7b4d247ec9c9612be571883335e89e3",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 21034,
+          "end": 21115,
+          "literal_sha256": "f49a4e180fdc7a3812f316d88a4082343c40f204670301c9efd24f47d19073c7",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 23901,
+          "end": 24758,
+          "literal_sha256": "585ba879ad76db58fac204ae1e5883fc488a3388be815e4d4bbf8dc9ffaf519c",
+          "outcome": "diagnostic"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-012",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 4918,
+          "end": 5171,
+          "literal_sha256": "528932376c3fdbaada25a897274dab4377dd8eea024cf19206d566cfb3162efc",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 5878,
+          "end": 6049,
+          "literal_sha256": "7c233b47468094dcc8d73c7d7dbc2bfa1783c85ad2084b54fc612d872083ffce",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 7590,
+          "end": 7723,
+          "literal_sha256": "0d6ad52db8aea080a65fa604bdd865de885ec9cb88f156cf039f0c4694f7c0ea",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 10526,
+          "end": 10698,
+          "literal_sha256": "1747c4e8c0825ca90874049a660588ced0a61aab17c2f351afa4b25365b861e7",
+          "outcome": "result"
+        },
+        {
+          "cell": 0,
+          "start": 11456,
+          "end": 11642,
+          "literal_sha256": "f4bdd0eb13564797ca39eb3f7a963d1c836cb6c53454b3e9b999d824ffa0587f",
+          "outcome": "result"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-015",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications.ipynb",
+      "source_sha256": "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 12361,
+          "end": 12664,
+          "literal_sha256": "ef77e1a2de24328e40a3a820c7c0bb6a2cc75fea0418ba490c4bee3a110df5af",
+          "outcome": "diagnostic"
+        },
+        {
+          "cell": 0,
+          "start": 29433,
+          "end": 29795,
+          "literal_sha256": "16bfd9ff1e8d61b031b2f89e0ea11802fe8144a319464801f83e38028a2db84e",
+          "outcome": "diagnostic"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-016",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+      "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 16597,
+          "end": 17277,
+          "literal_sha256": "033b8ff9c78bd080f8e52d71faa81f9edb5dbd6d69666dee0d7e89813b551f1c",
+          "outcome": "diagnostic"
+        }
+      ]
+    }
+  ]
+}

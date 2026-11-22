@@ -1770,18 +1770,33 @@ class TeXReader {
     if(input[pos]!='{')return "qtexregistersum("+arguments+") ";
     return "qtexgroupregistersum("+arguments+","+group()+")";
    }
-   if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
-   // A grouped arithmetic subscript is part of the variable's identity,
-   // not arithmetic applied to the variable. Keep its expression for the
-   // notation parser, which owns lexical binding and expression validation.
-   size_t indexed=variable.find("_{");
-   std::string identifier=variable;
-   if(indexed!=std::string::npos) {
-    if(!indexed || variable.back()!='}' || trim(variable.substr(indexed+2,variable.size()-indexed-3)).empty())
-     throw std::runtime_error(error("Invalid summation index"));
-    identifier=variable.substr(0,indexed);
+   if(name=="sum" && variable.find(',')!=std::string::npos && variable.find("_{")==std::string::npos) {
+    std::set<std::string> seen;
+    size_t begin=0;
+    for(;;) {
+     size_t comma=variable.find(',',begin);
+     std::string index=trim(variable.substr(begin,comma-begin));
+     if(index.size()!=1 || !asciiLetter(index[0]))
+      throw std::runtime_error(error("Shared summation indices must be single letters"));
+     if(!seen.insert(index).second)throw std::runtime_error(error("Duplicate shared summation index"));
+     if(comma==std::string::npos)break;
+     begin=comma+1;
+    }
+    variable="["+variable+"]";
+   } else {
+    if(variable[0]>='0' && variable[0]<='9') throw std::runtime_error(error("A summation index cannot begin with a digit"));
+    // A grouped arithmetic subscript is part of the variable's identity,
+    // not arithmetic applied to the variable. Keep its expression for the
+    // notation parser, which owns lexical binding and expression validation.
+    size_t indexed=variable.find("_{");
+    std::string identifier=variable;
+    if(indexed!=std::string::npos) {
+     if(!indexed || variable.back()!='}' || trim(variable.substr(indexed+2,variable.size()-indexed-3)).empty())
+      throw std::runtime_error(error("Invalid summation index"));
+     identifier=variable.substr(0,indexed);
+    }
+    for(unsigned char c:identifier) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && identifier.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
    }
-   for(unsigned char c:identifier) if(c<128 && !asciiLetter(c) && c!='_' && !(c>='0' && c<='9' && identifier.find('_')!=std::string::npos)) throw std::runtime_error(error("Invalid summation index"));
    space();
    if(pos==input.size())throw std::runtime_error(error("Missing finite sum/product body"));
    if(input[pos]!='{') {
