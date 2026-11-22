@@ -12,28 +12,32 @@
           "start": 955,
           "end": 977,
           "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         },
         {
           "cell": 0,
           "start": 11786,
           "end": 11808,
           "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         },
         {
           "cell": 0,
           "start": 13243,
           "end": 13277,
           "literal_sha256": "0b71df210cfcc3ed90d93ff1c8d249f859ad90f74173eec3672abe475b45d066",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"\u03bb_\",0,qsub('n',1),vector())"
         },
         {
           "cell": 0,
           "start": 13331,
           "end": 13353,
           "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('n',1),vector())"
         }
       ]
     },
@@ -47,14 +51,16 @@
           "start": 3930,
           "end": 3952,
           "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         },
         {
           "cell": 0,
           "start": 4126,
           "end": 4148,
           "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         }
       ]
     },
@@ -68,7 +74,8 @@
           "start": 13624,
           "end": 13647,
           "literal_sha256": "cd34fd61a2986250e9057486b06e3b056176e8acd9074121b4316f3b880c423f",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         }
       ]
     },
@@ -128,7 +135,8 @@
           "start": 841,
           "end": 863,
           "literal_sha256": "d71788e7444cf65dfcdf3bc6dd9103d2bad92bcd771475b3a5a3ddb67e5b74ec",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('m',1),vector())"
         }
       ]
     },
@@ -142,7 +150,8 @@
           "start": 3084,
           "end": 3106,
           "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('n',1),vector())"
         },
         {
           "cell": 0,
@@ -157,7 +166,8 @@
           "start": 11981,
           "end": 12003,
           "literal_sha256": "ac14a58fdd67770749248fa3b6781a5f3d73ea75108f945437660827158d9bea",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('n',1),vector())"
         },
         {
           "cell": 0,
@@ -172,7 +182,8 @@
           "start": 26456,
           "end": 26478,
           "literal_sha256": "d3f596f24fbaee06a51412ddafcfe9ccffc522720af06b3db5cba58bcc62a4c5",
-          "outcome": "result"
+          "outcome": "result",
+          "copy_text": "qindexedlist(\"p_\",0,qsub('N',1),vector())"
         }
       ]
     },
