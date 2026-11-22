@@ -703,15 +703,22 @@ std::string indexedLabelRange(const std::string &first,const std::string &last,c
 // Read the row coefficient and the conjugated column coefficient. A
 // squared modulus is the alternate notation for their diagonal entry.
 bool amplitudePair(const std::string &cell,std::string &row,std::string &column) {
- const std::string overline="\\overline{",bar="\\vert";
+ const std::string overline="\\overline",bar="\\vert";
  size_t at=cell.find(overline);
- if(at!=std::string::npos && cell.back()=='}') {
-  row=trim(cell.substr(0,at));column=trim(cell.substr(at+overline.size(),cell.size()-at-overline.size()-1));
+ if(at!=std::string::npos) {
+  std::string group=trim(cell.substr(at+overline.size()));
+  if(group.size()<3 || group.front()!='{' || group.back()!='}')return false;
+  row=trim(cell.substr(0,at));column=trim(group.substr(1,group.size()-2));
   return !row.empty() && !column.empty();
  }
  if(cell.compare(0,bar.size(),bar)!=0)return false;
  at=cell.find(bar,bar.size());
- if(at==std::string::npos || trim(cell.substr(at+bar.size()))!="^2")return false;
+ if(at==std::string::npos)return false;
+ std::string power=trim(cell.substr(at+bar.size()));
+ if(power.empty() || power.front()!='^')return false;
+ power=trim(power.substr(1));
+ if(power.size()>2 && power.front()=='{' && power.back()=='}')power=trim(power.substr(1,power.size()-2));
+ if(power!="2")return false;
  row=trim(cell.substr(bar.size(),at-bar.size()));column=row;return true;
 }
 std::string indexedMatrix(const std::string &raw,bool tex) {

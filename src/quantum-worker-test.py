@@ -74,10 +74,16 @@ amplitude_matrix = r"""\begin{pmatrix}
 \vdots & \vdots & \ddots & \vdots\\[1mm]
 \alpha_{n-1} \overline{\alpha_0} & \alpha_{n-1} \overline{\alpha_1} & \cdots & \alpha_{n-1} \overline{\alpha_{n-1}}
 \end{pmatrix}"""
-amplitudes = data("quantum:" + amplitude_matrix)["copy_text"]
+amplitude_copy = data("quantum:" + amplitude_matrix)["copy_text"]
+squared = amplitude_matrix.replace(r"\alpha_0 \overline{\alpha_0}", r"\vert\alpha_0\vert^{2}")
+assert data("quantum:" + squared.replace(r"\overline{", r"\overline {"))["copy_text"] == amplitude_copy
+amplitudes = amplitude_copy
 for key, value in [("n", "3"), ('"α_0"', "1"), ('"α_1"', "i"), ('"α_2"', "0")]:
     amplitudes = data(f"quantum:replace(({amplitudes}),{key},{value})")["copy_text"]
 assert amplitudes == "matrix(3,3,[1,−i,0,i,1,0,0,0,0])"
+for coefficient in ("[1;0]", "[x;0]", "vector(x,0)"):
+    invalid = f'quantum:replace(replace(({amplitude_copy}),n,3),"α_0",{coefficient})'
+    assert b"scalar coefficients" in run(invalid, "--json", success=False).stderr
 run("quantum:" + amplitude_matrix.replace(r"\alpha_0 \overline{\alpha_1}", r"\alpha_1 \overline{\alpha_0}"), "--json", success=False)
 
 # A zero-based weighted projector sum and its displayed diagonal matrix.

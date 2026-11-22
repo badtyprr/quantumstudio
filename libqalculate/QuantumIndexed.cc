@@ -2471,10 +2471,11 @@ class QuantumIndexedFunction: public MathFunction {
    bool pending=false;
    for(size_t i=0;i<entries.size();++i) {
     entries[i].eval(eo);
-    if(entries[i].isSymbolic() || entries[i].isUnknown() || entries[i].containsUnknowns())pending=true;
-    else if(!entries[i].representsScalar()) {
+    const bool unresolved=entries[i].isSymbolic() || entries[i].isUnknown() || entries[i].containsUnknowns();
+    if(entries[i].isVector() || (!unresolved && !entries[i].representsScalar())) {
      CALCULATOR->error(true,"An amplitude projector requires scalar coefficients.",NULL);return 0;
     }
+    if(unresolved)pending=true;
    }
    // A later assignment can be complex. Keep its conjugation intact until
    // all coefficient labels have values.
