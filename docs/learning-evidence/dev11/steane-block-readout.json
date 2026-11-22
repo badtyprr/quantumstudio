@@ -1,0 +1,71 @@
+{
+  "source": {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Steane-error-detection.svg",
+    "sha256": "fa3e635644b2310f60280caf2998528697bc614483de8a242aa601dbb834fe67"
+  },
+  "scope": "Both seven-qubit blocks of the IBM-067 figure. Ideal encoded ancillas, transversal CNOT, and physical measurement of the seven ancilla wires. X detection uses an encoded plus target. Z detection uses an encoded zero control and seven Hadamards before measurement. The encoder is the earlier verified IBM-060 circuit.",
+  "reference": "For each data error the measured words form one Hamming-code coset of 16 words, each with probability 1/16. Compare all amplitudes before measurement and the complete normalized 14-qubit state after each word. The data block retains its faulty logical state and complex relative phase. The two readouts are separate circuits as drawn.",
+  "cases": 48,
+  "state_vectors_before_measurement": 48,
+  "collapsed_state_vectors": 768,
+  "max_amplitude_error": 8.326672684688674e-17,
+  "states_without_fault": [
+    "0",
+    "1",
+    "+i"
+  ],
+  "single_fault_input": "+i",
+  "faults": [
+    "X",
+    "Y (Z followed by X, up to overall phase)",
+    "Z"
+  ],
+  "physical_fault_wires": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "syndrome_by_wire": {
+    "0": [
+      0,
+      1,
+      1
+    ],
+    "1": [
+      1,
+      0,
+      1
+    ],
+    "2": [
+      1,
+      1,
+      0
+    ],
+    "3": [
+      1,
+      1,
+      1
+    ],
+    "4": [
+      1,
+      0,
+      0
+    ],
+    "5": [
+      0,
+      1,
+      0
+    ],
+    "6": [
+      0,
+      0,
+      1
+    ]
+  },
+  "state_vector_source_sha256": "8eaccb3f233576084776db2eac259c6fe2e1774d87a19c25dee6354bebd6aa53"
+}
