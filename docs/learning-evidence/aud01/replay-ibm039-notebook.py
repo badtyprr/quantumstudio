@@ -16,6 +16,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+if not __debug__:
+    raise RuntimeError("This audit requires Python assertions.")
+
 parser = argparse.ArgumentParser()
 parser.add_argument("notebook", type=Path)
 parser.add_argument("worker", type=Path)

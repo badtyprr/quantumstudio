@@ -723,3 +723,7 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm059-lesson.json docs/learning-evid
 EXTRA_DIST += docs/learning-evidence/IBM-066.md docs/learning-evidence/dev11/ibm066-published.json docs/learning-evidence/dev11/replay-released-teleportation.py docs/learning-evidence/dev11/replay-released-teleportation.ps1
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm064-compact-distance.json docs/learning-evidence/aud01/replay-ibm064-distance.py
+
+EXTRA_DIST += docs/learning-evidence/IBM-039.md docs/learning-evidence/aud01/ibm039-published.json \
+	windows/dev13-notebooks/contracts/ibm039.json windows/dev13-notebooks/witnesses/ibm039.py \
+	windows/dev13-notebooks/observers/ibm039_seed.py windows/dev13-notebooks/observers/ibm039_samples.py

@@ -1,0 +1,259 @@
+{
+  "version": 2,
+  "id": "ibm039",
+  "route": "notebook",
+  "profile": "grover-win-py312",
+  "source": {
+    "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/single-systems/qiskit-implementation.ipynb",
+    "sha256": "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "de09cf69d949928684cc79d4c4076a1fb89d5f5c0bf9c2daf9f2b0eee6b22fe1"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "08e998faf30fc151fe75369799d2641e4fdf7d27527c87bfdac98ee692d95405"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "2608456a5ebc855d99d632a00b990260092657267685e9c6c5f964dc5def2458"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "75628454011fea192370f0bd02c19aa6d09db1a5fb9398ccc8a027837c0b909b"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "a4a408888156e37f19b78e6c9c55a4e74d2af336320e73cce52cf5ff70b06a60"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "832c08f6b9c53abf842429d502423265085c079d147745b48e92fb6a67c44b8f"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "6642b8bc8527df1cb67f8c47d5092b07b0648d98601e7bf035cc32f289c54c66"
+      },
+      {
+        "index": 8,
+        "type": "markdown",
+        "sha256": "85863fcf61e1c614cd4bb80007852a61e1b22e418cfba6a2e72747c2b4fe2f97"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "6248c5debe4bc63cad8e1a933930ad2d6a741d61d5b843a801469a20d29a5fc3"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "16bd57ccf85bacda6cb9eb3909d13b2dca4d5a54e2249803ac4751df5be68fae"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "c4890c3f1460efe36343a3ee471bcbea8d3449f56b969e7f6131dad85008026b"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "670857a41e2fb20a853d75449641a8d51fd09b6d18590b16e300c552afed0ecb"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "d40fd200ca2c06eccf16970c9b8887c200fdb5f47e47c87784acc51d359f61a9"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "ff378c2776a560985058bcf57e07fcb5aaa2f0867b19fa047fd584f0d543f39e"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "65349a0eb5cedd4432cb05cd4893d791a1eb00f5100cb31ac9513ea6c4d07ac1"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "10011a6e7974f1ba576b6ef31efdebadfe3c403b98e5786acec7510a5fd5e6b7"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "6317cd33bc1a1d1edb6fb328749a886d325bed0d445562bd789598a07cf4bbec"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "ccd2398718a3f58847621d0ae10b425d06f10e0da97c38f4119b85f5b90afbac"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "caa2f3ba4a39aee742fad8d9d63b9510a1aa79157c6c4b2e665ce9af0f8ab8ac"
+      },
+      {
+        "index": 20,
+        "type": "markdown",
+        "sha256": "0399bc82f56b73e0e5a48a5431e6854a83b6b58a9ce2e6472a935a9621167659"
+      },
+      {
+        "index": 21,
+        "type": "code",
+        "sha256": "f5b86b6e20025afbe9ac9a02f8c7d4a7df8bdd4d845351437356289473e1dc99"
+      },
+      {
+        "index": 22,
+        "type": "markdown",
+        "sha256": "301ed1b41c62aa134325f4783ddf06f58b756dd4006734932d87f8ec8c740481"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "94f9ed2ab3300121cf20226f8d99238da694b003a1744c1bb8bf3b25a18cb89d"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "ece0298beb4ba21186b85b9db096c32ff0a1e7d8699b8590564e29305a3dd7df"
+      },
+      {
+        "index": 25,
+        "type": "markdown",
+        "sha256": "3776b510a0afc1975f82ae4264d63f1f0b545eace6b97d9ba151ba627f9ea1c8"
+      },
+      {
+        "index": 26,
+        "type": "code",
+        "sha256": "d1e45c7dd3db69b86c7f97dab0f2dbd02720c147a316ba7e6d80086a2982cbf4"
+      },
+      {
+        "index": 27,
+        "type": "markdown",
+        "sha256": "b1bf92db43c1d10cc03078a3d862b1ee90ef7c59099ed19f1753cb7996ac9724"
+      },
+      {
+        "index": 28,
+        "type": "code",
+        "sha256": "f5ad366cc0c19e6164dfd779cbb328e0d5b54ce06c3b8cbf6d62e07c800a1e52"
+      },
+      {
+        "index": 29,
+        "type": "markdown",
+        "sha256": "bd3406f22f8528fac29cecd9bc63ce0991599139ae05fdc6328bf39761ac1b1d"
+      },
+      {
+        "index": 30,
+        "type": "code",
+        "sha256": "633193ac937f86ca59d3d1a11d9f33332af97fdbe999025788e1a6384aa03a9e"
+      },
+      {
+        "index": 31,
+        "type": "markdown",
+        "sha256": "9370160f4f255ae151a842d124fec8fd36f198e7aacf6b6fad28545ad99a7751"
+      },
+      {
+        "index": 32,
+        "type": "code",
+        "sha256": "7e3d2aea544c2b13927bc59023ed9ba190001e79362acebc7839a91075bdbe69"
+      },
+      {
+        "index": 33,
+        "type": "markdown",
+        "sha256": "ffb6932bd01d6a519823b8dddebd7a4aa7c0aca75d01b311515af671dbd312f9"
+      },
+      {
+        "index": 34,
+        "type": "code",
+        "sha256": "d7e281ee6afa7606e8300d8bbe6a1d2e32198013e27a402b123fb510897ccf5f"
+      },
+      {
+        "index": 35,
+        "type": "markdown",
+        "sha256": "1357214e8bdec87c91bf3deb66374473a137cfad1523bfddccd09d4009176699"
+      },
+      {
+        "index": 36,
+        "type": "code",
+        "sha256": "2e271d4ba74ace1fceb2b06b8f56df925e89cc09575549ddf7b32d0c174a5b77"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    3,
+    5,
+    7,
+    9,
+    11,
+    13,
+    15,
+    17,
+    19,
+    21,
+    23,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36
+  ],
+  "preamble": null,
+  "post_cell_observers": [
+    {
+      "after_original_index": 13,
+      "role": "postcell-observer",
+      "path": "observers/ibm039_seed.py",
+      "sha256": "c14cb9db9c7ccea4d771bf78e621164ab6d8ce46aeec45925e571f011992dbae"
+    },
+    {
+      "after_original_index": 23,
+      "role": "postcell-observer",
+      "path": "observers/ibm039_samples.py",
+      "sha256": "6c66a028febb1f3e17fd4a7fe3f133d3fb598622831a7de7c8dc3042ffd10e3c"
+    },
+    {
+      "after_original_index": 34,
+      "role": "postcell-observer",
+      "path": "observers/ibm039_seed.py",
+      "sha256": "c14cb9db9c7ccea4d771bf78e621164ab6d8ce46aeec45925e571f011992dbae"
+    }
+  ],
+  "required_images": [
+    23,
+    30,
+    36
+  ],
+  "required_text": {},
+  "witness": {
+    "path": "witnesses/ibm039.py",
+    "sha256": "5a89a996c44d11d8e10e91f553f63fde395da9bc6b36b045e9d60cc815bcad84"
+  },
+  "acceptance_field": "accepted",
+  "required_latex_counts": {
+    "11": 3,
+    "15": 1,
+    "19": 1,
+    "21": 1,
+    "26": 1,
+    "28": 1,
+    "32": 1,
+    "34": 1
+  }
+}
