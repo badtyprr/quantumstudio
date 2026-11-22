@@ -121,3 +121,10 @@ syndrome recovery, and unitary/nonunitary discretization with an entangled
 reference in a disclosed known-site three-qubit adaptation. Original nine-qubit
 Shor instrument execution and whole-lesson coverage remain open. DEV-09's fourth
 tetrahedral conditional state remains separately unresolved.**
+
+## Full-size numerical circuit follow-up
+
+The [19-wire replay](replay-shor-instrument.py) uses the product state-vector core
+for all nine data wires, eight syndrome wires, the reference and the environment.
+The dense symbolic comparisons above are a separate route. See the [channel,
+syndrome and recovery results](shor-nine-wire-instrument.json) for the tested inputs.

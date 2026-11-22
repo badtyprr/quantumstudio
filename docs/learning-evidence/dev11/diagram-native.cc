@@ -28,6 +28,12 @@ int main() {
     if(gate=="H") {double h=1/std::sqrt(2.0);matrix={h,h,h,-h};}
     else if(gate=="X") matrix={0,1,1,0};
     else if(gate=="Z") matrix={1,0,0,-1};
+    else if(gate=="RY") {
+     double angle;
+     if(!(std::cin >> angle) || !std::isfinite(angle)) throw std::runtime_error("Invalid rotation angle");
+     const double c=std::cos(angle/2), s=std::sin(angle/2);
+     matrix={c,-s,s,c};
+    }
     else if(gate=="S") matrix={1,0,0,Complex(0,1)};
     else if(gate=="CNOT") {unsigned b;std::cin>>b;wires.push_back(b);matrix={1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0};}
     else throw std::runtime_error("Unknown audit gate");
