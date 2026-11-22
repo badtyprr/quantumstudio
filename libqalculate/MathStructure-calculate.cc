@@ -7339,7 +7339,7 @@ bool MathStructure::calculateFunctions(const EvaluationOptions &eo, bool recursi
 			if(ret > 0) {
 				// function calculation was successful
 				bool preserve_matrix = o_function->preservesSingletonMatrix() && mstruct->isMatrix() && mstruct->rows() == 1 && mstruct->columns() == 1;
-				while(!preserve_matrix && mstruct->isVector() && mstruct->size() == 1) mstruct->setToChild(1, true);
+				while(!preserve_matrix && mstruct->isVector() && mstruct->size() == 1 && !o_function->preservesSingletonVector()) mstruct->setToChild(1, true);
 				m_type = STRUCT_FUNCTION;
 				if(mstruct->equals(*this, true, true) && mstruct->isApproximate() == b_approx && mstruct->precision() == i_precision && !mstruct->isProtected()) ret = 0;
 				set_nocopy(*mstruct, true);

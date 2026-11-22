@@ -63,6 +63,7 @@ using std::endl;
 
 class MathFunction_p {
 	public:
+		bool preserve_singleton_vector = false;
 		unordered_map<size_t, Argument*> argdefs;
 		std::vector<std::string> v_subs_calc;
 };
@@ -103,6 +104,7 @@ MathFunction::~MathFunction() {
 void MathFunction::set(const ExpressionItem *item) {
 	if(item->type() == TYPE_FUNCTION) {
 		MathFunction *f = (MathFunction*) item;
+		priv->preserve_singleton_vector = f->preservesSingletonVector();
 		argc = f->minargs();
 		max_argc = f->maxargs();
 		default_values.clear();
@@ -801,6 +803,8 @@ bool MathFunction::representsScalar(const MathStructure &vargs) const {
 	return representsNonMatrix(vargs);
 }
 bool MathFunction::preservesSingletonMatrix() const {return false;}
+bool MathFunction::preservesSingletonVector() const {return priv->preserve_singleton_vector;}
+void MathFunction::setPreserveSingletonVector(bool preserve) {priv->preserve_singleton_vector = preserve;}
 
 UserFunction::UserFunction(string cat_, string name_, string formula_, bool is_local, int argc_, string title_, string descr_, int max_argc_, bool is_active) : MathFunction(name_, argc_, max_argc_, cat_, title_, descr_, is_active) {
 	b_local = is_local;

@@ -207,6 +207,9 @@ class MathFunction : public ExpressionItem {
 	virtual bool representsScalar(const MathStructure&) const;
 	/// Preserve a 1-by-1 matrix result instead of reducing it to a scalar.
 	virtual bool preservesSingletonMatrix() const;
+	/// Keep the list shape when this function produces a one-element vector.
+	bool preservesSingletonVector() const;
+	void setPreserveSingletonVector(bool preserve);
 
 };
 

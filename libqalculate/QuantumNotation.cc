@@ -346,7 +346,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qinitialdensity",2},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qopenblockrow",2},{"qmatchblockrow",4},{"qcornerdensity",2},{"qmeasurementblockproduct",4},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectraltracesum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qamplitudeprojector",2},{"qindexeddiagonal",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qinitialdensity",2},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qopenblockrow",2},{"qmatchblockrow",4},{"qcornerdensity",2},{"qmeasurementblockproduct",4},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectraltracesum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedroots",1},{"qindexedtransposes",1},{"qamplitudeprojector",2},{"qindexeddiagonal",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qmodpowerequal",4},{"qringexpr",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -2485,7 +2485,7 @@ class Parser {
  }
  // A finite list of indexed labels has a common prefix and an integer
  // starting subscript. Bare labels have already been protected from units.
- static bool indexedList(const std::string &first,const std::string &last,std::string &list) {
+ static bool indexedList(const std::string &first,const std::string &last,std::string &list,const std::string &operation="qindexedlist") {
   std::string a=withoutLabelMarkers(first);
   if(a.size()<4 || a.front()!='"' || a.back()!='"')return false;
   size_t split=a.rfind('_');
@@ -2506,7 +2506,33 @@ class Parser {
    if((end.size()>1 && end[0]=='0') || (end.find_first_not_of("0123456789")!=std::string::npos &&
       !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
   }
-  list="qindexedlist("+prefix+","+start+","+end+",vector())";return true;
+  if(operation=="qindexedentries") {
+   // Free dimensions in indexed lists can share names with built-in
+   // constants. Keep lexical binder markers intact in nested expressions.
+   auto formal=[](const std::string &symbol) {
+    return symbol.size()==1 && std::isalpha((unsigned char)symbol[0]) &&
+           std::string("nxyz").find(symbol[0])==std::string::npos ? indexableLabel(symbol) : symbol;
+   };
+   std::string plain=withoutLabelMarkers(end);
+   if(plain.size()==1)end=formal(plain);
+   else if(plain.size()>8 && (plain.compare(0,5,"qsub(")==0 || plain.compare(0,5,"qadd(")==0) &&
+           plain[6]==',' && plain.back()==')' && plain.find_first_not_of("0123456789",7)==plain.size()-1)
+    end=plain.substr(0,5)+formal(plain.substr(5,1))+plain.substr(6);
+  }
+  list=operation+"("+prefix+","+start+","+end+",vector())";return true;
+ }
+ static bool transformedIndexedList(const std::string &first,const std::string &last,std::string &list) {
+  for(const std::string operation:{"qsqrt","qtranspose"}) {
+   const std::string prefix=operation+"(";
+   if(first.compare(0,prefix.size(),prefix)!=0 || last.compare(0,prefix.size(),prefix)!=0 ||
+      first.back()!=')' || last.back()!=')')continue;
+   std::string family;
+   if(!indexedList(first.substr(prefix.size(),first.size()-prefix.size()-1),
+                   last.substr(prefix.size(),last.size()-prefix.size()-1),family,"qindexedentries"))continue;
+   list=std::string(operation=="qsqrt" ? "qindexedroots(" : "qindexedtransposes(")+family+")";
+   return true;
+  }
+  return false;
  }
  void prepareEquality(std::string &left,std::string &right) {
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
@@ -2564,7 +2590,7 @@ class Parser {
      if(takeSetOperator("∈") || takeSetOperator("∉"))
       throw std::runtime_error("Group the integer range before testing it as one set member.");
      left="qindexrange("+left+",floor("+last+"))";
-    } else if(!indexedList(left,last,left)) {
+    } else if(!transformedIndexedList(left,last,left) && !indexedList(left,last,left)) {
      // Only a named, one-based list in a membership statement assigns
      // superscripts to samples. Ordinary powers keep their usual meaning.
      if(left.size()<11 || left.compare(0,7,"qpower(")!=0 || left[7]<'a' || left[7]>'z' ||
