@@ -1208,7 +1208,7 @@ class TeXReader {
  const std::string &input;
  bool modularTables=false;
  bool binaryLogs=false;
- bool binaryWords=false;
+ bool binaryWords=false,oracleConditions=false;
  size_t pos=0;
  unsigned depth=0;
  std::string rootAlignment;
@@ -2335,6 +2335,13 @@ class TeXReader {
    throw std::runtime_error(error("Expected a boxed question mark for an unspecified block"));
   }
   if(name=="text") {
+   if(cases && oracleConditions) {
+    static const std::regex promise(R"(\s*\{\s*if\s+\$\s*([fgh])\s*\$\s+is\s+(constant|balanced)\s*\})");
+    std::smatch match;
+    if(std::regex_search(input.cbegin()+pos,input.cend(),match,promise,std::regex_constants::match_continuous)) {
+     pos+=match.length();return "q"+match[2].str()+"oracle(\""+match[1].str()+"\")";
+    }
+   }
    std::string text=trim(group());
    if(!text.empty() && std::all_of(text.begin(),text.end(),asciiLetter)) {
     const std::string prefix=preceding ? trim(*preceding) : "";
@@ -2859,7 +2866,7 @@ class TeXReader {
   --depth; return result;
  }
  public:
- explicit TeXReader(const std::string &s,bool modular=false,bool logs=false,bool words=false):input(s),modularTables(modular),binaryLogs(logs),binaryWords(words) {}
+ explicit TeXReader(const std::string &s,bool modular=false,bool logs=false,bool words=false,bool oracles=false):input(s),modularTables(modular),binaryLogs(logs),binaryWords(words),oracleConditions(oracles) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
   if(conjugatedStateLabel) {
@@ -4389,7 +4396,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(!matched)normalized+=s[k++];
  }
  if(splitDimensions)normalized+="))";
- std::string result=TeXReader(normalized,modularPowers,binaryLogs,bitWord || binaryOracles).run(lines);
+ std::string result=TeXReader(normalized,modularPowers,binaryLogs,bitWord || binaryOracles,binaryOracles).run(lines);
  if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
   std::string value=trim(result),order;
   static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");

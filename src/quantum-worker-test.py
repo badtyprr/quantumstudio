@@ -146,6 +146,15 @@ assert data("quantum:" + component_xor)["copy_text"] == "1"
 run(r"quantum:bitword:$(a_1 \oplus b_1)c_1 \oplus \cdots \oplus (a_0 \oplus d_0)c_0$",
     "--json", success=False)
 
+promise_cases = data(
+    r"quantum:oracles:$\begin{cases}1 & \text{if $f$ is constant}\\"
+    r"0 & \text{if $f$ is balanced}\end{cases}$"
+)["copy_text"]
+balanced_graph = truth_table.replace("qbitlabel(1,2),1", "qbitlabel(1,2),0")
+assert data(f'quantum:replace(({promise_cases}),"f",{balanced_graph})')["copy_text"] == "0"
+run(f'quantum:replace(({promise_cases}),"f",{truth_table})', "--json", success=False)
+run("quantum:qconstantoracle(qset(vector(qtuple(vector(qbitlabel(1,2),0)))))", "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

@@ -1,0 +1,21 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 48,
+  "literal": "$$\n\\Biggl\\vert\n\\frac{1}{2^n}\n\\sum_{x_{n-1}\\cdots x_0 \\in \\Sigma^n}\n(-1)^{f(x_{n-1}\\cdots x_0)}\n\\Biggr\\vert^2\n= \\begin{cases}\n1 & \\text{if $f$ is constant}\\\\[1mm]\n0 & \\text{if $f$ is balanced}\n\\end{cases}\n$$",
+  "mode": "Binary oracles",
+  "widths": [
+    1,
+    2,
+    3
+  ],
+  "constant_balanced_unpromised": [
+    6,
+    78,
+    192
+  ],
+  "checks": 912,
+  "invalid_graph_checks": 10,
+  "method": "For every truth table, compare the probability with the squared mean of the oracle signs and classify the graph independently by its number of one outputs. Check the equality and swapped branch values on the promise. The cases expression is undefined outside it."
+}
