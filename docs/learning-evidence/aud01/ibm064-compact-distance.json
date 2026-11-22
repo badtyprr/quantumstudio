@@ -1,0 +1,29 @@
+{
+  "worker_sha256": "86e41e28ae263f4eb2f485eaf7f34bf99cf761a394cab1759071ae452e5b3f27",
+  "figures": {
+    "Steane-color-code": {
+      "qubits": 7,
+      "distance": 3
+    },
+    "color-code": {
+      "qubits": 19,
+      "distance": 5
+    },
+    "rotated-surface-code": {
+      "qubits": 25,
+      "distance": 5
+    }
+  },
+  "exhaustive_small_code_distances": {
+    "1": 53,
+    "2": 7
+  },
+  "windows": {
+    "passed": true,
+    "checks": 34,
+    "calls": 3,
+    "sessionsOnly": false,
+    "clipboardRetries": 1,
+    "clipboardRestored": true
+  }
+}

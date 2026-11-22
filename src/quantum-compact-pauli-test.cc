@@ -106,13 +106,32 @@ int main() {try {
  std::swap(first.front(),first.back());
  equal("qcompactcorrection("+vector(first)+",qbitlabel(2^63,64),1)",compact(1,1,0));
  equal("qcompactcorrection("+vector(many)+","+vector(last)+",1)",compact(1,1,0));
+ // Nine colored faces generate both types of check in IBM-064's 19-qubit code.
+ std::vector<std::string> color;
+ for(unsigned face:{2484u,45568u,475136u,4968u,84096u,23u,186624u,9792u,46u}) {
+  color.push_back(compact(19,face,0));
+  color.push_back(compact(19,0,face));
+ }
+ rejects("qcompactdistance("+vector(color)+",4)");
+ equal("qcompactdistance("+vector(color)+",5)","5");
+ equal("qcompactdistance("+vector(color)+",25)","5");
+ rejects("qcompactdistance("+vector(color)+",26)");
+ // Mixed five-qubit generators. The last independent syndrome bit is bit 63.
+ std::vector<std::string> perfect(64,compact(5,0,0));
+ perfect[0]=compact(5,18,12);
+ perfect[1]=compact(5,9,6);
+ perfect[2]=compact(5,20,3);
+ perfect[63]=compact(5,10,17);
+ equal("qcompactdistance("+vector(perfect)+",5)","3");
+ rejects("qcompactdistance("+vector(perfect)+",2)");
+ equal("qcompactdistance(vector([1,0,0,0]),4)","1");
  unsigned zh=0,zv=0,xh=0,xv=0;
  for(unsigned q=0;q<3;++q) {zh|=edge(q,0);zv|=edge(0,q,true);xh|=edge(0,q);xv|=edge(q,0,true);}
  std::vector<std::string> loops={compact(18,0,zh),compact(18,0,zv),compact(18,xh,0),compact(18,xv,0)};
  for(const auto &loop:loops)for(const auto &g:all)equal("qcompactcommutes("+loop+","+g+")","1");
  for(unsigned a=0;a<4;++a)for(unsigned b=0;b<4;++b)
   equal("qcompactcommutes("+loops[a]+","+loops[b]+")",((a+2)%4==b)?"0":"1");
- for(const auto &bad:{"qcompactpauli(0,0,0,0)","qcompactpauli(26,0,0,0)","qcompactpauli(18,262144,0,0)","qcompactpauli(18,0,0,4)","qcompactpauli(18,0,0,1/2)","qcompactrank(vector([1,1,0,0],[1,0,1,0]))","qcompactrank(vector([1,0,0,2]))","qcompactrank(vector([1,0,0,1]))","qcompactrank(vector([1,1,0,0],[1,1,0,2]))","qcompactmultiply([1,0,0,0],[2,0,0,0])","qcompactdistance(vector([1,0,0,0]),4)","qcompactdistance(vector([1,0,1,0]),3)"})rejects(bad);
+ for(const auto &bad:{"qcompactpauli(0,0,0,0)","qcompactpauli(26,0,0,0)","qcompactpauli(18,262144,0,0)","qcompactpauli(18,0,0,4)","qcompactpauli(18,0,0,1/2)","qcompactrank(vector([1,1,0,0],[1,0,1,0]))","qcompactrank(vector([1,0,0,2]))","qcompactrank(vector([1,0,0,1]))","qcompactrank(vector([1,1,0,0],[1,1,0,2]))","qcompactmultiply([1,0,0,0],[2,0,0,0])","qcompactdistance(vector([1,0,0,0]),0)","qcompactdistance(vector([1,0,1,0]),3)"})rejects(bad);
  equal(compact(25,33554431,33554431,3),"[25,33554431,33554431,3]");
  std::cout<<"PASS: "<<checks<<" compact Pauli checks\n";return 0;
 }catch(const std::exception &e) {std::cerr<<e.what()<<'\n';return 1;}}

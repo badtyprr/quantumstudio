@@ -39,6 +39,44 @@ bool commutes(const Pauli &a,const Pauli &b) {return !parity((a.x&b.z)^(a.z&b.x)
 Pauli product(const Pauli &a,const Pauli &b) {
  return {a.n,a.x^b.x,a.z^b.z,(a.phase+b.phase+2*parity(a.x&b.z))%4};
 }
+// A support contributes at most two binary columns per qubit. Descendants
+// append after the current rank, so siblings can reuse the same scratch space.
+struct BinaryColumns {
+ Word pivots[50]; // Two Pauli axes for each of the 25 compact qubits.
+ unsigned append(unsigned rank, Word column) {
+  for(unsigned i=0;i<rank;++i) {
+   const Word reduced=column^pivots[i];
+   if(reduced<column)column=reduced;
+  }
+  if(!column)return rank;
+  pivots[rank]=column;
+  return rank+1;
+ }
+};
+
+struct DistanceSearch {
+ struct Column { Word syndrome, remainder; };
+ std::vector<Column> columns; // X, Z for each qubit in order
+ BinaryColumns syndromes, remainders;
+
+ bool containsLogical(unsigned next, unsigned left, unsigned syndromeRank, unsigned remainderRank) {
+  if(CALCULATOR->aborted())throw std::runtime_error("Compact Pauli search cancelled.");
+  const unsigned qubits=columns.size()/2;
+  for(unsigned q=next;q+left<=qubits;++q) {
+   unsigned sr=syndromeRank, rr=remainderRank;
+   for(unsigned j=2*q;j<2*q+2;++j) {
+    sr=syndromes.append(sr,columns[j].syndrome);
+    rr=remainders.append(rr,columns[j].remainder);
+   }
+   // The zero-remainder kernel is the stabilizer subspace on this support.
+   // The zero-syndrome kernel also includes logical operators. Rank-nullity
+   // detects a logical operator exactly when the second kernel is larger.
+   if(rr>sr || (left>1 && containsLogical(q+1,left-1,sr,rr)))return true;
+  }
+  return false;
+ }
+};
+
 struct Stabilizers {
  std::vector<Pauli> generators,basis;
  unsigned n=0,rank=0;
@@ -59,12 +97,6 @@ struct Stabilizers {
    if(!p.x && !p.z && p.phase)throw std::invalid_argument("Compact generators contain -I and have no common +1 eigenspace.");
   }
  }
- bool logical(const Pauli &p) const {
-  for(const auto &g:generators)if(!commutes(p,g))return false;
-  Word word=p.x|(p.z<<n);
-  for(unsigned k=2*n;k-->0;)if(word&(Word(1)<<k))word^=basis[k].x|(basis[k].z<<n);
-  return word!=0;
- }
  template<class Predicate>
  bool search(unsigned next, unsigned left, Pauli p, const Predicate &accept) const {
   if(CALCULATOR->aborted())throw std::runtime_error("Compact Pauli search cancelled.");
@@ -82,8 +114,20 @@ struct Stabilizers {
  }
  unsigned distance(unsigned bound) const {
   if(rank==n)throw std::invalid_argument("Compact code distance requires at least one logical qubit.");
-  for(unsigned weight=1;weight<=bound;++weight)
-   if(search(0,weight,Pauli{n,0,0,0},[&](const Pauli &p){return logical(p);}))return weight;
+  DistanceSearch search;
+  for(unsigned q=0;q<n;++q)for(unsigned axis=0;axis<2;++axis) {
+   const Word bit=Word(1)<<q;
+   Pauli single{n,axis==0 ? bit : 0,axis==1 ? bit : 0,0};
+   Word syndrome=0;
+   for(size_t j=0;j<generators.size();++j)
+    if(!commutes(single,generators[j]))syndrome|=Word(1)<<j;
+   Word remainder=single.x|(single.z<<n);
+   for(unsigned k=2*n;k-->0;)
+    if(remainder&(Word(1)<<k))remainder^=basis[k].x|(basis[k].z<<n);
+   search.columns.push_back({syndrome,remainder});
+  }
+  for(unsigned weight=1;weight<=bound && weight<=n;++weight)
+   if(search.containsLogical(0,weight,0,0))return weight;
   throw std::invalid_argument("No logical Pauli found within the requested weight bound; distance is not determined.");
  }
  Pauli correction(const MathStructure &bits, unsigned bound) const {
@@ -127,8 +171,8 @@ public:
    if(op=="qcompactrank")out=MathStructure(int(group.rank));
    else if(op=="qcompactdimension")out=MathStructure(int(1u<<(group.n-group.rank)));
    else if(op=="qcompactdistance") {
-    unsigned bound=integer(args[1],3);
-    if(!bound)throw std::invalid_argument("Compact distance search requires a weight bound from 1 to 3.");
+    unsigned bound=integer(args[1],25);
+    if(!bound)throw std::invalid_argument("Compact distance search requires a weight bound from 1 to 25.");
     out=MathStructure(int(group.distance(bound)));
    } else if(op=="qcompactcorrection") {
     MathStructure syndrome=args[1];
