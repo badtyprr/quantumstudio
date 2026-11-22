@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Expected an equation after the comma",
+  "lessons": [
+    {
+      "lesson": "IBM-015",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/purifications.ipynb",
+      "source_sha256": "d68db5ef75dfa73cab258f3858fa066e2c27e1eda0993ac188fea8dca39b7e0e",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 27712,
+          "end": 27727,
+          "literal_sha256": "049ae9e20d0bb6f46892fa81492ea9c6b413ce22a92d57a6cbca718c4f270f6e",
+          "outcome": "result",
+          "copy_text": "('N')==(1000000)"
+        }
+      ]
+    }
+  ]
+}

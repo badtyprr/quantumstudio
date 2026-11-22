@@ -24,6 +24,17 @@ def data(expression, *flags):
     return value
 
 
+# A textbook equation uses grouped digits. Commas in function calls and
+# between complete equations retain their existing meanings.
+for literal, integer in [("1,000,000", 1000000), ("-12,345", -12345), ("+987,654", 987654)]:
+    equation = data(f"quantum:$N = {literal}$")["copy_text"]
+    for value, truth in [(integer, "1"), (integer + 1, "0")]:
+        assert data(f"quantum:replace(({equation}),N,{value})")["copy_text"] == truth
+assert data("quantum:vector(1=1,234,567)")["copy_text"] == "vector(1,234,567)"
+assert data("quantum:1=1,000=0")["copy_text"] == "1"
+for malformed in ("1,00,000", "1234,567", "1,2345", "1,234,"):
+    run("quantum:N=" + malformed, "--json", success=False)
+
 for heading in (r"\cdot", "·", "*", "+"):
     table = r"\begin{array}{c|c}" + heading + r" & 0\\\hline 0 & 0\end{array}"
     copied = data("quantum:" + table)["copy_text"]
