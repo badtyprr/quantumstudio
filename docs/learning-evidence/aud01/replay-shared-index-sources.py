@@ -34,9 +34,11 @@ for lesson in manifest["lessons"]:
         if literal not in cache:
             result = subprocess.run([worker, "--json"], input=b"quantum:" + literal,
                                     capture_output=True, timeout=30, env=env)
+            copy_text = None
             if result.returncode == 0:
                 response = json.loads(result.stdout)
-                if not response["copy_text"]:
+                copy_text = response["copy_text"]
+                if not copy_text:
                     raise ValueError("Worker returned an empty result")
                 outcome = "result"
             elif result.returncode == 2 and result.stderr.strip():
@@ -44,12 +46,14 @@ for lesson in manifest["lessons"]:
                            else "diagnostic")
             else:
                 raise RuntimeError((result.returncode, result.stderr))
-            cache[literal] = outcome, result.stderr
-        actual, diagnostic = cache[literal]
+            cache[literal] = outcome, result.stderr, copy_text
+        actual, diagnostic, copy_text = cache[literal]
         expected = "previous diagnostic" if args.baseline else row["outcome"]
         if actual != expected:
             raise ValueError((lesson["lesson"], row["cell"], row["start"], actual, expected))
         if not args.baseline and "diagnostic_contains" in row and row["diagnostic_contains"].encode() not in diagnostic:
             raise ValueError((lesson["lesson"], row["cell"], row["start"], diagnostic))
+        if not args.baseline and "copy_text" in row and row["copy_text"] != copy_text:
+            raise ValueError((lesson["lesson"], row["cell"], row["start"], copy_text))
         counts[actual] += 1
 print(dict(counts))

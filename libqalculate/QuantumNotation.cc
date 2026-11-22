@@ -2367,15 +2367,27 @@ class Parser {
  // A finite list of indexed labels has a common prefix and an integer
  // starting subscript. Bare labels have already been protected from units.
  static bool indexedList(const std::string &first,const std::string &last,std::string &list) {
-  std::string a=withoutLabelMarkers(first),b=withoutLabelMarkers(last);
-  if(a.size()<4 || b.size()<4 || a.front()!='"' || b.front()!='"' || a.back()!='"' || b.back()!='"')return false;
+  std::string a=withoutLabelMarkers(first);
+  if(a.size()<4 || a.front()!='"' || a.back()!='"')return false;
   size_t split=a.rfind('_');
-  if(split==std::string::npos || split<=1 || b.compare(0,split+1,a,0,split+1)!=0)return false;
-  std::string start=a.substr(split+1,a.size()-split-2),end=b.substr(split+1,b.size()-split-2);
-  if(start.empty() || end.empty() || (start.size()>1 && start[0]=='0') || (end.size()>1 && end[0]=='0') ||
-     start.find_first_not_of("0123456789")!=std::string::npos ||
-     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
-  list="qindexedlist("+indexableLabel(a.substr(1,split))+","+start+","+end+",vector())";return true;
+  if(split==std::string::npos || split<=1)return false;
+  std::string start=a.substr(split+1,a.size()-split-2);
+  if(start.empty() || (start.size()>1 && start[0]=='0') || start.find_first_not_of("0123456789")!=std::string::npos)return false;
+  std::string prefix=indexableLabel(a.substr(1,split)),end;
+  // A grouped TeX subscript has already been parsed as an expression.
+  // Keep its lexical markers so an enclosing binder can still act on it.
+  const std::string head="qindexedlabel("+prefix+",",tail=","+indexableLabel("")+")";
+  if(last.size()>head.size()+tail.size() && last.compare(0,head.size(),head)==0 &&
+     last.compare(last.size()-tail.size(),tail.size(),tail)==0) {
+   end=last.substr(head.size(),last.size()-head.size()-tail.size());
+  } else {
+   std::string b=withoutLabelMarkers(last);
+   if(b.size()<=split+2 || b.compare(0,split+1,a,0,split+1)!=0 || b.back()!='"')return false;
+   end=b.substr(split+1,b.size()-split-2);
+   if((end.size()>1 && end[0]=='0') || (end.find_first_not_of("0123456789")!=std::string::npos &&
+      !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return false;
+  }
+  list="qindexedlist("+prefix+","+start+","+end+",vector())";return true;
  }
  void prepareEquality(std::string &left,std::string &right) {
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
