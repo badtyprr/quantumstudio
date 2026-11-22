@@ -12,63 +12,72 @@
           "start": 12870,
           "end": 12902,
           "literal_sha256": "e9224cd5ce86b69477e6ccfbec312c12eda1b61d261bc3642330218d27dc01d0",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "A subscripted trace requires a grouped operand or matrix"
         },
         {
           "cell": 0,
           "start": 15583,
           "end": 15615,
           "literal_sha256": "f963c08518c286a9c71b6df9271fa7f64f11ec61ecd6b27e631d0fd3bb08bf22",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "A subscripted trace requires a grouped operand or matrix"
         },
         {
           "cell": 0,
           "start": 15620,
           "end": 15652,
           "literal_sha256": "e9224cd5ce86b69477e6ccfbec312c12eda1b61d261bc3642330218d27dc01d0",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "A subscripted trace requires a grouped operand or matrix"
         },
         {
           "cell": 0,
           "start": 18308,
           "end": 18941,
           "literal_sha256": "c67276ddd9d9dd8d14e3baaf001a3e08d6b8c54fb325a93a36c00819b35698d9",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 19627,
           "end": 19757,
           "literal_sha256": "63933188a858a2f7f9b85fa95d935aac8d90611db590fd9dd0ca5387560674e6",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 19839,
           "end": 20761,
           "literal_sha256": "e436022de8d7bcb3a07e63ddf2415f96f2ce3339e07d7bb6f765f5ef248fa871",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 20842,
           "end": 21104,
           "literal_sha256": "a2b60553734f4d12197c1c1890d57ce3bba73c12f7b9dfb4d19858fa98913c5a",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 21716,
           "end": 22342,
           "literal_sha256": "0a5cf45eb85ea9d4324772c34b1dbf1402c8950e52fcb133dc1a32a1efc1a37a",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 22404,
           "end": 22841,
           "literal_sha256": "23b1524bc612be9b400bb8e2731d7f3bd08c3852d65ee9cd9860652af043c985",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         }
       ]
     },
@@ -82,42 +91,48 @@
           "start": 4413,
           "end": 4549,
           "literal_sha256": "9f003d611db1c897d8d069c486ac92f35d9514fb92b42e46ef9d071099fc56c5",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 5781,
           "end": 5917,
           "literal_sha256": "5aee9e52f43d3ff2b8e42eb5d86f1ff87a40727edd246170836f875d4445635f",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 6686,
           "end": 6768,
           "literal_sha256": "c2a878abdbf9c182df4985c5a0a1d4cd1c9a2ef43821f4d4b1cdead683c8c90d",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 10545,
           "end": 11189,
           "literal_sha256": "268fd33a4135485f521334b7096ea59c5ff8ecc26d9e23b59991b7eaa99ba835",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 15848,
           "end": 17146,
           "literal_sha256": "2ef485b192c80292a4c9c967b1252d23a3a554ed440a7e8c1b015640f781e431",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Unsupported TeX control symbol"
         },
         {
           "cell": 0,
           "start": 31635,
           "end": 31740,
           "literal_sha256": "af48aa98685b8d3c9411ec703f74e0a38f940a6296c1a9e74a93366ec7e9f9d3",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         }
       ]
     },
@@ -131,28 +146,32 @@
           "start": 2487,
           "end": 2604,
           "literal_sha256": "90ec6182636cf54b6deaa5c4d7455b46127ddd42adc12d99d4323e5fc95459e8",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 17006,
           "end": 17127,
           "literal_sha256": "6b3e66f46ed32d603ef4e0c292cf1999889507233a0940d53e5003cd576b2da8",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 17791,
           "end": 18120,
           "literal_sha256": "5dd4977e42f64e796ac26540418e6cbd34cbf333e3607508a7acbd1de5462373",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 20171,
           "end": 20305,
           "literal_sha256": "e85177aa0cb7ca5451b60fc4151026227964194989c2075bb80e2fcbd2ffbd6b",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         }
       ]
     },
@@ -166,7 +185,8 @@
           "start": 24858,
           "end": 24939,
           "literal_sha256": "bed5c17715fb4523002cdf429a309b4e468b7955d39c50ecd1f405677087b9c5",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
@@ -180,28 +200,32 @@
           "start": 25807,
           "end": 25987,
           "literal_sha256": "400084891ceb448e8e96c5a3465489243ab89791955b4fdaea513374dfe419d8",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 26051,
           "end": 26136,
           "literal_sha256": "9b618ee94aeefc7eac4e61f93225e2c58754738d7a3e75cca29ca3812eb08868",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 26934,
           "end": 27015,
           "literal_sha256": "bed5c17715fb4523002cdf429a309b4e468b7955d39c50ecd1f405677087b9c5",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 28007,
           "end": 28463,
           "literal_sha256": "c1548af85e593c7ff2713e7f25f8761e161903a10150aef3d07496f0131e7895",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Unsupported TeX command: \\cdots"
         }
       ]
     },
@@ -215,42 +239,48 @@
           "start": 527,
           "end": 618,
           "literal_sha256": "18cbcef299d4f27060ced2d83e7993dbd95602900d152f6a35409a78a9a8803e",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 1377,
           "end": 1465,
           "literal_sha256": "08fa2f0d6c861df26b2a9a4d2a42bb1be3a023776f89ea030799ce80757a7cc1",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 4851,
           "end": 5153,
           "literal_sha256": "27f86a87e0f8d64e4895b2b2414ad26d0456ce1685c9ba15a06384c225faf9ed",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 5155,
           "end": 5449,
           "literal_sha256": "6e03c23fe591dca0ab3df48601eec564ce61d8426201f347ac36a3c58fd4a50b",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 11356,
           "end": 11451,
           "literal_sha256": "5440fc3f6860c959b99617c53ac1ef5020aa4c1b09aebab617a235e700eff106",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         },
         {
           "cell": 0,
           "start": 26634,
           "end": 26777,
           "literal_sha256": "2abd977a5de6eeb8a73fab9b2ba3e7f42e84b5b018505bbea90991ad3dd3bc43",
-          "outcome": "diagnostic"
+          "outcome": "diagnostic",
+          "diagnostic_contains": "Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping."
         }
       ]
     }
