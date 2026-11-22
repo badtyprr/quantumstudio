@@ -138,6 +138,7 @@ class SelectedCellTests(unittest.TestCase):
         for change in ({"excluded_code_cells": {}}, {"excluded_code_cells": {"1": ""}},
                        {"excluded_code_cells": {"1": "reason", "2": "extra"}},
                        {"required_images": [1]}, {"required_text": {"1": "bad"}},
+                       {"required_latex_counts": {"1": 1}}, {"required_latex_counts": {"0": 0}},
                        {"setup": {"cell": 0}}, {"code_cells": [0]}):
             with self.subTest(change=change), self.assertRaises(ValueError):
                 execution._execution_indices(dict(original, **change), cells)
@@ -708,6 +709,14 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(result["state"], "failed")
         self.assertEqual(result["authored_verification"], "failed")
         self.assertIn("SOURCE_RESULT_MISMATCH", result["error"]["message"])
+        self.assert_cleanup(result)
+
+    def test_missing_latex_display_fails_verification(self):
+        config = self.fixture(["from IPython.display import Latex, display; display(Latex('x'))"])
+        config["contract"]["required_latex_counts"] = {"0": 3}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result["state"], "failed")
+        self.assertIn("SOURCE_LATEX_COUNT: 0 expected 3, got 1", result["error"]["message"])
         self.assert_cleanup(result)
 
     def test_wrong_interpreter_profile_rejected(self):
