@@ -1,0 +1,94 @@
+{
+  "source_sha256": "8c130abce137e248aa0e3bf1ee7cffacefd66ccd8700cf8cbe31a321d2ae333a",
+  "candidate": "05e32f64",
+  "worker_sha256": "47d4532cf5482e5304e50ea6ed71424433d353f275c7770ba4a019bf640bcfce",
+  "application_sha256": "d7f800538fe1f3706204e5d2c5a526cf30a0baabda8d397efa9ad104bb5da59b",
+  "source_occurrences": 79,
+  "code_cells": 0,
+  "figures": 2,
+  "adaptation": {
+    "id": "IBM059-8c130abc-M017",
+    "direct_copy": "0",
+    "input": "bitstring(\"00\")",
+    "copy": "qbitlabel(0,2)",
+    "development_item": "DEV-05"
+  },
+  "pauli_syndrome_class_sizes": [
+    16,
+    16,
+    16,
+    16
+  ],
+  "logical_subspace_dimension": 2,
+  "windows": {
+    "passed": true,
+    "checks": 882,
+    "calls": 80,
+    "sessionsOnly": false,
+    "clipboardRetries": 3,
+    "clipboardRestored": true
+  },
+  "windows_records_sha256": "0407249c96f77c3f3a0a51d04bdcc2d891f14ac8ad5adabf0d58e26613b34521",
+  "release": {
+    "tag": "checkpoint-c5a456cd",
+    "archive_sha256": "fc37b7d107a883afe2e06dc9ee438a7ac68533f5711db8e41d5439c4b39507f4",
+    "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+    "identical_copy": 67,
+    "differences": [
+      {
+        "id": "IBM059-8c130abc-M002",
+        "copy": "((matrix(8,1,[\u2212'\u03b1',0,0,0,0,0,0,\u2212'\u03b2']))+ (qketstate('\u03c8')))==(0)",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M004",
+        "copy": "\\begin{gathered}((\u2212qketstate('\u03c8'))+ (qadjacent(qtensor(qtensor(matrix(2,2,[1,0,0,\u22121]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,1])),qnamedket('\u03c8'))))==(0)\\\\((\u2212qketstate('\u03c8'))+ (qadjacent(qtensor(qtensor(matrix(2,2,[1,0,0,1]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,\u22121])),qnamedket('\u03c8'))))==(0)\\end{gathered}",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M020",
+        "diagnostic": "Unclosed bra."
+      },
+      {
+        "id": "IBM059-8c130abc-M025",
+        "diagnostic": "Unsupported TeX command: \\mapsto at byte 26"
+      },
+      {
+        "id": "IBM059-8c130abc-M037",
+        "copy": "qequalchain(vector(qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,[1,0,0,\u22121]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,1])),qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1]))),qnamedket('\u03c8')),qadjacent(qadjacent((\u22121)*(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1]))),qtensor(qtensor(matrix(2,2,[1,0,0,\u22121]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,1]))),qnamedket('\u03c8')),qadjacent((\u22121)*(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1]))),qnamedket('\u03c8'))))",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M038",
+        "copy": "qadjacent(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1])),qnamedket('\u03c8'))",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M042",
+        "copy": "qadjacent(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1])),qnamedket('\u03c8'))",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M045",
+        "copy": "qequalchain(vector(qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,[1,0,0,1]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,\u22121])),qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1]))),qnamedket('\u03c8')),qadjacent(qadjacent(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1])),qtensor(qtensor(matrix(2,2,[1,0,0,1]),matrix(2,2,[1,0,0,\u22121])),matrix(2,2,[1,0,0,\u22121]))),qnamedket('\u03c8')),qadjacent(qtensor(qtensor(matrix(2,2,[0,1,1,0]),matrix(2,2,[1,0,0,1])),matrix(2,2,[1,0,0,1])),qnamedket('\u03c8'))))",
+        "approximate": false
+      },
+      {
+        "id": "IBM059-8c130abc-M053",
+        "diagnostic": "Unsupported TeX environment: array at byte 15"
+      },
+      {
+        "id": "IBM059-8c130abc-M069",
+        "diagnostic": "Expected ')' at byte 4"
+      },
+      {
+        "id": "IBM059-8c130abc-M072",
+        "diagnostic": "Expected ')' at byte 4"
+      },
+      {
+        "id": "IBM059-8c130abc-M076",
+        "diagnostic": "Expected ')' at byte 4"
+      }
+    ]
+  }
+}
