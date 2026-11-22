@@ -178,6 +178,13 @@ phase_product = data(r"quantum:bitword:$(-1)^{ab}$")["copy_text"]
 assert data(f'quantum:replace(replace(({phase_product}),"a",qbitlabel(1,1)),"b",1)')["copy_text"] == "−1"
 run(f'quantum:replace(replace(({phase_product}),"a",1),"b",qbitlabel(1,2))', "--json", success=False)
 
+repeated_input = data(r"quantum:$X^{\otimes n}\vert1\cdots1\rangle$")["copy_text"]
+assert "register width" not in repeated_input
+assert data(f"quantum:replace(({repeated_input}),n,2)")["copy_text"] == "matrix(4,1,[1,0,0,0])"
+assert "register width" in data(r"quantum:$U^{\otimes n}\vert1\cdots1\rangle$")["copy_text"]
+explicit_width = data(r"quantum:$X^{\otimes n}\vert1^{\otimes m}\rangle$")["copy_text"]
+run(f'quantum:replace(replace(({explicit_width}),n,2),"m",1)', "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

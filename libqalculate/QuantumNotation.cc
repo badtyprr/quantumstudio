@@ -2335,7 +2335,22 @@ class Parser {
     }
     a="qoplus("+a+","+right+")";
    }
-   else if(startsAtom()) a="qadjacent("+a+","+diracFactor()+")";
+   else if(startsAtom()) {
+    size_t start=p;
+    std::string right=diracFactor();
+    if(s[start]=='|' && right.find("\"register width\"")!=std::string::npos) {
+     std::string label=labelText(s.substr(start,p-start));
+     replaceAll(label,"⋯","...");replaceAll(label,"…","...");
+     if(label=="|0...0>" || label=="|1...1>") {
+      const auto power=bitCall(a,"qtensorpow");
+      if(power.size()==2)for(const char *name:{"I","X","Y","Z","H","S","T","Sdg","Tdg","SX","SXdg"}) {
+       if(power[0]!=bitOperand(gates.at(name)))continue;
+       right="qtensorpow("+ket(label.substr(1,1))+","+power[1]+")";break;
+      }
+     }
+    }
+    a="qadjacent("+a+","+right+")";
+   }
    else break;
    checkSize(a);
   } return a;
