@@ -113,6 +113,8 @@ int main(){try {
  }
  // IBM-028 Fourier exponents mix free coefficients and summation indices.
  // Juxtaposition must be split while the TeX binder is still in scope.
+ equal(R"(quantum:\Tr_{1}\bigl([1,0,0,0;0,2,0,0;0,0,3,0;0,0,0,4]\bigr))","[3,0;0,7]");
+ equal(R"(quantum:\Tr_{0}\begin{pmatrix}1&0&0&0\\0&2&0&0\\0&0&3&0\\0&0&0&4\end{pmatrix})","[4,0;0,6]");
  equal(R"(quantum:\sum_{a,b=0}^{2}{3a+b})","36");
  equal(R"(quantum:\sum_{a,b=0}^{2} ab+1)","10");
  equal(R"(quantum:\sum_{s,t\in\{0,1\}}{s+2t})","6");
