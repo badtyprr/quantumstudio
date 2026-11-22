@@ -231,7 +231,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qindexxor",2},
  {"qoplus",2},
  {"qiff",2},{"qcompare",3},{"qequalchain",1},
- {"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qestimate",2},{"qestimatewithin",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
+ {"qwordor",1},{"qbitdot",2},{"qcenterdot",2},{"qstateaction",2},{"qcheckaction",2},{"qdecimalmatch",4},{"qestimate",2},{"qestimatewithin",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},
  {"qbitxor",2},
  {"qbits",2},
  {"qgf2rref",1},
@@ -2060,6 +2060,15 @@ class Parser {
     if(setNotation && name=="p" && args.size()==1 && !costContext) {
      args.insert(args.begin(),indexableLabel(name));name="qfiniteapply";
     }
+    if((binaryWordNotation || binaryOracles) && name=="OR") {
+     if(args.size()!=1)throw std::runtime_error("OR requires one binary word.");
+     const std::string &digits=args[0];
+     if(!digits.empty() && digits.find_first_not_of("01")==std::string::npos) {
+      if(digits.size()>1024)throw std::runtime_error("A binary word supports at most 1024 bits.");
+      args[0]="qbitlabel("+binaryNumeral(digits)+","+std::to_string(digits.size())+")";
+     }
+     name="qwordor";
+    }
     const bool oracleName=name=="f" || name=="g" || name=="h";
     if(binaryOracles && oracleName && args.size()!=1)throw std::runtime_error("A binary oracle requires one word argument.");
     if((basisXorContext || binaryOracles) && oracleName && args.size()==1) {
@@ -2358,7 +2367,12 @@ class Parser {
       }
      }
     }
-    a=(gf2Products ? "qgf2mul(" : "qadjacent(")+a+","+right+")";
+    // An indexed operator applied directly to a ket has the same binding as U_f(|x>).
+    if((binaryOracles || binaryWordNotation) && s[start]=='|' && a.size()>=7 &&
+       a.front()==labelMarkerBegin && a[2]>='A' && a[2]<='Z' && a[3]=='_' &&
+       a.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",4)==a.size()-2)
+     a="qmul(qoperatorref("+a+"),"+right+")";
+    else a=(gf2Products ? "qgf2mul(" : "qadjacent(")+a+","+right+")";
    }
    else break;
    checkSize(a);

@@ -234,6 +234,19 @@ for search_symbol in "nxyz":
 xor_ket = data(r"quantum:bitword:$\vert a \oplus f(x)\rangle$")["copy_text"]
 assert data(f"quantum:replace(replace(replace(({xor_ket}),a,1),f,{search_graph}),x,bitstring(1,1))")["cells"] == [["1"], ["0"]]
 
+# The Grover diffusion oracle takes the OR of all bits in its input word.
+word_or = data(r"quantum:bitword:$\mathrm{OR}(x)$")["copy_text"]
+assert word_or == "qwordor(x)"
+for bits, expected in (("000", "0"), ("001", "1"), ("110", "1")):
+    assert data(f"quantum:replace({word_or},x,bitstring(\"{bits}\"))")["copy_text"] == expected
+    assert data(f"quantum:bitword:OR({bits})")["copy_text"] == expected
+assert data("quantum:qwordor(qbitlabel(0,0))")["copy_text"] == "0"
+run("quantum:bitword:OR([1,2])", "--json", success=False)
+run("quantum:bitword:OR(1,0)", "--json", success=False)
+phase_action = data(r"quantum:oracles:$Z_f\vert x\rangle = (-1)^{f(x)}\vert x\rangle$")["copy_text"]
+phase_probe = f'replace(replace(replace(({phase_action}),f,{search_graph}),x,bitstring(1,1)),"Z_f",Z)'
+assert data("quantum:" + phase_probe)["copy_text"] == "1"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
