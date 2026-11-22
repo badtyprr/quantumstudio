@@ -1,0 +1,58 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "tables": [
+    {
+      "occurrence": 3,
+      "cell": 0,
+      "start": 502,
+      "end": 844,
+      "literal_sha256": "52a8b869b42033d9022778ae7784373eb1343116cb4dde2b464c1f9a9c124098",
+      "copy": "vector(matrix(3,2,['a',\"f_1(a)\",0,0,1,0]),matrix(3,2,['a',\"f_2(a)\",0,0,1,1]),matrix(3,2,['a',\"f_3(a)\",0,1,1,0]),matrix(3,2,['a',\"f_4(a)\",0,1,1,1]))"
+    },
+    {
+      "occurrence": 11,
+      "cell": 0,
+      "start": 1475,
+      "end": 1600,
+      "literal_sha256": "daaec3d25d9ab460ed0c0add38bdcfe9bb183c096a15e2e7793ed0712cb4247e",
+      "copy": "matrix(5,2,vector(\"function\",\"string\",\"f_1\",qbitlabel(0,2),\"f_2\",qbitlabel(1,2),\"f_3\",qbitlabel(2,2),\"f_4\",qbitlabel(3,2)))"
+    }
+  ],
+  "verified_rows": [
+    {
+      "function": "f_1",
+      "outputs": [
+        0,
+        0
+      ],
+      "word": "00"
+    },
+    {
+      "function": "f_2",
+      "outputs": [
+        0,
+        1
+      ],
+      "word": "01"
+    },
+    {
+      "function": "f_3",
+      "outputs": [
+        1,
+        0
+      ],
+      "word": "10"
+    },
+    {
+      "function": "f_4",
+      "outputs": [
+        1,
+        1
+      ],
+      "word": "11"
+    }
+  ],
+  "cell_checks": 28
+}

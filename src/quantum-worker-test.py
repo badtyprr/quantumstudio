@@ -67,6 +67,21 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# The two Deutsch tables retain entries and leading zero bits through Copy.
+oracle_table = r"\begin{array}{c|c} a & f_2(a) \\ \hline 0 & 0 \\ 1 & 1 \end{array}"
+strut = r"\rule[-10mm]{0mm}{10mm}"
+tables = data("quantum:$" + strut + oracle_table + r"\qquad" + oracle_table + "$")["copy_text"]
+assert data(f"quantum:element(element(({tables}),2),3,2)")["copy_text"] == "1"
+word_table = r"\begin{array}{cc}\mathsf{function}&\mathsf{string}\\\hline f_{7}&001\end{array}"
+words = data("quantum:$" + word_table + "$")["copy_text"]
+assert data("quantum:" + words)["copy_text"] == words
+assert data(f"quantum:element(({words}),2,2)")["copy_text"] == "qbitlabel(1,3)"
+spaced_header = word_table.replace(r"\mathsf{", r"\mathsf {").replace("f_{7}", "f_{12}")
+assert '"f_12"' in data("quantum:$" + spaced_header + "$")["copy_text"]
+run("quantum:$" + word_table.replace("f_{7}", "f_12") + "$", "--json", success=False)
+run("quantum:$" + word_table.replace("001", "021") + "$", "--json", success=False)
+run("quantum:$" + strut.replace("{0mm}", "{2mm}") + oracle_table + "$", "--json", success=False)
+
 # A parenthesized Deutsch state remains the operand of the whole indexed oracle.
 oracle_action = data(r"quantum:$U_f\bigl(\vert 0\rangle\bigr)$")["copy_text"]
 assert data("quantum:" + oracle_action)["copy_text"] == oracle_action
