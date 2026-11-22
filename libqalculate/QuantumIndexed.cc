@@ -2,6 +2,7 @@
 #include "QuantumIndexed.h"
 #include <map>
 #include "QuantumBasisDomain.h"
+#include "QuantumBinary.h"
 #include "Calculator.h"
 #include "Function.h"
 #include "Variable.h"
@@ -2745,7 +2746,7 @@ class QuantumIndexedFunction: public MathFunction {
     // subject to the usual collection validation below.
     if(probe.isFunction() && probe.size()==2 &&
        ((probe.function()->referenceName()=="qnamedapplication" && probe[0].isUnknown()) ||
-        (probe.function()->referenceName()=="qgraphapply" && probe[1].isUnknown())))
+        (probe.function()->referenceName()=="qgraphapply" && pendingQuantumGraphLookup(probe[0],probe[1],exact))))
      deferredLabels=true;
     else if(!validateLabel(probe)) {CALCULATOR->error(true,"Membership requires a scalar or binary-string label.",NULL);return 0;}
    }
