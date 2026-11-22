@@ -1,0 +1,441 @@
+{
+  "runner_revision": "d0ec0f57",
+  "profile": "qiskit-aer-linux-py312",
+  "lock_sha256": "39206d4cf230cd8b21d46698b72a3092fd4c0d2a5f4eccc7dd18ec2b1ad16769",
+  "python": "3.12.10",
+  "platform": "Ubuntu 24.04 x86_64",
+  "verified_wheels": 54,
+  "installed_packages": 54,
+  "source_hash_rejections": {
+    "ibm019": {
+      "exit_code": 1,
+      "diagnostic": "ValueError: SOURCE_HASH_MISMATCH",
+      "executed": false
+    },
+    "ibm020": {
+      "exit_code": 1,
+      "diagnostic": "ValueError: SOURCE_HASH_MISMATCH",
+      "executed": false
+    }
+  },
+  "runs": {
+    "ibm019-old": {
+      "source_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+      "original_cells": 17,
+      "executed_source_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "png_sha256": {
+        "7": "dafa3bc810da501fca3cfc9e797caf02a8d2452f6d8d91170543166c5be524e3",
+        "11": "8df10d2cc2b875962959802f8278fe6b5be3f38ded85fa06659ea358cd44071b"
+      },
+      "text_outputs": {
+        "15": "'balanced'"
+      },
+      "remaining_processes": 0,
+      "results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              0.0
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.0,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.0,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              0.0
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ]
+      }
+    },
+    "ibm019-pinned": {
+      "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+      "original_cells": 16,
+      "executed_source_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "png_sha256": {
+        "7": "dafa3bc810da501fca3cfc9e797caf02a8d2452f6d8d91170543166c5be524e3",
+        "11": "8df10d2cc2b875962959802f8278fe6b5be3f38ded85fa06659ea358cd44071b"
+      },
+      "text_outputs": {
+        "15": "'balanced'"
+      },
+      "remaining_processes": 0,
+      "results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              0.0
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.0,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.0,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              0.0
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ]
+      }
+    },
+    "ibm020-old": {
+      "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+      "original_cells": 20,
+      "executed_source_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "png_sha256": {
+        "6": "271da83c2e94062e815dcc0bd53db677faad52bda9a2f71e81be605d0689f78a",
+        "12": "628e2558cd4ec51bcd04098ee60eae1c65247bf73c2649c69a2a73041d05062e",
+        "15": "78f396790611da70186629f84b27f39cba7c4ccfa44abe34abdec83dce6b84ba"
+      },
+      "text_outputs": {
+        "12": "'balanced'",
+        "17": "'1011'"
+      },
+      "remaining_processes": 0,
+      "results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "010": 1032,
+          "110": 1037,
+          "101": 985,
+          "001": 1042
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    },
+    "ibm020-pinned": {
+      "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+      "original_cells": 19,
+      "executed_source_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "png_sha256": {
+        "6": "271da83c2e94062e815dcc0bd53db677faad52bda9a2f71e81be605d0689f78a",
+        "12": "628e2558cd4ec51bcd04098ee60eae1c65247bf73c2649c69a2a73041d05062e",
+        "15": "78f396790611da70186629f84b27f39cba7c4ccfa44abe34abdec83dce6b84ba"
+      },
+      "text_outputs": {
+        "12": "'balanced'",
+        "17": "'1011'"
+      },
+      "remaining_processes": 0,
+      "results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "010": 1032,
+          "110": 1037,
+          "101": 985,
+          "001": 1042
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    }
+  },
+  "lifecycle": {
+    "profile": "notebook-linux-py312",
+    "preflight": "succeeded",
+    "tests": [
+      "test_cancel",
+      "test_cell_timeout",
+      "test_client_loss",
+      "test_complete_notebook_and_rich_output",
+      "test_detached_descendants_forced_cancel",
+      "test_engine_sigkill",
+      "test_failed_engine_start",
+      "test_gate_eof_without_kernel",
+      "test_kernel_crash",
+      "test_repeated_runs_use_distinct_units",
+      "test_runtime_deadline",
+      "test_source_error",
+      "test_supervisor_loss",
+      "test_wrong_unit_identity_cannot_be_stopped"
+    ]
+  }
+}
