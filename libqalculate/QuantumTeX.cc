@@ -650,24 +650,34 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ auto rootLabel=[](const std::string &term) {
+  std::string text=trim(term);
+  if(text.compare(0,5,"\\sqrt")!=0)return std::string();
+  text=trim(text.substr(5));
+  if(text.size()<3 || text.front()!='{' || text.back()!='}')return std::string();
+  return trim(text.substr(1,text.size()-2));
+ };
+ auto normalizeLabel=[tex](const std::string &cell) {
+  size_t sub=cell.rfind('_');
+  if(!tex || sub==std::string::npos)return cell;
+  std::string index=cell.substr(sub+1);
+  if(index.size()<3 || index.front()!='{' || index.back()!='}')return cell;
+  std::string bound=trim(index.substr(1,index.size()-2));
+  if(!bound.empty() && (bound.find_first_not_of("0123456789")==std::string::npos ||
+     (bound.size()==1 && asciiLetter(bound[0]))))return cell.substr(0,sub+1)+bound;
+  return cell;
+ };
  // The four corners of the expanded measurement matrix specify its
  // block row and block column independently.
  if(tex && height==3 && width==3 && cells[1].size()==3 && cells[2].size()==3 &&
     cells[0][1]==horizontal && cells[2][1]==horizontal &&
     cells[1][0]==vertical && cells[1][1]==diagonal && cells[1][2]==vertical) {
-  auto rootLabel=[](const std::string &term) {
-   std::string text=trim(term);
-   if(text.compare(0,5,"\\sqrt")!=0)return std::string();
-   text=trim(text.substr(5));
-   if(text.size()<3 || text.front()!='{' || text.back()!='}')return std::string();
-   return trim(text.substr(1,text.size()-2));
-  };
   std::string rowLabel[2],columnLabel[2];bool consistent=true;
   for(size_t r=0;r<2 && consistent;++r)for(size_t c=0;c<2;++c) {
    const std::string &cell=cells[2*r][2*c];
    size_t middle=cell.find("\\rho");
    if(middle==std::string::npos) {consistent=false;break;}
-   std::string left=rootLabel(cell.substr(0,middle)),right=rootLabel(cell.substr(middle+4));
+   std::string left=normalizeLabel(rootLabel(cell.substr(0,middle))),right=normalizeLabel(rootLabel(cell.substr(middle+4)));
    if(left.empty() || right.empty() || (c && rowLabel[r]!=left) || (r && columnLabel[c]!=right)) {consistent=false;break;}
    rowLabel[r]=left;columnLabel[c]=right;
   }
@@ -702,45 +712,30 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  // All later block columns are either explicitly zero or independently unspecified.
  const std::string &fill=cells.front()[1];
  if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {
-  auto rootArgument=[](const std::string &cell) {
-   if(cell.compare(0,5,"\\sqrt")!=0)return std::string();
-   std::string argument=trim(cell.substr(5));
-   if(argument.size()<3 || argument.front()!='{' || argument.back()!='}')return std::string();
-   return trim(argument.substr(1,argument.size()-2));
-  };
-  const bool roots=tex && !rootArgument(cells.front()[0]).empty();
+  const bool roots=tex && !rootLabel(cells.front()[0]).empty();
   if(roots) {
    for(size_t r=0;r<height;++r) {
     if(r==height-2)continue;
     if(cells[r].empty())invalid();
-    cells[r][0]=rootArgument(cells[r][0]);
+    cells[r][0]=rootLabel(cells[r][0]);
     if(cells[r][0].empty())invalid();
    }
   }
   size_t sub=cells.front()[0].find('_');
   if(sub!=std::string::npos) {
    std::string prefix=cells.front()[0].substr(0,sub+1);
-   auto blockLabel=[&](const std::string &cell) {
-    if(!tex || cell.compare(0,prefix.size(),prefix)!=0)return cell;
-    std::string index=cell.substr(prefix.size());
-    if(index.size()<3 || index.front()!='{' || index.back()!='}')return cell;
-    std::string bound=trim(index.substr(1,index.size()-2));
-    if(!bound.empty() && (bound.find_first_not_of("0123456789")==std::string::npos ||
-       (bound.size()==1 && asciiLetter(bound[0]))))return prefix+bound;
-    return cell;
-   };
    for(size_t r=0;r<height;++r) {
     if(cells[r].size()!=width)invalid();
     for(size_t c=0;c<width;++c) {
      if(r==height-1 && c==0)continue;
      std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
                           c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : fill;
-     if((c==0 && r<height-2 ? blockLabel(cells[r][c]) : cells[r][c])!=expected)invalid();
+     if((c==0 && r<height-2 ? normalizeLabel(cells[r][c]) : cells[r][c])!=expected)invalid();
     }
    }
    if(cells.back()[0].compare(0,prefix.size(),prefix)!=0)invalid();
    std::string name=quantumTeX(prefix.substr(0,sub))+"_";
-   std::string last=blockLabel(cells.back()[0]).substr(prefix.size());
+   std::string last=normalizeLabel(cells.back()[0]).substr(prefix.size());
    std::string family=indexedLabelRange(name+"0",name+last,"qindexedentries(");
    if(family.empty())invalid();
    if(roots)family="qblockroots("+family+")";

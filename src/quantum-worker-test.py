@@ -147,6 +147,10 @@ expanded_blocks = r"""\begin{pmatrix}
 \end{pmatrix}"""
 open_column = measurement_column.removeprefix("U=")
 measurement_product = open_column + corner_density + measurement_row
+grouped_product = open_column + "(" + corner_density + measurement_row + ")"
+assert data("quantum:" + grouped_product)["copy_text"] == data("quantum:" + measurement_product)["copy_text"]
+braced_corners = expanded_blocks.replace("P_0", "P_{ 0 }")
+assert data("quantum:" + braced_corners)["copy_text"] == data("quantum:" + expanded_blocks)["copy_text"]
 block_equation = r"\sigma =" + measurement_product + " = " + expanded_blocks
 block_copy = data("quantum:" + block_equation)["copy_text"]
 assert data("quantum:" + block_copy)["copy_text"] == block_copy
