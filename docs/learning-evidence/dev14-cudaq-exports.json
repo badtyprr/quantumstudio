@@ -1,0 +1,214 @@
+{
+  "exports": {
+    "ansatz": {
+      "sha256": "74d1a0b598a8e8f70b08e1ad288a7b7bd675ef648b84c1983019a7135d74755e",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": "1"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0,
+          "result": {
+            "": 10000
+          }
+        }
+      }
+    },
+    "bell": {
+      "sha256": "41aaa3ad3c11d65bcc1344e0e534a30f07fc31f6cb6fe1569ed62d2da969b5b4",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    "ghz2": {
+      "sha256": "f0fba5bb3446c29613bf24b14d8004d7be19199fe7d97bcbdfbcfa54787ceeae",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00": "0.5",
+            "11": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.006299999999999972,
+          "result": {
+            "00": 5063,
+            "11": 4937
+          }
+        }
+      }
+    },
+    "ghz3": {
+      "sha256": "fc3e75896dbf2b6dd1624969675df8ce7aea1251ecc36a6e092e332a332118b7",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "000": "0.5",
+            "111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0048000000000000265,
+          "result": {
+            "000": 5048,
+            "111": 4952
+          }
+        }
+      }
+    },
+    "ghz4": {
+      "sha256": "abbb4afe60b2ed9b4dfc69a19f601a4149c61cb3c9da4c901a2b0298be221a36",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "0000": "0.5",
+            "1111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 9.999999999998899e-05,
+          "result": {
+            "0000": 4999,
+            "1111": 5001
+          }
+        }
+      }
+    },
+    "ghz5": {
+      "sha256": "fe89bcb3001cf7d41b7548ecf52fa149991247afa0dd9791dae1317837516e8d",
+      "checks": {
+        "exact": {
+          "max_probability_error": 0.0,
+          "result": {
+            "00000": "0.5",
+            "11111": "0.5"
+          }
+        },
+        "sampled": {
+          "max_probability_error": 0.0019000000000000128,
+          "result": {
+            "00000": 4981,
+            "11111": 5019
+          }
+        }
+      }
+    }
+  },
+  "authored_ansatz_measurements": {
+    "Z": {
+      "exact": {
+        "max_probability_error": 1.3877787911212033e-17,
+        "result": {
+          "01": "(1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(1/4)*exp(i*(58999999999999997/100000000000000000))",
+          "10": "(-1/4)*exp(i*(-58999999999999997/100000000000000000))+(1/2)+(-1/4)*exp(i*(58999999999999997/100000000000000000))"
+        }
+      },
+      "sampled": {
+        "max_probability_error": 0.0015703395500817618,
+        "result": {
+          "01": 9139,
+          "10": 861
+        }
+      }
+    },
+    "XX": {
+      "exact": {
+        "max_probability_error": 8.470329472543003e-22,
+        "result": {
+          "00": "((0+(1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(-1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "01": "((0+(-1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "10": "((0+(-1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "11": "((0+(1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(-1/8)*i))*exp(i*(58999999999999997/100000000000000000))"
+        }
+      },
+      "sampled": {
+        "max_probability_error": 0.010309744271804033,
+        "result": {
+          "00": 3994,
+          "01": 1112,
+          "10": 1069,
+          "11": 3825
+        }
+      }
+    },
+    "YY": {
+      "exact": {
+        "max_probability_error": 8.470329472543003e-22,
+        "result": {
+          "00": "((0+(1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(-1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "01": "((0+(-1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "10": "((0+(-1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(1/8)*i))*exp(i*(58999999999999997/100000000000000000))",
+          "11": "((0+(1/8)*i))*exp(i*(-58999999999999997/100000000000000000))+(1/4)+((0+(-1/8)*i))*exp(i*(58999999999999997/100000000000000000))"
+        }
+      },
+      "sampled": {
+        "max_probability_error": 0.010309744271804033,
+        "result": {
+          "00": 3994,
+          "01": 1112,
+          "10": 1069,
+          "11": 3825
+        }
+      }
+    }
+  },
+  "environment": "CUDA-Q 0.17.0 qpp-cpu on Ubuntu 24.04.5; Python 3.12.3",
+  "scope": "Original Bell and GHZ kernels and the ansatz specialized to 0.59. Three exports had identical hashes per circuit. The six unchanged OpenQASM 2 programs ran via the classical file format, saved model, native exact engine and native 10,000-shot sampler. The separate ansatz controls appended measurement instructions.",
+  "qir_exports": {
+    "ansatz-0.1": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    },
+    "ansatz-1.0": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    },
+    "bell-0.1": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    },
+    "bell-1.0": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    },
+    "ghz-0.1": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    },
+    "ghz-1.0": {
+      "ir": "QIR_UNSUPPORTED_PROFILE",
+      "bitcode": "QIR_UNSUPPORTED_PROFILE",
+      "major": null,
+      "minor": null
+    }
+  }
+}
