@@ -685,6 +685,20 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 # Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
+# The missing operand can receive either ordering of the same labelled axes.
+pending_trace = data(r"quantum:\operatorname{Tr}_{\mathsf{B}}(\rho)")["copy_text"]
+assert data("quantum:" + pending_trace)["copy_text"] == pending_trace
+diagonal = "[1,0,0,0;0,2,0,0;0,0,3,0;0,0,0,4]"
+for labels, expected in [("[A,B]", "[3,0,0,7]"), ("[B,A]", "[4,0,0,6]")]:
+    mapped = f"subsystems({diagonal},{labels},[2,2])"
+    expression = f"quantum:replace(({pending_trace}),ρ,{mapped})"
+    assert data(expression)["copy_text"] == f"matrix(2,2,{expected})"
+assert b"explicit subsystems" in run(
+    f"quantum:replace(({pending_trace}),ρ,{diagonal})", "--json", success=False).stderr
+assert b"Unknown subsystem label" in run(
+    f"quantum:replace(({pending_trace}),ρ,subsystems({diagonal},[A,C],[2,2]))",
+    "--json", success=False).stderr
+
 alphabet_power = data(r"quantum:$\Sigma^m$")["copy_text"]
 for width in (0, 1, 3, -1):
     words = ",".join(f"qbitlabel({n},{width})" for n in range(2 ** max(width, 0)))

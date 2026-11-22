@@ -155,6 +155,9 @@ class QuantumSubsystemFunction: public MathFunction {
     MathStructure args;args.clearVector();args.addChild(state[0]);args.addChild(indices);args.addChild(state[2]);
     return CALCULATOR->getFunction("qptracedim")->calculate(out,args,eo);
    }
+   // A state variable may later receive a labelled subsystem mapping.
+   // Retain both selector interpretations until the state is supplied.
+   if(op=="qptraceselect" && state.isUnknown())return 0;
    if(op=="qptraceselect") {
     // The same spelling can denote metadata on a mapped value or an assigned
     // numeric index on an ordinary matrix. Resolve only after seeing the value.
