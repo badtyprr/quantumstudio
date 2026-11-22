@@ -2462,6 +2462,20 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
+  if(op=="qindexedroots" || op=="qindexedtransposes") {
+   MathStructure entries;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
+   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : "qtranspose");
+   for(size_t i=0;i<entries.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    entries[i].eval(eo);
+    // An unassigned label can still become a matrix. Wait to select the
+    // matrix or scalar form of the operation until its shape is known.
+    if(!entries[i].isVector() && (entries[i].isSymbolic() || entries[i].containsUnknowns()))return 0;
+    MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
+   }
+   out=entries;return 1;
+  }
   if(op=="qamplitudeprojector") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
@@ -3370,6 +3384,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexeddiagonal",2));
  calculator.addFunction(new QuantumIndexedFunction("qbasiskets",1));

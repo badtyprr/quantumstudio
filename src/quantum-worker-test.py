@@ -67,6 +67,18 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Both endpoints must apply the same operation to the same indexed family.
+for displayed, expected in [
+    (r"$P_0^{T},\ldots,P_{m-1}^{T}$", "vector(matrix(2,2,[1,i,−i,1]),matrix(2,2,[4,0,0,9]))"),
+    (r"$\sqrt{P_0},\ldots,\sqrt{P_{m-1}}$", "vector(matrix(2,2,[1,0,0,0]),matrix(2,2,[2,0,0,3]))"),
+]:
+    mapped = data("quantum:" + displayed)["copy_text"]
+    first = "[1,-i;i,1]" if "qindexedtransposes" in mapped else "[1,0;0,0]"
+    for key, value in [('"P_1"', "[4,0;0,9]"), ('"m"', "2"), ('"P_0"', first)]:
+        mapped = data(f"quantum:replace(({mapped}),{key},{value})")["copy_text"]
+    assert mapped == expected and data("quantum:" + mapped)["copy_text"] == mapped
+run(r"quantum:$\sqrt{P_0},\ldots,Q_{m-1}^{T}$", "--json", success=False)
+
 # Keep the complex conjugate until the last named amplitude is assigned.
 amplitude_matrix = r"""\begin{pmatrix}
 \alpha_0 \overline{\alpha_0} & \alpha_0 \overline{\alpha_1} & \cdots & \alpha_0 \overline{\alpha_{n-1}}\\[1mm]
