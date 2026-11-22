@@ -1,0 +1,162 @@
+{
+  "release": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "archive_sha256": "fc37b7d107a883afe2e06dc9ee438a7ac68533f5711db8e41d5439c4b39507f4",
+  "source_sha256": "e774a7223c3a5b4473198591f1c3a29863178b4b0b92055a6cfb185403214c96",
+  "windows": {
+    "passed": true,
+    "checks": 33,
+    "calls": 3,
+    "sessionsOnly": false,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "windows_copy": {
+    "source-5": "5",
+    "logical-dimension": "2",
+    "distance": "3"
+  },
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "single_wire_syndromes": 15,
+  "circuits": [
+    {
+      "case": "0-diagram-0",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-1",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-2",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-3",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-4",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-5",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-diagram-6",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0050000000000000044
+    },
+    {
+      "case": "0-teleportation-control-0",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-1",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-2",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-3",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-4",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-5",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "0-teleportation-control-6",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0050000000000000044
+    },
+    {
+      "case": "1-diagram-0",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-1",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-2",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-3",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-4",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-5",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-diagram-6",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0050000000000000044
+    },
+    {
+      "case": "1-teleportation-control-0",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-1",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-2",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-3",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-4",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-5",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0030000000000000027
+    },
+    {
+      "case": "1-teleportation-control-6",
+      "exact_max_error": 0.0,
+      "sampled_max_error": 0.0050000000000000044
+    }
+  ]
+}
