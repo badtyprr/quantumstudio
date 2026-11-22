@@ -80,7 +80,8 @@ class QuantumBinaryFunction: public MathFunction {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
   if(op=="qcontrolbit") {
-   if(a.isUnknown() || (a.representsScalar() && a.containsUnknowns()))return 0;
+   if(a.isUnknown() || (a.containsUnknowns() && (a.representsScalar() ||
+      (a.isFunction() && a.function()->referenceName()=="qgraphapply"))))return 0;
    if(isQuantumBitLabel(a) && a.size()==2) {
     MathStructure value=a[0],width=a[1];
     const auto state=validateQuantumBitLabel(value,width,eo);
@@ -388,7 +389,8 @@ class QuantumBinaryFunction: public MathFunction {
      for(size_t k=0;k<value.size();++k)bits[j].push_back(value[k]);
     } else bits[j].push_back(value);
     for(const auto &bit:bits[j]) {
-     if(op=="qbitword" && (bit.isUnknown() || bit.isSymbolic())) {symbolicLabel=true;continue;}
+     if(op=="qbitword" && (bit.isUnknown() || bit.isSymbolic() ||
+        (bit.isFunction() && bit.function()->referenceName()=="qcontrolbit" && bit.containsUnknowns()))) {symbolicLabel=true;continue;}
      if(!bit.isNumber() || (!bit.number().isZero() && !bit.number().isOne())) {CALCULATOR->error(true,"Binary bit operations require each entry to be 0 or 1.",NULL);return 0;}
     }
     knownWidths[j]=static_cast<int>(bits[j].size());
