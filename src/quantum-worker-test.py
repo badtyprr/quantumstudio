@@ -155,6 +155,14 @@ assert data(f'quantum:replace(({promise_cases}),"f",{balanced_graph})')["copy_te
 run(f'quantum:replace(({promise_cases}),"f",{truth_table})', "--json", success=False)
 run("quantum:qconstantoracle(qset(vector(qtuple(vector(qbitlabel(1,2),0)))))", "--json", success=False)
 
+aligned_hadamards = data(
+    r"quantum:oracles:$\begin{aligned} & H^{\otimes 2}\vert x_1 x_0\rangle\\"
+    r"&=\bigl(H\vert x_1\rangle\bigr)\otimes\cdots\otimes\bigl(H\vert x_0\rangle\bigr)\\"
+    r"&=H^{\otimes 2}\vert x_1 x_0\rangle\end{aligned}$"
+)["copy_text"]
+assert data(f'quantum:replace(replace(({aligned_hadamards}),"x_1",0),"x_0",1)')["copy_text"] == "1"
+assert data(r"quantum:oracles:$\sum_{a\in\Sigma}(-1)^a$")["copy_text"] == "0"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

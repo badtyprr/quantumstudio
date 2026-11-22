@@ -1754,7 +1754,10 @@ class Parser {
      const bool grouped=name.compare(0,9,"qtexgroup")==0;
      const std::string operation=name.substr(grouped ? 9 : 4);
      std::vector<std::string> args;
-     args.push_back(expression());need(',');
+     size_t domainStart=p;
+     args.push_back(expression());
+     if(operation=="sumset" && binaryOracles && groupedToken(s,domainStart,p,"Σ"))args[0]="qset(vector(0,1))";
+     need(',');
      if(operation!="sumset"){args.push_back(expression());need(',');}
      // A new multi-letter binder is a declaration, even if its letters are
      // indices in an enclosing sum. Its body then shadows those spellings.
