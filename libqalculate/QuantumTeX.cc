@@ -13,6 +13,36 @@ bool asciiSpace(unsigned char c) {return c==' ' || (c>='\t' && c<='\r');}
 bool asciiLetter(unsigned char c) {return (c>='A' && c<='Z') || (c>='a' && c<='z');}
 // In binary-word mode, adjacent digits and named bits occupy consecutive
 // positions, most significant first. Leave explicit calculator calls intact.
+// The outer Markdown delimiters have been removed. Each remaining pair
+// surrounds the prose separator between two successive binary words.
+std::string inlineWordTuple(const std::string &text) {
+ size_t pos=0,count=0;
+ auto space=[&](){while(pos<text.size() && asciiSpace((unsigned char)text[pos]))++pos;};
+ space();if(pos==text.size() || text[pos++]!='(')return "";
+ std::string tuple="qtuple(vector(";
+ bool finalWord=false;
+ for(;;) {
+  space();const size_t start=pos;
+  while(pos<text.size() && (text[pos]=='0' || text[pos]=='1'))++pos;
+  if(pos==start)return "";
+  if(pos-start>1024 || ++count>1024)throw std::runtime_error("A binary tuple supports up to 1024 words of at most 1024 bits.");
+  if(count>1)tuple+=",";
+  tuple+="bitstring(\""+text.substr(start,pos-start)+"\")";
+  space();
+  if(pos<text.size() && text[pos]==')') {
+   ++pos;space();return pos==text.size() && count>1 ? tuple+"))" : "";
+  }
+  if(finalWord || pos==text.size() || text[pos++]!='$')return "";
+  space();if(pos==text.size() || text[pos++]!=',')return "";
+  space();
+  if(text.compare(pos,3,"and")==0) {
+   pos+=3;
+   if(pos==text.size() || !asciiSpace((unsigned char)text[pos]))return "";
+   space();finalWord=true;
+  }
+  if(pos==text.size() || text[pos++]!='$')return "";
+ }
+}
 std::string orderedBitWord(const std::string &text) {
  std::string digits;
  for(unsigned char c:text)if(!asciiSpace(c))digits+=c;
@@ -2998,6 +3028,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   s=s.substr(1,s.size()-2);
   // Markdown can put a congruence and its trailing modulus in adjacent
   // inline math spans. Consume only that boundary and retain the TeX.
+  if(bitWord && s.find('$')!=std::string::npos) {
+   std::string tuple=inlineWordTuple(s);
+   if(!tuple.empty())return tuple;
+  }
   size_t close=s.find('$');
   if(close!=std::string::npos && s.find("\\equiv")<close) {
    size_t open=s.find_first_not_of(" \t\r\n",close+1);

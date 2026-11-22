@@ -1,0 +1,33 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/simon-algorithm.ipynb",
+  "source_sha256": "2a53c7740281662c4c68fd9b3a9492c3615ea3bbfead3c0d3cce9f2fab698f7a",
+  "cell": 0,
+  "start": 3587,
+  "end": 3627,
+  "occurrences": [
+    34,
+    35,
+    36,
+    37
+  ],
+  "literal": "$(10011$, $00101$, $00001$, and $11010)$",
+  "span_sha256": "e98a5fdaec2cc5ad2bd378b70761d771be620f85204a5821bc6754dea9b3bf3f",
+  "mode": "Binary word",
+  "expected": "qtuple(vector(qbitlabel(19,5),qbitlabel(5,5),qbitlabel(1,5),qbitlabel(26,5)))",
+  "outputs_in_prose_order": [
+    "10011",
+    "00101",
+    "00001",
+    "11010"
+  ],
+  "outputs_in_first_occurrence_table_order": [
+    "10011",
+    "00101",
+    "11010",
+    "00001"
+  ],
+  "table_inputs": 8,
+  "source_and_pair_checks": 73,
+  "negative_controls": 6
+}
