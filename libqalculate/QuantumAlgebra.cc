@@ -1369,6 +1369,15 @@ class QuantumAlgebraFunction: public MathFunction {
    else if(unresolvedMatrixOperand(other))return 0;
   }
   if((op=="qmul" || op=="qadjacent") && args.size()==2) {
+   // The ket supplies the space on which the unindexed identity acts.
+   if(args[0].isFunction() && args[0].function()->referenceName()=="qimplicitidentity") {
+    if(args[1].isFunction()) {
+     const auto &name=args[1].function()->referenceName();
+     if(name=="qketstate" || name=="qnamedket" || name=="qcomputationalket") {out=args[1];return 1;}
+    }
+    MathStructure operand=args[1];operand.eval(eo);
+    if(operand.isMatrix() && operand.columns()==1) {out=operand;return 1;}
+   }
    args[0].eval(eo);MathStructure rows,columns;
    evaluatedArguments=1;
    // Juxtaposed columns mean a tensor product, not operator application.

@@ -770,3 +770,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm034-probability-bounds.json docs/l
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-indexed-oracle-actions.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-tables.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-xor.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm019-ket-complement.json

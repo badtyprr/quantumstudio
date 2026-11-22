@@ -1,0 +1,44 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "occurrence": 49,
+  "cell": 0,
+  "start": 7508,
+  "end": 7732,
+  "literal_sha256": "ac84243e2a6a12264aa1b08da0923d0f23951bd272c2f2d529e3d70ff124d53b",
+  "original": "$$\n\\begin{aligned}\n\\vert b \\oplus 0 \\rangle & = \\vert b\\rangle = \\mathbb{I} \\vert b \\rangle = X^0 \\vert b \\rangle\\\\\n\\vert b \\oplus 1 \\rangle & = \\vert \\neg b\\rangle = X \\vert b \\rangle = X^1 \\vert b \\rangle.\n\\end{aligned}\n$$",
+  "copy_text": "\\begin{gathered}qequalchain(vector(qcomputationalket(qoplus('b',qbitlabel(0,1))),qketstate('b'),qketstate('b'),qadjacent(qpower(matrix(2,2,vector(0,1,1,0)),0),qketstate('b'))))\\\\qequalchain(vector(qcomputationalket(qoplus('b',qbitlabel(1,1))),qcomputationalket(qoplus(qbitlabel(1,1),'b')),qadjacent(matrix(2,2,vector(0,1,1,0)),qketstate('b')),qadjacent(qpower(matrix(2,2,vector(0,1,1,0)),1),qketstate('b'))))\\end{gathered}",
+  "checks": [
+    {
+      "formula": "original",
+      "bit": 0,
+      "result": "vector(1,1)"
+    },
+    {
+      "formula": "original",
+      "bit": 1,
+      "result": "vector(1,1)"
+    },
+    {
+      "formula": "flip first-row exponent",
+      "bit": 0,
+      "result": "vector(0,1)"
+    },
+    {
+      "formula": "flip first-row exponent",
+      "bit": 1,
+      "result": "vector(0,1)"
+    },
+    {
+      "formula": "remove second-row negation",
+      "bit": 0,
+      "result": "vector(1,0)"
+    },
+    {
+      "formula": "remove second-row negation",
+      "bit": 1,
+      "result": "vector(1,0)"
+    }
+  ]
+}

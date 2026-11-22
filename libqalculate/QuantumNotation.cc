@@ -876,6 +876,19 @@ class Parser {
    }
    return state;
   }
+  const size_t first=label.find_first_not_of(" \t\r\n");
+  if(dimension.empty() && first!=std::string::npos && label.compare(first,3,"not")==0 && first+3<label.size() &&
+     (std::isspace(static_cast<unsigned char>(label[first+3])) || label[first+3]=='(')) {
+   const std::string bit=labelText(label.substr(first+3));
+   size_t begin=0,end=bit.size();
+   while(end>begin+1 && bit[begin]=='(' && bit[end-1]==')') {++begin;--end;}
+   if(end==begin+1) {
+    if(bit[begin]=='0' || bit[begin]=='1')return ket(bit[begin]=='0' ? "1" : "0");
+    if(std::isalpha(static_cast<unsigned char>(bit[begin])))
+     return "qcomputationalket(qoplus(qbitlabel(1,1),"+indexableLabel(bit.substr(begin,1))+"))";
+   }
+   throw std::runtime_error("A complemented ket label requires one bit or a single bit variable.");
+  }
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
   // Inside a sum, an indexed binder denotes a basis value rather than an
   // independently declared named-state family. Outside that lexical scope,
