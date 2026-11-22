@@ -4,7 +4,7 @@ This increment implements deterministic protocol and gate-count handling derived
 from the pinned qBraid SDK sources. It does not execute an original notebook,
 submit a job, verify hardware, or implement CUDA-Q's different native REST route.
 The four added files are independent of the notebook runner and its environments.
-Integration base: `244681403225583af607d6839ec39511d83fc2ab`.
+The original adapter in PR #456 was based on `244681403225583af607d6839ec39511d83fc2ab`. The checklist integration starts at `38857059` and adds project-level tests and UTF-8 handle validation.
 
 ## Source provenance
 
