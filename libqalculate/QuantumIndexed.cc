@@ -1323,7 +1323,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2462,10 +2462,17 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qindexedroots" || op=="qindexedtransposes") {
+  if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
    if(!entries.size()) {CALCULATOR->error(true,"A displayed indexed list requires ascending endpoints.",NULL);return 0;}
+   const bool traces=op=="qindexedproducttraces";
+   MathStructure operand;
+   if(traces) {
+    operand=raw[1];operand.eval(eo);
+    if(!operand.isVector() && (operand.isSymbolic() || operand.containsUnknowns()))return 0;
+    if(!operand.isVector()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
+   }
    auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : "qtranspose");
    for(size_t i=0;i<entries.size();++i) {
     if(CALCULATOR->aborted())return 0;
@@ -2473,7 +2480,30 @@ class QuantumIndexedFunction: public MathFunction {
     // An unassigned label can still become a matrix. Wait to select the
     // matrix or scalar form of the operation until its shape is known.
     if(!entries[i].isVector() && (entries[i].isSymbolic() || entries[i].containsUnknowns()))return 0;
-    MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
+    if(traces) {
+     // Native one-row matrices may be stored as flat vectors. Contract
+     // Tr(A B) directly to avoid constructing a square intermediate and
+     // to preserve the trace of a one-dimensional product.
+     const MathStructure &factor=entries[i];
+     const bool matrixA=factor.isMatrix(),matrixB=operand.isMatrix();
+     const size_t rows=matrixA ? factor.rows() : 1,cols=matrixA ? factor.columns() : factor.size();
+     if(!factor.isVector() || !rows || !cols || cols!=(matrixB ? operand.rows() : 1) ||
+        rows!=(matrixB ? operand.columns() : operand.size())) {
+      CALCULATOR->error(true,"Indexed trace factors must compose to a square matrix.",NULL);return 0;
+     }
+     MathStructure trace;
+     for(size_t r=0;r<rows;++r) {
+      if(CALCULATOR->aborted())return 0;
+      for(size_t c=0;c<cols;++c) {
+       MathStructure product=matrixA ? *factor.getElement(r+1,c+1) : factor[c];
+       product.multiply(matrixB ? *operand.getElement(c+1,r+1) : operand[r]);
+       trace.add(product);
+      }
+     }
+     trace.eval(eo);entries[i]=trace;
+    } else {
+     MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
+    }
    }
    out=entries;
    return 1;
@@ -3386,6 +3416,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));

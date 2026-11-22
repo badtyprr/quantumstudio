@@ -346,7 +346,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qinitialdensity",2},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qopenblockrow",2},{"qmatchblockrow",4},{"qcornerdensity",2},{"qmeasurementblockproduct",4},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectraltracesum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedroots",1},{"qindexedtransposes",1},{"qamplitudeprojector",2},{"qindexeddiagonal",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qinitialdensity",2},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qopenblockrow",2},{"qmatchblockrow",4},{"qcornerdensity",2},{"qmeasurementblockproduct",4},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectraltracesum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedroots",1},{"qindexedtransposes",1},{"qindexedproducttraces",2},{"qamplitudeprojector",2},{"qindexeddiagonal",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qmodpowerequal",4},{"qringexpr",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -2522,6 +2522,20 @@ class Parser {
   list=operation+"("+prefix+","+start+","+end+",vector())";return true;
  }
  static bool transformedIndexedList(const std::string &first,const std::string &last,std::string &list) {
+  // In a list of traces the indexed left factor varies, while the
+  // right factor is the same expression at each displayed endpoint.
+  for(const std::string traceProduct:{"qtrace(qadjacent(","qtrace(qmul(","qtrace(qcenterdot("}) {
+   if(first.compare(0,traceProduct.size(),traceProduct)!=0 || last.compare(0,traceProduct.size(),traceProduct)!=0)continue;
+   size_t comma=first.find(',',traceProduct.size());
+   if(comma==std::string::npos || first.size()<comma+4 || first.compare(first.size()-2,2,"))")!=0)return false;
+   const std::string tail=first.substr(comma);
+   if(last.size()<=traceProduct.size()+tail.size() || last.compare(last.size()-tail.size(),tail.size(),tail)!=0)return false;
+   std::string family;
+   if(!indexedList(first.substr(traceProduct.size(),comma-traceProduct.size()),
+                   last.substr(traceProduct.size(),last.size()-traceProduct.size()-tail.size()),family,"qindexedentries"))return false;
+   list="qindexedproducttraces("+family+","+tail.substr(1,tail.size()-3)+")";
+   return true;
+  }
   for(const std::string operation:{"qsqrt","qtranspose"}) {
    const std::string prefix=operation+"(";
    if(first.compare(0,prefix.size(),prefix)!=0 || last.compare(0,prefix.size(),prefix)!=0 ||
