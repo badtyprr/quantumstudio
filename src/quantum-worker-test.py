@@ -79,6 +79,12 @@ for label in ("u", "v"):
     bad = f'replace(replace(({copied}),n,1),"{label}_0",[1,0;0,1])'
     assert b"column states" in run("quantum:" + bad, "--json", success=False).stderr
 
+shorthand = r"\ket{\overline{u_{0}}},\ldots,\ket{\overline{u_{n-1}}}"
+whole = r"\overline{\ket{u_0}},\ldots,\overline{\ket{u_{n-1}}}"
+assert data("quantum:" + shorthand)["copy_text"] == data("quantum:" + whole)["copy_text"]
+extended = data("quantum:" + shorthand.replace(r",\ldots", r",\ket{\overline{u_1}},\ldots"))["copy_text"]
+assert b"displayed states" in run(f"quantum:replace(({extended}),n,1)", "--json", success=False).stderr
+
 # Each Born probability pairs one indexed effect with the same density.
 born_source = r"""$$
 \bigl(\operatorname{Tr}(P_0 \rho),\ldots,\operatorname{Tr}(P_{m-1} \rho)\bigr)

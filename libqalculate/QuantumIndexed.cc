@@ -2474,7 +2474,10 @@ class QuantumIndexedFunction: public MathFunction {
     if(!operand.isVector()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
    }
    const bool conjugateKets=op=="qindexedconjugatekets";
-   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : conjugateKets ? "conj" : "qtranspose");
+   if(conjugateKets && (!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(entries.size()))) {
+    CALCULATOR->error(true,"A conjugated ket list must contain all its displayed states.",NULL);return 0;
+   }
+   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : conjugateKets ? "qconj" : "qtranspose");
    for(size_t i=0;i<entries.size();++i) {
     if(CALCULATOR->aborted())return 0;
     entries[i].eval(eo);
@@ -3426,7 +3429,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
- calculator.addFunction(new QuantumIndexedFunction("qindexedconjugatekets",1));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedconjugatekets",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));

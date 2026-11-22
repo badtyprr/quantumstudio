@@ -12,8 +12,8 @@
           "end": 14225,
           "literal_sha256": "f1f58098f63b9127cd67baa76d41a6ee196583903314d99b36f83438ae691c70",
           "outcome": "result",
-          "copy_text": "qindexedconjugatekets(qindexedentries(\"u_\",0,qsub(n,1),vector()))",
-          "control_input": "replace((replace((replace((qindexedconjugatekets(qindexedentries(\"u_\",0,qsub(n,1),vector()))),\"u_0\",matrix(2,1,[3/5,4i/5]))),n,2)),\"u_1\",matrix(2,1,[4i/5,3/5]))",
+          "copy_text": "qindexedconjugatekets(qindexedentries(\"u_\",0,qsub(n,1),vector()),1)",
+          "control_input": "replace((replace((replace((qindexedconjugatekets(qindexedentries(\"u_\",0,qsub(n,1),vector()),1)),\"u_0\",matrix(2,1,[3/5,4i/5]))),n,2)),\"u_1\",matrix(2,1,[4i/5,3/5]))",
           "control_result": "vector(matrix(2,1,[3 \u2215 5,(\u22124 \u2215 5) \u22c5 i]),matrix(2,1,[(\u22124 \u2215 5) \u22c5 i,3 \u2215 5]))"
         },
         {
@@ -22,8 +22,8 @@
           "end": 14299,
           "literal_sha256": "25aec01526a753cb34f3294408d14e933bf9d24b8971a77187580c2779045445",
           "outcome": "result",
-          "copy_text": "qindexedconjugatekets(qindexedentries(\"v_\",0,qsub(n,1),vector()))",
-          "control_input": "replace((replace((replace((qindexedconjugatekets(qindexedentries(\"v_\",0,qsub(n,1),vector()))),\"v_0\",matrix(2,1,[3/5,4i/5]))),n,2)),\"v_1\",matrix(2,1,[4i/5,3/5]))",
+          "copy_text": "qindexedconjugatekets(qindexedentries(\"v_\",0,qsub(n,1),vector()),1)",
+          "control_input": "replace((replace((replace((qindexedconjugatekets(qindexedentries(\"v_\",0,qsub(n,1),vector()),1)),\"v_0\",matrix(2,1,[3/5,4i/5]))),n,2)),\"v_1\",matrix(2,1,[4i/5,3/5]))",
           "control_result": "vector(matrix(2,1,[3 \u2215 5,(\u22124 \u2215 5) \u22c5 i]),matrix(2,1,[(\u22124 \u2215 5) \u22c5 i,3 \u2215 5]))"
         }
       ]
