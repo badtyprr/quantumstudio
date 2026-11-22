@@ -211,6 +211,11 @@ class QuantumPowerFunction: public MathFunction {
   if(op=="qpower" || op=="qsqrt")input.approximation=APPROXIMATION_EXACT;
   MathStructure args=raw;for(size_t k=0;k<args.size();++k)args[k].eval(input);
   const MathStructure &a=args[0];
+  // A set-valued base denotes words over that alphabet. Use the same
+  // evaluator as a power appearing directly in a membership or sum domain.
+  if(op=="qpower" && a.isFunction() && a.function()->referenceName()=="qset") {
+   out.set(CALCULATOR->getFunction("qwordpower"),&a,&args[1],NULL);return 1;
+  }
   if(op=="qlogm")return quantumMatrixLog(out,a,eo) ? 1 : 0;
   if(op=="qpower" || op=="qsqrt") {
    MathStructure exponent=op=="qsqrt" ? MathStructure(Number(1,2)) : args[1];

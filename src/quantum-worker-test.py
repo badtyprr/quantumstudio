@@ -685,6 +685,16 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 # Multi-bit outputs are strings too: their leading zeros and widths survive lookup.
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
+alphabet_power = data(r"quantum:$\Sigma^m$")["copy_text"]
+three_bit_words = ",".join(f"qbitlabel({n},3)" for n in range(8))
+for bindings in [[("Σ", r"\{0,1\}"), ("m", "3")], [("m", "3"), ("Σ", r"\{0,1\}")]]:
+    value = alphabet_power
+    for symbol, replacement in bindings:
+        value = data(f"quantum:replace(({value}),{symbol},{replacement})")["copy_text"]
+    assert value == f"qset(vector({three_bit_words}))"
+assert data(r"quantum:\{2,3\}^2")["copy_text"] == (
+    "qset(vector(qtuple(vector(2,2)),qtuple(vector(2,3)),qtuple(vector(3,2)),qtuple(vector(3,3))))")
+run(r"quantum:\{0,1\}^{-1}", "--json", success=False)
 # IBM-018 uses the output of a function as the membership probe. The
 # graph and its input can be supplied independently after Copy and re-entry.
 query_membership = data(r"quantum:$f(x)\in\Sigma^m$")["copy_text"]
