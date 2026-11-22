@@ -79,6 +79,22 @@ run(f'quantum:replace(({phase}),"a",qbitlabel(1,2))', "--json", success=False)
 assert data("quantum:$2^ a (3)$")["copy_text"] == data("quantum:$3 \\cdot 2^{a}$")["copy_text"]
 assert data("quantum:$2^{a(3)}$")["copy_text"] != data("quantum:$2^a(3)$")["copy_text"]
 
+# Binary oracles keep a query until a truth table and a word are supplied.
+oracle_graph = 'qset(vector(qtuple(vector(qbitlabel(1,2),1)),qtuple(vector(qbitlabel(1,1),0))))'
+for oracle in "fgh":
+    query = data(f"quantum:oracles:{oracle}(c)")["copy_text"]
+    assert data("quantum:" + query)["copy_text"] == query
+    for width, expected in [(1, "0"), (2, "1")]:
+        bound = f'replace(replace(({query}),"{oracle}",{oracle_graph}),"c",qbitlabel(1,{width}))'
+        assert data("quantum:" + bound)["copy_text"] == expected
+    literal = data(f"quantum:oracles:{oracle}((01))")["copy_text"]
+    assert data(f'quantum:replace(({literal}),"{oracle}",{oracle_graph})')["copy_text"] == "1"
+for bad_query in ("f(2)", "f(-1)", "f(0,1)", "h()"):
+    run("quantum:oracles:" + bad_query, "--json", success=False)
+bad_output = 'qset(vector(qtuple(vector(qbitlabel(1,2),qbitlabel(1,2)))))'
+run(f'quantum:replace(({literal}),"h",{bad_output})', "--json", success=False)
+assert "qgraphapply" not in data("quantum:f(0)")["copy_text"]
+
 # Binary-word mode concatenates oracle outputs in source order.
 word = data("quantum:bitword:$f(0)f(1)$")["copy_text"]
 assert data("quantum:" + word)["copy_text"] == word
