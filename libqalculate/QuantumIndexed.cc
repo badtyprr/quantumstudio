@@ -2442,7 +2442,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qmeasurementblocks") {
+  if(op=="qmeasurementblocks" || op=="qmeasurementblockproduct") {
    if(!indexedSpectralFamily(raw[0]))return 0;
    auto rootFunction=CALCULATOR->getFunction("qblockroots");
    MathStructure request(rootFunction,&raw[0],NULL),roots;
@@ -2451,6 +2451,21 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure density=raw[1];density.eval(eo);
    if(!density.isMatrix() && density.containsUnknowns())return 0;
    const size_t width=roots[0].rows(),count=roots.size();
+   MathStructure otherRoots;
+   if(op=="qmeasurementblockproduct") {
+    if(!raw[3].isInteger() || raw[3].number()<1 || raw[3].number()>Number(count)) {
+     CALCULATOR->error(true,"The block product requires all displayed blocks.",NULL);return 0;
+    }
+    if(!raw[0].equals(raw[2])) {
+     if(!indexedSpectralFamily(raw[2]))return 0;
+     request[0]=raw[2];request.childrenUpdated();
+     if(rootFunction->calculate(otherRoots,request,eo)!=1)return 0;
+     if(otherRoots.size()!=count || otherRoots[0].rows()!=width) {
+      CALCULATOR->error(true,"The two block families must have matching dimensions.",NULL);return 0;
+     }
+    }
+   }
+   const MathStructure &right=otherRoots.size() ? otherRoots : roots;
    if(!density.isMatrix() || density.rows()!=width || density.columns()!=width) {
     CALCULATOR->error(true,"The middle matrix must have the same dimensions as the measurement effects.",NULL);return 0;
    }
@@ -2460,7 +2475,7 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c) {
      element(column,k*width+r,c)=element(roots[k],r,c);
-     element(row,r,k*width+c)=element(roots[k],r,c);
+     element(row,r,k*width+c)=*right[k].getElement(r+1,c+1);
     }
    }
    out=column;out*=density;out*=row;out.eval(eo);
@@ -2469,8 +2484,8 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qmissingblock" || op=="qopenblockcolumn")return 0;
-  if(op=="qblockroots" || op=="qblockcolumn" || op=="qmatchblockcolumn") {
+  if(op=="qmissingblock" || op=="qopenblockcolumn" || op=="qopenblockrow" || op=="qcornerdensity")return 0;
+  if(op=="qblockroots" || op=="qblockcolumn" || op=="qmatchblockcolumn" || op=="qmatchblockrow") {
    MathStructure blocks;
    const bool roots=op!="qblockroots" && raw[0].isFunction() && raw[0].function()->referenceName()=="qblockroots";
    const MathStructure &family=roots ? raw[0][0] : raw[0];
@@ -2490,13 +2505,19 @@ class QuantumIndexedFunction: public MathFunction {
    }
    if(pending)return 0;
    if(!width || blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
-   size_t size=width*blocks.size();bool match=op=="qmatchblockcolumn";
+   size_t size=width*blocks.size();bool match=op=="qmatchblockcolumn" || op=="qmatchblockrow";
    MathStructure candidate;
    if(match) {
     candidate=raw[2];candidate.eval(eo);
     if(!candidate.isMatrix() && candidate.containsUnknowns())return 0;
     if(!raw[3].isInteger() || (raw[3].number()!=4 && raw[3].number()!=5))return 0;
     if(!candidate.isMatrix() || candidate.rows()!=size || candidate.columns()!=size) {out=raw[3].number()==5 ? 1 : 0;return 1;}
+    if(op=="qmatchblockrow") {
+     MathStructure column;column.clearMatrix();column.resizeMatrix(size,width,m_zero);
+     for(size_t k=0;k<blocks.size();++k)for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c)
+      element(column,k*width+r,c)=element(candidate,r,k*width+c);
+     candidate=column;
+    }
    }
    if(roots || op=="qblockroots") {
     const MathStructure half(Number(1,2));
@@ -3203,6 +3224,10 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qmeasurementblocks",2));
  calculator.addFunction(new QuantumIndexedFunction("qblockroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
+ calculator.addFunction(new QuantumIndexedFunction("qopenblockrow",2));
+ calculator.addFunction(new QuantumIndexedFunction("qcornerdensity",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmatchblockrow",4));
+ calculator.addFunction(new QuantumIndexedFunction("qmeasurementblockproduct",4));
  calculator.addFunction(new QuantumIndexedFunction("qopenblockcolumn",2));
  calculator.addFunction(new QuantumIndexedFunction("qmatchblockcolumn",4));
  calculator.addFunction(new QuantumIndexedFunction("qmissingblock",0));

@@ -127,6 +127,49 @@ for altered in [measurement_sum.replace("P_b", "P_a"), measurement_sum.replace("
                 measurement_sum.replace(r"\rho", "a"), measurement_sum.replace(r"\langle b", r"\langle a")]:
     assert "qmeasurementblocks" not in data("quantum:" + altered)["copy_text"]
 
+# IBM-012 M062. Only the specified row and column survive the zero padding.
+measurement_row = r"""\begin{pmatrix}
+\sqrt{P_0} & \sqrt{P_1} & \cdots & \sqrt{P_{m-1}} \\[1mm]
+\fbox{?} & \fbox{?} & \cdots & \fbox{?} \\[1mm]
+\vdots & \vdots & \ddots & \vdots\\[1mm]
+\fbox{?} & \fbox{?} & \cdots & \fbox{?}
+\end{pmatrix}"""
+corner_density = r"""\begin{pmatrix}
+\rho & 0 & \cdots & 0 \\[1mm]
+0 & 0 & \cdots & 0 \\[1mm]
+\vdots & \vdots & \ddots & \vdots\\[1mm]
+0 & 0 & \cdots & 0
+\end{pmatrix}"""
+expanded_blocks = r"""\begin{pmatrix}
+\sqrt{P_0}\rho\sqrt{P_0} & \cdots & \sqrt{P_0}\rho\sqrt{P_{m-1}} \\[1mm]
+\vdots & \ddots & \vdots\\[1mm]
+\sqrt{P_{m-1}}\rho\sqrt{P_0} & \cdots & \sqrt{P_{m-1}}\rho\sqrt{P_{m-1}}
+\end{pmatrix}"""
+open_column = measurement_column.removeprefix("U=")
+measurement_product = open_column + corner_density + measurement_row
+block_equation = r"\sigma =" + measurement_product + " = " + expanded_blocks
+block_copy = data("quantum:" + block_equation)["copy_text"]
+assert data("quantum:" + block_copy)["copy_text"] == block_copy
+for expr in (block_equation, block_copy):
+    for label, val in [("P_1", "[16/25,0;0,0]"), ("ρ", "[1,-i;i,1]/2"), ("m", "2"), ("P_0", "[9/25,0;0,1]")]:
+        expr = f'replace(({expr}),"{label}",{val})'
+    for state, truth in [(complex_expected, "1"), (complex_expected.replace("-15i", "15i"), "0")]:
+        assert data(f'quantum:replace(({expr}),"σ",{state})')["copy_text"] == truth
+row_match = "U=(" + measurement_row + ")"
+for label, val in [("m", "2"), ("P_0", "[1,-i;i,1]/2"), ("P_1", "[1,i;-i,1]/2")]:
+    row_match = f'replace(({row_match}),"{label}",{val})'
+for completion, truth in [("[1,-i,1,i;i,1,-i,1;0,0,0,0;0,0,0,0]/2", "1"),
+                          ("[1,i,1,-i;-i,1,i,1;0,0,0,0;0,0,0,0]/2", "0")]:
+    assert data(f'quantum:replace(({row_match}),"U",{completion})')["copy_text"] == truth
+distinct = open_column + corner_density + measurement_row.replace("P_", "Q_")
+for label, val in [("m", "2"), ("ρ", "[1,0;0,0]"), ("P_0", "[1,0;0,0]"), ("P_1", "[0,0;0,1]"),
+                   ("Q_0", "[0,0;0,1]"), ("Q_1", "[1,0;0,0]")]:
+    distinct = f'replace(({distinct}),"{label}",{val})'
+assert data("quantum:" + distinct)["copy_text"] == "matrix(4,4,[0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0])"
+for incorrect in [corner_density.replace("0 & 0", "0 & 1"), measurement_row.replace(r"\ddots", r"\cdots"),
+                  expanded_blocks.replace("P_{m-1}", "Q_{m-1}", 1)]:
+    run("quantum:" + incorrect, "--json", success=False)
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]

@@ -394,8 +394,8 @@ class QuantumOrderFunction: public MathFunction {
   bool equality=args[2].isNumber() && args[2].number()==4;
   if(equality || (args[2].isNumber() && args[2].number()==5))for(unsigned k=0;k<2;++k) {
    const auto &pattern=args[k];
-   if(pattern.isFunction() && pattern.function()->referenceName()=="qopenblockcolumn" && pattern.size()==2) {
-    out.set(CALCULATOR->getFunction("qmatchblockcolumn"),&pattern[0],&pattern[1],&args[1-k],&args[2],NULL);return 1;
+   if(pattern.isFunction() && (pattern.function()->referenceName()=="qopenblockcolumn" || pattern.function()->referenceName()=="qopenblockrow") && pattern.size()==2) {
+    out.set(CALCULATOR->getFunction(pattern.function()->referenceName()=="qopenblockrow" ? "qmatchblockrow" : "qmatchblockcolumn"),&pattern[0],&pattern[1],&args[1-k],&args[2],NULL);return 1;
    }
   }
   if(equality && (inferProductIdentity(args[0],args[1]) || inferProductIdentity(args[1],args[0]))) {

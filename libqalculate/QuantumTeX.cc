@@ -650,6 +650,55 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ // The four corners of the expanded measurement matrix specify its
+ // block row and block column independently.
+ if(tex && height==3 && width==3 && cells[1].size()==3 && cells[2].size()==3 &&
+    cells[0][1]==horizontal && cells[2][1]==horizontal &&
+    cells[1][0]==vertical && cells[1][1]==diagonal && cells[1][2]==vertical) {
+  auto rootLabel=[](const std::string &term) {
+   std::string text=trim(term);
+   if(text.compare(0,5,"\\sqrt")!=0)return std::string();
+   text=trim(text.substr(5));
+   if(text.size()<3 || text.front()!='{' || text.back()!='}')return std::string();
+   return trim(text.substr(1,text.size()-2));
+  };
+  std::string rowLabel[2],columnLabel[2];bool consistent=true;
+  for(size_t r=0;r<2 && consistent;++r)for(size_t c=0;c<2;++c) {
+   const std::string &cell=cells[2*r][2*c];
+   size_t middle=cell.find("\\rho");
+   if(middle==std::string::npos) {consistent=false;break;}
+   std::string left=rootLabel(cell.substr(0,middle)),right=rootLabel(cell.substr(middle+4));
+   if(left.empty() || right.empty() || (c && rowLabel[r]!=left) || (r && columnLabel[c]!=right)) {consistent=false;break;}
+   rowLabel[r]=left;columnLabel[c]=right;
+  }
+  if(consistent && rowLabel[0]==columnLabel[0] && rowLabel[1]==columnLabel[1]) {
+   std::string family=indexedLabelRange(rowLabel[0],rowLabel[1],"qindexedentries(");
+   if(!family.empty())return "qmeasurementblocks("+family+",ρ)";
+  }
+ }
+ // An open row has the same index pattern as an open column. Swap
+ // block positions and ellipsis directions, leaving each block untouched.
+ const bool openRow=tex && height==width && !cells[1].empty() && cells[1][0]=="\\fbox{?}";
+ if(openRow) {
+  for(const auto &row:cells)if(row.size()!=width)invalid();
+  for(size_t r=0;r<height;++r)for(size_t c=0;c<width;++c) {
+   if(r<c)std::swap(cells[r][c],cells[c][r]);
+   if(cells[r][c]==horizontal)cells[r][c]=vertical;
+   else if(cells[r][c]==vertical)cells[r][c]=horizontal;
+  }
+ }
+ if(tex && height==width && cells[0][0]=="\\rho" && cells[0][1]=="0") {
+  for(size_t r=0;r<height;++r) {
+   if(cells[r].size()!=width)invalid();
+   for(size_t c=0;c<width;++c) {
+    if(r==0 && c==0)continue;
+    const std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
+                               c==width-2 ? horizontal : "0";
+    if(cells[r][c]!=expected)invalid();
+   }
+  }
+  return "qcornerdensity(ρ,"+std::to_string(height-2)+")";
+ }
  // All later block columns are either explicitly zero or independently unspecified.
  const std::string &fill=cells.front()[1];
  if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {
@@ -695,7 +744,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    std::string family=indexedLabelRange(name+"0",name+last,"qindexedentries(");
    if(family.empty())invalid();
    if(roots)family="qblockroots("+family+")";
-   return std::string(fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
+   return std::string(openRow ? "qopenblockrow(" : fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
   }
  }
  // A superscript names the one-based sample row. Subscripts label the
