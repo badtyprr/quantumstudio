@@ -656,18 +656,28 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
   size_t sub=cells.front()[0].find('_');
   if(sub!=std::string::npos) {
    std::string prefix=cells.front()[0].substr(0,sub+1);
+   auto blockLabel=[&](const std::string &cell) {
+    if(!tex || cell.compare(0,prefix.size(),prefix)!=0)return cell;
+    std::string index=cell.substr(prefix.size());
+    if(index.size()<3 || index.front()!='{' || index.back()!='}')return cell;
+    std::string bound=trim(index.substr(1,index.size()-2));
+    if(!bound.empty() && (bound.find_first_not_of("0123456789")==std::string::npos ||
+       (bound.size()==1 && asciiLetter(bound[0]))))return prefix+bound;
+    return cell;
+   };
    for(size_t r=0;r<height;++r) {
     if(cells[r].size()!=width)invalid();
     for(size_t c=0;c<width;++c) {
      if(r==height-1 && c==0)continue;
      std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
                           c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : fill;
-     if(cells[r][c]!=expected)invalid();
+     if((c==0 && r<height-2 ? blockLabel(cells[r][c]) : cells[r][c])!=expected)invalid();
     }
    }
    if(cells.back()[0].compare(0,prefix.size(),prefix)!=0)invalid();
    std::string name=quantumTeX(prefix.substr(0,sub))+"_";
-   std::string family=indexedLabelRange(name+"0",name+cells.back()[0].substr(prefix.size()),"qindexedentries(");
+   std::string last=blockLabel(cells.back()[0]).substr(prefix.size());
+   std::string family=indexedLabelRange(name+"0",name+last,"qindexedentries(");
    if(family.empty())invalid();
    return std::string(fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
   }
