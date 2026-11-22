@@ -186,7 +186,7 @@
           "start": 23901,
           "end": 24758,
           "literal_sha256": "585ba879ad76db58fac204ae1e5883fc488a3388be815e4d4bbf8dc9ffaf519c",
-          "outcome": "diagnostic"
+          "outcome": "result"
         }
       ]
     },
