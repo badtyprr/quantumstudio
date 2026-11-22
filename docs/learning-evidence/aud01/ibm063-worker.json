@@ -1,0 +1,140 @@
+{
+  "qubits": 162,
+  "face_checks_per_chain": 81,
+  "worker_sha256": "662508d9d3d1fc7b852cf16269015b751b6fbc1e61840ed59da0b836e31e9459",
+  "figures": {
+    "toric-code-bit-flip": {
+      "error_negative_faces": [
+        [
+          9,
+          13
+        ],
+        [
+          9,
+          15
+        ]
+      ]
+    },
+    "X-error-chain": {
+      "error_negative_faces": [
+        [
+          3,
+          11
+        ],
+        [
+          9,
+          13
+        ]
+      ]
+    },
+    "X-error-loop": {
+      "error_negative_faces": [],
+      "residual_winding": [
+        0,
+        0
+      ]
+    },
+    "X-error-loop-generated": {
+      "error_negative_faces": [],
+      "residual_winding": [
+        0,
+        0
+      ]
+    },
+    "X-error-logical": {
+      "error_negative_faces": [],
+      "residual_winding": [
+        0,
+        1
+      ]
+    },
+    "X-error-correction": {
+      "error_negative_faces": [
+        [
+          3,
+          11
+        ],
+        [
+          9,
+          13
+        ]
+      ],
+      "recovery_negative_faces": [
+        [
+          3,
+          11
+        ],
+        [
+          9,
+          13
+        ]
+      ],
+      "residual_winding": [
+        0,
+        0
+      ]
+    },
+    "correction-complete-error": {
+      "error_negative_faces": [
+        [
+          3,
+          11
+        ],
+        [
+          9,
+          13
+        ]
+      ],
+      "recovery_negative_faces": [
+        [
+          3,
+          11
+        ],
+        [
+          9,
+          13
+        ]
+      ],
+      "residual_winding": [
+        1,
+        0
+      ]
+    },
+    "multiple-correction-chains": {
+      "recovery_negative_faces": [
+        [
+          1,
+          17
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          9,
+          13
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          15,
+          17
+        ],
+        [
+          17,
+          9
+        ],
+        [
+          17,
+          11
+        ]
+      ]
+    }
+  }
+}
