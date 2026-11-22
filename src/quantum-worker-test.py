@@ -686,12 +686,19 @@ assert b"conflicting outputs" in run(f"quantum:replace(f(00),f,{conflict})", "--
 word_table = r"\begin{aligned}g(00)&=001\\g(01)&=100\\g(10)&=000\\g(11)&=001\end{aligned}"
 word_graph = data("quantum:" + word_table)["copy_text"]
 alphabet_power = data(r"quantum:$\Sigma^m$")["copy_text"]
-three_bit_words = ",".join(f"qbitlabel({n},3)" for n in range(8))
-for bindings in [[("Σ", r"\{0,1\}"), ("m", "3")], [("m", "3"), ("Σ", r"\{0,1\}")]]:
-    value = alphabet_power
-    for symbol, replacement in bindings:
-        value = data(f"quantum:replace(({value}),{symbol},{replacement})")["copy_text"]
-    assert value == f"qset(vector({three_bit_words}))"
+for width in (0, 1, 3, -1):
+    words = ",".join(f"qbitlabel({n},{width})" for n in range(2 ** max(width, 0)))
+    alphabet = ("Σ", r"\{0,1\}")
+    size = ("m", str(width))
+    for first, last in [(alphabet, size), (size, alphabet)]:
+        value = data(f"quantum:replace(({alphabet_power}),{first[0]},{first[1]})")["copy_text"]
+        expression = f"quantum:replace(({value}),{last[0]},{last[1]})"
+        if width < 0:
+            assert b"nonnegative" in run(expression, "--json", success=False).stderr
+        else:
+            assert data(expression)["copy_text"] == f"qset(vector({words}))"
+    pending = data(f"quantum:replace(({alphabet_power}),m,{width})")["copy_text"]
+    assert data(f"quantum:replace(({pending}),Σ,2)=2^({width})")["copy_text"] == "1"
 assert data(r"quantum:\{2,3\}^2")["copy_text"] == (
     "qset(vector(qtuple(vector(2,2)),qtuple(vector(2,3)),qtuple(vector(3,2)),qtuple(vector(3,3))))")
 run(r"quantum:\{0,1\}^{-1}", "--json", success=False)

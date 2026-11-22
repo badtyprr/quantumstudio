@@ -213,6 +213,9 @@ class QuantumPowerFunction: public MathFunction {
   const MathStructure &a=args[0];
   // A set-valued base denotes words over that alphabet. Use the same
   // evaluator as a power appearing directly in a membership or sum domain.
+  // The conventional alphabet can also denote a scalar or a matrix. Keep
+  // the operation until its base is known, including at exponents 0 and 1.
+  if(op=="qpower" && a.isSymbolic() && a.symbol()=="Σ")return 0;
   if(op=="qpower" && a.isFunction() && a.function()->referenceName()=="qset") {
    out.set(CALCULATOR->getFunction("qwordpower"),&a,&args[1],NULL);return 1;
   }
