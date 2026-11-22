@@ -1185,8 +1185,14 @@ class TeXReader {
  }
  bool barePowerBeforeGroup(std::string &result) {
   size_t letter=input.find_first_not_of(" \t\r\n",pos+1);
-  if(letter==std::string::npos || !asciiLetter(input[letter]) ||
-     openingParenthesis(letter+1)==std::string::npos)return false;
+  if(letter==std::string::npos || !asciiLetter(input[letter]))return false;
+  const size_t group=openingParenthesis(letter+1);
+  if(group==std::string::npos)return false;
+  size_t saved=pos;pos=group+1;
+  bool roman=false;
+  bool modulus=takeModulusLabel(roman);
+  pos=saved;
+  if(modulus)return false;
   // TeX ends an unbraced superscript after one token. A following group
   // multiplies the power, even when the base is a scalar and the group a ket.
   result+="^("+input.substr(letter,1)+")";pos=letter+1;return true;
