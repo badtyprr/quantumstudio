@@ -1,0 +1,127 @@
+{
+  "scope": "Original selected cells compiled and executed through NVIDIA CUDA-Q on qpp-cpu. Benchmark sampling of the unchanged GHZ kernel is authored locally. Setup, hosted backends, QPUs and remote handle restoration remain open.",
+  "platform": "Ubuntu 24.04.5 LTS x86_64, Python 3.12.3",
+  "wheel_installation": "A clean Python environment installed the listed wheels directly with --no-index --no-deps. Only the CPU simulator was exercised.",
+  "wheels": {
+    "astpretty-3.0.0-py2.py3-none-any.whl": "15bfd47593667169485a1fa7938b8de9445b11057d6f2b6e214b2f70667f94b6",
+    "certifi-2026.11.20-py3-none-any.whl": "7422df25243767b9877031a2248cb14d09ddac9beee846f4cef3d5c9191d488f",
+    "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl": "3d31298449090ab8d47b7b1b2a555ff73cac7ed438a08b7ac160980c7ebed649",
+    "cuda_quantum_cu12-0.17.0-cp312-cp312-manylinux_2_28_x86_64.whl": "4b3ab321fa72f1bd838d17cd8f2323e3612462ca78d1e2d847fe037ef3975cbe",
+    "cudaq_core-0.17.0-cp312-cp312-manylinux_2_28_x86_64.whl": "40b957958a96c5cb58e46c1b7fb6b3dcf7c858f8d4b18c1010fa9783c3fbcd2a",
+    "idna-3.20-py3-none-any.whl": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c",
+    "numpy-2.5.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl": "704d819265e5d1064d932968e9ee85fff2103ccc78c05b878c06943ba27b8507",
+    "pip-26.3-py3-none-any.whl": "f3b60b20ffaadd4415ed7957212a38ac63fa4c5fa375bd0f4a797777940fad13",
+    "requests-2.34.2-py3-none-any.whl": "2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0",
+    "scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl": "f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218",
+    "urllib3-2.8.0-py3-none-any.whl": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3"
+  },
+  "cells": [
+    {
+      "notebook": "cuda_quantum_quickstart",
+      "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell": 9,
+      "cell_sha256": "466d04a306288726846b26774a3413bd3ff415beb70bfcd5bf0e6908179866ce"
+    },
+    {
+      "notebook": "cuda_quantum_quickstart",
+      "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell": 10,
+      "cell_sha256": "58a816463db81facc5a2b30c0eec1b5df2eda76ea5776e40e821b2424335cb7e"
+    },
+    {
+      "notebook": "cuda_quantum_quickstart",
+      "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell": 13,
+      "cell_sha256": "bae2ea45180d576508cd5400d701bb04347df54607e653ce9a56134cccf12517"
+    },
+    {
+      "notebook": "cuda_quantum_quickstart",
+      "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell": 17,
+      "cell_sha256": "8153f4577cd1ab9f84539c5d97618eb9a387ca9b178f7ab98017f90c9ea608f3"
+    },
+    {
+      "notebook": "cuda_quantum_qpu_benchmarking",
+      "source_sha256": "e22d3caa13116b307f7132d1b51b81cc26027120015cab6276dc87dd1ec35705",
+      "cell": 4,
+      "cell_sha256": "d0a85c59fd122d1a00aff8a5db8088463cbefbade3e7f35ac9b5a1bfdb13b386"
+    },
+    {
+      "notebook": "cuda_quantum_quickstart",
+      "source_sha256": "4344899335b2dc8c6c4f5b7d8c83e2373c3c5cc529e15e3d18e4b4d202af863d",
+      "cell": 15,
+      "cell_sha256": "d50490ecea0b630720265ab0a3d1041ac25237ea9da92a3c177c3baa26d6b50b",
+      "outcome": "Expected local persistence error"
+    }
+  ],
+  "runs": [
+    {
+      "target": "qpp-cpu",
+      "version": "CUDA-Q Version 0.17.0 (https://github.com/NVIDIA/cuda-quantum 1750574c92c613ff76c52fdbaa9289d864a3d640)",
+      "bell": {
+        "00": 1021,
+        "11": 979
+      },
+      "async_bell": {
+        "00": 503,
+        "11": 497
+      },
+      "ansatz": {
+        "exact": -1.7487948611472093,
+        "sampled": -1.5710179000000006,
+        "analytic": -1.748794861147215
+      },
+      "ghz2": {
+        "00": 495,
+        "11": 505
+      },
+      "ghz3": {
+        "000": 509,
+        "111": 491
+      },
+      "ghz4": {
+        "0000": 502,
+        "1111": 498
+      },
+      "ghz5": {
+        "00000": 517,
+        "11111": 483
+      },
+      "local_handle_error": "Cannot persist a cudaq::future for a local kernel execution."
+    },
+    {
+      "target": "qpp-cpu",
+      "version": "CUDA-Q Version 0.17.0 (https://github.com/NVIDIA/cuda-quantum 1750574c92c613ff76c52fdbaa9289d864a3d640)",
+      "bell": {
+        "00": 1021,
+        "11": 979
+      },
+      "async_bell": {
+        "00": 503,
+        "11": 497
+      },
+      "ansatz": {
+        "exact": -1.7487948611472093,
+        "sampled": -1.5710179000000006,
+        "analytic": -1.748794861147215
+      },
+      "ghz2": {
+        "00": 495,
+        "11": 505
+      },
+      "ghz3": {
+        "000": 509,
+        "111": 491
+      },
+      "ghz4": {
+        "0000": 502,
+        "1111": 498
+      },
+      "ghz5": {
+        "00000": 517,
+        "11111": 483
+      },
+      "local_handle_error": "Cannot persist a cudaq::future for a local kernel execution."
+    }
+  ]
+}
