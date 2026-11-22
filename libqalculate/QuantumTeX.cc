@@ -265,7 +265,7 @@ std::string binaryFunctionGraph(const std::vector<std::string> &rows) {
 // the whole register. Recognize the complete contextual pattern before an
 // isolated indexed ket becomes a named state. General tensor ellipses remain
 // unsupported; the existing register owns bit, width and substitution checks.
-std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t &end) {
+std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t &end,bool alignment) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {
@@ -296,7 +296,9 @@ std::string hadamardRegisterTensor(const std::string &input,size_t start,size_t 
  std::string first,last,upper,lower;
  if(!factor(first,upper) || !token("\\otimes") || !token("\\cdots") || !token("\\otimes") || !factor(last,lower))return "";
  if(first!=last || lower!="0")return "";
- space();if(at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
+ space();
+ const bool rowEnd=alignment && (input.compare(at,2,"\\\\")==0 || input.compare(at,5,"\\end{")==0);
+ if(!rowEnd && at<input.size() && input[at]!=')' && input[at]!='}' && input[at]!=',')return "";
  std::string width;
  if(upper.size()==3 && asciiLetter((unsigned char)upper[0]) && upper.substr(1)=="-1")width=upper.substr(0,1);
  else {
@@ -2577,7 +2579,7 @@ class TeXReader {
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }
-   if(!matrixDepth && !stateLabel && !setDepth && !setBound) {
+   if((!matrixDepth || (binaryWords && matrixDepth==alignmentDepth)) && !stateLabel && !setDepth && !setBound) {
     const std::string preceding=trim(result);
     if(input.compare(pos,10,"\\overline{")==0 && input.find("\\cdots",pos)!=std::string::npos) {
      // Both products must use the same two coefficient families and upper index.
@@ -2597,13 +2599,13 @@ class TeXReader {
      std::string product=indexedProduct(input,pos,end,ProductSeries::ScalarSum);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
-    if(preceding.empty() || preceding.back()==',') {
-     size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);
+    if(preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='=')) {
+     size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end,alignment);
      if(product.empty()) {
       TensorSeriesPattern series;
       if(tensorSeriesPattern(input,pos,series)) {
        product="qtexgrouptensorseries("+series.first+","+series.last+","+series.index+","+series.direction+","+
-        TeXReader(series.body,false,binaryLogs).run(nullptr)+")";end=series.end;
+        TeXReader(series.body,false,binaryLogs,binaryWords,oracleConditions).run(nullptr)+")";end=series.end;
       }
      }
      if(product.empty())product=indexedProduct(input,pos,end);

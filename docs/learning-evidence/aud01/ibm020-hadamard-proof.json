@@ -1,0 +1,19 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 36,
+  "literal": "$$\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (-1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (-1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n$$",
+  "altered_literal": "$$\n\\begin{aligned}\n  & H^{\\otimes n} \\vert x_{n-1} \\cdots x_1 x_0 \\rangle \\\\\n  & \\qquad = \\bigl(H \\vert x_{n-1} \\rangle \\bigr) \\otimes \\cdots \\otimes \\bigl(H \\vert x_{0} \\rangle \\bigr) \\\\\n  & \\qquad = \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{n-1}\\in\\Sigma} (1)^{x_{n-1} y_{n-1}} \\vert y_{n-1} \\rangle \\Biggr)\n  \\otimes \\cdots \\otimes\n  \\Biggl( \\frac{1}{\\sqrt{2}} \\sum_{y_{0}\\in\\Sigma} (1)^{x_{0} y_{0}} \\vert y_{0} \\rangle \\Biggr) \\\\\n  & \\qquad = \\frac{1}{\\sqrt{2^n}} \\sum_{y_{n-1}\\cdots y_0 \\in \\Sigma^n}\n  (-1)^{x_{n-1}y_{n-1} + \\cdots + x_0 y_0} \\vert y_{n-1} \\cdots y_0 \\rangle.\n\\end{aligned}\n$$",
+  "mode": "Binary oracles",
+  "widths": [
+    2,
+    3,
+    4
+  ],
+  "reason_for_minimum_width": "The printed ket explicitly includes x1 and x0.",
+  "input_words": 28,
+  "equality_checks": 56,
+  "scaled_amplitude_checks": 1344,
+  "method": "For each input x and each row, multiply by sqrt(2^n). Entry y must be (-1)^popcount(x AND y). Replacing the Hadamard phase base with +1 in the third row makes the chain false except at x=0."
+}
