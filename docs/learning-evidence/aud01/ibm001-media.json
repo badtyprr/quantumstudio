@@ -98,8 +98,16 @@
       "label": "diagonal trace"
     },
     {
+      "page": 13,
+      "label": "global phase"
+    },
+    {
       "page": 19,
       "label": "classical distribution"
+    },
+    {
+      "page": 23,
+      "label": "pure Bloch state"
     },
     {
       "page": 30,

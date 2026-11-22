@@ -68,8 +68,8 @@ for page, label, equation, expected in checks:
     run = subprocess.run([worker, "--json"], input=("quantum:" + equation).encode(),
                          capture_output=True, timeout=30, env=env)
     value = json.loads(run.stdout)["copy_text"] if run.returncode == 0 else run.stderr.decode().strip()
-    adapted = page in (4, 19, 42, 44) or label in ("Bloch center", "classical correlation", "rotation in XZ plane")
-    records.append(dict(page=page, label=label, numerical_adaptation=adapted, equation=equation, expected=expected, actual=value))
+    adapted = page in (4, 13, 19, 23, 42, 44) or label in ("Bloch center", "classical correlation", "rotation in XZ plane")
+    records.append(dict(page=page, label=label, numerical_adaptation=adapted, negative_control=expected == "0", equation=equation, expected=expected, actual=value))
 args.report.write_text(json.dumps(dict(slides_sha256=slides_hash, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
                                       checks=records), indent=2) + "\n", encoding="utf8")
 failed = [(r["label"], r["actual"]) for r in records if r["actual"] != r["expected"]]
