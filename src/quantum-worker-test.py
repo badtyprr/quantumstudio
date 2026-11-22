@@ -37,6 +37,19 @@ nested_matrix = matrix_rows[1].replace("2&", r"\operatorname{Tr}(" + matrix_rows
 nested_copy = data(r"quantum:$$" + nested_matrix + r",\quad" + matrix_rows[0] + "$$")["copy_text"]
 assert nested_copy == data(r"quantum:\begin{gathered}" + nested_matrix + r"\\" + matrix_rows[0] + r"\end{gathered}")["copy_text"]
 
+# The weights and both sides of each projector share the same endpoint.
+spectral = r"$$M = w_0 |v_0><v_0| + \cdots + w_{n-1} |v_{n-1}><v_{n-1}|$$"
+for extent, count in [("n-1", "n"), ("k+1", '"k"'), ("i+1", '"i"')]:
+    copied = data("quantum:" + spectral.replace("n-1", extent))["copy_text"]
+    assert "qspectralsum" in copied and data("quantum:" + copied)["copy_text"] == copied
+    expr = copied
+    for symbol, value in [('"w_0"', "3"), ('"v_0"', "|+i>"), (count, "2" if extent=="n-1" else "0"),
+                          ('"w_1"', "1"), ('"v_1"', "|-i>")]:
+        expr = f"replace(({expr}),{symbol},{value})"
+    for candidate, truth in [("[2,-i;i,2]", "1"), ("[2,i;-i,2]", "0")]:
+        assert data(f'quantum:replace(({expr}),"M",{candidate})')["copy_text"] == truth
+run("quantum:" + spectral.replace("><v_{n-1}", "><v_{n+1}"), "--json", success=False)
+
 # A textbook equation uses grouped digits. Commas in function calls and
 # between complete equations retain their existing meanings.
 for literal, integer in [("1,000,000", 1000000), ("-12,345", -12345), ("+987,654", 987654)]:
