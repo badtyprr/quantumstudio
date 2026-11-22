@@ -1,0 +1,36 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "An indexed matrix requires contiguous zero-based paired indices",
+  "lessons": [
+    {
+      "lesson": "IBM-009",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representation-equivalence.ipynb",
+      "source_sha256": "e2a20c467250d1ec1e01454b882a1e182450230999c471767c57938990b03f3f",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 15615,
+          "end": 15824,
+          "literal_sha256": "a5d0aff81e30f458ce2273124d1cddf18598bed46f7f97384aa9eefd073d5e67",
+          "outcome": "result",
+          "copy_text": "qmatchblockcolumn(qindexedentries(\"A_\",0,qsub('N',1),vector()),2,'U',4)"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-012",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 13993,
+          "end": 14202,
+          "literal_sha256": "866b15ac9cc85d4ec2d47e0a171639f911471d52ac7617002401e0498c7c6e9f",
+          "outcome": "result",
+          "copy_text": "qmatchblockcolumn(qindexedentries(\"A_\",0,qsub('m',1),vector()),2,'U',4)"
+        }
+      ]
+    }
+  ]
+}
