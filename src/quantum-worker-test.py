@@ -73,6 +73,8 @@ assert "qrootfidelity(" in fidelity and data("quantum:" + fidelity)["copy_text"]
 resolved_fidelity = f'replace(replace(({fidelity}),"ρ",[3/4,0;0,1/4]),"σ",[1,0;0,0])'
 assert data("quantum:" + resolved_fidelity)["copy_text"] == "√(3) ∕ 2"
 assert data(r"quantum:$\operatorname{F}(x)$")["copy_text"] == data(r"quantum:$F(x)$")["copy_text"]
+norm_identity = data(r"quantum:$\operatorname{F}(\rho,\sigma)=\bigl\|\sqrt{\sigma}\sqrt{\rho}\bigr\|_1.$")["copy_text"]
+assert data(f'quantum:replace(replace(({norm_identity}),"ρ",[3/4,0;0,1/4]),"σ",[1,0;0,0])')["copy_text"] == "1"
 
 # Preserve an unresolved norm and bind the whole following radical to Tr.
 norm_definition = r"""$$

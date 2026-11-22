@@ -16,6 +16,16 @@
     },
     {
       "cell": 0,
+      "start": 3282,
+      "end": 3361,
+      "literal_sha256": "dd618189adf5997e398d8d9993b24a85d7541772e1e0fb40d948b2213948e4c1",
+      "outcome": "result",
+      "copy_text": "(qadd(qrootfidelity('\u03c1','\u03c3'),qmul(\u22121,qschatten(qadjacent(qsqrt('\u03c3'),qsqrt('\u03c1')),1))))==(0)",
+      "control_input": "replace((replace(((qadd(qrootfidelity('\u03c1','\u03c3'),qmul(\u22121,qschatten(qadjacent(qsqrt('\u03c3'),qsqrt('\u03c1')),1))))==(0)),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "1"
+    },
+    {
+      "cell": 0,
       "start": 5332,
       "end": 5363,
       "literal_sha256": "1030c2c5f6e4998cb498ce53bd5f3e393fcb2787b7b620f2ad57fc8a449c6538",
