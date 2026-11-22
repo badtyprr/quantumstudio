@@ -464,7 +464,10 @@ class Parser {
   nodes+=name.size()-1;
   std::string result;
   for(char c:name) {
-   const std::string factor=(c=='i' || c=='e') ? std::string(1,constantMarkerBegin)+c+constantMarkerEnd : std::string(1,c);
+   std::string letter(1,c),factor=letter;
+   if(c=='i' || c=='e')factor=std::string(1,constantMarkerBegin)+letter+constantMarkerEnd;
+   else if(gates.count(letter) && std::find(texIndices.begin(),texIndices.end(),letter)==texIndices.end())
+    factor=std::find(declaredGates.begin(),declaredGates.end(),letter)!=declaredGates.end() ? "'"+letter+"'" : gates.at(letter);
    result=result.empty() ? factor : "qmul("+result+","+factor+")";
    checkSize(result);
   }

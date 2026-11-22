@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 
@@ -12,6 +13,9 @@ parser.add_argument("worker", type=Path)
 parser.add_argument("--baseline", action="store_true", help="Expect the previous summation-index diagnostic")
 args = parser.parse_args()
 worker = args.worker.resolve()
+env = os.environ.copy()
+if (worker.parent / "data").is_dir():
+    env.setdefault("QALCULATE_DEFINITIONS_DIR", str(worker.parent / "data"))
 manifest = json.loads(Path(__file__).with_name("shared-index-sources.json").read_bytes())
 counts = Counter()
 cache = {}
@@ -27,7 +31,7 @@ for lesson in manifest["lessons"]:
             raise ValueError(f"Source occurrence moved in {lesson['lesson']} at {row['start']}")
         if literal not in cache:
             result = subprocess.run([worker, "--json"], input=b"quantum:" + literal,
-                                    capture_output=True, timeout=30)
+                                    capture_output=True, timeout=30, env=env)
             if result.returncode == 0:
                 response = json.loads(result.stdout)
                 if not response["copy_text"]:
