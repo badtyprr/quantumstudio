@@ -1,5 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumCompactPauli.h"
+#include "QuantumBinary.h"
+#include "QuantumIndexed.h"
 #include "Calculator.h"
 #include "Function.h"
 #include <cstdint>
@@ -129,7 +131,18 @@ public:
     if(!bound)throw std::invalid_argument("Compact distance search requires a weight bound from 1 to 3.");
     out=MathStructure(int(group.distance(bound)));
    } else if(op=="qcompactcorrection") {
-    out=value(group.correction(args[1],integer(args[2],3)));
+    MathStructure syndrome=args[1];
+    if(isQuantumBitLabel(syndrome) && syndrome.size()==2) {
+     MathStructure index=syndrome[0], width=syndrome[1];
+     if(validateQuantumBitLabel(index,width,eo)!=QuantumBitLabelState::Concrete ||
+        index.number().isApproximate() || width.number().isApproximate() ||
+        width.number()!=Number(group.generators.size()))
+      throw std::invalid_argument("Supply a concrete syndrome word with one exact bit per compact generator.");
+     syndrome.clearVector();
+     for(size_t bit=group.generators.size();bit>0;--bit)
+      syndrome.addChild(MathStructure(index.number().bitGet(bit)));
+    }
+    out=value(group.correction(syndrome,integer(args[2],3)));
    } else {
     Pauli error=read(args[1]);sameSize(error,group.generators[0]);out.clearVector();
     for(const auto &g:group.generators)out.addChild(MathStructure(int(!commutes(g,error))));

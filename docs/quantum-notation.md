@@ -1350,7 +1350,9 @@ Groups containing -I are rejected, including inconsistent redundant checks.
 
 `compact_correction(g,syndrome,bound)` returns a minimum-weight compact
 Pauli with the requested syndrome. Supply one exact bit per generator in
-generator order and a weight bound from 0 to 3. A zero syndrome returns
+generator order and a weight bound from 0 to 3. A bit vector or a width-preserving
+word such as `bitstring("01")` is accepted. The leftmost digit belongs to the
+first generator. A zero syndrome returns
 identity. If the bound is too small, the calculation reports an error.
 For example, the repetition checks `ZZI` and `IZZ` give syndrome `[1,1]`
 for a middle-wire bit flip. Evaluating

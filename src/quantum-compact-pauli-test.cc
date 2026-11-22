@@ -94,7 +94,17 @@ int main() {try {
  equal(translateQuantum("compact_correction(vector(compact_pauli(ZZI),compact_pauli(IZZ)),[1,1],1)"),compact(3,2,0));
  equal("qcompactcorrection(vector([4,3,0,0],[4,0,3,0],[4,12,0,0],[4,0,12,0]),[1,1,1,1],2)",compact(4,5,5,2));
  std::vector<std::string> many(64,compact(1,0,0)), last(64,"0");
+ const std::string repetition="vector([3,0,6,0],[3,0,3,0])";
+ for(unsigned word=0;word<4;++word) {
+  const unsigned masks[]={0,1,4,2};
+  equal("qcompactcorrection("+repetition+",qbitlabel("+std::to_string(word)+",2),1)",compact(3,masks[word],0));
+ }
+ rejects("qcompactcorrection("+repetition+",qbitlabel(1,3),1)");
  many.back()=compact(1,0,1);last.back()="1";
+ equal("qcompactcorrection("+vector(many)+",qbitlabel(1,64),1)",compact(1,1,0));
+ std::vector<std::string> first=many;
+ std::swap(first.front(),first.back());
+ equal("qcompactcorrection("+vector(first)+",qbitlabel(2^63,64),1)",compact(1,1,0));
  equal("qcompactcorrection("+vector(many)+","+vector(last)+",1)",compact(1,1,0));
  unsigned zh=0,zv=0,xh=0,xv=0;
  for(unsigned q=0;q<3;++q) {zh|=edge(q,0);zv|=edge(0,q,true);xh|=edge(0,q);xv|=edge(q,0,true);}
