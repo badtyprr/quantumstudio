@@ -744,3 +744,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/replay-lecture-manifest.py docs/learn
 EXTRA_DIST += docs/learning-evidence/aud01/ibm014-media.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm010-media.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm002-density-list.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm003-spectral-endpoints.json

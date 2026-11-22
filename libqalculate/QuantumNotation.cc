@@ -1002,16 +1002,29 @@ class Parser {
    while(at<s.size() && (std::isalpha((unsigned char)s[at]) || (unsigned char)s[at]>=128))++at;
    return s.substr(start,at-start);
   };
-  auto index=[&]() {
+  auto index=[&](bool allowGroup=false) {
+   bool grouped=allowGroup && token("{");
    space();size_t start=at;
    while(at<s.size() && std::isdigit((unsigned char)s[at]))++at;
-   return at==start ? name() : s.substr(start,at-start);
+   const bool numeric=at>start;
+   std::string value=numeric ? s.substr(start,at-start) : name();
+   if(grouped) {
+    space();
+    if(!numeric && value.size()==1 && at<s.size() && (s[at]=='-' || s[at]=='+')) {
+     char sign=s[at++];space();size_t digits=at;
+     while(at<s.size() && std::isdigit((unsigned char)s[at]))++at;
+     if(at==digits)return std::string();
+     value+=sign;value+=s.substr(digits,at-digits);
+    }
+    if(!token("}"))return std::string();
+   }
+   return value;
   };
   auto projector=[&](std::string &weight,std::string &state,std::string &slot) {
    weight=name();if(weight.empty() || !token("_"))return false;
-   slot=index();if(slot.empty() || !token("|"))return false;
-   state=name();return !state.empty() && token("_") && index()==slot && token(">") &&
-    token("<") && name()==state && token("_") && index()==slot && token("|");
+   slot=index(true);if(slot.empty() || !token("|"))return false;
+   state=name();return !state.empty() && token("_") && index(true)==slot && token(">") &&
+    token("<") && name()==state && token("_") && index(true)==slot && token("|");
   };
   std::string start,end,weight,state,slot,probe;
   if(token("qtexsum(")) {
@@ -1033,8 +1046,18 @@ class Parser {
    std::string finalWeight,finalState;
    if(!projector(finalWeight,finalState,end) || weight!=finalWeight || state!=finalState)return "";
   }
-  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || end.empty() ||
-     (end.find_first_not_of("0123456789")!=std::string::npos && !(end.size()==1 && std::isalpha((unsigned char)end[0]))))return "";
+  if(start.empty() || start.find_first_not_of("0123456789")!=std::string::npos || end.empty())return "";
+  if(end.find_first_not_of("0123456789")!=std::string::npos) {
+   if(!std::isalpha((unsigned char)end[0]))return "";
+   // index() admits offsets only after a single letter inside braces.
+   std::string dimension=end.substr(0,1);
+   if(std::string("nxyz").find(end[0])==std::string::npos)dimension=indexableLabel(dimension);
+   if(end.size()==1)end=dimension;
+   else {
+    if(end[1]!='+' && end[1]!='-')return "";
+    end=std::string(end[1]=='-' ? "qsub(" : "qadd(")+dimension+","+end.substr(2)+")";
+   }
+  }
   space();if(at<s.size() && s[at]!=')' && s[at]!=',' && s[at]!='=' && s[at]!=']')return "";
   p=at;
   auto family=[&](const std::string &prefix){return "qindexedentries("+indexableLabel(prefix+"_")+","+start+","+end+",vector())";};
