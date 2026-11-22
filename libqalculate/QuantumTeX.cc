@@ -2253,6 +2253,7 @@ class TeXReader {
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
    else if(input[pos]=='_') {
+    const size_t subscriptStart=pos;
     if(input.compare(pos,10,"_{\\mathsf{")==0) {
      size_t close=input.find("}}",pos+10);
      size_t ketEnd=result.find_last_not_of(" \t\r\n"),ketStart=result.rfind('|',ketEnd);
@@ -2300,12 +2301,19 @@ class TeXReader {
      (result.size()==2 || !std::isalnum((unsigned char)result[result.size()-3]));
     if(fourier) {result.resize(result.size()-3);result+="qfourier("+index+")";}
     else if(trace) {
+     std::string subscript=input.substr(subscriptStart,pos-subscriptStart);
+     subscript.erase(std::remove_if(subscript.begin(),subscript.end(),[](unsigned char c){return asciiSpace(c);}),subscript.end());
      space();skipOpeningSize();std::string body;
      if(pos<input.size() && input[pos]=='{') body=group();
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
      else if(directMatrixOperand())body=argument();
      else throw std::runtime_error(error("A subscripted trace requires a grouped operand or matrix"));
-     result.resize(result.size()-2); result+="ptrace("+body+",vector("+index+"))";
+     result.resize(result.size()-2);
+     const std::string names=trim(index);
+     if(names.size()>1 && names.size()<=32 && names.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos &&
+        (subscript=="_{\\mathsf{"+names+"}}" || subscript=="_\\mathsf{"+names+"}"))
+      result+="qptraceregisters("+body+",\""+names+"\",vector("+index+"))";
+     else result+="ptrace("+body+",vector("+index+"))";
     } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {
      auto pair=indexedParts(index,",");
      if(pair.size()!=2 || pair[0].empty() || pair[1].empty())throw std::runtime_error(error("A paired coefficient subscript requires two indices"));

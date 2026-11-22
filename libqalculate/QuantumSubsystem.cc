@@ -135,6 +135,26 @@ class QuantumSubsystemFunction: public MathFunction {
    out=MathStructure(static_cast<MathFunction*>(this),static_cast<MathStructure*>(NULL));
    out.addChild(matrix);out.addChild(labels);out.addChild(dims);return 1;
   }
+  if(op=="qptraceregisters") {
+   if(!raw[1].isSymbolic()) {subsystemError("A grouped trace requires uppercase register names.");return 0;}
+   const std::string names=raw[1].symbol();
+   if(names.size()<2 || names.size()>32 || names.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")!=std::string::npos) {
+    subsystemError("A grouped trace requires 2 to 32 uppercase register names.");return 0;
+   }
+   MathStructure state=raw[0];state.eval(eo);
+   if(state.isUnknown())return 0;
+   if(!mappedSubsystems(state)) {
+    // On an ordinary matrix the same spelling may already be bound to an axis index.
+    MathStructure args=raw;args[0]=state;
+    return CALCULATOR->getFunction("qptraceselect")->calculate(out,args,eo);
+   }
+   if(!validSubsystems(state[0],state[1],state[2]))return 0;
+   MathStructure axes;axes.clearVector();
+   for(size_t k=0;k<state[1].size();++k)if(state[1][k].equals(raw[1]))axes.addChild(raw[1]);
+   if(!axes.size())for(char name:names)axes.addChild(MathStructure(std::string(1,name),true));
+   MathStructure args;args.clearVector();args.addChild(state);args.addChild(axes);
+   return CALCULATOR->getFunction("qptrace")->calculate(out,args,eo);
+  }
   if(op=="qptrace" || op=="qptracedim" || op=="qptraceselect") {
    MathStructure state=raw[0];state.eval(eo);
    if(mappedSubsystems(state)) {
@@ -372,6 +392,6 @@ class QuantumSubsystemFunction: public MathFunction {
 void registerQuantumSubsystem(Calculator &calculator) {
  calculator.addFunction(new QuantumSubsystemFunction("qregket",2));
  calculator.addFunction(new QuantumSubsystemFunction("qorderedket",2));
- for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
+ for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptraceregisters",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
   calculator.addFunction(new QuantumSubsystemFunction(entry.first,entry.second));
 }

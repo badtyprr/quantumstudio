@@ -168,6 +168,19 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
     // Six dense basis columns in a five-bit compute/swap/uncompute trace
     // exceed the parser's matrix-entry budget. Preserve their exact labels.
     const MathStructure &operand=result[k];
+    if(quantumMode && name=="qptraceregisters" && k==2 && result[1].isSymbolic() && operand.size()==1 &&
+       (operand.isVector() || (operand.isFunction() && operand.function()->referenceName()=="vector"))) {
+     // The printer sorts scalar products and combines repeated factors. Keep
+     // the original index spelling if it still denotes the saved operand.
+     const std::string word=result[1].symbol();
+     if(word.size()>=2 && word.size()<=32 && word.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos) {
+      EvaluationOptions exact;exact.approximation=APPROXIMATION_EXACT;
+      MathStructure original=CALCULATOR->calculate("quantum:vector("+word+")",exact);
+      if(original.isVector() && original.size()==1 && original[0].equals(operand[0])) {
+       text+="vector("+word+")";continue;
+      }
+     }
+    }
     if(quantumMode && name=="qstateaction" && operand.isMatrix() &&
        operand.columns()==1 && operand.rows()>=1024 && !operand.isApproximate()) {
      size_t label=0;
