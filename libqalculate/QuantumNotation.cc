@@ -2190,15 +2190,23 @@ class Parser {
     a=ringModulus.empty() ? "("+a+"/("+denominator+"))" : "qmul("+a+",qmodpower("+denominator+",-1,"+ringModulus+"))";
    }
    else if(take('@')) {
-    std::string right=diracFactor();
-    if(startsAtom()) {
-     // Scalar coefficients belong to the following tensor factor, whereas
-     // a tensor of operators may act on a following state. Preserve this
-     // unparenthesized run until evaluation can distinguish the two cases.
-     std::string factors="vector("+right;
-     while(startsAtom()) {factors+=","+diracFactor();checkSize(factors);}
-     a="qtensorchain("+a+","+factors+"))";
-    } else a="qtensor("+a+","+right+")";
+    std::string right=diracFactor(),factors;
+    bool firstKet=diracKind==1;
+    while(startsAtom()) {
+     bool possibleBra=firstKet && s[p]=='<';
+     std::string next=diracFactor();
+     if(possibleBra && diracKind==2) {
+      // The matrix unit |a><b| is one tensor factor, including off-diagonal units.
+      right="qadjacent("+right+","+next+")";
+     } else {
+      factors+=","+next;checkSize(factors);
+     }
+     firstKet=false;
+    }
+    // A scalar may scale the next ket, or the tensor of two operators may
+    // act on a following state. Preserve that decision until evaluation.
+    if(factors.empty())a="qtensor("+a+","+right+")";
+    else a="qtensorchain("+a+",vector("+right+factors+"))";
    }
    else if(take('#')) {
     std::string right=diracFactor();
