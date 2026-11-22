@@ -25,15 +25,22 @@ class QuantumStateFunction: public MathFunction {
   const MathStructure &state=args[0];
   if(op=="qentropy")return quantumEntropy(out,state,eo) ? 1 : 0;
   if(op=="qtracedistance" || op=="qfidelity" || op=="qrootfidelity") {
-   if(op=="qrootfidelity") {
-    auto unresolved=[](const MathStructure &v) {
-     return !v.isVector() && !v.isNumber() && (v.isSymbolic() || v.containsUnknowns());
-    };
-    auto stateShape=[](const MathStructure &v) {
-     return v.isMatrix() && v.rows()>=2 && v.rows()<=64 && (v.columns()==1 || v.columns()==v.rows());
-    };
-    if((unresolved(state) && (unresolved(args[1]) || stateShape(args[1]))) ||
-       (unresolved(args[1]) && stateShape(state)))return 0;
+   if(op=="qrootfidelity" && (state.containsUnknowns() || args[1].containsUnknowns())) {
+    size_t dimension=0;
+    for(size_t k=0;k<2;++k) {
+     const MathStructure &v=args[k];
+     if(!v.isVector() && v.containsUnknowns())continue;
+     if(!v.isMatrix() || v.rows()<2 || v.rows()>64 || (v.columns()!=1 && v.columns()!=v.rows()) ||
+        (dimension && dimension!=v.rows())) {
+      CALCULATOR->error(true,"Root fidelity requires two states of matching dimension from 2 to 64.",NULL);return 0;
+     }
+     dimension=v.rows();
+     if(!v.containsUnknowns()) {
+      MathStructure validation;
+      if(!quantumEntropy(validation,v,eo))return 0;
+     }
+    }
+    return 0;
    }
    if(!quantumStateMetric(out,state,args[1],eo,op!="qtracedistance",true))return 0;
    if(op=="qrootfidelity") {
