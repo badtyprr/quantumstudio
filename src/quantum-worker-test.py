@@ -59,6 +59,22 @@ for last in ("2", "n"):
 for invalid_label in ("A_{2}", "B_{1}"):
     run("quantum:" + block_column.replace("A_{1}", invalid_label), "--json", success=False)
 
+# IBM-012 M042 specifies principal square roots in the first block column.
+measurement_column = block_column.replace("A_{0}", r"\sqrt{P_0}").replace(
+    "A_{1}", r"\sqrt{P_1}").replace("A_{N-1}", r"\sqrt{P_{m-1}}")
+measurement_copy = data("quantum:" + measurement_column)["copy_text"]
+assert data("quantum:" + measurement_copy)["copy_text"] == measurement_copy
+effects = f"replace(replace(replace(({measurement_copy}),m,2),P_0,[1/2,-7/50;-7/50,1/2]),P_1,[1/2,7/50;7/50,1/2])"
+for candidate, expected in [
+    ("[7/10,-1/10,0,0;-1/10,7/10,0,0;7/10,1/10,0,0;1/10,7/10,0,0]", "1"),
+    ("[7/10,-1/10,1,0;-1/10,7/10,0,1;7/10,1/10,0,0;1/10,7/10,0,0]", "1"),
+    # Negating the first root leaves its square unchanged.
+    ("[-7/10,1/10,0,0;1/10,-7/10,0,0;7/10,1/10,0,0;1/10,7/10,0,0]", "0"),
+    ("[1/2,-7/50,0,0;-7/50,1/2,0,0;1/2,7/50,0,0;7/50,1/2,0,0]", "0"),
+]:
+    assert data(f"quantum:replace(({effects}),U,{candidate})")["copy_text"] == expected
+run("quantum:" + measurement_column.replace(r"\sqrt{P_1}", "P_1"), "--json", success=False)
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]

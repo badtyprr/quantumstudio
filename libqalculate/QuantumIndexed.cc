@@ -1,5 +1,7 @@
 // GPL-2.0-or-later; see COPYING.
 #include "QuantumIndexed.h"
+#include "QuantumInstruments.h"
+#include "QuantumMatrixPower.h"
 #include <map>
 #include "QuantumBasisDomain.h"
 #include "QuantumBinary.h"
@@ -2378,10 +2380,12 @@ class QuantumIndexedFunction: public MathFunction {
    return 1;
   }
   if(op=="qmissingblock" || op=="qopenblockcolumn")return 0;
-  if(op=="qblockcolumn" || op=="qmatchblockcolumn") {
+  if(op=="qblockroots" || op=="qblockcolumn" || op=="qmatchblockcolumn") {
    MathStructure blocks;
-   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(blocks,raw[0],eo))return 0;
-   if(!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(blocks.size())) {
+   const bool roots=op!="qblockroots" && raw[0].isFunction() && raw[0].function()->referenceName()=="qblockroots";
+   const MathStructure &family=roots ? raw[0][0] : raw[0];
+   if(!indexedSpectralFamily(family) || !indexedEntries(blocks,family,eo))return 0;
+   if(op!="qblockroots" && (!raw[1].isInteger() || raw[1].number()<1 || raw[1].number()>Number(blocks.size()))) {
     CALCULATOR->error(true,"A block column must contain its displayed blocks.",NULL);return 0;
    }
    size_t width=0;bool pending=false;
@@ -2395,7 +2399,7 @@ class QuantumIndexedFunction: public MathFunction {
     width=blocks[k].rows();
    }
    if(pending)return 0;
-   if(blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
+   if(!width || blocks.size()>1024/width) {CALCULATOR->error(true,"Block matrix dimension exceeds 1024.",NULL);return 0;}
    size_t size=width*blocks.size();bool match=op=="qmatchblockcolumn";
    MathStructure candidate;
    if(match) {
@@ -2404,6 +2408,35 @@ class QuantumIndexedFunction: public MathFunction {
     if(!raw[3].isInteger() || (raw[3].number()!=4 && raw[3].number()!=5))return 0;
     if(!candidate.isMatrix() || candidate.rows()!=size || candidate.columns()!=size) {out=raw[3].number()==5 ? 1 : 0;return 1;}
    }
+   if(roots || op=="qblockroots") {
+    const MathStructure half(Number(1,2));
+    for(size_t k=0;k<blocks.size();++k) {
+     if(CALCULATOR->aborted())return 0;
+     if(match && width<=64) {
+      MathStructure proposed;proposed.clearMatrix();proposed.resizeMatrix(width,width,m_zero);
+      for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c)
+       element(proposed,r,c)=element(candidate,k*width+r,c);
+      // A positive semidefinite root is unique. Squaring the proposed
+      // block lets an exact equality stay exact even for dense matrices.
+      QuantumValidity positivity=quantumPositiveSemidefinite(proposed,eo);
+      if(positivity==QuantumValidity::Valid) {
+       MathStructure squared=proposed;squared*=proposed;squared.eval(eo);
+       if(!squared.isMatrix())return 0;
+       for(size_t r=0;r<width;++r)for(size_t c=0;c<width;++c)
+        element(candidate,k*width+r,c)=element(squared,r,c);
+       continue;
+      }
+      if(quantumPositiveSemidefinite(blocks[k],eo)==QuantumValidity::Valid) {
+       if(positivity==QuantumValidity::Unknown)return 0;
+       out=raw[3].number()==5 ? 1 : 0;return 1;
+      }
+     }
+     MathStructure root;
+     if(!quantumMatrixPower(root,blocks[k],half,eo))return 0;
+     blocks[k]=root;
+    }
+   }
+   if(op=="qblockroots") {out=blocks;return 1;}
    out.clearMatrix();out.resizeMatrix(size,match ? width : size,m_zero);
    for(size_t k=0;k<blocks.size();++k)for(size_t r=0;r<width;++r) {
     if(CALCULATOR->aborted())return 0;
@@ -3074,6 +3107,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qreverseindexedlist",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedset",4));
  calculator.addFunction(new QuantumIndexedFunction("qindexedsum",4));
+ calculator.addFunction(new QuantumIndexedFunction("qblockroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qblockcolumn",2));
  calculator.addFunction(new QuantumIndexedFunction("qopenblockcolumn",2));
  calculator.addFunction(new QuantumIndexedFunction("qmatchblockcolumn",4));

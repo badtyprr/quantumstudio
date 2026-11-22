@@ -653,6 +653,16 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  // All later block columns are either explicitly zero or independently unspecified.
  const std::string &fill=cells.front()[1];
  if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {
+  const bool roots=tex && cells.front()[0].compare(0,6,"\\sqrt{")==0;
+  if(roots) {
+   for(size_t r=0;r<height;++r) {
+    if(r==height-2)continue;
+    if(cells[r].empty())invalid();
+    std::string &cell=cells[r][0];
+    if(cell.size()<8 || cell.compare(0,6,"\\sqrt{")!=0 || cell.back()!='}')invalid();
+    cell=trim(cell.substr(6,cell.size()-7));
+   }
+  }
   size_t sub=cells.front()[0].find('_');
   if(sub!=std::string::npos) {
    std::string prefix=cells.front()[0].substr(0,sub+1);
@@ -679,6 +689,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    std::string last=blockLabel(cells.back()[0]).substr(prefix.size());
    std::string family=indexedLabelRange(name+"0",name+last,"qindexedentries(");
    if(family.empty())invalid();
+   if(roots)family="qblockroots("+family+")";
    return std::string(fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
   }
  }

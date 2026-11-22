@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "An indexed matrix requires contiguous",
+  "lessons": [
+    {
+      "lesson": "IBM-012",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/naimark-theorem.ipynb",
+      "source_sha256": "c2b02c7509cf90b32f9330131c341ec26ef502c0c2c7b9e24818e51ebc119f62",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 3983,
+          "end": 4209,
+          "literal_sha256": "3c593beb9a30cf9f0e929981950403705192d493c3e320818e1d85dfec0e6f95",
+          "outcome": "result",
+          "copy_text": "qmatchblockcolumn(qblockroots(qindexedentries(\"P_\",0,qsub('m',1),vector())),2,'U',4)"
+        }
+      ]
+    }
+  ]
+}
