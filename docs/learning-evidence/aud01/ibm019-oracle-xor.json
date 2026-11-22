@@ -1,0 +1,70 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "mutation": "M025 reverses only the first amplitude. M050 supplies the complementary oracle gate while retaining the original truth table.",
+  "formulas": [
+    {
+      "occurrence": 25,
+      "cell": 0,
+      "start": 4030,
+      "end": 4260,
+      "literal_sha256": "2ce2d64d91d595a3759cb979ec84862a2051e43f9af51a249d7b8dfbd6e9a5da",
+      "source_formula": "$$\n\\vert \\pi_2 \\rangle\n= \\frac{1}{2} \\bigl( \\vert 0 \\oplus f(0) \\rangle - \\vert 1 \\oplus f(0) \\rangle \\bigr) \\vert 0 \\rangle\n+ \\frac{1}{2} \\bigl( \\vert 0 \\oplus f(1) \\rangle - \\vert 1 \\oplus f(1) \\rangle \\bigr) \\vert 1 \\rangle.\n$$",
+      "copy": "qcompare(qketstate(\"pi_2\"),qadd(qadjacent(qadjacent(1 ∕ 2,qsub(qcomputationalket(qoplus(qbitlabel(0,1),qgraphapply('f',qbitlabel(0,1)))),qcomputationalket(qoplus(qbitlabel(1,1),qgraphapply('f',qbitlabel(0,1)))))),matrix(2,1,vector(1,0))),qadjacent(qadjacent(1 ∕ 2,qsub(qcomputationalket(qoplus(qbitlabel(0,1),qgraphapply('f',qbitlabel(1,1)))),qcomputationalket(qoplus(qbitlabel(1,1),qgraphapply('f',qbitlabel(1,1)))))),matrix(2,1,vector(0,1)))),4)",
+      "controls": [
+        {"truth_table": [0,0],"mutated": false,"expected": 1},
+        {"truth_table": [0,0],"mutated": true,"expected": 0},
+        {"truth_table": [0,1],"mutated": false,"expected": 1},
+        {"truth_table": [0,1],"mutated": true,"expected": 0},
+        {"truth_table": [1,0],"mutated": false,"expected": 1},
+        {"truth_table": [1,0],"mutated": true,"expected": 0},
+        {"truth_table": [1,1],"mutated": false,"expected": 1},
+        {"truth_table": [1,1],"mutated": true,"expected": 0}
+      ]
+    },
+    {
+      "occurrence": 50,
+      "cell": 0,
+      "start": 7767,
+      "end": 7919,
+      "literal_sha256": "9925be888c982f42644b01365f7ec13efdd6adc23b90f06108bb17d33b1392c8",
+      "source_formula": "$$\nU_f \\bigl(\\vert b\\rangle \\vert a \\rangle\\bigr)\n= \\vert b \\oplus f(a) \\rangle \\vert a \\rangle\n= \\bigl(X^{f(a)}\\vert b \\rangle\\bigr) \\vert a \\rangle\n$$",
+      "copy": "qequalchain(vector(qmul(qoperatorref(\"U_f\"),qtensor(qketstate('b'),qketstate('a'))),qtensor(qcomputationalket(qoplus('b',qnamedapplication('f','a'))),qketstate('a')),qadjacent(qadjacent(qpower(matrix(2,2,[0,1,1,0]),qnamedapplication('f','a')),qketstate('b')),qketstate('a'))))",
+      "controls": [
+        {"truth_table": [0,0],"a": 0,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [0,0],"a": 0,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [0,0],"a": 0,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [0,0],"a": 0,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [0,0],"a": 1,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [0,0],"a": 1,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [0,0],"a": 1,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [0,0],"a": 1,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [0,1],"a": 0,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [0,1],"a": 0,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [0,1],"a": 0,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [0,1],"a": 0,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [0,1],"a": 1,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [0,1],"a": 1,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [0,1],"a": 1,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [0,1],"a": 1,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [1,0],"a": 0,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [1,0],"a": 0,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [1,0],"a": 0,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [1,0],"a": 0,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [1,0],"a": 1,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [1,0],"a": 1,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [1,0],"a": 1,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [1,0],"a": 1,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [1,1],"a": 0,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [1,1],"a": 0,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [1,1],"a": 0,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [1,1],"a": 0,"b": 1,"mutated": true,"expected": 0},
+        {"truth_table": [1,1],"a": 1,"b": 0,"mutated": false,"expected": 1},
+        {"truth_table": [1,1],"a": 1,"b": 0,"mutated": true,"expected": 0},
+        {"truth_table": [1,1],"a": 1,"b": 1,"mutated": false,"expected": 1},
+        {"truth_table": [1,1],"a": 1,"b": 1,"mutated": true,"expected": 0}
+      ]
+    }
+  ]
+}

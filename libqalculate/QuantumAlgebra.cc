@@ -1482,6 +1482,14 @@ class QuantumAlgebraFunction: public MathFunction {
    out=a;return 1;
   }
   if(op=="qindexxor" || op=="qoplus") {
+   // A Boolean oracle can return an integer bit for a one-bit register.
+   for(size_t k=0;k<2;++k) {
+    const MathStructure &word=args[k], &bit=args[1-k];
+    if(isQuantumBitLabel(word) && bit.isNumber() && (bit.isZero() || bit.isOne())) {
+     MathStructure label(CALCULATOR->getFunction("qbitlabel"),&bit,&m_one,NULL);
+     out.set(CALCULATOR->getFunction("qbitxor"),&word,&label,NULL);return 1;
+    }
+   }
    if(isQuantumBitLabel(a) && isQuantumBitLabel(args[1])) {
     out.set(CALCULATOR->getFunction("qbitxor"),&a,&args[1],NULL);
     return 1;

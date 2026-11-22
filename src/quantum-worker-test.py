@@ -67,6 +67,20 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Inside a ket XOR, f(01) queries a two-bit key. Its Boolean output flips one bit.
+oracle_xor = data(r"quantum:$\vert 1 \oplus f(01)\rangle$")["copy_text"]
+assert "qgraphapply('f',qbitlabel(1,2))" in oracle_xor
+assert data(r"quantum:$\vert 1 \oplus f((01))\rangle$")["copy_text"] == oracle_xor
+run(r"quantum:$\vert 1 \oplus f(0.0)\rangle$", "--json", success=False)
+assert data("quantum:" + oracle_xor)["copy_text"] == oracle_xor
+one_key = "qset(vector(qtuple(vector(qbitlabel(1,2),1))))"
+assert data(f'quantum:replace(({oracle_xor}),"f",{one_key})')["copy_text"] == "matrix(2,1,[1,0])"
+assert data("quantum:qoplus(0,qbitlabel(1,1))")["copy_text"] == "qbitlabel(1,1)"
+width_copy = data("quantum:qoplus(1,qbitlabel(0,n))")["copy_text"]
+assert data(f"quantum:replace(({width_copy}),n,1)")["copy_text"] == "qbitlabel(1,1)"
+run("quantum:qoplus(qbitlabel(0,2),1)", "--json", success=False)
+run("quantum:qoplus(qbitlabel(0,1),2)", "--json", success=False)
+
 # The two Deutsch tables retain entries and leading zero bits through Copy.
 oracle_table = r"\begin{array}{c|c} a & f_2(a) \\ \hline 0 & 0 \\ 1 & 1 \end{array}"
 strut = r"\rule[-10mm]{0mm}{10mm}"

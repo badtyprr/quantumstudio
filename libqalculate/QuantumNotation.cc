@@ -2017,6 +2017,18 @@ class Parser {
     }
     if(publicName=="O")name="qbigorder";
     if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
+    if(basisXorContext && (name=="f" || name=="g" || name=="h") && args.size()==1) {
+     std::string key=args[0];
+     size_t begin=0,end=key.size();
+     while(end>begin+1 && key[begin]=='(' && key[end-1]==')') {++begin;--end;}
+     key=key.substr(begin,end-begin);
+     if(!key.empty() && key.find_first_not_of("0123456789.")==std::string::npos) {
+      if(key.find_first_not_of("01")!=std::string::npos)throw std::runtime_error("A binary oracle key requires a word of zeros and ones.");
+      args[0]="qbitlabel("+binaryNumeral(key)+","+std::to_string(key.size())+")";
+     }
+     args.insert(args.begin(),indexableLabel(name));
+     name=key.size()==1 && std::isalpha(static_cast<unsigned char>(key[0])) ? "qnamedapplication" : "qgraphapply";
+    }
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
     if(name=="replace" && args.size()==3)name="qreplace";
