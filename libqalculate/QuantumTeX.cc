@@ -2154,6 +2154,8 @@ class TeXReader {
    if(name=="mathbb" && a=="C")return " qcomplexplane() ";
    if((a=="Tr" || a=="tr") && (name=="operatorname" || name=="mathrm")) {
     space();
+    if(input.compare(pos,5,"\\sqrt")==0 && (pos+5==input.size() || !asciiLetter(input[pos+5])))
+     return "qtrace("+argument()+")";
     if(directMatrixOperand()) {
      std::string matrix=argument();space();
      if(pos<input.size() && input[pos]=='^') {

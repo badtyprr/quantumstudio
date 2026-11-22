@@ -107,6 +107,10 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
  size_t rows=matrix.isMatrix() ? matrix.rows() : 1,cols=matrix.isMatrix() ? matrix.columns() : 1,n=rows*cols;
  bool frobenius=!spectral && pn==Number(2);
  if(frobenius)numeric.interval_calculation=INTERVAL_CALCULATION_INTERVAL_ARITHMETIC;
+ // A free operator or a product containing one can acquire its matrix
+ // shape through substitution. Validate concrete sizes and the norm order
+ // before attempting the numerical reduction.
+ if(!matrix.isVector() && !matrix.isNumber() && (matrix.isSymbolic() || matrix.containsUnknowns()))return false;
  if((!matrix.isMatrix() && !matrix.isNumber()) || n==0 || rows>1024 || cols>1024 || n>(frobenius ? 1048576U : 1024U)) {CALCULATOR->error(true,"Frobenius norms support numeric matrices up to 1024 by 1024; other operator norms support at most 1024 entries.",NULL);return false;}
  MathStructure ket;if(!frobenius){ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);}Number weight(0);
  for(size_t r=0;r<rows;++r)for(size_t c=0;c<cols;++c) {

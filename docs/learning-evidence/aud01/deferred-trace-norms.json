@@ -1,0 +1,59 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-013",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography.ipynb",
+      "source_sha256": "afd353deba6a4252c1cb7a50db286c74041ddaf3363bd95cb9f7b0c84e18c0a8",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 6571,
+          "end": 6729,
+          "literal_sha256": "07817e2b8e91dbc38fdd72e6b7ea9be5224b9979106bbddc48b8701c26884fe8",
+          "outcome": "result",
+          "copy_text": "qequalchain(vector(qtrace(qadjacent(qsub(\"\u03a0_0\",\"\u03a0_1\"),qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")))),qsum(qbars(qindexedlabel(\"\u03bb_\",\"qboundindex_0\",\"\")),0,qsub(n,1),\"qboundindex_0\"),qschatten(qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")),1)))",
+          "control_input": "replace((replace((replace((replace((replace((replace((replace((replace((qequalchain(vector(qtrace(qadjacent(qsub(\"\u03a0_0\",\"\u03a0_1\"),qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")))),qsum(qbars(qindexedlabel(\"\u03bb_\",\"qboundindex_0\",\"\")),0,qsub(n,1),\"qboundindex_0\"),qschatten(qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")),1)))),\"\u03a0_0\",[1,0;0,0])),\"\u03a0_1\",[0,0;0,1])),\"p\",3/4)),\"\u03c1_0\",[1,0;0,0])),\"\u03c1_1\",[0,0;0,1])),n,2)),\"\u03bb_0\",3/4)),\"\u03bb_1\",-1/4)",
+          "control_result": "1"
+        },
+        {
+          "cell": 0,
+          "start": 6922,
+          "end": 6994,
+          "literal_sha256": "9d42f556b18a24a8838699ac39029b1039966ddf53da03898840440e15eafcf6",
+          "outcome": "result",
+          "copy_text": "qadd(1 \u2215 2,qadjacent(1 \u2215 2,qschatten(qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")),1)))",
+          "control_input": "replace((replace((replace((qadd(1 \u2215 2,qadjacent(1 \u2215 2,qschatten(qsub(qadjacent('p',\"\u03c1_0\"),qadjacent(qsub(1,'p'),\"\u03c1_1\")),1)))),\"p\",1/2)),\"\u03c1_0\",[1,0;0,0])),\"\u03c1_1\",[1,0;0,0])",
+          "control_result": "1 \u2215 2"
+        }
+      ]
+    },
+    {
+      "lesson": "IBM-016",
+      "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+      "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 3552,
+          "end": 3608,
+          "literal_sha256": "17f1c4f216656f455dc3f51ba5ffbdf493d661ae73363c95ceb1ea32f58f367b",
+          "outcome": "result",
+          "copy_text": "(qadd(qmul(\u22121,qtrace(qsqrt(qadjacent(qdag('M'),'M')))),qschatten('M',1)))==(0)",
+          "control_input": "replace(((qadd(qmul(\u22121,qtrace(qsqrt(qadjacent(qdag('M'),'M')))),qschatten('M',1)))==(0)),\"M\",[0,2i;1,0])",
+          "control_result": "1"
+        },
+        {
+          "cell": 0,
+          "start": 7066,
+          "end": 7096,
+          "literal_sha256": "c9694ad42452f0fd8da3a9dc589f819825919830bd2cedeefb80a4a4c7e0e2c9",
+          "outcome": "result",
+          "copy_text": "qadjacent(1 \u2215 2,qschatten(qsub('\u03c1','\u03c3'),1))",
+          "control_input": "replace((replace((qadjacent(1 \u2215 2,qschatten(qsub('\u03c1','\u03c3'),1))),\"\u03c1\",[1,0;0,0])),\"\u03c3\",[1/2,0;0,1/2])",
+          "control_result": "1 \u2215 2"
+        }
+      ]
+    }
+  ]
+}

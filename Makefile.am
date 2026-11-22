@@ -763,3 +763,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm002-amplitude-projector.json
 EXTRA_DIST += docs/learning-evidence/aud01/indexed-measurement-lists.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm011-indexed-traces.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm016-conjugate-kets.json
+EXTRA_DIST += docs/learning-evidence/aud01/deferred-trace-norms.json
