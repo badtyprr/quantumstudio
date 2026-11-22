@@ -1146,6 +1146,17 @@ class TeXReader {
   }
   pos=saved;return false;
  }
+ std::string bareDegreeAngle() {
+  const size_t saved=pos;
+  // Read a single signed magnitude. A following product or sum stays
+  // outside the trigonometric function unless explicitly grouped.
+  static const std::regex magnitude(R"([+-]?\s*(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+|[A-Za-z]|\\[A-Za-z]+)\s*(?=\^))");
+  std::smatch match;
+  if(!std::regex_search(input.cbegin()+pos,input.cend(),match,magnitude,std::regex_constants::match_continuous))return "";
+  pos+=match.length();
+  if(degreeSuffix())return "("+TeXReader(match.str(),false,binaryLogs).run(nullptr)+") qtexdegrees ";
+  pos=saved;return "";
+ }
  bool directMatrixOperand() {
   if(input.compare(pos,6,"\\begin")!=0 || (pos+6<input.size() && asciiLetter(input[pos+6])))return false;
   const size_t saved=pos;
@@ -1738,12 +1749,14 @@ class TeXReader {
     std::string operand;
     if(pos<input.size() && input[pos]=='(') {++pos;operand=read(')');}
     else if(pos<input.size() && input[pos]=='{')operand=group();
-    else throw std::runtime_error(error("A powered trigonometric function requires a parenthesized or braced argument"));
+    else if((operand=bareDegreeAngle()).empty())throw std::runtime_error(error("A powered trigonometric function requires a grouped argument or degree angle"));
     if(trim(operand).empty())throw std::runtime_error(error("Empty trigonometric argument"));
     std::string compactPower;for(unsigned char c:power)if(!asciiSpace(c))compactPower+=c;
     if(compactPower=="-1")return "a"+name+"("+operand+")";
     return "("+name+"("+operand+"))^("+power+")";
    }
+   std::string angle=bareDegreeAngle();
+   if(!angle.empty())return name+"("+angle+")";
    pos=afterName;
   }
   if(name=="left" || name=="right" || name=="big" || name=="Big" || name=="bigl" || name=="bigr" || name=="Bigl" || name=="Bigr" || name=="bigg" || name=="Bigg" || name=="biggl" || name=="biggr" || name=="Biggl" || name=="Biggr") {

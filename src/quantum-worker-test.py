@@ -231,7 +231,7 @@ run("quantum:" + counted_product.replace(r"\cdots \otimes \rho", r"\cdots \otime
 run(f"quantum:replace(({counted_matrix}),N,-1)", "--json", success=False)
 
 for angle in (r"\pi=180^{\circ}", r"2\pi=360^\circ", r"\cos(60^{\circ})=1/2",
-              r"\frac{1}{30^{\circ}}=6/\pi", r"(40+5)^{\circ}=\pi/4"):
+              r"\frac{1}{30^{\circ}}=6/\pi", r"(40+5)^{\circ}=\pi/4", r"\cos 60^\circ=1/2", r"\sin^{2} -30^{\circ}=1/4"):
     assert data("quantum:" + angle)["copy_text"] == "1"
 assert data(r"quantum:\pi=90^{\circ}")["copy_text"] == "0"
 
