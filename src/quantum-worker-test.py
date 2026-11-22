@@ -689,6 +689,16 @@ word_graph = data("quantum:" + word_table)["copy_text"]
 pending_trace = data(r"quantum:\operatorname{Tr}_{\mathsf{B}}(\rho)")["copy_text"]
 assert data("quantum:" + pending_trace)["copy_text"] == pending_trace
 diagonal = "[1,0,0,0;0,2,0,0;0,0,3,0;0,0,0,4]"
+# A grouped textbook register matches a declared whole name first. Otherwise
+# the mapped axes provide the individual letters, in any physical order.
+group_trace = data(r"quantum:\operatorname{Tr}_{\mathsf{AB}}(ρ)")["copy_text"]
+assert data("quantum:" + group_trace)["copy_text"] == group_trace
+for axes, dimensions, expected in [("[A,B]", "[2,2]", "10"), ("[AB,C]", "[2,2]", "matrix(2,2,[4,0,0,6])"),
+                                    ("[B,AB,A]", "[2,1,2]", "matrix(4,4,[1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,4])")]:
+    mapping = f"subsystems({diagonal},{axes},{dimensions})"
+    assert data(f"quantum:replace({group_trace},ρ,{mapping})")["copy_text"] == expected
+assert b"Unknown subsystem label" in run(
+    f"quantum:replace({group_trace},ρ,subsystems({diagonal},[A,C],[2,2]))","--json",success=False).stderr
 for labels, expected in [("[A,B]", "[3,0,0,7]"), ("[B,A]", "[4,0,0,6]")]:
     mapped = f"subsystems({diagonal},{labels},[2,2])"
     expression = f"quantum:replace(({pending_trace}),ρ,{mapped})"
