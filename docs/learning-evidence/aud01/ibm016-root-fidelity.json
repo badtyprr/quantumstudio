@@ -1,0 +1,88 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/general-formulation-of-quantum-information/purifications-and-fidelity/fidelity.ipynb",
+  "source_sha256": "41e99c6e8a3beb8a3c7f37e0c474b495869dd510e4892a656fe2eb347e970ef7",
+  "lesson": "IBM-016",
+  "occurrences": [
+    {
+      "cell": 0,
+      "start": 1532,
+      "end": 1625,
+      "literal_sha256": "753f0a1bcc2e043c58c15c37b8edfbf81bce8a4f5da67cdfea16dc5d16e48e12",
+      "outcome": "result",
+      "copy_text": "(qadd(qmul(\u22121,qtrace(qsqrt(qadjacent(qadjacent(qsqrt('\u03c1'),'\u03c3'),qsqrt('\u03c1'))))),qrootfidelity('\u03c1','\u03c3')))==(0)",
+      "control_input": "replace((replace(((qadd(qmul(\u22121,qtrace(qsqrt(qadjacent(qadjacent(qsqrt('\u03c1'),'\u03c3'),qsqrt('\u03c1'))))),qrootfidelity('\u03c1','\u03c3')))==(0)),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "1"
+    },
+    {
+      "cell": 0,
+      "start": 5332,
+      "end": 5363,
+      "literal_sha256": "1030c2c5f6e4998cb498ce53bd5f3e393fcb2787b7b620f2ad57fc8a449c6538",
+      "outcome": "result",
+      "copy_text": "qrootfidelity('\u03c1','\u03c3')",
+      "control_input": "replace((replace((qrootfidelity('\u03c1','\u03c3')),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "\u221a(3) \u2215 2"
+    },
+    {
+      "cell": 0,
+      "start": 5457,
+      "end": 5490,
+      "literal_sha256": "6d79ee0d9c59728c6e1497518f50b834b71a4905849f9fbdf3880737d97db922",
+      "outcome": "result",
+      "copy_text": "(qrootfidelity('\u03c1','\u03c3'))==(0)",
+      "control_input": "replace((replace(((qrootfidelity('\u03c1','\u03c3'))==(0)),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "0"
+    },
+    {
+      "cell": 0,
+      "start": 5599,
+      "end": 5632,
+      "literal_sha256": "d1f5d432a99fd0f6ed75a10e99db62e48272fbd218f9f27184ea7a116259c9a2",
+      "outcome": "result",
+      "copy_text": "(qrootfidelity('\u03c1','\u03c3'))==(1)",
+      "control_input": "replace((replace(((qrootfidelity('\u03c1','\u03c3'))==(1)),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "0"
+    },
+    {
+      "cell": 0,
+      "start": 6499,
+      "end": 6633,
+      "literal_sha256": "edbc081c25ca47211a0368c5e47e26745177a51f1bbe263bf5be769e445d0d64",
+      "outcome": "result",
+      "copy_text": "((qrootfidelity('\u03c1', '\u03c3') \u2212 \u221a(1 \u2212 qschatten(qsub('\u03c1', '\u03c3'), 1)\u00b2 \u2215 4))<=(0) and (\u2212qrootfidelity('\u03c1', '\u03c3') \u2212 qschatten(qsub('\u03c1', '\u03c3'), 1) \u2215 2)<=(\u22121))",
+      "control_input": "replace((replace((((qrootfidelity('\u03c1', '\u03c3') \u2212 \u221a(1 \u2212 qschatten(qsub('\u03c1', '\u03c3'), 1)\u00b2 \u2215 4))<=(0) and (\u2212qrootfidelity('\u03c1', '\u03c3') \u2212 qschatten(qsub('\u03c1', '\u03c3'), 1) \u2215 2)<=(\u22121))),\"\u03c1\",[3/4,0;0,1/4])),\"\u03c3\",[1,0;0,0])",
+      "control_result": "1"
+    },
+    {
+      "cell": 0,
+      "start": 11042,
+      "end": 11610,
+      "literal_sha256": "e17e9115cfa47b0e332e346cd32e61ebf95165ba0c939df832cb9fd52057f8b2",
+      "outcome": "result",
+      "copy_text": "qequalchain(vector(qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121))),qtrace(qsqrt(qmul(qadjacent(qadjacent(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),'\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qtrace(qsqrt(qpower(qmul(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qsqrt(qtrace(qadjacent(\"P_0\",'\u03c1'))),\u22121)),2))),qtrace(qmul(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qsqrt(qtrace(qadjacent(\"P_0\",'\u03c1'))),\u22121))),qmul(qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121 \u2215 2))))",
+      "control_input": "replace((replace((qequalchain(vector(qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121))),qtrace(qsqrt(qmul(qadjacent(qadjacent(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),'\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qtrace(qsqrt(qpower(qmul(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qsqrt(qtrace(qadjacent(\"P_0\",'\u03c1'))),\u22121)),2))),qtrace(qmul(qadjacent(qadjacent(qsqrt('\u03c1'),qsqrt(\"P_0\")),qsqrt('\u03c1')),qpower(qsqrt(qtrace(qadjacent(\"P_0\",'\u03c1'))),\u22121))),qmul(qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121 \u2215 2))))),\"\u03c1\",[3/4,0;0,1/4])),\"P_0\",[1,0;0,0])",
+      "control_result": "1"
+    },
+    {
+      "cell": 0,
+      "start": 11814,
+      "end": 12132,
+      "literal_sha256": "1dc73eb43e973f5eee07ccb8c7bddb7c00c5000963a2906d1deb22dcaeac6e2c",
+      "outcome": "result",
+      "copy_text": "(((qadd(qmul(qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),1 \u2215 2),qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qmul(\u22121,qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')))))==(0) and (qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1'))))<=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))<(0)) or ((qadd(qmul(qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),1 \u2215 2),qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qmul(\u22121,qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')))))==(0) and (qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1'))))>=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))>(0)))",
+      "control_input": "replace((replace(((((qadd(qmul(qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),1 \u2215 2),qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qmul(\u22121,qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')))))==(0) and (qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1'))))<=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))<(0)) or ((qadd(qmul(qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),1 \u2215 2),qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121)))),qmul(\u22121,qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1')))))==(0) and (qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qtrace(qadjacent(qsqrt(\"P_0\"),'\u03c1'))))>=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))>(0)))),\"\u03c1\",[3/4,0;0,1/4])),\"P_0\",[1,0;0,0])",
+      "control_result": "1"
+    },
+    {
+      "cell": 0,
+      "start": 12174,
+      "end": 12335,
+      "literal_sha256": "c93634ffab24cef2f8fefc531de8bc842bef94954b455fa05725297f3328d11f",
+      "outcome": "result",
+      "copy_text": "((qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qpower(qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121))),2)))>=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))>(1 \u2212 '\u03b5'))",
+      "control_input": "replace((replace((replace((((qadd(qmul(\u22121,qtrace(qadjacent(\"P_0\",'\u03c1'))),qpower(qrootfidelity('\u03c1',qmul(qadjacent(qadjacent(qsqrt(\"P_0\"),'\u03c1'),qsqrt(\"P_0\")),qpower(qtrace(qadjacent(\"P_0\",'\u03c1')),\u22121))),2)))>=(0) and (qtrace(qadjacent(\"P_0\",'\u03c1')))>(1 \u2212 '\u03b5'))),\"\u03c1\",[3/4,0;0,1/4])),\"P_0\",[1,0;0,0])),\"\u03b5\",1/3)",
+      "control_result": "1"
+    }
+  ]
+}
