@@ -126,9 +126,20 @@ class FileImportTests(unittest.TestCase):
                         message = self.run_import(command, args, success=False)
                         self.assertIn(f'nested κ/body.inc:2:{body.index(token) + 3}: {detail}', message)
 
+    def test_numeric_name_at_utf16_limit(self):
+        name = "𐐀" * 32
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/limit.inc";')
+        self.put("nested κ/limit.inc", f"float[32] {name};")
+        for command in COMMANDS:
+            circuit = self.run_import(command, ["--classical", "--source-file", str(main)])["Circuit"]
+            self.assertEqual(circuit["NumericVariables"][0]["Name"], name)
+
     def test_declaration_range_scope_locations(self):
         cases = [
             ('int ' + 'i' * 65 + ';', True, 0, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('float[32] ' + 'f' * 65 + ';', True, 0, 'Float variable names must fit 64 UTF-16 code units.'),
+            ('angle[32] ' + '𐐀' * 32 + 'a;', True, 0, 'Angle variable names must fit 64 UTF-16 code units.'),
+            ('bool ' + 'b' * 65 + ';', True, 0, 'Boolean variable names must fit 64 UTF-16 code units.'),
             ('int n; for int ' + 'i' * 65 + ' in [0:n] { }', True, 7, 'Integer variable names must fit 64 UTF-16 code units.'),
             ('qubit[3] q; x q[0:0:2];', False, 12, 'Register ranges require integer bounds and a nonzero integer step.'),
             ('qubit[3] q; x q[0:0:2];', True, 12, 'Register ranges require integer bounds and a nonzero integer step.'),

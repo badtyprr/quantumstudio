@@ -750,6 +750,13 @@ def nodes(value, skip_definitions=False):
             yield from nodes(item,skip_definitions)
 
 
+def validate_variable_name(statement, name):
+    if len(name.encode('utf-16-le')) // 2 <= 64:
+        return
+    kind = {ast.FloatType: 'Float', ast.AngleType: 'Angle', ast.BoolType: 'Boolean'}.get(type(statement.type), 'Integer')
+    raise error_at(statement, f'{kind} variable names must fit 64 UTF-16 code units.')
+
+
 def resolve_integer_scopes(program):
     """Give locals unique slots and preserve explicit scope-exit clears through unrolling.
 
@@ -792,7 +799,7 @@ def resolve_integer_scopes(program):
                 expression(statement.type,env)
                 renamed=fresh(name) if depth and (integer or isinstance(statement,ast.ConstantDeclaration)) else name
                 if integer:
-                    if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
+                    validate_variable_name(statement, name)
                     statement._quantum_scoped=depth>0
                     env[name]=renamed
                     if depth:scoped.add(renamed);local.append(renamed)
@@ -1527,7 +1534,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
                 if name in numeric_variables:
                     if numeric_variables[name][1:]!=(kind,size):raise ValueError('Inconsistent repeated numeric declaration.')
                     continue
-                if len(name.encode('utf-16-le'))//2>64:raise ValueError('Numeric names must fit 64 UTF-16 code units.')
+                validate_variable_name(statement, name)
                 if len(variables) + len(numeric_variables) == 4096:
                     variable_overflow = statement
                 numeric_variables[name]=(len(numeric_variables),kind,size)
@@ -1536,7 +1543,7 @@ def classical_circuit(statements, published_u, hidden_registers=None, output_reg
             if isinstance(statement.type,(ast.IntType,ast.UintType)):
                 name=statement.identifier.name;size=statement.type.size.value
                 sign='Signed' if isinstance(statement.type,ast.IntType) else 'Unsigned'
-                if len(name.encode('utf-16-le'))//2>64:raise error_at(statement,'Integer variable names must fit 64 UTF-16 code units.')
+                validate_variable_name(statement, name)
                 if name in variables:
                     if variables[name][1:]!=(sign,size):raise ValueError('Inconsistent repeated integer declaration.')
                     continue
