@@ -45,9 +45,9 @@ for n, (number, binary, length) in enumerate(table("| Number | Binary encoding |
 for n, (number, unary, lexicographic) in enumerate(table("| Number | Unary encoding | Lexicographic encoding |")):
     assert int(number) == n
     for text, expected in ((unary, "0" * n), (lexicographic, format(n + 1, "b")[1:])):
-        # The lesson explicitly assigns epsilon to the empty string in this table.
-        bits = "" if text == r"$\varepsilon$" else text
-        assert bits == expected
-        verify_word(bits)
+        copy = evaluate("bitword:" + text)
+        assert copy == f"qbitlabel({int(expected or '0', 2)},{len(expected)})"
+        assert evaluate(copy) == copy
+        verify_word(expected)
 
 print("Verified all 18 table rows, including binary lengths, leading zeros, the empty string and copy/re-entry.")

@@ -2136,6 +2136,10 @@ class Parser {
     // Frequency symbols are unambiguous beside quantum gates. Resolve their
     // prefixes through the library without enabling units for symbolic indices.
     else if(a.size()>=2 && a.compare(a.size()-2,2,"Hz")==0) a="qfrequency(\""+a+"\")";
+    // In a set-indexed family the subscript can be bound after copying its member.
+    else if(setNotation && a.size()==3 && a[0]>='A' && a[0]<='Z' && a[1]=='_' && a[2]>='a' && a[2]<='z')
+     a="qindexedlabel("+indexableLabel(a.substr(0,2))+","+a.substr(2)+","+indexableLabel("")+")";
+    else if(binaryWordNotation && a=="ε")a="qbitlabel(0,0)";
     // Greek scalar letters denote unknown parameters in quantum notation.
     // Pi stays numerical, and explicit function calls take the path above.
     // Subscripted identifiers remain atomic instead of becoming products.

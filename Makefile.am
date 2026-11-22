@@ -794,4 +794,5 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm021-probability-lookup.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-gf2-products.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm020-full-lesson.md docs/learning-evidence/aud01/ibm020-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm020-formulas.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm021-formulas.py docs/learning-evidence/aud01/ibm021-formula-replay.md
+EXTRA_DIST += docs/learning-evidence/aud01/ibm024-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm024-formulas.py docs/learning-evidence/aud01/ibm024-formula-replay.md
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-full-lesson.md docs/learning-evidence/aud01/ibm019-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm019-formulas.py

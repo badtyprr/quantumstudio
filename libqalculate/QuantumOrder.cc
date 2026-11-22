@@ -134,7 +134,19 @@ class QuantumCostDescriptor: public MathFunction {
  QuantumCostDescriptor(const char *name,int arity):MathFunction(name,arity) {}
  ExpressionItem *copy() const {return new QuantumCostDescriptor(*this);}
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
-  if(referenceName()!="qcostcall" || raw[0].isSymbolic() || raw[0].isUnknown())return 0;
+  if(referenceName()!="qcostcall")return 0;
+  if(raw[0].isSymbolic() && raw[0].symbol()=="size" && raw[1].size()==1 &&
+     (raw[1].isVector() || (raw[1].isFunction() && raw[1].function()->referenceName()=="vector"))) {
+   const MathStructure &member=raw[1][0];
+   if(member.isFunction() && member.function()->referenceName()=="qindexedlabel") {
+    MathStructure label=member;label.eval(eo);
+    if(label.isSymbolic()) {
+     MathStructure args=raw[1];args[0]=label;
+     out.set(CALCULATOR->getFunction("qcostcall"),&raw[0],&args,NULL);return 1;
+    }
+   }
+  }
+  if(raw[0].isSymbolic() || raw[0].isUnknown())return 0;
   // A later binding can identify the head as a scalar factor or a graph.
   // Delegate to the same operation used for other named applications.
   MathStructure argument=raw[1];
@@ -436,6 +448,9 @@ class QuantumOrderFunction: public MathFunction {
     if(args[2].number()==5)out=out.isZero() ? 1 : 0;
     return 1;
    }
+   if(!args.equals(raw) && raw.containsFunction(CALCULATOR->getFunction("qindexedlabel"))) {
+    out.set(this,&args[0],&args[1],&args[2],NULL);return 1;
+   }
    return 0;
   }
   if(equality && (args[0].containsFunction(CALCULATOR->getFunction("qinversefunction")) ||
@@ -446,6 +461,7 @@ class QuantumOrderFunction: public MathFunction {
   MathFunction *costCall=CALCULATOR->getFunction("qcostcall");
   if(args[0].containsFunction(costCall) || args[1].containsFunction(costCall)) {
    if(args[0].equals(args[1]) && (equality || (args[2].isNumber() && args[2].number()==5))) {out=equality ? 1 : 0;return 1;}
+   if(!args.equals(raw)) {out.set(this,&args[0],&args[1],&args[2],NULL);return 1;}
    return 0;
   }
   if(equality && quantumMatrixShape(args[1],rows,columns,eo) && columns.isOne() &&

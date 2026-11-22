@@ -209,6 +209,21 @@ assert data("quantum:gf2:" + binary_product)["cells"] == [["0"], ["0"]]
 assert data("quantum:" + binary_product)["cells"] == [["2"], ["0"]]
 run("quantum:gf2:M matrix(2,1,[0,2])", "--json", success=False)
 
+# The encoding table uses epsilon for the zero-length binary word.
+for empty in (r"$\varepsilon$", r"$\epsilon$", "ε"):
+    assert data("quantum:bitword:" + empty)["copy_text"] == "qbitlabel(0,0)"
+assert data(r"quantum:bitword:$\epsilon \oplus \varepsilon$")["copy_text"] == "qbitlabel(0,0)"
+assert data(r"quantum:$\varepsilon$")["copy_text"] == "'ε'"
+assert data(r"quantum:bitword:$\epsilon_1$")["copy_text"] == '"ε_1"'
+
+# Set notation keeps the index of a circuit family available for substitution.
+family_size = data(r"quantum:sets:$t(n)=\operatorname{size}(C_n)$")["copy_text"]
+for count, expected in ((73, "1"), (31, "0")):
+    bound = f"replace(replace(replace(({family_size}),n,4),size(C_4),73),t(4),{count})"
+    assert data("quantum:" + bound)["copy_text"] == expected
+assert data("quantum:sets:replace(B_{k},k,7)")["copy_text"] == '"B_7"'
+assert data("quantum:C_n")["copy_text"] == '"C_n"'
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
