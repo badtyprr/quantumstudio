@@ -112,15 +112,17 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
  // before attempting the numerical reduction.
  if(!matrix.isVector() && !matrix.isNumber() && (matrix.isSymbolic() || matrix.containsUnknowns()))return false;
  if((!matrix.isMatrix() && !matrix.isNumber()) || n==0 || rows>1024 || cols>1024 || n>(frobenius ? 1048576U : 1024U)) {CALCULATOR->error(true,"Frobenius norms support numeric matrices up to 1024 by 1024; other operator norms support at most 1024 entries.",NULL);return false;}
- MathStructure ket;if(!frobenius){ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);}Number weight(0);
+ MathStructure ket;if(!frobenius){ket.clearMatrix();ket.resizeMatrix(n,1,m_zero);}Number weight(0);bool pending=false;
  for(size_t r=0;r<rows;++r)for(size_t c=0;c<cols;++c) {
   if(CALCULATOR->aborted())return false;
   MathStructure value=matrix.isMatrix() ? entry(matrix,r,c) : matrix;value.eval(numeric);
+  if(!value.isNumber() && !value.isVector() && (value.isSymbolic() || value.containsUnknowns())) {pending=true;continue;}
   if(!value.isNumber() || value.number().isUndefined() || value.number().isInfinite(false)) {CALCULATOR->error(true,"Operator norms require finite numeric entries.",NULL);return false;}
   Number re=value.number().realPart(),im=value.number().imaginaryPart();
   if((!frobenius && ((re.isInterval() && !re.intervalToPrecision(12)) || (im.isInterval() && !im.intervalToPrecision(12)))) || !std::isfinite(re.lowerEndPoint().floatValue()) || !std::isfinite(re.upperEndPoint().floatValue()) || !std::isfinite(im.lowerEndPoint().floatValue()) || !std::isfinite(im.upperEndPoint().floatValue())) {CALCULATOR->error(true,"Operator norm entries must fit floating-point range without broad uncertainty.",NULL);return false;}
   re.square();im.square();re.add(im);weight.add(re);if(!frobenius)entry(ket,r*cols+c,0)=value;
  }
+ if(pending)return false;
  // For two singular values, (s1+s2)^2 is the sum of squared entry
  // magnitudes plus twice the magnitude of the determinant.
  if(rows==2 && cols==2 && order.isOne() && !order.isApproximate() && !matrix.isApproximate() &&
