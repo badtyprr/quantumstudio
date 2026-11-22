@@ -1,0 +1,72 @@
+{
+  "qb028": {
+    "source_sha256": "08b3dce01a00fadb7897ff3baa49af2261c6e25f0ad1ca059836ffec4e3127a6",
+    "contract_sha256": "2c3bf3a2fdb1b6a649cfb7d993223ff498b3edb5381b38c58140c4c7717882e6",
+    "profile": {
+      "version": 2,
+      "id": "autoqasm-win-py312",
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "lock": "autoqasm-requirements.lock",
+      "lock_sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+      "offline_only": true,
+      "wheel_requirement": "89 retained hash-pinned Windows-compatible wheels",
+      "default_cell_timeout_seconds": 180,
+      "cancel_grace_seconds": 5,
+      "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+      "exact_packages": true
+    },
+    "whole_notebook_complete": false,
+    "selected_cells": [
+      3
+    ],
+    "local_verification": {
+      "accepted": true,
+      "original_diagnostic": "Failed to parse OpenQASM string: program reports being unsupported version '2'",
+      "corrected_header": "OPENQASM 3.0;",
+      "backend": "braket_sv",
+      "shots": 100,
+      "counts": {
+        "00": 54,
+        "11": 46
+      },
+      "state_residual": 1.1102230246251565e-16
+    }
+  },
+  "qb029": {
+    "source_sha256": "8c4e6a9e6ba7c0ca43737e98b456dd2e5e9e1bdb99952fe986fc74f4806d8eb0",
+    "contract_sha256": "45103325697d313105d4f3cedac9fec91b9f623381a8303cff0eaa3b7562ae0d",
+    "profile": {
+      "version": 2,
+      "id": "autoqasm-win-py312",
+      "python": "3.12.10",
+      "platform": "win32",
+      "architecture": "64bit",
+      "lock": "autoqasm-requirements.lock",
+      "lock_sha256": "d12b3f58bb97c13d87205d989ee70dd57027923456844e671abee55785c3992e",
+      "offline_only": true,
+      "wheel_requirement": "89 retained hash-pinned Windows-compatible wheels",
+      "default_cell_timeout_seconds": 180,
+      "cancel_grace_seconds": 5,
+      "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+      "exact_packages": true
+    },
+    "whole_notebook_complete": false,
+    "selected_cells": [
+      6
+    ],
+    "local_verification": {
+      "accepted": true,
+      "original_diagnostic": "Failed to parse OpenQASM string: program reports being unsupported version '2'",
+      "corrected_header": "OPENQASM 3.0;",
+      "backend": "braket_sv",
+      "shots": 100,
+      "counts": {
+        "00": 48,
+        "11": 52
+      },
+      "state_residual": 1.1102230246251565e-16
+    }
+  }
+}
