@@ -429,6 +429,16 @@ class Printer {
    return Fragment(render(value[0],depth+1).text+" ∈ indexrange("+render(value[1][0],depth+1).text+", "+render(value[1][1],depth+1).text+")",10);
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if((name=="qjointprob" || name=="qconditionalprob") && value.size()==3 && value[0].isSymbolic()) {
+   const std::string &systems=value[0].symbol();
+   size_t comma=systems.find(',');
+   if(comma!=std::string::npos && comma>0 && comma+1<systems.size() && systems.find(',',comma+1)==std::string::npos) {
+    std::string row=systems.substr(0,comma),column=systems.substr(comma+1);
+    std::string a=render(value[1],depth+1).text,b=render(value[2],depth+1).text;
+    return Fragment(name=="qconditionalprob" ? "Pr("+column+" = "+b+" | "+row+" = "+a+")" :
+                    "Pr(("+row+", "+column+") = ("+a+", "+b+"))");
+   }
+  }
   if(name=="qbasistransitions" && value.size()==3 && value[1].isNumber() && value[2].isNumber())
    return Fragment(render(value[0],depth+1).text+"|"+render(value[1],depth+1).text+"⟩ = |"+render(value[2],depth+1).text+"⟩",10);
   if(name=="qbasistransitions" && value.size()==3 && value[1].isVector() && value[2].isVector() &&

@@ -15,6 +15,7 @@ namespace {
 // the translated expression reaches libqalculate.
 const char labelMarkerBegin='\x1e',labelMarkerEnd='\x1f';
 const char constantMarkerBegin='\x1c',constantMarkerEnd='\x1d';
+const char outcomeIndexMarker='\x17';
 const char phaseKetMarker='\x1b';
 const char subsystemLabelBegin='\x18',subsystemLabelEnd='\x19';
 std::string indexableLabel(const std::string &label) {return std::string(1,labelMarkerBegin)+"\""+label+"\""+labelMarkerEnd;}
@@ -23,6 +24,7 @@ std::string withoutLabelMarkers(std::string value) {
  value.erase(std::remove(value.begin(),value.end(),labelMarkerEnd),value.end());
  value.erase(std::remove(value.begin(),value.end(),constantMarkerBegin),value.end());
  value.erase(std::remove(value.begin(),value.end(),constantMarkerEnd),value.end());
+ value.erase(std::remove(value.begin(),value.end(),outcomeIndexMarker),value.end());
  value.erase(std::remove(value.begin(),value.end(),subsystemLabelBegin),value.end());
  value.erase(std::remove(value.begin(),value.end(),subsystemLabelEnd),value.end());return value;
 }
@@ -216,7 +218,7 @@ std::string ket(const std::string &label, size_t dimension=0) {
 }
 // Shared by registration and strict quantum-call validation.
 const std::map<std::string,int> quantumSignatures = {
- {"qbitlength",1},{"qfloorlog2",1},{"qbinarylog",1},{"qprobabilitycall",2},{"qeventprob",2},{"qbigorder",1},{"qscalarupdate",2},{"qstepvalue",2},{"qcostcall",2},{"qcostparam",1},
+ {"qbitlength",1},{"qfloorlog2",1},{"qbinarylog",1},{"qprobabilitycall",2},{"qeventprob",2},{"qjointprob",3},{"qconditionalprob",3},{"qbigorder",1},{"qscalarupdate",2},{"qstepvalue",2},{"qcostcall",2},{"qcostparam",1},
  {"qstatecall",2},{"qstatecalls",2},
  {"qketstate",1},
  {"qamplitudedamping",1},
@@ -645,6 +647,9 @@ class Parser {
   if(!indexed) {
   const std::string labelIndex=plain ? original : original.substr(1,original.size()-2);
   scopeScalarProducts(args[body],labelIndex,symbol);
+  // Event arguments are formal outcome labels, including letters that
+  // ordinarily denote constants. A sum over that label binds its value.
+  replaceAll(args[body],std::string(1,outcomeIndexMarker)+"\""+labelIndex+"\"",symbol);
   // Oracle keys written as bare letters are word references. They stay
   // formal outside the sum but refer to its index inside the body.
   if(binaryOracles && labelIndex.size()==1) {
@@ -2009,6 +2014,11 @@ class Parser {
       // A bare S used as a set binding matches the label in |S>.
       if(setNotation && (name=="replace" || name=="qreplace") && groupedToken(s,start,p,"S"))
        argument=indexableLabel("S");
+      if(!args.empty() && (name=="qeventprob" || name=="qjointprob" || name=="qconditionalprob")) {
+       std::string token=s.substr(start,1);
+       if(!token.empty() && std::isalpha((unsigned char)token[0]) && groupedToken(s,start,p,token))
+        argument=std::string(1,outcomeIndexMarker)+"\""+token+"\"";
+      }
       args.push_back(argument);
      } while(take(','));
      need(')');
@@ -3170,7 +3180,7 @@ std::string expandIndexedSpin(const std::string &input,bool &found) {
 }
 std::string translateQuantum(const std::string &expression) {
  if(expression.size()>32768) throw std::runtime_error("Quantum input exceeds 32768 bytes.");
- if(expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
+ if(expression.find(outcomeIndexMarker)!=std::string::npos || expression.find(labelMarkerBegin)!=std::string::npos || expression.find(labelMarkerEnd)!=std::string::npos || expression.find(constantMarkerBegin)!=std::string::npos || expression.find(constantMarkerEnd)!=std::string::npos || expression.find(phaseKetMarker)!=std::string::npos || expression.find(subsystemLabelBegin)!=std::string::npos || expression.find(subsystemLabelEnd)!=std::string::npos)throw std::runtime_error("Quantum input contains reserved control characters.");
  std::string s=unicodeArithmetic(quantumWhitespace(expression,true));
  for(const auto &pair : std::map<std::string,std::string>{{"⟪","<<"},{"⟫",">>"},{"⟨","<"},{"⟩",">"},{"∣","|"},{"⊗","@"},{"⊕","#"},{"†","~"},{"−","-"},{"π","pi"},{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);

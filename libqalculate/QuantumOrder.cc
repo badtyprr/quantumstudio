@@ -420,6 +420,8 @@ class QuantumOrderFunction: public MathFunction {
   args[1].eval(eo);
   if(equality)for(unsigned k=0;k<2;++k) {
    if(args[k].containsFunction(CALCULATOR->getFunction("qkrausapply")) ||
+      args[k].containsFunction(CALCULATOR->getFunction("qjointprob")) ||
+      args[k].containsFunction(CALCULATOR->getFunction("qconditionalprob")) ||
       args[k].containsFunction(CALCULATOR->getFunction("qoperatorref"))) {
     if(args.equals(raw))return 0;
     out.set(this,&args[0],&args[1],&args[2],NULL);return 1;

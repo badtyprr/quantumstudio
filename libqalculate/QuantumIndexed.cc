@@ -1362,30 +1362,46 @@ class QuantumIndexedFunction: public MathFunction {
    if(operators.equals(raw[0]))return 0;
    out.set(this,&operators,NULL);return 1;
   }
-  if(op=="qeventprob") {
-   MathStructure distribution=raw[0], index=raw[1];
-   distribution.eval(eo);index.eval(eo);
-   if(!index.isInteger() || index.number()<0) {
-    if(!index.containsUnknowns())CALCULATOR->error(true,"An outcome index must be a nonnegative integer.",NULL);
+  if(op=="qeventprob" || op=="qjointprob" || op=="qconditionalprob") {
+   const bool joint=op!="qeventprob";
+   MathStructure distribution=raw[0],row=raw[1],column=joint ? raw[2] : m_zero;
+   distribution.eval(eo);row.eval(eo);column.eval(eo);
+   for(const MathStructure *index:{&row,&column}) {
+    if(index->isInteger() && index->number()>=0)continue;
+    if(!index->containsUnknowns())CALCULATOR->error(true,"An outcome index must be a nonnegative integer.",NULL);
     return 0;
    }
    if(!distribution.isVector() && distribution.containsUnknowns())return 0;
-   if(!distribution.isVector() || !distribution.size() || (distribution.isMatrix() && distribution.columns()!=1)) {
-    CALCULATOR->error(true,"An outcome distribution requires a vector of probabilities.",NULL);return 0;
+   const bool matrix=distribution.isMatrix();
+   if(!distribution.isVector() || !distribution.size() || (!joint && matrix && distribution.columns()!=1)) {
+    CALCULATOR->error(true,joint ? "A joint distribution requires a table of probabilities." : "An outcome distribution requires a vector of probabilities.",NULL);return 0;
    }
-   if(index.number()>=Number(distribution.size())) {CALCULATOR->error(true,"Outcome index outside the probability vector.",NULL);return 0;}
-   Number total(0);
-   for(size_t k=0;k<distribution.size();++k) {
+   const size_t rows=matrix ? distribution.rows() : joint ? 1 : distribution.size();
+   const size_t columns=matrix ? distribution.columns() : joint ? distribution.size() : 1;
+   if(row.number()>=Number(rows) || column.number()>=Number(columns)) {
+    CALCULATOR->error(true,joint ? "Outcome index outside the joint probability table." : "Outcome index outside the probability vector.",NULL);return 0;
+   }
+   const size_t selectedRow=row.number().uintValue(),selectedCol=column.number().uintValue();
+   Number total(0),rowTotal(0),probability(0);
+   for(size_t r=0;r<rows;++r)for(size_t c=0;c<columns;++c) {
     if(CALCULATOR->aborted())return 0;
-    const MathStructure &value=distribution.isMatrix() ? distribution[k][0] : distribution[k];
+    const MathStructure &value=matrix ? *distribution.getElement(r+1,c+1) : distribution[joint ? c : r];
     if(!value.isNumber() || !value.number().isReal() || value.number()<0 || value.number()>1) {
      if(!value.containsUnknowns())CALCULATOR->error(true,"A probability must be a real number between zero and one.",NULL);
      return 0;
     }
     total+=value.number();
+    if(r==selectedRow) {
+     rowTotal+=value.number();
+     if(c==selectedCol)probability=value.number();
+    }
    }
    if(!total.isOne()) {CALCULATOR->error(true,"Outcome probabilities must sum to one.",NULL);return 0;}
-   size_t k=index.number().uintValue();out=distribution.isMatrix() ? distribution[k][0] : distribution[k];return 1;
+   if(op=="qconditionalprob") {
+    if(rowTotal.isZero()) {CALCULATOR->error(true,"Cannot condition on an event of probability zero.",NULL);return 0;}
+    probability/=rowTotal;
+   }
+   out.set(probability);return 1;
   }
   if(op=="qoutcome") {
    if(!raw[0].isSymbolic() || raw[0].symbol().empty())CALCULATOR->error(true,"Expected a nonempty outcome name.",NULL);
@@ -3449,6 +3465,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qspectralket",2));
  calculator.addFunction(new QuantumIndexedFunction("qoutcome",1));
  calculator.addFunction(new QuantumIndexedFunction("qeventprob",2));
+ calculator.addFunction(new QuantumIndexedFunction("qjointprob",3));
+ calculator.addFunction(new QuantumIndexedFunction("qconditionalprob",3));
  calculator.addFunction(new QuantumIndexedFunction("qindexedentries",4));
  calculator.addFunction(new QuantumIndexedFunction("qcomposemaps",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketset",4));
