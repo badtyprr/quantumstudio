@@ -67,6 +67,17 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# The unindexed identity takes its dimension from the ket on its right.
+identity_ket = data(r"quantum:$\mathbb{I}\vert b\rangle$")["copy_text"]
+assert data(f'quantum:replace(({identity_ket}),"b",[0;0;1])')["copy_text"] == "matrix(3,1,[0,0,1])"
+assert data(r"quantum:$\vert b\rangle=\mathbb{I}\vert b\rangle$")["copy_text"] == "1"
+assert data(r"quantum:$\mathbb{I}\vert 01\rangle$")["copy_text"] == "matrix(4,1,[0,1,0,0])"
+negated_bit = data(r"quantum:$\vert\neg b\rangle$")["copy_text"]
+assert data(r"quantum:$\vert\neg{b}\rangle$")["copy_text"] == negated_bit
+assert data(f'quantum:replace(({negated_bit}),"b",qbitlabel(1,1))')["copy_text"] == "matrix(2,1,[1,0])"
+assert data(r"quantum:$\vert\neg 0\rangle$")["copy_text"] == "matrix(2,1,[0,1])"
+run(r"quantum:$\vert\neg 2\rangle$", "--json", success=False)
+
 # Inside a ket XOR, f(01) queries a two-bit key. Its Boolean output flips one bit.
 oracle_xor = data(r"quantum:$\vert 1 \oplus f(01)\rangle$")["copy_text"]
 assert "qgraphapply('f',qbitlabel(1,2))" in oracle_xor
