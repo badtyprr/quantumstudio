@@ -1,0 +1,65 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "occurrences": [
+    {
+      "lesson": "IBM-007",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrence": 160,
+      "cell": 0,
+      "start": 16451,
+      "end": 17116,
+      "literal_sha256": "d3737a96fa88296e1cbf2300f45710ea7999d53a03383867b888c9006bf8a64e",
+      "channel": "\u039b",
+      "kraus": "vector([1,0;0,0],[0,1;0,0])"
+    },
+    {
+      "lesson": "IBM-007",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/quantum-channel-basics.ipynb",
+      "source_sha256": "6fede816d919818114fd89015795132408202661127686a6d92efed0f27f8fdd",
+      "occurrence": 176,
+      "cell": 0,
+      "start": 19023,
+      "end": 19623,
+      "literal_sha256": "c52272f3b78325e0b30eb1c402c42ddcd14e60652e220d855aa87ce5c1636845",
+      "channel": "\u0394",
+      "kraus": "vector([1,0;0,0],[0,0;0,1])"
+    },
+    {
+      "lesson": "IBM-008",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels.ipynb",
+      "source_sha256": "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7",
+      "occurrence": 160,
+      "cell": 0,
+      "start": 32928,
+      "end": 33294,
+      "literal_sha256": "3a8d92534248bcd7c4f5d5f15d6c50b80e55c4d57f9b8e03120fe1832f091f9b",
+      "channel": "\u0394",
+      "kraus": "vector([1,0;0,0],[0,0;0,1])"
+    },
+    {
+      "lesson": "IBM-008",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels.ipynb",
+      "source_sha256": "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7",
+      "occurrence": 161,
+      "cell": 0,
+      "start": 33400,
+      "end": 33851,
+      "literal_sha256": "3f43190c705a6e7faebeb2c37fc110a569f27c307f455f9e690c97ac89663988",
+      "channel": "\u03a9",
+      "kraus": "vector(I/2,X/2,Y/2,Z/2)"
+    },
+    {
+      "lesson": "IBM-008",
+      "source": "learning/courses/general-formulation-of-quantum-information/quantum-channels/representations-of-channels.ipynb",
+      "source_sha256": "23dc8a0e8a4767010b3d9e402aad510df0539da6980048cef830a6b85efab6b7",
+      "occurrence": 163,
+      "cell": 0,
+      "start": 33940,
+      "end": 34366,
+      "literal_sha256": "0d4802cc292e87b84fec81610513adc21d771ae61c6727740053199462314b87",
+      "channel": "\u039b",
+      "kraus": "vector([1,0;0,0],[0,1;0,0])"
+    }
+  ]
+}
