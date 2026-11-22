@@ -736,3 +736,6 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm064-compact-distance.json docs/lea
 EXTRA_DIST += docs/learning-evidence/IBM-039.md docs/learning-evidence/aud01/ibm039-published.json \
 	windows/dev13-notebooks/contracts/ibm039.json windows/dev13-notebooks/witnesses/ibm039.py \
 	windows/dev13-notebooks/observers/ibm039_seed.py windows/dev13-notebooks/observers/ibm039_samples.py
+
+EXTRA_DIST += docs/learning-evidence/IBM-043.md docs/learning-evidence/aud01/ibm043-checkpoint.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/ibm043.json windows/dev13-notebooks/witnesses/ibm043.py windows/dev13-notebooks/observers/ibm043_states.py

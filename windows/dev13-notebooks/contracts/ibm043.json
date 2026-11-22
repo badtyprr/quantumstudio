@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "id": "ibm043",
+  "route": "notebook",
+  "profile": "grover-win-py312",
+  "source": {
+    "url": "https://github.com/Qiskit/documentation/blob/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/basics-of-quantum-information/multiple-systems/qiskit-implementation.ipynb",
+    "sha256": "971002d918d25f489f4b51e4a1bb1c8a675e5f220f6823a640517d77387bf840",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "7dbf4ee5f8337e756b1a9e0ff35e9d1c82892750dcab234ffb8c958e41af4bf5"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "79d8fdd9629838715b0c5bbd8a406d66063bef9be6fcf7ed58e63b5c982bcb80"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "828aa5dc5dc30cb43209fffd591ba7f23fa06855fb270a8c5374aa6f50fd872b"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "0b2d2219d5b7bb661224036abeae827912bc25a6ab5e90bb3af9cc170f303e2f"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "7770cb628cd506cae9d9708d289f06dbfb188c0d4dde5cb4aaa3103770b628b8"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "0e4a8659ac7abe241293d5c9a1206175286a9635c5061d11e1d0c75b39b1acb8"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "0583d1e6ec8948b01bc793d799bf8e321ae7c8e686f6937ce758568d8a8dd304"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "c70faddab60e75385d89d947acc11492c1b62d59ac8f15164f83a60c0ba1e3ac"
+      },
+      {
+        "index": 8,
+        "type": "markdown",
+        "sha256": "be3fabd0f6edbde8bcf612db7a4e2f74fc39d51db2ec6ac716cbc88244a316d6"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "8a2d994c8986ebe001f3f1de9b66c9cf63ad594f1fad1e75c3304949901ba341"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "5d8113898b280698506bd806a9b4a7140d0ae6e3c1c855587590500c50fa0c7c"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "94624aab6c3add9b010763cd5c362c1c5e33c49cc42b74b9ae48f4115877e0a0"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "2f352efcbcc319d7ccae91e08a24c2eb8ffe9afb9e6f353feda5dd9e9906a7ed"
+      },
+      {
+        "index": 13,
+        "type": "code",
+        "sha256": "1f66885080d0f88ec16db865fb4b1149be9de274c86ad82ff0ffd013f9c967f5"
+      },
+      {
+        "index": 14,
+        "type": "markdown",
+        "sha256": "ce39e6aa6fae29302c9aac6c3ae0c958ae713a2f3662566db313e7b5a51594ee"
+      },
+      {
+        "index": 15,
+        "type": "code",
+        "sha256": "73cb4dd282e9f1d2f84fe52206d988b6114c8fdceac689c129128c90d6a07e82"
+      },
+      {
+        "index": 16,
+        "type": "markdown",
+        "sha256": "15fd0e67800552a728b18af12ca6744b4d001a5724c758a62fed84e814ff7ec6"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "3d5f499b35457a6c1502d56943abc7eb4bfae46843cc8d3651fba11f8f9a3029"
+      },
+      {
+        "index": 18,
+        "type": "markdown",
+        "sha256": "c623111e413952c848ecf572f87271e46c974ac0fe1403222c02a82d785a5144"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "94817afdebe255077d4c90bcf1e9d968e4e83186400f7c7f49565c0235e4b355"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    3,
+    5,
+    7,
+    9,
+    11,
+    13,
+    15,
+    17,
+    19
+  ],
+  "preamble": null,
+  "post_cell_observers": [
+    {
+      "after_original_index": 5,
+      "role": "postcell-observer",
+      "path": "observers/ibm043_states.py",
+      "sha256": "4fd0777fc1356eba6b00b59e11fb58231dfb9b55ef9fb3ccf6984284a4ee0179"
+    }
+  ],
+  "required_images": [],
+  "required_text": {},
+  "witness": {
+    "path": "witnesses/ibm043.py",
+    "sha256": "7119c7d6de23094ba2dee8a9bbc22b16c17a88f4ddcb08467d1067a6d037db00"
+  },
+  "acceptance_field": "accepted",
+  "required_latex_counts": {
+    "5": 1,
+    "7": 1,
+    "9": 1,
+    "11": 2,
+    "13": 1,
+    "15": 1,
+    "17": 1,
+    "19": 3
+  }
+}
