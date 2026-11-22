@@ -249,7 +249,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qcssgenerators",2},
  {"qcssstate",3},
  {"qcssencoder",2},
- {"qbitvalue",1},{"qbinaryfraction",3},{"qbinarytail",2},
+ {"qbitvalue",1},{"qcontrolbit",1},{"qbinaryfraction",3},{"qbinarytail",2},
  {"qbitword",1},{"qallbitdot",3},
  {"qbloch",1},
  {"qblochsub",2},
@@ -2578,7 +2578,49 @@ class Parser {
   }
   return false;
  }
+ // Split only translator-generated calls. Grouping around operands and
+ // commas inside matrices or nested calls do not change their argument list.
+ static std::string bitOperand(std::string text) {
+  while(text.size()>1 && text.front()=='(' && text.back()==')')text=text.substr(1,text.size()-2);
+  return text;
+ }
+ static std::vector<std::string> bitCall(const std::string &term,const std::string &name) {
+  std::string text=bitOperand(term),prefix=name+"(";
+  if(text.compare(0,prefix.size(),prefix)!=0 || text.back()!=')')return {};
+  std::vector<std::string> args;size_t start=prefix.size();int depth=0;
+  for(size_t i=start;i+1<text.size();++i) {
+   if(text[i]=='(' || text[i]=='[')++depth;
+   else if(text[i]==')' || text[i]==']') {if(--depth<0)return {};}
+   else if(text[i]==',' && !depth) {args.push_back(bitOperand(text.substr(start,i-start)));start=i+1;}
+  }
+  if(depth)return {};
+  args.push_back(bitOperand(text.substr(start,text.size()-1-start)));return args;
+ }
+ // A qubit Pauli action fixes the width of the two XOR operands in the
+ // opposite ket. Keep shared letters formal on either side of the equality.
+ static void prepareBitAction(std::string &ket,std::string &action) {
+  if(ket.find("qcomputationalket(qoplus") == std::string::npos || action.find("qpower(")==std::string::npos)return;
+  const auto index=bitCall(ket,"qcomputationalket");
+  if(index.size()!=1)return;
+  const auto bits=bitCall(index[0],"qoplus");
+  if(bits.size()!=2)return;
+  for(const auto &name:bits)if(name.size()!=1 || name[0]<'a' || name[0]>'z')return;
+  std::vector<std::string> operands=bitCall(action,"qadjacent");
+  if(operands.empty())operands=bitCall(action,"qmul");
+  if(operands.empty())operands=bitCall(action,"qcenterdot");
+  if(operands.size()!=2)return;
+  const auto power=bitCall(operands[0],"qpower");
+  auto state=bitCall(operands[1],"qketstate");
+  if(state.empty())state=bitCall(operands[1],"qcomputationalket");
+  if(power.size()!=2 || state.size()!=1 || (power[0]!=gates.at("X") && power[0]!=gates.at("Y") && power[0]!=gates.at("Z")))return;
+  auto shared=[&](const std::string &name) {return name==bits[0] || name==bits[1];};
+  if(!shared(power[1]) || !shared(state[0]))return;
+  auto bit=[](const std::string &name) {return "qcontrolbit("+indexableLabel(name)+")";};
+  ket="qcomputationalket(qoplus("+bit(bits[0])+","+bit(bits[1])+"))";
+  action="qmul(qpower("+power[0]+","+bit(power[1])+"),qcomputationalket("+bit(state[0])+"))";
+ }
  void prepareEquality(std::string &left,std::string &right) {
+  prepareBitAction(left,right);prepareBitAction(right,left);
   preservePaddedLiteral(left,right);preservePaddedLiteral(right,left);
   preserveNamedApplication(left,right);preserveNamedApplication(right,left);
   preserveGraphDefinition(left,right);preserveGraphDefinition(right,left);

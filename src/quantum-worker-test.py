@@ -67,6 +67,16 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# In a one-bit XOR identity, a shared Pauli exponent is the same bit.
+bit_ket = r"\vert b\oplus (c)\rangle"
+for pauli in [r"(X^c)\vert b\rangle", r"X^c\cdot\vert b\rangle", r"X^c(\vert b\rangle)"]:
+    controlled_flip = data("quantum:$" + pauli + "=" + bit_ket + "$")["copy_text"]
+    assert data("quantum:" + controlled_flip)["copy_text"] == controlled_flip
+    assert data(f'quantum:replace(replace(({controlled_flip}),"b",0),"c",qbitlabel(1,1))')["copy_text"] == "1"
+run(f'quantum:replace(({controlled_flip}),"c",qbitlabel(0,2))', "--json", success=False)
+run(f'quantum:replace(({controlled_flip}),"c",1/2)', "--json", success=False)
+assert "qcontrolbit" not in data(r"quantum:$X^{c}\vert b\rangle$")["copy_text"]
+
 # The unindexed identity takes its dimension from the ket on its right.
 identity_ket = data(r"quantum:$\mathbb{I}\vert b\rangle$")["copy_text"]
 assert data(f'quantum:replace(({identity_ket}),"b",[0;0;1])')["copy_text"] == "matrix(3,1,[0,0,1])"

@@ -635,6 +635,8 @@ class QuantumAlgebraFunction: public MathFunction {
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &args) const {
   if(op=="qbinarylog")return args.size()==1 && args[0].representsScalar();
+  if(op=="qoplus" || op=="qindexxor")return args.size()==2 && args[0].representsScalar() && args[1].representsScalar() &&
+   !isQuantumBitLabel(args[0]) && !isQuantumBitLabel(args[1]);
   return op=="qtrace" || op=="qbitlength" || op=="qfloorlog2" || op=="qmodpower" || op=="qmodpowerequal" || MathFunction::representsScalar(args);
  }
  bool representsNonMatrix(const MathStructure &args) const {
