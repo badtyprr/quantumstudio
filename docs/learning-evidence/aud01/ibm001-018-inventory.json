@@ -17,7 +17,8 @@
       "figure_panels": 0,
       "published": {},
       "development": {},
-      "replay_sha256": "f1dbf4bf5014ab292126cd99df2da0caa658bbd5c3e4271bbf0133f9c98cffff"
+      "replay_sha256": "f1dbf4bf5014ab292126cd99df2da0caa658bbd5c3e4271bbf0133f9c98cffff",
+      "integrated": {}
     },
     {
       "lesson": "IBM-002",
@@ -37,7 +38,11 @@
         "exact_label": 73,
         "diagnostic": 3
       },
-      "replay_sha256": "d64f1f5e4271334e92fa21b4ae4e4ed55f63af09fe0c2a61becf24cce52e854d"
+      "replay_sha256": "d64f1f5e4271334e92fa21b4ae4e4ed55f63af09fe0c2a61becf24cce52e854d",
+      "integrated": {
+        "exact_label": 73,
+        "diagnostic": 3
+      }
     },
     {
       "lesson": "IBM-003",
@@ -57,7 +62,11 @@
         "exact_label": 159,
         "diagnostic": 9
       },
-      "replay_sha256": "6c305aab66bdfc74b48409e6324d188d690b93cd79a5403701465a809001635a"
+      "replay_sha256": "6c305aab66bdfc74b48409e6324d188d690b93cd79a5403701465a809001635a",
+      "integrated": {
+        "exact_label": 163,
+        "diagnostic": 5
+      }
     },
     {
       "lesson": "IBM-004",
@@ -77,7 +86,11 @@
         "exact_label": 100,
         "diagnostic": 3
       },
-      "replay_sha256": "61b4d487fb03f73a873c02fe24d929c6b5ec668bf540db1c2fb1fa25b57259c0"
+      "replay_sha256": "61b4d487fb03f73a873c02fe24d929c6b5ec668bf540db1c2fb1fa25b57259c0",
+      "integrated": {
+        "exact_label": 100,
+        "diagnostic": 3
+      }
     },
     {
       "lesson": "IBM-005",
@@ -97,7 +110,11 @@
         "exact_label": 123,
         "diagnostic": 22
       },
-      "replay_sha256": "645b4a498410f0adb517544c4c1b300a96538b98e853c9a4a664544e4a93de9b"
+      "replay_sha256": "645b4a498410f0adb517544c4c1b300a96538b98e853c9a4a664544e4a93de9b",
+      "integrated": {
+        "exact_label": 125,
+        "diagnostic": 20
+      }
     },
     {
       "lesson": "IBM-006",
@@ -111,7 +128,8 @@
       "figure_panels": 0,
       "published": {},
       "development": {},
-      "replay_sha256": "5c197453f79428685ef76625739b908eee14ce31bae3454015885aef97ea62e1"
+      "replay_sha256": "5c197453f79428685ef76625739b908eee14ce31bae3454015885aef97ea62e1",
+      "integrated": {}
     },
     {
       "lesson": "IBM-007",
@@ -131,7 +149,11 @@
         "exact_label": 184,
         "diagnostic": 9
       },
-      "replay_sha256": "8f046f22c685643e55dd472caffd2961ab9626fd5843a3dd8859b4fb980b6fe4"
+      "replay_sha256": "8f046f22c685643e55dd472caffd2961ab9626fd5843a3dd8859b4fb980b6fe4",
+      "integrated": {
+        "exact_label": 187,
+        "diagnostic": 6
+      }
     },
     {
       "lesson": "IBM-008",
@@ -151,7 +173,11 @@
         "exact_label": 138,
         "diagnostic": 28
       },
-      "replay_sha256": "109ad02a88fae2ab40fccfe8eb4be6b6505f6ed2bee648626407394975e93d85"
+      "replay_sha256": "109ad02a88fae2ab40fccfe8eb4be6b6505f6ed2bee648626407394975e93d85",
+      "integrated": {
+        "exact_label": 142,
+        "diagnostic": 24
+      }
     },
     {
       "lesson": "IBM-009",
@@ -171,7 +197,11 @@
         "exact_label": 173,
         "diagnostic": 25
       },
-      "replay_sha256": "6d2999939621ff4460abb7825578f77cfa1450ffd2f8cc61df518a0e5fd7068b"
+      "replay_sha256": "6d2999939621ff4460abb7825578f77cfa1450ffd2f8cc61df518a0e5fd7068b",
+      "integrated": {
+        "exact_label": 179,
+        "diagnostic": 19
+      }
     },
     {
       "lesson": "IBM-010",
@@ -185,7 +215,8 @@
       "figure_panels": 0,
       "published": {},
       "development": {},
-      "replay_sha256": "bce256afa0dff6fe81ee6722361546225f4abb25fc7b2b46438cee89cae78c3f"
+      "replay_sha256": "bce256afa0dff6fe81ee6722361546225f4abb25fc7b2b46438cee89cae78c3f",
+      "integrated": {}
     },
     {
       "lesson": "IBM-011",
@@ -206,7 +237,11 @@
         "exact_label": 199,
         "diagnostic": 23
       },
-      "replay_sha256": "7f611f57134a431abc83b6133cb6e034907469f0da2eda0cd25525e161d5ce30"
+      "replay_sha256": "7f611f57134a431abc83b6133cb6e034907469f0da2eda0cd25525e161d5ce30",
+      "integrated": {
+        "exact_label": 203,
+        "diagnostic": 19
+      }
     },
     {
       "lesson": "IBM-012",
@@ -226,7 +261,11 @@
         "exact_label": 117,
         "diagnostic": 9
       },
-      "replay_sha256": "1b5d2e80d214a7bd701b705448559b80e3c79d73627c243045b9f81bc6b6ec25"
+      "replay_sha256": "1b5d2e80d214a7bd701b705448559b80e3c79d73627c243045b9f81bc6b6ec25",
+      "integrated": {
+        "exact_label": 121,
+        "diagnostic": 5
+      }
     },
     {
       "lesson": "IBM-013",
@@ -247,7 +286,11 @@
         "exact_label": 147,
         "diagnostic": 14
       },
-      "replay_sha256": "5b083a35bb0d532ae1462ebdd6e7baec38e27b611ff0df6912a853ff5f88c49b"
+      "replay_sha256": "5b083a35bb0d532ae1462ebdd6e7baec38e27b611ff0df6912a853ff5f88c49b",
+      "integrated": {
+        "exact_label": 148,
+        "diagnostic": 13
+      }
     },
     {
       "lesson": "IBM-014",
@@ -265,7 +308,10 @@
       "development": {
         "exact_label": 3
       },
-      "replay_sha256": "7f937cded2add18703dde3ef8b5374d7395040912abd030f316afee0d30d8544"
+      "replay_sha256": "7f937cded2add18703dde3ef8b5374d7395040912abd030f316afee0d30d8544",
+      "integrated": {
+        "exact_label": 3
+      }
     },
     {
       "lesson": "IBM-015",
@@ -285,7 +331,11 @@
         "exact_label": 307,
         "diagnostic": 27
       },
-      "replay_sha256": "d04ed3e3475533bbe92966da75be4697abc52c461fa175641fce72f530d5918d"
+      "replay_sha256": "d04ed3e3475533bbe92966da75be4697abc52c461fa175641fce72f530d5918d",
+      "integrated": {
+        "exact_label": 310,
+        "diagnostic": 24
+      }
     },
     {
       "lesson": "IBM-016",
@@ -305,7 +355,11 @@
         "exact_label": 136,
         "diagnostic": 20
       },
-      "replay_sha256": "c4ff6039f52955f5658c4deb89b2e605cf43b589e34148b4fc30c6fb3d6498bf"
+      "replay_sha256": "c4ff6039f52955f5658c4deb89b2e605cf43b589e34148b4fc30c6fb3d6498bf",
+      "integrated": {
+        "exact_label": 136,
+        "diagnostic": 20
+      }
     },
     {
       "lesson": "IBM-017",
@@ -319,7 +373,8 @@
       "figure_panels": 0,
       "published": {},
       "development": {},
-      "replay_sha256": "8b149513a4ef51020a532764dc53e0d6b92df76bf2d123e4fcd898adb033dfcd"
+      "replay_sha256": "8b149513a4ef51020a532764dc53e0d6b92df76bf2d123e4fcd898adb033dfcd",
+      "integrated": {}
     },
     {
       "lesson": "IBM-018",
@@ -339,7 +394,13 @@
         "exact_label": 58,
         "diagnostic": 1
       },
-      "replay_sha256": "3d0b74e7b27233694bb8ac7feddab91c27c0f0038c6a14c3657343b143ebc7a9"
+      "replay_sha256": "3d0b74e7b27233694bb8ac7feddab91c27c0f0038c6a14c3657343b143ebc7a9",
+      "integrated": {
+        "exact_label": 58,
+        "diagnostic": 1
+      }
     }
-  ]
+  ],
+  "integrated_revision": "cd131847",
+  "integrated_worker_sha256": "427b538fb01b4d29969e1add54e803e90c5a43c5248b0ad68f04d2552b4abd70"
 }

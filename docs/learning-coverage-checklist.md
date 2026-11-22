@@ -56,6 +56,8 @@ The DEV-17 [source manifest](learning-evidence/aud01/partial-trace-operands.json
 
 The [indexed tuple replay](learning-evidence/aud01/indexed-tuple-endpoints.json) covers 19 occurrences which originally reported a measurement-list error. Eleven now return ordered symbolic tuples with the original family name and upper bound. Six retain the original diagnostic and two encounter a different error. Substituting a positive integer for the size produces the expected ordered labels for the Latin and Greek source families.
 
+With all three parser changes applied, the same 2,110 occurrences produced 1,948 exact-labelled results and 162 diagnostics. All 1,917 previously accepted occurrences retained identical Copy text and approximation flags. Of the 31 newly accepted occurrences, one IBM-011 equation requires both shared sums and a sized partial-trace operand. This brings the shared-sum manifest to 19 results and 12 diagnostics on the combined build. Its table above records the standalone change. The [per-lesson inventory](learning-evidence/aud01/ibm001-018-inventory.json) gives both development snapshots.
+
 ## Release queue
 
 - [x] REL-01: Release `92f80696`: 70 packaged audit groups, 262 verified visual captures, 340 manifest files. ZIP SHA-256 `d621438711c3ff6a58f819b3c3d559db547b187d3b2c5f5f099e87c71bdb3323`.
