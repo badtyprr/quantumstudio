@@ -59,6 +59,14 @@ for last in ("2", "n"):
 for invalid_label in ("A_{2}", "B_{1}"):
     run("quantum:" + block_column.replace("A_{1}", invalid_label), "--json", success=False)
 
+# Both textbook declarations name c as a column index.
+for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
+    column_index = data("quantum:" + literal)["copy_text"]
+    assert data("quantum:" + column_index)["copy_text"] == column_index
+    for index, expected in [(-1, "0"), (0, "1"), (2, "1"), (3, "0")]:
+        assert data(f'quantum:replace(replace(({column_index}),n,3),"c",{index})')["copy_text"] == expected
+assert "299792458" in data("quantum:c")["copy_text"]
+
 for heading in (r"\cdot", "·", "*", "+"):
     table = r"\begin{array}{c|c}" + heading + r" & 0\\\hline 0 & 0\end{array}"
     copied = data("quantum:" + table)["copy_text"]
