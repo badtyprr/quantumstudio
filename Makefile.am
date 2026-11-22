@@ -743,3 +743,4 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/ibm043.json windows/dev13-notebo
 EXTRA_DIST += docs/learning-evidence/aud01/replay-lecture-manifest.py docs/learning-evidence/aud01/ibm006-media.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm014-media.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm010-media.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm002-density-list.json
