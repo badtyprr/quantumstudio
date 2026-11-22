@@ -118,6 +118,13 @@ assert data("quantum:" + sample_input)["copy_text"] == "qtuple(vector(1,0,1))"
 run(f'quantum:replace(({sample_queries}),"k",0)', "--json", success=False)
 run(r"quantum:oracles:$f(x^1),\ldots,g(x^k)$", "--json", success=False)
 
+expanded_dot = data(r"quantum:bitword:$a_1 b_1 \oplus \cdots \oplus a_0 b_0$")["copy_text"]
+assert data("quantum:" + expanded_dot)["copy_text"] == expanded_dot
+for key, value in [("a_1", 1), ("a_0", 1), ("b_1", 1), ("b_0", 1)]:
+    expanded_dot = f'replace(({expanded_dot}),"{key}",{value})'
+assert data("quantum:" + expanded_dot)["copy_text"] == "0"
+run(r"quantum:bitword:$a_1 b_1 \oplus \cdots \oplus a_0 c_0$", "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
