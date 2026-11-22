@@ -8,6 +8,9 @@ import runpy
 import subprocess
 import tempfile
 
+if not __debug__:
+    raise RuntimeError("This audit requires Python assertions to be enabled.")
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("application", type=Path, help="extracted QuantumStudio directory")
 args = parser.parse_args()
@@ -42,12 +45,19 @@ for wire in range(5):
         syndromes.add(tuple(bits))
 assert len(syndromes) == 15 and (0, 0, 0, 0) not in syndromes
 
-# Illustrative probabilities for the lesson's discussion. Under independent
-# faults at two locations with rates 1/10 and 1/5, both fail with rate 1/50.
-# Perfectly correlated failures at two locations of rate 1/10 have rate 1/10.
-for expr in ("(1/10)*(1/5)==1/50", "((1/10)+(1/5)-1/50)==7/25",
-             "1/10 > (1/10)^2"):
-    assert evaluate(expr) == "1"
+# Each location independently fails with probability 1/10 or 1/5.
+# Conditional on a fault, both locations use the same fair X/Z selector.
+# The row and column alphabets are (no fault, X, Z). Work in units of 1/100.
+joint = [[72, 9, 9], [4, 1, 0], [4, 0, 1]]
+assert sum(map(sum, joint)) == 100
+first_fault = sum(map(sum, joint[1:]))
+second_fault = sum(sum(row[1:]) for row in joint)
+both_fault = sum(sum(row[1:]) for row in joint[1:])
+assert (first_fault, second_fault, both_fault) == (10, 20, 2)
+assert evaluate(f"{both_fault}/100==({first_fault}/100)*({second_fault}/100)") == "1"
+assert evaluate(f"({first_fault}+{second_fault}-{both_fault})/100==7/25") == "1"
+# A mixed X/Z pair has zero joint mass despite positive single-site marginals.
+assert joint[1][2] == joint[2][1] == 0 and joint[1][1] == joint[2][2] == 1
 
 records = []
 with tempfile.TemporaryDirectory() as directory:
