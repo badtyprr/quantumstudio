@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "cdots",
+  "lessons": [
+    {
+      "lesson": "IBM-013",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/discrimination-and-tomography.ipynb",
+      "source_sha256": "afd353deba6a4252c1cb7a50db286c74041ddaf3363bd95cb9f7b0c84e18c0a8",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 9651,
+          "end": 9746,
+          "literal_sha256": "abe884fd0265210f7af5e4f981c7690a9703b1cf27a0c215ffa437a261893d18",
+          "outcome": "result",
+          "copy_text": "1"
+        }
+      ]
+    }
+  ]
+}
