@@ -1881,15 +1881,20 @@ class Parser {
       // For an unsized |0><0|, the input width of U determines the
       // ancillary register. Explicitly dimensioned kets keep their width.
       const std::string literal=labelText(s.substr(argumentStart,p-argumentStart));
-      if(literal.compare(0,7,"|0><0|@")==0 && theta.compare(0,9,"(qtensor(")==0) {
-       const std::string zero=ket("0");
-       for(const char *product:{"qadjacent(","qmul("}) {
-        std::string prefix=std::string("(qtensor(")+product+zero+",qdag("+zero+")),";
-        if(theta.compare(0,prefix.size(),prefix)==0) {
-         std::string density=theta.substr(prefix.size(),theta.size()-prefix.size()-2);
-         theta="qinitialdensity("+indexableLabel("U")+","+density+")";break;
-        }
+      std::string projector=literal.substr(0,literal.find('@'));
+      projector.erase(std::remove(projector.begin(),projector.end(),'('),projector.end());
+      projector.erase(std::remove(projector.begin(),projector.end(),')'),projector.end());
+      if((projector=="|0><0|" || projector=="|0>*<0|") && theta.compare(0,9,"(qtensor(")==0) {
+       // The parsed left operand contains only the two literal zero states.
+       size_t split=9;int nested=0;
+       for(;split<theta.size();++split) {
+        const char c=theta[split];
+        if(c=='(' || c=='[')++nested;
+        else if(c==')' || c==']')--nested;
+        else if(c==',' && nested==0)break;
        }
+       if(split<theta.size()-2)
+        theta="qinitialdensity("+indexableLabel("U")+","+theta.substr(split+1,theta.size()-split-3)+")";
       }
       a="qmul("+indexableLabel("U")+","+theta+")";
      } else {

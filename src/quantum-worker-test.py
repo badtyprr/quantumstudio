@@ -111,6 +111,11 @@ for dim, unitary, sigma, effect_values in [
 for fixed in [r"U (\vert 0\rangle_{2}\langle 0\vert_{2}\otimes\rho)",
               r"U ([1;0][1,0]\otimes\rho)"]:
     assert "qinitialdensity" not in data("quantum:" + fixed)["copy_text"]
+for projector in ["|0><0|", "(|0><0|)", "|0>*<0|"]:
+    applied = data("quantum:U (" + projector + " @ ρ)")["copy_text"]
+    assert "qinitialdensity" in applied
+    rectangular = f'replace(replace(({applied}),"ρ",[0;1]),"U",[1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1])'
+    assert data("quantum:" + rectangular)["copy_text"] == "matrix(4,2,[0,0,1,0,0,0,0,0])"
 # Applying the two diagonal roots to (1,i)/sqrt(2) gives the column
 # (3,5i,4,0)/sqrt(50). Its outer product distinguishes the row and column indices.
 complex_output = f'replace(replace(replace(replace(({measurement_sum}),"P_0",[9/25,0;0,1]),"P_1",[16/25,0;0,0]),"ρ",[1,-i;i,1]/2),"m",2)'

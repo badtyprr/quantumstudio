@@ -2420,6 +2420,11 @@ class QuantumIndexedFunction: public MathFunction {
   }
   if(op=="qinitialdensity") {
    MathStructure operation=raw[0],density=raw[1];operation.eval(eo);density.eval(eo);
+   if(density.isMatrix() && density.rows()!=density.columns()) {
+    // A ket or rectangular map is an ordinary tensor factor.
+    MathStructure projector;projector.clearMatrix();projector.resizeMatrix(2,2,m_zero);element(projector,0,0)=m_one;
+    out.set(CALCULATOR->getFunction("qtensor"),&projector,&density,NULL);return 1;
+   }
    if((operation.isMatrix() && (!operation.columns() || operation.columns()>1024)) ||
       (!operation.isMatrix() && !operation.containsUnknowns()) ||
       (density.isMatrix() && (!density.rows() || density.columns()!=density.rows())) ||
