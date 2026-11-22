@@ -334,5 +334,25 @@
       "destination": "https://quantum.cloud.ibm.com/functions",
       "title": "Functions | IBM Quantum Platform"
     }
-  ]
+  ],
+  "verification": {
+    "revision": "b9423eccbbe78935fa8290a886d9d9af0c76ee1e",
+    "github_actions_enabled": false,
+    "exported_files": [
+      "docs/learning-evidence/IBM-136.md",
+      "docs/learning-evidence/aud01/ibm136-inventory.json",
+      "docs/learning-evidence/aud01/ibm136-released.json",
+      "docs/learning-evidence/aud01/replay-ibm136-staffing.py"
+    ],
+    "checks": [
+      {
+        "sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+        "result": "Verified all 15 role entries, including the academic range, and all eight endpoint totals."
+      },
+      {
+        "sha256": "ef982addd0ef8d676708f76e5d7e73396610200c7901ed3c0efe2d0ff933e1ec",
+        "result": "Verified all 15 role entries, including the academic range, and all eight endpoint totals."
+      }
+    ]
+  }
 }
