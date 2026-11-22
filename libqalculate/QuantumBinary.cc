@@ -79,6 +79,39 @@ class QuantumBinaryFunction: public MathFunction {
  int calculate(MathStructure &out,const MathStructure &raw,const EvaluationOptions &eo) {
   MathStructure args=raw;for(size_t j=0;j<args.size();++j)args[j].eval(eo);
   const MathStructure &a=args[0];
+  if(op=="qconstantoracle" || op=="qbalancedoracle") {
+   if(a.isUnknown() || a.isSymbolic())return 0;
+   if(!a.isFunction() || a.function()->referenceName()!="qset" || a.size()!=1 || !a[0].isVector()) {
+    CALCULATOR->error(true,"An oracle promise requires a finite binary function graph.",NULL);return 0;
+   }
+   std::map<Number,bool> outputs;
+   MathStructure width;
+   size_t ones=0;
+   for(size_t k=0;k<a[0].size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    const auto &pair=a[0][k];
+    if(!binaryGraphPair(pair)) {CALCULATOR->error(true,"An oracle promise requires bit-string input pairs.",NULL);return 0;}
+    MathStructure index=pair[0][0][0],length=pair[0][0][1];
+    if(validateQuantumBitLabel(index,length,eo)!=QuantumBitLabelState::Concrete)return 0;
+    if(!k)width=length;
+    else if(!width.equals(length)) {CALCULATOR->error(true,"Oracle promise inputs must have the same width.",NULL);return 0;}
+    MathStructure bit(CALCULATOR->getFunction("qcontrolbit"),&pair[0][1],NULL);bit.eval(eo);
+    if(!bit.isNumber())return 0;
+    const auto inserted=outputs.emplace(index.number(),bit.isOne());
+    if(!inserted.second && inserted.first->second!=bit.isOne()) {
+     CALCULATOR->error(true,"The function graph has conflicting outputs for this input.",NULL);return 0;
+    }
+    if(inserted.second && bit.isOne())++ones;
+   }
+   // Compare the width with log2(count) without allocating 2^width.
+   size_t count=outputs.size(),bits=0;
+   for(size_t n=count;n>1;n>>=1)++bits;
+   if(!count || (count & (count-1)) || width.number()!=Number(bits)) {
+    CALCULATOR->error(true,"An oracle promise requires an output for every input word.",NULL);return 0;
+   }
+   const bool holds=op=="qconstantoracle" ? ones==0 || ones==count : ones==count-ones;
+   out=holds ? m_one : m_zero;return 1;
+  }
   if(op=="qcontrolbit") {
    if(a.isUnknown() || (a.containsUnknowns() && (a.representsScalar() ||
       (a.isFunction() && a.function()->referenceName()=="qgraphapply"))))return 0;
@@ -426,6 +459,8 @@ void registerQuantumBinary(Calculator &calculator) {
  calculator.addFunction(new QuantumBinaryFunction("qbinarytail",2));
  calculator.addFunction(new QuantumBinaryFunction("qbinaryfraction",3));
  calculator.addFunction(new QuantumBinaryFunction("qbitword",1));
+ calculator.addFunction(new QuantumBinaryFunction("qconstantoracle",1));
+ calculator.addFunction(new QuantumBinaryFunction("qbalancedoracle",1));
  calculator.addFunction(new QuantumBinaryFunction("qcontrolbit",1));
  for(const auto &entry:{std::pair<const char *,int>("qgf2mul",2),{"qgf2rref",1},{"qgf2rank",1},{"qgf2inverse",1},{"qgf2nullspace",1},{"qlineargate",1},{"qbits",2},{"qbitdot",2},{"qcenterdot",2},{"qcomparisonliteral",2},{"qcomparisonzero",2},{"qnamedapplication",2},{"qinversefunction",1},{"qgraphapply",2},{"qbitxor",2},{"qbitvalue",1}})calculator.addFunction(new QuantumBinaryFunction(entry.first,entry.second));
 }
