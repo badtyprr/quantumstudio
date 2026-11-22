@@ -247,6 +247,14 @@ phase_action = data(r"quantum:oracles:$Z_f\vert x\rangle = (-1)^{f(x)}\vert x\ra
 phase_probe = f'replace(replace(replace(({phase_action}),f,{search_graph}),x,bitstring(1,1)),"Z_f",Z)'
 assert data("quantum:" + phase_probe)["copy_text"] == "1"
 
+# In Set notation the same bare S names the set and the uniform ket's label.
+pair_set = "qset(vector(bitstring(0,2),bitstring(3,2)))"
+assert data(f"quantum:sets:replace(S,S,{pair_set})")["copy_text"] == data("quantum:"+pair_set)["copy_text"]
+uniform_pair = data(f"quantum:sets:replace(|S>,S,{pair_set})")["copy_text"]
+assert data(f"quantum:norm(({uniform_pair})-(basis(0,4)+basis(3,4))/sqrt(2))")["copy_text"] == "0"
+assert data("quantum:sets:S*|1>")["cells"] == [["0"], ["i"]]
+assert data("quantum:sets:S^1")["copy_text"] == "qunitcircle()"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
