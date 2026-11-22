@@ -67,6 +67,25 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# A zero-based weighted projector sum and its displayed diagonal matrix.
+diagonal_density = r"""$$
+\rho = \sum_{a = 0}^{n-1} p_a \vert a\rangle \langle a \vert
+= \begin{pmatrix}
+p_0 & 0 & \cdots & 0\\
+0 & p_1 & \ddots & \vdots\\
+\vdots & \ddots & \ddots & 0\\
+0 & \cdots & 0 & p_{n-1}
+\end{pmatrix}.
+$$"""
+diagonal_copy = data("quantum:" + diagonal_density)["copy_text"]
+assert "qindexeddiagonal(" in diagonal_copy and data("quantum:" + diagonal_copy)["copy_text"] == diagonal_copy
+for matrix, expected in [("[1/2,0,0;0,1/3,0;0,0,1/6]", "1"), ("[1/3,0,0;0,1/2,0;0,0,1/6]", "0")]:
+    expression = diagonal_copy
+    for key, value in [('"p_2"', "1/6"), ('"ρ"', matrix), ("n", "3"), ('"p_1"', "1/3"), ('"p_0"', "1/2")]:
+        expression = f"replace(({expression}),{key},{value})"
+    assert data("quantum:" + expression)["copy_text"] == expected
+run("quantum:" + diagonal_density.replace("0 & p_1", "1 & p_1"), "--json", success=False)
+
 # A qualification limits the points at which a displayed equation is defined.
 for interval, allowed, excluded in [("[0,1)", "0", "1"), ("(0,1]", "1", "0")]:
     qualified = r"quantum:$$x^2=x\qquad\text{(for $x \in " + interval + "$)}$$"

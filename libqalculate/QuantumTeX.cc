@@ -774,6 +774,36 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
   }
   return "qcornerdensity(ρ,"+std::to_string(height-2)+")";
  }
+ // An indexed diagonal lists its first entries and its final entry. The
+ // three diagonal dots around the omitted square distinguish it from a
+ // matrix whose first column contains the indexed coefficients.
+ if(tex && height==width && height>=4 && cells[0][1]=="0" &&
+    cells[1].size()==width && cells[1][1]!="0" && cells[1][1]!=horizontal) {
+  for(const auto &row:cells)if(row.size()!=width)invalid();
+  const size_t omitted=height-2;
+  const std::string first=normalizeLabel(cells[0][0]);
+  const size_t sub=first.rfind('_');
+  if(sub!=std::string::npos && first.substr(sub+1)=="0") {
+   const std::string prefix=first.substr(0,sub+1);
+   for(size_t r=0;r<height;++r)for(size_t c=0;c<width;++c) {
+    if(r==c && r==height-1)continue;
+    std::string expected="0";
+    if(r==omitted && c==omitted)expected=diagonal;
+    else if(r==omitted)expected=c+1==omitted ? diagonal : (c==width-1 ? "0" : vertical);
+    else if(c==omitted)expected=r+1==omitted ? diagonal : (r==height-1 ? "0" : horizontal);
+    else if(r==c)expected=prefix+std::to_string(r);
+    else if(r==height-1 && c+1==omitted)expected=horizontal;
+    else if(c==width-1 && r+1==omitted)expected=vertical;
+    if(normalizeLabel(cells[r][c])!=expected)invalid();
+   }
+   const std::string last=normalizeLabel(cells.back().back());
+   if(last.compare(0,prefix.size(),prefix)!=0)invalid();
+   const std::string name=quantumTeX(prefix.substr(0,sub))+"_";
+   const std::string family=indexedLabelRange(name+"0",name+last.substr(sub+1),"qindexedentries(");
+   if(family.empty())invalid();
+   return "qindexeddiagonal("+family+","+std::to_string(omitted+1)+")";
+  }
+ }
  // All later block columns are either explicitly zero or independently unspecified.
  const std::string &fill=cells.front()[1];
  if(height==width && (fill=="0" || (tex && fill=="\\fbox{?}"))) {

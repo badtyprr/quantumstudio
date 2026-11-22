@@ -1,0 +1,21 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses",
+  "lessons": [
+    {
+      "lesson": "IBM-003",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/convex-combinations.ipynb",
+      "source_sha256": "668d5081fe1a43b51446593573cd3b763a74067736c49ef5df1a5ff29809acbd",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 10164,
+          "end": 10370,
+          "literal_sha256": "6a1bd1eae52e64adfd691b6250669914871d414fe3aafa415dae2b46115916bb",
+          "outcome": "result",
+          "copy_text": "qequalchain(vector('\u03c1',qsum(qadjacent(qadjacent(qindexedlabel(\"p_\",\"qboundindex_0\",\"\"),qketstate(\"qboundindex_0\")),qdag(qketstate(\"qboundindex_0\"))),0,qsub(n,1),\"qboundindex_0\"),qindexeddiagonal(qindexedentries(\"p_\",0,qsub(n,1),vector()),3)))"
+        }
+      ]
+    }
+  ]
+}
