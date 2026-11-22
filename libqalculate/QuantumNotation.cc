@@ -434,7 +434,7 @@ class Parser {
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
- bool binaryOracles=false;
+ bool binaryOracles=false,binaryWordNotation=false;
  size_t lastKetEnd=std::string::npos;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
@@ -2180,6 +2180,7 @@ class Parser {
   if(takeWord("qtexdegrees"))a="("+a+"*(pi/180))";
   if(allowPercent)percentSuffix(a);
   bool sphere=setNotation && groupedToken(s,baseStart,p,"S");
+  const bool zeroWord=binaryWordNotation && groupedToken(s,baseStart,p,"0");
   const bool binaryAlphabet=binaryOracles && groupedToken(s,baseStart,p,"Σ");
   if(take('^')) {
    kind=0;
@@ -2229,6 +2230,7 @@ class Parser {
     } else {
      p=start;
      if(sphere && groupedToken(exponent,0,exponent.size(),"1"))a="qunitcircle()";
+     else if(zeroWord)a="qbitlabel(0,"+exponent+")";
      else if(binaryAlphabet)
       a="qbitstrings("+exponent+")";
      else if(setNotation && a=="\"Σ\"" && s.compare(baseStart,2,"Σ")==0)
@@ -3053,7 +3055,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false,bool oracles=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),binaryOracles(oracles),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false,bool oracles=false,bool words=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),binaryOracles(oracles),binaryWordNotation(words),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -3120,6 +3122,7 @@ std::string translateQuantum(const std::string &expression) {
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
  const size_t first=s.find_first_not_of(" \t\r\n");
  const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
+ const bool words=first!=std::string::npos && s.compare(first,8,"bitword:")==0;
  const bool oracles=first!=std::string::npos && s.compare(first,8,"oracles:")==0;
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
@@ -3127,5 +3130,5 @@ std::string translateQuantum(const std::string &expression) {
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets,scalars || modular,modular,oracles).run();
+ return Parser(s,spin,sets,scalars || modular,modular,oracles,words).run();
 }
