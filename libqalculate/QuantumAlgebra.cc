@@ -1214,6 +1214,29 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 1;
   }
+  // Only the top-left block of the middle factor is nonzero. All
+  // unspecified blocks in the outside factors multiply zero.
+  if(op=="qmul" || op=="qadjacent") {
+   auto product=[](const MathStructure &v) {
+    return v.isFunction() && v.size()==2 && (v.function()->referenceName()=="qmul" || v.function()->referenceName()=="qadjacent");
+   };
+   bool left=product(raw[0]);
+   if(left || product(raw[1])) {
+    const auto &column=left ? raw[0][0] : raw[0],&corner=left ? raw[0][1] : raw[1][0],&row=left ? raw[1] : raw[1][1];
+    auto form=[](const MathStructure &v,const char *name,size_t size) {
+     return v.isFunction() && v.function()->referenceName()==name && v.size()==size;
+    };
+    if(form(column,"qopenblockcolumn",2) && form(corner,"qcornerdensity",2) && form(row,"qopenblockrow",2) &&
+       form(column[0],"qblockroots",1) && form(row[0],"qblockroots",1) &&
+       column[1].isInteger() && corner[1].isInteger() && row[1].isInteger()) {
+     MathStructure minimum=column[1];
+     if(corner[1].number()>minimum.number())minimum=corner[1];
+     if(row[1].number()>minimum.number())minimum=row[1];
+     out.set(CALCULATOR->getFunction("qmeasurementblockproduct"),&column[0][0],&corner[0],&row[0][0],&minimum,NULL);
+     return 1;
+    }
+   }
+  }
   if((op=="qmul" || op=="qadjacent") && raw.size()==2 && raw[1].isFunction() && raw[1].size()==2 && raw[1].function()->referenceName()=="qbasis") {
    const MathStructure *gate=&raw[0];bool inverse=false;
    if(gate->isFunction() && gate->size()==1 && gate->function()->referenceName()=="qdag") {inverse=true;gate=&(*gate)[0];}
