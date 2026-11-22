@@ -188,6 +188,9 @@ for unit in ("(|0>)<1|", "|0>(<1|)", "((|0>))((<1|))"):
     assert data(f"quantum:(I @ {unit})=tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(I @ (2|0>)<1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(I @ (|0>+|1>)<1|)=tensor(I,([1;1]*[0,1]))")["copy_text"] == "1"
+named_unit = data("quantum:I @ (2|0>)<ψ|")["copy_text"]
+assigned_unit = f'replace(({named_unit}),qnamedket("ψ"),|1>)'
+assert data(f"quantum:({assigned_unit})=2*tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(I @ 2|0><1|)=2*tensor(I,(|0><1|))")["copy_text"] == "1"
 assert data("quantum:(H @ H |00>)=([1;1;1;1]/2)")["copy_text"] == "1"
 

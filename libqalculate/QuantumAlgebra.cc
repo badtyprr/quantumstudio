@@ -1184,6 +1184,7 @@ class QuantumAlgebraFunction: public MathFunction {
    // of an outer product. The following row completes the tensor factor.
    if(next<factors.size() && right.isMatrix() && right.columns()==1) {
     MathStructure row=factors[next];row.eval(eo);
+    if(!row.isVector() && row.containsUnknowns())return 0;
     if(row.isVector() && row.size() && (!row.isMatrix() || row.rows()==1)) {
      MathStructure column=right;
      right.set(CALCULATOR->getFunction("qmul"),&column,&row,NULL);right.eval(eo);++next;
