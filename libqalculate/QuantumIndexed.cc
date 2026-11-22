@@ -2470,24 +2470,40 @@ class QuantumIndexedFunction: public MathFunction {
    MathStructure operand;
    if(traces) {
     operand=raw[1];operand.eval(eo);
-    if(!operand.isMatrix() && (operand.isSymbolic() || operand.containsUnknowns()))return 0;
-    if(!operand.isMatrix()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
+    if(!operand.isVector() && (operand.isSymbolic() || operand.containsUnknowns()))return 0;
+    if(!operand.isVector()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
    }
-   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : traces ? "qtrace" : "qtranspose");
+   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : "qtranspose");
    for(size_t i=0;i<entries.size();++i) {
     if(CALCULATOR->aborted())return 0;
     entries[i].eval(eo);
     // An unassigned label can still become a matrix. Wait to select the
     // matrix or scalar form of the operation until its shape is known.
     if(!entries[i].isVector() && (entries[i].isSymbolic() || entries[i].containsUnknowns()))return 0;
-    MathStructure argument=entries[i];
     if(traces) {
-     if(!argument.isMatrix() || argument.columns()!=operand.rows() || argument.rows()!=operand.columns()) {
+     // Native one-row matrices may be stored as flat vectors. Contract
+     // Tr(A B) directly to avoid constructing a square intermediate and
+     // to preserve the trace of a one-dimensional product.
+     const MathStructure &factor=entries[i];
+     const bool matrixA=factor.isMatrix(),matrixB=operand.isMatrix();
+     const size_t rows=matrixA ? factor.rows() : 1,cols=matrixA ? factor.columns() : factor.size();
+     if(!factor.isVector() || !rows || !cols || cols!=(matrixB ? operand.rows() : 1) ||
+        rows!=(matrixB ? operand.columns() : operand.size())) {
       CALCULATOR->error(true,"Indexed trace factors must compose to a square matrix.",NULL);return 0;
      }
-     argument.set(CALCULATOR->getFunction("qmul"),&entries[i],&operand,NULL);
+     MathStructure trace;
+     for(size_t r=0;r<rows;++r) {
+      if(CALCULATOR->aborted())return 0;
+      for(size_t c=0;c<cols;++c) {
+       MathStructure product=matrixA ? *factor.getElement(r+1,c+1) : factor[c];
+       product.multiply(matrixB ? *operand.getElement(c+1,r+1) : operand[r]);
+       trace.add(product);
+      }
+     }
+     trace.eval(eo);entries[i]=trace;
+    } else {
+     MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
     }
-    MathStructure mapped(transform,&argument,NULL);mapped.eval(eo);entries[i]=mapped;
    }
    out=entries;
    return 1;

@@ -2524,8 +2524,8 @@ class Parser {
  static bool transformedIndexedList(const std::string &first,const std::string &last,std::string &list) {
   // In a list of traces the indexed left factor varies, while the
   // right factor is the same expression at each displayed endpoint.
-  const std::string traceProduct="qtrace(qadjacent(";
-  if(first.compare(0,traceProduct.size(),traceProduct)==0 && last.compare(0,traceProduct.size(),traceProduct)==0) {
+  for(const std::string traceProduct:{"qtrace(qadjacent(","qtrace(qmul(","qtrace(qcenterdot("}) {
+   if(first.compare(0,traceProduct.size(),traceProduct)!=0 || last.compare(0,traceProduct.size(),traceProduct)!=0)continue;
    size_t comma=first.find(',',traceProduct.size());
    if(comma==std::string::npos || first.size()<comma+4 || first.compare(first.size()-2,2,"))")!=0)return false;
    const std::string tail=first.substr(comma);
