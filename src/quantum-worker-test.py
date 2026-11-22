@@ -24,6 +24,13 @@ def data(expression, *flags):
     return value
 
 
+# A free matrix name remains bindable anywhere in an equality chain.
+for expression in ("R=H*S*H=H*S*H", "H*S*H=R=H*S*H", "H*S*H=H*S*H=R"):
+    chain = data("quantum:" + expression)["copy_text"]
+    assert chain.startswith("qequalchain(") and data("quantum:" + chain)["copy_text"] == chain
+    for operator, truth in [("H*S*H", "1"), ("X", "0")]:
+        assert data(f"quantum:replace(({chain}),'R',{operator})")["copy_text"] == truth
+
 # Numeric basis transitions obtain their dimensions from the bound operator.
 transitions = r"$$A \vert 0\rangle = \vert 1\rangle,\quad A \vert 1\rangle = \vert 2\rangle,\quad\text{and}\quad A \vert 2\rangle = \vert 0\rangle$$"
 transition = data("quantum:" + transitions)

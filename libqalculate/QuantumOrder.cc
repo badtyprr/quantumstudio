@@ -677,6 +677,12 @@ class QuantumEqualityChain: public MathFunction {
   if(!deferred)for(size_t k=1;k<operands.size();++k) {
    if(CALCULATOR->aborted())return 0;
    bool same=false;
+   // As in binary matrix equality, a free name can stand for the
+   // entire operator. Comparing it elementwise discards that binding.
+   if((operands[k-1].isSymbolic() && operands[k].isMatrix()) ||
+      (operands[k].isSymbolic() && operands[k-1].isMatrix())) {
+    deferred=true;continue;
+   }
    if(setPair(operands[k-1],operands[k])) {
     if(!compareQuantumSets(operands[k-1],operands[k],same,eo))deferred=true;
     else if(!same)equal=false;

@@ -62,7 +62,40 @@ for image in product(range(3), repeat=3):
     assert evaluate(f"replace(({formula}),'A',{operator})")["copy_text"] == expected, image
     maps_checked += 1
 
-clipboard_checks(worker, args.windows, args.report, cases, 167,
+# The displayed definition singles out one square root of X. Its square
+# alone also accepts the negative and adjoint roots.
+roots = {
+    "lesson": ("H*S*H", "1", "1"),
+    "negative": ("-(H*S*H)", "0", "1"),
+    "adjoint": ("H*dagger(S)*H", "0", "1"),
+    "negative-adjoint": ("-(H*dagger(S)*H)", "0", "1"),
+    "identity": ("identity(2)", "0", "0"),
+    "pauli-x": ("X", "0", "0"),
+}
+for number in (146, 148):
+    row = inventory["rows"][number-1]
+    copied = cases[row["id"]][1]
+    assert copied.startswith("qequalchain(") and evaluate(copied)["copy_text"] == copied
+    for name, (operator, definition, square) in roots.items():
+        expr = f"replace(({copied}),'R',({operator}))"
+        truth = definition if number == 146 else square
+        assert evaluate(expr)["copy_text"] == truth
+        cases[f"root-{number}-{name}"] = expr, truth
+
+# Change each concrete stage independently while supplying the correct R.
+source = inventory["rows"][145]["literal"]
+for name, old, new in [("composition", "H S H", "H T H"),
+                       ("middle-factor", "0 & i", "0 & -i"),
+                       ("last-matrix", "1+i", "1-i")]:
+    altered = source.replace(old, new, 1)
+    assert altered != source
+    # Bind R before evaluation so an inconsistent concrete pair is always tested.
+    expr = altered.replace("R =", "H S H =", 1)
+    assert evaluate(expr)["copy_text"] == "0"
+    cases["changed-"+name] = expr, "0"
+
+clipboard_checks(worker, args.windows, args.report, cases, 182,
                  dict(source_sha256=inventory["source_sha256"], original_formulas=161,
                       transitions=formula, concrete_controls=6, deterministic_maps=maps_checked,
+                      matrix_root_bindings=12, changed_definition_steps=3,
                       application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()))
