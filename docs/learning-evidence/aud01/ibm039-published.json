@@ -1,0 +1,252 @@
+{
+  "release_revision": "c5a456cde595b3e1211cfc51a233dea511322a56",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "source_sha256": "071bde2b6b2b044a08f3cbbf813d7fd8d93d3e4819faf8b4543147ef9797639a",
+  "windows": {
+    "passed": true,
+    "checks": 220,
+    "calls": 20,
+    "sessionsOnly": false,
+    "clipboardRetries": 0,
+    "clipboardRestored": true
+  },
+  "verified_formula_ids": [
+    "IBM039-071bde2b-M001",
+    "IBM039-071bde2b-M002",
+    "IBM039-071bde2b-M003",
+    "IBM039-071bde2b-M004",
+    "IBM039-071bde2b-M005",
+    "IBM039-071bde2b-M006",
+    "IBM039-071bde2b-M007",
+    "IBM039-071bde2b-M008",
+    "IBM039-071bde2b-M009",
+    "IBM039-071bde2b-M010",
+    "IBM039-071bde2b-M011",
+    "IBM039-071bde2b-M012",
+    "IBM039-071bde2b-M013",
+    "IBM039-071bde2b-M014",
+    "IBM039-071bde2b-M015",
+    "IBM039-071bde2b-M016",
+    "IBM039-071bde2b-M017",
+    "IBM039-071bde2b-M018",
+    "IBM039-071bde2b-M019",
+    "IBM039-071bde2b-M020"
+  ],
+  "source_route_qiskit": {
+    "qiskit": "2.6.2",
+    "numpy": "2.5.5",
+    "matplotlib": "3.11.2",
+    "IPython": "9.18.1",
+    "pylatexenc": "2.11",
+    "sympy": "1.14.0"
+  },
+  "source_route_samples": [
+    {
+      "cell": 23,
+      "seed": 3923,
+      "counts": {
+        "0": 548,
+        "1": 452
+      },
+      "expected_zero": 0.5555555555555556
+    },
+    {
+      "cell": 36,
+      "seed": 3936,
+      "counts": {
+        "0": 545,
+        "1": 3455
+      },
+      "expected_zero": 0.1464466094067263
+    }
+  ],
+  "notebook_runner_qiskit": "2.2.3",
+  "notebook_cells": [
+    {
+      "cell": 1,
+      "formats": [
+        [
+          "stream"
+        ]
+      ]
+    },
+    {
+      "cell": 3,
+      "formats": []
+    },
+    {
+      "cell": 5,
+      "formats": [
+        [
+          "stream"
+        ]
+      ]
+    },
+    {
+      "cell": 7,
+      "formats": [
+        [
+          "stream"
+        ]
+      ]
+    },
+    {
+      "cell": 9,
+      "formats": [
+        [
+          "stream"
+        ]
+      ]
+    },
+    {
+      "cell": 11,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ],
+        [
+          "text/latex",
+          "text/plain"
+        ],
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 13,
+      "formats": []
+    },
+    {
+      "cell": 15,
+      "formats": [
+        [
+          "text/plain"
+        ],
+        [
+          "text/latex",
+          "text/plain"
+        ],
+        [
+          "stream"
+        ]
+      ]
+    },
+    {
+      "cell": 17,
+      "formats": [
+        [
+          "text/plain"
+        ],
+        [
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 19,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 21,
+      "formats": [
+        [
+          "stream"
+        ],
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 23,
+      "formats": [
+        [
+          "image/png",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 26,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 28,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 30,
+      "formats": [
+        [
+          "image/png",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 32,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 34,
+      "formats": [
+        [
+          "text/latex",
+          "text/plain"
+        ]
+      ]
+    },
+    {
+      "cell": 36,
+      "formats": [
+        [
+          "image/png",
+          "text/plain"
+        ]
+      ]
+    }
+  ],
+  "notebook_witness": {
+    "accepted": true,
+    "measurement": 0,
+    "first_counts": {
+      "0": 554,
+      "1": 446
+    },
+    "circuit_counts": {
+      "0": 620,
+      "1": 3380
+    }
+  },
+  "cleanup": {
+    "active_processes": 0,
+    "kernel_job_membership": true,
+    "method": "forced",
+    "engine_exit": null,
+    "launcher_exit": 0
+  }
+}
