@@ -13,7 +13,7 @@
           "end": 15314,
           "literal_sha256": "9afb06096649287bdc0441aa31fe3f0aa0aa6d8ce6b5ca44077090c519a5c200",
           "outcome": "result",
-          "copy_text": "qequalchain(vector(1,qtrace('\u03c1'),qtrace(qspectralsum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector()))),qtrace(qspectralsum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector()))),qindexedsum(\"\u03bb_\",0,qsub(n,1),vector())))"
+          "copy_text": "qequalchain(vector(1,qtrace('\u03c1'),qtrace(qspectralsum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector()))),qspectraltracesum(qindexedentries(\"\u03bb_\",0,qsub(n,1),vector()),qindexedentries(\"\u03c8_\",0,qsub(n,1),vector())),qindexedsum(\"\u03bb_\",0,qsub(n,1),vector())))"
         }
       ]
     }

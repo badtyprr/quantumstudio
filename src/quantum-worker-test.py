@@ -52,10 +52,18 @@ run("quantum:" + spectral.replace("><v_{n-1}", "><v_{n+1}"), "--json", success=F
 
 traced = r"$$w_0 \operatorname{Tr}(|v_0><v_0|) + \cdots + w_{n-1} \operatorname{Tr}(|v_{n-1}><v_{n-1}|)$$"
 trace_copy = data("quantum:" + traced)["copy_text"]
-assert "qtrace(qspectralsum(" in trace_copy and data("quantum:" + trace_copy)["copy_text"] == trace_copy
+assert "qspectraltracesum(" in trace_copy and data("quantum:" + trace_copy)["copy_text"] == trace_copy
 for symbol, value in [('n', '2'), ('"w_0"', '3'), ('"w_1"', '1'), ('"v_0"', '2*|+i>'), ('"v_1"', '|-i>')]:
     trace_copy = f'replace(({trace_copy}),{symbol},{value})'
 assert data("quantum:" + trace_copy)["copy_text"] == "13"
+short_trace = traced.replace(r"\operatorname{Tr}", r"\mathrm{tr}")
+mixed_dimension = data("quantum:" + short_trace)["copy_text"]
+for symbol, value in [('n', '2'), ('"w_0"', '3'), ('"w_1"', '1'), ('"v_0"', '|00>'), ('"v_1"', '|0>')]:
+    mixed_dimension = f'replace(({mixed_dimension}),{symbol},{value})'
+assert data("quantum:" + mixed_dimension)["copy_text"] == "4"
+for limit, bound in [("i", "1"), ("i+1", "0")]:
+    series = data(r"quantum:$$w_0 + \cdots + w_{" + limit + "}$$")["copy_text"]
+    assert data(f'quantum:replace(replace(replace(({series}),"i",{bound}),"w_0",3),"w_1",1)')["copy_text"] == "4"
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 

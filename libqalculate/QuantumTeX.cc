@@ -3976,8 +3976,12 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(firstLetter==base.size() || !std::all_of(base.begin()+firstLetter,base.end(),
        [](unsigned char c){return c>=128 || asciiLetter(c);}))continue;
    std::string name=trim(TeXReader(base,false,binaryLogs).run(nullptr));
-   std::string family=indexedLabelRange(name+terms.front().substr(sub),name+terms.back().substr(sub),"qindexedsum(");
-   if(!family.empty()) {side=family;changed=true;}
+   std::string upper=terms.back().substr(sub+1);
+   if(upper.size()==3 && upper.front()=='{' && asciiLetter(upper[1]) && upper.back()=='}')upper=upper.substr(1,1);
+   if(!indexedLabelRange(name+terms.front().substr(sub),name+"_"+upper,"qindexedsum(").empty()) {
+    // The notation parser binds dimension letters consistently across scalar and projector sums.
+    side=terms.front()+" + ... + "+terms.back();changed=true;
+   }
   }
   if(changed) {s=sides[0];for(size_t i=1;i<sides.size();++i)s+="="+sides[i];}
  }

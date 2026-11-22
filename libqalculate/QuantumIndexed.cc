@@ -2379,7 +2379,7 @@ class QuantumIndexedFunction: public MathFunction {
    if(op=="qspectralket" && out.isSymbolic())out.set(CALCULATOR->getFunction("qketstate"),&entries[0],NULL);
    return 1;
   }
-  if(op=="qspectralsum" || op=="qspectralaction") {
+  if(op=="qspectralsum" || op=="qspectralaction" || op=="qspectraltracesum") {
    auto entries=[&](const MathStructure &input,MathStructure &out) {
     if(input.isFunction() && input.function()->referenceName()=="qindexedentries")return indexedEntries(out,input,eo);
     out=input;out.eval(eo);return out.isVector();
@@ -2390,7 +2390,7 @@ class QuantumIndexedFunction: public MathFunction {
     CALCULATOR->error(true,"A spectral sum requires one weight per state.",NULL);return 0;
    }
    MathStructure sum,probe;
-   const bool action=op=="qspectralaction";
+   const bool action=op=="qspectralaction",traced=op=="qspectraltracesum";
    if(action) {
     probe=raw[2];probe.eval(eo);
     if(!stateColumn(probe)) {
@@ -2405,21 +2405,22 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     MathStructure ket=states[i],weight=weights[i];ket.eval(eo);weight.eval(eo);
     if(ket.isUnknown() || (!ket.isMatrix() && ket.containsUnknowns()))return 0;
-    if(!ket.isMatrix() || ket.columns()!=1 || (dimension && ket.rows()!=dimension) || !weight.representsScalar()) {
+    if(!ket.isMatrix() || ket.columns()!=1 || (!traced && dimension && ket.rows()!=dimension) || !weight.representsScalar()) {
      CALCULATOR->error(true,"Spectral terms require scalar weights and column states of the same dimension.",NULL);return 0;
     }
     dimension=ket.rows();
     MathStructure bra(CALCULATOR->getFunction("qdag"),&ket,NULL);
     MathStructure term;
-    if(action) {
-     if(probe.rows()!=dimension) {CALCULATOR->error(true,"The probe and spectral states must have the same dimension.",NULL);return 0;}
-     MathStructure overlap(CALCULATOR->getFunction("qmul"),&bra,&probe,NULL);
+    if(action || traced) {
+     if(action && probe.rows()!=dimension) {CALCULATOR->error(true,"The probe and spectral states must have the same dimension.",NULL);return 0;}
+     MathStructure overlap(CALCULATOR->getFunction("qmul"),&bra,traced ? &ket : &probe,NULL);
      overlap.eval(eo);
      if(overlap.isMatrix() && overlap.rows()==1 && overlap.columns()==1) {
       MathStructure amplitude=*overlap.getElement(1,1);overlap=amplitude;
      }
      if(!overlap.representsScalar())return 0;
-     term=ket;term.multiply(overlap);
+     if(traced)term=overlap;
+     else {term=ket;term.multiply(overlap);}
     } else {
      term.set(CALCULATOR->getFunction("qmul"),&ket,&bra,NULL);term.eval(eo);
     }
@@ -3266,6 +3267,7 @@ bool quantumSetSumShapeInput(const MathStructure &value,MathStructure &term,cons
  return true;
 }
 void registerQuantumIndexed(Calculator &calculator) {
+ calculator.addFunction(new QuantumIndexedFunction("qspectraltracesum",2));
  calculator.addFunction(new QuantumIndexedFunction("qspectralsum",2));
  calculator.addFunction(new QuantumIndexedFunction("qspectralaction",3));
  calculator.addFunction(new QuantumIndexedFunction("qspectralentry",2));
