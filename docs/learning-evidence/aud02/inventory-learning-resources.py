@@ -38,6 +38,10 @@ tasks={
 assigned_exercise = re.compile(
     r"\b(?:as an exercise|try this (?:on your own|yourself))\b", re.I
 )
+learner_prompt = re.compile(
+    r"(?:^|(?<=[.!?])\s+)(?:Try\b(?!\s+(?:to avoid|the questions below)\b)|"
+    r"See if you can\b|Can you (?:find|come up with)\b)"
+)
 def add(kind,target,cell):
     key=kind+"\n"+target
     id="LR-"+hashlib.sha256(key.encode()).hexdigest()[:16]
@@ -142,6 +146,11 @@ for path,meta in sorted(listed.items()):
                 if assigned_exercise.search(prose):
                     paragraph_exercise += 1
                     add("exercise-prose", f"{path}#cell={source_id}&assignment={paragraph_exercise}", i)
+                elif learner_prompt.search(prose):
+                    # Adding a prompt must not renumber existing assignment IDs.
+                    content = " ".join(inline.content.split())
+                    anchor = hashlib.sha256(content.encode()).hexdigest()[:16]
+                    add("exercise-prose", f"{path}#cell={source_id}&prompt={anchor}", i)
             if tok.type!="heading_open":continue
             level=int(tok.tag[1:])
             label=parsed[j+1].content.strip()
