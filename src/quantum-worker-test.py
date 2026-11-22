@@ -67,6 +67,19 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# IBM-016 defines F as root fidelity. Its square for this pair is 3/4.
+fidelity = data(r"quantum:$\operatorname{F}\bigl(\rho,\sigma\bigr)$")["copy_text"]
+assert "qrootfidelity(" in fidelity and data("quantum:" + fidelity)["copy_text"] == fidelity
+resolved_fidelity = f'replace(replace(({fidelity}),"ρ",[3/4,0;0,1/4]),"σ",[1,0;0,0])'
+assert data("quantum:" + resolved_fidelity)["copy_text"] == "√(3) ∕ 2"
+pending_state = data("quantum:qrootfidelity([x,0;0,1-x],[1,0;0,0])")["copy_text"]
+assert data(f"quantum:replace(({pending_state}),x,3/4)")["copy_text"] == "√(3) ∕ 2"
+run('quantum:qrootfidelity("ρ",[-1,0;0,2])', "--json", success=False)
+run('quantum:qrootfidelity([1,0;0,∞],"σ")', "--json", success=False)
+assert data(r"quantum:$\operatorname{F}(x)$")["copy_text"] == data(r"quantum:$F(x)$")["copy_text"]
+norm_identity = data(r"quantum:$\operatorname{F}(\rho,\sigma)=\bigl\|\sqrt{\sigma}\sqrt{\rho}\bigr\|_1.$")["copy_text"]
+assert data(f'quantum:replace(replace(({norm_identity}),"ρ",[3/4,0;0,1/4]),"σ",[1,0;0,0])')["copy_text"] == "1"
+
 # Preserve an unresolved norm and bind the whole following radical to Tr.
 norm_definition = r"""$$
 \| M \|_1 = \operatorname{Tr}\sqrt{M^{\dagger} M},

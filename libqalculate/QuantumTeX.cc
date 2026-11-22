@@ -194,13 +194,13 @@ std::string withoutDisplayPunctuation(std::string value) {
   mark=value.find_last_not_of(" \t\r\n",mark-2);
  if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
  if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1])) {
-  // An unbraced TeX superscript consumes one token. The following period
+  // An unbraced TeX script consumes one token. The following period
   // belongs to the sentence, while a number such as 1. keeps its decimal.
   size_t previous=mark>=2 ? value.find_last_not_of(" \t\r\n",mark-2) : std::string::npos;
   size_t digits=mark;
   while(digits && std::isdigit((unsigned char)value[digits-1]))--digits;
   bool hasRadix=digits && value[digits-1]=='.' && (digits==1 || value[digits-2]!='.');
-  if(!hasRadix && (previous==std::string::npos || value[previous]!='^'))return value;
+  if(!hasRadix && (previous==std::string::npos || (value[previous]!='^' && value[previous]!='_')))return value;
  }
  size_t before=value.find_last_not_of(" \t\r\n",mark-1);
  if(before==std::string::npos)return value;
@@ -2169,6 +2169,24 @@ class TeXReader {
    if(name=="operatorname" && a=="Pr") {
     std::string event=eventProbability();if(!event.empty())return event;
    }
+   if(name=="operatorname" && a=="F") {
+    size_t at=input.find_first_not_of(" \t\r\n",pos);
+    if(at!=std::string::npos) {
+     for(const std::string size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})
+      if(input.compare(at,size.size(),size)==0) {at=input.find_first_not_of(" \t\r\n",at+size.size());break;}
+     if(at!=std::string::npos && input[at]=='(') {
+      // Only the two-argument operator is the lesson's fidelity notation.
+      int depth=1, commas=0;
+      while(++at<input.size() && depth) {
+       const char c=input[at];
+       if(c=='(' || c=='{' || c=='[')++depth;
+       else if(c==')' || c=='}' || c==']')--depth;
+       else if(c==',' && depth==1 && input[at-1]!='\\')++commas;
+      }
+      if(!depth && commas==1)a="qrootfidelity";
+     }
+    }
+   }
    if(name=="operatorname" && a=="lg")a="qbitlength";
    if(name=="operatorname" && a=="range")a="qfunctionrange";
    if((name=="mathbb" || name=="mathbf") && a=="1") a="I";
@@ -2489,6 +2507,16 @@ class TeXReader {
      result.find('_',delimiter+1)!=std::string::npos;
     size_t commandStart=pos;
     std::string part=command(matrix,norms,environment=="cases",registerLabel,&result);
+    // TeX control words delimit their names. Preserve that boundary when
+    // lowering juxtaposed factors so P_0\rho and \rho\sqrt{P} keep their order.
+    if(!stateLabel && !registerLabel && commandStart && !result.empty()) {
+     auto greek=[](const std::string &word,size_t offset) {
+      return offset+2==word.size() && ((unsigned char)word[offset]==0xce || (unsigned char)word[offset]==0xcf);
+     };
+     if((part.size()==2 && greek(part,0) && std::isdigit((unsigned char)result.back())) ||
+        (result.size()>=2 && greek(result,result.size()-2) && part.compare(0,5,"sqrt(")==0))
+      result+=' ';
+    }
     if(part==" qtexcongruent ")congruence=true;
     else if(part.compare(0,14," qtexmodulus (")==0) {
      if(!congruence)throw std::runtime_error(error("A congruence modulus must follow a congruence relation"));
