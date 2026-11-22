@@ -766,3 +766,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm016-conjugate-kets.json
 EXTRA_DIST += docs/learning-evidence/aud01/deferred-trace-norms.json
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm016-root-fidelity.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm034-probability-bounds.json docs/learning-evidence/aud01/replay-ibm034-probability-bounds.py
