@@ -94,6 +94,11 @@ for equation, order in [(state_equation, assignments), (copied_state, reversed(a
         equation = f'replace(({equation}),"{label}",{value})'
     for value, truth in [(bell_density, "1"), ("[1,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0]", "0")]:
         assert data(f'quantum:replace(({equation}),"σ",{value})')["copy_text"] == truth
+# Applying the two diagonal roots to (1,i)/sqrt(2) gives the column
+# (3,5i,4,0)/sqrt(50). Its outer product distinguishes the row and column indices.
+complex_output = f'replace(replace(replace(replace(({measurement_sum}),"P_0",[9/25,0;0,1]),"P_1",[16/25,0;0,0]),"ρ",[1,-i;i,1]/2),"m",2)'
+complex_expected = "[9,-15i,12,0;15i,25,20i,0;12,-20i,16,0;0,0,0,0]/50"
+assert data(f"quantum:({complex_output})=({complex_expected})")["copy_text"] == "1"
 single_outcome = f'replace(replace(replace(({measurement_sum}),"P_0",[1,0;0,1]),"m",1),"ρ",[0,0;0,1])'
 assert data("quantum:" + single_outcome)["copy_text"] == "matrix(2,2,[0,0,0,1])"
 for altered in [measurement_sum.replace("P_b", "P_a"), measurement_sum.replace("P_b", "Q_b"),
