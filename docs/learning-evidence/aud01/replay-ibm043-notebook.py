@@ -43,7 +43,8 @@ scope["display"] = display
 phi = np.array([1,-1j,1,-1j])/2
 h = np.array([[1,1],[1,-1]])/np.sqrt(2)
 flip = np.array([[0,1],[1,0]])
-for idx,cell in enumerate(json.loads(raw)["cells"]):
+cells = json.loads(raw)["cells"]
+for idx,cell in enumerate(cells):
     if cell["cell_type"]!="code":
         continue
     stdout, displays = StringIO(), []
@@ -81,6 +82,30 @@ definition = calculate(notation[9]["literal"])
 for state,expected in [("(|+>@|-i>)","1"), ("|00>","0")]:
     expressions.append(f'replace(({definition}),qketstate("φ"),{state})={expected}')
     expressions.append(f'(replace(({action}),qnamedket("φ"),{state})=([1;-i;0;0]/sqrt(2)))={expected}')
+# Every source occurrence has an independent value or a state supplied by
+# the surrounding notebook. The source reuses psi in two different cells.
+ket_zero, ket_one = "[1;0]", "[0;1]"
+plus, minus_i = "[1;1]/sqrt(2)", "[1;-i]/sqrt(2)"
+bell = "[1;0;0;1]/sqrt(2)"
+cx = "[1,0,0,0;0,1,0,0;0,0,0,1;0,0,1,0]"
+values = {1: ket_zero, 2: ket_one, 4: ket_zero, 5: ket_one, 6: "1", 7: plus, 8: minus_i,
+          11: cx, 14: cx, 15: bell}
+definitions = {3: ("ψ", "[0;1;0;0]"), 10: ("φ", "[1;-i;1;-i]/2"),
+               13: ("ψ", "[1;0;1;0]/sqrt(2)"), 16: ("w", "[0;1;1;0;1;0;0;0]/sqrt(3)")}
+actions = {9: ("φ", "[1;-i;1;-i]/2", "[1;-i;0;0]/sqrt(2)"), 12: ("ψ", "[1;0;1;0]/sqrt(2)", bell)}
+for ordinal, row in enumerate(notation, 1):
+    text = "".join(cells[row["cell"]]["source"])
+    assert text[row["start"]:row["end"]] == row["literal"]
+    copied = calculate(row["literal"])
+    if ordinal in values:
+        expressions.append(f"({copied})=({values[ordinal]})")
+    elif ordinal in definitions:
+        label, state = definitions[ordinal]
+        for probe, truth in [(state, "1"), ("|00>", "0")]:
+            expressions.append(f'replace(({copied}),qketstate("{label}"),{probe})={truth}')
+    else:
+        label, state, expected = actions[ordinal]
+        expressions.append(f'replace(({copied}),qnamedket("{label}"),({state}))=({expected})')
 for expr in expressions:
     assert calculate(expr)=="1", expr
 print(json.dumps(dict(source_sha256=digest,worker_sha256=sha256(worker.read_bytes()).hexdigest(),
