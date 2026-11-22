@@ -1,0 +1,154 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-algorithm.ipynb",
+  "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+  "occurrence": 26,
+  "formula": "$$\n\\vert 0 \\oplus a\\rangle - \\vert 1 \\oplus a\\rangle = (-1)^a \\bigl( \\vert 0\\rangle - \\vert 1\\rangle \\bigr)\n$$",
+  "copy_text": "qcompare(qsub(qcomputationalket(qoplus(qbitlabel(0,1),qcontrolbit('a'))),qcomputationalket(qoplus(qbitlabel(1,1),qcontrolbit('a')))),matrix(2,1,vector(qpower(−1,qcontrolbit('a')),qmul(−1,qpower(−1,qcontrolbit('a'))))),4)",
+  "controls": [
+    {
+      "form": "source",
+      "bit": 0,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "source",
+      "bit": 0,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "source",
+      "bit": 1,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "source",
+      "bit": 1,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "reverse",
+      "bit": 0,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "reverse",
+      "bit": 0,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "reverse",
+      "bit": 1,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "reverse",
+      "bit": 1,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "braced",
+      "bit": 0,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "braced",
+      "bit": 0,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "braced",
+      "bit": 1,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "braced",
+      "bit": 1,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "spaced",
+      "bit": 0,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "spaced",
+      "bit": 0,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "spaced",
+      "bit": 1,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "spaced",
+      "bit": 1,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "constant phase",
+      "bit": 0,
+      "typed": false,
+      "expected": 1
+    },
+    {
+      "form": "constant phase",
+      "bit": 0,
+      "typed": true,
+      "expected": 1
+    },
+    {
+      "form": "constant phase",
+      "bit": 1,
+      "typed": false,
+      "expected": 0
+    },
+    {
+      "form": "constant phase",
+      "bit": 1,
+      "typed": true,
+      "expected": 0
+    },
+    {
+      "form": "opposite sign",
+      "bit": 0,
+      "typed": false,
+      "expected": 0
+    },
+    {
+      "form": "opposite sign",
+      "bit": 0,
+      "typed": true,
+      "expected": 0
+    },
+    {
+      "form": "opposite sign",
+      "bit": 1,
+      "typed": false,
+      "expected": 0
+    },
+    {
+      "form": "opposite sign",
+      "bit": 1,
+      "typed": true,
+      "expected": 0
+    }
+  ]
+}

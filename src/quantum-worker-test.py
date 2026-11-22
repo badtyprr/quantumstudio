@@ -67,6 +67,18 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# An XOR of one bit contributes a scalar phase to the difference of basis kets.
+phase_state = r"\vert 0\oplus a\rangle-\vert 1\oplus a\rangle"
+signed_state = r"(-1)^a\bigl(\vert 0\rangle-\vert 1\rangle\bigr)"
+for sign, truth in [("", "1"), ("-", "0")]:
+    phase = data("quantum:$" + sign + signed_state + "=" + phase_state + "$")["copy_text"]
+    assert data("quantum:" + phase)["copy_text"] == phase
+    for bit in (0, 1):
+        assert data(f'quantum:replace(({phase}),"a",qbitlabel({bit},1))')["copy_text"] == truth
+run(f'quantum:replace(({phase}),"a",qbitlabel(1,2))', "--json", success=False)
+assert data("quantum:$2^ a (3)$")["copy_text"] == data("quantum:$3 \\cdot 2^{a}$")["copy_text"]
+assert data("quantum:$2^{a(3)}$")["copy_text"] != data("quantum:$2^a(3)$")["copy_text"]
+
 # Binary-word mode concatenates oracle outputs in source order.
 word = data("quantum:bitword:$f(0)f(1)$")["copy_text"]
 assert data("quantum:" + word)["copy_text"] == word

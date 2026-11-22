@@ -773,3 +773,4 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-xor.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-ket-complement.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-controlled-flip.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-oracle-word.json
+EXTRA_DIST += docs/learning-evidence/aud01/ibm019-xor-phase.json
