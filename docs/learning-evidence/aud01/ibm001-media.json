@@ -1,0 +1,95 @@
+{
+  "notebook": {
+    "revision": "079769d205eb3b60e077820060274c7b0359c123",
+    "path": "learning/courses/general-formulation-of-quantum-information/density-matrices/introduction.ipynb",
+    "sha256": "cf11a27a0c9789af7a330d2eb80b59e84bfe8c26fe015c331c21261f414ee563"
+  },
+  "slides": {
+    "url": "https://ibm.box.com/public/static/eoddc2njf8dyays2ju54gn8il5j5pxv9.pdf",
+    "sha256": "cd4b365f01d989d5913d5ba94167d55dee9ed807de8c321cfa25b661d7acc390",
+    "pages": 45
+  },
+  "lecture": {
+    "player_id": "134056231",
+    "track": "Generated English (US)",
+    "segments": 205,
+    "digest_method": "SHA-256 over concatenated binary segment SHA-256 values in playlist order",
+    "sha256": "9ea5adde6ba74c9d4f67b60364fba046b3b750195df8ab4ac72357f7ea232486",
+    "distinct_cues": 1859,
+    "first_cue_seconds": 0.38,
+    "last_cue_end_seconds": 4369.099,
+    "player_url": "https://video.ibm.com/embed/recorded/134056231",
+    "duration_seconds": 4374.825,
+    "topic_observations": [
+      [
+        300,
+        "Definition and matrix labels"
+      ],
+      [
+        600,
+        "Positive semidefinite matrices"
+      ],
+      [
+        938,
+        "Connection with state vectors"
+      ],
+      [
+        1324,
+        "Probabilistic selection"
+      ],
+      [
+        1926,
+        "Spectral theorem"
+      ],
+      [
+        2701,
+        "Bloch sphere"
+      ],
+      [
+        3300,
+        "Higher-dimensional states"
+      ],
+      [
+        3344,
+        "Multiple systems"
+      ],
+      [
+        3675,
+        "Reduced states"
+      ],
+      [
+        4180,
+        "Partial trace"
+      ]
+    ]
+  },
+  "runs": {
+    "release": {
+      "revision": "c5a456cd",
+      "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+      "checks": 27,
+      "passed": 25,
+      "unresolved": [
+        {
+          "page": 21,
+          "label": "spectral decomposition"
+        },
+        {
+          "page": 30,
+          "label": "rotation in XZ plane"
+        }
+      ],
+      "windows_sessions": 27,
+      "stable_copy_and_reentry": 27
+    },
+    "candidate": {
+      "revision": "73e61223",
+      "worker_sha256": "1e9b450dd4c89c450457ae512e25996de136af253295c1f48c14c9d8b3b047c1",
+      "checks": 27,
+      "passed": 27,
+      "unresolved": [],
+      "windows_sessions": 27,
+      "stable_copy_and_reentry": 27
+    }
+  }
+}
