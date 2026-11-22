@@ -161,6 +161,10 @@ bool quantumEntropy(MathStructure &out,const MathStructure &state,const Evaluati
 }
 
 bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &eo,bool fidelity) {
+ return quantumStateMetric(out,first,second,eo,fidelity,false);
+}
+
+bool quantumStateMetric(MathStructure &out,const MathStructure &first,const MathStructure &second,const EvaluationOptions &eo,bool fidelity,bool allowExactExpressions) {
  if(!first.isMatrix() || !second.isMatrix() || first.rows()!=second.rows() || first.rows()<2 || first.rows()>64) {
   CALCULATOR->error(true,"State distance and fidelity require two states of matching dimension from 2 to 64.",NULL);return false;
  }
@@ -168,7 +172,7 @@ bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const Ma
  MathStructure validation;
  if(!quantumEntropy(validation,first,eo) || !quantumEntropy(validation,second,eo))return false;
  size_t n=first.rows();EvaluationOptions numeric=eo;numeric.approximation=APPROXIMATION_APPROXIMATE;
- if(first.columns()==n && second.columns()==n && eo.approximation!=APPROXIMATION_APPROXIMATE && CALCULATOR->getFunction("conj")) {
+ if(allowExactExpressions && first.columns()==n && second.columns()==n && eo.approximation!=APPROXIMATION_APPROXIMATE && CALCULATOR->getFunction("conj")) {
   if(n==2 && exactQubitMetric(out,first,second,eo,fidelity))return true;
   if(n>2 && fidelity && exactPureDensityFidelity(out,first,second,eo))return true;
  }
