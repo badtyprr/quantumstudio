@@ -58,7 +58,7 @@ The [indexed tuple replay](learning-evidence/aud01/indexed-tuple-endpoints.json)
 
 With all three parser changes applied, the same 2,110 occurrences produced 1,948 exact-labelled results and 162 diagnostics. All 1,917 previously accepted occurrences retained identical Copy text and approximation flags. Of the 31 newly accepted occurrences, one IBM-011 equation requires both shared sums and a sized partial-trace operand. This brings the shared-sum manifest to 19 results and 12 diagnostics on the combined build. Its table above records the standalone change. The [per-lesson inventory](learning-evidence/aud01/ibm001-018-inventory.json) gives both development snapshots.
 
-DEV-17 now retains a named partial trace of an unbound state variable. Supplying the same diagonal matrix with labels in opposite orders produced the two expected reductions. Supplying the matrix alone still requested a mapping. A replay of the 56 previously failing named traces from IBM-001 through IBM-018 returned symbolic results for eight occurrences and requested an explicit mapping for the other 48. Their surrounding equations still require semantic review.
+DEV-17 now retains a named partial trace of an unbound state variable. Supplying the same diagonal matrix with labels in opposite orders produced the two expected reductions. Supplying the matrix alone still requested a mapping. The [replay of 56 previously failing named traces](learning-evidence/aud01/deferred-named-trace.json) from IBM-001 through IBM-018 returned symbolic results for eight occurrences and requested an explicit mapping for the other 48. Their surrounding equations still require semantic review.
 
 ## Release queue
 
