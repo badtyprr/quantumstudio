@@ -1,0 +1,354 @@
+{
+  "source": {
+    "row": "IBM-067",
+    "url": "https://quantum.cloud.ibm.com/learning/images/courses/foundations-of-quantum-error-correction/fault-tolerant-quantum-computing/Shor-error-detection.svg",
+    "sha256": "74dddf40e5b46df9e93bc0e00ce949f3dff498f6b0b1b997b878f56c1a2f1639"
+  },
+  "scope": "The three cat wires control P2, P1 and P0 on their corresponding data wires in source order. The native circuit records all three X-basis ancilla measurements and computes their XOR. Authored readouts measure the data in the indicated bases.",
+  "reference": "Each parity projector is (I + (-1)^s P)/2, shared equally among four cat readout words. An X component of a fault on a prepared cat qubit propagates its controlled Pauli to its one data target. A Z component flips the parity. Cases use complementary data readouts to distinguish both effects.",
+  "limits": "Faults are inserted after ideal cat preparation and before the controlled gates. Cat verification, noisy preparation and threshold behavior are outside these cases.",
+  "exact_cases": 26,
+  "sampled_cases": 26,
+  "shots_per_case": 10000,
+  "bit_order": "Computed parity, three ancilla bits (5,4,3), then three data bits (2,1,0).",
+  "cases": [
+    {
+      "pauli": "ZZZ",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "001",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 1.0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "010",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 1.0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "011",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "100",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 1.0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "101",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "110",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 0
+    },
+    {
+      "pauli": "ZZZ",
+      "preparation": "111",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003500000000000003
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 1.0
+    },
+    {
+      "pauli": "XYZ",
+      "preparation": "+i1",
+      "readout": "XYZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 2.220446049250313e-16,
+        "sampled": 0.003500000000000225
+      },
+      "joint_outcomes": 4,
+      "parity_one_probability": 1.0
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "X",
+      "fault_wire": 0,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Y",
+      "fault_wire": 0,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Z",
+      "fault_wire": 0,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "X",
+      "fault_wire": 1,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Y",
+      "fault_wire": 1,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Z",
+      "fault_wire": 1,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "X",
+      "fault_wire": 2,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Y",
+      "fault_wire": 2,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": "Z",
+      "fault_wire": 2,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "ZZZ",
+      "cat_fault": null,
+      "fault_wire": null,
+      "max_probability_error": {
+        "exact": 0.0,
+        "sampled": 0.003599999999999999
+      },
+      "joint_outcomes": 16,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Y",
+      "fault_wire": 0,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Z",
+      "fault_wire": 0,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Y",
+      "fault_wire": 1,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Z",
+      "fault_wire": 1,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Y",
+      "fault_wire": 2,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    },
+    {
+      "pauli": "XXX",
+      "preparation": "000",
+      "readout": "XXX",
+      "cat_fault": "Z",
+      "fault_wire": 2,
+      "max_probability_error": {
+        "exact": 1.3877787807814457e-17,
+        "sampled": 0.003149999999999986
+      },
+      "joint_outcomes": 32,
+      "parity_one_probability": 0.5
+    }
+  ]
+}
