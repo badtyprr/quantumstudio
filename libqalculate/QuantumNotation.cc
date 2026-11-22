@@ -354,7 +354,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qprobs",1},
  {"qprobsub",2},
  {"qptrace",2},
- {"qptraceselect",3},{"qptraceregisters",2},
+ {"qptraceselect",3},{"qptraceregisters",3},
  {"qsubsystems",3},
  {"qregket",2},{"qorderedket",2},
  {"qptracedim",3},
@@ -1624,10 +1624,7 @@ class Parser {
      std::string function=general ? "matrixassume" : "operatorassume";
      if(gate)function="qgate"+function;
      a=function+"("+body+","+label+","+rows+","+(general ? columns : property)+")";
-    } else if(name=="qptraceregisters") {
-     std::string state=expression();need(',');std::string labels=subsystemLabels(true);
-     need(')');a=name+"("+state+","+labels+")";
-    } else if(name=="qsubsystems" || name=="qptraceselect") {
+    } else if(name=="qsubsystems" || name=="qptraceselect" || name=="qptraceregisters") {
      std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
      std::string dimensions=expression();need(')');a=name+"("+state+","+labels+","+dimensions+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {

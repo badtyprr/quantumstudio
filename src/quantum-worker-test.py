@@ -697,6 +697,9 @@ for axes, dimensions, expected in [("[A,B]", "[2,2]", "10"), ("[AB,C]", "[2,2]",
                                     ("[B,AB,A]", "[2,1,2]", "matrix(4,4,[1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,4])")]:
     mapping = f"subsystems({diagonal},{axes},{dimensions})"
     assert data(f"quantum:replace({group_trace},ρ,{mapping})")["copy_text"] == expected
+assert data(r"quantum:\operatorname{Tr}_{ \mathsf {AB} }(ρ)")["copy_text"] == group_trace
+numeric_trace = rf"\operatorname{{Tr}}_{{\mathsf{{AB}}}}({diagonal})"
+assert data(f"quantum:replace(replace({numeric_trace},A,1),B,1)")["copy_text"] == "matrix(2,2,[3,0,0,7])"
 assert b"Unknown subsystem label" in run(
     f"quantum:replace({group_trace},ρ,subsystems({diagonal},[A,C],[2,2]))","--json",success=False).stderr
 for labels, expected in [("[A,B]", "[3,0,0,7]"), ("[B,A]", "[4,0,0,6]")]:

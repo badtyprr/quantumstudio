@@ -2301,6 +2301,8 @@ class TeXReader {
      (result.size()==2 || !std::isalnum((unsigned char)result[result.size()-3]));
     if(fourier) {result.resize(result.size()-3);result+="qfourier("+index+")";}
     else if(trace) {
+     std::string subscript=input.substr(subscriptStart,pos-subscriptStart);
+     subscript.erase(std::remove_if(subscript.begin(),subscript.end(),[](unsigned char c){return asciiSpace(c);}),subscript.end());
      space();skipOpeningSize();std::string body;
      if(pos<input.size() && input[pos]=='{') body=group();
      else if(pos<input.size() && input[pos]=='(') { ++pos; body=read(')'); }
@@ -2309,8 +2311,8 @@ class TeXReader {
      result.resize(result.size()-2);
      const std::string names=trim(index);
      if(names.size()>1 && names.size()<=32 && names.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")==std::string::npos &&
-        input.compare(subscriptStart,12+names.size(),"_{\\mathsf{"+names+"}}")==0)
-      result+="qptraceregisters("+body+",\""+names+"\")";
+        subscript=="_{\\mathsf{"+names+"}}")
+      result+="qptraceregisters("+body+",\""+names+"\",vector("+index+"))";
      else result+="ptrace("+body+",vector("+index+"))";
     } else if(!stateSubscript && grouped && indexedParts(index,",").size()>1) {
      auto pair=indexedParts(index,",");

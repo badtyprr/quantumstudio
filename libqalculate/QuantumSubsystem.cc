@@ -144,7 +144,9 @@ class QuantumSubsystemFunction: public MathFunction {
    MathStructure state=raw[0];state.eval(eo);
    if(state.isUnknown())return 0;
    if(!mappedSubsystems(state)) {
-    subsystemError("Named partial traces require an explicit subsystems(matrix, labels, dimensions) mapping.");return 0;
+    // On an ordinary matrix the same spelling may already be bound to an axis index.
+    MathStructure args=raw;args[0]=state;
+    return CALCULATOR->getFunction("qptraceselect")->calculate(out,args,eo);
    }
    if(!validSubsystems(state[0],state[1],state[2]))return 0;
    MathStructure axes;axes.clearVector();
@@ -390,6 +392,6 @@ class QuantumSubsystemFunction: public MathFunction {
 void registerQuantumSubsystem(Calculator &calculator) {
  calculator.addFunction(new QuantumSubsystemFunction("qregket",2));
  calculator.addFunction(new QuantumSubsystemFunction("qorderedket",2));
- for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptraceregisters",2},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
+ for(const auto &entry:{std::pair<const char *,int>("qapply",3),{"qsubsystems",3},{"qpermute",2},{"qpermutedim",3},{"qptrace",2},{"qptraceselect",3},{"qptraceregisters",3},{"qptracedim",3},{"qptranspose",2},{"qptransposedim",3}})
   calculator.addFunction(new QuantumSubsystemFunction(entry.first,entry.second));
 }
