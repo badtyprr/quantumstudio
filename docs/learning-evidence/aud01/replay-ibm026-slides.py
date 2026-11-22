@@ -39,6 +39,23 @@ def checks():
         yield "33–37", f"norm({action}-i^{j}*{ket})^2", "0"
         yield "36–37 printed", f"norm({action}-i^{j}*{kets[1]})^2", "0" if j == 1 else "2"
     yield "40", "norm((" + "+".join(kets) + ")/2-basis(1,15))", "0"
+    # At 23–27 minutes the promised two-bit phases are distinguished by inverse QFT.
+    for j in range(4):
+        amplitudes = "+".join(f"i^({x*j})*basis({x},4)" for x in range(4))
+        yield "23–27 min", f"norm(fourier(4)~*(({amplitudes})/2)-basis({j},4))", "0"
+    # At 62–65 minutes a sampled numerator can hide a factor of the order.
+    for j in range(1, 6):
+        phase = Fraction(j, 6)
+        nearest = round(2048*phase)
+        expected = str(phase).replace("/", " ∕ ")
+        yield "62–65 min", f"recoverphase({nearest}/2048,21)", f"qset(vector({expected}))"
+    yield "65 min", "lcm(3,2)", "6"
+    # Repeated squaring modulo N implements every controlled power (66–69 min).
+    for exponent in (1, 2, 4, 8):
+        factor = pow(2, exponent, 15)
+        for x in range(15):
+            target = (factor*x) % 15
+            yield "66–69 min", f"norm(qresiduemultiplier({factor},15)*basis({x},15)-basis({target},15))", "0"
     for n in (15, 21, 35):
         successes = 0
         for a in range(2, n):
