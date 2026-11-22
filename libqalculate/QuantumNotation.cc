@@ -346,7 +346,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpreimage",2},{"qfunctionrange",1},{"qfunctiontype",3},{"qfiniteapply",2},{"qhalfopen",3},{"qrealinterval",4},{"qcomplexplane",0},{"qunitcircle",0},{"qtuple",1},{"qset",1},{"qcartesian",2},{"qcartesianpower",2},{"qwordpower",2},{"qsetimage",3},{"qsetfilter",3},
  {"qsetunion",2},{"qsetintersect",2},{"qsetdiff",2},
  {"qfamilymembers",4},{"qregisterword",4},{"qregisterfamily",4},{"qscalarproductsum",4},
- {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
+ {"qindexrange",2},{"qindexsequence",2},{"qindexedfamily",2},{"qindexedlist",4},{"qreverseindexedlist",4},{"qindexedset",4},{"qindexedsum",4},{"qinitialdensity",2},{"qmeasurementblocks",2},{"qblockroots",1},{"qblockcolumn",2},{"qopenblockcolumn",2},{"qmatchblockcolumn",4},{"qmissingblock",0},{"qspectralsum",2},{"qspectralaction",3},{"qspectralentry",2},{"qspectralket",2},{"qindexedentries",4},{"qcomposemaps",1},{"qoutcome",1},{"qindexedketset",4},{"qindexedketlist",4},{"qbasiskets",1},{"qbasisketset",1},{"qfamilyat",2},
  {"qpostselect",2},
  {"qresidues",1},{"qunitsmod",1},{"qrecoverphase",2},{"qintegergcd",2},{"qmodpower",3},{"qmodpowerequal",4},{"qringexpr",2},{"qpower",2},{"qresidue",2},
  {"qlogm",1},
@@ -1873,10 +1873,29 @@ class Parser {
      std::string co="cos("+theta+")", si="-i*sin("+theta+")";
      a="[1,0,0,0;0,"+co+","+si+",0;0,"+si+","+co+",0;0,0,0,exp(-i*"+phi+")]";
     } else if(name=="U" || name=="U3" || name=="U2" || name=="U1") {
+     const size_t argumentStart=p;
      std::string theta="0", phi="0", lambda;
      if(name=="U" || name=="U3")theta="("+expression()+")";
      // A spaced U with one grouped operand applies a lesson-defined unitary.
      if(name=="U" && std::isspace((unsigned char)s[b+1]) && take(')')) {
+      // For an unsized |0><0|, the input width of U determines the
+      // ancillary register. Explicitly dimensioned kets keep their width.
+      const std::string literal=labelText(s.substr(argumentStart,p-argumentStart));
+      std::string projector=literal.substr(0,literal.find('@'));
+      projector.erase(std::remove(projector.begin(),projector.end(),'('),projector.end());
+      projector.erase(std::remove(projector.begin(),projector.end(),')'),projector.end());
+      if((projector=="|0><0|" || projector=="|0>*<0|") && theta.compare(0,9,"(qtensor(")==0) {
+       // The parsed left operand contains only the two literal zero states.
+       size_t split=9;int nested=0;
+       for(;split<theta.size();++split) {
+        const char c=theta[split];
+        if(c=='(' || c=='[')++nested;
+        else if(c==')' || c==']')--nested;
+        else if(c==',' && nested==0)break;
+       }
+       if(split<theta.size()-2)
+        theta="qinitialdensity("+indexableLabel("U")+","+theta.substr(split+1,theta.size()-split-3)+")";
+      }
       a="qmul("+indexableLabel("U")+","+theta+")";
      } else {
       if(name=="U" || name=="U3")need(',');
