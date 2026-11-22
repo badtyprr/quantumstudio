@@ -1,0 +1,36 @@
+{
+  "source": "https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-model-of-computation.ipynb",
+  "source_sha256": "53ff87ea24a13657dc87d633abb0736efa5e18e87dbbec57a0e3414c6d895217",
+  "figures": [
+    {
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/standard-computation.svg",
+      "blob": "5f6595018aa55daeb1f4539923716caf2bc25599",
+      "sha256": "9e5ebec265e9dff30cb00a80a56b66daff3cf7b08221863fc4da60894fcd9cc0",
+      "interpretation": "Data flow from input through computation to output. No particular program or data are specified."
+    },
+    {
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/query-computation.svg",
+      "blob": "0db59ce2f228816981d55fc963976fa4efcac49a",
+      "sha256": "36fd701585291ce414f502b5d86152675785399f8a9d006ad0a96f7e937fcdcf",
+      "interpretation": "The computation queries its input repeatedly before emitting an output. The ellipsis leaves the number of queries open."
+    },
+    {
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/classical-query-gate.svg",
+      "blob": "d26ec832622699840a43037bc5586cba8382fc91",
+      "sha256": "6338e610c075b945b93a832977a4e2aaec43c13c895d2e2853d1cfc8439f304c",
+      "interpretation": "A classical gate maps an input register x to f(x). The audit supplies four two-bit inputs and checks all three-bit outputs."
+    },
+    {
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/classical-parity.svg",
+      "blob": "4b84fbe01e947e50d1f688c13eb5b9ce10d4a07c",
+      "sha256": "dce2698a94c6a6392827496f791c1c33cb4bf01dfa4bb4ccb019ef00bed54104",
+      "interpretation": "The Boolean circuit queries both inputs, fans each result out, negates one branch, forms two conjunctions and takes their disjunction."
+    },
+    {
+      "path": "/learning/images/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/unitary-query-gate.svg",
+      "blob": "c832ab637585c631b21b30b13ac42a7e7720c5ed",
+      "sha256": "7481e9bf742242909cde9b2ea848afe21f31fabc24dcf80cd6be163f668cf63a",
+      "interpretation": "The unitary preserves the x register and XORs f(x) into the target register. The audit compares every entry of the 32-dimensional permutation matrix."
+    }
+  ]
+}
