@@ -185,6 +185,12 @@ assert "register width" in data(r"quantum:$U^{\otimes n}\vert1\cdots1\rangle$")[
 explicit_width = data(r"quantum:$X^{\otimes n}\vert1^{\otimes m}\rangle$")["copy_text"]
 run(f'quantum:replace(replace(({explicit_width}),n,2),"m",1)', "--json", success=False)
 
+word_tuple = data("quantum:bitword:$(001$, $1$, and $001)$")["copy_text"]
+assert word_tuple == "qtuple(vector(qbitlabel(1,3),qbitlabel(1,1),qbitlabel(1,3)))"
+assert data("quantum:" + word_tuple)["copy_text"] == word_tuple
+run("quantum:bitword:$(001$", "--json", success=False)
+run("quantum:bitword:$(001$, and $1$, $10)$", "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
