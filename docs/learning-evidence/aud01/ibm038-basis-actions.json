@@ -1,0 +1,11 @@
+{
+  "worker_sha256": "9fa94112e6c4f18173e6ab42f8c6ac2dee9dfd4bc05d57d221c58b660b812518",
+  "source_sha256": "9193becddf7f8f9943aa24057a5666195b2f70d946ccd104033164ed6125e79b",
+  "original_formulas": 161,
+  "transitions": "qbasistransitions('A',vector(0,1,2),vector(1,2,0))",
+  "concrete_controls": 6,
+  "deterministic_maps": 27,
+  "application_sha256": "d7f800538fe1f3706204e5d2c5a526cf30a0baabda8d397efa9ad104bb5da59b",
+  "clipboard_sessions": 167,
+  "windows_checks": 1837
+}

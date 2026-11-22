@@ -24,6 +24,21 @@ def data(expression, *flags):
     return value
 
 
+# Numeric basis transitions obtain their dimensions from the bound operator.
+transitions = r"$$A \vert 0\rangle = \vert 1\rangle,\quad A \vert 1\rangle = \vert 2\rangle,\quad\text{and}\quad A \vert 2\rangle = \vert 0\rangle$$"
+transition = data("quantum:" + transitions)
+copied = transition["copy_text"]
+assert transition["display_text"] == "A|0⟩ = |1⟩, A|1⟩ = |2⟩, A|2⟩ = |0⟩"
+assert data("quantum:" + copied) == transition
+for matrix, truth in [("matrix(3,3,[0,0,1,1,0,0,0,1,0])", "1"),
+                      ("identity(3)", "0"), ("matrix(4,3,[0,0,1,1,0,0,0,1,0,0,0,0])", "1")]:
+    assert data(f"quantum:replace({copied},'A',{matrix})")["copy_text"] == truth
+assert b"indices" in run(f"quantum:replace({copied},'A',identity(2))", "--json", success=False).stderr
+single_transition = data(r"quantum:$B \vert 2\rangle = \vert 0\rangle$")
+assert single_transition["display_text"] == "B|2⟩ = |0⟩"
+assert data(f"quantum:replace({single_transition['copy_text']},'B',matrix(1,3,[0,0,1]))")["copy_text"] == "1"
+assert b"explicit dimension" in run("quantum:|2>", "--json", success=False).stderr
+
 # A displayed list of matrices can use prose before its last item.
 matrix_rows = [r"\begin{pmatrix}1&0\\0&0\end{pmatrix}", r"\begin{pmatrix}2&3\\4&5\end{pmatrix}"]
 matrix_list = r"$$" + r",\quad\text{and}\quad".join(matrix_rows) + ".$$"

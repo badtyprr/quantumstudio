@@ -996,6 +996,44 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qbasistransitions") {
+   MathStructure matrix=raw[0],inputs=raw[1],outputs=raw[2];
+   matrix.eval(eo);inputs.eval(eo);outputs.eval(eo);
+   // Evaluation represents a one-row matrix as a flat row vector.
+   if(matrix.isVector() && !matrix.isMatrix()) {
+    MathStructure row=matrix;matrix.clearVector();matrix.addChild(row);
+   }
+   if(!matrix.isMatrix()) {
+    if(matrix.isNumber() || matrix.isVector())CALCULATOR->error(true,"Basis transitions require a matrix operator.",NULL);
+    return 0;
+   }
+   // The expression printer may collapse a singleton index vector.
+   if(inputs.isNumber()) {MathStructure item=inputs;inputs.clearVector();inputs.addChild(item);}
+   if(outputs.isNumber()) {MathStructure item=outputs;outputs.clearVector();outputs.addChild(item);}
+   if(!inputs.isVector() || !outputs.isVector() || !inputs.size() || inputs.size()!=outputs.size()) {
+    CALCULATOR->error(true,"Basis transitions require equally sized lists of input and output indices.",NULL);return 0;
+   }
+   bool unresolved=false,mismatch=false;
+   for(size_t i=0;i<inputs.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    const MathStructure &input=inputs[i],&target=outputs[i];
+    if(!input.isNumber() || !target.isNumber())return 0;
+    if(!input.isInteger() || !target.isInteger() || input.isApproximate() || target.isApproximate() ||
+       input.number()<0 || input.number()>=matrix.columns() || target.number()<0 || target.number()>=matrix.rows()) {
+     CALCULATOR->error(true,"Basis transition indices must be exact integers within the operator dimensions.",NULL);return 0;
+    }
+    const size_t column=input.number().uintValue()+1, row=target.number().uintValue()+1;
+    for(size_t r=1;r<=matrix.rows();++r) {
+     const auto &cell=*matrix.getElement(r,column);
+     const auto relation=cell.compare(r==row ? m_one : m_zero);
+     if(COMPARISON_IS_NOT_EQUAL(relation))mismatch=true;
+     if(relation!=COMPARISON_RESULT_EQUAL)unresolved=true;
+    }
+   }
+   if(mismatch) {out=0;return 1;}
+   if(unresolved)return 0;
+   out=1;return 1;
+  }
   if(op=="qzeroimage") {
    MathStructure opMatrix=raw[0];opMatrix.eval(eo);
    if(!opMatrix.isMatrix()) {
@@ -1823,6 +1861,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qrealvectormember",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectordot",2));
  calculator.addFunction(new QuantumAlgebraFunction("qvectorref",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qbasistransitions",3));
  calculator.addFunction(new QuantumAlgebraFunction("qzeroimage",1));
  calculator.addFunction(new QuantumAlgebraFunction("qwireapply",4));
  calculator.addFunction(new QuantumAlgebraFunction("qwireoperatorlike",3));

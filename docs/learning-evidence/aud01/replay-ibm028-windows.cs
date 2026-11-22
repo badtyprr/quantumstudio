@@ -68,7 +68,7 @@ class PhaseEstimationGuiReplay {
     var entries=serializer.Deserialize<string[][]>(File.ReadAllText(Path.Combine(output,"inputs.json")));
     foreach(string[] entry in entries) {
      Type matrixType=assembly.GetType("MatrixDeclaration");
-     bool declareV=entry[0].EndsWith("-M123");
+     bool declareV=entry[0]=="IBM028-2ff07f29-M123";
      Array declarations=Array.CreateInstance(matrixType,declareV ? 1 : 0);
      if(declareV) {
       object definition=Activator.CreateInstance(matrixType);
