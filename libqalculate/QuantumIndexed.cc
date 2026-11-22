@@ -1323,7 +1323,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2462,18 +2462,32 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qindexedroots" || op=="qindexedtransposes") {
+  if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
    if(!entries.size()) {CALCULATOR->error(true,"A displayed indexed list requires ascending endpoints.",NULL);return 0;}
-   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : "qtranspose");
+   const bool traces=op=="qindexedproducttraces";
+   MathStructure operand;
+   if(traces) {
+    operand=raw[1];operand.eval(eo);
+    if(!operand.isMatrix() && (operand.isSymbolic() || operand.containsUnknowns()))return 0;
+    if(!operand.isMatrix()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
+   }
+   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : traces ? "qtrace" : "qtranspose");
    for(size_t i=0;i<entries.size();++i) {
     if(CALCULATOR->aborted())return 0;
     entries[i].eval(eo);
     // An unassigned label can still become a matrix. Wait to select the
     // matrix or scalar form of the operation until its shape is known.
     if(!entries[i].isVector() && (entries[i].isSymbolic() || entries[i].containsUnknowns()))return 0;
-    MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
+    MathStructure argument=entries[i];
+    if(traces) {
+     if(!argument.isMatrix() || argument.columns()!=operand.rows() || argument.rows()!=operand.columns()) {
+      CALCULATOR->error(true,"Indexed trace factors must compose to a square matrix.",NULL);return 0;
+     }
+     argument.set(CALCULATOR->getFunction("qmul"),&entries[i],&operand,NULL);
+    }
+    MathStructure mapped(transform,&argument,NULL);mapped.eval(eo);entries[i]=mapped;
    }
    out=entries;
    return 1;
@@ -3386,6 +3400,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));

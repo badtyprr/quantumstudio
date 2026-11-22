@@ -1,0 +1,30 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "lessons": [
+    {
+      "lesson": "IBM-011",
+      "source": "learning/courses/general-formulation-of-quantum-information/general-measurements/formulations-of-measurements.ipynb",
+      "source_sha256": "f7a4df41bb0ba245b6e52a62b059703c376a9a5d695e6f33e8fb3dbecf7c6bf6",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 5587,
+          "end": 5671,
+          "literal_sha256": "4b3f820b6f5518189ba0a8ffc1054eedbb7d9a020ce690f024909945815a2cdb",
+          "outcome": "result",
+          "copy_text": "qindexedproducttraces(qindexedentries(\"P_\",0,qsub('m',1),vector()),'\u03c1')"
+        }
+      ],
+      "controls": [
+        {
+          "input": "replace((replace((replace((replace((qindexedproducttraces(qindexedentries(\"P_\",0,qsub('m',1),vector()),'\u03c1')),\"P_1\",[1,i;-i,1]/2)),\"m\",2)),\"\u03c1\",[2,-i;i,2]/4)),\"P_0\",[1,-i;i,1]/2)",
+          "expected": "vector(3 \u2215 4,1 \u2215 4)"
+        },
+        {
+          "input": "replace((replace((replace((replace((qindexedproducttraces(qindexedentries(\"P_\",0,qsub('m',1),vector()),'\u03c1')),\"P_1\",[1,i;-i,1]/2)),\"m\",2)),\"\u03c1\",[2,i;-i,2]/4)),\"P_0\",[1,-i;i,1]/2)",
+          "expected": "vector(1 \u2215 4,3 \u2215 4)"
+        }
+      ]
+    }
+  ]
+}

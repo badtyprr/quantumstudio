@@ -67,6 +67,19 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Each Born probability pairs one indexed effect with the same density.
+born_source = r"""$$
+\bigl(\operatorname{Tr}(P_0 \rho),\ldots,\operatorname{Tr}(P_{m-1} \rho)\bigr)
+$$"""
+born_copy = data("quantum:" + born_source)["copy_text"]
+assert "qindexedproducttraces" in born_copy and data("quantum:" + born_copy)["copy_text"] == born_copy
+for density, expected in [("[2,-i;i,2]/4", "vector(3 ∕ 4,1 ∕ 4)"), ("[2,i;-i,2]/4", "vector(1 ∕ 4,3 ∕ 4)")]:
+    bound = born_copy
+    for key, value in [('"P_1"', "[1,i;-i,1]/2"), ('"m"', "2"), ('"ρ"', density), ('"P_0"', "[1,-i;i,1]/2")]:
+        bound = f"replace(({bound}),{key},{value})"
+    assert data("quantum:" + bound)["copy_text"] == expected
+run("quantum:" + born_source.replace(r"P_{m-1} \rho", r"P_{m-1} \sigma"), "--json", success=False)
+
 # Both endpoints must apply the same operation to the same indexed family.
 for displayed, expected in [
     (r"$P_0^{T},\ldots,P_{m-1}^{T}$", "vector(matrix(2,2,[1,i,−i,1]),matrix(2,2,[4,0,0,9]))"),
