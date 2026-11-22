@@ -68,6 +68,12 @@ int main(){try {
  registerQuantumAlgebra(calculator);
 #endif
  eo.approximation=APPROXIMATION_EXACT;
+ const MathStructure left=calculator.calculate("[1,2;3,4]",eo),right=calculator.calculate("[4,3;2,1]",eo);
+ MathStructure sum=left+right;sum.eval(eo);
+ if(!sum.equals(calculator.calculate("[5,5;5,5]",eo)) ||
+    !left.equals(calculator.calculate("[1,2;3,4]",eo)) || !right.equals(calculator.calculate("[4,3;2,1]",eo)))
+  throw std::runtime_error("Matrix addition must add both operands and preserve their values");
+ ++checks;
  matrixProducts();
  equal("matrix(1,2,[1,2])*matrix(2,1,[3,4])","11");
  for(const char *source:{"qmul(qdag(operatorparam(\"A\",2,unitary)),operatorparam(\"A\",2,unitary))",

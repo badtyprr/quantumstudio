@@ -485,7 +485,7 @@ MathStructure MathStructure::operator / (const MathStructure &o) const {
 MathStructure MathStructure::operator + (const MathStructure &o) const {
 	MathStructure o2(*this);
 	o2.add(o);
-	return o;
+	return o2;
 }
 MathStructure MathStructure::operator - (const MathStructure &o) const {
 	MathStructure o2(*this);
