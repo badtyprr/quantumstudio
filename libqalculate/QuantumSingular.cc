@@ -117,6 +117,24 @@ bool quantumSchattenNorm(MathStructure &out,const MathStructure &matrix,const Ma
   if((!frobenius && ((re.isInterval() && !re.intervalToPrecision(12)) || (im.isInterval() && !im.intervalToPrecision(12)))) || !std::isfinite(re.lowerEndPoint().floatValue()) || !std::isfinite(re.upperEndPoint().floatValue()) || !std::isfinite(im.lowerEndPoint().floatValue()) || !std::isfinite(im.upperEndPoint().floatValue())) {CALCULATOR->error(true,"Operator norm entries must fit floating-point range without broad uncertainty.",NULL);return false;}
   re.square();im.square();re.add(im);weight.add(re);if(!frobenius)entry(ket,r*cols+c,0)=value;
  }
+ // For two singular values, (s1+s2)^2 is the sum of squared entry
+ // magnitudes plus twice the magnitude of the determinant.
+ if(rows==2 && cols==2 && order.isOne() && !order.isApproximate() && !matrix.isApproximate() &&
+    !matrix.containsInterval() && eo.approximation!=APPROXIMATION_APPROXIMATE) {
+  auto *absolute=CALCULATOR->getFunction("abs");
+  if(absolute) {
+   EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
+   MathStructure det=entry(matrix,0,0)*entry(matrix,1,1)-entry(matrix,0,1)*entry(matrix,1,0);
+   det.eval(exact);
+   MathStructure squared(absolute,&det,NULL);squared*=2;
+   for(size_t r=0;r<2;++r)for(size_t c=0;c<2;++c) {
+    MathStructure magnitude(absolute,&entry(matrix,r,c),NULL);
+    magnitude.raise(Number(2));squared+=magnitude;
+   }
+   squared.eval(exact);squared.raise(Number(1,2));squared.eval(exact);
+   if(!squared.isApproximate() && squared.representsNonNegative()) {out=squared;return true;}
+  }
+ }
  if(!weight.sqrt())return false;
  // Frobenius norms use interval-safe arithmetic throughout. Near-zero
  // cancellation may have little relative precision but still a useful bound.
