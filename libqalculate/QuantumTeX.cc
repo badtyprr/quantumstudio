@@ -420,7 +420,7 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
 }
 // Recognize a complete scalar argument before ordinary subscript handling
 // flattens its grouped upper endpoint. No general ellipsis token is enabled.
-std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
+std::string indexedProduct(const std::string &input,size_t start,size_t &end,bool scalarOnly=false) {
  size_t at=start;
  auto space=[&]() {while(at<input.size() && asciiSpace((unsigned char)input[at]))++at;};
  auto token=[&](const std::string &text) {space();if(input.compare(at,text.size(),text)!=0)return false;at+=text.size();return true;};
@@ -447,6 +447,7 @@ std::string indexedProduct(const std::string &input,size_t start,size_t &end) {
  token("\\,");
  if(token("\\cdots")) {
   token("\\,");
+  if(scalarOnly)return "";
   if(!factor(lastFirst,lowerA) || first!=lastFirst || lowerA!="1" ||
      first.size()!=1 || first[0]<'A' || first[0]>'Z')return "";
   if(!(upperA.size()==1 && asciiLetter(upperA[0])) &&
@@ -1188,7 +1189,7 @@ class TeXReader {
   if((input.compare(pos,6,"\\cdots")!=0 && input.compare(pos,6,"\\ldots")!=0) ||
      (pos+6<input.size() && asciiLetter(input[pos+6])))return false;
   const size_t equals=result.find('=');
-  if(equals==std::string::npos && !binaryWords)return false;
+  if(equals==std::string::npos && (!binaryWords || setBound))return false;
   std::string first=trim(equals==std::string::npos ? result : result.substr(equals+1));
   const std::string word=equals==std::string::npos ? first.substr(0,first.find('_')) : trim(result.substr(0,equals));
   if(word.empty() || !std::all_of(word.begin(),word.end(),asciiLetter) ||
@@ -2528,6 +2529,11 @@ class TeXReader {
     if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
      if(!series.empty()) {result+=series;continue;}
+    }
+    if(binaryWords && !preceding.empty() && preceding.back()=='+' && asciiLetter(input[pos])) {
+     size_t end=pos;
+     std::string product=indexedProduct(input,pos,end,true);
+     if(!product.empty()) {result+=product;pos=end;continue;}
     }
     if(preceding.empty() || preceding.back()==',') {
      size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end);

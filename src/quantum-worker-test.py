@@ -93,6 +93,20 @@ range_query = data(r"quantum:oracles:$f(x_{1}\cdots x_0)=1$")["copy_text"]
 range_query = f'replace(replace(({range_query}),"x_0",1),"x_1",0)'
 assert data(f'quantum:replace(({range_query}),"f",qset(vector(qtuple(vector(qbitlabel(1,2),1)))) )')["copy_text"] == "1"
 
+# A register declaration scopes the word inside the oracle argument.
+phase_sum = data(r"quantum:oracles:$\sum_{x_1\cdots x_0 \in \Sigma^2} f(x_1\cdots x_0)$")["copy_text"]
+truth_table = "qset(vector(" + ",".join(
+    f"qtuple(vector(qbitlabel({i},2),{int(i != 0)}))" for i in range(4)
+) + "))"
+assert data(f'quantum:replace(({phase_sum}),"f",{truth_table})')["copy_text"] == "3"
+
+nested_phase = data(
+    r"quantum:oracles:$\sum_{x_{n-1}\cdots x_0\in\Sigma^n}"
+    r"\sum_{y_{n-1}\cdots y_0\in\Sigma^n}"
+    r"(-1)^{f(x_{n-1}\cdots x_0)+x_{n-1}y_{n-1}+\cdots+x_0y_0}$"
+)["copy_text"]
+assert data(f'quantum:replace(replace(({nested_phase}),"f",{truth_table}),n,2)')["copy_text"] == "4"
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]
