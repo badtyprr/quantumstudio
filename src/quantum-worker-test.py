@@ -35,6 +35,28 @@ assert data("quantum:1=1,000=0")["copy_text"] == "1"
 for malformed in ("1,00,000", "1234,567", "1,2345", "1,234,"):
     run("quantum:N=" + malformed, "--json", success=False)
 
+# IBM-009 and IBM-012 specify only the first block column of U.
+block_column = r"""U=\begin{pmatrix}
+A_{0} & \fbox{?} & \cdots & \fbox{?} \\[1mm]
+A_{1} & \fbox{?} & \cdots & \fbox{?} \\[1mm]
+\vdots & \vdots & \ddots & \vdots \\[1mm]
+A_{N-1} & \fbox{?} & \cdots & \fbox{?}
+\end{pmatrix}"""
+for count in ("N", "m"):
+    copied = data("quantum:" + block_column.replace("N", count))["copy_text"]
+    assert data("quantum:" + copied)["copy_text"] == copied
+    bound = f"replace(replace(replace(({copied}),{count},2),A_0,[1,0;0,0]),A_1,[0,0;0,1])"
+    for completion, expected in [("[1,0,0,0;0,0,1,0;0,0,0,1;0,1,0,0]", "1"),
+                                 ("[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]", "1"),
+                                 ("[0,0,0,0;0,0,1,0;0,0,0,1;0,1,0,0]", "0")]:
+        assert data(f"quantum:replace(({bound}),U,{completion})")["copy_text"] == expected
+for last in ("2", "n"):
+    braced = block_column.replace("{N-1}", "{" + last + "}")
+    bare = braced.replace("{0}", "0").replace("{1}", "1").replace("{" + last + "}", last)
+    assert data("quantum:" + braced)["copy_text"] == data("quantum:" + bare)["copy_text"]
+for invalid_label in ("A_{2}", "B_{1}"):
+    run("quantum:" + block_column.replace("A_{1}", invalid_label), "--json", success=False)
+
 for heading in (r"\cdot", "·", "*", "+"):
     table = r"\begin{array}{c|c}" + heading + r" & 0\\\hline 0 & 0\end{array}"
     copied = data("quantum:" + table)["copy_text"]

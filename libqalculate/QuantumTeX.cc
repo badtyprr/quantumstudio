@@ -662,12 +662,19 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
      if(r==height-1 && c==0)continue;
      std::string expected=r==height-2 ? (c==width-2 ? diagonal : vertical) :
                           c==width-2 ? horizontal : c==0 ? prefix+std::to_string(r) : fill;
-     if(cells[r][c]!=expected)invalid();
+     // A TeX subscript may group even a single digit, as in A_{0}.
+     if(cells[r][c]!=expected && !(tex && c==0 && r<height-2 &&
+        cells[r][c]==prefix+"{"+std::to_string(r)+"}"))invalid();
     }
    }
    if(cells.back()[0].compare(0,prefix.size(),prefix)!=0)invalid();
    std::string name=quantumTeX(prefix.substr(0,sub))+"_";
-   std::string family=indexedLabelRange(name+"0",name+cells.back()[0].substr(prefix.size()),"qindexedentries(");
+   std::string last=cells.back()[0].substr(prefix.size());
+   if(tex && last.size()>=3 && last.front()=='{' && last.back()=='}') {
+    std::string bound=trim(last.substr(1,last.size()-2));
+    if(bound.find_first_not_of("0123456789")==std::string::npos || (bound.size()==1 && asciiLetter(bound[0])))last=bound;
+   }
+   std::string family=indexedLabelRange(name+"0",name+last,"qindexedentries(");
    if(family.empty())invalid();
    return std::string(fill=="0" ? "qblockcolumn(" : "qopenblockcolumn(")+family+","+std::to_string(height-2)+")";
   }
