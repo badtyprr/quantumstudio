@@ -13,11 +13,13 @@ environment; it does not install or validate the complete dependency profile.
 
 Input is at most 1 MiB, verified LLVM, QIR 1.0, 1.1, or 2.0, with both dynamic resource
 flags false. Exactly one entry point must be void, argument-free, and have one
-basic block ending in return. It declares 1–10 qubits and 0–64 result slots.
+basic block ending in return. It declares 1â€“10 qubits and 0â€“64 result slots.
 The block has at most 4,096 instructions, including return. Calls must be direct
-to external, void, nonvariadic declarations with pointer arguments.
+to external, void, nonvariadic declarations. Rotation calls take a finite
+constant LLVM double angle in radians and a static qubit pointer. The other
+supported calls take pointer arguments.
 
-Supported calls are H, X, Y, Z, S, S-adjoint, T, T-adjoint, CNOT, CZ, MZ,
+Supported calls are H, X, Y, Z, S, S-adjoint, T, T-adjoint, CNOT, CZ, RX, RY, RZ, MZ,
 optional first-call runtime initialization with null data, and result output
 with a null label. Resource IDs must be constant and in range; two-qubit gate
 targets must differ. All other entry instructions and calls reject the input.
@@ -67,7 +69,7 @@ duplicate output, discarded measurement, unitary-only input, and Bell inversion.
 Empty-output cases establish output disposition only, not final state fidelity.
 
 The width extension adds highest-wire basis states and GHZ correlations at every
-width 5–10, bringing the native suite to 21 circuits. The ten-qubit bound matches
+width 5â€“10, bringing the native suite to 21 circuits. The ten-qubit bound matches
 the existing native exact engine; the sampled engine's wider capacity does not
 expand this importer contract. Other native execution budgets still apply: for
 example, exact requests support at most 512 steps, while import validation permits
@@ -102,3 +104,7 @@ Authored measured circuits are separate controls, not acceptance of that source.
 
 Review, hosted CI, packaging, release verification, broader QIR programs and
 CUDA-Q compatibility remain required before the wider checklist can close.
+
+The [rotation checks](dev14-qir-rotations.json) compare exact and sampled
+execution with the analytic energy of the QB-035 cell 17 ansatz at 0.59 radians.
+They use an authored static QIR translation and separate RX and RZ phase checks.
