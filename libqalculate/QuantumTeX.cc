@@ -3226,6 +3226,25 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(listed.size()==2 && std::regex_search(listed[0],marker) && std::regex_search(listed[1],marker))
    return "vector("+nestedTeX(listed[0])+","+nestedTeX(listed[1])+")";
  }
+ // In a decimal basis-action equation the operator supplies the input and
+ // output dimensions. Keep all clauses together until that operator is bound.
+ if(s.find("\\rangle")!=std::string::npos && s.find_first_of("23456789")!=std::string::npos && s.find('=')!=std::string::npos) {
+  static const std::regex action(R"(^\s*([A-Z])\s*\\vert\s*(0|[1-9][0-9]*)\s*\\rangle\s*=\s*\\vert\s*(0|[1-9][0-9]*)\s*\\rangle\s*$)");
+  static const std::regex separator(R"(^\s*(?:\\q?quad\s*)*(?:\\text\{and\}\s*(?:\\q?quad\s*)*)?)");
+  auto clauses=indexedParts(s,",");
+  std::string op,inputs,outputs;
+  bool decimal=false;
+  for(size_t i=0;i<clauses.size();++i) {
+   std::string clause=i ? std::regex_replace(clauses[i],separator,"") : clauses[i];
+   std::smatch m;
+   if(!std::regex_match(clause,m,action) || (i && m[1].str()!=op)) {decimal=false;break;}
+   op=m[1];
+   if(i) {inputs+=",";outputs+=",";}
+   inputs+=m[2];outputs+=m[3];
+   decimal=decimal || m[2].str().find_first_of("23456789")!=std::string::npos || m[3].str().find_first_of("23456789")!=std::string::npos;
+  }
+  if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
+ }
  if(sets && trim(s)=="S")return "\"S\"";
  if(spinNumber) {
   // Only the bare symbol S changes meaning in a declared scalar spin formula.

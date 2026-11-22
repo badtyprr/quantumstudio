@@ -429,6 +429,17 @@ class Printer {
    return Fragment(render(value[0],depth+1).text+" ∈ indexrange("+render(value[1][0],depth+1).text+", "+render(value[1][1],depth+1).text+")",10);
   if(name=="qmember" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" ∈ "+render(value[1],depth+1).text,10);
+  if(name=="qbasistransitions" && value.size()==3 && value[1].isNumber() && value[2].isNumber())
+   return Fragment(render(value[0],depth+1).text+"|"+render(value[1],depth+1).text+"⟩ = |"+render(value[2],depth+1).text+"⟩",10);
+  if(name=="qbasistransitions" && value.size()==3 && value[1].isVector() && value[2].isVector() &&
+     value[1].size() && value[1].size()==value[2].size()) {
+   std::string text,op=render(value[0],depth+1).text;
+   for(size_t k=0;k<value[1].size();++k) {
+    if(k)text+=", ";
+    text+=op+"|"+render(value[1][k],depth+1).text+"⟩ = |"+render(value[2][k],depth+1).text+"⟩";
+   }
+   return Fragment(text,10);
+  }
   if(name=="qmatrixdimensions" && value.size()==2)
    return Fragment(render(value[0],depth+1).text+" × "+render(value[1],depth+1).text);
   if(name=="qbinarytail" && value.size()==2)
