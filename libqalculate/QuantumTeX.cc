@@ -1323,6 +1323,24 @@ class TeXReader {
    if(take(size.first)) {closingSize=size.second;break;}
   }
   if(!take("("))return "";
+  // The joint table is indexed first by the row system, then by the
+  // column system. Conditioning on a row uses that same table.
+  static const std::string system=R"(\\mathsf\s*\{\s*([A-Za-z]+)\s*\})";
+  static const std::string index=R"((0|[1-9][0-9]*|[A-Za-z]))";
+  static const std::regex joint(R"(\s*\(\s*)"+system+R"(\s*,\s*)"+system+R"(\s*\)\s*=\s*\(\s*)"+index+R"(\s*,\s*)"+index+R"(\s*\))");
+  static const std::regex conditional(R"(\s*)"+system+R"(\s*=\s*)"+index+R"((?:\s|\\[,;!])*(?:\\vert\b|\\mid\b|\|)(?:\s|\\[,;!])*)"+system+R"(\s*=\s*)"+index);
+  std::smatch match;
+  bool conditioned=false;
+  if(!std::regex_search(input.cbegin()+at,input.cend(),match,joint,std::regex_constants::match_continuous))
+   conditioned=std::regex_search(input.cbegin()+at,input.cend(),match,conditional,std::regex_constants::match_continuous);
+  if(!match.empty()) {
+   at+=match.length();
+   if((!closingSize.empty() && !take(closingSize)) || !take(")"))return "";
+   std::string row=match[conditioned ? 3 : 1],col=match[conditioned ? 1 : 2];
+   pos=at;
+   return std::string(conditioned ? "qconditionalprob(" : "qjointprob(")+"\""+row+","+col+"\","+
+          match[conditioned ? 4 : 3].str()+","+match[conditioned ? 2 : 4].str()+")";
+  }
   std::string distribution;
   bool prose=take("\\text");
   if(prose) {
@@ -1340,8 +1358,9 @@ class TeXReader {
   bool inlineMath=prose && take("$");
   space();size_t first=at;
   std::string outcome;
-  if(inlineMath && at<input.size() && asciiLetter(input[at])) {
-   outcome="\""+input.substr(at++,1)+"\"";
+  if((inlineMath || !prose) && at<input.size() && asciiLetter(input[at])) {
+   outcome=input.substr(at++,1);
+   if(prose)outcome="\""+outcome+"\"";
   } else {
    while(at<input.size() && std::isdigit((unsigned char)input[at]))++at;
    if(at==first || (at>first+1 && input[first]=='0'))return "";

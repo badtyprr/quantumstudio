@@ -24,6 +24,26 @@ def data(expression, *flags):
     return value
 
 
+# Joint events keep the system order. Conditional probabilities divide by
+# the marginal of the system after the bar, including on rectangular tables.
+event = data(r"quantum:$\operatorname{Pr}(\mathsf{Y}=b\mid\mathsf{X}=a)$")
+assert event["display_text"] == "Pr(Y = b | X = a)"
+assert data("quantum:"+event["copy_text"]) == event
+for expr, expected in [("qjointprob([1/8,1/4,1/8;1/4,0,1/4],0,1)", "1 ∕ 4"),
+                       ("qconditionalprob([1/8,1/4,1/8;1/4,0,1/4],0,1)", "1 ∕ 2"),
+                       ("qconditionalprob(matrix(1,2,[1/4,3/4]),0,1)", "3 ∕ 4"),
+                       ("qconditionalprob(matrix(2,1,[1/4,3/4]),1,0)", "1")]:
+    assert data("quantum:"+expr)["copy_text"] == expected
+for expr, diagnostic in [("qconditionalprob([0,0;1,0],0,0)", b"probability zero"),
+                         ("qjointprob([1,1;0,0],0,0)", b"sum to one"),
+                         ("qjointprob([1/2,1;0,-1/2],0,0)", b"between zero and one"),
+                         ("qjointprob([0,0;0,1],0,2)", b"outside"),
+                         ("qjointprob([0,0;0,1],0,1/2)", b"nonnegative integer")]:
+    assert diagnostic in run("quantum:"+expr, "--json", success=False).stderr
+summed = data(r"quantum:$\sum_{c\in\Gamma}\operatorname{Pr}((\mathsf{X},\mathsf{Y})=(a,c))$")["copy_text"]
+bound = f'replace(replace(replace(({summed}),"X,Y",[1/8,3/8;1/4,1/4]),"Γ",qset(vector(0,1))),"a",0)'
+assert data("quantum:"+bound)["copy_text"] == "1 ∕ 2"
+
 # A tuple with descending indices keeps its order and substitution history.
 reverse = data(r"quantum:$(a_{n-1},\ldots,a_0)$")["copy_text"]
 assert data("quantum:" + reverse)["copy_text"] == reverse
