@@ -168,10 +168,10 @@ bool quantumTraceDistance(MathStructure &out,const MathStructure &first,const Ma
  MathStructure validation;
  if(!quantumEntropy(validation,first,eo) || !quantumEntropy(validation,second,eo))return false;
  size_t n=first.rows();EvaluationOptions numeric=eo;numeric.approximation=APPROXIMATION_APPROXIMATE;
- if(n==2 && first.columns()==2 && second.columns()==2 && eo.approximation!=APPROXIMATION_APPROXIMATE &&
-    exactQubitMetric(out,first,second,eo,fidelity))return true;
- if(fidelity && n>2 && first.columns()==n && second.columns()==n && eo.approximation!=APPROXIMATION_APPROXIMATE &&
-    exactPureDensityFidelity(out,first,second,eo))return true;
+ if(first.columns()==n && second.columns()==n && eo.approximation!=APPROXIMATION_APPROXIMATE && CALCULATOR->getFunction("conj")) {
+  if(n==2 && exactQubitMetric(out,first,second,eo,fidelity))return true;
+  if(n>2 && fidelity && exactPureDensityFidelity(out,first,second,eo))return true;
+ }
  // For two kets, form the inner product before squaring. Density matrices
  // introduce cancellation and double underflow for nearly orthogonal states.
  if(fidelity && first.columns()==1 && second.columns()==1) {
