@@ -50,6 +50,8 @@ for count in ("N", "m"):
                                  ("[1,0,0,0;0,0,0,1;0,0,1,0;0,1,0,0]", "1"),
                                  ("[0,0,0,0;0,0,1,0;0,0,0,1;0,1,0,0]", "0")]:
         assert data(f"quantum:replace(({bound}),U,{completion})")["copy_text"] == expected
+spaced = block_column.replace("{0}", "{ 0 }").replace("{1}", "{1 }")
+assert data("quantum:" + spaced)["copy_text"] == data("quantum:" + block_column)["copy_text"]
 for last in ("2", "n"):
     braced = block_column.replace("{N-1}", "{" + last + "}")
     bare = braced.replace("{0}", "0").replace("{1}", "1").replace("{" + last + "}", last)
