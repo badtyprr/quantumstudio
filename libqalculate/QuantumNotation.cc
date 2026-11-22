@@ -434,6 +434,7 @@ class Parser {
  std::vector<std::string> declaredGates;
  bool costContext=false;
  bool basisXorContext=false;
+ bool binaryOracles=false;
  size_t lastKetEnd=std::string::npos;
  int diracKind=0; // 1: a ket, 2: a bra; zero: another expression.
  std::string s; size_t p = 0; unsigned depth = 0, nodes = 0, nodeLimit = 512;
@@ -2030,17 +2031,22 @@ class Parser {
     }
     if(publicName=="O")name="qbigorder";
     if(name=="p" && args.size()==2 && !costContext)name="qprobabilitycall";
-    if(basisXorContext && (name=="f" || name=="g" || name=="h") && args.size()==1) {
+    const bool oracleName=name=="f" || name=="g" || name=="h";
+    if(binaryOracles && oracleName && args.size()!=1)throw std::runtime_error("A binary oracle requires one word argument.");
+    if((basisXorContext || binaryOracles) && oracleName && args.size()==1) {
      std::string key=args[0];
      size_t begin=0,end=key.size();
      while(end>begin+1 && key[begin]=='(' && key[end-1]==')') {++begin;--end;}
      key=key.substr(begin,end-begin);
      if(!key.empty() && key.find_first_not_of("0123456789.")==std::string::npos) {
       if(key.find_first_not_of("01")!=std::string::npos)throw std::runtime_error("A binary oracle key requires a word of zeros and ones.");
+      if(key.size()>1024)throw std::runtime_error("A binary oracle key supports at most 1024 bits.");
       args[0]="qbitlabel("+binaryNumeral(key)+","+std::to_string(key.size())+")";
+     } else if(binaryOracles && key.size()==1 && key[0]>='a' && key[0]<='z') {
+      args[0]=indexableLabel(key);
      }
      args.insert(args.begin(),indexableLabel(name));
-     name=key.size()==1 && std::isalpha(static_cast<unsigned char>(key[0])) ? "qnamedapplication" : "qgraphapply";
+     name=!binaryOracles && key.size()==1 && std::isalpha(static_cast<unsigned char>(key[0])) ? "qnamedapplication" : "qgraphapply";
     }
     if((costContext && name=="lg") || name=="bitlength")name="qbitlength";
     scopeIndex(name,args);
@@ -2058,6 +2064,7 @@ class Parser {
     if(name=="sum" && args.size()==4)name="qsum";
     a=name+"(";
     for(size_t k=0;k<args.size();++k){if(k)a+=",";a+=args[k];checkSize(a);}a+=")";
+    if(binaryOracles && oracleName)a="qcontrolbit("+a+")";
     if(publicName=="cost") {
      if(args.size()!=1)throw std::runtime_error("cost() requires one expression.");
      a=args[0];
@@ -3022,7 +3029,7 @@ class Parser {
   return result;
  }
  public:
- explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),s(text) {}
+ explicit Parser(std::string text,bool spin=false,bool sets=false,bool scalars=false,bool modular=false,bool oracles=false):spinContext(spin),setNotation(sets),scalarNotation(scalars),modularPowers(modular),binaryOracles(oracles),s(text) {}
  std::string run() {
   auto out=expression(true);ws();
   if(p!=s.size())throw std::runtime_error("Unexpected notation at byte "+std::to_string(p+1));
@@ -3089,11 +3096,13 @@ std::string translateQuantum(const std::string &expression) {
  for(const auto &pair : std::map<std::string,std::string>{{"≤","<="},{"≥",">="},{"≼","<="},{"≽",">="},{"⪯","<="},{"⪰",">="},{"≺","<"},{"≻",">"},{"≠","!="},{"∧"," and "},{"∨"," or "},{"¬"," not "},{"⊻"," xor "}})replaceAll(s,pair.first,pair.second);
  const size_t first=s.find_first_not_of(" \t\r\n");
  const bool modular=first!=std::string::npos && s.compare(first,10,"modpowers:")==0;
+ const bool oracles=first!=std::string::npos && s.compare(first,8,"oracles:")==0;
+ if(oracles)s.erase(first,8);
  bool sets=false,scalars=false;
  s=quantumTeX(s,nullptr,&sets,&scalars);
  if(s.find_first_of("\r\n")!=std::string::npos)s=quantumWhitespace(s);
  for(const auto &pair : std::map<std::string,std::string>{{"σ_x","X"},{"σ_y","Y"},{"σ_z","Z"}}) replaceAll(s,pair.first,pair.second);
  replaceAll(s,"^{~}","~"); replaceAll(s,"^~","~");
  bool spin=false;s=expandIndexedSpin(unicodePowers(s),spin);
- return Parser(s,spin,sets,scalars || modular,modular).run();
+ return Parser(s,spin,sets,scalars || modular,modular,oracles).run();
 }

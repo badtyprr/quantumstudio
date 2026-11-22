@@ -216,11 +216,11 @@ class QuantumBinaryFunction: public MathFunction {
    out.set(CALCULATOR->getFunction(graph ? "qgraphapply" : "qmul"),&a,&args[1],NULL);return 1;
   }
   if(op=="qgraphapply") {
-   if(!a.isFunction() || a.function()->referenceName()!="qset")return 0;
    if(!isQuantumBitLabel(args[1])) {
     if(!args[1].containsUnknowns())CALCULATOR->error(true,"A binary function graph requires a bit-string input.",NULL);
     return 0;
    }
+   if(!a.isFunction() || a.function()->referenceName()!="qset")return 0;
    return applyQuantumBinaryGraph(out,a,args[1],eo);
   }
   if(op=="qcenterdot") {

@@ -1277,6 +1277,12 @@ The result displays its integer-index conditions. Copy result retains both the s
 
 Copy/re-entry may normalize equivalent scalar formatting, such as `1/sqrt(N)` to `1/N^0.5`; it preserves evaluation and domain checks. Use Copy result for re-entry of the full conditional expression. A bare named ket such as `QFT_N|x>` does not declare x to be an integer basis index and is not expanded by this rule. General Fourier identities and unspecified basis declarations remain separate work.
 
+## Binary oracle queries
+
+Select **Binary oracles** when a lesson defines `f`, `g`, or `h` as a function from binary words to a single bit. For example, `(-1)^{f(0)}` retains the lookup until you assign the function's truth table. Leading zeros specify the width, so `f(01)` and `f(1)` query different keys. The worker prefix is `quantum:oracles:`.
+
+For example, enter `replace(f(0),f,qset(vector(qtuple(vector(qbitlabel(0,1),1)),qtuple(vector(qbitlabel(1,1),0)))))` in Binary oracles mode. This assigns the two one-bit inputs the outputs 1 and 0 respectively, so the result is 1. Use **Binary word** for adjacent outputs such as `f(0)f(1)` when the lesson calls them a string.
+
 ## Binary fractions with an open tail
 
 Select **Binary fraction** when the surrounding text identifies a radix-two expansion. For example, paste `0.a_1 a_2 a_3\cdots` or `a_1. a_2 a_3\cdots`. If the three printed bits form the integer B and the remaining fraction is t, these give (B + t)/8 and (B + t)/4 respectively.

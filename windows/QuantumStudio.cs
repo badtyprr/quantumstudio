@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Web.Script.Serialization;
 
 class QuantumStudio {
- static readonly string[] requestPrefixes={"quantum:","","quantum:sets:","quantum:dimensions:","quantum:fractionbits:","quantum:bitword:","quantum:scalars:","quantum:modpowers:","quantum:binarylogs:"};
+ static readonly string[] requestPrefixes={"quantum:","","quantum:sets:","quantum:dimensions:","quantum:fractionbits:","quantum:bitword:","quantum:scalars:","quantum:modpowers:","quantum:binarylogs:","quantum:oracles:"};
  static Window window;
  static TextBox input, output;
  static string copyText;
