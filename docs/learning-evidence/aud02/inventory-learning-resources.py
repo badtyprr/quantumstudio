@@ -24,6 +24,8 @@ tasks={
     "exam":"Verify the exam instructions and authorized assessment route.",
     "practice":"Review the question, its answer or rubric, and reproduce any calculation.",
     "exercise-part":"Carry out the named part and verify its output against the exercise requirements.",
+    "exercise-prose":"Reconstruct the assigned exercise from the paragraph and verify the result or worked solution.",
+    "exercise-code":"Read the accompanying prompt and independently verify the marked code cell or supplied solution.",
     "exercise-solution":"Check the supplied solution against the original exercise.",
     "practice-panel":"Review the prompt preceding or naming the panel, and verify the answer, hint or rubric.",
     "reading-panel":"Read the expanded explanation and verify its worked examples.",
@@ -32,6 +34,10 @@ tasks={
     "tutorial":"Follow the referenced tutorial and reproduce its worked examples.",
     "reference":"Verify the linked material and classify any additional learning content.",
     "image":"Inspect the figure and verify any information needed to reproduce the example."}
+# Direct assignments embedded in ordinary paragraphs have no heading or panel.
+assigned_exercise = re.compile(
+    r"\b(?:as an exercise|try this (?:on your own|yourself))\b", re.I
+)
 def add(kind,target,cell):
     key=kind+"\n"+target
     id="LR-"+hashlib.sha256(key.encode()).hexdigest()[:16]
@@ -105,6 +111,14 @@ for path,meta in sorted(listed.items()):
     if p.suffix==".ipynb":
         add("notebook","github:Qiskit/documentation/"+path,0)
         notebook_cells=json.loads(raw)["cells"]
+        for i, cell in enumerate(notebook_cells):
+            if cell["cell_type"] != "code":
+                continue
+            source = "".join(cell["source"])
+            # IBM retains these learner markers even in some fully worked solutions.
+            if re.search(r"#+[ \t]*your code (?:goes )?here[ \t]*#*[ \t]*$", source, re.I | re.M):
+                cell_id = cell.get("id") or i
+                add("exercise-code", f"{path}#cell={cell_id}", i)
         cells=[(i,"".join(c["source"])) for i,c in enumerate(notebook_cells) if c["cell_type"]=="markdown"]
     else:cells=[(0,raw.decode("utf8"))]
     seen={}
@@ -120,7 +134,14 @@ for path,meta in sorted(listed.items()):
         Components(i,source_id).feed(clean)
         plain=re.sub(r"</?[A-Z][\w.]*\b(?:[^>\"']|\"[^\"]*\"|'[^']*')*>","",clean)
         parsed=parser.parse(plain)
+        paragraph_exercise = 0
         for j,tok in enumerate(parsed):
+            if tok.type == "paragraph_open":
+                inline = parsed[j+1]
+                prose = " ".join(t.content for t in inline.children or [] if t.type == "text")
+                if assigned_exercise.search(prose):
+                    paragraph_exercise += 1
+                    add("exercise-prose", f"{path}#cell={source_id}&assignment={paragraph_exercise}", i)
             if tok.type!="heading_open":continue
             level=int(tok.tag[1:])
             label=parsed[j+1].content.strip()
