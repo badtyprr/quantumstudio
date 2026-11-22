@@ -1626,18 +1626,7 @@ class Parser {
      a=function+"("+body+","+label+","+rows+","+(general ? columns : property)+")";
     } else if(name=="qsubsystems" || name=="qptraceselect" || name=="qptraceregisters") {
      std::string state=expression();need(',');std::string labels=subsystemLabels(true);need(',');
-     size_t start=p;std::string argument=expression();
-     // Copy prints an ordinary scalar product as adjacent quoted factors.
-     // Retain that product as a possible numeric index, including a later
-     // replacement of the entire monomial. Operator adjacency has different structure.
-     if(name=="qptraceregisters" && p-start<=105 && s.compare(start,7,"vector(")==0) {
-      size_t at=start+7;std::string product;
-      while(at+3<=p && s[at]=='\'' && s[at+1]>='A' && s[at+1]<='Z' && s[at+2]=='\'') {
-       if(!product.empty())product+="*";
-       product+="\"" + s.substr(at+1,1) + "\"";at+=3;
-      }
-      if(at>=start+13 && at+1==p && s[at]==')')argument="vector("+product+")";
-     }
+     std::string argument=expression();
      need(')');a=name+"("+state+","+labels+","+argument+")";
     } else if(name=="qschmidt" || name=="qptrace" || name=="qptranspose" || name=="qpermute" || name=="qnegativity" || name=="qlognegativity") {
      std::string state=expression(); need(',');size_t selectorStart=p;unsigned selectorNodes=nodes;
