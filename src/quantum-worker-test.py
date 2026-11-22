@@ -80,6 +80,26 @@ for candidate, expected in [
     assert data(f"quantum:replace(({effects}),U,{candidate})")["copy_text"] == expected
 run("quantum:" + measurement_column.replace(r"\sqrt{P_1}", "P_1"), "--json", success=False)
 
+# The double sum in the measurement dilation uses the first index for
+# block rows and the second for block columns. Its middle matrix stays free.
+measurement_sum = r"\sum_{a,b=0}^{m-1} \vert a\rangle \langle b \vert \otimes \sqrt{P_a} \rho \sqrt{P_b}"
+state_equation = r"\sigma = U (\vert 0\rangle \langle 0 \vert \otimes \rho) U^{\dagger} = " + measurement_sum
+bell_density = "[1,0,0,1;0,0,0,0;0,0,0,0;1,0,0,1]/2"
+assignments = [("P_1", "[0,0;0,1]"), ("m", "2"), ("U", "[1,0,0,0;0,0,1,0;0,0,0,1;0,1,0,0]"),
+               ("ρ", "[1,1;1,1]/2"), ("P_0", "[1,0;0,0]")]
+copied_state = data("quantum:" + state_equation)["copy_text"]
+assert data("quantum:" + copied_state)["copy_text"] == copied_state
+for equation, order in [(state_equation, assignments), (copied_state, reversed(assignments))]:
+    for label, value in order:
+        equation = f'replace(({equation}),"{label}",{value})'
+    for value, truth in [(bell_density, "1"), ("[1,0,0,0;0,0,0,0;0,0,0,0;0,0,0,0]", "0")]:
+        assert data(f'quantum:replace(({equation}),"σ",{value})')["copy_text"] == truth
+single_outcome = f'replace(replace(replace(({measurement_sum}),"P_0",[1,0;0,1]),"m",1),"ρ",[0,0;0,1])'
+assert data("quantum:" + single_outcome)["copy_text"] == "matrix(2,2,[0,0,0,1])"
+for altered in [measurement_sum.replace("P_b", "P_a"), measurement_sum.replace("P_b", "Q_b"),
+                measurement_sum.replace(r"\rho", "a"), measurement_sum.replace(r"\langle b", r"\langle a")]:
+    assert "qmeasurementblocks" not in data("quantum:" + altered)["copy_text"]
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]
