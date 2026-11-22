@@ -6,7 +6,7 @@ The public English course and module directories showed the same 15 course and 1
 
 ## Resource queue
 
-ibm-resource-inventory.json lists 1,659 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
+ibm-resource-inventory.json lists 1,682 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
 
 | Resource | Targets |
 | --- | ---: |
@@ -15,6 +15,8 @@ ibm-resource-inventory.json lists 1,659 typed targets. Each target has an ID der
 | Notebook | 141 |
 | Overview | 19 |
 | Practice headings | 148 |
+| Code cells marked for the learner | 10 |
+| Practice assigned in ordinary paragraphs | 13 |
 | Tasks within numbered exercises | 4 |
 | Solutions within numbered exercises | 3 |
 | Expandable answers, hints and practice questions | 178 |
@@ -22,6 +24,8 @@ ibm-resource-inventory.json lists 1,659 typed targets. Each target has an ID der
 | Reference | 574 |
 | Tutorial | 15 |
 | Video | 106 |
+
+The ten code cells retain explicit learner markers. Several already contain IBM's solution, including the XX, HH and HZH circuits. Each cell has one target even when the marker appears on several lines. Thirteen prose paragraphs explicitly assign independent work, including a commutator calculation, a channel check and five parts of the utility-scale simulation. A prompt and its solution cell can be separate targets. Additional exercise wording and external resources remain under review.
 
 Nine numbered section headings identify exercises, including a QFT calculation and a second-order Suzuki–Trotter simulation. Its four tasks cover circuit construction, evolution, plotting and comparison with exact results. Three solution sections are indexed under the phase-estimation and variational exercises. Practice detection covers explicit exercise headings and all 197 expandable panels in this revision. Panels include 171 answer keys, two sets of hints, one guidance panel, four questions named in their titles, and 19 supplementary readings. Each panel has a source location and a separate audit task. A question heading and its answer panel can belong to the same exercise. A prose question without a label may require manual inventory. The queue includes the 69 distinct IBM video IDs, external video links, overview pages, assessment pages and launch destinations, notebook sources, illustrations and tutorial links. Ordinary links remain reference-review tasks. External destinations, authenticated assessment content, playback and exercises still require source-specific acceptance.
 
