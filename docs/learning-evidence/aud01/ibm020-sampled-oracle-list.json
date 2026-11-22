@@ -1,0 +1,23 @@
+{
+  "source_revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "source": "learning/courses/fundamentals-of-quantum-algorithms/quantum-query-algorithms/deutsch-jozsa-algorithm.ipynb",
+  "sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+  "occurrence": 80,
+  "literal": "$f(x^1),\\ldots,f(x^k)$",
+  "mode": "Binary oracles",
+  "copy": "qoraclequeries('f',qindexedentries(\"x^\",1,'k',vector()))",
+  "oracle_tables": 20,
+  "ordered_sequence_checks": 160,
+  "rejections": 6,
+  "sample_orders": [
+    "last",
+    "first, last, first",
+    "all in descending order",
+    "last, last, first, last"
+  ],
+  "replacement_orders": [
+    "count, graph, samples in order",
+    "samples in reverse, graph, count"
+  ],
+  "expected": "For each sample v the output is bit v of the truth-table mask, retaining duplicates and sample order."
+}
