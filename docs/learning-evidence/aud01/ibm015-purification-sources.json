@@ -69,5 +69,83 @@
         }
       }
     }
-  ]
+  ],
+  "windows": {
+    "inputs": "Evaluated state columns and reductions of those columns. The source replay supplies the state family separately.",
+    "worker_sha256": "ef982addd0ef8d676708f76e5d7e73396610200c7901ed3c0efe2d0ff933e1ec",
+    "sessions": [
+      {
+        "id": "M083-state",
+        "expected": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])",
+        "label": "EXACT RESULT",
+        "copy": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "matrix(4,1,[(1 + 2 ∕ √(2)) ∕ (2 ⋅ √(2)),(1 − 2 ∕ √(2)) ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2)),1 ∕ (2 ⋅ √(2))])"
+      },
+      {
+        "id": "M083-X",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M083-Y",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M083-wrong-axis",
+        "expected": "0",
+        "label": "EXACT RESULT",
+        "copy": "0",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "0"
+      },
+      {
+        "id": "M091-state",
+        "expected": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])",
+        "label": "EXACT RESULT",
+        "copy": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "matrix(4,1,[1 ∕ √(2),1 ∕ 2,0,1 ∕ 2])"
+      },
+      {
+        "id": "M091-X",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M091-Y",
+        "expected": "1",
+        "label": "EXACT RESULT",
+        "copy": "1",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "1"
+      },
+      {
+        "id": "M091-wrong-axis",
+        "expected": "0",
+        "label": "EXACT RESULT",
+        "copy": "0",
+        "restored_same": true,
+        "reentry_label": "EXACT RESULT",
+        "second_copy": "0"
+      }
+    ]
+  }
 }

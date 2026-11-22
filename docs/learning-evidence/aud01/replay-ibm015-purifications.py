@@ -68,11 +68,13 @@ for number in (78, 81, 86):
         for proposal, expected in [(matrix, "1"), (wrong_matrix, "0")]:
             check(f"replace(({expression}),ρ,{proposal})", expected, family)
 
-for number, other_register in [
-    (83, "[(2+sqrt(2))/4,0;0,(2-sqrt(2))/4]"),
-    (91, "[1/2,1/(2*sqrt(2));1/(2*sqrt(2)),1/2]"),
+for number, column, other_register in [
+    (83, "[(2+sqrt(2))/4;-(2-sqrt(2))/4;sqrt(2)/4;sqrt(2)/4]", "[(2+sqrt(2))/4,0;0,(2-sqrt(2))/4]"),
+    (91, "[1/sqrt(2);1/2;0;1/2]", "[1/2,1/(2*sqrt(2));1/(2*sqrt(2)),1/2]"),
 ]:
     for state in forms("IBM-015", number):
+        check(f"norm(({state}))", "1", family)
+        check(f"qcompare(({state}),({column}),4)", "1", family)
         density = f"density(({state}))"
         check(f"tr({density})", "1", family)
         for axis, reference in [(1, matrix), (0, other_register)]:
