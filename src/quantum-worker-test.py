@@ -67,6 +67,18 @@ for limit, bound in [("i", "1"), ("i+1", "0")]:
 run("quantum:" + traced.replace(r"\operatorname{Tr}(|v_{n-1}><v_{n-1}|)", "|v_{n-1}><v_{n-1}|"),
     "--json", success=False)
 
+# Conjugate each amplitude while retaining the original column orientation.
+for label in ("u", "v"):
+    ket_list = r"$\vert \overline{@_0} \rangle,\ldots,\vert \overline{@_{n-1}}\rangle$".replace("@", label)
+    copied = data("quantum:" + ket_list)["copy_text"]
+    expr = copied
+    for key, value in [("n", "2"), (f'"{label}_1"', "matrix(2,1,[4i/5,3/5])"), (f'"{label}_0"', "matrix(2,1,[3/5,4i/5])")]:
+        expr = data(f"quantum:replace(({expr}),{key},{value})")["copy_text"]
+    expected = data("quantum:vector(matrix(2,1,[3/5,-4i/5]),matrix(2,1,[-4i/5,3/5]))")["copy_text"]
+    assert expr == expected and data("quantum:" + expr)["copy_text"] == expr
+    bad = f'replace(replace(({copied}),n,1),"{label}_0",[1,0;0,1])'
+    assert b"column states" in run("quantum:" + bad, "--json", success=False).stderr
+
 # Each Born probability pairs one indexed effect with the same density.
 born_source = r"""$$
 \bigl(\operatorname{Tr}(P_0 \rho),\ldots,\operatorname{Tr}(P_{m-1} \rho)\bigr)

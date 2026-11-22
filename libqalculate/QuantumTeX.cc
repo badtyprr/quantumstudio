@@ -1053,6 +1053,19 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  }
  if(entries.size()!=3 || entries[1]!="...")return "";
  std::string first=label(entries.front()),last=label(entries.back());
+ if(ordered) {
+  auto conjugated=[](const std::string &value) {
+   const std::string prefix="(conj(";
+   if(value.size()<=prefix.size()+2 || value.compare(0,prefix.size(),prefix)!=0 ||
+      value.compare(value.size()-2,2,"))")!=0)return std::string();
+   return trim(value.substr(prefix.size(),value.size()-prefix.size()-2));
+  };
+  const std::string begin=conjugated(first),end=conjugated(last);
+  if(!begin.empty() && !end.empty()) {
+   const std::string family=indexedLabelRange(begin,end,"qindexedentries(",true);
+   if(!family.empty())return "qindexedconjugatekets("+family+")";
+  }
+ }
  const std::string basis=ordered ? "qbasiskets(" : "qbasisketset(";
  if(first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
     last.size()==first.size() && last.find_first_not_of("1")==std::string::npos)

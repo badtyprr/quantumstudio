@@ -1323,7 +1323,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2462,7 +2462,7 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
-  if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces") {
+  if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
    if(!entries.size()) {CALCULATOR->error(true,"A displayed indexed list requires ascending endpoints.",NULL);return 0;}
@@ -2473,7 +2473,8 @@ class QuantumIndexedFunction: public MathFunction {
     if(!operand.isVector() && (operand.isSymbolic() || operand.containsUnknowns()))return 0;
     if(!operand.isVector()) {CALCULATOR->error(true,"An indexed trace product requires a matrix operand.",NULL);return 0;}
    }
-   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : "qtranspose");
+   const bool conjugateKets=op=="qindexedconjugatekets";
+   auto transform=CALCULATOR->getFunction(op=="qindexedroots" ? "qsqrt" : conjugateKets ? "conj" : "qtranspose");
    for(size_t i=0;i<entries.size();++i) {
     if(CALCULATOR->aborted())return 0;
     entries[i].eval(eo);
@@ -2501,6 +2502,15 @@ class QuantumIndexedFunction: public MathFunction {
       }
      }
      trace.eval(eo);entries[i]=trace;
+    } else if(conjugateKets) {
+     if(!stateColumn(entries[i])) {
+      CALCULATOR->error(true,"Conjugated ket families require column states.",NULL);return 0;
+     }
+     for(size_t row=0;row<entries[i].rows();++row) {
+      MathStructure &amplitude=element(entries[i],row,0);
+      if(amplitude.isSymbolic() || amplitude.containsUnknowns())return 0;
+      MathStructure mapped(transform,&amplitude,NULL);mapped.eval(eo);amplitude=mapped;
+     }
     } else {
      MathStructure mapped(transform,&entries[i],NULL);mapped.eval(eo);entries[i]=mapped;
     }
@@ -3416,6 +3426,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsubset",2));
  calculator.addFunction(new QuantumIndexedFunction("qfixedspace",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedketlist",4));
+ calculator.addFunction(new QuantumIndexedFunction("qindexedconjugatekets",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
