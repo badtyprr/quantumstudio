@@ -1,0 +1,29 @@
+{
+  "revision": "079769d205eb3b60e077820060274c7b0359c123",
+  "previous_diagnostic": "Unsupported TeX command: \\circ",
+  "lessons": [
+    {
+      "lesson": "IBM-004",
+      "source": "learning/courses/general-formulation-of-quantum-information/density-matrices/bloch-sphere.ipynb",
+      "source_sha256": "b604993a890e6d2f3d4e5ea470edd4b4ac1df361a9823f2c8a1c54dcd66b3c4b",
+      "occurrences": [
+        {
+          "cell": 0,
+          "start": 4142,
+          "end": 4161,
+          "literal_sha256": "40d7af49b98bd8be3740ba7757c073aacb85ce438b3a149b0c7c6259ca0193bb",
+          "outcome": "result",
+          "copy_text": "1"
+        },
+        {
+          "cell": 0,
+          "start": 4259,
+          "end": 4279,
+          "literal_sha256": "31536dc558bc62b1791ac033d12b9a0f36007016495189de0fad4166308bffe4",
+          "outcome": "result",
+          "copy_text": "1"
+        }
+      ]
+    }
+  ]
+}

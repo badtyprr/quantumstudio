@@ -230,6 +230,11 @@ assert data(f"quantum:replace(({counted_matrix}),N,2)=tensor(X,I)")["copy_text"]
 run("quantum:" + counted_product.replace(r"\cdots \otimes \rho", r"\cdots \otimes X"), "--json", success=False)
 run(f"quantum:replace(({counted_matrix}),N,-1)", "--json", success=False)
 
+for angle in (r"\pi=180^{\circ}", r"2\pi=360^\circ", r"\cos(60^{\circ})=1/2",
+              r"\frac{1}{30^{\circ}}=6/\pi", r"(40+5)^{\circ}=\pi/4"):
+    assert data("quantum:" + angle)["copy_text"] == "1"
+assert data(r"quantum:\pi=90^{\circ}")["copy_text"] == "0"
+
 # Both textbook declarations name c as a column index.
 for literal in (r"$c = 0,\ldots,n-1$", r"$c\in\{0,\ldots,n-1\}$"):
     column_index = data("quantum:" + literal)["copy_text"]

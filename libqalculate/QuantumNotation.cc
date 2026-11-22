@@ -1380,6 +1380,7 @@ class Parser {
     a=binaryNumeral(a);ws();
     if(p<s.size() && (s[p]=='_' || s.compare(p,std::string("₂").size(),"₂")==0))throw std::runtime_error("A binary numeral cannot have a second radix subscript.");
    }
+   if(a=="qtexdegrees")throw std::runtime_error("A degree sign requires a preceding angle.");
    if(a=="qtexpercent")throw std::runtime_error("A percentage requires a preceding value.");
    if(a=="iff" || a=="and" || a=="or" || a=="not" || (a=="xor" && (p==s.size() || s[p]!='(')))throw std::runtime_error("Expected an operand; group a logical predicate when using it in arithmetic.");
    // A scalar prefix is its own token so powers/daggers bind to the gate:
@@ -2087,6 +2088,7 @@ class Parser {
  std::string power(bool allowPercent) {
   ws();size_t baseStart=p;
   auto a=atom();int kind=diracKind;
+  if(takeWord("qtexdegrees"))a="("+a+"*(pi/180))";
   if(allowPercent)percentSuffix(a);
   bool sphere=setNotation && groupedToken(s,baseStart,p,'S');
   if(take('^')) {

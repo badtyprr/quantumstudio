@@ -1135,6 +1135,17 @@ class TeXReader {
  static bool matrixEnvironment(const std::string &name) {
   return name=="matrix" || name=="pmatrix" || name=="bmatrix" || name=="Bmatrix";
  }
+ bool degreeSuffix() {
+  size_t saved=pos;++pos;space();
+  bool grouped=pos<input.size() && input[pos]=='{';
+  if(grouped){++pos;space();}
+  if(input.compare(pos,5,"\\circ")==0 && (pos+5==input.size() || !asciiLetter(input[pos+5]))) {
+   pos+=5;
+   if(!grouped)return true;
+   space();if(pos<input.size() && input[pos]=='}'){++pos;return true;}
+  }
+  pos=saved;return false;
+ }
  bool directMatrixOperand() {
   if(input.compare(pos,6,"\\begin")!=0 || (pos+6<input.size() && asciiLetter(input[pos+6])))return false;
   const size_t saved=pos;
@@ -2335,6 +2346,7 @@ class TeXReader {
     result+=column.empty() ? std::string(1,open)+body+end : column;
    }
    else if(input[pos]==')' || input[pos]==']') throw std::runtime_error(error("Unmatched closing delimiter"));
+   else if(input[pos]=='^' && degreeSuffix())result+=" qtexdegrees ";
    else if(input[pos]=='_') {
     const size_t subscriptStart=pos;
     if(input.compare(pos,10,"_{\\mathsf{")==0) {
