@@ -107,6 +107,17 @@ nested_phase = data(
 )["copy_text"]
 assert data(f'quantum:replace(replace(({nested_phase}),"f",{truth_table}),n,2)')["copy_text"] == "4"
 
+# Superscripts in an oracle sample list name successive samples, including repeats.
+sample_queries = data(r"quantum:oracles:$f(x^1),\ldots,f(x^k)$")["copy_text"]
+assert data("quantum:" + sample_queries)["copy_text"] == sample_queries
+sample_input = f'replace(({sample_queries}),"f",{truth_table})'
+for key, value in [("x^2", "qbitlabel(0,2)"), ("k", "3"),
+                   ("x^1", "qbitlabel(3,2)"), ("x^3", "qbitlabel(3,2)")]:
+    sample_input = f'replace(({sample_input}),"{key}",{value})'
+assert data("quantum:" + sample_input)["copy_text"] == "qtuple(vector(1,0,1))"
+run(f'quantum:replace(({sample_queries}),"k",0)', "--json", success=False)
+run(r"quantum:oracles:$f(x^1),\ldots,g(x^k)$", "--json", success=False)
+
 # Tensor powers inside a ket label and between repeated gates share the
 # same register-width rules as explicit tensor powers.
 zero_register = data(r"quantum:$\vert 0^{\otimes n}\rangle$")["copy_text"]

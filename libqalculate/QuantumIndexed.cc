@@ -1351,7 +1351,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qoraclequeries" || op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2490,6 +2490,22 @@ class QuantumIndexedFunction: public MathFunction {
    }
    sum.eval(eo);out=sum;return 1;
   }
+  if(op=="qoraclequeries") {
+   MathStructure entries;
+   if(indexedSpectralFamily(raw[1])) {
+    if(!indexedEntries(entries,raw[1],eo))return 0;
+   } else {entries=raw[1];entries.eval(eo);}
+   if(!entries.isVector() || entries.isMatrix() || entries.size()==0 || entries.size()>1024) {
+    CALCULATOR->error(true,"An oracle query list requires between 1 and 1024 samples.",NULL);return 0;
+   }
+   auto lookup=CALCULATOR->getFunction("qgraphapply"),bit=CALCULATOR->getFunction("qcontrolbit");
+   for(size_t i=0;i<entries.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure result(lookup,&raw[0],&entries[i],NULL);
+    entries[i].set(bit,&result,NULL);
+   }
+   entries.childrenUpdated();out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
+  }
   if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
@@ -3460,6 +3476,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedconjugatekets",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
+ calculator.addFunction(new QuantumIndexedFunction("qoraclequeries",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexeddiagonal",2));

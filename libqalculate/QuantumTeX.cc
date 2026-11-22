@@ -2949,6 +2949,15 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  else if(s.size()>=4 && ((s.substr(0,2)=="\\(" && s.substr(s.size()-2)=="\\)") || (s.substr(0,2)=="\\[" && s.substr(s.size()-2)=="\\]"))) s=s.substr(2,s.size()-4);
  else mathWrapper=false;
+ if(binaryOracles && s.find(',')!=std::string::npos) {
+  static const std::regex samples(R"re(\s*([fgh])\s*\(\s*([a-z])\s*\^\s*(?:1|\{\s*1\s*\})\s*\)\s*,\s*\\(?:ldots|cdots)\s*,\s*\1\s*\(\s*\2\s*\^\s*(?:\{\s*([a-z]|[0-9]+)\s*\}|([a-z]|[0-9]))\s*\)\s*)re");
+  std::smatch m;
+  if(std::regex_match(s,m,samples)) {
+   std::string count=m[3].matched ? m[3].str() : m[4].str();
+   if(asciiLetter(count[0]))count="\""+count+"\"";
+   return "qoraclequeries(\""+m[1].str()+"\",qindexedentries(\""+m[2].str()+"^\",1,"+count+",vector()))";
+  }
+ }
  // A trailing lesson annotation gives the domain on which the displayed
  // expression is defined. Leave an out-of-domain substitution undefined.
  size_t note=s.rfind("\\text{");
