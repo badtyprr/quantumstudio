@@ -699,7 +699,7 @@ std::string sampleWordDefinitions(const std::vector<std::string> &lines) {
  }
  return sampleArray(cells,"⋯","⋮","⋱",true);
 }
-std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation);
+std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation,bool formalEndpoint=false);
 std::string indexedMatrix(const std::string &raw,bool tex) {
  const std::string horizontal=tex ? "\\cdots" : "⋯",vertical=tex ? "\\vdots" : "⋮",diagonal=tex ? "\\ddots" : "⋱";
  auto rows=indexedParts(raw,tex ? "\\\\" : ";");
@@ -799,7 +799,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    const std::string last=normalizeLabel(cells.back().back());
    if(last.compare(0,prefix.size(),prefix)!=0)invalid();
    const std::string name=quantumTeX(prefix.substr(0,sub))+"_";
-   const std::string family=indexedLabelRange(name+"0",name+last.substr(sub+1),"qindexedentries(");
+   const std::string family=indexedLabelRange(name+"0",name+last.substr(sub+1),"qindexedentries(",true);
    if(family.empty())invalid();
    return "qindexeddiagonal("+family+","+std::to_string(omitted+1)+")";
   }
@@ -963,7 +963,7 @@ std::string openIndexedFamily(const std::vector<std::string> &entries) {
  }
  return "qindexedfamily(\""+prefix+"\","+start+")";
 }
-std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation) {
+std::string indexedLabelRange(const std::string &first,const std::string &last,const std::string &operation,bool formalEndpoint) {
  size_t split=first.rfind('_');
  if(split==std::string::npos || split==0)return "";
  std::string prefix=first.substr(0,split+1);
@@ -984,6 +984,8 @@ std::string indexedLabelRange(const std::string &first,const std::string &last,c
   value=bound.substr(0,1)+offset.front()+magnitude;return true;
  };
  if(!endpoint(from) || !endpoint(to))return "";
+ if(formalEndpoint && asciiLetter(to.front()) && std::string("nxyz").find(to.front())==std::string::npos)
+  to="\""+to.substr(0,1)+"\""+to.substr(1);
  return operation+"\""+prefix+"\","+from+","+to+",vector())";
 }
 // A finite family of kets uses the same prefix at both endpoints.

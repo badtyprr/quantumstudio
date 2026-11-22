@@ -1299,13 +1299,19 @@ bool indexedDiagonalSum(MathStructure &out,const MathStructure &sum,const MathSt
  return true;
 }
 void prepareIndexedMatrixSums(MathStructure &value) {
+ auto preparePair=[](MathStructure &left,MathStructure &right) {
+  const bool first=left.isFunction() && left.function()->referenceName()=="qsum";
+  MathStructure &sum=first ? left : right;
+  const MathStructure &diagonal=first ? right : left;
+  MathStructure replacement;
+  if(sum.isFunction() && sum.function()->referenceName()=="qsum" && sum.size()==4 &&
+     indexedDiagonalSum(replacement,sum,diagonal))sum=replacement;
+ };
  if(value.isFunction() && value.function()->referenceName()=="qequalchain" && value.size()==1 && value[0].isVector()) {
   MathStructure &terms=value[0];
-  for(size_t i=1;i<terms.size();++i) {
-   MathStructure &sum=terms[i-1],replacement;
-   if(sum.isFunction() && sum.function()->referenceName()=="qsum" && sum.size()==4 &&
-      indexedDiagonalSum(replacement,sum,terms[i]))sum=replacement;
-  }
+  for(size_t i=1;i<terms.size();++i)preparePair(terms[i-1],terms[i]);
+ } else if(value.isFunction() && value.function()->referenceName()=="qcompare" && value.size()==3) {
+  preparePair(value[0],value[1]);
  }
  if(value.isFunction() && value.function()->referenceName()=="qsum" && value.size()==4) {
   MathStructure blocks;

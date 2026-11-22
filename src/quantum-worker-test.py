@@ -84,6 +84,17 @@ for matrix, expected in [("[1/2,0,0;0,1/3,0;0,0,1/6]", "1"), ("[1/3,0,0;0,1/2,0;
     for key, value in [('"p_2"', "1/6"), ('"ρ"', matrix), ("n", "3"), ('"p_1"', "1/3"), ('"p_0"', "1/2")]:
         expression = f"replace(({expression}),{key},{value})"
     assert data("quantum:" + expression)["copy_text"] == expected
+diagonal_matrix = diagonal_density.split("= ")[-1].split(r"\end{pmatrix}")[0] + r"\end{pmatrix}"
+for bound in ("i", "c"):
+    symbolic = data("quantum:" + diagonal_matrix.replace("n-1", bound + "-1"))["copy_text"]
+    bound_matrix = data(f'quantum:replace(({symbolic}),"{bound}",3)')["copy_text"]
+    assert bound_matrix == 'matrix(3,3,["p_0",0,0,0,"p_1",0,0,0,"p_2"])'
+projector_sum = diagonal_density.split("=", 1)[1].split("= " + diagonal_matrix)[0].strip()
+for identity in (projector_sum + "=" + diagonal_matrix, diagonal_matrix + "=" + projector_sum):
+    expression = data("quantum:" + identity)["copy_text"]
+    for key, value in [('"p_1"', "1/3"), ("n", "3")]:
+        expression = f"replace(({expression}),{key},{value})"
+    assert data("quantum:" + expression)["copy_text"] == "1"
 run("quantum:" + diagonal_density.replace("0 & p_1", "1 & p_1"), "--json", success=False)
 
 # A qualification limits the points at which a displayed equation is defined.
