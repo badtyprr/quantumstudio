@@ -1041,6 +1041,35 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  auto label=[](const std::string &entry) {
   return entry.size()>2 && entry.front()=='|' && entry.back()=='>' ? trim(entry.substr(1,entry.size()-2)) : std::string();
  };
+ if(ordered && (entries.size()==3 || entries.size()==4) && entries[entries.size()-2]=="...") {
+  auto conjugated=[&](const std::string &entry) {
+   std::string value=label(entry);const std::string prefix="(conj(";
+   const bool whole=value.empty();if(whole)value=trim(entry);
+   if(value.size()<=prefix.size()+2 || value.compare(0,prefix.size(),prefix)!=0 ||
+      value.compare(value.size()-2,2,"))")!=0)return std::string();
+   std::string name=trim(value.substr(prefix.size(),value.size()-prefix.size()-2));
+   if(whole)name=label(name);
+   size_t split=name.rfind("_{");
+   if(split!=std::string::npos && name.back()=='}') {
+    std::string sub=trim(name.substr(split+2,name.size()-split-3));
+    if(!sub.empty() && (sub.find_first_not_of("0123456789")==std::string::npos ||
+       (sub.size()==1 && asciiLetter(sub.front()))))name=name.substr(0,split+1)+sub;
+   }
+   return name;
+  };
+  const std::string first=conjugated(entries.front()),last=conjugated(entries.back());
+  if(!first.empty() && !last.empty()) {
+   const std::string family=indexedLabelRange(first,last,"qindexedentries(",true);
+   if(family.empty())return "";
+   if(entries.size()==4) {
+    size_t split=first.rfind('_');std::string next=first.substr(split+1);
+    if(next.empty() || next.find_first_not_of("0123456789")!=std::string::npos)return "";
+    nextDecimalIndex(next);
+    if(conjugated(entries[1])!=first.substr(0,split+1)+next)return "";
+   }
+   return "qindexedconjugatekets("+family+","+std::to_string(entries.size()-2)+")";
+  }
+ }
  if(entries.size()==4 && entries[2]=="...") {
   std::string first=label(entries[0]),second=label(entries[1]);
   size_t split=first.rfind('_');
@@ -1053,6 +1082,7 @@ std::string indexedKets(const std::vector<std::string> &entries,bool ordered) {
  }
  if(entries.size()!=3 || entries[1]!="...")return "";
  std::string first=label(entries.front()),last=label(entries.back());
+
  const std::string basis=ordered ? "qbasiskets(" : "qbasisketset(";
  if(first.size()>1 && first.find_first_not_of("0")==std::string::npos &&
     last.size()==first.size() && last.find_first_not_of("1")==std::string::npos)
@@ -1127,6 +1157,7 @@ class TeXReader {
  std::vector<std::string> rootLines;
  bool setBound=false;
  bool stateLabel=false;
+ bool conjugatedStateLabel=false;
  std::string stateArgument() {bool previous=stateLabel;stateLabel=true;auto value=argument();stateLabel=previous;return value;}
  std::string stateGroup() {bool previous=stateLabel;stateLabel=true;auto value=group();stateLabel=previous;return value;}
  unsigned setDepth=0;
@@ -1959,7 +1990,7 @@ class TeXReader {
   if((stateLabel || registerLabel || setBound) && (name=="ldots" || name=="cdots" || name=="dots"))return " ... ";
   if(name=="frac" || name=="dfrac" || name=="tfrac") { auto a=argument(), b=argument(); return "(("+a+")/("+b+"))"; }
   if(name=="overline") {
-   if(stateLabel)throw std::runtime_error(error("Use conj around the whole ket or bra to conjugate a state"));
+   if(stateLabel)conjugatedStateLabel=true;
    auto value=argument();
    if(trim(value).empty())throw std::runtime_error(error("A conjugation overline requires an operand"));
    return "(conj("+value+"))";
@@ -2667,6 +2698,11 @@ class TeXReader {
  explicit TeXReader(const std::string &s,bool modular=false,bool logs=false):input(s),modularTables(modular),binaryLogs(logs) {}
  std::string run(std::vector<std::string> *lines) {
   std::string result=read();
+  if(conjugatedStateLabel) {
+   std::string ordered=orderedKetList(result);
+   if(ordered.find("qindexedconjugatekets(")==0)return ordered;
+   throw std::runtime_error(error("Use conj around the whole ket or bra to conjugate a state"));
+  }
   std::string integers=explicitIntegerList(result);
   if(!integers.empty())return integers;
   std::string list=orderedKetList(result);
