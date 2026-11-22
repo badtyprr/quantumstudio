@@ -713,3 +713,5 @@ EXTRA_DIST += docs/learning-evidence/dev11/teleportation-controls.json docs/lear
 EXTRA_DIST += docs/learning-evidence/dev11/steane-block-readout.json docs/learning-evidence/dev11/replay-steane-block-readout.py
 
 EXTRA_DIST += docs/learning-evidence/dev11/shor-nine-wire-instrument.json docs/learning-evidence/dev11/replay-shor-instrument.py
+
+EXTRA_DIST += docs/learning-evidence/dev11/compact-correction.json

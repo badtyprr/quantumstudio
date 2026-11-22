@@ -76,8 +76,26 @@ int main() {try {
    expected[9+3*y+x]="1";
    expected[9+3*((y+(!vertical ? 2:0))%3)+(x+(vertical ? 2:0))%3]="1";
   }
-  equal("qcompactsyndrome("+group+","+compact(18,(letter&1)?bit:0,(letter&2)?bit:0,letter==3?3:0)+")",vector(expected));
+  const std::string error=compact(18,(letter&1)?bit:0,(letter&2)?bit:0,letter==3?3:0);
+  equal("qcompactsyndrome("+group+","+error+")",vector(expected));
+  equal("qcompactcorrection("+group+","+vector(expected)+",1)",error);
  }
+ // Three independent Z checks uniquely locate X faults. Weight order,
+ // ties (X before Y), zero syndrome, and a redundant final check are observable.
+ const std::string checks3="vector([3,0,1,0],[3,0,2,0],[3,0,4,0])";
+ equal("qcompactcorrection("+checks3+",[0,0,0],0)",compact(3,0,0));
+ equal("qcompactcorrection("+checks3+",[1,0,1],3)",compact(3,5,0));
+ equal("qcompactcorrection("+checks3+",[1,1,1],3)",compact(3,7,0));
+ rejects("qcompactcorrection("+checks3+",[1,1,1],2)");
+ rejects("qcompactcorrection("+checks3+",[0,2,0],1)");
+ rejects("qcompactcorrection("+checks3+",[0,0],1)");
+ rejects("qcompactcorrection("+checks3+",[0,0,0],4)");
+ rejects("qcompactcorrection(vector([1,0,1,0],[1,0,1,0]),[0,1],1)");
+ equal(translateQuantum("compact_correction(vector(compact_pauli(ZZI),compact_pauli(IZZ)),[1,1],1)"),compact(3,2,0));
+ equal("qcompactcorrection(vector([4,3,0,0],[4,0,3,0],[4,12,0,0],[4,0,12,0]),[1,1,1,1],2)",compact(4,5,5,2));
+ std::vector<std::string> many(64,compact(1,0,0)), last(64,"0");
+ many.back()=compact(1,0,1);last.back()="1";
+ equal("qcompactcorrection("+vector(many)+","+vector(last)+",1)",compact(1,1,0));
  unsigned zh=0,zv=0,xh=0,xv=0;
  for(unsigned q=0;q<3;++q) {zh|=edge(q,0);zv|=edge(0,q,true);xh|=edge(0,q);xv|=edge(q,0,true);}
  std::vector<std::string> loops={compact(18,0,zh),compact(18,0,zv),compact(18,xh,0),compact(18,xv,0)};

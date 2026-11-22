@@ -1348,6 +1348,18 @@ commuting compact generators, `compact_rank(g)`, `compact_dimension(g)` and
 dimension and syndrome in generator order. Syndrome 1 means anticommutation.
 Groups containing -I are rejected, including inconsistent redundant checks.
 
+`compact_correction(g,syndrome,bound)` returns a minimum-weight compact
+Pauli with the requested syndrome. Supply one exact bit per generator in
+generator order and a weight bound from 0 to 3. A zero syndrome returns
+identity. If the bound is too small, the calculation reports an error.
+For example, the repetition checks `ZZI` and `IZZ` give syndrome `[1,1]`
+for a middle-wire bit flip. Evaluating
+`compact_correction(vector(compact_pauli(ZZI),compact_pauli(IZZ)),[1,1],1)`
+returns the compact tuple for `IXI`. For tied candidates the search visits
+mask bits from least significant to most significant and tries X, Z, then Y.
+Each result has positive Pauli sign. Matching a syndrome restores the code
+space; success on the logical information also depends on the actual error.
+
 `compact_distance(g,bound)` searches weights in ascending order through an
 explicit bound of 1–3. A returned integer is the exact minimum: every smaller
 weight was exhausted and the witness commutes with the checks but lies outside

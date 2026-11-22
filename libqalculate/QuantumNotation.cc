@@ -362,7 +362,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qpaulivec",1},
  {"qpauliword",4},
  {"qcompactpauli",4},{"qcompactmultiply",2},{"qcompactcommutes",2},
- {"qcompactrank",1},{"qcompactdimension",1},{"qcompactdistance",2},{"qcompactsyndrome",2},
+ {"qcompactrank",1},{"qcompactdimension",1},{"qcompactdistance",2},{"qcompactsyndrome",2},{"qcompactcorrection",3},
  {"qunpaulivec",1},
  {"qptranspose",2},
  {"qptransposedim",3},
@@ -1443,6 +1443,7 @@ class Parser {
     if(name=="compact_dimension")name="qcompactdimension";
     if(name=="compact_distance")name="qcompactdistance";
     if(name=="compact_syndrome")name="qcompactsyndrome";
+    if(name=="compact_correction")name="qcompactcorrection";
     if(name=="stabilizer_projector")name="qstabilizerprojector";
     if(name=="stabilizer_dimension")name="qstabilizerdimension";
     if(name=="stabilizer_distance")name="qstabilizerdistance";

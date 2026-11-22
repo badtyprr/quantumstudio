@@ -1,0 +1,410 @@
+{
+  "repetition_example": "vector(3,2,0,0)",
+  "shor_cases": [
+    {
+      "wire": 0,
+      "error": "X",
+      "syndrome": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,256,0,0)"
+    },
+    {
+      "wire": 0,
+      "error": "Y",
+      "syndrome": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,256,256,3)"
+    },
+    {
+      "wire": 0,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,0,64,0)"
+    },
+    {
+      "wire": 1,
+      "error": "X",
+      "syndrome": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,128,0,0)"
+    },
+    {
+      "wire": 1,
+      "error": "Y",
+      "syndrome": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,128,128,3)"
+    },
+    {
+      "wire": 1,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,0,64,0)"
+    },
+    {
+      "wire": 2,
+      "error": "X",
+      "syndrome": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,64,0,0)"
+    },
+    {
+      "wire": 2,
+      "error": "Y",
+      "syndrome": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,64,64,3)"
+    },
+    {
+      "wire": 2,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "copy": "vector(9,0,64,0)"
+    },
+    {
+      "wire": 3,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,32,0,0)"
+    },
+    {
+      "wire": 3,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,32,32,3)"
+    },
+    {
+      "wire": 3,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,0,8,0)"
+    },
+    {
+      "wire": 4,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,16,0,0)"
+    },
+    {
+      "wire": 4,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,16,16,3)"
+    },
+    {
+      "wire": 4,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,0,8,0)"
+    },
+    {
+      "wire": 5,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,8,0,0)"
+    },
+    {
+      "wire": 5,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,8,8,3)"
+    },
+    {
+      "wire": 5,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "copy": "vector(9,0,8,0)"
+    },
+    {
+      "wire": 6,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "copy": "vector(9,4,0,0)"
+    },
+    {
+      "wire": 6,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "copy": "vector(9,4,4,3)"
+    },
+    {
+      "wire": 6,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "copy": "vector(9,0,1,0)"
+    },
+    {
+      "wire": 7,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "copy": "vector(9,2,0,0)"
+    },
+    {
+      "wire": 7,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "copy": "vector(9,2,2,3)"
+    },
+    {
+      "wire": 7,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "copy": "vector(9,0,1,0)"
+    },
+    {
+      "wire": 8,
+      "error": "X",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "copy": "vector(9,1,0,0)"
+    },
+    {
+      "wire": 8,
+      "error": "Y",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "copy": "vector(9,1,1,3)"
+    },
+    {
+      "wire": 8,
+      "error": "Z",
+      "syndrome": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "copy": "vector(9,0,1,0)"
+    }
+  ]
+}
