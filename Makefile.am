@@ -830,3 +830,4 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/ibm102.json windows/dev13-notebo
 EXTRA_DIST += docs/learning-evidence/dev13/ibm102-notebook.json
 EXTRA_DIST += windows/dev13-notebooks/qiskit-aer-public-linux-requirements.lock windows/dev13-notebooks/profiles/qiskit-aer-public-linux-py312.json
 EXTRA_DIST += docs/learning-evidence/dev13/public-aer-lessons.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/ibm070.json windows/dev13-notebooks/witnesses/ibm070.py docs/learning-evidence/dev13/ibm070-notebook.json

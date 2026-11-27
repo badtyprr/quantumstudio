@@ -86,6 +86,12 @@ python -B notebooks/run.py run --contract ibm102 --source reference-states.ipynb
 Open executed.ipynb for the four circuit diagrams. The independent_results
 field in status.json records the state fidelity for each diagram in order.
 
+For IBM-070 (quantum mechanics basics), use the same environment and run
+
+python -B notebooks/run.py run --contract ibm070 --source quantum-mechanics-basics.ipynb --environment NEW_ENV --output NEW_RESULTS
+
+The results include the Bell circuit diagram and 4096 simulated measurements.
+
 The same environment can run IBM-019 (Deutsch), IBM-020 (Deutsch-Jozsa),
 QB-026 (cached noise benchmark), QB-036 and QB-038 (local GHZ circuits).
 Use the same PROFILE for setup and execution. Supply the original notebook

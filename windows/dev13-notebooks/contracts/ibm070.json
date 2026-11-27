@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "id": "ibm070",
+  "route": "notebook",
+  "profiles": {
+    "win32": "grover-win-py312",
+    "linux": "qiskit-aer-public-linux-py312"
+  },
+  "source": {
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/quantum-mechanics-basics.ipynb",
+    "revision": "f842259423a7adc9adeafd54153cdb5d3c5b680b",
+    "sha256": "70686bafd5486949decd0166944c52ad02c55ea183f4e7ef4d6ded3ad5ef709d",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "d1a13020aa29d10dfa9f7c0b1107056edd17d556754fd7eb020684c0f3183248"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "4e18af5eacb42084387debf4b862bd890038bdc7cf33bfd80da81ff947701198"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "03817ef36a6fe02f9b24999614c57f04f2b465ac1a8d9cccbeba6c565dc1f5a9"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "eccd70f8ef96806b54037e761029f63f8cc15cca8f30c697e593d1a4ec91eadc"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "59815a848d3329574f649609ccc7e3ca06ebb939c9e5074f044f362c48c2316f"
+      },
+      {
+        "index": 5,
+        "type": "markdown",
+        "sha256": "33b6d6162fce65badbe070861c375b879dce0233f628d4cdb18bfbb46f1b10e5"
+      }
+    ]
+  },
+  "code_cells": [
+    2
+  ],
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/ibm070.py",
+    "sha256": "0581b5d88558e06aa01003c34cac8df98254e0103411173ea84c837a121280ba"
+  },
+  "required_images": [],
+  "required_image_counts": {
+    "2": 1
+  },
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": []
+}
