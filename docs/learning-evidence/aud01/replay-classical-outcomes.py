@@ -55,13 +55,35 @@ for lesson,numbers in (("041",((49,"qbitstrings(10)"),(74,pairs),(77,words),(82,
 
 check("repeated-words","$001, 111, 001$","qtuple(vector(qbitlabel(1,3),qbitlabel(7,3),qbitlabel(1,3)))")
 check("reversed-pairs",r"$(3,1),\;(1,0),\;(3,1)$","qtuple(vector(qtuple(vector(3,1)),qtuple(vector(1,0)),qtuple(vector(3,1))))")
+inventory = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+pair = inventory["rows"][154]
+check(pair["id"],pair["literal"],"1")
+
+def bind(expression):
+    for name,value in (("a","[0;i]"),("b","[1;0]"),("c","[0;1;0]"),("d","[0;0;1]"),
+                       ("M","[0,1;2,0]"),("N","[0,0,0;0,0,1+i;1,0,0]")):
+        expression = f'replace(({expression}),"{name}",{value})'
+    return expression
+
+state = evaluate(r"$\vert(a,c)\rangle$")["copy_text"]
+check("rectangular-basis",bind(state),"matrix(6,1,[0,0,0,0,i,0])")
+row = inventory["rows"][326]
+element = evaluate(row["literal"])["copy_text"]
+check(row["id"],row["literal"],element)
+joint = evaluate(r"$\langle (a,c) \vert M \otimes N \vert (b,d)\rangle$")["copy_text"]
+assert element.startswith("qcompare("+joint+",")
+check("matrix-element",bind(joint),"2 − 2i")
+check("factorization",bind(element),"1")
+wrong = row["literal"].replace(r"\langle a \vert M \vert b\rangle",r"\langle b \vert M \vert a\rangle")
+assert wrong!=row["literal"]
+check("reversed-first-element",bind(evaluate(wrong)["copy_text"]),"0")
 details = dict(source_sha256=sources,binary_labels_checked=1024)
 if args.session_report:
     result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
     records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
     inputs = json.loads((args.windows/"inputs.json").read_bytes())
     assert inputs==[[key,expr,"0"] for key,(expr,_) in cases.items()]
-    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==8
+    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==14
     for (key,(expr,expected)),record in zip(cases.items(),records):
         session = json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
         assert session["Expression"]==expr and session["Mode"]==0
@@ -72,4 +94,4 @@ if args.session_report:
                   windows_sessions=len(records),windows_checks=result["checks"],clipboard_verified=False)
     args.session_report.write_text(json.dumps(report,indent=2)+"\n","utf8")
 else:
-    clipboard_checks(worker,args.windows,args.report,cases,8,details)
+    clipboard_checks(worker,args.windows,args.report,cases,14,details)

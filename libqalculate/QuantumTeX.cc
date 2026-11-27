@@ -3666,6 +3666,19 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  // In the coordinate formula for a tensor product, the two one-system
+  // matrix elements on the right identify the compound bra and ket as
+  // ordered pairs. Standalone multi-letter state names retain their meaning.
+  if(s.find("\\langle")!=std::string::npos && s.find("\\otimes")!=std::string::npos && s.find('=')!=std::string::npos) {
+   static const std::regex composite(R"(^\s*\\langle\s*([a-z])\s*([a-z])\s*\\vert\s*([A-Z])\s*\\otimes\s*([A-Z])\s*\\vert\s*([a-z])\s*([a-z])\s*\\rangle\s*=\s*)");
+   static const std::string entry=R"(\\langle\s*[a-z]\s*\\vert\s*[A-Z]\s*\\vert\s*[a-z]\s*\\rangle)";
+   static const std::regex product(entry+R"(\s*)"+entry+R"(\s*)");
+   std::smatch m;
+   if(std::regex_search(s,m,composite) && std::regex_match(m.suffix().first,s.cend(),product)) {
+    s="\\langle ("+m[1].str()+","+m[2].str()+") \\vert "+m[3].str()+" \\otimes "+m[4].str()+
+      " \\vert ("+m[5].str()+","+m[6].str()+")\\rangle = "+m.suffix().str();
+   }
+  }
   if(s.find("\\leftarrow")!=std::string::npos) {
    std::string column=probabilityColumn(trim(s));
    if(!column.empty())s=column;

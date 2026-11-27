@@ -24,6 +24,11 @@ def data(expression, *flags):
     return value
 
 
+# A comma in a function call stays inside the basis index.
+ordered_basis = data(r"quantum:$\vert(a,c)\rangle$")["copy_text"]
+assert data(f'quantum:replace(replace(({ordered_basis}),"a",[0;i]),"c",[0;1;0])')["cells"] == [["0"],["0"],["0"],["0"],["i"],["0"]]
+assert data(r"quantum:$\vert(mod(3,2))\rangle_2$")["cells"] == [["0"],["1"]]
+
 # Fixed-width outcome lists keep their order and leading zeros.
 assert data(r"quantum:$10,00,10$")["copy_text"] == "qtuple(vector(qbitlabel(2,2),qbitlabel(0,2),qbitlabel(2,2)))"
 assert data(r"quantum:$(2,0),\;(1,0)$")["copy_text"] == "qtuple(vector(qtuple(vector(2,0)),qtuple(vector(1,0))))"
