@@ -3149,6 +3149,27 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  // remains an error in the quantum grammar.
  size_t first=input.find_first_not_of(" \t\r\n"), last=input.find_last_not_of(" \t\r\n");
  if(first==std::string::npos) return "";
+ std::vector<std::string> basisDeclarations;
+ while(input.compare(first,12,"basislabels(")==0) {
+  const size_t end=input.find(')',first+12);
+  if(end==std::string::npos || input.compare(end,2,"):")!=0)break;
+   const std::string axes=input.substr(first+12,end-first-12);
+   if(axes.find_first_not_of("[],0123456789 \t\r\n")!=std::string::npos)
+    throw std::runtime_error("Basis labels must be lists of nonnegative integer labels.");
+   first=input.find_first_not_of(" \t\r\n",end+2);
+   if(first==std::string::npos)throw std::runtime_error("Expected an expression after the basis labels.");
+   basisDeclarations.push_back(axes);
+   if(basisDeclarations.size()>32)throw std::runtime_error("Too many nested basis declarations.");
+ }
+ if(!basisDeclarations.empty()) {
+  std::string body=quantumTeX(input.substr(first),lines,setNotation,scalarNotation);
+  for(auto axes=basisDeclarations.rbegin();axes!=basisDeclarations.rend();++axes) {
+   auto wrap=[&](const std::string &part){return "basislabels(["+*axes+"],("+part+"))";};
+   body=wrap(body);
+   if(lines)for(auto &line:*lines)line=wrap(line);
+  }
+  return body;
+ }
  // The mode precedes the pasted formula, including any TeX delimiters.
  const bool dimensions=input.compare(first,11,"dimensions:")==0;
  const bool fractionBits=input.compare(first,13,"fractionbits:")==0;

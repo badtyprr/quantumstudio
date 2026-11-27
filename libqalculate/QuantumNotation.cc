@@ -436,6 +436,7 @@ class Parser {
  std::string ringModulus;
  std::string updateVariable;
  std::vector<std::string> declaredGates;
+ std::vector<std::vector<std::string>> basisAxes;
  bool costContext=false;
  bool basisXorContext=false;
  bool binaryOracles=false,binaryWordNotation=false,gf2Products=false;
@@ -904,6 +905,28 @@ class Parser {
     size_t previous=k ? label.find_last_not_of(" \t\r\n",k-1) : std::string::npos;
     if(label[k]=='@' && previous!=std::string::npos && label[previous]=='^')continue;
     registers.push_back(label.substr(start,k-start));start=k+1;
+   }
+  }
+  if(!basisAxes.empty() && dimension.empty()) {
+   std::vector<std::string> coordinates=registers;
+   std::string tail=labelText(label.substr(start));
+   if(coordinates.empty() && basisAxes.size()>1 && tail.size()==basisAxes.size() &&
+      tail.find_first_not_of("0123456789")==std::string::npos) {
+    for(char digit:tail)coordinates.emplace_back(1,digit);
+   } else coordinates.push_back(tail);
+   for(auto &coordinate:coordinates)coordinate=labelText(coordinate);
+   if(std::all_of(coordinates.begin(),coordinates.end(),[](const std::string &v){
+     return !v.empty() && v.find_first_not_of("0123456789")==std::string::npos;
+   })) {
+    if(coordinates.size()!=basisAxes.size())throw std::runtime_error("Expected one numeric basis label per declared register.");
+    size_t index=0,size=1;
+    for(size_t k=0;k<basisAxes.size();++k) {
+     const auto &axis=basisAxes[k];
+     auto value=std::find(axis.begin(),axis.end(),coordinates[k]);
+     if(value==axis.end())throw std::runtime_error("Basis label is outside the declared register alphabet.");
+     index=index*axis.size()+size_t(value-axis.begin());size*=axis.size();
+    }
+    return "qbasis("+std::to_string(index)+","+std::to_string(size)+")";
    }
   }
   if(!registers.empty()) {
@@ -1737,6 +1760,24 @@ class Parser {
     } else if(name=="qindexrange") {
      std::string first=rangeEndpoint();need(',');std::string last=rangeEndpoint();need(')');
      a="qindexrange("+first+","+last+")";
+    } else if(name=="basislabels") {
+     auto previous=std::move(basisAxes);basisAxes.clear();
+     need('[');size_t dimension=1;
+     do {
+      need('[');std::vector<std::string> axis;
+      do {
+       ws();size_t begin=p;while(p<s.size() && s[p]>='0' && s[p]<='9')++p;
+       if(p==begin)throw std::runtime_error("Expected a numeric register label.");
+       std::string value=s.substr(begin,p-begin);
+       if(value.size()>1 && value.front()=='0')throw std::runtime_error("Write each numeric register label without leading zeros.");
+       if(std::find(axis.begin(),axis.end(),value)!=axis.end())throw std::runtime_error("Register labels must be distinct.");
+       axis.push_back(value);
+       if(axis.size()>1024/dimension)throw std::runtime_error("The declared basis exceeds 1024 states.");
+      } while(take(','));
+      need(']');dimension*=axis.size();basisAxes.push_back(std::move(axis));
+      if(basisAxes.size()>32)throw std::runtime_error("At most 32 basis registers are supported.");
+     } while(take(','));
+     need(']');need(',');a=expression();need(')');basisAxes=std::move(previous);
     } else if(name=="matrixcontext") {
      std::string label=expression();need(',');
      if(label.size()<3 || label.front()!='"' || label.back()!='"')throw std::runtime_error("Expected a quoted matrix name.");
