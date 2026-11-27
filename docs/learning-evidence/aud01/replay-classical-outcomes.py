@@ -55,6 +55,14 @@ for lesson,numbers in (("041",((49,"qbitstrings(10)"),(74,pairs),(77,words),(82,
 check("repeated-words","$001, 111, 001$","qtuple(vector(qbitlabel(1,3),qbitlabel(7,3),qbitlabel(1,3)))")
 check("reversed-pairs",r"$(3,1),\;(1,0),\;(3,1)$","qtuple(vector(qtuple(vector(3,1)),qtuple(vector(1,0)),qtuple(vector(3,1))))")
 inventory = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+# M080 uses a pair of decimal digits. The four rows below use binary registers.
+for number, digits in [(50,"0000000110"),(104,"00"),(179,"00"),(185,"11")]:
+    row = inventory["rows"][number-1]
+    assert row["literal"] == "$"+digits+"$"
+    word = check(row["id"], "bitword:"+row["literal"],
+                 f"qbitlabel({int(digits,2)},{len(digits)})")["copy_text"]
+    for wire, bit in enumerate(reversed(digits)):
+        check(f"register-{number}-{wire}",f"mod(floor(qbitvalue({word})/2^{wire}),2)",bit)
 pair = inventory["rows"][154]
 check(pair["id"],pair["literal"],"1")
 
@@ -114,5 +122,5 @@ for number,indices in [(45,range(10)),(48,reversed(range(10)))]:
         given = [(f"Σ_{i}",f"qset(vector(0,{middle if i==4 else 1}))") for i in range(10)]
         check(f"middle-alphabet-{number}-{middle}",assign(chain,given),answer)
 details = dict(source_sha256=sources,binary_labels_checked=1024)
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,37,details,
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,57,details,
                  sessions_only=bool(args.session_report))
