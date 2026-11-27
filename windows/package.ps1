@@ -221,7 +221,7 @@ $manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $outpu
 $name = if ($Candidate) { 'QuantumStudio-candidate-Windows-x64.zip' } else { 'QuantumStudio-Windows-x64.zip' }
 $zip = Join-Path $repo ('dist\'+$name)
 Compress-Archive -LiteralPath $output -DestinationPath $zip
-$verifyArguments = @((Join-Path $PSScriptRoot 'test-package.py'), $zip, '--revision', $revision)
+$verifyArguments = @((Join-Path $PSScriptRoot 'test-package.py'), $zip, '--revision', $revision, '--source-archive', (Join-Path $repo 'dist/QuantumStudio-source.tar.gz'))
 if ($Candidate) { $verifyArguments += '--candidate' }
 & $PythonPath @verifyArguments
 if ($LASTEXITCODE -ne 0) { throw 'Portable ZIP verification failed.' }
