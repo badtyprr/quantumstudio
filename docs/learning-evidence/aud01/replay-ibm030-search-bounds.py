@@ -10,6 +10,9 @@ from pathlib import Path
 import random
 import subprocess
 
+if not __debug__:
+    raise RuntimeError("This replay requires assertions enabled.")
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("slides", type=Path)
 parser.add_argument("worker", type=Path)
@@ -119,6 +122,7 @@ for mask in range(16):
     if mask == 15:
         assert len(trace) == 1 and word is not None
     traces.append(dict(marked_mask=mask, verified_word=word, trials=trace))
-assert any(t["verified_word"] is not None and len(t["trials"]) > 1 for t in traces)
+assert all(t["verified_word"] is not None for t in traces[1:])
+assert sum(len(t["trials"]) > 1 for t in traces[1:]) == 9
 print(json.dumps(dict(slides_sha256=digest, worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
                       per_word_checks=word_checks, bound_cases=bound_checks, adaptive_traces=traces), indent=2))
