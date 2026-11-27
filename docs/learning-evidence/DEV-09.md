@@ -79,11 +79,11 @@ Effects are half their projectors. For |0> the independent probabilities are
 and every compressed effect of the constructed 8-by-8 unitary, using independent
 state vectors. A disclosed instrument adaptation uses the rank-one identity
 sqrt(P/2)=P/sqrt(2); all four conditional |0> input outputs equal their respective
-projectors. The general square-root form was also tried with |i> input; the
-fourth conditional state stayed pending. The rank-one form has the same pending
-result for that input: the scalar engine does not establish positivity of its
-exact probability. This limitation remains explicit and has a copy/re-entry
-regression; it is not counted as successful evaluation or whole-lesson coverage.
+projectors. The release left the fourth conditional state for |i> pending.
+The development worker now proves its probability positive by evaluating the exact
+inequality. Both the general square-root and rank-one constructions return the
+expected projectors for all four outcomes. An outcome that can vanish at an
+unknown rotation angle remains pending after copying and re-entry.
 
 A preview GUI using the development worker passed 21 checks through actual Run
 and Copy buttons, clipboard re-entry, session save/open, invalid-input recovery,
@@ -116,10 +116,8 @@ Automated paths: `src/quantum-instruments-test.cc`,
 `windows/test-measurements-gui.ps1`. The Windows package pipeline executes the
 worker and real GUI gates; its source archive includes these inputs.
 
-The fourth tetrahedral outcome for the diagnostic |i> input has independently
-positive probability (3-sqrt(6))/12, but the exact scalar sign prover leaves its
-conditional state pending. This is a disclosed evaluation limitation, not a
-successful evaluation claim. Symbolic unresolved calls are conservative; the
+The fourth tetrahedral outcome for |i> has probability (3-sqrt(6))/12.
+The development regression exercises this sign and the normalized state. The
 resource bounds and numerical tolerances above remain part of the contract.
 IBM-011 and IBM-012 have selected-example evidence only. IBM-013 and full-lesson
 coverage remain unaudited by this work.

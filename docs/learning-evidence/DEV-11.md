@@ -212,6 +212,5 @@ recorded above; the wider task remains open:
 
 The variadic `tensor(X,Y,Z)` spelling was an invented adaptation, not an original
 source feature: nested binary/Unicode tensor forms pass. The 14/18-qubit
-constructor rejections remain intentional finite boundaries. DEV-09's unresolved
-fourth tetrahedral conditional state for `|i>` and DEV-10's documented domain
-limits are unchanged. DEV-13/AUD-02 and DEV-16 retained work was not modified.
+constructor rejections remain intentional finite boundaries. The [DEV-09 follow-up](DEV-09.md) resolves the fourth tetrahedral conditional
+state on the development worker. DEV-10's documented domain limits remain open. DEV-13/AUD-02 and DEV-16 retained work was not modified.
