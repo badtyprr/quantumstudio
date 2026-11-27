@@ -807,6 +807,12 @@ std::string probabilityColumn(const std::string &source) {
  for(size_t i=0;i<ordered.size();++i) {if(i)column+="\\\\";column+=ordered[i];}
  return column+close;
 }
+std::string sharedAlphabetChain(const std::string &prefix,int first,int last,const std::string &domain) {
+ const int step=first<=last ? 1 : -1;
+ std::string chain="qequalchain(vector(";
+ for(int i=first;i!=last+step;i+=step)chain+="\""+prefix+std::to_string(i)+"\",";
+ return chain+domain+"))";
+}
 // Read the same coordinate declaration at both ends of an ellipsis.
 // Every outcome subscript must agree with the alphabet subscript.
 std::string alphabetMembership(const std::string &source) {
@@ -3448,11 +3454,72 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
  }
+ // In a shared alphabet declaration each intervening index is a separate
+ // operand. Keep those operands bindable after the ellipsis is expanded.
+ if(mathWrapper && s.find('=')!=std::string::npos && (s.find("\\Sigma_")!=std::string::npos || s.find("\\Gamma_")!=std::string::npos)) {
+  static const std::regex shared(R"(^\s*\\(Sigma|Gamma)_(\{[0-9]{1,3}\}|[0-9])\s*=\s*\\\1_(\{[0-9]{1,3}\}|[0-9])\s*=\s*\\(?:cdots|ldots)\s*=\s*\\\1_(\{[0-9]{1,3}\}|[0-9])\s*=\s*(\\\{[^{}=]*\\\})\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,shared)) {
+   auto index=[](std::string text){return std::stoi(text.front()=='{' ? text.substr(1) : text);};
+   const int first=index(m[2]),second=index(m[3]),last=index(m[4]),step=second-first;
+   if((step==1 || step==-1) && (last-second)*step>0) {
+    if((last-first)*step>126)throw std::runtime_error("An equality chain requires 3 to 128 operands.");
+    const std::string prefix=m[1]=="Sigma" ? "Σ_" : "Γ_";
+    return sharedAlphabetChain(prefix,first,last,nestedTeX(m[5].str()));
+   }
+  }
+ }
  // In an alphabet domain the cross denotes an ordered Cartesian product.
  // Preserve the printed direction so the first alphabet supplies the
  // first tuple coordinate even when the register indices count down.
  if(s.find("\\times")!=std::string::npos && (s.find("\\Sigma")!=std::string::npos || s.find("\\Gamma")!=std::string::npos)) {
   auto alphabet=[](const std::string &name){return name=="Sigma" ? "Σ" : "Γ";};
+  static const std::regex ascending(R"(\\(Sigma|Gamma)_([0-9])\s*\\times\s*\\(?:cdots|ldots)\s*\\times\s*\\\1_([a-z])\b)");
+  auto ascendingProduct=[&](const std::string &name,const std::string &lower,std::string upper) {
+   if(std::string("nxyz").find(upper)==std::string::npos)upper="\""+upper+"\"";
+   return "qcartesianseries(qindexedentries(\""+std::string(alphabet(name))+"_\","
+          +lower+","+upper+",vector()),0)";
+  };
+  std::smatch product;
+  if(std::regex_search(s,product,ascending)) {
+   const std::string translated=ascendingProduct(product[1],product[2],product[3]);
+   s.replace(product.position(),product.length(),translated);
+   // A tuple builder enumerates a product only when its variables and
+   // endpoints coincide with the coordinate membership declarations.
+   if(s.find("\\in")!=std::string::npos) {
+    static const std::regex spacing(R"(\\[,;:]|\s+)");
+    static const std::regex builder(R"re(^(?:\\bigl)?\\\{\(([a-z])_([0-9]),\\(?:ldots|cdots),\1_([a-z])\):\1_\2\\in\\(Sigma|Gamma)_\2,\\(?:ldots|cdots),\1_\3\\in\\\4_\3(?:\\bigr)?\\\}$)re");
+    const size_t eq=s.find('=');
+    if(eq!=std::string::npos) {
+     const std::string body=s.substr(eq+1);
+     const std::string rhs=std::regex_replace(mathWrapper ? withoutDisplayPunctuation(body) : body,spacing,"");
+     std::smatch binding;
+     if(std::regex_match(rhs,binding,builder))
+      s.replace(eq+1,std::string::npos,ascendingProduct(binding[4],binding[2],binding[3]));
+    }
+   }
+  }
+  // Beside an explicit alphabet product, the set power denotes tuples
+  // in the same coordinate convention as the left side of the equality.
+  static const std::regex finitePower(R"(^\s*\\(Sigma|Gamma)_([0-9])\s*\\times\s*\\\1_([0-9])\s*\\times\s*\\(?:cdots|ldots)\s*\\times\s*\\\1_([0-9])\s*=\s*(\\\{[^{}=]*\\\})\s*\^\s*(?:\{([0-9]+)\}|([0-9]))\s*$)");
+  const std::string display=mathWrapper ? withoutDisplayPunctuation(s) : s;
+  if(std::regex_match(display,product,finitePower)) {
+   const int first=product[2].str()[0]-'0',second=product[3].str()[0]-'0',last=product[4].str()[0]-'0';
+   const int step=second-first;
+   if((step==1 || step==-1) && (last-second)*step>0) {
+    const std::string low=step==1 ? product[2] : product[4],high=step==1 ? product[4] : product[2];
+    const std::string factors="qindexedentries(\""+std::string(alphabet(product[1]))+"_\","
+                              +low+","+high+",vector())";
+    const std::string width=product[6].matched ? product[6] : product[7];
+    const std::string domain=nestedTeX(product[5].str());
+    // A nonempty power has the base alphabet as each coordinate
+    // projection. This keeps a ten-bit comparison small enough to copy.
+    static const std::regex nonempty(R"(\\\{\s*[0-9]+(?:\s*,\s*[0-9]+)*\s*\\\})");
+    if(width==std::to_string((last-first)*step+1) && std::regex_match(product[5].str(),nonempty))
+     return sharedAlphabetChain(std::string(alphabet(product[1]))+"_",first,last,domain);
+    return "qcartesianseries("+factors+","+(step==1 ? "0" : "1")+")=qcartesianpower("+domain+","+width+")";
+   }
+  }
   static const std::regex indexed(R"(\\(Sigma|Gamma)_\{([a-z])-1\}\s*\\times\s*\\(?:cdots|ldots)\s*\\times\s*\\\1_0\b)");
   std::smatch m;
   if(std::regex_search(s,m,indexed)) {

@@ -24,6 +24,27 @@ def data(expression, *flags):
     return value
 
 
+# The shared-domain declaration and equivalent nonempty Cartesian power
+# both retain every alphabet, including those hidden by the ellipsis.
+for formula in [r"\Sigma_0=\Sigma_1=\cdots=\Sigma_9=\{0,1\}",
+                r"\Sigma_9\times\Sigma_8\times\cdots\times\Sigma_0=\{0,1\}^{10}."]:
+    shared = data("quantum:$$" + formula + "$$")["copy_text"]
+    assert len(shared) < 250 and data("quantum:" + shared)["copy_text"] == shared
+    for middle, answer in [(1, "1"), (2, "0")]:
+        bound = shared
+        for i in range(10):
+            bound = f'replace(({bound}),"Σ_{i}",qset(vector(0,{middle if i == 4 else 1})))'
+        assert data("quantum:" + bound)["copy_text"] == answer
+
+builder = r"\bigl\{(a_1,\ldots,a_n)\,:\,a_1\in\Gamma_1,\:\ldots,\:a_n\in\Gamma_n\bigr\}."
+product = r"\Sigma_1\times\cdots\times\Sigma_n"
+comparison = data("quantum:$$" + product + "=" + builder + "$$")["copy_text"]
+for last, answer in [(7, "1"), (8, "0")]:
+    bound = f"replace(({comparison}),n,2)"
+    for name, value in [("Σ_1",3),("Γ_1",3),("Σ_2",7),("Γ_2",last)]:
+        bound = f'replace(({bound}),"{name}",qset(vector({value})))'
+    assert data("quantum:" + bound)["copy_text"] == answer
+
 # Coordinate membership does not require constructing all 4096 tuples.
 binary_domains = ",".join(["qset(vector(0,1))"]*12)
 axes = f"qcartesianseries(vector({binary_domains}),0)"

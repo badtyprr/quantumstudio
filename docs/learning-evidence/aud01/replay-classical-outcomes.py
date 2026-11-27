@@ -99,13 +99,28 @@ for number in (171,343,328,329):
         check(f"width-first-{number}",assign(declaration,[("n","2")]+labels+domains),"1")
         changed = [(key,"7" if key==("b_1" if number==343 else "a_1") else value) for key,value in labels]
         check(f"wrong-axis-{number}",assign(declaration,domains+changed+[("n","2")]),"0")
+row = inventory["rows"][35]
+check(row["id"],row["literal"],"1")
+mixed = evaluate(row["literal"].replace(r"\in\Sigma",r"\in\Gamma"))["copy_text"]
+for last,answer in [(7,"1"),(8,"0")]:
+    axes = [("Σ_1",3),("Σ_2",7),("Γ_1",3),("Γ_2",last)]
+    given = [(key,f"qset(vector({value}))") for key,value in axes]
+    check(f"independent-domains-{last}",assign(mixed,given+[("n","2")]),answer)
+for number,indices in [(45,range(10)),(48,reversed(range(10)))]:
+    row = inventory["rows"][number-1]
+    names = ",".join(f'"Σ_{i}"' for i in indices)
+    chain = f"qequalchain(vector({names},qset(vector(0,1))))"
+    check(row["id"],row["literal"],chain)
+    for middle,answer in [(1,"1"),(2,"0")]:
+        given = [(f"Σ_{i}",f"qset(vector(0,{middle if i==4 else 1}))") for i in range(10)]
+        check(f"middle-alphabet-{number}-{middle}",assign(chain,given),answer)
 details = dict(source_sha256=sources,binary_labels_checked=1024)
 if args.session_report:
     result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
     records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
     inputs = json.loads((args.windows/"inputs.json").read_bytes())
     assert inputs==[[key,expr,"0"] for key,(expr,_) in cases.items()]
-    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==28
+    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==37
     for (key,(expr,expected)),record in zip(cases.items(),records):
         session = json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
         assert session["Expression"]==expr and session["Mode"]==0
@@ -116,4 +131,4 @@ if args.session_report:
                   windows_sessions=len(records),windows_checks=result["checks"],clipboard_verified=False)
     args.session_report.write_text(json.dumps(report,indent=2)+"\n","utf8")
 else:
-    clipboard_checks(worker,args.windows,args.report,cases,28,details)
+    clipboard_checks(worker,args.windows,args.report,cases,37,details)

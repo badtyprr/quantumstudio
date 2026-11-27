@@ -4,8 +4,8 @@
     "042": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5"
   },
   "binary_labels_checked": 1024,
-  "worker_sha256": "c229c0d585ebb70511a9b4d34796f25948c96b7fcc7196ed3c6a7fbd6dcd9497",
-  "windows_sessions": 28,
-  "windows_checks": 252,
+  "worker_sha256": "d1321610317f9fcb7de413e736e367df64a13858583941c96e729288d6d51d11",
+  "windows_sessions": 37,
+  "windows_checks": 333,
   "clipboard_verified": false
 }
