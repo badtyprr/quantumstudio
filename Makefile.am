@@ -507,7 +507,7 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm021-descending-column.json docs/le
 
 EXTRA_DIST += docs/learning-evidence/aud01/ibm021-copy-context.json
 EXTRA_DIST += docs/learning-evidence/aud01/ibm022-foundations.md docs/learning-evidence/aud01/ibm023-factoring-baseline.json docs/learning-evidence/aud01/ibm023-factoring-replay.json docs/learning-evidence/aud01/replay-ibm023.py
-EXTRA_DIST += docs/learning-evidence/IBM-128.md docs/learning-evidence/IBM-134.md docs/learning-evidence/IBM-135.md docs/learning-evidence/IBM-136.md docs/learning-evidence/IBM-138.md
+EXTRA_DIST += docs/learning-evidence/IBM-080.md docs/learning-evidence/IBM-128.md docs/learning-evidence/IBM-134.md docs/learning-evidence/IBM-135.md docs/learning-evidence/IBM-136.md docs/learning-evidence/IBM-138.md
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm136-staffing.py docs/learning-evidence/aud01/ibm136-released.json
 EXTRA_DIST += docs/learning-evidence/IBM-137.md docs/learning-evidence/aud01/replay-ibm137-estimates.py docs/learning-evidence/aud01/ibm137-grant-estimates.json
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm015-purifications.py docs/learning-evidence/aud01/ibm015-purification-sources.json docs/learning-evidence/aud01/ibm015-grouped-integer.json
