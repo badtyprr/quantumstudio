@@ -4,7 +4,7 @@
   "route": "notebook",
   "profiles": {
     "win32": "grover-win-py312",
-    "linux": "qiskit-aer-linux-py312"
+    "linux": "qiskit-aer-public-linux-py312"
   },
   "source": {
     "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",

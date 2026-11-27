@@ -63,13 +63,25 @@ contains the executed notebook, individual cell results, and status.json
 with the final conversion check.
 
 IBM-102 reference states
-Use the original IBM reference-states.ipynb linked in
-notebooks/contracts/ibm102.json. With the wheel folder for the
-grover-win-py312 profile, run these commands on Windows:
+Use 64-bit CPython 3.12.10 and the original reference-states.ipynb linked
+in notebooks/contracts/ibm102.json. Choose empty or new wheel and result
+folders and a new environment directory. Run the download on the same
+operating system and architecture that will execute the notebook.
 
-python -B notebooks/run.py environment --profile grover-win-py312 --python BASE_PYTHON --wheelhouse WHEEL_FOLDER --destination NEW_ENV
+On Windows, download the 76 pinned wheels from PyPI:
+
+python -m pip --isolated download --index-url https://pypi.org/simple --only-binary=:all: --require-hashes --no-deps -r notebooks/grover-requirements.lock --dest WHEEL_FOLDER
+
+On Linux x86-64, download the 54 pinned wheels:
+
+python -m pip --isolated download --index-url https://pypi.org/simple --only-binary=:all: --require-hashes --no-deps -r notebooks/qiskit-aer-public-linux-requirements.lock --dest WHEEL_FOLDER
+
+The remaining steps run offline. Use grover-win-py312 for PROFILE on
+Windows and qiskit-aer-public-linux-py312 on Linux. BASE_PYTHON is the
+full path to the Python 3.12.10 executable.
+
+python -B notebooks/run.py environment --profile PROFILE --python BASE_PYTHON --wheelhouse WHEEL_FOLDER --destination NEW_ENV
 python -B notebooks/run.py run --contract ibm102 --source reference-states.ipynb --environment NEW_ENV --output NEW_RESULTS
 
-On Linux, select qiskit-aer-linux-py312 and its matching wheels.
 Open executed.ipynb for the four circuit diagrams. The independent_results
 field in status.json records the state fidelity for each diagram in order.
