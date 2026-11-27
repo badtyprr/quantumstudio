@@ -3454,6 +3454,18 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
  }
+ if(mathWrapper && s.find("\\cdots")!=std::string::npos && s.find("\\|")!=std::string::npos) {
+  // Size commands affect only the typography of the norm delimiters.
+  static const std::string bar=R"((?:\\(?:bigl|bigr|left|right)\s*)?\\\|\s*)";
+  static const std::regex product(bar+R"(\\vert\s*(\\[a-zA-Z]+|[a-zA-Z])_\{([a-z])-1\}\s*\\rangle\s*)"+bar+
+                                  R"(\\cdots\s*)"+bar+R"(\\vert\s*\1_0\s*\\rangle\s*)"+bar);
+  std::smatch m;
+  if(std::regex_search(s,m,product)) {
+   const std::string label=nestedTeX(m[1].str()),width=m[2];
+   const std::string count=std::string("nxyz").find(width)!=std::string::npos ? width : "\""+width+"\"";
+   s.replace(m.position(),m.length()," qstatenormproduct(qindexedentries(\""+label+"_\",0,"+count+"-1,vector())) ");
+  }
+ }
  // In a shared alphabet declaration each intervening index is a separate
  // operand. Keep those operands bindable after the ellipsis is expanded.
  if(mathWrapper && s.find('=')!=std::string::npos && (s.find("\\Sigma_")!=std::string::npos || s.find("\\Gamma_")!=std::string::npos)) {

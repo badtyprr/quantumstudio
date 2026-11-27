@@ -24,6 +24,16 @@ def data(expression, *flags):
     return value
 
 
+# A product of norms checks normalization after the state factors are bound.
+norm_series = r"\bigl\|\vert \psi_{n-1}\rangle\bigl\|\cdots\bigl\|\vert \psi_0\rangle\bigr\|"
+tensor_norm = r"\bigl\|\vert \psi_{n-1}\rangle\otimes\cdots\otimes\vert \psi_0\rangle\bigr\|"
+norm_chain = data("quantum:$$" + tensor_norm + "=" + norm_series + "=1^n=1.$$")["copy_text"]
+separate_norms = data("quantum:$" + norm_series + "$")["copy_text"]
+for high, low, product, normalized in [("2*i", "1/2", "1", "1"), ("3*i", "2", "6", "0"), ("0", "2", "0", "0")]:
+    for expr, expected in [(separate_norms,product),(norm_chain,normalized)]:
+        bound = f'replace(replace(replace(({expr}),"ψ_0",[{low};0;0]),"ψ_1",[0;{high}]),n,2)'
+        assert data("quantum:" + bound)["copy_text"] == expected
+
 # The shared-domain declaration and equivalent nonempty Cartesian power
 # both retain every alphabet, including those hidden by the ellipsis.
 for formula in [r"\Sigma_0=\Sigma_1=\cdots=\Sigma_9=\{0,1\}",

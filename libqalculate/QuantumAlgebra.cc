@@ -1733,6 +1733,8 @@ class QuantumAlgebraFunction: public MathFunction {
    // A tensor of named kets is a column even before its dimension is known.
    // Retain its normalization constraint until the states are supplied.
    if(a.isFunction() && a.function()->referenceName()=="qtensor" && stateActionOperand(a,eo))return 0;
+   if(a.isFunction() && a.function()->referenceName()=="qtensorseries" && a.size() &&
+      a[0].isFunction() && a[0].function()->referenceName()=="qindexedket")return 0;
    // A weighted sum of kets may have no known dimension until its domain
    // is bound. Keep the operation so the resulting column is checked then.
    if(a.isFunction() && unresolvedMatrixOperand(a)) {

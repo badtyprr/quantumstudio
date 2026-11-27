@@ -10,7 +10,9 @@ from learning_clipboard_checks import clipboard_checks
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
-parser.add_argument("--report", type=Path)
+reports = parser.add_mutually_exclusive_group()
+reports.add_argument("--report", type=Path)
+reports.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -66,4 +68,11 @@ for name, left, right, expected in (("unit","[0;i]","[1;0;0]","1"),
                                     ("inverse-scales","[0;2*i]","[1/2;0;0]","1")):
     check(name,bind(norm, ("φ",left), ("ψ",right)),expected)
 
-clipboard_checks(worker,args.windows,args.report,cases,19,dict(source_sha256=sources))
+chain = source("042",42)
+for name,high,low,expected in [("inverse","2*i","1/2","1"),("scaled","3*i","2","0"),("zero","0","2","0")]:
+    assignments = [("ψ_1",f"[0;{high}]"),("ψ_0",f"[{low};0;0]")]
+    check("norm-width-first-"+name,bind(chain,("n","2"),*assignments),expected)
+    check("norm-width-last-"+name,bind(chain,*assignments,("n","2")),expected)
+
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,26,
+                 dict(source_sha256=sources),sessions_only=bool(args.session_report))
