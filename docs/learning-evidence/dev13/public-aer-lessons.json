@@ -1,7 +1,7 @@
 {
   "ibm019-old": {
     "source_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
-    "contract_sha256": "01742fe3c8b34eabd223957fb4f84a72190c0861e56dab4e7a671a58f5b95e46",
+    "contract_sha256": "9fde140b2601ae14e5ded742a48db37fd7a13449c628c03cd9c0ff798ce64abd",
     "code_cells": [
       2,
       3,
@@ -49,7 +49,7 @@
   },
   "ibm019-pinned": {
     "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
-    "contract_sha256": "01742fe3c8b34eabd223957fb4f84a72190c0861e56dab4e7a671a58f5b95e46",
+    "contract_sha256": "9fde140b2601ae14e5ded742a48db37fd7a13449c628c03cd9c0ff798ce64abd",
     "code_cells": [
       2,
       3,
@@ -97,7 +97,7 @@
   },
   "ibm020-old": {
     "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
-    "contract_sha256": "26ea5f33ba95999216e2a8a5653bfc4b78a3ce14f44b2d7625730411b5a15a8b",
+    "contract_sha256": "a5256166b877562f345e642906d4e2c467f1f222b54856773727bd9b748e5e90",
     "code_cells": [
       2,
       4,
@@ -153,7 +153,7 @@
   },
   "ibm020-pinned": {
     "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
-    "contract_sha256": "26ea5f33ba95999216e2a8a5653bfc4b78a3ce14f44b2d7625730411b5a15a8b",
+    "contract_sha256": "a5256166b877562f345e642906d4e2c467f1f222b54856773727bd9b748e5e90",
     "code_cells": [
       2,
       4,
@@ -209,7 +209,7 @@
   },
   "qb026-revised": {
     "source_sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
-    "contract_sha256": "1dd818fd4010367d2531d702a27959b55ee4d8c991087076df6fb683a2c947c2",
+    "contract_sha256": "92e903a23c7197caba1540456a73610b83221573e156a37f037d01e64f858d60",
     "code_cells": [
       4,
       6,
@@ -247,7 +247,7 @@
   },
   "qb026": {
     "source_sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
-    "contract_sha256": "1dd818fd4010367d2531d702a27959b55ee4d8c991087076df6fb683a2c947c2",
+    "contract_sha256": "92e903a23c7197caba1540456a73610b83221573e156a37f037d01e64f858d60",
     "code_cells": [
       4,
       6,
@@ -285,7 +285,7 @@
   },
   "qb036": {
     "source_sha256": "cf5d5103296e683fa1e5b89b3187282fa01400d1172c112d36ff3ba82a4f1787",
-    "contract_sha256": "f468f97a6692a28a9b6d0c8bdcf6a289b932aae10b5cbea7bf254d8dd81dc145",
+    "contract_sha256": "7571d678a58a80218b6a969684669a5ed9008255c23d3b30e77c3069b439ce0e",
     "code_cells": [
       7
     ],
@@ -308,7 +308,7 @@
   },
   "qb038": {
     "source_sha256": "0c953abc62d97d819435b4ed3bcf3d820b3b24b2af514c3ea3a3bceb79999412",
-    "contract_sha256": "e8410bae67a4dd072cf08bb1130b4781e3da569d8776bc159a3d25f6fb208b8a",
+    "contract_sha256": "f11b03e12eedb02e4ff72661dcd88f847bc5ff3abfde62cba39cf4bc102031fd",
     "code_cells": [
       8
     ],
