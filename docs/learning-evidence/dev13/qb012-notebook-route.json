@@ -93,5 +93,23 @@
         ]
       }
     }
+  },
+  "source_archive_replay": {
+    "git_commit": "35d10c05",
+    "archive_scope": "windows/dev13-notebooks",
+    "archive_sha256": "33fd7427a5915bb01989db8f48d808e7a88fa839913567bda58894f78461411d",
+    "state": "succeeded",
+    "source_cells_preserved": true,
+    "verification": {
+      "accepted": true,
+      "operator_max_errors": [
+        1.1102230246251565e-16,
+        1.1102230246251565e-16
+      ],
+      "routes": [
+        "qiskit -> qasm3 -> braket",
+        "qiskit -> braket"
+      ]
+    }
   }
 }
