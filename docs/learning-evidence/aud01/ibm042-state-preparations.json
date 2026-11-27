@@ -1,0 +1,9 @@
+{
+  "worker_sha256": "5882d9f640925bdfb69fec023e11216288ce1eb7257200141fd7ead0b8a08831",
+  "source_sha256": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5",
+  "source_occurrences": 3,
+  "ordered_states": 3,
+  "application_sha256": "d7f800538fe1f3706204e5d2c5a526cf30a0baabda8d397efa9ad104bb5da59b",
+  "clipboard_sessions": 17,
+  "windows_checks": 187
+}
