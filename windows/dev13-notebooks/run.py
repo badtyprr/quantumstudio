@@ -17,6 +17,7 @@ def main():
     setup.add_argument("--destination", type=Path, required=True)
     run = commands.add_parser("run")
     run.add_argument("--contract", required=True)
+    run.add_argument("--profile", help="select a reviewed alternative to the contract's default environment")
     run.add_argument("--source", type=Path, required=True)
     run.add_argument("--environment", type=Path, required=True)
     run.add_argument("--output", type=Path, required=True)

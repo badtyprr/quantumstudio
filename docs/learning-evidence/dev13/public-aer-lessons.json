@@ -1,0 +1,332 @@
+{
+  "ibm019-old": {
+    "source_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+    "contract_sha256": "01742fe3c8b34eabd223957fb4f84a72190c0861e56dab4e7a671a58f5b95e46",
+    "code_cells": [
+      2,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "7": [
+            241,
+            174
+          ],
+          "11": [
+            627,
+            238
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "7": [
+            241,
+            174
+          ],
+          "11": [
+            627,
+            238
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "ibm019-pinned": {
+    "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+    "contract_sha256": "01742fe3c8b34eabd223957fb4f84a72190c0861e56dab4e7a671a58f5b95e46",
+    "code_cells": [
+      2,
+      3,
+      5,
+      7,
+      9,
+      11,
+      13,
+      15
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "7": [
+            241,
+            174
+          ],
+          "11": [
+            627,
+            238
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "7": [
+            241,
+            174
+          ],
+          "11": [
+            627,
+            238
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "ibm020-old": {
+    "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+    "contract_sha256": "26ea5f33ba95999216e2a8a5653bfc4b78a3ce14f44b2d7625730411b5a15a8b",
+    "code_cells": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      15,
+      17
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "6": [
+            144,
+            303
+          ],
+          "12": [
+            1142,
+            303
+          ],
+          "15": [
+            305,
+            367
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "6": [
+            144,
+            303
+          ],
+          "12": [
+            1142,
+            303
+          ],
+          "15": [
+            305,
+            367
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "ibm020-pinned": {
+    "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+    "contract_sha256": "26ea5f33ba95999216e2a8a5653bfc4b78a3ce14f44b2d7625730411b5a15a8b",
+    "code_cells": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      15,
+      17
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "6": [
+            144,
+            303
+          ],
+          "12": [
+            1142,
+            303
+          ],
+          "15": [
+            305,
+            367
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "succeeded",
+        "required_png_dimensions": {
+          "6": [
+            144,
+            303
+          ],
+          "12": [
+            1142,
+            303
+          ],
+          "15": [
+            305,
+            367
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "qb026-revised": {
+    "source_sha256": "254a1133e82db85455593c1804d066180706f214326ce9d244fa2835f8d2004f",
+    "contract_sha256": "1dd818fd4010367d2531d702a27959b55ee4d8c991087076df6fb683a2c947c2",
+    "code_cells": [
+      4,
+      6,
+      8,
+      9,
+      11,
+      13
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {
+          "11": [
+            740,
+            410
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {
+          "11": [
+            740,
+            410
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "qb026": {
+    "source_sha256": "70f423daefc2bd11bd6ceec060efdac19298e019b0486ee01b9111e221c4a4fb",
+    "contract_sha256": "1dd818fd4010367d2531d702a27959b55ee4d8c991087076df6fb683a2c947c2",
+    "code_cells": [
+      4,
+      6,
+      8,
+      9,
+      11,
+      13
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {
+          "11": [
+            740,
+            410
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {
+          "11": [
+            740,
+            410
+          ]
+        },
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "qb036": {
+    "source_sha256": "cf5d5103296e683fa1e5b89b3187282fa01400d1172c112d36ff3ba82a4f1787",
+    "contract_sha256": "f468f97a6692a28a9b6d0c8bdcf6a289b932aae10b5cbea7bf254d8dd81dc145",
+    "code_cells": [
+      7
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {},
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {},
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  },
+  "qb038": {
+    "source_sha256": "0c953abc62d97d819435b4ed3bcf3d820b3b24b2af514c3ea3a3bceb79999412",
+    "contract_sha256": "e8410bae67a4dd072cf08bb1130b4781e3da569d8776bc159a3d25f6fb208b8a",
+    "code_cells": [
+      8
+    ],
+    "runs": {
+      "windows": {
+        "profile": "grover-win-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {},
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      },
+      "linux": {
+        "profile": "qiskit-aer-public-linux-py312",
+        "original_execution": "not_executed_as_whole",
+        "required_png_dimensions": {},
+        "authored_verification": "succeeded",
+        "active_processes_after_run": 0
+      }
+    }
+  }
+}

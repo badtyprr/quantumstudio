@@ -602,6 +602,20 @@ class PlatformProfileTests(unittest.TestCase):
                         self.assertEqual(execution.contract_profile(contract), {"platform": platform})
                         lookup.assert_called_once_with(expected)
 
+    def test_public_wheels_are_explicit_platform_specific_alternatives(self):
+        public = "qiskit-aer-public-linux-py312"
+        for name in ("ibm019", "ibm020", "qb026", "qb036", "qb038"):
+            contract = json.loads((execution.ROOT / "contracts" / (name + ".json")).read_bytes())
+            with self.subTest(name=name), patch.object(execution.sys, "platform", "linux"):
+                self.assertEqual(execution.contract_profile(contract)["id"], "qiskit-aer-linux-py312")
+                self.assertEqual(execution.contract_profile(contract, public)["id"], public)
+                with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTRACT_PROFILE"):
+                    execution.contract_profile(contract, "sympy-linux-py312")
+            with patch.object(execution.sys, "platform", "win32"):
+                self.assertEqual(execution.contract_profile(contract, "grover-win-py312")["id"], "grover-win-py312")
+                with self.assertRaisesRegex(ValueError, "UNSUPPORTED_CONTRACT_PLATFORM"):
+                    execution.contract_profile(contract, public)
+
     def test_unsupported_host_rejected_before_environment_or_source_access(self):
         for name in ("ibm019", "ibm020"):
             with self.subTest(contract=name), patch.object(execution.sys, "platform", "darwin"):
