@@ -71,4 +71,4 @@ This recovered 32 references and two tutorials, including the Rustworkx
 betweenness-centrality exercise and Quantinuum's Fe4N2 example. All 43 added
 source locations were checked against the literal addresses in 13 pinned files.
 The registry records where learners encounter each address and the follow-up
-task for its resource type. Execution of the linked tutorials remains open.
+task for its resource type. The Rustworkx tutorial passed all four original code blocks. An independent NetworkX calculation matched all 48 node scores on the 63-edge lattice, and all three graph drawings rendered. The Quantinuum example remains open. [Rustworkx execution evidence](rustworkx-centrality-replay.json).

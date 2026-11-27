@@ -1,0 +1,54 @@
+{
+  "source": "https://www.rustworkx.org/_sources/tutorial/betweenness_centrality.rst.txt",
+  "source_sha256": "187fbb9925bb0e89e1dc761dd6ad5c5cc8302108b82c005a1799a509dd44c031",
+  "executed_blocks": [
+    "7f939b9fdef8c4b22b19f45fec1f596f2c3c3f4705620b34b0d489ea185ff9eb",
+    "7d7059a3748869fe6614eff29901a60614b31a07f6df9508f1bfc02e43e1159b",
+    "17df2f56c8439e1f1a687674d51e855b945dfb74cb0fe0973dd7871d1bb39368",
+    "b4c7c9ad8c5fd2d3b9b48b7ed3ecc368dac8beaae9307c9a59b8f166bab4a9e5"
+  ],
+  "versions": {
+    "rustworkx": "0.18.1",
+    "networkx": "3.7",
+    "matplotlib": "3.11.2",
+    "Pillow": "13.0.0"
+  },
+  "graphviz": "16.1.2",
+  "nodes": 48,
+  "edges": 63,
+  "max_absolute_error": 0.0,
+  "images": [
+    {
+      "cell": 1,
+      "pixels": [
+        640,
+        480
+      ],
+      "sha256": "235a7c4c41092be24cf0fa9fe7cf1142b3065effc830750771cef8c6c849191e"
+    },
+    {
+      "cell": 3,
+      "pixels": [
+        1500,
+        1000
+      ],
+      "sha256": "20fa6efe2e5ece7297dd96000e91f208c2ce431f9a430808169415d3a1e033bd"
+    },
+    {
+      "cell": 4,
+      "pixels": [
+        860,
+        995
+      ],
+      "sha256": "91db5a238246ede67bf60a327d5f302c1966b56940a78c923e31d06231473657"
+    }
+  ],
+  "resource_id": "LR-99d672e8855e806e",
+  "learning_sources": [
+    {
+      "path": "learning/courses/utility-scale-quantum-computing/utility-iii.ipynb",
+      "cell": 52
+    }
+  ],
+  "visual_review": "All three drawings show the lattice. The second includes a centrality color bar and the third labels node scores."
+}
