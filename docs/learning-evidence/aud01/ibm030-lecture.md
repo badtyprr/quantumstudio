@@ -15,4 +15,4 @@ The 30-page slide deck has SHA-256 `02be18ffcd56ac5b9d4bd43a69180ac1330f285fc8df
 
 Take four words with 01, 10 and 11 marked. The printed upper endpoint is floor(π√4/4) = 1, so the only possible iteration count is one. After the oracle, the amplitudes in binary order are (1, −1, −1, −1)/2. Reflecting about their mean of −1/4 gives (−1, 0, 0, 0). Measurement therefore returns 00 with certainty, giving success probability zero. Independently, θ = arcsin(√3/2) = π/3 gives sin²(3θ) = 0. Repeating this particular schedule still gives zero success.
 
-Run the [slide replay](replay-ibm030-slides.py) with the pinned PDF and a candidate worker executable as its two arguments. It checks the range endpoint, the probability and the resulting state separately. Published-package verification remains pending.
+Run the [slide replay](replay-ibm030-slides.py) with the pinned PDF and a candidate worker executable as its two arguments. It checks the range endpoint, the probability and the resulting state separately. The [published Windows results](ibm030-published.json) include the exercise replay and saved-session checks.

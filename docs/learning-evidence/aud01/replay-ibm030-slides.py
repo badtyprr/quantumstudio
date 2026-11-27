@@ -11,7 +11,14 @@ import subprocess
 parser = argparse.ArgumentParser()
 parser.add_argument("slides", type=Path)
 parser.add_argument("worker", type=Path)
+parser.add_argument("--windows", type=Path, help="Prepare or verify the exact-result Windows session inputs")
+report_options = parser.add_mutually_exclusive_group()
+report_options.add_argument("--report", type=Path)
+report_options.add_argument("--session-report", type=Path)
 args = parser.parse_args()
+if (args.report or args.session_report) and not args.windows:
+    parser.error("Report verification requires a Windows session directory")
+windows_cases = {}
 slides_hash = sha256(args.slides.read_bytes()).hexdigest()
 assert slides_hash == "02be18ffcd56ac5b9d4bd43a69180ac1330f285fc8dfc30ed5559142d04091c1"
 worker = args.worker.resolve()
@@ -24,7 +31,11 @@ def evaluate(expression, approximate=False):
         command.append("--approx")
     output = subprocess.run(command, input=("quantum:" + expression).encode(),
                             env=env, capture_output=True, timeout=30, check=True)
-    return json.loads(output.stdout)["copy_text"]
+    value = json.loads(output.stdout)
+    if args.windows and not approximate:
+        assert not value["approximate"]
+        windows_cases.setdefault(expression, value["copy_text"])
+    return value["copy_text"]
 
 
 reports = []
@@ -89,6 +100,11 @@ assert evaluate("sin(3*asin(sqrt(3/4)))^2") == "0"
 diffusion = "matrix(4,4,[" + ",".join(str(Fraction(1,2)-int(r==c)) for r in range(4) for c in range(4)) + "])"
 oracle = "matrix(4,4,[1,0,0,0,0,-1,0,0,0,0,-1,0,0,0,0,-1])"
 assert evaluate(f"norm({diffusion}*{oracle}*matrix(4,1,[1,1,1,1])/2+basis(0,4))") == "0"
+if args.windows:
+    from learning_clipboard_checks import clipboard_checks
+    cases = {f"lecture-{i:03}": case for i, case in enumerate(windows_cases.items(), 1)}
+    clipboard_checks(worker, args.windows, args.report or args.session_report, cases, 144,
+                     dict(slides_sha256=slides_hash), sessions_only=bool(args.session_report))
 print(json.dumps(dict(slides_sha256=slides_hash, worker_sha256=sha256(worker.read_bytes()).hexdigest(),
                       search_space=128, cases=reports, controlled_query_checks=query_checks,
                       unique_search_table=table,
