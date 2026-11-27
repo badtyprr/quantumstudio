@@ -1,5 +1,7 @@
 # DEV-17: named subsystem partial traces
 
+Current status: the finite DEV-17 contract is released in checkpoint-c5a456cd. See the [final release reconciliation](release-reconciliation.md). Development, candidate and pending statements below record the earlier stage; whole-source acceptance remains open.
+
 Implementation and validation are in progress; this is not a release claim or a
 whole-lesson audit. The central checklist remains owned by the coordinator.
 

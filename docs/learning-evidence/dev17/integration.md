@@ -1,5 +1,7 @@
 # DEV-17 integrated source status — 2026-11-03
 
+Current status: the finite DEV-17 contract is released in checkpoint-c5a456cd. See the [final release reconciliation](release-reconciliation.md). Development, candidate and pending statements below record the earlier stage; whole-source acceptance remains open.
+
 [PR #427](https://github.com/badtyprr/quantumstudio/pull/427) merged at
 `02d5ca3f5713385818e80db15b1a58e3b518e569`, with the same product tree
 `0bbf9fe440e755378675d485e7ae6bd62843b106` as reviewed head
