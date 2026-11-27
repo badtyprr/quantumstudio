@@ -16,6 +16,8 @@ Unknown or changed sources are rejected. Only these finite contracts are exposed
 | --- | --- |
 | ibm019, ibm020 | Original IBM code cells with authored verification; Windows or Linux profile |
 | qb007 | Selected Cirq cells; excluded cells remain outside acceptance |
+| qb011 | Runs the original Qiskit, Braket, Cirq, PyQuil and pytket conversions and checks every entry of the final operator. Uses the Windows profile `transpiler-pyquil-win-py312` with PyQASM 1.4.0. |
+| qb012 | Runs the default and custom Qiskit-to-Braket routes, saves both conversion graphs and checks both operators. Uses the Windows profile `transpiler-win-py312` with PyQASM 1.3.0. [Run evidence](qb012-notebook-route.json) |
 | qb013 | Original Cirq/Stim source with observed conversions and explicit output audits |
 | qb017 | QIR source contract with explicit semantic rejection when unsupported |
 | qb027 | Selected Braket local simulation cells; provider work remains outstanding |

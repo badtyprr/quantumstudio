@@ -39,7 +39,11 @@ def verify(archive, revision, candidate):
             raise ValueError('Archive contents differ from the manifest')
         for name in ('QuantumStudio.exe', 'quantum-worker.exe', 'qalc.exe',
                      'qasm-import/qasm-import.exe', 'Notation-guide.html',
-                     'README.txt', 'LICENSE.txt', 'Research-notes.md'):
+                     'README.txt', 'LICENSE.txt', 'Research-notes.md',
+                     'notebooks/run.py', 'notebooks/execution.py',
+                     'notebooks/contracts/qb011.json', 'notebooks/witnesses/qb011.py',
+                     'notebooks/profiles/transpiler-pyquil-win-py312.json',
+                     'notebooks/transpiler-pyquil-requirements.lock'):
             if prefix + name not in files:
                 raise ValueError('Missing required package file: ' + name)
         if not any(name.startswith(prefix + 'data/') and name.endswith('.xml') for name in files):

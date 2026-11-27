@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "transpiler-pyquil-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "transpiler-pyquil-requirements.lock",
+  "lock_sha256": "28e5b7c23fcd58cebc611fcb59405e5ee87a7b556f22b6133f0fc62e4b02630d",
+  "offline_only": true,
+  "wheel_requirement": "117 pinned distributions for the local Qiskit and Braket transpiler; rpcq 3.11.0 uses a wheel built from source archive SHA-256 4361e759782f58dd0b8aa3a6d901e3ea5709f91c6a060bd444081fbb007b05a9",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}
