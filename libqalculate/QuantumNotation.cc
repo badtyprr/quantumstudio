@@ -448,6 +448,16 @@ class Parser {
  // TeX binds indices before parsing its body. A joined letter product may
  // also contain free coefficients; quoted and declared names stay atomic.
  std::vector<std::string> texIndices;
+ bool boundPair(const std::string &word,std::string &left,std::string &right) const {
+  if(word.size()!=2)return false;
+  auto coordinate=[&](char c,std::string &value) {
+   value.assign(1,c);
+   if(std::find(texIndices.begin(),texIndices.end(),value)==texIndices.end())return false;
+   if(c=='i' || c=='e')value=std::string(1,constantMarkerBegin)+value+constantMarkerEnd;
+   return true;
+  };
+  return coordinate(word[0],left) && coordinate(word[1],right);
+ }
  bool texIndexDeclaration=false;
  std::string texIndexProduct(const std::string &name) {
   if(texIndexDeclaration || name.size()<2 || name=="pi" || gates.count(name) || (name.size()>=2 && name.compare(name.size()-2,2,"Hz")==0))return name;
@@ -908,6 +918,11 @@ class Parser {
    throw std::runtime_error("A complemented ket label requires one bit or a single bit variable.");
   }
   std::string familyLabel=labelText(label);size_t familyOpen=stateFamilyOpen(familyLabel);
+  if(dimension.empty()) {
+   std::string word,left,right;
+   for(unsigned char c:label)if(!std::isspace(c))word+=char(c);
+   if(boundPair(word,left,right))return "qtensor(qketstate("+left+"),qketstate("+right+"))";
+  }
   // Inside a sum, an indexed binder denotes a basis value rather than an
   // independently declared named-state family. Outside that lexical scope,
   // preserve the established state-family interpretation.
@@ -2168,7 +2183,15 @@ class Parser {
     // Greek scalar letters denote unknown parameters in quantum notation.
     // Pi stays numerical, and explicit function calls take the path above.
     // Subscripted identifiers remain atomic instead of becoming products.
-    else if(!numericToken && a.find('_')!=std::string::npos) a=indexableLabel(a);
+    else if(!numericToken && a.find('_')!=std::string::npos) {
+     size_t subscript=a.rfind('_');
+     std::string left,right;
+     if(boundPair(a.substr(subscript+1),left,right)) {
+      // Keep the two coordinates separate, including when either index
+      // has more than one digit, so (1,12) and (11,2) cannot collide.
+      a="qindexedlabel(qindexedlabel("+indexableLabel(a.substr(0,subscript+1))+","+left+",\"_\"),"+right+",\"\")";
+     } else a=indexableLabel(a);
+    }
     else if(!numericToken) {
      static const std::string letters="αβγδεζηθικλμνξορςστυφχψωΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϑϕϖϱϵ";
      std::string product;size_t begin=0,factors=0;

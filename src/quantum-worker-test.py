@@ -24,6 +24,11 @@ def data(expression, *flags):
     return value
 
 
+# Grouped Cartesian sums bind both coordinates only inside their body.
+pair_sum = data(r"quantum:$\sum_{(a,b)\in\Sigma\times\Gamma}{10a+b}$")["copy_text"]
+assert data(f'quantum:replace(replace(({pair_sum}),"Σ",qset(vector(3,5))),"Γ",qset(vector(2,7,8)))')["copy_text"] == "274"
+assert b"distinct coordinate" in run(r"quantum:$\sum_{(a,a)\in\Sigma\times\Gamma}{a}$","--json",success=False).stderr
+
 # A per-factor adjoint must conjugate and transpose the supplied operator.
 adjoints = data(r"quantum:$M_{n-1}^{\dagger}\otimes\cdots\otimes M_0^{\dagger}$")["copy_text"]
 assert data(f'quantum:replace(replace(({adjoints}),"M_0",[0,i;1,0]),n,1)')["copy_text"] == "matrix(2,2,[0,1,−i,0])"

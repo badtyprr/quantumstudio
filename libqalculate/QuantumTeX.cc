@@ -2255,6 +2255,20 @@ class TeXReader {
    size_t first=variable.find_first_not_of(" \t\r\n"), last=variable.find_last_not_of(" \t\r\n");
    if(first==std::string::npos) throw std::runtime_error(error("Missing summation index"));
    variable=variable.substr(first,last-first+1);
+   if(setSum && variable.front()=='(' && variable.back()==')') {
+    static const std::regex pair(R"(\(\s*([a-z])\s*,\s*([a-z])\s*\))");
+    std::smatch coordinates;
+    std::string domain=trim(startValue);
+    if(std::regex_match(variable,coordinates,pair) && domain.compare(0,11,"qcartesian(")==0 && domain.back()==')') {
+     const auto alphabets=indexedParts(domain.substr(11,domain.size()-12),",");
+     if(alphabets.size()!=2)throw std::runtime_error(error("A Cartesian pair requires two alphabets"));
+     if(coordinates[1]==coordinates[2])throw std::runtime_error(error("A Cartesian sum requires distinct coordinate indices"));
+     const std::string outer=alphabets[0]+","+coordinates[1].str(),inner=alphabets[1]+","+coordinates[2].str();
+     space();if(pos==input.size())throw std::runtime_error(error("Missing Cartesian sum body"));
+     if(input[pos]=='{')return "qtexgroupsumset("+outer+",qtexgroupsumset("+inner+","+group()+"))";
+     return "qtexsumset("+outer+") qtexsumset("+inner+") ";
+    }
+   }
    if(setSum && variable.find("...")!=std::string::npos) {
     std::string prefix,begin,end,alphabet,width;
     if(!registerSumDeclaration(variable,startValue,prefix,begin,end,alphabet,width))
