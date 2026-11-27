@@ -3542,6 +3542,34 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    if(!left.empty())return m[3].matched ? "qpairwiseproducts("+left+","+family(m[3])+")" : left;
   }
  }
+ if(mathWrapper && s.find("\\cdots")!=std::string::npos && s.find("\\langle")!=std::string::npos) {
+  const auto sides=indexedParts(trim(withoutDisplayPunctuation(s)),"=");
+  static const std::string state=R"((\\[a-zA-Z]+|[a-zA-Z]))";
+  static const std::regex factors(R"(^\s*\\langle\s*)"+state+R"(_\{([a-z])-1\}\s*\\vert\s*(?:([A-Z])_\{\2-1\}\s*\\vert\s*)?)"+state+
+   R"(_\{\2-1\}\s*\\rangle\s*\\cdots\s*\\langle\s*\1_0\s*\\vert\s*(?:([A-Z])_0\s*\\vert\s*)?\4_0\s*\\rangle\s*$)");
+  std::smatch m;
+  if((sides.size()==1 || sides.size()==2) && std::regex_match(sides.back(),m,factors) && m[3]==m[5]) {
+   auto width=[](const std::string &v){return std::string("nxyz").find(v)==std::string::npos ? "\""+v+"\"" : v;};
+   auto entries=[&](const std::string &family){return "qindexedentries(\""+quantumTeX(family)+"_\",0,"+width(m[2])+"-1,vector())";};
+   std::string product=m[3].matched ? "qmatrixelementproduct("+entries(m[1])+","+entries(m[3])+","+entries(m[4])+")" :
+    "qoverlapproduct("+entries(m[1])+","+entries(m[4])+")";
+   if(sides.size()==1)return product;
+   static const std::regex composite(R"(^\s*\\langle\s*)"+state+R"(_\{([a-z])-1\}\s*\\cdots\s*\1_0\s*\\vert\s*(?:([A-Z])_\{\2-1\}\s*\\otimes\s*\\cdots\s*\\otimes\s*\3_0\s*\\vert\s*)?)"+state+
+    R"((_\{\2-1\}\s*\\cdots\s*\4_0)?\s*\\rangle\s*$)");
+   std::smatch left;
+   if(std::regex_match(sides[0],left,composite)) {
+    const std::string index=left[2]=="j" ? "k" : "j";
+    auto tensor=[&](const std::string &family,bool ket) {
+     std::string factor="qindexedlabel(\""+quantumTeX(family)+"_\","+index+",\"\")";
+     if(ket)factor="qindexedket("+factor+")";
+     return "qtensorseries("+factor+","+width(left[2])+"-1,0,"+index+",-1)";
+    };
+    std::string ket=left[5].matched ? tensor(left[4],true) : "qketstate(\""+quantumTeX(left[4].str())+"\")";
+    if(left[3].matched)ket="qmul("+tensor(left[3],false)+","+ket+")";
+    return "qcompare(qmul(qdag("+tensor(left[1],true)+"),"+ket+"),"+product+",4)";
+   }
+  }
+ }
  if(mathWrapper && s.find("\\cdots")!=std::string::npos && s.find("\\|")!=std::string::npos) {
   // Size commands affect only the typography of the norm delimiters.
   static const std::string bar=R"((?:\\(?:bigl|bigr|left|right)\s*)?\\\|\s*)";

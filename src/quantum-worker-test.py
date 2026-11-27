@@ -24,6 +24,11 @@ def data(expression, *flags):
     return value
 
 
+# Each overlap conjugates its bra independently, including at width one.
+overlaps = data(r"quantum:$\langle a_{n-1}\vert b_{n-1}\rangle\cdots\langle a_0\vert b_0\rangle$")["copy_text"]
+assert data(f'quantum:replace(replace(replace(({overlaps}),"a_0",[0;i]),"b_0",[0;2]),n,1)')["copy_text"] == "−2i"
+assert data(f'quantum:replace(replace(replace(({overlaps}),n,1),"a_0",[0;i]),"b_0",[2;0])')["copy_text"] == "0"
+
 # Tensor columns run through the inner coordinate before changing blocks.
 tensor_rows = r"x_0 y_0\\\vdots\\x_0 y_k\\\vdots\\x_m y_0\\\vdots\\x_m y_k"
 tensor_display = r"$$\begin{pmatrix}" + tensor_rows + r"\end{pmatrix}$$"
