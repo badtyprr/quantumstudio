@@ -597,6 +597,8 @@ One-dimensional quantum states and operators retain their 1-by-1 matrix shape. T
 
 ### Named basis labels in IBM examples
 
+A coefficient set such as `$\{\alpha_{ab}:(a,b)\in\Sigma\times\Gamma\}$` takes the image of the ordered pairs in the two alphabets. Supply the alphabets as finite sets and `α` as a finite function graph. For example, `qtuple(vector(qtuple(vector(3,7)),i))` is a graph entry assigning the coefficient `i` to the pair `(3,7)`. Repeated coefficients occur once in the image.
+
 When a lesson calls an indexed sequence a classical state string, use the finite-set notation mode. For example, `sets:$a_{n-1}\cdots a_0$` represents the ordered tuple from register `n-1` down to register zero. Its entries can include repeated values and named outcomes. Ascending indices follow the printed order as well.
 
 Use `basislabels([0,1],[1,2,3]):` before a pasted formula when the lesson specifies the order of its numeric basis labels in the surrounding text. In this example `|0,1>` selects the first entry of a six-entry column and `|1,3>` selects the last. The first register varies slowest. A compact string such as `|012>` supplies one digit per register when three registers are declared. Use commas for multi-digit labels. A single list such as `basislabels([3,1,2]):` preserves its printed order for both kets and bras. An explicit ket dimension takes precedence.

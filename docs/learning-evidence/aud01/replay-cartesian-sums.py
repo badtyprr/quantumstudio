@@ -10,7 +10,9 @@ from learning_clipboard_checks import clipboard_checks
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
-parser.add_argument("--report", type=Path)
+reports=parser.add_mutually_exclusive_group()
+reports.add_argument("--report", type=Path)
+reports.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ,QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -86,4 +88,29 @@ for lesson, numbers in (("041",(91,131,229)),("042",(31,104,106,166,168,169,170)
 sparse = evaluate(r"$\sum_{(a,b)\in\Sigma\times\Gamma}{10a+b}$")
 check("nonconsecutive",bind(sparse,[("Σ","qset(vector(3,5))"),("Γ","qset(vector(2,7,8))")]),"274")
 check("empty",bind(sparse,[("Σ","qset(vector())"),domains[1]]),"0")
-clipboard_checks(worker,args.windows,args.report,cases,30,dict(source_sha256=sources))
+row=inventory["rows"][104]
+image=evaluate(row["literal"])
+check(row["id"],row["literal"],image)
+def graph(entries):
+    pairs=[f"qtuple(vector(qtuple(vector({a},{b})),{value}))" for a,b,value in entries]
+    return "qset(vector("+",".join(pairs)+"))"
+table=[(i,j,amplitude[3*i+j]) for i in range(2) for j in range(3)]
+# The image uses the same six coefficients as the state and its squared
+# norm above. An extra graph entry lies outside the displayed domain.
+family=("α",graph(table+[(9,9,"-7")]))
+unique=evaluate("qset(vector(0,3*i/5,4/5))")
+check("image-domains-first",bind(image,domains+[family]),unique)
+check("image-family-first",bind(image,[family]+domains),unique)
+check("empty-image",bind(image,[family,domains[0],("Γ","qset(vector())")]),"qset(vector())")
+swapped=evaluate(row["literal"].replace("_{ab}","_{ba}"))
+transposed=("α",graph([(b,a,value) for a,b,value in table]))
+transposed_image=bind(swapped,domains+[transposed])
+check("transposed-coefficient-keys",f"({transposed_image})==({unique})","1")
+clubs='qoutcome("clubs")'
+check("named-coefficient-key",bind(image,[("Σ",f"qset(vector({clubs}))"),("Γ","qset(vector(7))"),
+      ("α",graph([(clubs,7,"i")]))]),"qset(vector(i))")
+for missing in [bind(image,domains+[("α",graph(table[:-1]))]),bind(swapped,domains+[family])]:
+    failure=subprocess.run([worker,"--json"],input=("quantum:"+missing).encode(),capture_output=True,env=env,timeout=30)
+    assert failure.returncode and b"no value for this input" in failure.stderr
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,36,dict(source_sha256=sources),
+                 sessions_only=bool(args.session_report))
