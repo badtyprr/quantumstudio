@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "id": "qiskit-aer-public-linux-py312",
+  "python": "3.12.10",
+  "platform": "linux",
+  "architecture": "64bit",
+  "lock": "qiskit-aer-public-linux-requirements.lock",
+  "lock_sha256": "310e0973373304f7bde387313b04ddbed7c04667d4f8f073be3d8558be2af2a6",
+  "offline_only": true,
+  "exact_packages": true,
+  "wheel_requirement": "54 hash-pinned Linux-compatible wheels available from PyPI",
+  "default_cell_timeout_seconds": 120,
+  "cancel_grace_seconds": 5,
+  "service_runtime_seconds": 600,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only"
+}

@@ -1,6 +1,6 @@
 {
   "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
-  "contract_sha256": "5ccb716a8465efb531c2a0d923d42502e60277822d1e4ef1d2053d734639e6a1",
+  "contract_sha256": "47454a9debf4b8e6e75b147e3ac39b120e9e4c5c8f8705d65dae1f970683e349",
   "runs": {
     "windows": {
       "profile": "grover-win-py312",
@@ -28,10 +28,16 @@
         1.0,
         0.9999999999999984
       ],
-      "active_processes_after_run": 0
+      "active_processes_after_run": 0,
+      "public_wheel_download": {
+        "index": "https://pypi.org/simple",
+        "wheel_count": 76,
+        "lock_sha256": "84f259186212da8cb293a0a1842af146f62ccea366c9a02c10aa99b9cc42436f",
+        "offline_install_succeeded": true
+      }
     },
     "linux": {
-      "profile": "qiskit-aer-linux-py312",
+      "profile": "qiskit-aer-public-linux-py312",
       "figure_dimensions": {
         "3": [
           176,
@@ -56,7 +62,13 @@
         0.9999999999999996,
         0.9999999999999987
       ],
-      "active_processes_after_run": 0
+      "active_processes_after_run": 0,
+      "public_wheel_download": {
+        "index": "https://pypi.org/simple",
+        "wheel_count": 54,
+        "lock_sha256": "310e0973373304f7bde387313b04ddbed7c04667d4f8f073be3d8558be2af2a6",
+        "offline_install_succeeded": true
+      }
     }
   }
 }
