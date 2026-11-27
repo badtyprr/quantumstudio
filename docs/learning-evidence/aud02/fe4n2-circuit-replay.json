@@ -1,0 +1,48 @@
+{
+  "canonical_tutorial": "https://docs.quantinuum.com/inquanto/tutorials/InQ_tut_fe4n2_2.html",
+  "html_sha256": "d50ddc0a6aec119c7755137ba0553e96a34e57426afc63199b4deb8e24f5f4df",
+  "circuit_sha256": "fda8d96ca5d99fa561b5924e500f2e4468fb731a6d71ca839b702a2afa89b33d",
+  "native_revision": "c637aa12b0993876c7f185f07c8b4b4683aaac4b",
+  "qubits": 6,
+  "gates": 311,
+  "two_qubit_gates": 59,
+  "published_parameters": {
+    "d0": -0.07710267528565536,
+    "d1": -0.0018869565337611026,
+    "d2": -0.001981770447813303,
+    "d3": -0.3163768160454625,
+    "s0": 0.0032754295419417136,
+    "s1": 0.0032218165050814794,
+    "s2": 0.009271065107960087
+  },
+  "sample_checks": [
+    {
+      "basis": "Z",
+      "shots": 100000,
+      "max_probability_error": 0.00014060060358787874,
+      "limit": 0.009941366382583432
+    },
+    {
+      "basis": "X",
+      "shots": 100000,
+      "max_probability_error": 0.0015964801592053476,
+      "limit": 0.009941366382583432
+    },
+    {
+      "basis": "Y",
+      "shots": 100000,
+      "max_probability_error": 0.001596480159205365,
+      "limit": 0.009941366382583432
+    }
+  ],
+  "resource_id": "LR-a7ef7a17999a9638",
+  "source_link": "https://inquanto.quantinuum.com/tutorials/InQ_tut_fe4n2_2.html",
+  "learning_sources": [
+    {
+      "source": "learning/courses/quantum-diagonalization-algorithms/vqe.ipynb",
+      "cell": 38
+    }
+  ],
+  "method": "Read the published circuit and bind the seven reported parameters. Compare 64 native outcome frequencies in each of three bases with pytket statevector probabilities.",
+  "scope": "Sampling the published circuit. Regeneration of the Hamiltonian, ADAPT-VQE optimization and optimizer energy require the InQuanto environment and first tutorial outputs."
+}

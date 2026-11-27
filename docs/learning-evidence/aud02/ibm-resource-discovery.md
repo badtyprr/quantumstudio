@@ -71,4 +71,14 @@ This recovered 32 references and two tutorials, including the Rustworkx
 betweenness-centrality exercise and Quantinuum's Fe4N2 example. All 43 added
 source locations were checked against the literal addresses in 13 pinned files.
 The registry records where learners encounter each address and the follow-up
-task for its resource type. The Rustworkx tutorial passed all four original code blocks. An independent NetworkX calculation matched all 48 node scores on the 63-edge lattice, and all three graph drawings rendered. The Quantinuum example remains open. [Rustworkx execution evidence](rustworkx-centrality-replay.json).
+task for its resource type. The Rustworkx tutorial passed all four original code blocks. An independent NetworkX calculation matched all 48 node scores on the 63-edge lattice, and all three graph drawings rendered. [Rustworkx execution evidence](rustworkx-centrality-replay.json).
+
+The VQE lesson links to Quantinuum's Fe4N2 tutorial. Its original host failed
+certificate validation. The current [publisher page](https://docs.quantinuum.com/inquanto/tutorials/InQ_tut_fe4n2_2.html)
+provides the six-qubit circuit and seven optimized parameter values. The native
+worker ran all 311 gates, including 59 controlled-X gates. All 64 outcome
+frequencies in each of the X, Y and Z bases agreed with pytket statevector
+probabilities within the recorded sampling tolerance. Reproducing the
+optimization requires InQuanto and the Hamiltonian, state and space generated
+by the preceding chemistry tutorial. [Circuit replay](fe4n2-circuit-replay.json) ·
+[Publisher installation guide](https://docs.quantinuum.com/inquanto/introduction/installation.html).

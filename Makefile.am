@@ -814,3 +814,4 @@ EXTRA_DIST += docs/learning-evidence/dev13/qb012-notebook-route.json
 EXTRA_DIST += windows/dev13-notebooks/contracts/qb011.json windows/dev13-notebooks/profiles/transpiler-pyquil-win-py312.json windows/dev13-notebooks/transpiler-pyquil-requirements.lock windows/dev13-notebooks/witnesses/qb011.py windows/dev13-notebooks/test_qb011.py
 EXTRA_DIST += docs/learning-evidence/dev13/qb011-notebook-route.json
 EXTRA_DIST += docs/learning-evidence/aud02/rustworkx-centrality-replay.json
+EXTRA_DIST += docs/learning-evidence/aud02/fe4n2-circuit-replay.json
