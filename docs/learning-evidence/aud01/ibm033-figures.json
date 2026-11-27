@@ -1,0 +1,43 @@
+{
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "figures": [
+    {
+      "file": "reflection1.svg",
+      "sha256": "2bd09c6838febdf9fb881e7b4071b672dd87e34bf11101070e27cf0b94c02931",
+      "reflection_axes_degrees": [
+        0.0
+      ],
+      "state_angles_degrees": [
+        20.0002,
+        -20.0002
+      ],
+      "worker_checks": 2
+    },
+    {
+      "file": "reflection2.svg",
+      "sha256": "243a98b788cf2879a26c8abbff342626e3db14dafc3aaeec91b50ba139748dd3",
+      "reflection_axes_degrees": [
+        20.0002
+      ],
+      "state_angles_degrees": [
+        -9.9998,
+        49.9995
+      ],
+      "worker_checks": 2
+    },
+    {
+      "file": "Grover_rotation.svg",
+      "sha256": "e9ad67e771dbae4b722b2f11b3bfafee42c26baab8ace144ec2860ecb639c4b9",
+      "reflection_axes_degrees": [
+        0.0,
+        15.0
+      ],
+      "state_angles_degrees": [
+        40.0005,
+        -40.0005,
+        69.9998
+      ],
+      "worker_checks": 6
+    }
+  ]
+}
