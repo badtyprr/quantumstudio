@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
 parser.add_argument("--report", type=Path)
+parser.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -40,6 +41,7 @@ def check(key, expr, expected):
 
 sources = {}
 hashes = {}
+standalone = {"041": (132,272), "042": (215,216)}
 for lesson, ids in [("041", (18,20,40)), ("042", (88,90,110))]:
     inventory = json.loads(Path(__file__).with_name(f"ibm{lesson}-inventory.json").read_bytes())
     hashes[lesson] = inventory["source_sha256"]
@@ -50,11 +52,19 @@ for lesson, ids in [("041", (18,20,40)), ("042", (88,90,110))]:
         copied = evaluate(expr)
         assert evaluate(copied) == copied
         cases[row["id"]] = expr, copied
+    for number in standalone[lesson]:
+        row = inventory["rows"][number-1]
+        check(row["id"], "sets:"+row["literal"], "qcartesian('Σ','Γ')")
 
 definition = sources["041",18]
 check("definition",definition,"1")
 swapped = definition.replace("(a,b)", "(b,a)")
 domain_bindings = [("Σ", alphabet((0,1))), ("Γ", alphabet((4,5,6)))]
+for left,right in [((0,1),(4,5,6)), ((4,5,6),(0,1)), ((),(4,)), ((0,),())]:
+    for reversed_axes in (False,True):
+        expr = r"sets:$\Gamma\times\Sigma$" if reversed_axes else r"sets:$\Sigma\times\Gamma$"
+        bound = bind(evaluate(expr), [("Σ",alphabet(left)),("Γ",alphabet(right))])
+        check(f"standalone-{len(cases)}",bound,tuple_set((right,left) if reversed_axes else (left,right)))
 check("swapped-coordinates",bind(evaluate(swapped),domain_bindings),"0")
 for lesson, number in [("041",20),("042",110)]:
     member = evaluate(sources[lesson,number])
@@ -79,5 +89,6 @@ for lesson,number in [("041",40),("042",90)]:
         expected = all(v in axis for v,axis in zip(values,axes))
         check(f"triple-{lesson}-"+"-".join(map(str,values)),bind(expr,sets+coordinates+[("n",3)]),str(int(expected)))
 
-clipboard_checks(worker,args.windows,args.report,cases,34,dict(source_sha256=hashes, original_occurrences=6,
-                 application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()))
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,46,dict(source_sha256=hashes, original_occurrences=10,
+                 application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()),
+                 sessions_only=bool(args.session_report))
