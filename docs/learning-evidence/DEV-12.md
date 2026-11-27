@@ -108,7 +108,8 @@ a rotated three-qubit state. The original input and response remain in
 to propagate uncertainty through the absolute value is undefined. The
 development worker now falls back to interval arithmetic in that case. The
 regression checks the numeric result, display and copy text against zero to
-within 2e-12, and verifies a nonzero residual of 0.001 separately.
+within 2e-12, and verifies a nonzero residual of 0.001 separately. The updated worker passed
+all 80 variational checks and all 4,219 general worker process checks.
 Attempt 2 exposed a test-parser assumption that tiny complex residuals would
 print as real; accepting complex numerical output corrected the harness.
 
