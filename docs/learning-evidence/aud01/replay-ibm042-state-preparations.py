@@ -1,6 +1,7 @@
 """Check the three source states and both normalized post-measurement states."""
 import argparse
 import hashlib
+import itertools
 import json
 import os
 from pathlib import Path
@@ -11,7 +12,9 @@ from learning_clipboard_checks import clipboard_checks
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
-parser.add_argument("--report", type=Path)
+reports = parser.add_mutually_exclusive_group()
+reports.add_argument("--report", type=Path)
+reports.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -51,6 +54,45 @@ for number, diagonal in [(148, (1,1,0,0)), (160, (1,0,1,0))]:
     check(f"conditional-{number}",f"norm(({projected})/sqrt(2/3)-({conditional}))","0")
     check(f"wrong-phase-{number}","$$"+left+"= -("+right+");$$","0")
     check(f"wrong-normalization-{number}","$$"+left+"= 2*("+right+");$$","0")
-clipboard_checks(worker,args.windows,args.report,cases,17,dict(source_sha256=inventory["source_sha256"],
-                 source_occurrences=3, ordered_states=len(vectors),
-                 application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()))
+classical = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+joint = "[1/2;0;1/12;1/12;1/6;1/6]"
+for number in (252,258,264,268):
+    row = classical["rows"][number-1]
+    source = row["literal"]
+    if number==258:
+        # X is the first factor. Each parenthesized Y vector uses its own axis.
+        assert source.count(r"\biggl(")==source.count(r"\biggr)")==2
+        source = source.replace(r"\biggl(","basislabels([[1,2,3]],(").replace(r"\biggr)","))")
+    axes = {252:"[0,1],[1,2,3]",258:"[0,1]",264:"[1,2,3]",268:"[1,2,3]"}[number]
+    scoped = f"basislabels({axes}):"+source
+    copied = evaluate(scoped)
+    check(row["id"],scoped,copied)
+    if number in (252,258):
+        check(f"joint-{number}",f'replace(({copied}),"pi",{joint})',"1")
+    else:
+        assert copied=="1"
+
+row = inventory["rows"][76]
+qutrits = "basislabels([0,1,2],[0,1,2],[0,1,2]):"+row["literal"]
+state = evaluate(qutrits)
+cases[row["id"]] = qutrits,state
+entries = [0]*27
+for a,b,c in itertools.permutations(range(3)):
+    entries[9*a+3*b+c] = (-1)**((a>b)+(a>c)+(b>c))
+expected = "["+";".join(map(str,entries))+"]/sqrt(6)"
+check("qutrit-permutation-signs",f"norm(({state})-({expected}))","0")
+
+matrix_literal = next(r["literal"] for r in inventory["rows"][221:228] if r"\begin{pmatrix}" in r["literal"])
+matrix = evaluate("$$"+matrix_literal.split("=",1)[1])
+row = inventory["rows"][228]
+scoped = 'matrixcontext("U",(6),(6),"general"):basislabels([1,2,3],[0,1]):'+row["literal"]
+relation = evaluate(scoped)
+cases[row["id"]] = scoped,relation
+check("declared-unitary-column",f'replace(({relation}),"U",{matrix})',"1")
+check("wrong-unitary-column",f'replace(({relation}),"U",qidentity(6))',"0")
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,28,
+                 dict(source_sha256=inventory["source_sha256"],classical_source_sha256=classical["source_sha256"],
+                 scoped_formulas={"IBM-041":[252,258,264,268],"IBM-042":[77,229]},
+                 qutrit_coordinates_checked=27,ordered_states=len(vectors),
+                 application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()),
+                 sessions_only=bool(args.session_report))

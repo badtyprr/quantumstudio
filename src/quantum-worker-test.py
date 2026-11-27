@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# Printed alphabet order supplies the row and column coordinates.
+assert data("quantum:basislabels([3,1,2]):|1>")["cells"] == [["0"],["1"],["0"]]
+assert data("quantum:basislabels([1,2,3],[0,1]):<3,1|")["copy_text"] == "vector(0,0,0,0,0,1)"
+assert data("quantum:basislabels([1,2]):|0>_2")["cells"] == [["1"],["0"]]
+assert data("quantum:basislabels([[3,1]],basislabels([[0,1]],|1>)+|3>)")["cells"] == [["1"],["1"]]
+for invalid in ["basislabels([1,1]):|1>","basislabels([01,1]):|1>","basislabels([1,2]):|3>",
+                "basislabels([0,1],[0,1]):|0>"]:
+    run("quantum:" + invalid,"--json",success=False)
+
 # Register subscripts label the identity factors, including register zero.
 identities = r"\mathbb{I}_{n-1}\otimes\cdots\otimes\mathbb{I}_0"
 series = data("quantum:$" + identities + "$")["copy_text"]
