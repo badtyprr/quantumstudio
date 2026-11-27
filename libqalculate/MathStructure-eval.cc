@@ -2972,7 +2972,8 @@ MathStructure &MathStructure::eval(const EvaluationOptions &eo) {
 					if(eo.keep_zero_units) remove_add_zero_unit(*this);
 					b_failed = !merge_uncertainty(*this, munc, eo3);
 
-					if(b_failed && munc.countTotalChildren(false) < 60) {
+					// An undefined derivative at a cusp cannot be retained as a symbolic uncertainty.
+					if(b_failed && munc.countTotalChildren(false) < 60 && !munc.representsUndefined(true)) {
 						if(eo.structuring != STRUCTURING_NONE) {simplify_ln(*this); simplify_ln(munc); simplify_roots(*this, eo); simplify_roots(munc, eo);}
 						structure(eo.structuring, eo2, false);
 						munc.structure(eo.structuring, eo2, false);

@@ -102,12 +102,13 @@ symbol before differentiation and rejects; use the existing
 this is not scalar-gradient support. No missing general optimizer or matrix
 derivative implementation is inferred from the finite scalar audit.
 
-The first regression attempt encountered `Division by zero` while formatting
-an approximately zero cancellation of a normalized-vector norm. The test now
-compares the returned scalar against the independent reference in Python,
-without asking the product to format that cancellation. The original input
-and response remain in `baseline-regression-attempt-1.json`; that numerical
-cancellation diagnostic is unresolved and is not counted as newly supported.
+The release worker reported division by zero for the absolute norm residual of
+a rotated three-qubit state. The original input and response remain in
+`baseline-regression-attempt-1.json`. At a zero residual, the derivative used
+to propagate uncertainty through the absolute value is undefined. The
+development worker now falls back to interval arithmetic in that case. The
+regression checks the numeric result, display and copy text against zero to
+within 2e-12, and verifies a nonzero residual of 0.001 separately.
 Attempt 2 exposed a test-parser assumption that tiny complex residuals would
 print as real; accepting complex numerical output corrected the harness.
 
@@ -253,8 +254,7 @@ verification retry, not a resumed build or validation run.
 Raw source snapshots, original failing inputs, baseline/development runs,
 failed harness assumptions, final runs and build manifests remain outside
 disposable checkouts under `cleanup-audit/`. Decimal eigenpair copies re-enter
-as equivalent exact fractions and are checked semantically. The earlier
-approximate norm-cancellation diagnostic is retained as unresolved. This release
+as equivalent exact fractions and are checked semantically. The norm-cancellation fix above awaits release verification. This release
 does not claim symbolic/generalized eigensolvers, expanded parser capacity,
 whole-lesson support, original framework execution or global optimizer convergence.
 DEV-09's unresolved symbolic case, DEV-10 limits and DEV-11 Partial status remain.
