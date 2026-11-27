@@ -82,3 +82,5 @@ probabilities within the recorded sampling tolerance. An independently synthesiz
 optimization requires InQuanto and the Hamiltonian, state and space generated
 by the preceding chemistry tutorial. [Circuit replay](fe4n2-circuit-replay.json) ·
 [Publisher installation guide](https://docs.quantinuum.com/inquanto/introduction/installation.html).
+
+To repeat the circuit checks, give the [replay script](replay-fe4n2-circuit.py) the saved publisher HTML and the path to the packaged quantum-worker.exe. The script checks the source digest before reading the circuit. Use an environment with NumPy, pytket and Qiskit.
