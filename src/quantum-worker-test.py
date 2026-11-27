@@ -32,6 +32,12 @@ assigned=f'replace(replace(replace(({coefficients}),"α",{table}),"Σ",qset(vect
 assert data("quantum:"+assigned)["copy_text"]=="qset(vector(i))"
 
 # A word over finite alphabets preserves position and repeated symbols.
+# Binding the same set label supplies its cardinality and its uniform ket.
+set_state = data(r"quantum:$\sqrt{\vert A_0\vert}\vert A_0\rangle$")["copy_text"]
+support = "qset(vector(qbitlabel(0,2),qbitlabel(3,2)))"
+assert data(f'quantum:replace(({set_state}),"A_0",{support})')["copy_text"] == "matrix(4,1,[1,0,0,1])"
+empty_state = run('quantum:replace(qketstate("S"),"S",qset(vector()))', "--json", success=False)
+assert b"nonempty set" in empty_state.stderr
 for symbol in (r"\emptyset", r"\varnothing", "∅"):
     condition = data(f"quantum:$A_0 = {symbol}$")["copy_text"]
     assert data(f'quantum:replace(({condition}),"A_0",qset(vector()))')["copy_text"] == "1"

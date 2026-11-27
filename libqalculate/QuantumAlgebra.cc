@@ -633,7 +633,10 @@ class QuantumAlgebraFunction: public MathFunction {
  std::string op;
  public:
  QuantumAlgebraFunction(const std::string &name,int n):MathFunction(name,n),op(name) {
-  if(op=="qnamedket" || op=="qfrequency" || op=="qphysicalunit")setArgumentDefinition(1,new TextArgument());
+  // Parse a bare ket label as text. After substitution qketstate checks
+  // the supplied set, basis label or column vector.
+  if(op=="qnamedket")setArgumentDefinition(1,new TextArgument("",false));
+  if(op=="qfrequency" || op=="qphysicalunit")setArgumentDefinition(1,new TextArgument());
   if(op=="qphysicalunit")setArgumentDefinition(2,new TextArgument());
  }
  ExpressionItem *copy() const {return new QuantumAlgebraFunction(*this);}
@@ -1459,6 +1462,7 @@ class QuantumAlgebraFunction: public MathFunction {
    }
   }
   if(op=="qketstate" && args[0].isFunction() && args[0].function()->referenceName()=="qset" && args[0].size()==1 && args[0][0].isVector()) {
+   if(!args[0][0].size()) {CALCULATOR->error(true,"A uniform set ket requires a nonempty set.",NULL);return 0;}
    MathStructure entries=args[0][0];args[0]=entries;
   }
   const MathStructure &a=args[0];
