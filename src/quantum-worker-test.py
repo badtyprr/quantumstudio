@@ -197,6 +197,14 @@ assert data("quantum:"+alphabets)["copy_text"] == alphabets
 pairs = f'quantum:replace(replace(replace(({alphabets}),"Σ_0",qset(vector(2,3))),"Σ_1",qset(vector(7))),n,2)'
 assert data(pairs)["copy_text"] == "qset(vector(qtuple(vector(7,2)),qtuple(vector(7,3))))"
 member = data(r"quantum:$(a,b)\in\Sigma\times\Gamma$")["copy_text"]
+pauli_channel = data(r"quantum:$\Phi(\rho) = p_I I\rho I + p_X X\rho X+p_Y Y \rho Y + p_Z Z \rho Z$")["copy_text"]
+for gate in "IXYZ":
+    mixture = pauli_channel
+    for label in "IXYZ":
+        mixture = f'replace(({mixture}),"p_{label}",{int(label == gate)})'
+    mixture = f'replace(({mixture}),"ρ",[2/3,(1-i)/6;(1+i)/6,1/3])'
+    for actual in (gate, "X" if gate == "I" else "I"):
+        assert data(f'quantum:replace(({mixture}),"Φ",vector({actual}))')["copy_text"] == str(int(actual == gate))
 channel_end = data(r"quantum:$\Phi(\rho,t\to1)$")["copy_text"]
 rotation = "vector([cos(pi*t/2),-sin(pi*t/2);sin(pi*t/2),cos(pi*t/2)])"
 assert data(f'quantum:replace(replace(({channel_end}),"ρ",[1,0;0,0]),"Φ",{rotation})')["copy_text"] == "matrix(2,2,[0,0,0,1])"
