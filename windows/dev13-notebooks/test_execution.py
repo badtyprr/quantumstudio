@@ -719,6 +719,14 @@ class LifecycleTests(unittest.TestCase):
         self.assertIn("SOURCE_STDOUT_MISMATCH: 0", result["error"]["message"])
         self.assert_cleanup(result)
 
+    def test_missing_second_image_fails_verification(self):
+        config = self.fixture(["from IPython.display import display; display({'image/png': 'YWJj'}, raw=True)"])
+        config["contract"]["required_image_counts"] = {"0": 2}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result["authored_verification"], "failed")
+        self.assertIn("SOURCE_IMAGE_COUNT: 0 expected 2, got 1", result["error"]["message"])
+        self.assert_cleanup(result)
+
     def test_missing_latex_display_fails_verification(self):
         config = self.fixture(["from IPython.display import Latex, display; display(Latex('x'))"])
         config["contract"]["required_latex_counts"] = {"0": 3}

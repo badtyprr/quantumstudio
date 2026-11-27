@@ -21,9 +21,9 @@ import traceback
 
 ROOT = Path(__file__).resolve().parent
 TERMINAL = {"succeeded", "failed", "cancelled"}
-CONTRACTS = {"ibm023", "qb011", "qb012", "ibm043", "ibm039", "qb020", "qb019", "qb026", "qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb028", "qb029", "qb030", "ibm-timing", "qb013"}
+CONTRACTS = {"ibm052", "ibm023", "qb011", "qb012", "ibm043", "ibm039", "qb020", "qb019", "qb026", "qb036", "qb038", "qb008", "qb007-cpu", "qb006", "qb005", "qb004", "qb003", "qb002", "qb001", "qb015", "ibm019", "ibm020", "qb017", "qb018", "qb007", "qb027", "qb028", "qb029", "qb030", "ibm-timing", "qb013"}
 SELECTED_ROUTE = "selected-cells/direct-native-execution"
-PROFILES = {"sympy-linux-py312", "sympy-win-py312", "transpiler-pyquil-win-py312", "transpiler-win-py312", "ibm-runtime-win-py312", "grover-win-py312", "qsim-win-py312", "algorithms-win-py312", "autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
+PROFILES = {"qiskit-aer-sympy-linux-py312", "sympy-linux-py312", "sympy-win-py312", "transpiler-pyquil-win-py312", "transpiler-win-py312", "ibm-runtime-win-py312", "grover-win-py312", "qsim-win-py312", "algorithms-win-py312", "autoqasm-win-py312", "qiskit-aer-win-py312", "qir-win-py312", "squin-win-py312", "notebook-linux-py312", "qiskit-aer-linux-py312", "pulser-win-py312", "timing-win-py312", "stim-win-py312"}
 
 
 def digest(raw):
@@ -253,11 +253,14 @@ def validate_request(request):
 def _execution_indices(contract, cells):
     """Validate selection before launch; whole routes still retain every cell."""
     route = contract.get("route", "notebook")
-    latex = contract.get("required_latex_counts", {})
     code_indices = {str(i) for i, cell in enumerate(cells) if cell["cell_type"] == "code"}
-    if (not isinstance(latex, dict) or not latex.keys() <= code_indices
-            or any(type(count) is not int or count < 1 for count in latex.values())):
-        raise ValueError("INVALID_LATEX_REQUIREMENT")
+    counted_outputs = set()
+    for kind in ("latex", "image"):
+        counts = contract.get(f"required_{kind}_counts", {})
+        if (not isinstance(counts, dict) or not counts.keys() <= code_indices
+                or any(type(count) is not int or count < 1 for count in counts.values())):
+            raise ValueError(f"INVALID_{kind.upper()}_REQUIREMENT")
+        counted_outputs.update(counts)
     streams = contract.get("required_stdout", {})
     if (type(streams) is not dict or not streams.keys() <= code_indices
             or any(type(options) is not list or not options or any(type(v) is not str for v in options)
@@ -294,7 +297,7 @@ def _execution_indices(contract, cells):
         raise ValueError("OUTPUT_REQUIREMENT_OUTSIDE_SELECTION")
     images, texts = contract.get("required_images", []), contract.get("required_text", {})
     if (type(images) is not list or type(texts) is not dict
-            or not latex.keys() <= {str(i) for i in selected}
+            or not counted_outputs <= {str(i) for i in selected}
             or any(type(i) is not int or i not in selected for i in images)
             or any(type(i) is not str or i not in {str(s) for s in selected} for i in texts)):
         raise ValueError("OUTPUT_REQUIREMENT_OUTSIDE_SELECTION")
@@ -947,11 +950,12 @@ async def _run_notebook(output, config, control_state=None):
                                  if o.output_type == "stream" and o.name == "stdout")
                 if actual not in alternatives:
                     raise AssertionError("SOURCE_STDOUT_MISMATCH: " + index)
-            for index, expected in contract.get("required_latex_counts", {}).items():
-                outputs = notebook.cells[source_positions[int(index)]].outputs
-                count = sum(bool(o.get("data", {}).get("text/latex")) for o in outputs)
-                if count != expected:
-                    raise AssertionError(f"SOURCE_LATEX_COUNT: {index} expected {expected}, got {count}")
+            for kind, mime in (("latex", "text/latex"), ("image", "image/png")):
+                for index, expected in contract.get(f"required_{kind}_counts", {}).items():
+                    outputs = notebook.cells[source_positions[int(index)]].outputs
+                    count = sum(bool(o.get("data", {}).get(mime)) for o in outputs)
+                    if count != expected:
+                        raise AssertionError(f"SOURCE_{kind.upper()}_COUNT: {index} expected {expected}, got {count}")
             witness_result, witness_stderr = witness_streams(notebook.cells[-1].outputs)
             result.update(state="succeeded", original_execution="succeeded", authored_verification="succeeded",
                           independent_results=witness_result, witness_stderr=witness_stderr,

@@ -14,6 +14,7 @@ Unknown or changed sources are rejected. Only these finite contracts are exposed
 
 | Contract | Execution scope |
 | --- | --- |
+| ibm052 | Runs the complete entanglement lesson on Windows and Linux. Checks teleportation, superdense coding and both CHSH strategies. [Notebook results](ibm052-notebook.json) |
 | ibm023 | Runs the complete factoring and GCD lesson with SymPy. The Windows and Linux profiles verify the original printed results and independently check the final divisor. [Notebook results](ibm023-notebook.json) |
 | ibm019, ibm020 | Original IBM code cells with authored verification; Windows or Linux profile |
 | qb007 | Selected Cirq cells; excluded cells remain outside acceptance |

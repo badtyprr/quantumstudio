@@ -1,0 +1,263 @@
+{
+  "source": "https://raw.githubusercontent.com/Qiskit/documentation/079769d205eb3b60e077820060274c7b0359c123/learning/courses/basics-of-quantum-information/entanglement-in-action/qiskit-implementation.ipynb",
+  "source_sha256": "4710386ae5132269bef68865323170020d169b002601db142d2bd3160c77ec30",
+  "contract_sha256": "a05ee39662539c2831e9ad6c0f3351f83120358c3e53aff2b61b3bc5d1cc0052",
+  "runs": {
+    "windows": {
+      "profile": "grover-win-py312",
+      "installed_distributions": 76,
+      "original_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        17,
+        19,
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39
+      ],
+      "graph_dimensions": {
+        "5": [
+          [
+            938,
+            367
+          ]
+        ],
+        "9": [
+          [
+            1441,
+            432
+          ]
+        ],
+        "11": [
+          [
+            630,
+            470
+          ]
+        ],
+        "13": [
+          [
+            630,
+            470
+          ]
+        ],
+        "19": [
+          [
+            788,
+            238
+          ]
+        ],
+        "21": [
+          [
+            630,
+            470
+          ]
+        ],
+        "23": [
+          [
+            1318,
+            496
+          ]
+        ],
+        "25": [
+          [
+            630,
+            470
+          ]
+        ],
+        "31": [
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ]
+        ]
+      },
+      "latex_cells": [
+        7
+      ],
+      "verification": {
+        "accepted": true,
+        "teleportation": {
+          "0": 1024
+        },
+        "bell_outcomes": {
+          "0 1 1": 277,
+          "0 1 0": 240,
+          "0 0 0": 253,
+          "0 0 1": 254
+        },
+        "fixed_message": {
+          "10": 1024
+        },
+        "random_messages": {
+          "1 1 1 1": 252,
+          "0 0 0 0": 260,
+          "0 1 0 1": 254,
+          "1 0 1 0": 258
+        },
+        "quantum_wins": 852,
+        "classical_wins": 739,
+        "games_per_strategy": 1000,
+        "quantum_per_input": [
+          0.8535533905932735,
+          0.8535533905932735,
+          0.8535533905932738,
+          0.8535533905932738
+        ],
+        "classical_winning_inputs": 3
+      },
+      "active_processes_after_run": 0
+    },
+    "linux": {
+      "profile": "qiskit-aer-sympy-linux-py312",
+      "installed_distributions": 56,
+      "original_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        17,
+        19,
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39
+      ],
+      "graph_dimensions": {
+        "5": [
+          [
+            938,
+            367
+          ]
+        ],
+        "9": [
+          [
+            1506,
+            432
+          ]
+        ],
+        "11": [
+          [
+            630,
+            470
+          ]
+        ],
+        "13": [
+          [
+            630,
+            470
+          ]
+        ],
+        "19": [
+          [
+            788,
+            238
+          ]
+        ],
+        "21": [
+          [
+            630,
+            470
+          ]
+        ],
+        "23": [
+          [
+            1318,
+            496
+          ]
+        ],
+        "25": [
+          [
+            630,
+            469
+          ]
+        ],
+        "31": [
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ],
+          [
+            498,
+            238
+          ]
+        ]
+      },
+      "latex_cells": [
+        7
+      ],
+      "verification": {
+        "accepted": true,
+        "teleportation": {
+          "0": 1024
+        },
+        "bell_outcomes": {
+          "0 1 1": 249,
+          "0 0 1": 252,
+          "0 0 0": 255,
+          "0 1 0": 268
+        },
+        "fixed_message": {
+          "10": 1024
+        },
+        "random_messages": {
+          "1 0 1 0": 240,
+          "0 1 0 1": 293,
+          "0 0 0 0": 238,
+          "1 1 1 1": 253
+        },
+        "quantum_wins": 843,
+        "classical_wins": 742,
+        "games_per_strategy": 1000,
+        "quantum_per_input": [
+          0.8535533905932735,
+          0.8535533905932735,
+          0.8535533905932735,
+          0.8535533905932735
+        ],
+        "classical_winning_inputs": 3
+      },
+      "active_processes_after_run": 0
+    }
+  }
+}
