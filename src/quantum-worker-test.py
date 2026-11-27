@@ -24,6 +24,13 @@ def data(expression, *flags):
     return value
 
 
+# Coefficients indexed by a bound pair form the image over its product domain.
+coefficients=data(r"quantum:$\{\alpha_{ab}:(a,b)\in\Sigma\times\Gamma\}$")["copy_text"]
+assert data("quantum:"+coefficients)["copy_text"]==coefficients
+table="qset(vector(qtuple(vector(qtuple(vector(3,7)),i)),qtuple(vector(qtuple(vector(5,7)),i))))"
+assigned=f'replace(replace(replace(({coefficients}),"α",{table}),"Σ",qset(vector(3,5))),"Γ",qset(vector(7)))'
+assert data("quantum:"+assigned)["copy_text"]=="qset(vector(i))"
+
 # A word over finite alphabets preserves position and repeated symbols.
 assert data(r"quantum:sets:$a_{11}\cdots a_9$")["copy_text"] == 'qtuple(vector("a_11","a_10","a_9"))'
 assert data(r"quantum:sets:$a_1\ldots a_3$")["copy_text"] == 'qtuple(vector("a_1","a_2","a_3"))'

@@ -1,0 +1,10 @@
+{
+  "worker_sha256": "b419862ff2b2aebe35e650e7a0176efa3aaa9ee5bfc82c46e239275a3ac49d8c",
+  "source_sha256": {
+    "041": "624fe895b052089a6afaf5a2ca6849918cd7291dba8932b444827ac042494249",
+    "042": "1173c31c7f1a9be7194647118d80d11c734f4412d5f41642fc381f986295e8f5"
+  },
+  "windows_sessions": 36,
+  "clipboard_verified": false,
+  "windows_checks": 324
+}

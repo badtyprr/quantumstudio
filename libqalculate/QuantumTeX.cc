@@ -1788,6 +1788,28 @@ class TeXReader {
   if(membership!=std::string::npos && separator!=std::string::npos && separator<membership) {
    std::string body=trim(contents.substr(0,separator)),index=trim(contents.substr(separator+1,membership-separator-1)),collection=trim(contents.substr(membership+3));
    if(body.empty() || index.empty() || collection.empty() || std::isdigit((unsigned char)index[0]))throw std::runtime_error(error("An indexed image requires an expression, index and domain"));
+   // The coefficient family is a finite function on ordered pairs. Keeping
+   // the pair as its graph key also supports nonnumeric alphabet symbols.
+   static const std::regex coordinates(R"(^\(\s*([a-z])\s*,\s*([a-z])\s*\)$)");
+   std::smatch pairIndex;
+   if(std::regex_match(index,pairIndex,coordinates) && pairIndex[1]!=pairIndex[2]) {
+    const size_t sub=body.find('_');
+    if(sub!=std::string::npos) {
+     const std::string family=trim(body.substr(0,sub));
+     std::string labels=trim(body.substr(sub+1));
+     if(labels.size()>2 && labels.front()=='{' && labels.back()=='}')labels=trim(labels.substr(1,labels.size()-2));
+     const std::string direct=pairIndex[1].str()+pairIndex[2].str(),reverse=pairIndex[2].str()+pairIndex[1].str();
+     if(!family.empty() && std::all_of(family.begin(),family.end(),[](unsigned char c){return asciiLetter(c) || c>=128;}) &&
+        (labels==direct || labels==reverse) && collection.compare(0,11,"qcartesian(")==0 && collection.back()==')') {
+      auto axes=indexedParts(collection.substr(11,collection.size()-12),",");
+      if(axes.size()==2) {
+       if(labels==reverse)std::swap(axes[0],axes[1]);
+       const std::string binder=family=="j" ? "k" : "j";
+       return "qsetimage(qfiniteapply(\""+family+"\","+binder+"),qcartesian("+axes[0]+","+axes[1]+"),"+binder+")";
+      }
+     }
+    }
+   }
    for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("An indexed image requires a symbol index"));
    // Comprehension of an ordered pair with independent domain clauses.
    // Keep the two domains in the order of the coordinates in the image.
