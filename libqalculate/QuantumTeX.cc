@@ -4868,6 +4868,20 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s="qkrausapply(\""+name+"\","+argument+")="+body;
   }
  }
+ // In a channel call on a density operator, a second argument such as
+ // t -> 0 takes the limit of the channel output at the given input.
+ if(s.find("\\Phi")!=std::string::npos) {
+  static const std::regex call(R"(\\Phi\s*\(\s*\\(rho|sigma)\s*(?:,\s*([a-z])\s*\\(?:rightarrow|to)\s*(-?[0-9]+|\\infty))?\s*\))");
+  std::string converted;size_t start=0;
+  for(std::sregex_iterator it(s.begin(),s.end(),call),end;it!=end;++it) {
+   const auto &match=*it;
+   converted.append(s,start,match.position()-start);
+   const std::string operands=std::string("\"Φ\",\"")+(match[1]=="rho" ? "ρ" : "σ")+"\"";
+   converted+=match[2].matched ? "qchannelendpoint("+operands+","+match[2].str()+","+nestedTeX(match[3].str())+")" : "qkrausapply("+operands+")";
+   start=match.position()+match.length();
+  }
+  if(start)s=converted+s.substr(start);
+ }
  if(whole=="\\pm i" || whole=="\\pm 1") {
   const std::string value=whole.substr(4);
   return "qset(vector("+value+",-"+value+"))";
