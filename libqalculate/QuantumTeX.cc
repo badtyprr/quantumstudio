@@ -2602,6 +2602,7 @@ class TeXReader {
   std::vector<std::string> alignmentCells,expressions;
   std::vector<size_t> preceding;
   unsigned alignmentRows=0;
+  bool continuedGatheredSum=false;
   auto finishAlignment=[&]() {
    if(++alignmentRows>128)throw std::runtime_error(error("Alignment is limited to 128 rows"));
    alignmentCells.push_back(trim(result));result.clear();
@@ -2617,8 +2618,22 @@ class TeXReader {
     if(preceding.size()<=column)preceding.resize(column+1,std::string::npos);
     bool relation=value[0]=='=' || value.compare(0,2,"<=")==0 || value.compare(0,2,">=")==0 || value.compare(0,2,"!=")==0;
     bool operation=value[0]=='+' || value[0]=='-' || value[0]=='*' || value[0]=='/' || value[0]=='@' || value[0]=='#';
-    bool positiveContinuation=(environment=="gathered" && value[0]=='+' && preceding[column]!=std::string::npos);
-    bool continuation=relation || positiveContinuation || (indented && operation && preceding[column]!=std::string::npos);
+    if(environment=="gathered" && value[0]=='-' && preceding[column]!=std::string::npos) {
+     // A long state preparation can also wrap directly before a negative
+     // term. Both rows then contain sums of products of multiple kets.
+     auto tensorTerms=[](const std::string &row,size_t first) {
+      if(row.find('|')==std::string::npos || row.find('=')!=std::string::npos)return false;
+      size_t ket=row.find('>',first);
+      if(ket==std::string::npos || (ket=row.find('>',ket+1))==std::string::npos)return false;
+      size_t sign=row.find_first_of("+-",ket+1);
+      return sign!=std::string::npos && std::count(row.begin()+sign,row.end(),'>')>=2;
+     };
+     continuedGatheredSum=continuedGatheredSum ||
+       (tensorTerms(expressions[preceding[column]],0) && tensorTerms(value,1));
+    }
+    continuedGatheredSum=environment=="gathered" && preceding[column]!=std::string::npos &&
+      (value[0]=='+' || (continuedGatheredSum && value[0]=='-'));
+    bool continuation=relation || continuedGatheredSum || (indented && operation && preceding[column]!=std::string::npos);
     if(continuation) {
      if(preceding[column]==std::string::npos)throw std::runtime_error(error("An aligned continuation requires a preceding expression"));
      expressions[preceding[column]]+=" "+value;
@@ -2799,6 +2814,24 @@ class TeXReader {
    else if(input[pos]=='^' && barePowerBeforeGroup(result))continue;
    else if(input[pos]=='_') {
     const size_t subscriptStart=pos;
+    // A numbered suit ket identifies a system. The suit itself remains a
+    // named state until its basis column is supplied.
+    if(pos+1<input.size()) {
+     size_t digit=pos+1;const bool braced=input[digit]=='{';
+     if(braced)++digit;
+     if(digit<input.size() && input[digit]>='0' && input[digit]<='9' &&
+        (braced ? digit+1<input.size() && input[digit+1]=='}' :
+                  digit+1==input.size() || !std::isdigit((unsigned char)input[digit+1]))) {
+      size_t end=result.find_last_not_of(" \t\r\n"),begin=result.rfind('|',end);
+      if(end!=std::string::npos && result[end]=='>' && begin<end) {
+       const std::string suit=trim(result.substr(begin+1,end-begin-1));
+       if(suit=="♣" || suit=="♢" || suit=="♡" || suit=="♠") {
+        result.replace(begin,std::string::npos,"qregket(|"+suit+">,\""+input[digit]+"\")");
+        pos=digit+(braced ? 2 : 1);continue;
+       }
+      }
+     }
+    }
     if(input.compare(pos,10,"_{\\mathsf{")==0) {
      size_t close=input.find("}}",pos+10);
      size_t ketEnd=result.find_last_not_of(" \t\r\n"),ketStart=result.rfind('|',ketEnd);
@@ -4566,11 +4599,15 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
  }
  if(splitDimensions)normalized+="))";
  std::string result=TeXReader(normalized,modularPowers,binaryLogs,bitWord || binaryOracles,binaryOracles).run(lines);
- if(normalized.find("_{\\mathsf{")!=std::string::npos && result.find("qregket(")!=std::string::npos) {
+ if(result.find("qregket(")!=std::string::npos && (normalized.find("_{\\mathsf{")!=std::string::npos ||
+    normalized.find("suit")!=std::string::npos || normalized.find("♣")!=std::string::npos ||
+    normalized.find("♢")!=std::string::npos || normalized.find("♡")!=std::string::npos || normalized.find("♠")!=std::string::npos) &&
+    result.find("qregket(|")!=std::string::npos) {
   std::string value=trim(result),order;
-  static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+)"\))ket");
+  static const std::regex subscript(R"ket(qregket\(\|[^<>|]*>,"([A-Z]+|[0-9])"\))ket");
   for(std::sregex_iterator it(value.begin(),value.end(),subscript),end;it!=end;++it)
    for(char wire:(*it)[1].str())if(order.find(wire)==std::string::npos)order+=wire;
+  if(!order.empty() && order.find_first_not_of("0123456789")==std::string::npos)std::sort(order.rbegin(),order.rend());
   // Alignment environments group the entire equation. Remove that one
   // wrapper only when it encloses every operand.
   if(value.size()>1 && value.front()=='(' && value.back()==')') {

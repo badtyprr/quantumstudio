@@ -66,8 +66,9 @@ bool registerColumn(RegisterColumn &state,const MathStructure &expr,const Evalua
  auto marker=CALCULATOR->getFunction("qregket");
  if(expr.isFunction() && expr.function()==marker && expr.size()==2 && expr[1].isSymbolic()) {
   state.labels=expr[1].symbol();
-  if(state.labels.empty() || state.labels.size()>32 || state.labels.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")!=std::string::npos)
-   return subsystemError("A labelled ket requires uppercase register names.");
+  const bool numbered=state.labels.size()==1 && state.labels[0]>='0' && state.labels[0]<='9';
+  if(!numbered && (state.labels.empty() || state.labels.size()>32 || state.labels.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ")!=std::string::npos))
+   return subsystemError("A labelled ket requires uppercase register names or a single register number.");
   for(size_t k=0;k<state.labels.size();++k)if(state.labels.find(state.labels[k])!=k)return subsystemError("Repeated register in a ket.");
   state.value=expr[0];state.value.eval(eo);
   if(!state.value.isMatrix())return state.value.containsUnknowns() ? false : subsystemError("A labelled state must be a column vector.");
@@ -122,6 +123,18 @@ class QuantumSubsystemFunction: public MathFunction {
   if(op=="qregket")return 0;
   if(op=="qorderedket") {
    if(!raw[1].isSymbolic())return 0;
+   // A probability display takes a norm after assembling the state.
+   // Keep the register labels on the column, including through a power.
+   const MathStructure *norm=&raw[0];
+   if(norm->isFunction() && norm->function()->referenceName()=="qpower" && norm->size()==2)norm=&(*norm)[0];
+   if(norm->isFunction() && norm->function()->referenceName()=="qnorm" && norm->size()==1) {
+    RegisterColumn state;
+    if(!registerColumn(state,(*norm)[0],eo) || !reorderColumn(state,raw[1].symbol(),eo))return 0;
+    MathStructure value(norm->function(),&state.value,NULL);
+    if(norm==&raw[0])out=value;
+    else out.set(raw[0].function(),&value,&raw[0][1],NULL);
+    out.eval(eo);return 1;
+   }
    RegisterColumn state;
    if(!registerColumn(state,raw[0],eo) || !reorderColumn(state,raw[1].symbol(),eo))return 0;
    out=state.value;return 1;

@@ -24,6 +24,10 @@ def data(expression, *flags):
     return value
 
 
+# The higher numbered subsystem is the first tensor axis.
+ordered_suits = data(r"quantum:$\vert\clubsuit\rangle_0\vert\heartsuit\rangle_{2}$")["copy_text"]
+assert data(f'quantum:replace(replace(({ordered_suits}),"♣",qbasis(1,2)),"♡",qbasis(0,3))')["cells"] == [["0"],["1"],["0"],["0"],["0"],["0"]]
+
 # Keep the square root of a product of projection sums until both states
 # are known, even when the dimensions were supplied first.
 def squared_projection_sum(state, width):
