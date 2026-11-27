@@ -2793,9 +2793,10 @@ class TeXReader {
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }
-   if((!matrixDepth || (binaryWords && matrixDepth==alignmentDepth)) && !stateLabel && !setDepth && !setBound) {
+   if((!matrixDepth || matrixDepth==alignmentDepth) && !stateLabel && !setDepth && !setBound) {
+    const bool ordinarySeries=!matrixDepth || binaryWords;
     const std::string preceding=trim(result);
-    if(input.compare(pos,10,"\\overline{")==0 && input.find("\\cdots",pos)!=std::string::npos) {
+    if(ordinarySeries && input.compare(pos,10,"\\overline{")==0 && input.find("\\cdots",pos)!=std::string::npos) {
      // Both products must use the same two coefficient families and upper index.
      static const std::regex series(R"(\\overline\{(\\?[a-zA-Z]+)_1\}\s*(\\?[a-zA-Z]+)_1\s*\+\s*\\cdots\s*\+\s*\\overline\{\1_([a-zA-Z])\}\s*\2_\3(?![a-zA-Z0-9_]))");
      std::smatch match;
@@ -2804,7 +2805,7 @@ class TeXReader {
       result+="qmul(qdag(qcomplexcolumn("+column(1)+")),"+column(2)+")";pos+=match.length();continue;
      }
     }
-    if(input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
+    if(ordinarySeries && input[pos]=='1' && (preceding.empty() || preceding.back()==',' || preceding.back()=='=')) {
      std::string series=geometricSum();
      if(!series.empty()) {result+=series;continue;}
     }
@@ -2813,7 +2814,8 @@ class TeXReader {
      std::string product=indexedProduct(input,pos,end,ProductSeries::ScalarSum);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
-    const bool seriesStart=preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='=');
+    const bool seriesStart=ordinarySeries &&
+      (preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='='));
     // A product can also occur inside a norm, after an equality or
     // beside another operator. Its endpoint factors must match.
     const bool tensorFactor=input[pos]=='(' || input.compare(pos,5,"\\vert")==0 ||
@@ -3453,6 +3455,26 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    decimal=decimal || m[2].str().find_first_of("23456789")!=std::string::npos || m[3].str().find_first_of("23456789")!=std::string::npos;
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
+ }
+ // In an indexed tensor product the subscript on I names the register.
+ // A preceding product of A†A terms supplies its input dimensions.
+ if(s.find("\\mathbb{I}_")!=std::string::npos && s.find("\\otimes")!=std::string::npos) {
+  static const std::regex identities(R"(\\mathbb\{I\}_\{([a-z])-1\}\s*\\otimes\s*\\cdots\s*\\otimes\s*\\mathbb\{I\}_0\b)");
+  static const std::regex gram(R"((?:^|=)\s*\(\s*([A-Z])_\{([a-z])-1\}\s*\^\{\\dagger\}\s*\1_\{\2-1\}\s*\)\s*\\otimes\s*\\cdots\s*\\otimes\s*\(\s*\1_0\s*\^\{\\dagger\}\s*\1_0\s*\)\s*(?:\\\\\s*&\s*(?:\\quad\s*)?)?=\s*$)");
+  std::smatch series;
+  if(std::regex_search(s,series,identities)) {
+   const std::string before=series.prefix(),after=series.suffix(),width=series[1];
+   const std::string index=width=="j" ? "k" : "j";
+   std::string factor="qidentity(qindexedlabel(\"dim_\","+index+",\"\"))";
+   std::smatch previous;
+   if(std::regex_search(before,previous,gram) && previous[2].str()==width)
+    factor="qidentitylike(qdag(qoperatorref(qindexedlabel(\""+previous[1].str()+"_\","+index+",\"\"))))";
+   const std::string count=std::string("nxyz").find(width)==std::string::npos ? "\""+width+"\"" : width;
+   const std::string product="qtensorseries("+factor+","+count+"-1,0,"+index+",-1)";
+   static const std::regex joint(R"(^(\s*(?:\\\\\s*&\s*(?:\\quad\s*)?)?=\s*)\\mathbb\{I\}(?!_))");
+   std::smatch last;
+   s=before+product+(std::regex_search(after,last,joint) ? last[1].str()+product+last.suffix().str() : after);
+  }
  }
  // In the controlled-operation definition the identity acts on the same
  // target as the gate. The control is binary, but the target need not be.
