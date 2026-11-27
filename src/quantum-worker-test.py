@@ -197,6 +197,11 @@ assert data("quantum:"+alphabets)["copy_text"] == alphabets
 pairs = f'quantum:replace(replace(replace(({alphabets}),"Σ_0",qset(vector(2,3))),"Σ_1",qset(vector(7))),n,2)'
 assert data(pairs)["copy_text"] == "qset(vector(qtuple(vector(7,2)),qtuple(vector(7,3))))"
 member = data(r"quantum:$(a,b)\in\Sigma\times\Gamma$")["copy_text"]
+for formula, result in [(r"\lim_{x\to0^{-}}{\frac{|x|}{x}}","−1"),
+                        (r"\lim_{x\to0^+}{\frac{|x|}{x}}","1"),
+                        (r"\lim_{x\to3}{\lim_{p\to x}{p+1}}","4")]:
+    assert data("quantum:$"+formula+"$")["copy_text"] == result
+assert b"approach arrow" in run(r"quantum:$\lim_{x=0}{x}$","--json",success=False).stderr
 identity_list = data(r"quantum:$\mathbb{I}_{n-1},\ldots,\mathbb{I}_0$")["copy_text"]
 assert data(f'quantum:replace(replace(replace(({identity_list}),n,2),"dim_1",2),"dim_0",3)')["copy_text"] == "vector(matrix(2,2,[1,0,0,1]),matrix(3,3,[1,0,0,0,1,0,0,0,1]))"
 assert b"dimensions" in run(f'quantum:replace(replace(({identity_list}),n,1),"dim_0",0)',"--json",success=False).stderr

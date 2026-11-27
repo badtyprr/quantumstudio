@@ -628,7 +628,7 @@ class Parser {
   checkSize(result);return result;
  }
  void scopeIndex(const std::string &name,std::vector<std::string> &args) {
-  size_t index=((name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
+  size_t index=((name=="qtexlimit" || name=="qphasefunction" || name=="qsequence" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="select") && args.size()==3) ? 2 :
    (((name=="sum" || name=="qsum" || name=="product" || name=="qtensorproduct" || name=="qblocksum" || name=="qoraclefunction") && args.size()==4) || (name=="qtensorseries" && args.size()==5) ? 3 : 0);
   if(!index)return;
   size_t body=name=="select" ? 1 : 0;
@@ -639,7 +639,7 @@ class Parser {
   const bool lexicalConstant=original.size()>2 && original.front()==constantMarkerBegin && original.back()==constantMarkerEnd;
   original=withoutLabelMarkers(original);
   const bool indexed=original.compare(0,14,"qindexedlabel(")==0 && original.back()==')';
-  bool plain=(name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="sum" || name=="qsum" || name=="product" || name=="qtensorseries" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
+  bool plain=(name=="qtexlimit" || name=="qsumset" || name=="qsetimage" || name=="qsetfilter" || name=="sum" || name=="qsum" || name=="product" || name=="qtensorseries" || name=="select") && !original.empty() && (lexicalConstant || (original!="pi" && original!="i" && original!="e"));
   for(unsigned char c:original)if(c<128 && !std::isalpha(c))plain=false;
   if(!plain && !indexed && (original.size()<3 || original.front()!='"' || original.back()!='"' ||
      original.find('"',1)!=original.size()-1))return;
@@ -1830,6 +1830,20 @@ class Parser {
      need(grouped ? ',' : ')');std::string body=grouped ? expression() : product();
      if(grouped)need(')');
      a="qregistersum("+body+","+args[0]+","+args[2]+","+args[3]+","+withoutLabelMarkers(args[4])+","+args[1]+",vector())";
+    } else if(name=="qtexlimit" || name=="qtexgrouplimit") {
+     const bool grouped=name=="qtexgrouplimit";
+     std::string point=expression();need(',');
+     std::string direction=expression();need(',');
+     texIndexDeclaration=true;std::string variable=expression();texIndexDeclaration=false;
+     need(grouped ? ',' : ')');
+     texIndices.push_back(withoutLabelMarkers(variable));
+     std::string body=grouped ? expression() : product();
+     texIndices.pop_back();if(grouped)need(')');
+     std::vector<std::string> args={body,point,variable};
+     scopeIndex("qtexlimit",args);
+     // The approach variable is scalar, so its bars denote absolute value.
+     replaceAll(args[0],"qbars("+args[2]+")","abs("+args[2]+")");
+     a="limit("+args[0]+","+args[1]+","+args[2]+","+direction+")";
     } else if(name=="qtexgrouptensorseries") {
      std::vector<std::string> args;
      args.push_back(expression());need(',');args.push_back(expression());need(',');
