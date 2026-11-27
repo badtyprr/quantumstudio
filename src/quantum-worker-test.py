@@ -197,6 +197,8 @@ assert data("quantum:"+alphabets)["copy_text"] == alphabets
 pairs = f'quantum:replace(replace(replace(({alphabets}),"Σ_0",qset(vector(2,3))),"Σ_1",qset(vector(7))),n,2)'
 assert data(pairs)["copy_text"] == "qset(vector(qtuple(vector(7,2)),qtuple(vector(7,3))))"
 member = data(r"quantum:$(a,b)\in\Sigma\times\Gamma$")["copy_text"]
+shift = data(r"quantum:$\sum_{j=0}^{2}\vert(j-1)\bmod 3\rangle\langle j\vert$")
+assert shift["copy_text"] == "matrix(3,3,[0,1,0,0,0,1,1,0,0])"
 assert data(r"quantum:$\{0,1\}\times\{3\}$")["copy_text"] == "qset(vector(qtuple(vector(0,3)),qtuple(vector(1,3))))"
 assert data(r"quantum:$\{0\}×\{1\}×\{3\}$")["copy_text"] == "qset(vector(qtuple(vector(0,1,3))))"
 assert data(f'quantum:replace(replace(replace(replace(({member}),"Σ",qset(vector(3))),"Γ",qset(vector(9))),"a",3),"b",9)')["copy_text"] == "1"

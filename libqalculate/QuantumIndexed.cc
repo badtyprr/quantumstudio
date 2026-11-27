@@ -1049,6 +1049,12 @@ void resolveIndexedNames(MathStructure &value,const EvaluationOptions &eo) {
  value.childrenUpdated();
 }
 bool inferSumBasis(MathStructure &value,const MathStructure &index,const MathStructure *dimension) {
+ if(dimension && call(value,"qcomputationalket",1) && call(value[0],"mod",2) &&
+    value[0][1].equals(*dimension) && value[0][0].contains(index)) {
+  MathStructure component=value[0];
+  value.set(CALCULATOR->getFunction("qbasis"),&component,dimension,NULL);
+  return true;
+ }
  if(value.isFunction() && value.size()==1 && value[0].equals(index) &&
     (value.function()->referenceName()=="qketstate" || value.function()->referenceName()=="qnamedket")) {
   auto basis=CALCULATOR->getFunction("qbasis");

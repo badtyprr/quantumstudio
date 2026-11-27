@@ -90,7 +90,24 @@ relation = evaluate(scoped)
 cases[row["id"]] = scoped,relation
 check("declared-unitary-column",f'replace(({relation}),"U",{matrix})',"1")
 check("wrong-unitary-column",f'replace(({relation}),"U",qidentity(6))',"0")
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,28,
+shift = inventory["rows"][234]
+inverse = inventory["rows"][236]
+assert classical["rows"][299]["literal"] == shift["literal"]
+def shift_matrix(size, step):
+    cells = (str(int(row==(column+step)%size)) for row in range(size) for column in range(size))
+    return f"matrix({size},{size},["+",".join(cells)+"])"
+
+check(shift["id"],shift["literal"],shift_matrix(8,1))
+check(inverse["id"],inverse["literal"],"1")
+for size in (3,5,8):
+    def resize(expr):
+        return expr.replace("^{7}",f"^{{{size-1}}}").replace(r"\bmod 8",rf"\bmod {size}")
+    for step in (-2,-1,1,2):
+        expr = resize(shift["literal"]).replace("k+1",f"k{step:+d}")
+        check(f"shift-{size}-{step}",expr,shift_matrix(size,step))
+    wrong = resize(inverse["literal"]).replace("k-1","k+1")
+    check(f"wrong-inverse-{size}",wrong,"0")
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,45,
                  dict(source_sha256=inventory["source_sha256"],classical_source_sha256=classical["source_sha256"],
                  scoped_formulas={"IBM-041":[252,258,264,268],"IBM-042":[77,229]},
                  qutrit_coordinates_checked=27,ordered_states=len(vectors),
