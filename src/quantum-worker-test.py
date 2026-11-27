@@ -24,6 +24,20 @@ def data(expression, *flags):
     return value
 
 
+# A binary control can select an operation on a three-dimensional target.
+controlled_definition = r"CU=\vert 0\rangle\langle 0\vert\otimes\mathbb{I}_{\mathsf{R}}+\vert 1\rangle\langle 1\vert\otimes U"
+target_matrix = "[0,1,0;0,0,i;1,0,0]"
+for formula, expected in [(controlled_definition,"1"),(controlled_definition.replace("+","-"),"0"),
+                          (controlled_definition.replace(r"\langle 0",r"\langle 1"),"0")]:
+    relation = data("quantum:$$" + formula + ".$$")["copy_text"]
+    assert data("quantum:" + relation)["copy_text"] == relation
+    assert data(f'quantum:replace(({relation}),"U",{target_matrix})')["copy_text"] == expected
+controlled = data("quantum:qregistercontrol(" + target_matrix + ")")
+assert controlled["cells"] == [
+    ["1","0","0","0","0","0"], ["0","1","0","0","0","0"], ["0","0","1","0","0","0"],
+    ["0","0","0","0","1","0"], ["0","0","0","0","0","i"], ["0","0","0","1","0","0"]]
+assert b"square matrix" in run("quantum:qregistercontrol([1,0,0;0,1,0])","--json",success=False).stderr
+
 # An ellipsis between operator products pairs corresponding list entries.
 operator_list = data(r"quantum:$N_0\ldots,N_{n-1}$")["copy_text"]
 assert operator_list == data(r"quantum:$N_0,\ldots,N_{n-1}$")["copy_text"]
