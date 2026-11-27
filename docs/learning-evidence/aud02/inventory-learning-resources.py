@@ -16,7 +16,8 @@ a=args.parse_args()
 manifest=json.loads((a.cache/"manifest.json").read_bytes())
 tree=json.loads((a.cache/"tree.json").read_bytes())
 assert not tree["truncated"] and tree["sha"]==manifest["revision"]
-parser=MarkdownIt("commonmark")
+parser=MarkdownIt("commonmark", {"linkify": True}).enable("linkify")
+parser.linkify.set({"fuzzy_link": False, "fuzzy_email": False})
 registry={}
 origins=[]
 tasks={
