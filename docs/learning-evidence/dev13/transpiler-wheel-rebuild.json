@@ -1,0 +1,80 @@
+{
+  "base_python": "Windows x64 CPython 3.12.10",
+  "backend": "setuptools 84.2.1",
+  "pip": "25.0.1",
+  "rpcq_archive_sha256": "4361e759782f58dd0b8aa3a6d901e3ea5709f91c6a060bd444081fbb007b05a9",
+  "rpcq_wheel_sha256": "8eda564220237edd729da76e3eb081ce43eae8a1adf0c0e591a8fe6c366fc3c9",
+  "retained_rpcq_wheel_sha256": "c43c6f377f0d12dd253e2fe3f8960ca75e9360815563d5ac5f9c7e7b01581d28",
+  "matching_wheel_members": 17,
+  "independent_builds": 2,
+  "verified_wheels_per_profile": 117,
+  "qb011_uncached_wheels_matching": 117,
+  "profile_specific_files": [
+    "pyqasm-1.3.0-cp312-cp312-win_amd64.whl",
+    "pyqasm-1.4.0-cp312-cp312-win_amd64.whl"
+  ],
+  "runs": {
+    "qb011": {
+      "source_sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "original_code_cells": [
+        1,
+        3,
+        5,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23
+      ],
+      "lock_sha256": "9da3df4012ae0ae2f8762f8a4950c8834872c5ee4e1568f19a08fa9e6a01e0f1",
+      "independent_results": {
+        "accepted": true,
+        "qubits": 8,
+        "dimension": 256,
+        "max_operator_error": 2.7755575615628914e-16,
+        "stages": [
+          "cirq.circuits.circuit.Circuit",
+          "braket.circuits.circuit.Circuit",
+          "pyquil.quil.Program",
+          "qiskit.circuit.quantumcircuit.QuantumCircuit",
+          "pytket._tket.circuit.Circuit",
+          "cirq.circuits.circuit.Circuit"
+        ]
+      }
+    },
+    "qb012": {
+      "source_sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "original_code_cells": [
+        0,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "lock_sha256": "98fbd602dddfac57b04ca19e716d913ff85205e33e7228f62220e026bd29ddcb",
+      "independent_results": {
+        "accepted": true,
+        "operator_max_errors": [
+          1.1102230246251565e-16,
+          1.1102230246251565e-16
+        ],
+        "routes": [
+          "qiskit -> qasm3 -> braket",
+          "qiskit -> braket"
+        ]
+      }
+    }
+  }
+}

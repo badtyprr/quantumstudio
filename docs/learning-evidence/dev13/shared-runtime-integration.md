@@ -66,3 +66,21 @@ are historical, not evidence for the new runtime.
 Pass either recorded notebook revision to the existing `ibm019` or `ibm020` contract. Each revision retains the same eight executable cells. The runner verifies the full file and the cell manifest for that revision. A fresh offline Windows installation ran both revisions of both lessons. The runs preserved every original cell, produced the required figures and text, and passed the reference state, sampling and error checks. Changing a code cell in either pinned notebook produced a source hash mismatch. All 121 execution and Windows lifecycle tests passed. Published-release checks remain open. [Four runs and reference results](deutsch-notebook-revisions.json).
 
 The Linux runner at `d0ec0f57` ran the same four notebooks in a fresh Python 3.12.10 environment installed from 54 hash-verified wheels on Ubuntu 24.04 x86-64. Each execution preserved all eight original code cells, used its own systemd service and finished with zero remaining processes. The two altered source controls failed hash validation before execution. For IBM-019 each of the four oracles produced its predicted result on all 256 samples. For IBM-020 the generated oracle matched the independently computed operator and state, the 4,096 samples occupied the predicted support, and all five Bernstein–Vazirani secrets were recovered. The run records include image hashes and output text. [Linux results](deutsch-linux-runs.json).
+
+## Preparing the Windows transpiler environments
+
+Run `prepare_transpiler_wheels.py qb011 WHEEL_FOLDER` or
+`prepare_transpiler_wheels.py qb012 WHEEL_FOLDER` with 64-bit Windows Python
+3.12.10 and a new destination. This online preparation step checks the source
+and build backend hashes before building rpcq. Two builds produced the same
+wheel, with the same 17 member files as the earlier cached copy. The normal
+offline environment command installed 117 distributions for each profile.
+Both original notebooks passed using those installations.
+[Build and replay evidence](transpiler-wheel-rebuild.json).
+
+The Windows package staging directory at revision `c637aa12` ran QB-011,
+QB-012 and both supported revisions of IBM-019 and IBM-020. The staged
+native worker also passed all 237 source formulas from the two IBM lessons.
+Package creation stopped when the domain GUI test could not read the copied
+result. The standalone retry reproduced the clipboard failure. Extracted-ZIP
+verification remains open. [Staged package results](staged-windows-notebook-runs.json).
