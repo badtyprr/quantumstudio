@@ -95,6 +95,18 @@ static std::string copyBinaryEncodingGraph(const MathStructure &entries) {
  }
  return "qsetimage(qtuple(vector(j,qbitlabel(j,"+std::to_string(width)+"))),qindexrange(0,"+std::to_string(entries.size()-1)+"),j)";
 }
+static unsigned largeBinaryAlphabetWidth(const MathStructure &entries) {
+ if(!entries.isVector() || entries.size()<=64 || entries.size()>1024 || entries.isApproximate())return 0;
+ unsigned width=0;
+ while((size_t(1)<<width)<entries.size())++width;
+ if((size_t(1)<<width)!=entries.size())return 0;
+ for(size_t i=0;i<entries.size();++i) {
+  const MathStructure &word=entries[i];
+  if(!word.isFunction() || word.function()->referenceName()!="qbitlabel" || word.size()!=2 ||
+     !word[0].isNumber() || word[0].number()!=int(i) || !word[1].isNumber() || word[1].number()!=int(width))return 0;
+ }
+ return width;
+}
 static bool containsDeferredQuantum(const MathStructure &value,bool orderedOnly=false) {
  if(value.isFunction()) {
   const std::string &name=value.function()->referenceName();
@@ -129,6 +141,8 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
    const std::string name=result.function()->referenceName();
    if(quantumMode && name=="qset" && result.size()==1) {
     if(completeComputationalBasis(result[0]))return "basisset("+std::to_string(result[0].size())+")";
+    unsigned width=largeBinaryAlphabetWidth(result[0]);
+    if(width)return "qbitstrings("+std::to_string(width)+")";
     std::string graph=copyBinaryEncodingGraph(result[0]);
     if(!graph.empty())return graph;
    }
@@ -304,9 +318,16 @@ static std::string copyText(const MathStructure &result, const PrintOptions &po,
  return text+(useVector ? "))" : "])");
 }
 // Keep ordered lists of states distinct from both sets and matrices.
-static bool displayKetCollection(const MathStructure &value,const PrintOptions &po,std::string &shown) {
+static bool displayQuantumCollection(const MathStructure &value,const PrintOptions &po,std::string &shown) {
  bool set=value.isFunction() && value.function()->referenceName()=="qset" && value.size()==1;
  const MathStructure &entries=set ? value[0] : value;
+ if(set) {
+  unsigned width=largeBinaryAlphabetWidth(entries);
+  if(width) {
+   shown="\\{"+std::string(width,'0')+", "+std::string(width-1,'0')+"1, …, "+std::string(width,'1')+"\\}";
+   return true;
+  }
+ }
  if(!entries.isVector() || entries.size()==0)return false;
  bool hasState=false;
  std::string text=set ? "\\{" : "vector(";
@@ -553,7 +574,7 @@ int main(int argc,char **argv) {
     if(compact.size()<32768)lineDisplay=compact;
    }
    shown+=std::to_string(i+1)+".  "+lineDisplay;
-  } else if(displayKetCollection(result,po,shown))rows=cols=0;
+  } else if(displayQuantumCollection(result,po,shown))rows=cols=0;
   else shown=QuantumDisplay::print(decimalMatch(result) ? result : display,po);
   if(!pauliLines.empty() || (multipleLines && plain.size()>32768 && shown.size()<32768))plain=shown;
   std::cout << "{\"text\":"; jsonString(plain);

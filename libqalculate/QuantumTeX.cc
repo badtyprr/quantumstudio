@@ -741,6 +741,72 @@ std::string conjugateCoefficientRow(const std::string &raw) {
  std::string values=indexedColumn(column,true);
  return values.empty() ? "" : "qdag(qcomplexcolumn("+values+"))";
 }
+// A complete display can enumerate outcomes in a particular order. Keep
+// duplicates and distinguish a fixed-width word from a decimal integer.
+std::string orderedOutcomes(const std::string &source) {
+ if(source.empty() || (source.front()!='(' && source.front()!='0' && source.front()!='1'))return "";
+ auto entries=indexedParts(source,",");
+ if(entries.size()<2)return "";
+ static const std::regex spacing(R"(^(?:\\[,;:]|\\q?quad\b)\s*)");
+ static const std::regex pair(R"(\(\s*(0|[1-9][0-9]*)\s*,\s*(0|[1-9][0-9]*)\s*\))");
+ bool pairs=!entries.front().empty() && entries.front().front()=='(';
+ bool leadingZero=false;size_t width=entries.front().size();
+ std::string tuple="qtuple(vector(";
+ for(size_t i=0;i<entries.size();++i) {
+  const std::string entry=i ? std::regex_replace(entries[i],spacing,"") : entries[i];
+  if(i)tuple+=",";
+  if(pairs) {
+   std::smatch coordinates;
+   if(!std::regex_match(entry,coordinates,pair))return "";
+   tuple+="qtuple(vector("+coordinates[1].str()+","+coordinates[2].str()+"))";
+  } else {
+   if(width<2 || entry.size()!=width || entry.find_first_not_of("01")!=std::string::npos)return "";
+   leadingZero=leadingZero || entry.front()=='0';
+   tuple+="bitstring(\""+entry+"\")";
+  }
+ }
+ if(!pairs && !leadingZero)return "";
+ if(entries.size()>32 || (!pairs && width>1024))throw std::runtime_error("An outcome tuple supports at most 32 entries and 1024 bits per word.");
+ return tuple+"))";
+}
+std::string withoutRowSpacing(const std::string &row) {
+ static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
+ return !row.empty() && row.front()=='[' ? std::regex_replace(row,spacing,"") : row;
+}
+// The adjacent arrows explicitly identify each coordinate of the column.
+// Return it in binary basis order, including when the printed rows differ.
+std::string probabilityColumn(const std::string &source) {
+ const std::string open="\\begin{pmatrix}",close="\\end{pmatrix}";
+ const std::string notes="\\begin{array}{l}",endNotes="\\end{array}";
+ if(source.compare(0,open.size(),open)!=0 || source.find("\\leftarrow")==std::string::npos)return "";
+ const size_t end=source.find(close,open.size());
+ if(end==std::string::npos)return "";
+ const size_t start=source.find_first_not_of(" \r\n\t",end+close.size());
+ if(start==std::string::npos || source.compare(start,notes.size(),notes)!=0)return "";
+ const size_t last=source.find(endNotes,start+notes.size());
+ if(last==std::string::npos)return "";
+ std::string tail=trim(source.substr(last+endNotes.size()));
+ static const std::regex tag(R"(\\tag\{[0-9]+\})");
+ if(!tail.empty() && !std::regex_match(tail,tag))return "";
+ auto labels=indexedParts(source.substr(start+notes.size(),last-start-notes.size()),"\\\\");
+ auto values=indexedParts(source.substr(open.size(),end-open.size()),"\\\\");
+ if(values.size()!=labels.size() || values.size()<2 || values.size()>1024)return "";
+ static const std::regex annotation(R"(\\leftarrow\s*\\text\{\s*probability\s+of\s+being\s+in\s+the\s+state\s+([01]{1,10})\s*\})");
+ std::vector<std::string> ordered(values.size());
+ for(size_t i=0;i<labels.size();++i) {
+  std::smatch m;const std::string label=withoutRowSpacing(labels[i]);
+  if(!std::regex_match(label,m,annotation))return "";
+  std::string bits=m[1];size_t index=0;
+  for(char bit:bits)index=index*2+(bit-'0');
+  if((size_t(1)<<bits.size())!=ordered.size() || !ordered[index].empty())
+   throw std::runtime_error("Probability labels must identify each binary basis state exactly once.");
+  ordered[index]=withoutRowSpacing(values[i]);
+  if(ordered[index].empty() || indexedParts(ordered[index],"&").size()!=1)return "";
+ }
+ std::string column=open;
+ for(size_t i=0;i<ordered.size();++i) {if(i)column+="\\\\";column+=ordered[i];}
+ return column+close;
+}
 std::string sampleArray(const std::vector<std::vector<std::string>> &cells,const std::string &horizontal,
                         const std::string &vertical,const std::string &diagonal,bool definitions) {
   const size_t height=cells.size(),width=cells[0].size();
@@ -1669,10 +1735,6 @@ class TeXReader {
   for(unsigned char ch:index)if(ch<128 && !std::isalnum(ch) && ch!='_')throw std::runtime_error(error("A set builder requires a symbol index"));
   return "qsetfilter("+predicate+","+collection+","+index+")";
  }
- std::string withoutRowSpacing(const std::string &row) {
-  static const std::regex spacing(R"(^\[-?[0-9]+(?:\.[0-9]+)?(?:pt|mm|cm|em|ex)\]\s*)");
-  return !row.empty() && row.front()=='[' ? std::regex_replace(row,spacing,"") : row;
- }
  // A gathered list beginning at zero can describe decimal inputs and their
  // fixed-width binary encodings. Check every printed example before filling
  // the gap indicated by the vertical ellipsis.
@@ -1792,6 +1854,23 @@ class TeXReader {
   }
   const size_t end=input.find(endMarker,pos);
   if(end==std::string::npos)throw std::runtime_error(error("Unclosed numeric table"));
+  if(alignment=="c" && input.find("\\vdots",pos)<end) {
+   auto rows=indexedParts(input.substr(pos,end-pos),"\\\\");
+   if(rows.size()>=4 && trim(rows[rows.size()-2])=="\\vdots") {
+    const size_t width=rows.front().size();
+    if(width>=2 && width<=1024 && rows.front()==std::string(width,'0')) {
+     bool complete=trim(withoutRowSpacing(rows.back()))==std::string(width,'1');
+     std::string word=rows.front();
+     for(size_t i=0;complete && i+2<rows.size();++i) {
+      if(trim(withoutRowSpacing(rows[i]))!=word) {complete=false;break;}
+      const size_t bit=word.rfind('0');
+      if(bit==std::string::npos) {complete=false;break;}
+      word[bit]='1';std::fill(word.begin()+bit+1,word.end(),'0');
+     }
+     if(complete) {pos=end+endMarker.size();return "qbitstrings("+std::to_string(width)+")";}
+    }
+   }
+  }
   if(modularTables && input.find('^',pos)<end && input.find('=',pos)<end) {
    std::string table=modularPowerTable(input.substr(pos,end-pos),alignment.size());
    if(!table.empty()) {pos=end+endMarker.size();return table;}
@@ -3587,6 +3666,14 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  if(s.find("\\leftarrow")!=std::string::npos) {
+   std::string column=probabilityColumn(trim(s));
+   if(!column.empty())s=column;
+  }
+  if(s.find(',')!=std::string::npos) {
+   std::string outcomes=orderedOutcomes(trim(s));
+   if(!outcomes.empty())return outcomes;
+  }
   if(s.find("\\rangle")!=std::string::npos && s.find("\\text{and}")!=std::string::npos &&
      s.find_first_of("=<>&")==std::string::npos && s.find("\\begin{")==std::string::npos) {
    // A prose list of state preparations uses a spaced comma after each
