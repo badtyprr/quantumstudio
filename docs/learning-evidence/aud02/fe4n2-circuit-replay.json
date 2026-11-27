@@ -44,5 +44,14 @@
     }
   ],
   "method": "Read the published circuit and bind the seven reported parameters. Compare 64 native outcome frequencies in each of three bases with pytket statevector probabilities.",
-  "scope": "Sampling the published circuit. Regeneration of the Hamiltonian, ADAPT-VQE optimization and optimizer energy require the InQuanto environment and first tutorial outputs."
+  "scope": "Sampling the published circuit. Regeneration of the Hamiltonian, ADAPT-VQE optimization and optimizer energy require the InQuanto environment and first tutorial outputs.",
+  "reference_state_projection": {
+    "method": "Qiskit synthesized inverse state preparation from the pytket reference statevector. QuantumStudio applied the inverse after the published circuit and measured every wire.",
+    "inverse_gates": 245,
+    "seed": 12345,
+    "counts": {
+      "000000": 100000
+    },
+    "inserted_x_control_zero_outcomes": 0
+  }
 }

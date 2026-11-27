@@ -78,7 +78,7 @@ certificate validation. The current [publisher page](https://docs.quantinuum.com
 provides the six-qubit circuit and seven optimized parameter values. The native
 worker ran all 311 gates, including 59 controlled-X gates. All 64 outcome
 frequencies in each of the X, Y and Z bases agreed with pytket statevector
-probabilities within the recorded sampling tolerance. Reproducing the
+probabilities within the recorded sampling tolerance. An independently synthesized inverse state preparation returned all six wires to zero on 100,000 shots. Inserting an X gate on the first wire gave zero all-zero outcomes in the control run. Reproducing the
 optimization requires InQuanto and the Hamiltonian, state and space generated
 by the preceding chemistry tutorial. [Circuit replay](fe4n2-circuit-replay.json) ·
 [Publisher installation guide](https://docs.quantinuum.com/inquanto/introduction/installation.html).
