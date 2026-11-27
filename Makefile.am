@@ -817,3 +817,4 @@ EXTRA_DIST += docs/learning-evidence/aud02/rustworkx-centrality-replay.json
 EXTRA_DIST += docs/learning-evidence/aud02/fe4n2-circuit-replay.json docs/learning-evidence/aud02/replay-fe4n2-circuit.py
 EXTRA_DIST += windows/dev13-notebooks/prepare_transpiler_wheels.py
 EXTRA_DIST += docs/learning-evidence/dev13/transpiler-wheel-rebuild.json
+EXTRA_DIST += docs/learning-evidence/dev13/staged-windows-notebook-runs.json

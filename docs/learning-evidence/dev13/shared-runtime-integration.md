@@ -77,3 +77,10 @@ wheel, with the same 17 member files as the earlier cached copy. The normal
 offline environment command installed 117 distributions for each profile.
 Both original notebooks passed using those installations.
 [Build and replay evidence](transpiler-wheel-rebuild.json).
+
+The Windows package staging directory at revision `c637aa12` ran QB-011,
+QB-012 and both supported revisions of IBM-019 and IBM-020. The staged
+native worker also passed all 237 source formulas from the two IBM lessons.
+Package creation stopped when the domain GUI test could not read the copied
+result. The standalone retry reproduced the clipboard failure. Extracted-ZIP
+verification remains open. [Staged package results](staged-windows-notebook-runs.json).

@@ -1,0 +1,468 @@
+{
+  "revision": "c637aa12b0993876c7f185f07c8b4b4683aaac4b",
+  "delivery": "Staged portable directory before the GUI clipboard gate",
+  "runs": {
+    "qb011": {
+      "original_code_cells": [
+        1,
+        3,
+        5,
+        7,
+        8,
+        9,
+        11,
+        14,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23
+      ],
+      "source_sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+      "verification": {
+        "accepted": true,
+        "qubits": 10,
+        "dimension": 1024,
+        "max_operator_error": 1.1157603309187458e-15,
+        "stages": [
+          "cirq.circuits.circuit.Circuit",
+          "braket.circuits.circuit.Circuit",
+          "pyquil.quil.Program",
+          "qiskit.circuit.quantumcircuit.QuantumCircuit",
+          "pytket._tket.circuit.Circuit",
+          "cirq.circuits.circuit.Circuit"
+        ]
+      }
+    },
+    "qb012": {
+      "original_code_cells": [
+        0,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "source_sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+      "verification": {
+        "accepted": true,
+        "operator_max_errors": [
+          1.1102230246251565e-16,
+          1.1102230246251565e-16
+        ],
+        "routes": [
+          "qiskit -> qasm3 -> braket",
+          "qiskit -> braket"
+        ]
+      }
+    },
+    "ibm019-old": {
+      "source_sha256": "c9d818b01277230bc0b7ecb64dc41fe54a53de8fcfc84c08818a5051d039567f",
+      "original_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "independent_results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ]
+      }
+    },
+    "ibm019-pinned": {
+      "source_sha256": "e7dbe4d7175edf2376dc598021245b7308ac9d401fcb083b356b3072a06fef27",
+      "original_code_cells": [
+        2,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "independent_results": {
+        "checks": [
+          {
+            "case": 1,
+            "truth": [
+              0,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          },
+          {
+            "case": 2,
+            "truth": [
+              0,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 3,
+            "truth": [
+              1,
+              0
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              1.0573994819069698e-33,
+              0.9999999999999996
+            ],
+            "counts": {
+              "1": 256
+            },
+            "label": "balanced"
+          },
+          {
+            "case": 4,
+            "truth": [
+              1,
+              1
+            ],
+            "state_residual": 1.1102230246251565e-16,
+            "probabilities": [
+              0.9999999999999996,
+              1.0573994819069698e-33
+            ],
+            "counts": {
+              "0": 256
+            },
+            "label": "constant"
+          }
+        ],
+        "expected_errors": [
+          {
+            "input": 0,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          },
+          {
+            "input": 5,
+            "type": "ValueError",
+            "message": "`case` must be 1, 2, 3, or 4."
+          }
+        ]
+      }
+    },
+    "ibm020-old": {
+      "source_sha256": "513398ae77d7502e7e8c2f2d4bdc85d4a7b5474d25f88a00eb1a2e8a8777586f",
+      "original_code_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "independent_results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "001": 1042,
+          "101": 985,
+          "110": 1037,
+          "010": 1032
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    },
+    "ibm020-pinned": {
+      "source_sha256": "eb5801cde14e135802785c00092569b141deba7f3c091550b0ef0826654fc0a4",
+      "original_code_cells": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "independent_results": {
+        "original_generated_truth": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "operator_residual": 1.1109166973105323e-15,
+        "state_residual": 3.889650809439966e-16,
+        "expected_probabilities": [
+          0.0,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.0
+        ],
+        "counts": {
+          "001": 1042,
+          "101": 985,
+          "110": 1037,
+          "010": 1032
+        },
+        "label": "balanced",
+        "bv": [
+          {
+            "secret": "0000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0000": 256
+            }
+          },
+          {
+            "secret": "0001",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "0001": 256
+            }
+          },
+          {
+            "secret": "1000",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1000": 256
+            }
+          },
+          {
+            "secret": "1011",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1011": 256
+            }
+          },
+          {
+            "secret": "1111",
+            "operator_residual": 0.0,
+            "state_residual": 4.440892098500626e-16,
+            "counts": {
+              "1111": 256
+            }
+          }
+        ]
+      }
+    }
+  },
+  "build": {
+    "native_src_suite": {
+      "passed": 95,
+      "skipped": 1,
+      "failed": 0
+    },
+    "verified_source_distribution_inputs": 1606,
+    "release_zip_created": false,
+    "blocking_check": "Windows domain GUI Copy failed to expose the current result on the clipboard in this desktop session. The standalone retry also failed."
+  },
+  "native_formula_runs": {
+    "ibm019": "Passed 69 source formulas, 195 binding checks and 20 circuit checks",
+    "ibm020": "Verified 168 source formulas and 443 bound results."
+  },
+  "source_dialog_captures": {
+    "revision": "c637aa12b0993876c7f185f07c8b4b4683aaac4b",
+    "observations": "Both editors show file-level status for main.qasm and helper.qasm. At minimum size the missing include diagnostic wraps, and both action buttons remain visible.",
+    "captures": [
+      {
+        "image": "source-files.txt.classical.changed.png",
+        "sha256": "74e09fed38ad9886d31485896c76f2c112408ea198a917d1122961ec141f0c8e"
+      },
+      {
+        "image": "source-files.txt.classical.minimum.png",
+        "sha256": "8a45b0a088c93a84578eb28618a65eb1b612d9695dd61e46222471ddb6d90b24"
+      },
+      {
+        "image": "source-files.txt.classical.unchanged.png",
+        "sha256": "11900a5825b6ca4195b645844e77e91f577042d6f811f3ca52cde625271fc4be"
+      },
+      {
+        "image": "source-files.txt.composer.changed.png",
+        "sha256": "74e09fed38ad9886d31485896c76f2c112408ea198a917d1122961ec141f0c8e"
+      },
+      {
+        "image": "source-files.txt.composer.minimum.png",
+        "sha256": "8a45b0a088c93a84578eb28618a65eb1b612d9695dd61e46222471ddb6d90b24"
+      },
+      {
+        "image": "source-files.txt.composer.unchanged.png",
+        "sha256": "11900a5825b6ca4195b645844e77e91f577042d6f811f3ca52cde625271fc4be"
+      }
+    ]
+  }
+}
