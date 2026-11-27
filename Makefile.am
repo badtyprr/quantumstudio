@@ -815,3 +815,4 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/qb011.json windows/dev13-noteboo
 EXTRA_DIST += docs/learning-evidence/dev13/qb011-notebook-route.json
 EXTRA_DIST += docs/learning-evidence/aud02/rustworkx-centrality-replay.json
 EXTRA_DIST += docs/learning-evidence/aud02/fe4n2-circuit-replay.json docs/learning-evidence/aud02/replay-fe4n2-circuit.py
+EXTRA_DIST += windows/dev13-notebooks/prepare_transpiler_wheels.py

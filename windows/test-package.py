@@ -41,6 +41,7 @@ def verify(archive, revision, candidate):
                      'qasm-import/qasm-import.exe', 'Notation-guide.html',
                      'README.txt', 'LICENSE.txt', 'Research-notes.md',
                      'notebooks/run.py', 'notebooks/execution.py',
+                     'notebooks/prepare_transpiler_wheels.py',
                      'notebooks/contracts/qb011.json', 'notebooks/witnesses/qb011.py',
                      'notebooks/profiles/transpiler-pyquil-win-py312.json',
                      'notebooks/transpiler-pyquil-requirements.lock'):
