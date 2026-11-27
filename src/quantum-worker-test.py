@@ -24,6 +24,12 @@ def data(expression, *flags):
     return value
 
 
+# Bind unequal state vectors before the register width. The phase and
+# its position distinguish descending from ascending tensor order.
+ket_series = data(r"quantum:$\vert \psi_{n-1}\rangle\otimes\cdots\otimes\vert \psi_0\rangle$")["copy_text"]
+assert data(f'quantum:replace(replace(replace(({ket_series}),"ψ_0",[1;0]),"ψ_1",[0;i]),n,2)')["cells"] == [["0"],["0"],["i"],["0"]]
+assert b"column vector" in run("quantum:qindexedket([1,0;0,1])","--json",success=False).stderr
+
 # Prose separates complete state expressions and preserves their order.
 state_list = data(r"quantum:$$\vert 1\rangle,\quad\text{and}\quad -\vert 0\rangle.$$")
 ordered = data(r"quantum:\begin{gathered}\vert 1\rangle\\-\vert 0\rangle\end{gathered}")
