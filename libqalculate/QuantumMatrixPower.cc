@@ -231,7 +231,15 @@ class QuantumPowerFunction: public MathFunction {
     for(size_t k=0;k<a.rows();++k)entry(out,k,k)=m_one;
    } else if(a.isMatrix() && !(exponent.isNumber() && exponent.number().isInteger())) {
     return quantumMatrixPower(out,a,exponent,eo) ? 1 : 0;
-   } else {out=a;out.raise(exponent);out.eval(eo);}
+   } else {
+    // Scalar root simplification can repeatedly expand products of squared
+    // projections while their state vectors are still unknown. Preserve the
+    // root until the supplied states determine those projections.
+    if(exponent.isNumber() && !exponent.number().isInteger() &&
+       a.containsFunction(CALCULATOR->getFunction("qbars")) &&
+       a.containsFunction(CALCULATOR->getFunction("qnamedket")))return 0;
+    out=a;out.raise(exponent);out.eval(eo);
+   }
    return 1;
   }
   return 0;
