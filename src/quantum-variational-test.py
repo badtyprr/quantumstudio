@@ -18,13 +18,13 @@ worker = Path(sys.argv[1] if len(sys.argv) > 1 else
 records = []
 
 
-def evaluate(expression, approximate=False):
+def evaluate(expression, approximate=False, allowed_warning=None):
     process = subprocess.run([str(worker), '--json'] + (['--approx'] if approximate else []),
                              input=('quantum:' + expression).encode(), capture_output=True, timeout=30)
     record = dict(expression=expression, approximate=approximate, returncode=process.returncode,
                   stdout=process.stdout.decode(), stderr=process.stderr.decode())
     records.append(record)
-    assert process.returncode == 0 and not process.stderr, record
+    assert process.returncode == 0 and (not process.stderr or record["stderr"].strip() == allowed_warning), record
     return json.loads(process.stdout)
 
 
@@ -121,7 +121,7 @@ def sample(gates, expected_zero):
                   stdout=process.stdout.decode(), stderr=process.stderr.decode(),
                   expected_zero=expected_zero, absolute_frequency_tolerance=0.025)
     records.append(record)
-    assert process.returncode == 0 and not process.stderr, record
+    assert process.returncode == 0 and (not process.stderr or record["stderr"].strip() == allowed_warning), record
     result = json.loads(process.stdout)
     assert sum(result['counts'].values()) == shots and set(result['counts']) <= {'0', '1'}, result
     assert abs(result['counts'].get('0', 0)/shots - expected_zero) < 0.025, record
@@ -137,6 +137,15 @@ def run():
         expected[4], expected[7] = math.cos(angle/2), -1j*math.sin(angle/2)
         vector_close(state, expected)
         close('norm(vec(' + state + '))', 1)
+
+    # A norm residual at zero is a cusp of abs. Its derivative cannot define
+    # an uncertainty there, but interval arithmetic still bounds the result.
+    norm = 'norm(vec(apply(X,apply(CX,apply(Rx(1.0471975511965976),|000>,[2]),[2,1]),[0])))'
+    residual = evaluate('abs((' + norm + ')-((1+(0)*i)))', True,
+                        'Calculation of uncertainty propagation failed (using interval arithmetic instead).')
+    for field in ('text', 'display_text', 'copy_text'):
+        assert 0 <= float(residual[field]) < 2e-12, residual
+    close('abs((' + norm + ')-1.001)', 0.001)
 
     # IBM-104 cells 7,11: exact expectation, separate from finite-shot estimates.
     exact('expect(2*X-Z,H*|0>)-2')
