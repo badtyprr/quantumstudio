@@ -383,6 +383,7 @@ const std::map<std::string,int> quantumSignatures = {
  {"qtensorpow",2},
  {"qtensorproduct",4},
  {"qtensorseries",5},
+ {"qonebasedmatrix",6},
  {"qboundtensorseries",6},
  {"qregistersum",7},{"qregisterelement",2},
  {"qblocksum",4},

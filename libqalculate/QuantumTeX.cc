@@ -953,9 +953,42 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
   for(const auto &cell:cells.back())if(cell==diagonal)found=true;
  }
  if(!found)return "";
- auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous zero-based paired indices and consistent horizontal, vertical and diagonal ellipses");};
+ auto invalid=[](){throw std::runtime_error("An indexed matrix requires contiguous paired indices starting at zero or one and consistent horizontal, vertical and diagonal ellipses");};
  const size_t height=cells.size(),width=cells[0].size();
  if(height<3 || width<3 || height>1026 || width>1026)invalid();
+ if(tex && height==7 && width==7) {
+  const std::string entry=R"(((?:\\[A-Za-z]+|[A-Za-z])_\{[A-Za-z0-9]+(?:,[A-Za-z0-9]+)?\}))";
+  static const std::regex product(entry+R"(\s*)"+entry);
+  if(std::regex_match(cells[0][0],product)) {
+   // Each of the four displayed blocks has a fixed outer coefficient
+   // and the same inner matrix. The separator row and column carry the
+   // outer ellipses and have intentionally empty corner positions.
+   std::string outer[2][2],inner[2][2];
+   for(size_t r=0;r<7;++r) {
+    if(cells[r].size()!=7)invalid();
+    for(size_t c=0;c<7;++c) {
+     const std::string &cell=cells[r][c];
+     if(r==3 || c==3) {
+      static const std::regex spacing(R"(\\hspace\{[0-9.]+(?:mm|cm|pt|em|ex)\}|\s+)");
+      std::string expected=r==3 && c==3 ? diagonal : r==3 && c%4==1 ? vertical : c==3 && r%4==1 ? horizontal : "";
+      if(std::regex_replace(cell,spacing,"")!=expected)invalid();
+     } else if(r%4==1 || c%4==1) {
+      if(cell!=(r%4==1 ? (c%4==1 ? diagonal : vertical) : horizontal))invalid();
+     } else {
+      std::smatch term;if(!std::regex_match(cell,term,product))invalid();
+      auto &a=outer[r/4][c/4],&b=inner[r%4/2][c%4/2];
+      if((!a.empty() && a!=term[1]) || (!b.empty() && b!=term[2]))invalid();
+      a=term[1];b=term[2];
+     }
+    }
+   }
+   auto matrix=[&](const std::string (&corner)[2][2]) {
+    return indexedMatrix(corner[0][0]+"&"+horizontal+"&"+corner[0][1]+"\\\\"+
+      vertical+"&"+diagonal+"&"+vertical+"\\\\"+corner[1][0]+"&"+horizontal+"&"+corner[1][1],true);
+   };
+   return "qtensor("+matrix(outer)+","+matrix(inner)+")";
+  }
+ }
  auto rootLabel=[](const std::string &term) {
   std::string text=trim(term);
   if(text.compare(0,5,"\\sqrt")!=0)return std::string();
@@ -1110,7 +1143,7 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
  if(cells[0][0].find('^')!=std::string::npos) {
   return sampleArray(cells,horizontal,vertical,diagonal,false);
  }
- std::string family,lastRow,lastColumn;
+ std::string family,lastRow,lastColumn;int origin=0;
  for(size_t r=0;r<height;++r) {
   if(cells[r].size()!=width)invalid();
   for(size_t c=0;c<width;++c) {
@@ -1125,7 +1158,13 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
    size_t first=tex && name[0]=='\\' ? 1 : 0;if(first==name.size())invalid();
    for(size_t i=first;i<name.size();++i)if((unsigned char)name[i]<128 && !asciiLetter(name[i]))invalid();
    if(family.empty())family=name;else if(family!=name)invalid();
-   auto pair=indexedParts(indices.substr(1,indices.size()-2),",");if(pair.size()!=2)invalid();
+   const std::string coordinates=indices.substr(1,indices.size()-2);
+   auto pair=indexedParts(coordinates,",");
+   if(r==0 && c==0 && ((pair.size()==2 && pair[0]=="1" && pair[1]=="1") || (tex && coordinates=="11")))origin=1;
+   if(tex && origin && pair.size()==1 && coordinates.size()==2 &&
+      std::isalnum((unsigned char)coordinates[0]) && std::isalnum((unsigned char)coordinates[1]))
+    pair={coordinates.substr(0,1),coordinates.substr(1)};
+   if(pair.size()!=2)invalid();
    for(auto &index:pair) {
     std::string compact;
     for(unsigned char ch:index) {
@@ -1135,13 +1174,14 @@ std::string indexedMatrix(const std::string &raw,bool tex) {
     }
     if(compact.empty())invalid();index=compact;
    }
-   if(r<height-2) {if(pair[0]!=std::to_string(r))invalid();}
+   if(r<height-2) {if(pair[0]!=std::to_string(r+origin))invalid();}
    else {if(lastRow.empty())lastRow=pair[0];else if(lastRow!=pair[0])invalid();}
-   if(c<width-2) {if(pair[1]!=std::to_string(c))invalid();}
+   if(c<width-2) {if(pair[1]!=std::to_string(c+origin))invalid();}
    else {if(lastColumn.empty())lastColumn=pair[1];else if(lastColumn!=pair[1])invalid();}
   }
  }
- return "qindexedmatrix(\""+quantumTeX(family)+"_\",("+lastRow+"),("+lastColumn+"),"+std::to_string(height-3)+","+std::to_string(width-3)+")";
+ return std::string(origin ? "qonebasedmatrix" : "qindexedmatrix")+"(\""+quantumTeX(family)+"_\",("+lastRow+"),("+lastColumn+"),"+
+   std::to_string(height-3+origin)+","+std::to_string(width-3+origin)+(origin ? ",vector())" : ")");
 }
 bool registerSumDeclaration(const std::string &variable,const std::string &domain,
                             std::string &prefix,std::string &first,std::string &last,

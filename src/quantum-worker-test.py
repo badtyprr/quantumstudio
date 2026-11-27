@@ -2507,6 +2507,13 @@ for flags in [(), ("--approx",)]:
         assert run('quantum:'+bad,'--json',*flags,success=False).stdout==b''
 
 # Indexed matrix dimensions and paired coefficient labels survive substitution.
+one_based = r"$$\begin{pmatrix}a_{11}&\cdots&a_{1k}\\\vdots&\ddots&\vdots\\a_{m1}&\cdots&a_{mk}\end{pmatrix}$$"
+one_based_copy = data("quantum:"+one_based)["copy_text"]
+for spelling in [one_based,one_based.replace("_{11}","_{1, 1}")]:
+    assert data("quantum:"+spelling)["copy_text"]==one_based_copy
+for key,value in [("a_1,3","i"),("m","1"),("k","3"),("a_1,2","7"),("a_1,1","5")]:
+    one_based_copy=f'replace(({one_based_copy}),"{key}",{value})'
+assert data("quantum:"+one_based_copy)["copy_text"]=="vector(5,7,i)"
 for flags in [(), ("--approx",)]:
     expression='qindexedmatrix("a_",m-1,n-1,1,1)'
     symbolic=data('quantum:'+expression,*flags)

@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 
@@ -120,5 +121,39 @@ malformed = rhs.replace(r"\alpha_2 \beta_k",r"\alpha_1 \beta_k")
 assert malformed!=rhs
 error = subprocess.run([worker,"--json"],input=("quantum:"+malformed).encode(),capture_output=True,env=env,timeout=30)
 assert error.returncode and b"indexed column" in error.stderr
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,31,
+row=classical["rows"][337]
+literal=row["literal"]
+assert evaluate(literal)=="1"
+cases[row["id"]]=literal,"1"
+arrays=re.findall(r"\\begin\{pmatrix\}.*?\\end\{pmatrix\}",literal,re.S)
+assert len(arrays)==3
+expanded="$$"+arrays[-1]+"$$"
+symbolic=evaluate(expanded)
+assert evaluate(symbolic)==symbolic
+cases["expanded-product-matrix"]=expanded,symbolic
+left=[[1,2],[3,4]]
+right=[[0,1,-2],[5,0,3],[2,-3,1]]
+entries=[str(a*b) for row_a in left for row_b in right for a in row_a for b in row_b]
+expected="matrix(6,6,["+",".join(entries).replace("-","−")+"])"
+def fill(expression,assignments):
+    for name,value in assignments:
+        expression=f'replace(({expression}),"{name}",{value})'
+    return expression
+values=[(f"{name}_{r},{c}",v) for name,mat in [("α",left),("β",right)]
+        for r,line in enumerate(mat,1) for c,v in enumerate(line,1)]
+sizes=[("m",2),("k",3)]
+for name,assignments in [("sizes-first",sizes+values),("sizes-last",values+sizes)]:
+    expression=fill(symbolic,assignments)
+    assert evaluate(expression)==expected
+    cases["product-matrix-"+name]=expression,expected
+changed=literal.replace(arrays[-1],arrays[-1].replace(r"\alpha_",r"\gamma_"))
+relation=evaluate(changed)
+expression=fill(relation,values+[(f"γ_{r},{c}",int(r==c)) for r in (1,2) for c in (1,2)]+sizes)
+assert evaluate(expression)=="0"
+cases["changed-block-family"]=expression,"0"
+malformed=expanded.replace(r"\alpha_{11}\beta_{1k}",r"\alpha_{1m}\beta_{1k}",1)
+assert malformed!=expanded
+error=subprocess.run([worker,"--json"],input=("quantum:"+malformed).encode(),capture_output=True,env=env,timeout=30)
+assert error.returncode and b"indexed matrix" in error.stderr
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,36,
                  dict(source_sha256=sources),sessions_only=bool(args.session_report))

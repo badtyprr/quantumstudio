@@ -1244,15 +1244,15 @@ void prepareArrayEntry(MathStructure &term,const MathStructure &target) {
  if(term.isFunction()) {
   const auto &op=term.function()->referenceName();
   const bool diagonal=op=="qdiagonalsum" || op=="qbounddiagonalsum";
-  const bool matrix=op=="qindexedmatrix" || op=="qboundindexedmatrix";
+  const bool matrix=op=="qindexedmatrix" || op=="qboundindexedmatrix" || op=="qonebasedmatrix";
   if((diagonal || matrix) && term.size()>0 && term[0].isSymbolic()) {
    const std::string &prefix=term[0].symbol(),name=target.symbol();
    if(name.compare(0,prefix.size(),prefix)!=0)return;
    std::string coordinates=name.substr(prefix.size());size_t comma=coordinates.find(',');
    if(comma==std::string::npos)return;
-   auto coordinate=[](const std::string &s) {
+   auto coordinate=[&](const std::string &s) {
     return !s.empty() && s.size()<=4 && s.find_first_not_of("0123456789")==std::string::npos &&
-           (s=="0" || s[0]!='0') && std::stoi(s)<=1023;
+           (s=="0" || s[0]!='0') && (op=="qonebasedmatrix" ? s!="0" && std::stoi(s)<=1024 : std::stoi(s)<=1023);
    };
    std::string row=coordinates.substr(0,comma),col=coordinates.substr(comma+1);
    if(!coordinate(row) || !coordinate(col) || (diagonal && row!=col))return;
@@ -2429,9 +2429,10 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
-  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qsamplebitmatrix" || op=="qdiagonalsum" || op=="qbounddiagonalsum" || op=="qboundindexedmatrix") {
+  if(op=="qindexedcolumn" || op=="qonebasedcolumn" || op=="qdescendingcolumn" || op=="qindexedmatrix" || op=="qonebasedmatrix" || op=="qsamplebitmatrix" || op=="qdiagonalsum" || op=="qbounddiagonalsum" || op=="qboundindexedmatrix") {
    const bool samples=op=="qsamplebitmatrix";
-   const bool matrix=samples || op=="qindexedmatrix" || op=="qboundindexedmatrix";
+   const bool oneBasedMatrix=op=="qonebasedmatrix";
+   const bool matrix=samples || oneBasedMatrix || op=="qindexedmatrix" || op=="qboundindexedmatrix";
    if(!raw[0].isSymbolic()) {CALCULATOR->error(true,"An indexed array requires a coefficient-name prefix.",NULL);return 0;}
    const std::string prefix=raw[0].symbol();
    bool valid=prefix.size()>=2 && prefix.size()<=128 && prefix.back()=='_';
@@ -2444,7 +2445,7 @@ class QuantumIndexedFunction: public MathFunction {
    // Endpoint bounds also cap the product at 1024 * 1024 matrix cells.
    for(int axis=0;axis<(matrix ? 2 : 1);++axis) {
     MathStructure last=raw[1+axis],minimum=raw[(matrix ? 3 : 2)+axis];last.eval(exact);minimum.eval(exact);
-    const int offset=(samples || op=="qonebasedcolumn") && axis==0 ? 1 : 0;
+    const int offset=oneBasedMatrix || ((samples || op=="qonebasedcolumn") && axis==0) ? 1 : 0;
     if(!minimum.isNumber() || !minimum.number().isInteger() || minimum.number()<offset || minimum.number()>1023+offset) {
      CALCULATOR->error(true,"An indexed array minimum must be an integer from 0 to 1023.",NULL);return 0;
     }
@@ -2455,7 +2456,7 @@ class QuantumIndexedFunction: public MathFunction {
     dimensions[axis]=last.number().intValue()+1-offset;
    }
    std::map<std::string,MathStructure> assigned;
-   if(op=="qboundindexedmatrix" || op=="qbounddiagonalsum") {
+   if(oneBasedMatrix || op=="qboundindexedmatrix" || op=="qbounddiagonalsum") {
     MathStructure pairs;
     if(!tensorReplacementHistory(raw[matrix ? 5 : 3],pairs)) {
      CALCULATOR->error(true,"Invalid indexed coefficient assignments.",NULL);return 0;
@@ -2485,7 +2486,7 @@ class QuantumIndexedFunction: public MathFunction {
     if(CALCULATOR->aborted())return 0;
     int index=op=="qdescendingcolumn" ? dimensions[0]-1-row : row+(op=="qonebasedcolumn" ? 1 : 0);
     if(samples)element(out,row,col).set(prefix+std::to_string(row+1)+"_"+std::to_string(dimensions[1]-1-col),true);
-    else if(matrix)element(out,row,col)=coefficient(std::to_string(index)+","+std::to_string(col));
+    else if(matrix)element(out,row,col)=coefficient(std::to_string(index+oneBasedMatrix)+","+std::to_string(col+oneBasedMatrix));
     else element(out,row,col).set(prefix+std::to_string(index),true);
    }
    return 1;
@@ -3642,6 +3643,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qsampledotcolumn",5));
  calculator.addFunction(new QuantumIndexedFunction("qsamplebitmatrix",5));
  calculator.addFunction(new QuantumIndexedFunction("qindexedmatrix",5));
+ calculator.addFunction(new QuantumIndexedFunction("qonebasedmatrix",6));
  calculator.addFunction(new QuantumIndexedFunction("qdiagonalsum",3));
  calculator.addFunction(new QuantumIndexedFunction("qbounddiagonalsum",4));
  calculator.addFunction(new QuantumIndexedFunction("qboundindexedmatrix",6));
