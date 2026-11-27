@@ -1743,6 +1743,7 @@ class QuantumAlgebraFunction: public MathFunction {
        name=="qadd" || name=="qsub" || name=="qketstate" || name=="qstatecall")return 0;
    }
   }
+  if(op=="qregistercontrol" && !a.isMatrix() && a.containsUnknowns() && unresolvedMatrixOperand(a))return 0;
   if(op=="qnorm" && a.isZero()) {out.clear();return 1;}
   if(!a.isMatrix()) { CALCULATOR->error(true,"Quantum operation requires a matrix (kets are column matrices).",NULL); return 0; }
   if(op=="qtensorpow") {
@@ -1788,7 +1789,7 @@ class QuantumAlgebraFunction: public MathFunction {
    for(size_t r=0;r<n;++r) for(size_t c=0;c<n;++c) element(out,offset+r,offset+c)=element(a,r,c);
    return 1;
   }
-  if(op=="qcontrolled") {
+  if(op=="qcontrolled" || op=="qregistercontrol") {
    size_t n=a.rows(); if(n!=a.columns() || n>256) { CALCULATOR->error(true,"Controlled gates require a square matrix of dimension at most 256.",NULL); return 0; }
    out.setToIdentityMatrix(n*2); for(size_t r=0;r<n;++r) for(size_t c=0;c<n;++c) element(out,r+n,c+n)=element(a,r,c); return 1;
   }
@@ -1842,6 +1843,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qmatrixdimensions",2));
  calculator.addFunction(new QuantumAlgebraFunction("qimplicitidentity",0));
  calculator.addFunction(new QuantumAlgebraFunction("qidentitylike",1));
+ calculator.addFunction(new QuantumAlgebraFunction("qregistercontrol",1));
  calculator.addFunction(new QuantumAlgebraFunction("qfloorlog2",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbinarylog",1));
  calculator.addFunction(new QuantumAlgebraFunction("qbitlength",1));

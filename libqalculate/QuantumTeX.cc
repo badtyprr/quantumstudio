@@ -3454,6 +3454,22 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
  }
+ // In the controlled-operation definition the identity acts on the same
+ // target as the gate. The control is binary, but the target need not be.
+ if(mathWrapper && s.find("\\mathbb{I}_{\\mathsf{")!=std::string::npos) {
+  static const std::string outer=R"(\\vert\s*([01])\s*\\rangle\s*\\langle\s*([01])\s*\\vert)";
+  static const std::regex blocks(R"(^\s*C([A-Z])\s*=\s*)"+outer+
+   R"(\s*\\otimes\s*\\mathbb\{I\}_\{\\mathsf\{[A-Z]\}\}\s*([+-])\s*)"+outer+
+   R"(\s*\\otimes\s*\1(?=\s*(?:=|[.,]?\s*$)))");
+  std::smatch m;
+  if(std::regex_search(s,m,blocks)) {
+   auto unit=[&](size_t row,size_t col){return "(|"+m[row].str()+"><"+m[col].str()+"|)";};
+   const std::string gate="qoperatorref("+m[1].str()+")";
+   const std::string definition="qregistercontrol("+gate+")=qtensor("+unit(2,3)+",qidentitylike("+gate+"))"
+    +m[4].str()+"qtensor("+unit(5,6)+","+gate+")";
+   s.replace(m.position(),m.length(),definition);
+  }
+ }
  if(mathWrapper && s.find("\\ldots")!=std::string::npos && s.find(',')!=std::string::npos) {
   static const std::regex list(R"(^\s*([A-Z])_([0-9])(?:\s*([A-Z])_\2)?\s*,?\s*\\ldots\s*,\s*\1_(\{[a-z]-1\})(?:\s*([A-Z])_\4)?\s*$)");
   std::smatch m;

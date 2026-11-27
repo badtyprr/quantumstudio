@@ -69,5 +69,20 @@ reverse = bound(evaluate(r"$N_0 M_0,\ldots,N_{n-1} M_{n-1}$"),"MN")
 expected = "vector(matrix(2,2,[1,0,0,0]),matrix(2,2,[3,3,2,3]))"
 assert evaluate(reverse)==expected
 cases["reverse-products"] = reverse,expected
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,14,
+inventory = json.loads(Path(__file__).with_name("ibm042-inventory.json").read_bytes())
+row = inventory["rows"][315]
+target = "[0,1,0;0,0,i;1,0,0]"
+literal = row["literal"]
+relation = evaluate(literal)
+assert evaluate(relation)==relation
+cases[row["id"]] = literal,relation
+for label,formula,expected in [("three-level-control",literal,"1"),("negative-block",literal.replace("+","-"),"0"),
+                               ("off-diagonal-control",literal.replace(r"\langle 0",r"\langle 1"),"0")]:
+    expression = f'replace(({evaluate(formula)}),"U",{target})'
+    assert evaluate(expression)==expected
+    cases[label] = expression,expected
+row = inventory["rows"][320]
+assert evaluate(row["literal"])=="1"
+cases[row["id"]] = row["literal"],"1"
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,19,
                  dict(source_sha256=sources),sessions_only=bool(args.session_report))
