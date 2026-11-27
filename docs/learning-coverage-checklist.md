@@ -207,7 +207,7 @@ DEV-17 now retains a named partial trace of an unbound state variable. Supplying
 - [x] **Symbolic ensembles, instruments and POVMs** — P2; Released in REL-25; size L; dependencies: DEV-03.
 - Acceptance: Labeled outcomes and instrument poststates; normalization, probabilities and partial traces; automatic full Naimark construction with explicit ancilla dimensions; invalid POVM/dimension rejection and preservation of unresolved symbolic conditions.
 - Delivered through [#409](https://github.com/badtyprr/quantumstudio/pull/409) and [#410](https://github.com/badtyprr/quantumstudio/pull/410), verified release [e5ed358a](https://github.com/badtyprr/quantumstudio/releases/tag/checkpoint-e5ed358a). [Source reproductions, review/CI records, package checks and limits](learning-evidence/DEV-09.md).
-- Bounds: 64 outcomes, 64 Kraus matrices per outcome, dimensions up to 64, total Naimark dimension up to 128. The fourth diagnostic tetrahedral |i> conditional state remains pending because its exact probability sign is not established. No whole IBM lesson completion is inferred.
+- Bounds: 64 outcomes, 64 Kraus matrices per outcome, dimensions up to 64, total Naimark dimension up to 128. The development worker proves the fourth tetrahedral |i> probability positive and verifies all four conditional states for both instrument constructions. Release verification is pending. No whole IBM lesson completion is inferred.
 
 ### DEV-10
 

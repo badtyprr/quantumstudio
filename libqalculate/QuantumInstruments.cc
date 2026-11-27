@@ -402,7 +402,16 @@ public:
    for(size_t k=0;k<m.labels.size();++k)unknownMatch|=labelsEqual(label,m.labels[k],eo)==Verdict::Unknown;
    for(size_t k=0;k<m.labels.size();++k)if(labelsEqual(label,m.labels[k],eo)==Verdict::Valid) {
     if(probabilities[k].isZero()) {fail("A zero-probability outcome has no normalized post-measurement state.");return 0;}
-    if(!probabilities[k].representsPositive())return 0;
+    if(!probabilities[k].representsPositive()) {
+     // A radical difference can have a provable sign after evaluating the inequality.
+     MathStructure positive=probabilities[k];
+     positive.transform(COMPARISON_GREATER,m_zero);
+     EvaluationOptions proof=eo;
+     proof.approximation=APPROXIMATION_EXACT;
+     proof.assume_denominators_nonzero=false;
+     positive.eval(proof);
+     if(!positive.isOne())return 0;
+    }
     out=states[k];out/=probabilities[k];out.eval(eo);return 1;
    }
    if(unknownMatch)return 0;

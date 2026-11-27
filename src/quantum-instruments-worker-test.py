@@ -98,8 +98,12 @@ for outcome,state in enumerate(reference):
 instrument='instrument(vector(0,1,2,3),vector('+','.join('vector(density('+state+')/sqrt(2))' for state in states)+'))'
 for outcome,state in enumerate(states):
     equal('poststate('+instrument+',|0>,'+str(outcome)+')','density('+state+')')
-# The exact sign of the fourth |i> probability is not currently proved by
-# the scalar simplifier. Retain the obligation instead of claiming a poststate.
-pending=copy('poststate('+instrument+',|i>,3)')
-assert pending.startswith('qpoststate('),pending
+# The last |i> outcome has exact probability (3-sqrt(6))/12.
+square_roots='instrument(vector(0,1,2,3),vector('+','.join('vector(sqrt('+effect+'))' for effect in effects)+'))'
+for construction in (instrument,square_roots):
+    for outcome,state in enumerate(states):
+        equal('poststate('+construction+',|i>,'+str(outcome)+')','density('+state+')')
+# The blue outcome can vanish when the rotation angle is unknown.
+conditional=copy('poststate('+z+',Ry(t)*|0>,"blue")')
+assert conditional.startswith('qpoststate('),conditional
 print('PASS:',checks,'DEV-09 worker checks')
