@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# Fixed-width outcome lists keep their order and leading zeros.
+assert data(r"quantum:$10,00,10$")["copy_text"] == "qtuple(vector(qbitlabel(2,2),qbitlabel(0,2),qbitlabel(2,2)))"
+assert data(r"quantum:$(2,0),\;(1,0)$")["copy_text"] == "qtuple(vector(qtuple(vector(2,0)),qtuple(vector(1,0))))"
+binary_alphabet = data("quantum:qbitstrings(10)")
+assert binary_alphabet["copy_text"] == "qbitstrings(10)"
+assert binary_alphabet["display_text"] == r"\{0000000000, 0000000001, …, 1111111111\}"
+assert data("quantum:"+binary_alphabet["copy_text"]) == binary_alphabet
+assert data("quantum:qsetimage(qbitlabel(j,8),qindexrange(0,127),j)")["copy_text"].startswith("qset(vector(qbitlabel(0,8),")
+
 # The higher numbered subsystem is the first tensor axis.
 ordered_suits = data(r"quantum:$\vert\clubsuit\rangle_0\vert\heartsuit\rangle_{2}$")["copy_text"]
 assert data(f'quantum:replace(replace(({ordered_suits}),"♣",qbasis(1,2)),"♡",qbasis(0,3))')["cells"] == [["0"],["1"],["0"],["0"],["0"],["0"]]
