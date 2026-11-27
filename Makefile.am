@@ -157,6 +157,7 @@ EXTRA_DIST = config.rpath  \
 	windows/package.ps1 \
 	windows/README.txt \
 	windows/test-package.py \
+	windows/test-package-notebooks.py \
 	windows/build-native.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
