@@ -85,3 +85,13 @@ python -B notebooks/run.py run --contract ibm102 --source reference-states.ipynb
 
 Open executed.ipynb for the four circuit diagrams. The independent_results
 field in status.json records the state fidelity for each diagram in order.
+
+The same environment can run IBM-019 (Deutsch), IBM-020 (Deutsch-Jozsa),
+QB-026 (cached noise benchmark), QB-036 and QB-038 (local GHZ circuits).
+Use the same PROFILE for setup and execution. Supply the original notebook
+for LESSON and use one new results directory per run.
+
+python -B notebooks/run.py run --contract LESSON --profile PROFILE --source ORIGINAL_NOTEBOOK --environment NEW_ENV --output NEW_RESULTS
+
+The two IBM lessons run all original code cells. The three qBraid routes
+run the selected local cells documented in each lesson contract.

@@ -2,6 +2,7 @@
   "version": 2,
   "id": "qb026",
   "route": "selected-cells/direct-native-execution",
+  "alternate_profiles": ["grover-win-py312", "qiskit-aer-public-linux-py312"],
   "profiles": {
     "win32": "qiskit-aer-win-py312",
     "linux": "qiskit-aer-linux-py312"

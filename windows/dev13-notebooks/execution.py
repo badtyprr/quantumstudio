@@ -71,7 +71,7 @@ def profile_for(name):
     return profile
 
 
-def contract_profile(contract):
+def contract_profile(contract, requested=None):
     """Choose only a reviewed profile for the current host platform."""
     profiles = contract.get("profiles")
     if profiles is None:
@@ -84,6 +84,10 @@ def contract_profile(contract):
         name = profiles[sys.platform]
         if not isinstance(name, str):
             raise ValueError("INVALID_PLATFORM_PROFILES")
+    if requested is not None and requested != name:
+        if requested not in contract.get("alternate_profiles", []):
+            raise ValueError("UNSUPPORTED_CONTRACT_PROFILE")
+        name = requested
     profile = profile_for(name)
     if profile["platform"] != sys.platform:
         raise ValueError("UNSUPPORTED_CONTRACT_PLATFORM")
@@ -220,7 +224,7 @@ def validate_request(request):
         raise ValueError("UNKNOWN_CONTRACT")
     contract_bytes = (ROOT / "contracts" / (name + ".json")).read_bytes()
     contract = json.loads(contract_bytes)
-    profile = contract_profile(contract)
+    profile = contract_profile(contract, request.get("profile"))
     raw = Path(request["source"]).read_bytes()
     source_hash = digest(raw)
     revisions = [contract["source"], *contract.get("source_revisions", [])]

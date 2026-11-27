@@ -125,6 +125,7 @@
     "Native mathematics and lesson interpretation"
   ],
   "source_preservation": "Original cells retain text/type/order; authored cells have separate provenance",
+  "alternate_profiles": ["grover-win-py312", "qiskit-aer-public-linux-py312"],
   "profiles": {
     "win32": "qiskit-aer-win-py312",
     "linux": "qiskit-aer-linux-py312"
