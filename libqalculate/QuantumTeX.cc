@@ -231,13 +231,13 @@ bool completeAlignedEquation(const std::string &cell) {
  }
  return false;
 }
-std::string withoutDisplayPunctuation(std::string value) {
+std::string withoutDisplayPunctuation(std::string value,bool wholeDisplay=false) {
  size_t mark=value.find_last_not_of(" \t\r\n");
  // Display spacing may follow the sentence comma inside a math span.
  while(mark!=std::string::npos && mark>1 && value[mark-1]=='\\' &&
        (value[mark]==';' || value[mark]==',' || value[mark]=='!'))
   mark=value.find_last_not_of(" \t\r\n",mark-2);
- if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=','))return value;
+ if(mark==std::string::npos || mark==0 || (value[mark]!='.' && value[mark]!=',' && !(wholeDisplay && value[mark]==';')))return value;
  if(value[mark]=='.' && std::isdigit((unsigned char)value[mark-1])) {
   // An unbraced TeX script consumes one token. The following period
   // belongs to the sentence, while a number such as 1. keeps its decimal.
@@ -3418,7 +3418,7 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   // Some displayed equations end in a nonbreaking space before their
   // sentence punctuation or a check mark that annotates the completed proof.
   static const std::regex annotation(R"(\s*~\s*(?:\\checkmark|[.,])\s*$)");
-  s=withoutDisplayPunctuation(std::regex_replace(s,annotation,""));
+  s=withoutDisplayPunctuation(std::regex_replace(s,annotation,""),true);
   static const std::regex bellTextSign(R"((\\(?:Phi|Psi|phi|psi))_\\text\{([+-])\})");
   s=std::regex_replace(s,bellTextSign,"$1^$2");
   static const std::regex bell(R"(^\s*(\\(?:Phi|Psi|phi|psi))\^\{?([+-])\}?\s*$)");
@@ -3525,6 +3525,29 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  if(s.find("\\rangle")!=std::string::npos && s.find("\\text{and}")!=std::string::npos &&
+     s.find_first_of("=<>&")==std::string::npos && s.find("\\begin{")==std::string::npos) {
+   // A prose list of state preparations uses a spaced comma after each
+   // complete ket expression and a conjunction before the last one.
+   auto states=indexedParts(s,",");
+   static const std::regex spacing(R"(^\\q?quad\s*)");
+   static const std::regex conjunction(R"(^\\text\{and\}\s*(?:\\q?quad\s*)?)");
+   std::string rows;
+   for(size_t i=0;states.size()>1 && i<states.size();++i) {
+    std::string term=states[i];
+    if(i)term=std::regex_replace(term,spacing,"");
+    if(i+1==states.size()) {
+     if(!std::regex_search(term,conjunction))break;
+     term=trim(std::regex_replace(term,conjunction,""));
+     if(!term.empty() && term.back()=='.')term=trim(term.substr(0,term.size()-1));
+    }
+    if(term.size()<7 || term.compare(term.size()-7,7,"\\rangle")!=0 || term.find("\\vert")==std::string::npos ||
+       term.find("\\text")!=std::string::npos)break;
+    if(i)rows+="\\\\";
+    rows+=term;
+    if(i+1==states.size())s="\\begin{gathered}"+rows+"\\end{gathered}";
+   }
+  }
   if(s.find("\\end{pmatrix}")!=std::string::npos) {
    std::string list=gatheredMatrixList(s);
    if(!list.empty())s=std::move(list);

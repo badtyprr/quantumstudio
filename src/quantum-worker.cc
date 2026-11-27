@@ -474,7 +474,8 @@ int main(int argc,char **argv) {
  eo.approximation=approximate ? APPROXIMATION_APPROXIMATE : APPROXIMATION_EXACT;
  std::vector<std::string> independentLines;
  size_t quantumStart=quantumPrefixLength(input);
- if(quantumStart && input.find("\\begin")!=std::string::npos)try {
+ if(quantumStart && (input.find("\\begin")!=std::string::npos ||
+    (input.find("\\rangle")!=std::string::npos && input.find("\\text{and}")!=std::string::npos)))try {
   quantumTeX(input.substr(quantumStart),&independentLines);
  } catch(const std::exception &error) {std::cerr << error.what() << '\n';return 2;}
  // A whole alignment of wide Pauli words can be evaluated in the exact

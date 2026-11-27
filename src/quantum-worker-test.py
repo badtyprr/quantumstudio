@@ -24,6 +24,13 @@ def data(expression, *flags):
     return value
 
 
+# Prose separates complete state expressions and preserves their order.
+state_list = data(r"quantum:$$\vert 1\rangle,\quad\text{and}\quad -\vert 0\rangle.$$")
+ordered = data(r"quantum:\begin{gathered}\vert 1\rangle\\-\vert 0\rangle\end{gathered}")
+assert state_list == ordered == data("quantum:"+state_list["copy_text"])
+assert data(r"quantum:$\vert 1\rangle = \vert 1\rangle;\;$")["copy_text"] == "1"
+assert data(r"quantum:$[1,2;3,4]$")["cells"] == [["1","2"],["3","4"]]
+
 # The first coordinate belongs to the first printed alphabet, including
 # when indices count down. Set literals can be supplied before the width.
 alphabets = data(r"quantum:$\Sigma_{n-1}\times\cdots\times\Sigma_0$")["copy_text"]
