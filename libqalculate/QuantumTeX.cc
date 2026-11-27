@@ -4880,7 +4880,13 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    converted+=match[2].matched ? "qchannelendpoint("+operands+","+match[2].str()+","+nestedTeX(match[3].str())+")" : "qkrausapply("+operands+")";
    start=match.position()+match.length();
   }
-  if(start)s=converted+s.substr(start);
+  if(start) {
+   s=converted+s.substr(start);
+   // Each Pauli is self-adjoint, so P rho P is the single-Kraus
+   // channel for P. Keep the density matrix intact until it is bound.
+   static const std::regex sandwich(R"((^|[\s+(=])([IXYZ])\s*\\(rho|sigma)(?![A-Za-z])\s*\2(?![A-Za-z0-9_^]))");
+   s=std::regex_replace(s,sandwich,"$1qkrausapply(vector($2),\\$3)");
+  }
  }
  if(whole=="\\pm i" || whole=="\\pm 1") {
   const std::string value=whole.substr(4);
