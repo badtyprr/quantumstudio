@@ -40,3 +40,18 @@ after measurement must use the existing calculator workflow. The editor and
 importer support up to 25 qubits. Above 10 qubits, use numerical sampling; exact
 state and density-matrix inspection is disabled. A 25-qubit state requires
 512 MiB, plus memory for sampling and the application.
+
+Running reviewed notebooks on Windows
+
+Open a terminal in the extracted QuantumStudio folder. For QB-011, use
+64-bit Python 3.12.10, the original qbraid_sdk_transpiler.ipynb notebook,
+and a local folder containing the wheels listed in
+notebooks/transpiler-pyquil-requirements.lock. Choose new folders for the
+environment and the results. Run these commands from the same terminal.
+
+python -B notebooks/run.py environment --profile transpiler-pyquil-win-py312 --python python.exe --wheelhouse WHEEL_FOLDER --destination NEW_ENV
+python -B notebooks/run.py run --contract qb011 --source ORIGINAL_NOTEBOOK --environment NEW_ENV --output NEW_RESULTS
+
+Replace python.exe after --python with the full path to your Python 3.12.10
+interpreter. The results folder contains the executed notebook, individual
+cell results, and status.json with the final conversion check.

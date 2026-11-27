@@ -81,6 +81,18 @@ while ($queue.Count) {
         }
     }
 }
+# Stage the tracked runtime inputs. Native tests can create bytecode in the checkout.
+$runtimeRoot = 'windows/dev13-notebooks/'
+$runtimeFiles = Invoke-SourceGit -Arguments @('ls-files', '--', $runtimeRoot)
+foreach ($file in $runtimeFiles) {
+    $relative = $file.Substring($runtimeRoot.Length)
+    if ($relative -match '^(test_.*\.py|\.gitattributes)$') { continue }
+    $target = Join-Path (Join-Path $output 'notebooks') $relative
+    [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($target)) | Out-Null
+    Copy-Item -LiteralPath (Join-Path $repo $file) -Destination $target
+}
+& $PythonPath -B (Join-Path $output 'notebooks/run.py') --help | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'Packaged notebook command failed to start.' }
 New-Item -ItemType Directory -Path (Join-Path $output 'data') | Out-Null
 Copy-Item (Join-Path $repo 'data\*.xml') (Join-Path $output 'data')
 Copy-Item (Join-Path $repo 'COPYING') (Join-Path $output 'LICENSE.txt')
