@@ -1,0 +1,19 @@
+{
+  "source_sha256": "554cc9694595ec167fb501776310e6bfdfe0a87a5c638d2c79ba8a4fdf09bbcd",
+  "terms": {
+    "M099": "n \\operatorname{lg}(n) \\operatorname{lg}(\\operatorname{lg}(n))",
+    "M116": "n(\\operatorname{lg}(n))^2 \\operatorname{lg}(\\operatorname{lg}(n))"
+  },
+  "runs": {
+    "previous": {
+      "worker_sha256": "611adf4b137b0bfe3f8a5ec355dbc3d4e35792b24866cd640c8ffb6c08d51933",
+      "M099_bounded_by_M116": "qcompare(qadjacent(qadjacent(n,qbitlength(n)),qbitlength(qbitlength(n))),qbigorder(qadjacent(qadjacent(n,qpower(qbitlength(n),2)),qbitlength(qbitlength(n)))),4)",
+      "M116_bounded_by_M099": "qcompare(qadjacent(qadjacent(n,qpower(qbitlength(n),2)),qbitlength(qbitlength(n))),qbigorder(qadjacent(qadjacent(n,qbitlength(n)),qbitlength(qbitlength(n)))),4)"
+    },
+    "candidate": {
+      "worker_sha256": "38bfdd5f9e56c444969635b5efb3e253bb7e594bc6e8c4226ec1f7ad107611d9",
+      "M099_bounded_by_M116": "1",
+      "M116_bounded_by_M099": "0"
+    }
+  }
+}

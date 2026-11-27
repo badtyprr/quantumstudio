@@ -128,4 +128,22 @@ for number, expected in [("M099", 240), ("M116", 1200)]:
     # At n=16, the binary length is 5 and the binary length of 5 is 3.
     assert evaluate(probe)["copy_text"] == str(expected), probe
 
-print("Verified 49 polynomial degree pairs, the source cubic, formal functions, cost witnesses and binary lengths.")
+# Compare the original multiplication costs without replacing the input size.
+short, long = [spans[key].strip("$")[2:-1] for key in ("M099", "M116")]
+for left, right, answer in [(short, long, 1), (long, short, 0), (long, long, 1)]:
+    assert evaluate(f"{left}=O({right})")["copy_text"] == str(answer)
+
+for cost, bound, answer in [
+    ("bitlength(n)^100", "n^(1/2)", 1),
+    ("n^(1/2)", "bitlength(n)^100", 0),
+    ("bitlength(bitlength(n))^100", "bitlength(n)^(1/2)", 1),
+    ("n+bitlength(n)^3", "n", 1),
+    ("bitlength(n)", "bitlength(bitlength(n))", 0),
+    ("0", "bitlength(n)", 1), ("bitlength(n)", "0", 0),
+]:
+    assert evaluate(f"{cost}=O({bound})")["copy_text"] == str(answer)
+    assert evaluate(f"{cost}!=O({bound})")["copy_text"] == str(1-answer)
+for cost, bound in [("bitlength(n)", "bitlength(m)"), ("n", "n-bitlength(n)")]:
+    assert "qbigorder(" in evaluate(f"{cost}=O({bound})")["copy_text"]
+
+print("Verified polynomial and bit-length bounds, source costs, formal functions and cost witnesses.")
