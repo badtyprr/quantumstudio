@@ -1,0 +1,82 @@
+{
+  "compiler_sha256": "f31f5aed1cb1543403525229285335962c836c94047e34afece5979e6da5dc6a",
+  "comparison_staged_compiler_sha256": "60a4aaa1de322675c6ee428213706b4fe0344706a634dd4321473b4ff867b1a3",
+  "examples": [
+    {
+      "dependency_line_2": "OPENQASM 3; /* π */ include \"outer.inc\";",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc:2: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:21: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:21: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc"
+    },
+    {
+      "dependency_line_2": "  OPENQASM 2;",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc: Included module version must match the entry file's explicit version.",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:3: Included module version must match the entry file's explicit version.",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:3: Included module version must match the entry file's explicit version."
+    },
+    {
+      "dependency_line_2": "OPENQASM 3; OPENQASM 3;",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc: A version header must occur once, at the start.",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:13: A version header must occur once, at the start.",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:13: A version header must occur once, at the start."
+    }
+  ],
+  "candidate_integration": {
+    "gui_sha256": "35a2435800fa23d41d6fd797fd98d34d6ec6cc65b0978dc8d3b49a34f306299c",
+    "file_import_methods_passed_against_source_and_frozen": [
+      "test_adapter_declaration_location_and_unchanged_stdin_message",
+      "test_adapter_runtime_gate_location_after_module_adaptation",
+      "test_box_declaration_locations",
+      "test_classical_file_contract",
+      "test_declaration_range_scope_locations",
+      "test_dependency_lowering_diagnostics",
+      "test_dependency_parser_diagnostic",
+      "test_dependency_semantic_diagnostic",
+      "test_emission_dependency_diagnostics",
+      "test_entry_suffix_parser_diagnostic",
+      "test_explicit_root_and_utf8_snapshot",
+      "test_explicit_saved_source_check",
+      "test_gate_arithmetic_locations",
+      "test_gate_modifier_errors_in_module",
+      "test_generated_qb004_modules",
+      "test_lowering_and_assignment_emission_locations",
+      "test_mixed_variable_limit_in_included_module",
+      "test_module_header_ast_diagnostic",
+      "test_module_mode_keeps_custom_duplicate_errors",
+      "test_module_version_checks",
+      "test_nested_include_and_module_header_coordinates",
+      "test_numeric_name_at_utf16_limit",
+      "test_numerical_loop_transfer_file_import",
+      "test_numerical_transfer_scope_rejections",
+      "test_option_errors",
+      "test_physical_wire_in_nested_include",
+      "test_published_u_file_contract",
+      "test_runtime_angle_cast_location",
+      "test_stdin_remains_context_free",
+      "test_timed_gate_rejection",
+      "test_validation_origin_file_locations"
+    ],
+    "editor_checks": {
+      "bridge-suite": [
+        "PASS: 23 frozen source-import bridge checks."
+      ],
+      "source-files-ui": [
+        "PASS: both editors check unchanged/changed/missing files; failed reimport preserves document; successful reimport is undoable."
+      ],
+      "test-composer-source-import": [
+        "PASS: three frozen composer source imports, original bytes, undo/save/reopen and standalone export equivalence."
+      ],
+      "test-classical-module-import": [
+        "PASS: two frozen QB-004 classical editor imports, expected gates and retained source bytes."
+      ]
+    },
+    "source_files_dialog_screenshots": {
+      "source-files.txt.classical.changed.png": "a6cdbb5df4614bbe077147fc5988ffae65a73fd04a12cb1ca0a2731b14e2ed89",
+      "source-files.txt.classical.minimum.png": "2a354f69a51dd1cb89ddc3cec042bcc927333276169cf2beac407d5c3fc85e2b",
+      "source-files.txt.classical.unchanged.png": "d4efb1b5ac6f68f2ddbbbe5f30f434d2dd0d857185770f0fb0c7716d0f3c81c1",
+      "source-files.txt.composer.changed.png": "a6cdbb5df4614bbe077147fc5988ffae65a73fd04a12cb1ca0a2731b14e2ed89",
+      "source-files.txt.composer.minimum.png": "2a354f69a51dd1cb89ddc3cec042bcc927333276169cf2beac407d5c3fc85e2b",
+      "source-files.txt.composer.unchanged.png": "d4efb1b5ac6f68f2ddbbbe5f30f434d2dd0d857185770f0fb0c7716d0f3c81c1"
+    }
+  }
+}

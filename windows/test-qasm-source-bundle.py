@@ -319,7 +319,7 @@ class SourceBundleTests(unittest.TestCase):
         spec.loader.exec_module(compiler)
         cases = [
             ('int ' + 'n' * 65 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
-            ('float ' + 'n' * 65 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
+            ('float ' + 'n' * 65 + ';', 0, True, 'Float variable names must fit 64 UTF-16 code units.'),
             ('int ' + '𝑎' * 33 + ';', 0, True, 'Integer variable names must fit 64 UTF-16 code units.'),
             ('int n; for int ' + 'i' * 65 + ' in [0:n] { }', 7, True,
              'Integer variable names must fit 64 UTF-16 code units.'),

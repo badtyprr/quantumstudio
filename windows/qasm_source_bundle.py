@@ -43,8 +43,8 @@ def _includes(text, name):
         following = tokens[index + 1:index + 3]
         if (len(following) != 2 or following[0].type != qasm3Lexer.StringLiteral
                 or following[1].type != qasm3Lexer.SEMICOLON):
-            raise SourceError(f"{name}:{token.line}: Expected a quoted include filename and semicolon.")
-        yield token.start, following[1].stop + 1, token.line, following[0].text[1:-1]
+            raise SourceError(f"{name}:{token.line}:{token.column + 1}: Expected a quoted include filename and semicolon.")
+        yield token.start, following[1].stop + 1, token.line, token.column, following[0].text[1:-1]
 
 
 @dataclass(frozen=True)
@@ -288,12 +288,14 @@ def capture_source(entry, *, root=None, module_headers=False):
         if not versions:
             return None
         if versions != [0] or len(tokens) < 3 or tokens[2].type != qasm3Lexer.SEMICOLON:
-            raise SourceError(f"{name}: A version header must occur once, at the start.")
+            token = tokens[versions[1] if versions[0] == 0 and len(versions) > 1 else versions[0]]
+            raise SourceError(f"{name}:{token.line}:{token.column + 1}: A version header must occur once, at the start.")
         parts = tokens[1].text.split(".")
         if not 1 <= len(parts) <= 2 or not all(part.isascii() and part.isdigit() for part in parts):
-            raise SourceError(f"{name}: Invalid OpenQASM version header.")
+            token = tokens[1]
+            raise SourceError(f"{name}:{token.line}:{token.column + 1}: Invalid OpenQASM version header.")
         version = (int(parts[0]), int(parts[1]) if len(parts) == 2 else 0)
-        return version, tokens[0].start, tokens[2].stop + 1
+        return version, tokens[0], tokens[2].stop + 1
 
     def append(name, line, text, column=0, synthetic=False):
         nonlocal expanded_bytes
@@ -338,22 +340,23 @@ def capture_source(entry, *, root=None, module_headers=False):
             if not active:
                 root_version = declaration[0] if declaration else None
             elif declaration:
-                if root_version is None or declaration[0] != root_version:
-                    raise SourceError(f"{name}: Included module version must match the entry file's explicit version.")
+                version, token, end = declaration
+                if root_version is None or version != root_version:
+                    raise SourceError(f"{name}:{token.line}:{token.column + 1}: Included module version must match the entry file's explicit version.")
                 # An explicit adapter extension for generated standalone modules.
                 # Preserve original source and line offsets in the snapshot.
-                _, start, end = declaration
+                start = token.start
                 text = text[:start] + "".join(c if c in "\r\n" else " " for c in text[start:end]) + text[end:]
         cursor = 0
         def fragment(start, end):
             append(name, text.count("\n", 0, start) + 1, text[start:end],
                    start - text.rfind("\n", 0, start) - 1)
-        for start, end, line, filename in _includes(text, name):
+        for start, end, line, include_column, filename in _includes(text, name):
             if filename in STANDARD_INCLUDES:
                 if module_headers and filename in standard_includes:
                     fragment(cursor, start)
                     append(name, line, "".join(c if c in "\r\n" else " " for c in text[start:end]),
-                           start - text.rfind("\n", 0, start) - 1)
+                           include_column)
                     cursor = end
                 standard_includes.add(filename)
                 continue
@@ -362,13 +365,12 @@ def capture_source(entry, *, root=None, module_headers=False):
             # paths, UNC paths and alternate data streams are never implicit roots.
             if (not filename or filename.startswith("/") or "\\" in filename or ":" in filename
                     or Path(filename).is_absolute() or PureWindowsPath(filename).drive):
-                raise SourceError(f"{name}:{line}: Include requires a relative filename using '/' separators.")
-            include_column = start - text.rfind("\n", 0, start) - 1
+                raise SourceError(f"{name}:{line}:{include_column + 1}: Include requires a relative filename using '/' separators.")
             append(name, line, "\n", include_column, True)
             try:
                 visit(path.parent / filename, (*active, name))
             except (OSError, SourceError) as error:
-                raise SourceError(f'{name}:{line}: include "{filename}": {error}') from error
+                raise SourceError(f'{name}:{line}:{include_column + 1}: include "{filename}": {error}') from error
             append(name, line, "\n", include_column, True)
             cursor = end
         fragment(cursor, len(text))
