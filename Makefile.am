@@ -275,7 +275,7 @@ EXTRA_DIST += docs/learning-evidence/dev17/contract.md
 EXTRA_DIST += windows/Dev17GuiTests.cs windows/test-named-subsystems-gui.ps1
 EXTRA_DIST += docs/learning-evidence/dev17/validation.md
 
-EXTRA_DIST += docs/learning-evidence/dev17/integration.md
+EXTRA_DIST += docs/learning-evidence/dev17/integration.md docs/learning-evidence/dev17/release-reconciliation.md docs/learning-evidence/dev17/release-reconciliation.json
 EXTRA_DIST += docs/learning-evidence/dev17/numeric-k-gui.md
 EXTRA_DIST += docs/learning-evidence/dev17/release-proposal.md
 EXTRA_DIST += diagnostics/dev17-unattended/KeywordGuiTests.cs \

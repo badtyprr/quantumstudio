@@ -1,5 +1,7 @@
 # Assigned numeric-k supplemental GUI acceptance
 
+Current status: the finite DEV-17 contract is released in checkpoint-c5a456cd. See the [final release reconciliation](release-reconciliation.md). Development, candidate and pending statements below record the earlier stage; whole-source acceptance remains open.
+
 This focused supplement leaves `windows/Dev17GuiTests.cs` and its wrapper
 unchanged. The existing 306 keyword checks remain, with 71 additional assertions
 (377 total expected). GUI execution against the coordinator's fresh candidate is
