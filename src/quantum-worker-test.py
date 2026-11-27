@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# Tensor columns run through the inner coordinate before changing blocks.
+tensor_rows = r"x_0 y_0\\\vdots\\x_0 y_k\\\vdots\\x_m y_0\\\vdots\\x_m y_k"
+tensor_display = r"$$\begin{pmatrix}" + tensor_rows + r"\end{pmatrix}$$"
+block = data("quantum:" + tensor_display)["copy_text"]
+for name,value in [("k","1"),("m","1"),("x_0","1"),("x_1","2"),("y_0","3"),("y_1","4")]:
+    block = f'replace(({block}),"{name}",{value})'
+assert data("quantum:" + block)["copy_text"] == "matrix(4,1,[3,4,6,8])"
+assert b"indexed column" in run("quantum:" + tensor_display.replace("x_m y_k","x_m y_j"),"--json",success=False).stderr
+
 # Printed alphabet order supplies the row and column coordinates.
 assert data("quantum:basislabels([3,1,2]):|1>")["cells"] == [["0"],["1"],["0"]]
 assert data("quantum:basislabels([1,2,3],[0,1]):<3,1|")["copy_text"] == "vector(0,0,0,0,0,1)"

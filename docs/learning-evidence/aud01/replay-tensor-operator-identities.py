@@ -100,5 +100,25 @@ for number in (245,249,252):
             expr = f'replace(replace(replace(({relation}),"U_0",[0,i;1,0]),"U_1",[0,0,{scale};1,0,0;0,1,0]),n,2)'
             assert evaluate(expr)==expected
             cases[f"unitary-{number}-scale-{scale}"] = expr,expected
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,27,
+classical = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+row = classical["rows"][151]
+relation = evaluate(row["literal"])
+cases[row["id"]] = row["literal"],relation
+rhs = "$$"+row["literal"].split("=",1)[1]
+column = evaluate(rhs)
+cases["tensor-column"] = rhs,column
+def assign_column(expression):
+    for name,value in [("m","2"),("k","3"),("α_1","2"),("α_2","i"),("β_1","5"),("β_2","7"),("β_3","11")]:
+        expression = f'replace(({expression}),"{name}",{value})'
+    return expression
+for name,expression,expected in [("tensor-column-entries",column,"matrix(6,1,[10,14,22,5i,7i,11i])"),
+                                 ("tensor-column-equality",relation,"1")]:
+    concrete = assign_column(expression)
+    assert evaluate(concrete)==expected
+    cases[name] = concrete,expected
+malformed = rhs.replace(r"\alpha_2 \beta_k",r"\alpha_1 \beta_k")
+assert malformed!=rhs
+error = subprocess.run([worker,"--json"],input=("quantum:"+malformed).encode(),capture_output=True,env=env,timeout=30)
+assert error.returncode and b"indexed column" in error.stderr
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,31,
                  dict(source_sha256=sources),sessions_only=bool(args.session_report))
