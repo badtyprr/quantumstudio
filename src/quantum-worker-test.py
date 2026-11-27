@@ -24,6 +24,10 @@ def data(expression, *flags):
     return value
 
 
+# A per-factor adjoint must conjugate and transpose the supplied operator.
+adjoints = data(r"quantum:$M_{n-1}^{\dagger}\otimes\cdots\otimes M_0^{\dagger}$")["copy_text"]
+assert data(f'quantum:replace(replace(({adjoints}),"M_0",[0,i;1,0]),n,1)')["copy_text"] == "matrix(2,2,[0,1,−i,0])"
+
 # Bind unequal state vectors before the register width. The phase and
 # its position distinguish descending from ascending tensor order.
 ket_series = data(r"quantum:$\vert \psi_{n-1}\rangle\otimes\cdots\otimes\vert \psi_0\rangle$")["copy_text"]
