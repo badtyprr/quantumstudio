@@ -24,6 +24,15 @@ def data(expression, *flags):
     return value
 
 
+# Coordinate membership does not require constructing all 4096 tuples.
+binary_domains = ",".join(["qset(vector(0,1))"]*12)
+axes = f"qcartesianseries(vector({binary_domains}),0)"
+for entry, answer in [(1,"1"),(2,"0")]:
+    coordinates = ",".join(["0"]*11+[str(entry)])
+    assert data(f"quantum:qmember(qtuple(vector({coordinates})),{axes})")["copy_text"] == answer
+outcomes = data(r"quantum:$c,d\in\Gamma$")["copy_text"]
+assert data(f'quantum:replace(replace(replace(({outcomes}),"Γ",qset(vector(3,7))),"c",7),"d",3)')["copy_text"] == "1"
+
 # A comma in a function call stays inside the basis index.
 ordered_basis = data(r"quantum:$\vert(a,c)\rangle$")["copy_text"]
 assert data(f'quantum:replace(replace(({ordered_basis}),"a",[0;i]),"c",[0;1;0])')["cells"] == [["0"],["0"],["0"],["0"],["i"],["0"]]
