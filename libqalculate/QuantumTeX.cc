@@ -807,6 +807,39 @@ std::string probabilityColumn(const std::string &source) {
  for(size_t i=0;i<ordered.size();++i) {if(i)column+="\\\\";column+=ordered[i];}
  return column+close;
 }
+// Read the same coordinate declaration at both ends of an ellipsis.
+// Every outcome subscript must agree with the alphabet subscript.
+std::string alphabetMembership(const std::string &source) {
+ static const std::regex plain(R"(\s*([a-z])(?:\s*,\s*([a-z]))?\s*\\in\s*\\(Sigma|Gamma)\s*)");
+ auto alphabet=[](const std::string &name){return name=="Sigma" ? "Σ" : "Γ";};
+ std::smatch match;
+ if(std::regex_match(source,match,plain)) {
+  const std::string domain="\""+std::string(alphabet(match[3]))+"\"";
+  auto member=[&](const std::string &label){return "qmember(\""+label+"\","+domain+")";};
+  return match[2].matched ? "("+member(match[1])+" and "+member(match[2])+")" : member(match[1]);
+ }
+ static const std::regex dots(R"(\s*,\s*\\(?:ldots|cdots)\s*,?\s*)");
+ if(!std::regex_search(source,match,dots))return "";
+ const std::string first=match.prefix(),last=match.suffix();
+ const std::string suffix=R"(_\s*(\{\s*(?:[0-9]+|[a-z](?:\s*-\s*1)?)\s*\}|[0-9a-z]))";
+ static const std::regex endpoint(R"(\s*([a-z]))"+suffix+R"((?:\s*,\s*([a-z]))"+suffix+R"()?\s*\\in\s*\\(Sigma|Gamma))"+suffix+R"(\s*)");
+ std::smatch begin,end;
+ if(!std::regex_match(first,begin,endpoint) || !std::regex_match(last,end,endpoint) ||
+    begin[1]!=end[1] || begin[3]!=end[3] || begin[5]!=end[5])return "";
+ auto index=[](const std::string &text) {
+  std::string result;for(unsigned char c:text)if(!asciiSpace(c) && c!='{' && c!='}')result+=char(c);
+  if(!result.empty() && asciiLetter(result[0]) && std::string("nxyz").find(result[0])==std::string::npos)
+   result="\""+result.substr(0,1)+"\""+result.substr(1);
+  return result;
+ };
+ const std::string lower=index(begin[6]),upper=index(end[6]);
+ if(lower.empty() || lower.find_first_not_of("0123456789")!=std::string::npos || lower!=index(begin[2]) || upper!=index(end[2]) ||
+    (begin[3].matched && (lower!=index(begin[4]) || upper!=index(end[4]))))return "";
+ const std::string range=","+lower+","+upper+",vector())";
+ const std::string domain="qcartesianseries(qindexedentries(\""+std::string(alphabet(begin[5]))+"_\""+range+",0)";
+ auto member=[&](const std::string &label){return "qmember(qindexedlist(\""+label+"_\""+range+","+domain+")";};
+ return begin[3].matched ? "("+member(begin[1])+" and "+member(begin[3])+")" : member(begin[1]);
+}
 std::string sampleArray(const std::vector<std::vector<std::string>> &cells,const std::string &horizontal,
                         const std::string &vertical,const std::string &diagonal,bool definitions) {
   const size_t height=cells.size(),width=cells[0].size();
@@ -3666,6 +3699,10 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
  }
  if(mathWrapper) {
+  if(s.find("\\in")!=std::string::npos && (s.find("\\Sigma")!=std::string::npos || s.find("\\Gamma")!=std::string::npos)) {
+   std::string declaration=alphabetMembership(s);
+   if(!declaration.empty())return declaration;
+  }
   // In the coordinate formula for a tensor product, the two one-system
   // matrix elements on the right identify the compound bra and ket as
   // ordered pairs. Standalone multi-letter state names retain their meaning.

@@ -77,13 +77,35 @@ check("factorization",bind(element),"1")
 wrong = row["literal"].replace(r"\langle a \vert M \vert b\rangle",r"\langle b \vert M \vert a\rangle")
 assert wrong!=row["literal"]
 check("reversed-first-element",bind(evaluate(wrong)["copy_text"]),"0")
+def assign(expression,assignments):
+    for name,value in assignments:
+        key = "n" if name=="n" else f'"{name}"'
+        expression = f"replace(({expression}),{key},{value})"
+    return expression
+
+domains = [("Σ_0","qset(vector(4,7))"),("Σ_1","qset(vector(2,3))")]
+labels = [("a_0","7"),("a_1","2"),("b_0","4"),("b_1","3")]
+for number in (171,343,328,329):
+    row = inventory["rows"][number-1]
+    declaration = evaluate(row["literal"])["copy_text"]
+    check(row["id"],row["literal"],declaration)
+    if number in (328,329):
+        left,right,alphabet = ("a","b","Σ") if number==328 else ("c","d","Γ")
+        given = [(left,"5"),(alphabet,"qset(vector(2,5))")]
+        check(f"allowed-{number}",assign(declaration,given+[(right,"2")]),"1")
+        check(f"excluded-{number}",assign(declaration,given+[(right,"3")]),"0")
+    else:
+        check(f"width-last-{number}",assign(declaration,domains+labels+[("n","2")]),"1")
+        check(f"width-first-{number}",assign(declaration,[("n","2")]+labels+domains),"1")
+        changed = [(key,"7" if key==("b_1" if number==343 else "a_1") else value) for key,value in labels]
+        check(f"wrong-axis-{number}",assign(declaration,domains+changed+[("n","2")]),"0")
 details = dict(source_sha256=sources,binary_labels_checked=1024)
 if args.session_report:
     result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
     records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
     inputs = json.loads((args.windows/"inputs.json").read_bytes())
     assert inputs==[[key,expr,"0"] for key,(expr,_) in cases.items()]
-    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==14
+    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==28
     for (key,(expr,expected)),record in zip(cases.items(),records):
         session = json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
         assert session["Expression"]==expr and session["Mode"]==0
@@ -94,4 +116,4 @@ if args.session_report:
                   windows_sessions=len(records),windows_checks=result["checks"],clipboard_verified=False)
     args.session_report.write_text(json.dumps(report,indent=2)+"\n","utf8")
 else:
-    clipboard_checks(worker,args.windows,args.report,cases,14,details)
+    clipboard_checks(worker,args.windows,args.report,cases,28,details)

@@ -116,6 +116,9 @@ int calculateScalarProduct(MathStructure &out,const MathStructure &raw,MathFunct
 }
 // Labels passed here have already been validated and canonicalized.
 enum class SetEquality { Equal, Different, Unknown };
+bool call(const MathStructure &value,const char *name,size_t count) {
+ return value.isFunction() && value.function()->referenceName()==name && value.size()==count;
+}
 bool namedKet(const MathStructure &value) {
  return value.isFunction() && value.function()->referenceName()=="qketstate" && value.size()==1;
 }
@@ -1303,9 +1306,6 @@ void prepareFreeEntry(MathStructure &term,const MathStructure &target) {
 // Recognize the block expansion only when its matrix-unit row and column
 // indices agree with the corresponding roots and the middle factor is free.
 bool measurementBlockSum(MathStructure &out,const MathStructure &sum) {
- auto call=[](const MathStructure &value,const char *name,size_t count) {
-  return value.isFunction() && value.function()->referenceName()==name && value.size()==count;
- };
  const MathStructure &inner=sum[0];
  if(!call(inner,"qsum",4) || !sum[1].isZero() || !inner[1].isZero() ||
     !sum[2].equals(inner[2]) || sum[3].equals(inner[3]) || inner[2].contains(sum[3]) ||
@@ -1332,9 +1332,6 @@ bool measurementBlockSum(MathStructure &out,const MathStructure &sum) {
 // The generic zero-based finite sum infers a computational basis of
 // last+1 states. Retain coefficient assignments while its upper bound is free.
 bool indexedDiagonalSum(MathStructure &out,const MathStructure &sum,const MathStructure &diagonal) {
- auto call=[](const MathStructure &v,const char *name,size_t count) {
-  return v.isFunction() && v.function()->referenceName()==name && v.size()==count;
- };
  const MathStructure &term=sum[0];
  if(!sum[1].isZero() || !call(term,"qadjacent",2) || !call(term[0],"qadjacent",2))return false;
  const MathStructure &label=term[0][0],&ket=term[0][1],&bra=term[1];
@@ -2024,24 +2021,48 @@ class QuantumIndexedFunction: public MathFunction {
    if(op=="qcartesian")domains[1]=&right;
    return cartesianTuples(out,domains);
   }
-  if(op=="qcartesianseries") {
+  bool coordinateMembership=op=="qmember" && call(raw[1],"qcartesianseries",2) &&
+    (call(raw[0],"qtuple",1) || call(raw[0],"qindexedlist",4) || call(raw[0],"qreverseindexedlist",4));
+  if(op=="qcartesianseries" || coordinateMembership) {
+   const MathStructure &series=coordinateMembership ? raw[1] : raw;
    MathStructure factors;
-   if(indexedSpectralFamily(raw[0])) {
-    if(!indexedEntries(factors,raw[0],eo))return 0;
+   if(indexedSpectralFamily(series[0])) {
+    if(!indexedEntries(factors,series[0],eo))return 0;
    } else {
-    factors=raw[0];factors.eval(eo);
+    factors=series[0];factors.eval(eo);
     if(!factors.isVector())return 0;
    }
    if(factors.size()>32) {CALCULATOR->error(true,"Cartesian products support at most 32 tuple coordinates.",NULL);return 0;}
-   if(!raw[1].isZero() && !raw[1].isOne()) {CALCULATOR->error(true,"Cartesian index order must be zero or one.",NULL);return 0;}
+   if(!series[1].isZero() && !series[1].isOne()) {CALCULATOR->error(true,"Cartesian index order must be zero or one.",NULL);return 0;}
    std::vector<MathStructure> sets(factors.size());
    std::vector<const MathStructure*> domains;
    for(size_t k=0;k<factors.size();++k) {
-    const size_t axis=raw[1].isOne() ? factors.size()-1-k : k;
+    const size_t axis=series[1].isOne() ? factors.size()-1-k : k;
     const DomainState state=finiteDomain(factors[axis],sets[k],eo);
     if(state==DomainState::Invalid) {CALCULATOR->error(true,"Cartesian factors must be finite sets of at most 1024 valid entries.",NULL);return 0;}
     if(state==DomainState::Pending)return 0;
     domains.push_back(&sets[k]);
+   }
+   if(coordinateMembership) {
+    // A tuple belongs to a product exactly when each coordinate belongs
+    // to its own alphabet. The full product may be too large to build.
+    MathStructure tuple=raw[0];tuple.eval(eo);
+    if(!call(tuple,"qtuple",1) || !tuple[0].isVector())return 0;
+    if(tuple[0].size()!=sets.size()) {out=m_zero;return 1;}
+    bool pending=false;
+    for(size_t k=0;k<sets.size();++k) {
+     bool match=false,unknown=false;
+     for(size_t j=0;j<sets[k].size();++j) {
+      if(CALCULATOR->aborted())return 0;
+      SetEquality relation=setEquality(tuple[0][k],sets[k][j]);
+      if(relation==SetEquality::Equal) {match=true;break;}
+      unknown=unknown || relation==SetEquality::Unknown;
+     }
+     if(!match && !unknown) {out=m_zero;return 1;}
+     pending=pending || !match;
+    }
+    if(pending)return 0;
+    out=m_one;return 1;
    }
    return cartesianTuples(out,domains);
   }
