@@ -1,0 +1,9 @@
+{
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "source_sha256": "2e7d0842cbf9f1d426ed3fda184de58f5d3459956867f9d9dc6ab2d75f4bd6ae",
+  "source_cell": 8,
+  "register_qubits": 4,
+  "windows_sessions": 36,
+  "clipboard_verified": false,
+  "windows_checks": 324
+}
