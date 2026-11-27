@@ -2452,6 +2452,31 @@ class TeXReader {
    if(pos<input.size() && input[pos]=='[') { ++pos; index=read(']'); }
    auto a=argument(); return index.empty() ? "sqrt("+a+")" : "(("+a+")^(1/("+index+")))";
   }
+  if(name=="lim") {
+   space();
+   if(input.compare(pos,7,"\\limits")==0) {pos+=7;space();}
+   if(pos==input.size() || input[pos++]!='_')throw std::runtime_error(error("A limit requires an approach such as x\\to 0"));
+   std::string approach=group();
+   const std::string arrow="→";
+   const size_t split=approach.find(arrow);
+   if(split==std::string::npos || approach.find(arrow,split+arrow.size())!=std::string::npos)
+    throw std::runtime_error(error("A limit requires one approach arrow"));
+   const std::string variable=trim(approach.substr(0,split));
+   std::string point=trim(approach.substr(split+arrow.size()));
+   static const std::regex oneSided(R"(\^\s*(?:\(\s*([+-])\s*\)|([+-]))\s*$)");
+   std::smatch side;
+   std::string direction="0";
+   if(std::regex_search(point,side,oneSided)) {
+    direction=(side[1].matched ? side[1].str() : side[2].str())=="+" ? "1" : "-1";
+    point=trim(side.prefix().str());
+   }
+   if(variable.size()!=1 || !asciiLetter(variable.front()) || point.empty())
+    throw std::runtime_error(error("A limit requires a variable and an approach point"));
+   space();
+   if(pos==input.size())throw std::runtime_error(error("Missing limit body"));
+   const std::string args=point+","+direction+","+variable;
+   return input[pos]=='{' ? "qtexgrouplimit("+args+","+group()+")" : "qtexlimit("+args+") ";
+  }
   if(name=="sum" || name=="prod" || name=="bigotimes" || name=="bigoplus") {
    space(); if(input.compare(pos,7,"\\limits")==0) pos+=7;
    std::string lower, upper;
