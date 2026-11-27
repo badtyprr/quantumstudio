@@ -6,7 +6,7 @@ The public English course and module directories showed the same 15 course and 1
 
 ## Resource queue
 
-ibm-resource-inventory.json lists 1,718 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
+ibm-resource-inventory.json lists 1,752 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
 
 | Resource | Targets |
 | --- | ---: |
@@ -21,15 +21,15 @@ ibm-resource-inventory.json lists 1,718 typed targets. Each target has an ID der
 | Solutions within numbered exercises | 3 |
 | Expandable answers, hints and practice questions | 178 |
 | Expandable readings | 19 |
-| Reference | 574 |
-| Tutorial | 15 |
+| Reference | 606 |
+| Tutorial | 17 |
 | Video | 106 |
 
 The ten code cells retain explicit learner markers. Several already contain IBM's solution, including the XX, HH and HZH circuits. Each cell has one target even when the marker appears on several lines. The first thirteen prose paragraphs explicitly assign independent work, including a commutator calculation, a channel check and five parts of the utility-scale simulation. Fourteen additional paragraphs ask learners to carry out a specific task, including constructing a teleportation circuit, trying different kernel feature maps, and deriving a measurement identity. Their resource IDs use the notebook cell and a digest of the paragraph, so earlier assignments retain their IDs. A prompt and its solution cell can be separate targets. Additional exercise wording and external resources remain under review.
 
 Nine numbered section headings identify exercises, including a QFT calculation and a second-order Suzuki–Trotter simulation. Its four tasks cover circuit construction, evolution, plotting and comparison with exact results. Three solution sections are indexed under the phase-estimation and variational exercises. Practice detection covers explicit exercise headings and all 197 expandable panels in this revision. Panels include 171 answer keys, two sets of hints, one guidance panel, four questions named in their titles, and 19 supplementary readings. Each panel has a source location and a separate audit task. A question heading and its answer panel can belong to the same exercise. A prose question without a label may require manual inventory. The queue includes the 69 distinct IBM video IDs, external video links, overview pages, assessment pages and launch destinations, notebook sources, illustrations and tutorial links. Ordinary links remain reference-review tasks. External destinations, authenticated assessment content, playback and exercises still require source-specific acceptance.
 
-To rebuild, run fetch-learning-resources.py with a cache directory. Run inventory-learning-resources.py with that directory and an output JSON path using Python and markdown-it-py 3.0.0. The fetcher defaults to this immutable revision and verifies every expected blob. The generator skips fenced code and indexes prose inside MDX components. The public URL observations are recorded separately from repository content.
+To rebuild, run fetch-learning-resources.py with a cache directory. Run inventory-learning-resources.py with that directory and an output JSON path using Python with markdown-it-py 3.0.0, linkify-it-py 2.0.3 and uc-micro-py 1.0.3. The fetcher defaults to this immutable revision and verifies every expected blob. The generator skips fenced code and indexes prose inside MDX components. The public URL observations are recorded separately from repository content.
 
 ## Runtime API change checks
 
@@ -63,3 +63,24 @@ On published checkpoint `c5a456cd`, the XY4 exercise in cell 24 gave 1 for `Y*X*
 ### CNOT twirling exercise
 
 Cell 26 of the error-suppression notebook asks for a second sequence that preserves CNOT. With the control as the first tensor factor, the supplied answer puts Z on the target before CNOT and Z on both wires afterward. The worker returned 1 for `qtensor(Z,Z)*CNOT*qtensor(I,Z) = CNOT`. It also returned 1 for the worked fourth panel, `qtensor(Y,Z)*CNOT*qtensor(X,Y) = CNOT`. Omitting the final control Z gave 0 for `qtensor(I,Z)*CNOT*qtensor(I,Z) = CNOT`: the two amplitudes with control 1 changed sign. These exact matrix comparisons cover all input states on candidate `897b5681`. [Pinned exercise and answers](https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/tools-for-quantum-advantage/error-suppression.ipynb).
+
+### Web addresses in lesson prose
+
+The generator also recognizes explicit web addresses written as ordinary text.
+This recovered 32 references and two tutorials, including the Rustworkx
+betweenness-centrality exercise and Quantinuum's Fe4N2 example. All 43 added
+source locations were checked against the literal addresses in 13 pinned files.
+The registry records where learners encounter each address and the follow-up
+task for its resource type. The Rustworkx tutorial passed all four original code blocks. An independent NetworkX calculation matched all 48 node scores on the 63-edge lattice, and all three graph drawings rendered. [Rustworkx execution evidence](rustworkx-centrality-replay.json).
+
+The VQE lesson links to Quantinuum's Fe4N2 tutorial. Its original host failed
+certificate validation. The current [publisher page](https://docs.quantinuum.com/inquanto/tutorials/InQ_tut_fe4n2_2.html)
+provides the six-qubit circuit and seven optimized parameter values. The native
+worker ran all 311 gates, including 59 controlled-X gates. All 64 outcome
+frequencies in each of the X, Y and Z bases agreed with pytket statevector
+probabilities within the recorded sampling tolerance. An independently synthesized inverse state preparation returned all six wires to zero on 100,000 shots. Inserting an X gate on the first wire gave zero all-zero outcomes in the control run. Reproducing the
+optimization requires InQuanto and the Hamiltonian, state and space generated
+by the preceding chemistry tutorial. [Circuit replay](fe4n2-circuit-replay.json) ·
+[Publisher installation guide](https://docs.quantinuum.com/inquanto/introduction/installation.html).
+
+To repeat the circuit checks, give the [replay script](replay-fe4n2-circuit.py) the saved publisher HTML and the path to the packaged quantum-worker.exe. The script checks the source digest before reading the circuit. Use an environment with NumPy, pytket and Qiskit.
