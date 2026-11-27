@@ -104,5 +104,6 @@
   },
   "windows_sessions": 144,
   "clipboard_verified": false,
-  "windows_checks": 1296
+  "windows_checks": 1296,
+  "forward_kickback_checks": 128
 }
