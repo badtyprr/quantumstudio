@@ -1,0 +1,100 @@
+{
+  "release": "checkpoint-c5a456cd",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "source_total": 117,
+  "source_exact": 96,
+  "source_stable": 82,
+  "source_rejected": [
+    2,
+    6,
+    7,
+    13,
+    14,
+    15,
+    18,
+    31,
+    36,
+    37,
+    38,
+    51,
+    52,
+    56,
+    69,
+    76,
+    80,
+    81,
+    82,
+    88,
+    91
+  ],
+  "source_changed_on_reentry": [
+    8,
+    20,
+    48,
+    49,
+    53,
+    55,
+    64,
+    67,
+    70,
+    97,
+    100,
+    102,
+    110,
+    111
+  ],
+  "bound_by_row": {
+    "M020": {
+      "passed": 8
+    },
+    "M031": {
+      "source rejected": 32
+    },
+    "M037": {
+      "source rejected": 4
+    },
+    "M039": {
+      "passed": 32
+    },
+    "M048": {
+      "evaluation rejected": 60
+    },
+    "M049": {
+      "different result": 4
+    },
+    "M051": {
+      "source rejected": 60
+    },
+    "M053": {
+      "evaluation rejected": 8
+    },
+    "M055": {
+      "different result": 4
+    },
+    "M070": {
+      "evaluation rejected": 56
+    },
+    "M085": {
+      "passed": 10
+    },
+    "M089": {
+      "passed": 10
+    },
+    "M100": {
+      "different result": 4
+    },
+    "M102": {
+      "evaluation rejected": 60
+    },
+    "M110": {
+      "different result": 4
+    }
+  },
+  "bound_totals": {
+    "source rejected": 96,
+    "passed": 60,
+    "evaluation rejected": 184,
+    "different result": 16
+  }
+}
