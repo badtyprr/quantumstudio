@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "id": "qb012",
+  "route": "notebook",
+  "profile": "transpiler-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler_braket_qiskit.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+    "cells": [
+      {
+        "index": 0,
+        "type": "code",
+        "sha256": "a3ffcc3e5ea32c08c79d021194b4d95091af5b62f0b0a256d42f53dc42ec642e"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "2cd0cc52dae359f5fc0b20d6789b7ea99767296b7c8a0189c9ef75d4af7442ad"
+      },
+      {
+        "index": 2,
+        "type": "code",
+        "sha256": "62f5ff3b72c77ceaac7c6609fb026c2f304909d4326a99674b41e3e0b81749cd"
+      },
+      {
+        "index": 3,
+        "type": "markdown",
+        "sha256": "439caaae4e55a4012490ac81cc746a1889bd7a44d866dd422a3003dd0cfffe27"
+      },
+      {
+        "index": 4,
+        "type": "code",
+        "sha256": "66851bf87d70bca690117aa342fc56fde79b1c440b3356980c1cbe47526c3579"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "e275067a2d9d843207e49a9f27a4cb7ffc883d4e9362f3b2258f7221df49387e"
+      },
+      {
+        "index": 6,
+        "type": "code",
+        "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec"
+      },
+      {
+        "index": 7,
+        "type": "markdown",
+        "sha256": "3a162c6d477485f5593c2362ebcdc1cf3c70684a054141efce91a035488fb70a"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "a5fd5095d173009c2b83965714826170d9d1d9e3d6bcfc646859755175b4723a"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "26855d46367e2980cedaf7faf5995aa4cbe71fda08a044a5786ec88f012a1c34"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "2d6fae148a74013ca475071db5275652cc214c9ef0a8c418a109064a78cb278d"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "9344e64008cb61cdfe9f882c8f430371c9953399f7663b8c47f1b8bc0e0c93ea"
+      },
+      {
+        "index": 12,
+        "type": "code",
+        "sha256": "66c506ae281f7b483f41ef540aad1aae370c967d28870fc8bf844a7a19b302ec"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    0,
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb012.py",
+    "sha256": "8726353b3c6484ff4ff5cff998a1bb3f32241bdae4a443da7482ec9b368c2776"
+  },
+  "post_cell_observers": [
+    {
+      "after_original_index": 5,
+      "role": "postcell-observer",
+      "path": "observers/qb012_routes.py",
+      "sha256": "3d1f171e44dcb1f0735377b5cc326173c6b15a13f520a3bc8e25f57826b16d84"
+    },
+    {
+      "after_original_index": 6,
+      "role": "postcell-observer",
+      "path": "observers/qb012_first_operator.py",
+      "sha256": "834a99040de00e4af06c02b11f9ab1e56e59b4942adf26df9d75503dcd6a691c"
+    }
+  ],
+  "required_images": [
+    2,
+    11
+  ],
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "external_requirements": []
+}
