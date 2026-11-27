@@ -1,0 +1,24 @@
+{
+  "compiler_sha256": "f31f5aed1cb1543403525229285335962c836c94047e34afece5979e6da5dc6a",
+  "comparison_staged_compiler_sha256": "60a4aaa1de322675c6ee428213706b4fe0344706a634dd4321473b4ff867b1a3",
+  "examples": [
+    {
+      "dependency_line_2": "OPENQASM 3; /* π */ include \"outer.inc\";",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc:2: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:21: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:21: include \"outer.inc\": Include cycle: main.qasm -> nested κ/outer.inc -> nested κ/leaf.inc -> nested κ/outer.inc"
+    },
+    {
+      "dependency_line_2": "  OPENQASM 2;",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc: Included module version must match the entry file's explicit version.",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:3: Included module version must match the entry file's explicit version.",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:3: Included module version must match the entry file's explicit version."
+    },
+    {
+      "dependency_line_2": "OPENQASM 3; OPENQASM 3;",
+      "earlier_staged_compiler": "main.qasm:1: include \"nested κ/outer.inc\": nested κ/outer.inc:2: include \"leaf.inc\": nested κ/leaf.inc: A version header must occur once, at the start.",
+      "source": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:13: A version header must occur once, at the start.",
+      "frozen": "main.qasm:1:13: include \"nested κ/outer.inc\": nested κ/outer.inc:2:4: include \"leaf.inc\": nested κ/leaf.inc:2:13: A version header must occur once, at the start."
+    }
+  ]
+}

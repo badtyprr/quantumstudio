@@ -72,6 +72,27 @@ class FileImportTests(unittest.TestCase):
             self.assertIn("nested κ/helper.inc:2:18:", message)
             self.assertIn("Unexpected token", message)
 
+    def test_nested_include_and_module_header_coordinates(self):
+        main = self.put("main.qasm", 'OPENQASM 3; include "nested κ/outer.inc";')
+        self.put("nested κ/outer.inc", '// module\r\n   include "leaf.inc";')
+        cases = [
+            ('OPENQASM 3; /* π */ include "missing.inc";', 21, 'include "missing.inc"'),
+            ('OPENQASM 3; /* π */ include "outer.inc";', 21, 'Include cycle'),
+            ('OPENQASM 3; /* π */ include "/outside.inc";', 21, 'relative filename'),
+            ('OPENQASM 3; /* π */ include "file.inc"', 21, 'quoted include filename'),
+            ('  OPENQASM 2;', 3, 'Included module version'),
+            ('OPENQASM 3; OPENQASM 3;', 13, 'version header must occur once'),
+        ]
+        for body, column, detail in cases:
+            self.put("nested κ/leaf.inc", "// leaf\r\n" + body)
+            for command in COMMANDS:
+                with self.subTest(body=body, command=command):
+                    error = self.run_import(command, ["--module-headers", "--source-file", str(main)], success=False)
+                    self.assertIn('main.qasm:1:13: include "nested κ/outer.inc"', error)
+                    self.assertIn('nested κ/outer.inc:2:4: include "leaf.inc"', error)
+                    self.assertIn(f'nested κ/leaf.inc:2:{column}:', error)
+                    self.assertIn(detail, error)
+
     def test_dependency_lowering_diagnostics(self):
         cases = [
             ('qubit[26] q;', 'Classical circuits support', 'qubit'),
