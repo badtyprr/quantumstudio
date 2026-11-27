@@ -14,6 +14,7 @@
 #include <flint/qqbar.h>
 #endif
 #endif
+#include <algorithm>
 #include <array>
 namespace {
 #if defined(HAVE_FLINT) && __FLINT_RELEASE >= 30000
@@ -168,36 +169,30 @@ bool polynomialSymbols(const MathStructure &term,const MathStructure *&variable)
 // Positive-coefficient monomials in up to three independent input sizes.
 // On positive input sizes, roots and rational powers have exact growth exponents.
 using CostPowers = std::array<Number,3>;
-bool costPowers(const MathStructure &factor,CostPowers &powers,std::vector<std::string> &axes,const Number &scale) {
+template<class AddFactor>
+bool costPowers(const MathStructure &factor,CostPowers &powers,const AddFactor &addFactor,const Number &scale) {
  const std::string operation=factor.isFunction() ? factor.function()->referenceName() : "";
  if(factor.isMultiplication() || operation=="qmul") {
-  for(size_t i=0;i<factor.size();++i)if(!costPowers(factor[i],powers,axes,scale))return false;
+  for(size_t i=0;i<factor.size();++i)if(!costPowers(factor[i],powers,addFactor,scale))return false;
   return true;
  }
  if(factor.isNumber())
   return factor.number().isRational() && !factor.number().isApproximate() && factor.number().isPositive();
- if(operation=="qsqrt")return costPowers(factor[0],powers,axes,scale/Number(2));
+ if(operation=="qsqrt")return costPowers(factor[0],powers,addFactor,scale/Number(2));
  if(factor.isPower() || operation=="qpower") {
   if(!factor[1].isNumber())return false;
   const Number &exponent=factor[1].number();
   if(!exponent.isRational() || exponent.isNegative() || exponent.isApproximate())return false;
-  return costPowers(factor[0],powers,axes,scale*exponent);
+  return costPowers(factor[0],powers,addFactor,scale*exponent);
  }
- if(!factor.isUnknown())return false;
- const std::string &name=factor.isSymbolic() ? factor.symbol() : factor.variable()->referenceName();
- if(name.size()!=1 || std::string("nmkN").find(name)==std::string::npos)return false;
- size_t axis=0;
- while(axis<axes.size() && axes[axis]!=name)++axis;
- if(axis==powers.size())return false;
- if(axis==axes.size())axes.push_back(name);
- powers[axis]+=scale;
- return true;
+ return addFactor(factor,powers,scale);
 }
-bool costSupport(const MathStructure &polynomial,std::vector<CostPowers> &terms,std::vector<std::string> &axes) {
+template<class AddFactor>
+bool costSupport(const MathStructure &polynomial,std::vector<CostPowers> &terms,const AddFactor &addFactor) {
  if(polynomial.isZero())return true;
  for(size_t i=0;i<(polynomial.isAddition() ? polynomial.size() : 1);++i) {
   CostPowers powers{};
-  if(!costPowers(polynomial.isAddition() ? polynomial[i] : polynomial,powers,axes,Number(1)))return false;
+  if(!costPowers(polynomial.isAddition() ? polynomial[i] : polynomial,powers,addFactor,Number(1)))return false;
   terms.push_back(powers);
  }
  return true;
@@ -217,7 +212,18 @@ bool restrictCostWeights(const Number &x,const Number &y,Number &low,Number &hig
 bool multivariateCostBound(MathStructure &out,const MathStructure &cost,const MathStructure &bound) {
  std::vector<CostPowers> numerator,denominator;
  std::vector<std::string> axes;
- if(!costSupport(cost,numerator,axes) || !costSupport(bound,denominator,axes))return false;
+ auto addAxis=[&](const MathStructure &factor,CostPowers &powers,const Number &scale) {
+  if(!factor.isUnknown())return false;
+  const std::string &name=factor.isSymbolic() ? factor.symbol() : factor.variable()->referenceName();
+  if(name.size()!=1 || std::string("nmkN").find(name)==std::string::npos)return false;
+  size_t axis=0;
+  while(axis<axes.size() && axes[axis]!=name)++axis;
+  if(axis==powers.size())return false;
+  if(axis==axes.size())axes.push_back(name);
+  powers[axis]+=scale;
+  return true;
+ };
+ if(!costSupport(cost,numerator,addAxis) || !costSupport(bound,denominator,addAxis))return false;
  for(const auto &a:numerator) {
   // A separating weight makes this monomial grow faster than every
   // denominator monomial along (floor(t^x),floor(t),floor(t^z)).
@@ -249,6 +255,29 @@ bool multivariateCostBound(MathStructure &out,const MathStructure &cost,const Ma
 bool polynomialCostBound(MathStructure &out,MathStructure cost,MathStructure bound,const EvaluationOptions &eo) {
  EvaluationOptions exact=eo;exact.approximation=APPROXIMATION_EXACT;
  cost.eval(exact);bound.eval(exact);
+ MathFunction *length=CALCULATOR->getFunction("qbitlength");
+ if(cost.containsFunction(length) || bound.containsFunction(length)) {
+  const MathStructure *input=NULL;
+  auto addLength=[&](const MathStructure &factor,CostPowers &powers,const Number &scale) {
+   const MathStructure *atom=&factor;
+   size_t depth=0;
+   while(atom->isFunction() && atom->function()==length && atom->size()==1) {
+    if(++depth==powers.size())return false;
+    atom=&(*atom)[0];
+   }
+   if(!atom->isUnknown() || (input && !atom->equals(*input)))return false;
+   input=atom;
+   powers[depth]+=scale;
+   return true;
+  };
+  std::vector<CostPowers> numerator,denominator;
+  if(!costSupport(cost,numerator,addLength) || !costSupport(bound,denominator,addLength))return false;
+  // Every positive power of n eventually dominates every fixed power of
+  // its bit length. The same holds between bit length and iterated bit length.
+  out=numerator.empty() || (!denominator.empty() &&
+      *std::max_element(numerator.begin(),numerator.end())<=*std::max_element(denominator.begin(),denominator.end())) ? 1 : 0;
+  return true;
+ }
  const MathStructure *variable=NULL;
  if(!polynomialSymbols(cost,variable) || !polynomialSymbols(bound,variable))return multivariateCostBound(out,cost,bound);
  if((!cost.isZero() && !cost.isRationalPolynomial()) || (!bound.isZero() && !bound.isRationalPolynomial()))return multivariateCostBound(out,cost,bound);
