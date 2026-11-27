@@ -24,7 +24,19 @@ def data(expression, *flags):
     return value
 
 
-# Grouped Cartesian sums bind both coordinates only inside their body.
+# Keep the square root of a product of projection sums until both states
+# are known, even when the dimensions were supplied first.
+def squared_projection_sum(state, width):
+    projection = f'qmul(qdag(qketstate("k")),qnamedket("{state}"))'
+    domain = "qset(vector("+",".join(map(str,range(width)))+"))"
+    return f'qsumset(qpower(qbars({projection}),2),{domain},"k")'
+
+left_sum = squared_projection_sum("φ",2)
+right_sum = squared_projection_sum("ψ",3)
+deferred_root = data(f"quantum:qsqrt(qadjacent({left_sum},{right_sum}))")["copy_text"]
+assert data(f'quantum:replace(replace(({deferred_root}),"φ",[0;2*i]),"ψ",[0;0;3])')["copy_text"] == "6"
+
+# Each Cartesian coordinate ranges over its own finite set.
 pair_sum = data(r"quantum:$\sum_{(a,b)\in\Sigma\times\Gamma}{10a+b}$")["copy_text"]
 assert data(f'quantum:replace(replace(({pair_sum}),"Σ",qset(vector(3,5))),"Γ",qset(vector(2,7,8)))')["copy_text"] == "274"
 assert b"distinct coordinate" in run(r"quantum:$\sum_{(a,a)\in\Sigma\times\Gamma}{a}$","--json",success=False).stderr

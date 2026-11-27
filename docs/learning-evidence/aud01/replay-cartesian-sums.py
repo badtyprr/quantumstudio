@@ -52,6 +52,17 @@ for lesson, numbers in (("041",(91,131,229)),("042",(31,104,106,166,168,169,170)
         column = "["+";".join(values)+"]"
         if n==31:
             check(row["id"]+"-factors",bind(copied,[("φ","[0;i]"),("ψ","[1;0;0]")]+domains),"1")
+            deferred = evaluate(bind(copied,domains))
+            check(row["id"]+"-domains-first",bind(copied,domains),deferred)
+            check(row["id"]+"-deferred-copy",deferred,deferred)
+            states = [("φ","[0;2*i]"),("ψ","[1;0;1]")]
+            check(row["id"]+"-scaled",bind(deferred,states),"1")
+            # Change only the last equality. Nonunit factors distinguish
+            # computing the norms from assuming every named state is a unit.
+            left,marker,right = row["literal"].rpartition("& =")
+            assert marker
+            wrong = evaluate(left+marker+"2 "+right)
+            check(row["id"]+"-wrong-norm",bind(evaluate(bind(wrong,domains)),states),"0")
             continue
         concrete = evaluate(bind(copied,domains))
         if n in (91,166):
@@ -60,10 +71,9 @@ for lesson, numbers in (("041",(91,131,229)),("042",(31,104,106,166,168,169,170)
             name = "pi" if n==229 else "ψ"
             check(row["id"]+"-match",bind(concrete,assignments+[(name,column)]),"1")
             check(row["id"]+"-reverse",bind(concrete,assignments+[(name,"["+";".join(reversed(values))+"]")]),"0")
-        elif n in (31,131):
+        elif n==131:
             factors = [("φ","[0;i]"),("ψ","[1;0;0]")]
-            if n==131:
-                factors += [("α_0","0"),("α_1","i"),("β_0","1"),("β_1","0"),("β_2","0")]
+            factors += [("α_0","0"),("α_1","i"),("β_0","1"),("β_1","0"),("β_2","0")]
             check(row["id"]+"-factors",bind(concrete,factors),"1")
         elif n==106:
             check(row["id"]+"-unit",bind(concrete,assignments),"1")
@@ -76,4 +86,4 @@ for lesson, numbers in (("041",(91,131,229)),("042",(31,104,106,166,168,169,170)
 sparse = evaluate(r"$\sum_{(a,b)\in\Sigma\times\Gamma}{10a+b}$")
 check("nonconsecutive",bind(sparse,[("Σ","qset(vector(3,5))"),("Γ","qset(vector(2,7,8))")]),"274")
 check("empty",bind(sparse,[("Σ","qset(vector())"),domains[1]]),"0")
-clipboard_checks(worker,args.windows,args.report,cases,26,dict(source_sha256=sources))
+clipboard_checks(worker,args.windows,args.report,cases,30,dict(source_sha256=sources))
