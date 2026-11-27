@@ -357,6 +357,8 @@ those semantics when adding whole-program serialization.
 
 ### AUD-02
 
+The [retained notebook discovery](learning-evidence/DEV-13-AUD-02.md) indexes 417 code cells from 39 pinned notebooks. The November 27 recheck matched the original notebook and cell hashes. The current catalog and the whole-notebook execution results below have their own evidence.
+
 - [ ] **Complete source discovery** — P1; Pending; size M; dependencies: None.
 - Source focus: All IBM/qBraid catalogs. These are audit targets, not a claim that every page has the same gap.
 - Acceptance: Reconcile the pinned inventory with current catalogs. Inventory overviews, exams, videos, downloads, linked examples, SDK references and qBook chapters. Track access-blocked sources explicitly; a missing chapter cannot count as covered.
