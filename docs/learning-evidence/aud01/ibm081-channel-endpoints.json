@@ -1,0 +1,12 @@
+{
+  "worker_sha256": "253591bacd9de6c4333b9e5440894e0d3dee050707453f5c41bc0cb3ca5cc1cb",
+  "source_sha256": "7b09f95f2f11ea63b11b77acb937e460060ddcd787a50f65c03abc6ba60fe993",
+  "source_rows": [
+    180,
+    219,
+    226
+  ],
+  "windows_sessions": 27,
+  "clipboard_verified": false,
+  "windows_checks": 243
+}

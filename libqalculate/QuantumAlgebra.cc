@@ -1056,6 +1056,13 @@ class QuantumAlgebraFunction: public MathFunction {
    }
    out=value;return 1;
   }
+  if(op=="qchannelendpoint") {
+   MathStructure action(CALCULATOR->getFunction("qkrausapply"),&raw[0],&raw[1],NULL);
+   action.eval(eo);
+   if(!action.isMatrix())return 0;
+   out.set(CALCULATOR->getFunction("limit"),&action,&raw[3],&raw[2],&m_zero,NULL);
+   return 1;
+  }
   if(op=="qkrausapply") {
    MathStructure operators=raw[0];operators.eval(eo);
    if(!operators.isVector())return 0;
@@ -1874,6 +1881,7 @@ void registerQuantumAlgebra(Calculator &calculator) {
  calculator.addFunction(new QuantumAlgebraFunction("qwireoperatorlike",3));
  calculator.addFunction(new QuantumAlgebraFunction("qoperatorref",1));
  calculator.addFunction(new QuantumAlgebraFunction("qkrausapply",2));
+ calculator.addFunction(new QuantumAlgebraFunction("qchannelendpoint",4));
  calculator.addFunction(new QuantumAlgebraFunction("qadd",2));
  calculator.addFunction(new QuantumAlgebraFunction("qsub",2));
  for(const char *name:{"qasin","qacos","qatan","qsin","qcos","qtan"})calculator.addFunction(new QuantumAlgebraFunction(name,1));
