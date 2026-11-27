@@ -361,7 +361,8 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
   if(!token("(")) {
    static const std::string subscript=R"(_\s*(?:\{[a-zA-Z0-9+\- ]+\}|[a-zA-Z0-9]))";
    static const std::regex atom(R"((?:\\vert\s*(?:\\[a-zA-Z]+|[A-Za-z])\s*)"+subscript+
-                                R"(\s*\\rangle|[A-Za-z])"+subscript+")");
+                                R"(\s*\\rangle|[A-Za-z])"+subscript+
+                                R"((?:\s*\^\s*(?:\{\s*\\dagger\s*\}|\\dagger(?![A-Za-z])))?))");
    std::smatch m;
    if(!std::regex_search(input.cbegin()+at,input.cend(),m,atom,std::regex_constants::match_continuous))return false;
    body=m.str();at+=m.length();return true;
@@ -2665,19 +2666,15 @@ class TeXReader {
      std::string product=indexedProduct(input,pos,end,ProductSeries::ScalarSum);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
-    // An unparenthesized indexed ket or operator is also a whole factor.
-    // It can occur after an equality or inside one side of a norm.
-    if((input.compare(pos,5,"\\vert")==0 || (asciiLetter(input[pos]) && pos+1<input.size() && input[pos+1]=='_')) &&
-       input.find("\\cdots",pos)!=std::string::npos) {
-     TensorSeriesPattern series;
-     if(tensorSeriesPattern(input,pos,series)) {
-      result+="qtexgrouptensorseries("+series.first+","+series.last+","+series.index+","+series.direction+","+
-       TeXReader(series.body,false,binaryLogs,binaryWords,oracleConditions).run(nullptr)+")";
-      pos=series.end;continue;
-     }
-    }
-    if(preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='=')) {
-     size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end,alignment);
+    const bool seriesStart=preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='=');
+    // A product can also occur inside a norm, after an equality or
+    // beside another operator. Its endpoint factors must match.
+    const bool tensorFactor=input[pos]=='(' || input.compare(pos,5,"\\vert")==0 ||
+      (asciiLetter(input[pos]) && pos+1<input.size() && input[pos+1]=='_');
+    if(seriesStart || (tensorFactor && input.find("\\cdots",pos)!=std::string::npos)) {
+     size_t end=pos;
+     std::string product;
+     if(seriesStart)product=hadamardRegisterTensor(input,pos,end,alignment);
      if(product.empty()) {
       TensorSeriesPattern series;
       if(tensorSeriesPattern(input,pos,series)) {
@@ -2685,7 +2682,7 @@ class TeXReader {
         TeXReader(series.body,false,binaryLogs,binaryWords,oracleConditions).run(nullptr)+")";end=series.end;
       }
      }
-     if(product.empty())product=indexedProduct(input,pos,end);
+     if(product.empty() && seriesStart)product=indexedProduct(input,pos,end);
      if(!product.empty()) {result+=product;pos=end;continue;}
     }
    }
