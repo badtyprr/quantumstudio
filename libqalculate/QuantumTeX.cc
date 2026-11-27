@@ -3531,6 +3531,27 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
    s.replace(m.position(),m.length(),definition);
   }
  }
+ // In finite alphabet notation the word denotes the ordered coordinates
+ // of a classical state. Its symbols may belong to different alphabets.
+ if(sets && (s.find("\\cdots")!=std::string::npos || s.find("\\ldots")!=std::string::npos)) {
+  static const std::string index=R"((\{[0-9]{1,4}\}|\{[a-z]\s*[+-]\s*[0-9]{1,4}\}|[0-9a-z]))";
+  static const std::regex word(R"(^\s*([a-z])_)"+index+R"(\s*\\(?:cdots|ldots)(?![A-Za-z])\s*\1_)"+index+R"(\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,word)) {
+   auto endpoint=[](std::string v) {
+    if(v.front()=='{' && v[1]>='0' && v[1]<='9')return v.substr(1,v.size()-2);
+    return v;
+   };
+   const std::string first=endpoint(m[2]),last=endpoint(m[3]),prefix=m[1].str()+"_";
+   const bool fixedFirst=first.front()>='0' && first.front()<='9',fixedLast=last.front()>='0' && last.front()<='9';
+   if(fixedFirst || fixedLast) {
+    const bool descending=!fixedFirst || (fixedLast && std::stoi(first)>std::stoi(last));
+    const std::string result=indexedLabelRange(prefix+(descending ? last : first),prefix+(descending ? first : last),
+       descending ? "qreverseindexedlist(" : "qindexedlist(",true);
+    if(!result.empty())return result;
+   }
+  }
+ }
  if(mathWrapper && s.find("\\ldots")!=std::string::npos && s.find(',')!=std::string::npos) {
   static const std::regex list(R"(^\s*([A-Z])_([0-9])(?:\s*([A-Z])_\2)?\s*,?\s*\\ldots\s*,\s*\1_(\{[a-z]-1\})(?:\s*([A-Z])_\4)?\s*$)");
   std::smatch m;

@@ -24,6 +24,11 @@ def data(expression, *flags):
     return value
 
 
+# A word over finite alphabets preserves position and repeated symbols.
+assert data(r"quantum:sets:$a_{11}\cdots a_9$")["copy_text"] == 'qtuple(vector("a_11","a_10","a_9"))'
+assert data(r"quantum:sets:$a_1\ldots a_3$")["copy_text"] == 'qtuple(vector("a_1","a_2","a_3"))'
+run(r"quantum:sets:$a_{11}\cdots b_9$","--json",success=False)
+
 # Each overlap conjugates its bra independently, including at width one.
 overlaps = data(r"quantum:$\langle a_{n-1}\vert b_{n-1}\rangle\cdots\langle a_0\vert b_0\rangle$")["copy_text"]
 assert data(f'quantum:replace(replace(replace(({overlaps}),"a_0",[0;i]),"b_0",[0;2]),n,1)')["copy_text"] == "−2i"

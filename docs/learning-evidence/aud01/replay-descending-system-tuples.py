@@ -10,7 +10,9 @@ from learning_clipboard_checks import clipboard_checks
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
-parser.add_argument("--report", type=Path)
+reports = parser.add_mutually_exclusive_group()
+reports.add_argument("--report", type=Path)
+reports.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -54,6 +56,27 @@ for lesson, numbers in [("041", (39,41,165)), ("042", (41,87,240,251))]:
     assert evaluate(row["literal"]) == expected
     cases[row["id"]] = row["literal"], expected
 
-clipboard_checks(worker, args.windows, args.report, cases, 44,
+inventory=json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+row=inventory["rows"][41]
+word="sets:"+row["literal"]
+copied=evaluate(word)
+assert copied==evaluate(inventory["rows"][40]["literal"])==evaluate(copied)
+cases[row["id"]]=word,copied
+for early in (True,False):
+    assignments=[('"a_0"',"9"),('"a_1"','qoutcome("clubs")'),('"a_2"',"2"),('"a_3"',"9"),("n","4")]
+    expr=copied
+    for key,value in assignments if early else reversed(assignments):
+        expr=f"replace(({expr}),{key},{value})"
+    expected='qtuple(vector(9,2,qoutcome("clubs"),9))'
+    assert evaluate(expr)==expected
+    cases[f"mixed-alphabets-{early}"]=expr,expected
+ascending=r"sets:$b_1\cdots b_k$"
+expr=f'replace(({evaluate(ascending)}),"k",3)'
+expected='qtuple(vector("b_1","b_2","b_3"))'
+assert evaluate(expr)==expected
+cases["ascending-word"]=expr,expected
+clipboard_checks(worker, args.windows, args.report or args.session_report, cases, 48,
                  dict(source_sha256=hashes, original_occurrences=9,
-                      application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()))
+                      scoped_word=row["id"],
+                      application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()),
+                 sessions_only=bool(args.session_report))
