@@ -822,3 +822,6 @@ EXTRA_DIST += windows/dev13-notebooks/contracts/ibm023.json windows/dev13-notebo
 EXTRA_DIST += windows/dev13-notebooks/profiles/sympy-win-py312.json windows/dev13-notebooks/sympy-requirements.lock
 EXTRA_DIST += windows/dev13-notebooks/profiles/sympy-linux-py312.json windows/dev13-notebooks/sympy-linux-requirements.lock
 EXTRA_DIST += docs/learning-evidence/dev13/ibm023-notebook.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/ibm052.json windows/dev13-notebooks/witnesses/ibm052.py windows/dev13-notebooks/test_ibm052.py windows/dev13-notebooks/observers/ibm052_teleportation.py windows/dev13-notebooks/observers/ibm052_message.py windows/dev13-notebooks/observers/ibm052_games.py
+EXTRA_DIST += windows/dev13-notebooks/profiles/qiskit-aer-sympy-linux-py312.json windows/dev13-notebooks/qiskit-aer-sympy-linux-requirements.lock
+EXTRA_DIST += docs/learning-evidence/dev13/ibm052-notebook.json
