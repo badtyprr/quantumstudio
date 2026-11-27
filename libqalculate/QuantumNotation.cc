@@ -450,7 +450,7 @@ class Parser {
  // also contain free coefficients; quoted and declared names stay atomic.
  std::vector<std::string> texIndices;
  bool boundPair(const std::string &word,std::string &left,std::string &right) const {
-  if(word.size()!=2)return false;
+  if(word.size()!=2 || word[0]==word[1])return false;
   auto coordinate=[&](char c,std::string &value) {
    value.assign(1,c);
    if(std::find(texIndices.begin(),texIndices.end(),value)==texIndices.end())return false;
