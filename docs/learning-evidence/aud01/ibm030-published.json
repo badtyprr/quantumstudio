@@ -1,0 +1,108 @@
+{
+  "release": "checkpoint-c5a456cd",
+  "notebook_sha256": "7cd1ba3b4697d4bde922918a060234374ca4fa8137ef221d54944e6c53c24e83",
+  "slides_sha256": "02be18ffcd56ac5b9d4bd43a69180ac1330f285fc8dfc30ed5559142d04091c1",
+  "worker_sha256": "87889ec52d136d4a39c755d4aa5967d5e0bc792b19ad7e4c3ef86f91e2192c33",
+  "search_space": 128,
+  "cases": [
+    {
+      "page": 24,
+      "marked": 1,
+      "iterations": 8,
+      "probabilities": {
+        "0": "0.00781250000000000000000000000000",
+        "1": "0.0688552856445312500000000000000",
+        "2": "0.183370120823383331298828125000",
+        "8": "0.995619865694322240004564282262",
+        "12": "0.641632489064842844929005172431"
+      }
+    },
+    {
+      "page": 26,
+      "marked": 4,
+      "iterations": 4,
+      "probabilities": {
+        "0": "0.0312500000000000000000000000000",
+        "1": "0.258300781250000000000000000000",
+        "2": "0.602424621582031250000000000000",
+        "3": "0.896936535835266113281250000000",
+        "4": "0.999182315543293952941894531250",
+        "8": "0.0144530757692874489706014173862"
+      }
+    }
+  ],
+  "controlled_query_checks": 128,
+  "unique_search_table": [
+    {
+      "inputs": 2,
+      "iterations": 1,
+      "printed": ".5"
+    },
+    {
+      "inputs": 4,
+      "iterations": 1,
+      "printed": "1.0"
+    },
+    {
+      "inputs": 8,
+      "iterations": 2,
+      "printed": ".9453125"
+    },
+    {
+      "inputs": 16,
+      "iterations": 3,
+      "printed": ".9613190"
+    },
+    {
+      "inputs": 32,
+      "iterations": 4,
+      "printed": ".9991823"
+    },
+    {
+      "inputs": 64,
+      "iterations": 6,
+      "printed": ".9965857"
+    },
+    {
+      "inputs": 128,
+      "iterations": 8,
+      "printed": ".9956199"
+    },
+    {
+      "inputs": 256,
+      "iterations": 12,
+      "printed": ".9999470"
+    },
+    {
+      "inputs": 512,
+      "iterations": 17,
+      "printed": ".9994480"
+    },
+    {
+      "inputs": 1024,
+      "iterations": 25,
+      "printed": ".9994612"
+    },
+    {
+      "inputs": 2048,
+      "iterations": 35,
+      "printed": ".9999968"
+    },
+    {
+      "inputs": 4096,
+      "iterations": 50,
+      "printed": ".9999453"
+    }
+  ],
+  "printed_random_schedule": {
+    "inputs": 4,
+    "marked": 3,
+    "iterations": [
+      1
+    ],
+    "success": 0
+  },
+  "windows_sessions": 144,
+  "clipboard_verified": false,
+  "windows_checks": 1296
+}
