@@ -59,6 +59,13 @@ class SourceImportBridgeTests {
    try{history.ImportSource(QasmImport.CompileSource(entry,false,true,true),false);throw new Exception("Invalid lowering accepted.");}
    catch(InvalidDataException error){Check(error.Message.Contains("sub dir/bad \u03ba.inc:"+(i==2?5:4)+":3: "+messages[i]) && history.Serialize()==imported && history.CanUndo && history.CanRedo);}
   }
+  File.WriteAllText(bad,"// old module\r\n  OPENQASM 2;",new UTF8Encoding(true));
+  foreach(bool classical in new[]{false,true}) {
+   try{QasmImport.CompileSource(entry,false,classical,true);throw new Exception("Mismatched nested module version accepted.");}
+   catch(InvalidDataException error){
+    Check(error.Message.Contains("helper.qasm:2:1: include \"sub dir/bad \u03ba.inc\": sub dir/bad \u03ba.inc:2:3: Included module version"));
+   }
+  }
   history.Redo();Check(history.Serialize()==edited);history.Undo();Check(history.Serialize()==imported);
   Console.WriteLine("PASS: "+checks+" frozen source-import bridge checks.");
  }
