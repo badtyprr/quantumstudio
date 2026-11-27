@@ -358,7 +358,14 @@ bool tensorSeriesPattern(const std::string &input,size_t start,TensorSeriesPatte
  auto factor=[&](std::string &body) {
   space();
   for(const auto *size:{"\\left","\\bigl","\\Bigl","\\biggl","\\Biggl"})if(token(size))break;
-  if(!token("("))return false;
+  if(!token("(")) {
+   static const std::string subscript=R"(_\s*(?:\{[a-zA-Z0-9+\- ]+\}|[a-zA-Z0-9]))";
+   static const std::regex atom(R"((?:\\vert\s*(?:\\[a-zA-Z]+|[A-Za-z])\s*)"+subscript+
+                                R"(\s*\\rangle|[A-Za-z])"+subscript+")");
+   std::smatch m;
+   if(!std::regex_search(input.cbegin()+at,input.cend(),m,atom,std::regex_constants::match_continuous))return false;
+   body=m.str();at+=m.length();return true;
+  }
   size_t begin=at;unsigned depth=1;char quote=0;
   while(at<input.size()) {
    char c=input[at++];
@@ -2657,6 +2664,17 @@ class TeXReader {
      size_t end=pos;
      std::string product=indexedProduct(input,pos,end,ProductSeries::ScalarSum);
      if(!product.empty()) {result+=product;pos=end;continue;}
+    }
+    // An unparenthesized indexed ket or operator is also a whole factor.
+    // It can occur after an equality or inside one side of a norm.
+    if((input.compare(pos,5,"\\vert")==0 || (asciiLetter(input[pos]) && pos+1<input.size() && input[pos+1]=='_')) &&
+       input.find("\\cdots",pos)!=std::string::npos) {
+     TensorSeriesPattern series;
+     if(tensorSeriesPattern(input,pos,series)) {
+      result+="qtexgrouptensorseries("+series.first+","+series.last+","+series.index+","+series.direction+","+
+       TeXReader(series.body,false,binaryLogs,binaryWords,oracleConditions).run(nullptr)+")";
+      pos=series.end;continue;
+     }
     }
     if(preceding.empty() || preceding.back()==',' || (binaryWords && alignment && preceding.back()=='=')) {
      size_t end=pos;std::string product=hadamardRegisterTensor(input,pos,end,alignment);

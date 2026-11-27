@@ -1730,6 +1730,9 @@ class QuantumAlgebraFunction: public MathFunction {
     if(unequalKnownDimensions(columns,m_one))CALCULATOR->error(true,"norm and normalize require a column ket.",NULL);
     return 0;
    }
+   // A tensor of named kets is a column even before its dimension is known.
+   // Retain its normalization constraint until the states are supplied.
+   if(a.isFunction() && a.function()->referenceName()=="qtensor" && stateActionOperand(a,eo))return 0;
    // A weighted sum of kets may have no known dimension until its domain
    // is bound. Keep the operation so the resulting column is checked then.
    if(a.isFunction() && unresolvedMatrixOperand(a)) {

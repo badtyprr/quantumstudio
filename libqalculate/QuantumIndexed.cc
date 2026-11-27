@@ -2263,6 +2263,9 @@ class QuantumIndexedFunction: public MathFunction {
   }
   if(op=="qindexedket") {
    MathStructure label=raw[0];label.eval(eo);
+   if(label.isMatrix()) {
+    out.set(CALCULATOR->getFunction("qketstate"),&label,NULL);out.eval(eo);return 1;
+   }
    if(!label.isSymbolic())return 0;
    out.set(CALCULATOR->getFunction("qnamedket"),&label,NULL);out.eval(eo);return 1;
   }
