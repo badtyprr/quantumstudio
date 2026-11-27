@@ -40,7 +40,8 @@ assigned_exercise = re.compile(
 )
 learner_prompt = re.compile(
     r"(?:^|(?<=[.!?])\s+)(?:Try\b(?!\s+(?:to avoid|the questions below)\b)|"
-    r"See if you can\b|Can you (?:find|come up with)\b)"
+    r"(?:Verify|Show|Prove) that\b|(?:Then )?[Yy]our task is to\b|"
+    r"See if you can\b|Can you\b)"
 )
 def add(kind,target,cell):
     key=kind+"\n"+target

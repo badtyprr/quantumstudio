@@ -6,7 +6,7 @@ The public English course and module directories showed the same 15 course and 1
 
 ## Resource queue
 
-ibm-resource-inventory.json lists 1,696 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
+ibm-resource-inventory.json lists 1,718 typed targets. Each target has an ID derived from its type and address, references to its source files and zero-based notebook cells, and an audit task for its type. A zero cell for MDX or navigation JSON denotes the whole file. The origins array supplies source paths and digests. Notebook targets beginning with github: identify repository paths at the inventory revision. IBM video targets retain the component's video ID. Targets may have more than one source.
 
 | Resource | Targets |
 | --- | ---: |
@@ -16,7 +16,7 @@ ibm-resource-inventory.json lists 1,696 typed targets. Each target has an ID der
 | Overview | 19 |
 | Practice headings | 148 |
 | Code cells marked for the learner | 10 |
-| Practice assigned in ordinary paragraphs | 27 |
+| Practice assigned in ordinary paragraphs | 49 |
 | Tasks within numbered exercises | 4 |
 | Solutions within numbered exercises | 3 |
 | Expandable answers, hints and practice questions | 178 |
@@ -53,6 +53,12 @@ The [supplementary registry](ibm-notebook-metadata.json) covers all 140 notebook
 | [IBM-101](https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/variational-algorithm-design/variational-algorithms.ipynb) | 6 | 0 |
 
 For each glossary entry, check its definition and replay embedded mathematical examples. Two computational-basis examples already have [Windows re-entry evidence](../IBM-090.md). For IBM-098, check the notation and spoken descriptions against the corresponding encoding, normalization and tensor-product examples. These are discovery records. Each source row tracks its own acceptance.
+
+### Verification prompts
+
+The November 27 pass found 22 further learner prompts across 11 notebooks. These include verifying channel completeness, identifying an oracle from measurements, decrypting a short message with different keys, and proving individual gate identities. Each prompt has a content-derived identifier and a source-cell location. Regenerating the inventory preserved all 1,696 prior resource records. A numbered instruction in Shor's factoring procedure to check a modular condition was reviewed as an algorithm step.
+
+On published checkpoint `c5a456cd`, the XY4 exercise in cell 24 gave 1 for `Y*X*Y*X==-I`, 0 for equality with the positive identity, and 0 for `Y*X*Y==-I` with one pulse omitted. The matrix comparison covers arbitrary inputs. The source's intermediate expansion of the plus state omits its common normalization factor. [Pinned exercise](https://github.com/Qiskit/documentation/blob/079769d205eb3b60e077820060274c7b0359c123/learning/courses/tools-for-quantum-advantage/error-suppression.ipynb)
 
 ### CNOT twirling exercise
 
