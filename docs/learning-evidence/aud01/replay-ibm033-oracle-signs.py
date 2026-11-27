@@ -1,4 +1,5 @@
 """Verify the phases of the original Grover oracles and their action on word sets."""
+from fractions import Fraction
 from replay_oracle_lesson import replay_lesson
 
 
@@ -44,8 +45,20 @@ def cases():
                     yield (row, line), assign(['"Z_f"', f'"A_{line}"'], [supplied, support]), expected
     for n in range(1, 5):
         size = 2**n
+        entries = ["1"] * size
+        for first, expected in (("1", "1"), ("-1", "0")):
+            entries[0] = first
+            state = "[" + ";".join(entries) + f"]/sqrt({size})"
+            yield 20, assign(["n", '"u"'], [str(n), state]), expected
         signs = [1] + [-1] * (size - 1)
         oracle = diagonal(signs)
+        # In one qubit the diagonal vanishes and the reflection swaps the
+        # basis states. Use an exact matrix equality at every register width.
+        values = [Fraction(2, size) - int(i == j) for i in range(size) for j in range(size)]
+        entries = [str(value).replace("/", " ∕ ").replace("-", "−") for value in values]
+        expected = f"matrix({size},{size},[" + ",".join(entries) + "])"
+        for row in (49, 55, 100, 110):
+            yield row, assign(['"Z_OR"', "n"], [oracle, str(n)]), expected
         for x in range(size):
             flipped = signs.copy()
             flipped[x] *= -1
@@ -53,6 +66,16 @@ def cases():
                 yield 51, assign(['"Z_OR"', "x", "n"], [supplied, f"qbitlabel({x},{n})", str(n)]), expected
         for supplied, expected in ((oracle, "1"), (diagonal([-s for s in signs]), "0")):
             yield 53, assign(['"Z_OR"', '"n"'], [supplied, str(n)]), expected
+
+    # Exact rotation entries determined independently from the unit circle.
+    for angle, cosine, sine in (("0", "1", "0"), ("pi/6", "1/2", "sqrt(3)/2"),
+                                ("pi/4", "0", "1"), ("pi/3", "-1/2", "sqrt(3)/2"),
+                                ("pi/2", "-1", "0")):
+        rotation = f"[{cosine},-({sine});{sine},{cosine}]"
+        for matrix, expected in ((rotation, "1"), (f"-({rotation})", "0")):
+            yield 85, assign(['"θ"', '"M"'], [angle, matrix]), expected
+        for line in (0, 1):
+            yield (89, line), [('"θ"', angle)], "1"
 
 
 if __name__ == "__main__":
