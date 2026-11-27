@@ -201,6 +201,16 @@ assert data(f'quantum:replace(replace(replace(replace(({member}),"Σ",qset(vecto
 assert data("quantum:qcartesianseries(vector(qset(vector(1)),qset(vector())),1)")["copy_text"] == "qset(vector())"
 assert b"32 tuple coordinates" in run("quantum:qcartesianseries(qindexedentries('A_',0,32,vector()),1)","--json",success=False).stderr
 
+for literal, register, outcome in [(r"$\mathsf{X}=1$", "X", "1"),
+                                   (r"$\mathsf{Y}=b$", "Y", "'b'")]:
+    comparison = data("quantum:"+literal)["copy_text"]
+    assert comparison == f"('{register}')==({outcome})"
+    for observed in (0,1):
+        bound = f'replace(({comparison}),"{register}",{observed})'
+        if outcome == "'b'":
+            bound = f'replace(({bound}),"b",1)'
+        assert data("quantum:"+bound)["copy_text"] == str(observed)
+
 # Joint events keep the system order. Conditional probabilities divide by
 # the marginal of the system after the bar, including on rectangular tables.
 event = data(r"quantum:$\operatorname{Pr}(\mathsf{Y}=b\mid\mathsf{X}=a)$")

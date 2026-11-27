@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
 parser.add_argument("--report", type=Path)
+parser.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -29,7 +30,7 @@ def bind(formula, bindings):
 inventory = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
 copies = {}
 cases = {}
-for number in [60, 87, 116, 200, 217, 218, 221, 222]:
+for number in [60, 87, 116, 200, 217, 218, 219, 220, 221, 222, 275]:
     row = inventory["rows"][number-1]
     copies[number] = evaluate(row["literal"])
     cases[row["id"]] = row["literal"], copies[number]
@@ -39,6 +40,15 @@ def check(key, number, values, expected):
     actual = evaluate(expr)
     assert Fraction(actual.replace(" ∕ ", "/")) == expected, (key, actual, expected)
     cases[key] = expr, actual
+
+for number, register, outcome in [(219,"Y","b"), (220,"X","a"), (275,"X",None)]:
+    for observed in [0,1]:
+        bindings = [(register,observed)]
+        if outcome:
+            bindings.append((outcome,1))
+        check(f"event-{number}-{observed}",number,bindings,observed==1)
+        if outcome:
+            check(f"event-reversed-bindings-{number}-{observed}",number,bindings[::-1],observed==1)
 
 for label, table in [("independent", [[1,2,3],[2,4,6]]),
                      ("correlated", [[3,0,1],[1,4,1]])]:
@@ -71,6 +81,7 @@ for index, line in enumerate(lines):
         expr = bind(line, [("X,Y",joint)])
         assert evaluate(expr) == expected
         cases[f"aligned-{index}-{name}"] = expr, expected
-clipboard_checks(worker, args.windows, args.report, cases, 71,
+clipboard_checks(worker, args.windows, args.report or args.session_report, cases, 84,
                  dict(source_sha256=inventory["source_sha256"], source_formulas=len(copies),
-                      application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()))
+                      application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()),
+                 sessions_only=bool(args.session_report))

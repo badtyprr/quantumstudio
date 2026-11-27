@@ -168,6 +168,15 @@ std::string quantifiedPaulis(const std::string &clause) {
 // systems. Preserve their names even when the same letters are Pauli gates.
 std::string systemNames(const std::string &input) {
  if(input.find("\\mathsf")==std::string::npos)return "";
+ if(input.find('=')!=std::string::npos) {
+  static const std::regex event(R"(\s*\\mathsf\s*\{\s*([A-Z])\s*\}\s*=\s*([a-z]|0|[1-9][0-9]*)\s*)");
+  std::smatch match;
+  if(std::regex_match(input,match,event)) {
+   std::string outcome=match[2].str();
+   if(outcome.front()>='a' && outcome.front()<='z')outcome="\""+outcome+"\"";
+   return "qcompare(\""+match[1].str()+"\","+outcome+",4)";
+  }
+ }
  if(input.find("\\ldots")!=std::string::npos || input.find("\\cdots")!=std::string::npos) {
   static const std::regex descending(R"(\s*\(\s*\\mathsf\{([A-Za-z])\}_([1-9])\s*,\s*\\mathsf\{\1\}_([0-9])\s*,\s*\\(?:ldots|cdots)\s*,\s*\\mathsf\{\1\}_0\s*\)\s*)");
   std::smatch match;
