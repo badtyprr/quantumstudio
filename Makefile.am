@@ -811,3 +811,4 @@ EXTRA_DIST += windows/dev13-proof/requirements.lock
 EXTRA_DIST += windows/dev13-proof/reference-result.json
 EXTRA_DIST += windows/dev13-proof/validation.json
 EXTRA_DIST += docs/learning-evidence/dev13/qb012-notebook-route.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/qb011.json windows/dev13-notebooks/profiles/transpiler-pyquil-win-py312.json windows/dev13-notebooks/transpiler-pyquil-requirements.lock windows/dev13-notebooks/witnesses/qb011.py windows/dev13-notebooks/test_qb011.py

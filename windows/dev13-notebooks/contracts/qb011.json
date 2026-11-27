@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "id": "qb011",
+  "route": "notebook",
+  "profile": "transpiler-pyquil-win-py312",
+  "source": {
+    "url": "https://github.com/qBraid/qbraid-lab-demo/blob/86787e1ba372facc224f925189755e69c479828b/qBraid-SDK/qbraid_sdk_transpiler.ipynb",
+    "revision": "86787e1ba372facc224f925189755e69c479828b",
+    "sha256": "c73d5506ff10a778ca044fca6bb91430849df02c7e796ae99f323cf50ffe3f71",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "c1e557f83f8d07bf29ea6a541a261a57fbf65086f95a2deec9e97e2171c93aea"
+      },
+      {
+        "index": 1,
+        "type": "code",
+        "sha256": "d8a7c2b6a2039d6edfdd59612dc17660fee190a63d453567b3f08f892700a193"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "d0e3acfb6351104b4210fb227ba57564c31238cc3001d5ce84214a16d2d69266"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "2b7ac783e59aa32f4a79bf6e295f3a5cfb204999691e6606d1961a715ec70ff2"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "571952b2051fd4aae140f8b27715f9e1167f1a4c07258ad42c2a5432038776d9"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "e45a58a9e998f9cefcc56627f0370d94ef7a1d90453a51cbab1614e8bbe499c5"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "c9b555fec662eddfed9eb0d1a9aa8abb465a7ac7acfc5018b7974f24e84e4a2a"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "89e971b0e33958ce210704c059c7ae7ea80762a49466a227740e39cfbf925822"
+      },
+      {
+        "index": 8,
+        "type": "code",
+        "sha256": "3d947d0fabaade407423746b18896a7084a15941d2d66f28292d12b3a3c1aa81"
+      },
+      {
+        "index": 9,
+        "type": "code",
+        "sha256": "91890a87cd10eca6c7916bcc86c2f133a018fa95c8f99aa2baece91bcfe468cd"
+      },
+      {
+        "index": 10,
+        "type": "markdown",
+        "sha256": "7f4cd2bc4c039e56d6cd052e246a1a390f4125b1cfeb019f199afee574ad414c"
+      },
+      {
+        "index": 11,
+        "type": "code",
+        "sha256": "488c5937a32b149d3b792d29234117a13206ea1d71b97c39f6d0aa4bd7439d79"
+      },
+      {
+        "index": 12,
+        "type": "markdown",
+        "sha256": "83ab88240e900f32bf471d4d7f8276a6ae6e08ef857c88e898b7c6483cec9e38"
+      },
+      {
+        "index": 13,
+        "type": "markdown",
+        "sha256": "7dcd0b31ac492f2d8d269917e1cc0ff778d8eea1f5b97e0b0572f4ad7c49d2b2"
+      },
+      {
+        "index": 14,
+        "type": "code",
+        "sha256": "b63689b9c654e8e27352e6eedcb983c5428f31d470233999cb82d54b0e3979d2"
+      },
+      {
+        "index": 15,
+        "type": "markdown",
+        "sha256": "1cf00bdfac2f47504bd33e282e20dc38bf6fb9cb244336279882d63a9237109e"
+      },
+      {
+        "index": 16,
+        "type": "code",
+        "sha256": "b7f051c675878e497d6dce1728d4dabf7c9eec48da5d66791ba83ed53248de36"
+      },
+      {
+        "index": 17,
+        "type": "code",
+        "sha256": "8ef682f63a3790c2fe83da68e9d0c55f58925629c9627c7b11bc8533252eee54"
+      },
+      {
+        "index": 18,
+        "type": "code",
+        "sha256": "0e11286c65d7bb666eead78a7eb9ffde098ef62fcee62eca6d43bf06ede75c46"
+      },
+      {
+        "index": 19,
+        "type": "code",
+        "sha256": "365a02d7760181c5d161568f608538dc0afd246ce103a4aa6bcc7a6adb02f817"
+      },
+      {
+        "index": 20,
+        "type": "code",
+        "sha256": "8111c22b302c861ea3c21d65db286d60699915d2dc5f73548cac49bb90f2e38c"
+      },
+      {
+        "index": 21,
+        "type": "markdown",
+        "sha256": "460884df8d944e74d4d531ebba77cfc0145eba8f0738e278bb5015ed601e6ee1"
+      },
+      {
+        "index": 22,
+        "type": "code",
+        "sha256": "6024be667f780ae67a75097699c070c0d53d1fa3a4ea26c071bae4dd40b542aa"
+      },
+      {
+        "index": 23,
+        "type": "code",
+        "sha256": "f523a60deb12514aafd2d2b4f5d7d9785885e581d90606fac0421027ea33c6d9"
+      },
+      {
+        "index": 24,
+        "type": "markdown",
+        "sha256": "2eac578da51e68d9ad4e2b63856c496b1308f1532bcdbfface6e08de6446d07b"
+      }
+    ]
+  },
+  "code_cells": [
+    1,
+    3,
+    5,
+    7,
+    8,
+    9,
+    11,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22,
+    23
+  ],
+  "preamble": null,
+  "witness": {
+    "path": "witnesses/qb011.py",
+    "sha256": "ccb56502b6cd6a85fdb91e9ce1b04eb39fca3c8b88e36ac3db01c0af22cbca30"
+  },
+  "required_images": [],
+  "required_text": {
+    "11": "True"
+  },
+  "acceptance_field": "accepted",
+  "output_artifacts": [],
+  "external_requirements": []
+}
