@@ -1,6 +1,7 @@
 // Quantum notation extension. GPL-2.0-or-later; see COPYING.
 #include "QuantumIndexed.h"
 #include "Calculator.h"
+#include "Variable.h"
 #include "QuantumNotation.h"
 #include "QuantumTeX.h"
 #include <stdexcept>
@@ -881,6 +882,17 @@ class Parser {
   }
   std::string registerState=registerFamily(label,dimension);
   if(!registerState.empty())return registerState;
+  const size_t first=label.find_first_not_of(" \t\r\n"),last=label.find_last_not_of(" \t\r\n");
+  if(first!=std::string::npos && label[first]=='(' && label[last]==')') {
+   int level=0;bool tuple=false;
+   for(size_t i=first;i<=last;++i) {
+    if(label[i]=='(' || label[i]=='{' || label[i]=='[')++level;
+    else if(label[i]==')' || label[i]=='}' || label[i]==']') {
+     if(--level==0 && i!=last) {tuple=false;break;}
+    } else if(label[i]==',' && level==1)tuple=true;
+   }
+   if(tuple && !level)return basisState(label.substr(first+1,last-first-1),dimension);
+  }
   // Top-level commas and tensor products separate registers. Commas inside
   // a computed basis index, such as mod(k,3), remain function arguments.
   std::vector<std::string> registers;size_t start=0;int nesting=0;
@@ -904,7 +916,6 @@ class Parser {
    }
    return state;
   }
-  const size_t first=label.find_first_not_of(" \t\r\n");
   if(dimension.empty() && first!=std::string::npos && label.compare(first,3,"not")==0 && first+3<label.size() &&
      (std::isspace(static_cast<unsigned char>(label[first+3])) || label[first+3]=='(')) {
    const std::string bit=labelText(label.substr(first+3));
@@ -976,6 +987,14 @@ class Parser {
     bool wordXor=compact.find('#')!=std::string::npos && compact.find_first_not_of("01#")!=std::string::npos;
     if(!arithmetic && !wordXor) {
      std::string state=ket(label);
+     if(compact.size()==1 && state=="qketstate("+compact+")" && CALCULATOR &&
+        std::find(texIndices.begin(),texIndices.end(),compact)==texIndices.end()) {
+      // A scalar constant's ordinary spelling can also label an independent
+      // ket. Local state assignments keep their usual variable lookup.
+      Variable *variable=CALCULATOR->getActiveVariable(compact);
+      if(variable && variable->isKnown() && !variable->isLocal() && variable->representsScalar())
+       return "qnamedket("+indexableLabel(compact)+")";
+     }
      if(binaryWordNotation && state.compare(0,10,"qketstate(")==0 && state.size()==12 &&
         state[10]>='a' && state[10]<='z')return "qbinaryket("+state.substr(10);
      return state;
