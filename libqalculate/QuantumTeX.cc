@@ -2259,7 +2259,26 @@ class TeXReader {
   if(pos==input.size()) throw std::runtime_error(error("Incomplete TeX command"));
   if(!asciiLetter((unsigned char)input[pos])) {
    char c=input[pos++];
-   if(c=='{')return setLiteral(true);
+   if(c=='{') {
+    std::string first=setLiteral(true);
+    std::vector<std::string> factors;
+    for(;;) {
+     const size_t end=pos;
+     space();
+     if(input.compare(pos,6,"\\times")==0)pos+=6;
+     else if(input.compare(pos,2,"×")==0)pos+=2;
+     else {pos=end;break;}
+     space();
+     if(input.compare(pos,2,"\\{")!=0) {pos=end;break;}
+     pos+=2;
+     factors.push_back(setLiteral(true));
+    }
+    if(factors.empty())return first;
+    if(factors.size()==1)return "qcartesian("+first+","+factors.front()+")";
+    std::string axes="vector("+first;
+    for(const auto &factor:factors)axes+=","+factor;
+    return "qcartesianseries("+axes+"),0)";
+   }
    if(c=='}')throw std::runtime_error(error("Unmatched set delimiter"));
    if(c=='\\' && matrix) {
     space();

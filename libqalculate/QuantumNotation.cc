@@ -84,12 +84,13 @@ std::string unicodeArithmetic(const std::string &input) {
  std::string out;char quoted=0;
  const size_t start=input.find_first_not_of(" \t\r\n");
  const bool dimensions=start!=std::string::npos && input.compare(start,11,"dimensions:")==0;
+ const bool literalSets=input.find("\\{")!=std::string::npos;
  for(size_t p=0;p<input.size();) {
   if(input[p]=='"' || input[p]=='\'') {if(quoted==input[p])quoted=0;else if(!quoted)quoted=input[p];out+=input[p++];continue;}
   if(!quoted && input.compare(p,3,"∑")==0) {out+="\\sum";p+=3;continue;}
   bool matched=false;
   if(!quoted)for(const auto &symbol:symbols)if(input.compare(p,symbol.first.size(),symbol.first)==0) {
-   if(dimensions && symbol.first=="×")out+="\\times ";else out+=symbol.second;
+   if((dimensions || literalSets) && symbol.first=="×")out+="\\times ";else out+=symbol.second;
    p+=symbol.first.size();matched=true;break;
   }
   if(!matched)out+=input[p++];

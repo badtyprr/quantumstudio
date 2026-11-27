@@ -56,6 +56,21 @@ for lesson, ids in [("041", (18,20,40)), ("042", (88,90,110))]:
         row = inventory["rows"][number-1]
         check(row["id"], "sets:"+row["literal"], "qcartesian('Σ','Γ')")
 
+for lesson, products in [("041",[(73,range(1,4),range(2)),(76,range(2),range(2)),(79,range(10),range(10))]),
+                         ("042",[(5,range(2),range(2)),(220,range(1,4),range(2)),(231,range(1,4),range(2))])]:
+    inventory = json.loads(Path(__file__).with_name(f"ibm{lesson}-inventory.json").read_bytes())
+    for number,left,right in products:
+        row = inventory["rows"][number-1]
+        check(row["id"],row["literal"],tuple_set((left,right)))
+for key, expr, axes in [
+    ("rectangular",r"$\{1,2\}\times\{3,4,5\}$",((1,2),(3,4,5))),
+    ("swapped",r"$\{3,4,5\}×\{1,2\}$",((3,4,5),(1,2))),
+    ("empty-left",r"$\{\}\times\{1\}$",((),(1,))),
+    ("empty-right",r"$\{1\}\times\{\}$",((1,),())),
+    ("three-axes",r"$\{7\}\times\{1,2\}\times\{9\}$",((7,),(1,2),(9,)))]:
+    check(key,expr,tuple_set(axes))
+check("scalar-product",r"$2\times3$","6")
+
 definition = sources["041",18]
 check("definition",definition,"1")
 swapped = definition.replace("(a,b)", "(b,a)")
@@ -89,6 +104,6 @@ for lesson,number in [("041",40),("042",90)]:
         expected = all(v in axis for v,axis in zip(values,axes))
         check(f"triple-{lesson}-"+"-".join(map(str,values)),bind(expr,sets+coordinates+[("n",3)]),str(int(expected)))
 
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,46,dict(source_sha256=hashes, original_occurrences=10,
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,58,dict(source_sha256=hashes, original_occurrences=16,
                  application_sha256=hashlib.sha256((worker.parent/"QuantumStudio.exe").read_bytes()).hexdigest()),
                  sessions_only=bool(args.session_report))
