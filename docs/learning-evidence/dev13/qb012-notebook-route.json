@@ -1,0 +1,97 @@
+{
+  "contract": "qb012",
+  "source_sha256": "aa019f44a5dbcda11cb7a2307a2ceeb019a86ad84bee9b0568be024c1b9838c1",
+  "profile": "transpiler-win-py312",
+  "lock_sha256": "bbac3c1693a2d26e40ca6f88a04ab26abbb05c00a7e244e091f2299fe8062d33",
+  "offline_wheels": 117,
+  "runs": {
+    "fresh_offline": {
+      "original_code_cells": [
+        0,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "original_execution": "succeeded",
+      "source_cells_preserved": true,
+      "installed_distributions": 117,
+      "graph_images": {
+        "2": {
+          "pixels": [
+            630,
+            470
+          ],
+          "sha256": "e22174379283eaff17cef84b012634cd988a03c2041d278e627e778c267d4e0d"
+        },
+        "11": {
+          "pixels": [
+            630,
+            470
+          ],
+          "sha256": "301238d520dcb653fceeb1af6a2af381db084899692e179e595f20bf9003fbb8"
+        }
+      },
+      "verification": {
+        "accepted": true,
+        "operator_max_errors": [
+          1.1102230246251565e-16,
+          1.1102230246251565e-16
+        ],
+        "routes": [
+          "qiskit -> qasm3 -> braket",
+          "qiskit -> braket"
+        ]
+      }
+    },
+    "retained": {
+      "original_code_cells": [
+        0,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "original_execution": "succeeded",
+      "source_cells_preserved": true,
+      "installed_distributions": 117,
+      "graph_images": {
+        "2": {
+          "pixels": [
+            630,
+            470
+          ],
+          "sha256": "e3079db3f9d6ba734c9e583ca8cf8abbef4056b5c0303c3476b5a66e23ae4d8d"
+        },
+        "11": {
+          "pixels": [
+            630,
+            470
+          ],
+          "sha256": "0966355ba2eefe83ea2bff2026c02d474c5b004ce08a6c52e10bba11b136407e"
+        }
+      },
+      "verification": {
+        "accepted": true,
+        "operator_max_errors": [
+          1.1102230246251565e-16,
+          1.1102230246251565e-16
+        ],
+        "routes": [
+          "qiskit -> qasm3 -> braket",
+          "qiskit -> braket"
+        ]
+      }
+    }
+  }
+}
