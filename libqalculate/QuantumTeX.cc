@@ -3586,6 +3586,16 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
  }
  // In an indexed tensor product the subscript on I names the register.
+ if(mathWrapper && s.find("\\mathbb{I}_")!=std::string::npos && s.find(',')!=std::string::npos) {
+  const std::string subscript=R"((0|\{[a-z]-1\}))";
+  static const std::regex list(R"(\s*\\mathbb\{I\}_)"+subscript+R"(\s*,\s*\\(?:ldots|cdots)\s*,\s*\\mathbb\{I\}_)"+subscript+R"(\s*)");
+  std::smatch ends;
+  if(std::regex_match(s,ends,list) && ends[1].str()!=ends[2].str() && (ends[1]=="0" || ends[2]=="0")) {
+   const bool descending=ends[2]=="0";
+   std::string family=indexedLabelRange("dim_0","dim_"+ends[descending ? 1 : 2].str(),"qindexedentries(",true);
+   if(!family.empty())return "qregisteridentities("+family+","+(descending ? "1)" : "0)");
+  }
+ }
  // A preceding product of A†A terms supplies its input dimensions.
  if(s.find("\\mathbb{I}_")!=std::string::npos && s.find("\\otimes")!=std::string::npos) {
   static const std::regex identities(R"(\\mathbb\{I\}_\{([a-z])-1\}\s*\\otimes\s*\\cdots\s*\\otimes\s*\\mathbb\{I\}_0\b)");

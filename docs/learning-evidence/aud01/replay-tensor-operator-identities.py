@@ -101,6 +101,25 @@ for number in (245,249,252):
             expr = f'replace(replace(replace(({relation}),"U_0",[0,i;1,0]),"U_1",[0,0,{scale};1,0,0;0,1,0]),n,2)'
             assert evaluate(expr)==expected
             cases[f"unitary-{number}-scale-{scale}"] = expr,expected
+for number in (246,250):
+    row = inventory["rows"][number-1]
+    relation = evaluate(row["literal"])
+    assert evaluate(relation)==relation
+    cases[row["id"]] = row["literal"],relation
+    for dims in [(),(3,),(2,3,4)]:
+        matrices = []
+        for size in (reversed(dims) if number==250 else dims):
+            cells = ",".join(str(int(r==c)) for r in range(size) for c in range(size))
+            matrices.append(f"matrix({size},{size},[{cells}])")
+        expected = "vector("+",".join(matrices)+")"
+        for width_first in (True,False):
+            assignments = [(f'"dim_{i}"',v) for i,v in enumerate(dims)]
+            assignments.insert(0 if width_first else len(assignments),("n",len(dims)))
+            expr = relation
+            for key,value in assignments:
+                expr=f"replace(({expr}),{key},{value})"
+            assert evaluate(expr)==expected,(number,dims,width_first)
+            cases[f"identity-list-{number}-{len(dims)}-{width_first}"] = expr,expected
 classical = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
 row = classical["rows"][151]
 relation = evaluate(row["literal"])
@@ -155,5 +174,5 @@ malformed=expanded.replace(r"\alpha_{11}\beta_{1k}",r"\alpha_{1m}\beta_{1k}",1)
 assert malformed!=expanded
 error=subprocess.run([worker,"--json"],input=("quantum:"+malformed).encode(),capture_output=True,env=env,timeout=30)
 assert error.returncode and b"indexed matrix" in error.stderr
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,36,
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,50,
                  dict(source_sha256=sources),sessions_only=bool(args.session_report))
