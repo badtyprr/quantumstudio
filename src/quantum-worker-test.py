@@ -24,6 +24,18 @@ def data(expression, *flags):
     return value
 
 
+# Register subscripts label the identity factors, including register zero.
+identities = r"\mathbb{I}_{n-1}\otimes\cdots\otimes\mathbb{I}_0"
+series = data("quantum:$" + identities + "$")["copy_text"]
+identity = data(f'quantum:replace(replace(replace(({series}),"dim_1",3),n,2),"dim_0",2)')
+assert identity["cells"] == [[str(int(row==column)) for column in range(6)] for row in range(6)]
+gram = r"(V_{n-1}^{\dagger} V_{n-1})\otimes\cdots\otimes(V_0^{\dagger} V_0)"
+test = data("quantum:$" + gram + "=" + identities + "$")["copy_text"]
+for scale, expected in [(1,"1"),(2,"0")]:
+    # The 3-by-2 isometry has a two-dimensional input space.
+    expr = f'replace(replace(({test}),n,1),"V_0",[1,0;0,{scale};0,0])'
+    assert data("quantum:" + expr)["copy_text"] == expected
+
 # A binary control can select an operation on a three-dimensional target.
 controlled_definition = r"CU=\vert 0\rangle\langle 0\vert\otimes\mathbb{I}_{\mathsf{R}}+\vert 1\rangle\langle 1\vert\otimes U"
 target_matrix = "[0,1,0;0,0,i;1,0,0]"

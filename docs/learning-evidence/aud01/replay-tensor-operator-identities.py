@@ -84,5 +84,21 @@ for label,formula,expected in [("three-level-control",literal,"1"),("negative-bl
 row = inventory["rows"][320]
 assert evaluate(row["literal"])=="1"
 cases[row["id"]] = row["literal"],"1"
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,19,
+for number in (245,249,252):
+    row = inventory["rows"][number-1]
+    relation = evaluate(row["literal"])
+    assert evaluate(relation)==relation
+    cases[row["id"]] = row["literal"],relation
+    if number==249:
+        expr = f'replace(replace(replace(({relation}),"dim_0",2),"dim_1",3),n,2)'
+        entries = ",".join(str(int(r==c)) for r in range(6) for c in range(6))
+        expected = "matrix(6,6,["+entries+"])"
+        assert evaluate(expr)==expected
+        cases["six-dimensional-identity"] = expr,expected
+    else:
+        for scale,expected in [(1,"1"),(2,"0")]:
+            expr = f'replace(replace(replace(({relation}),"U_0",[0,i;1,0]),"U_1",[0,0,{scale};1,0,0;0,1,0]),n,2)'
+            assert evaluate(expr)==expected
+            cases[f"unitary-{number}-scale-{scale}"] = expr,expected
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,27,
                  dict(source_sha256=sources),sessions_only=bool(args.session_report))
