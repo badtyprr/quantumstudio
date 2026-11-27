@@ -29,20 +29,18 @@ def cases():
         for supplied, expected in ((oracle, "1"), (complement, "0")):
             yield 31, assign(["G", '"Z_f"', '"Z_OR"', "n"],
                              [iterate, supplied, diagonal([1, -1, -1, -1]), "2"]), expected
+        sets = ["qset(vector(" + ",".join(f"qbitlabel({i},2)" for i in range(4)
+                                          if signs[i] == sign) + "))" for sign in (1, -1)]
         if mask not in (0, 15):
-            sets = ["qset(vector(" + ",".join(f"qbitlabel({i},2)" for i in range(4)
-                                              if signs[i] == sign) + "))" for sign in (1, -1)]
             for line in (0, 1):
                 for gate, expected in ((iterate, "1"), (f"-({iterate})", "0")):
                     yield (70, line), assign(["G", '"N"', '"A_0"', '"A_1"'], [gate, "4", *sets]), expected
         for line, sign in enumerate((1, -1)):
-            labels = [f"qbitlabel({i},2)" for i in range(4) if signs[i] == sign]
-            if not labels:
+            if sign not in signs:
                 continue
-            support = "qset(vector(" + ",".join(labels) + "))"
             for row in (48, 102):
                 for supplied, expected in ((oracle, "1"), (complement, "0")):
-                    yield (row, line), assign(['"Z_f"', f'"A_{line}"'], [supplied, support]), expected
+                    yield (row, line), assign(['"Z_f"', f'"A_{line}"'], [supplied, sets[line]]), expected
     for n in range(1, 5):
         size = 2**n
         entries = ["1"] * size
