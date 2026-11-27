@@ -3454,6 +3454,17 @@ std::string quantumTeX(const std::string &input, std::vector<std::string> *lines
   }
   if(decimal)return "qbasistransitions("+op+",vector("+inputs+"),vector("+outputs+"))";
  }
+ if(mathWrapper && s.find("\\ldots")!=std::string::npos && s.find(',')!=std::string::npos) {
+  static const std::regex list(R"(^\s*([A-Z])_([0-9])(?:\s*([A-Z])_\2)?\s*,?\s*\\ldots\s*,\s*\1_(\{[a-z]-1\})(?:\s*([A-Z])_\4)?\s*$)");
+  std::smatch m;
+  if(std::regex_match(s,m,list) && m[3]==m[5]) {
+   auto family=[&](const std::string &name) {
+    return indexedLabelRange(name+"_"+m[2].str(),name+"_"+m[4].str(),"qindexedentries(",true);
+   };
+   const std::string left=family(m[1]);
+   if(!left.empty())return m[3].matched ? "qpairwiseproducts("+left+","+family(m[3])+")" : left;
+  }
+ }
  if(mathWrapper && s.find("\\cdots")!=std::string::npos && s.find("\\|")!=std::string::npos) {
   // Size commands affect only the typography of the norm delimiters.
   static const std::string bar=R"((?:\\(?:bigl|bigr|left|right)\s*)?\\\|\s*)";

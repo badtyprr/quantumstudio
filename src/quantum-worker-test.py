@@ -24,6 +24,19 @@ def data(expression, *flags):
     return value
 
 
+# An ellipsis between operator products pairs corresponding list entries.
+operator_list = data(r"quantum:$N_0\ldots,N_{n-1}$")["copy_text"]
+assert operator_list == data(r"quantum:$N_0,\ldots,N_{n-1}$")["copy_text"]
+products = data(r"quantum:$M_0 N_0,\ldots,M_{n-1} N_{n-1}$")["copy_text"]
+assignments = [("M_0","[0,1;1,0]"),("N_0","[1,0;0,-1]"),("M_1","[1,2;0,1]"),("N_1","[2,0;3,1]")]
+for width_first in (True,False):
+    expr = f"replace(({products}),n,2)" if width_first else products
+    for key, value in assignments:
+        expr = f'replace(({expr}),"{key}",{value})'
+    if not width_first:
+        expr = f"replace(({expr}),n,2)"
+    assert data("quantum:" + expr)["copy_text"] == "vector(matrix(2,2,[0,−1,1,0]),matrix(2,2,[8,2,3,1]))"
+
 # A product of norms checks normalization after the state factors are bound.
 norm_series = r"\bigl\|\vert \psi_{n-1}\rangle\bigl\|\cdots\bigl\|\vert \psi_0\rangle\bigr\|"
 tensor_norm = r"\bigl\|\vert \psi_{n-1}\rangle\otimes\cdots\otimes\vert \psi_0\rangle\bigr\|"
