@@ -1,0 +1,14 @@
+{
+  "worker_sha256": "7a2963d86c15c103dbac370a720d35d14f1dc4f216f76115c3474072afcab59e",
+  "source_sha256": "cf35c6409842268e9913008e61df569cf875bb209765682689bb590b6ed36ebe",
+  "source_rows": [
+    5,
+    11,
+    12
+  ],
+  "boolean_oracles": 16,
+  "bound_checks": 49,
+  "windows_sessions": 13,
+  "clipboard_verified": false,
+  "windows_checks": 117
+}

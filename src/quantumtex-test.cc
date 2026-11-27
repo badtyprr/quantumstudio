@@ -170,9 +170,9 @@ int main() {
   equal(R"(x\notin S)","x∉ S");
   equal(R"(A\cup B\cap C\setminus D)","A∪ B∩ C∖ D");
   equal("A∪B∩C∖D","A∪ B∩ C∖ D");
-  equal(R"(\emptyset)","vector()");
-  equal(R"(\varnothing)","vector()");
-  equal("∅","vector() ");
+  equal(R"(\emptyset)","qset(vector())");
+  equal(R"(\varnothing)","qset(vector())");
+  equal("∅","qset(vector()) ");
   equal("'∪∩∖∅'","'∪∩∖∅'");
   equal(R"(\{0,1\}^{3})","qbitstrings(3)");
   equal(R"(\{1,0\}^{n})","qbitstrings(n)");

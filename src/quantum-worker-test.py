@@ -32,6 +32,10 @@ assigned=f'replace(replace(replace(({coefficients}),"α",{table}),"Σ",qset(vect
 assert data("quantum:"+assigned)["copy_text"]=="qset(vector(i))"
 
 # A word over finite alphabets preserves position and repeated symbols.
+for symbol in (r"\emptyset", r"\varnothing", "∅"):
+    condition = data(f"quantum:$A_0 = {symbol}$")["copy_text"]
+    assert data(f'quantum:replace(({condition}),"A_0",qset(vector()))')["copy_text"] == "1"
+    assert data(f'quantum:replace(({condition}),"A_0",qset(vector(0)))')["copy_text"] == "0"
 assert data(r"quantum:sets:$a_{11}\cdots a_9$")["copy_text"] == 'qtuple(vector("a_11","a_10","a_9"))'
 assert data(r"quantum:sets:$a_1\ldots a_3$")["copy_text"] == 'qtuple(vector("a_1","a_2","a_3"))'
 run(r"quantum:sets:$a_{11}\cdots b_9$","--json",success=False)
