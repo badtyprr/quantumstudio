@@ -1124,14 +1124,15 @@ class QuantumStateFamilyFunction: public MathFunction {
  }
 };
 // Materialize the sequence without simplifying a singleton into its element.
-bool indexedEntries(MathStructure &entries,const MathStructure &raw,const EvaluationOptions &eo) {
+bool indexedEntries(MathStructure &entries,const MathStructure &raw,const EvaluationOptions &eo,bool allowZeroWidth=false) {
  if(raw.size()!=4)return false;
  if(!raw[0].isSymbolic())return false;
  MathStructure first=raw[1],last=raw[2],history=raw[3];
  first.eval(eo);last.eval(eo);history.eval(eo);
  if(!history.isVector() || history.size()%2 || history.size()>2048)return false;
  if(pendingRegisterIndex(first) || pendingRegisterIndex(last))return false;
- if(!first.isInteger() || !last.isInteger() || first.number()<0 || last.number()<0) {
+ const bool emptyRange=allowZeroWidth && first.isZero() && last.isMinusOne();
+ if(!first.isInteger() || !last.isInteger() || first.number()<0 || (last.number()<0 && !emptyRange)) {
   CALCULATOR->error(true,"Indexed lists require nonnegative integer endpoints.",NULL);return false;
  }
  Number count=last.number()-first.number()+1;
@@ -1376,7 +1377,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qpairwiseproducts" || op=="qoraclequeries" || op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qregisteridentities" || op=="qpairwiseproducts" || op=="qoraclequeries" || op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2582,6 +2583,34 @@ class QuantumIndexedFunction: public MathFunction {
    }
    entries.childrenUpdated();out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
   }
+  if(op=="qregisteridentities") {
+   MathStructure dimensions;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(dimensions,raw[0],eo,true))return 0;
+   if(!raw[1].isZero() && !raw[1].isOne()) {
+    CALCULATOR->error(true,"Identity list order must be zero or one.",NULL);return 0;
+   }
+   size_t cells=0;
+   bool pending=false;
+   for(size_t i=0;i<dimensions.size();++i) {
+    dimensions[i].eval(eo);
+    if(dimensions[i].isSymbolic() || dimensions[i].isUnknown()) {pending=true;continue;}
+    if(!dimensions[i].isInteger() || dimensions[i].number()<1 || dimensions[i].number()>1024) {
+     CALCULATOR->error(true,"Register identity dimensions must be integers from 1 to 1024.",NULL);return 0;
+    }
+    const size_t size=dimensions[i].number().intValue();
+    cells+=size*size;
+    if(cells>1048576) {CALCULATOR->error(true,"Register identity list matrix allocation limit exceeded.",NULL);return 0;}
+   }
+   if(pending)return 0;
+   out.clearVector();
+   for(size_t i=0;i<dimensions.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    const size_t k=raw[1].isOne() ? dimensions.size()-1-i : i;
+    MathStructure identity(CALCULATOR->getFunction("qidentity"),&dimensions[k],NULL);
+    out.addChild(identity);
+   }
+   return 1;
+  }
   if(op=="qpairwiseproducts") {
    MathStructure factors[2];
    for(size_t k=0;k<2;++k) {
@@ -3615,6 +3644,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qoverlapproduct",2));
  calculator.addFunction(new QuantumIndexedFunction("qmatrixelementproduct",3));
  calculator.addFunction(new QuantumIndexedFunction("qpairwiseproducts",2));
+ calculator.addFunction(new QuantumIndexedFunction("qregisteridentities",2));
  calculator.addFunction(new QuantumIndexedFunction("qoraclequeries",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
