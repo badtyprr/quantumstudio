@@ -586,6 +586,24 @@ std::string indexedColumn(const std::string &raw, bool tex) {
  if(rows.size()<3 || rows.size()>1027 || (rows[1]!=marker && rows[rows.size()-2]!=marker))invalid();
  if(rows[rows.size()-2]==marker && std::count(rows.begin(),rows.end(),"0")==int(rows.size()-1))
   return "qtexzerocolumn("+std::to_string(rows.size()-2)+")";
+ // The fast index runs through a whole column before the slow index
+ // advances. Validate every displayed endpoint before folding the blocks.
+ if(tex && rows.size()>=7 && rows.size()%3==1 && rows[rows.size()-4]==marker) {
+  static const std::regex factors(R"(^((?:\\[A-Za-z]+|[A-Za-z])_(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]))\s*((?:\\[A-Za-z]+|[A-Za-z])_(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]))$)");
+  std::string outer,inner;
+  for(size_t row=0;row<rows.size();) {
+   if(row==rows.size()-4) {outer+=marker+separator;++row;}
+   std::smatch first,last;
+   if(rows[row+1]!=marker || !std::regex_match(rows[row],first,factors) ||
+      !std::regex_match(rows[row+2],last,factors) || first[1]!=last[1]) {outer.clear();break;}
+   const std::string block=first[2].str()+separator+marker+separator+last[2].str();
+   if(inner.empty())inner=block;
+   else if(inner!=block) {outer.clear();break;}
+   outer+=first[1].str();row+=3;
+   if(row<rows.size())outer+=separator;
+  }
+  if(!outer.empty())return "qtensor("+indexedColumn(outer,true)+","+indexedColumn(inner,true)+")";
+ }
  const std::string dot=tex ? "\\cdot" : "·";
  if(rows.front().find(dot)!=std::string::npos) {
   auto malformed=[](){throw std::runtime_error("A sample dot-product column requires consecutive one-based samples and a common right operand");};
