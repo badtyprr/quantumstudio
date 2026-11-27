@@ -74,5 +74,30 @@ for name,high,low,expected in [("inverse","2*i","1/2","1"),("scaled","3*i","2","
     check("norm-width-first-"+name,bind(chain,("n","2"),*assignments),expected)
     check("norm-width-last-"+name,bind(chain,*assignments,("n","2")),expected)
 
-clipboard_checks(worker,args.windows,args.report or args.session_report,cases,26,
-                 dict(source_sha256=sources),sessions_only=bool(args.session_report))
+inventory = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+symbol = inventory["rows"][147]
+assert symbol["literal"]==r"$\otimes$"
+for number in (149,150,151):
+    form = source("041",number)
+    check(f"tensor-notation-{number}",bind(form,("φ","[1;i]"),("ψ","[2;3;5]")),
+          "matrix(6,1,[2,3,5,2i,3i,5i])")
+
+overlap = [("a_0","[1;0]"),("a_1","[0;i;0]"),("φ_0","[i;0]"),("φ_1","[0;1;0]"),
+           ("ψ","[0;0;i;0;0;0]")]
+elements = [("a_0","[0;i]"),("a_1","[0;1;0]"),("b_0","[0;1;0]"),("b_1","[1;0]"),
+            ("M_0","[1,0,3;0,2+i,0]"),("M_1","[0,1;3,0;0,1]")]
+for number,assignments,expected in [(170,overlap,"1"),(342,elements,"3 − 6i")]:
+    identity = source("041",number)
+    row = inventory["rows"][number-1]
+    right = evaluate("$$"+row["literal"].split("=",1)[1])
+    check(f"factor-product-{number}",bind(right,*assignments,("n","2")),expected)
+    check(f"width-first-{number}",bind(identity,("n","2"),*assignments),"1")
+    check(f"width-last-{number}",bind(identity,*assignments,("n","2")),"1")
+check("independent-joint-state",bind(source("041",170),*overlap[:-1],("ψ","[0;0;-i;0;0;0]"),("n","2")),"0")
+altered = inventory["rows"][341]["literal"].split("=")
+changed = evaluate(altered[0]+"="+altered[1].replace("M_","N_"))
+check("independent-operator-family",bind(changed,*elements,("N_0",elements[-2][1]),
+      ("N_1","[0,1;-3,0;0,1]"),("n","2")),"0")
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,42,
+                 dict(source_sha256=sources,operator_symbol_occurrence=symbol["id"]),
+                 sessions_only=bool(args.session_report))

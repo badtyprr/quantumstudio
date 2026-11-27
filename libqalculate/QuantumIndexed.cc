@@ -2591,6 +2591,31 @@ class QuantumIndexedFunction: public MathFunction {
    }
    return 1;
   }
+  if(op=="qoverlapproduct" || op=="qmatrixelementproduct") {
+   const size_t count=raw.size();
+   std::vector<MathStructure> families(count);
+   for(size_t k=0;k<count;++k) {
+    if(!indexedSpectralFamily(raw[k]) || !indexedEntries(families[k],raw[k],eo))return 0;
+    if(families[k].size()!=families[0].size()) {
+     CALCULATOR->error(true,"Each matrix-element family must have the same length.",NULL);return 0;
+    }
+   }
+   out=m_one;
+   for(size_t i=0;i<families[0].size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    for(const auto &family:families)if(family[i].isSymbolic())return 0;
+    auto ket=CALCULATOR->getFunction("qindexedket"),mul=CALCULATOR->getFunction("qmul");
+    MathStructure left(ket,&families.front()[i],NULL),right(ket,&families.back()[i],NULL);
+    MathStructure bra(CALCULATOR->getFunction("qdag"),&left,NULL);
+    if(count==3) {
+     MathStructure applied(mul,&families[1][i],&right,NULL);right=applied;
+    }
+    MathStructure value(mul,&bra,&right,NULL);value.eval(eo);
+    if(!value.representsScalar())return 0;
+    out.multiply(value);
+   }
+   out.eval(eo);return 1;
+  }
   if(op=="qstatenormproduct") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
@@ -3580,6 +3605,8 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qstatenormproduct",1));
+ calculator.addFunction(new QuantumIndexedFunction("qoverlapproduct",2));
+ calculator.addFunction(new QuantumIndexedFunction("qmatrixelementproduct",3));
  calculator.addFunction(new QuantumIndexedFunction("qpairwiseproducts",2));
  calculator.addFunction(new QuantumIndexedFunction("qoraclequeries",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
