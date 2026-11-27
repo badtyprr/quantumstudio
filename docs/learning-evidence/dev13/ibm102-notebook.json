@@ -1,0 +1,62 @@
+{
+  "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
+  "contract_sha256": "5ccb716a8465efb531c2a0d923d42502e60277822d1e4ef1d2053d734639e6a1",
+  "runs": {
+    "windows": {
+      "profile": "grover-win-py312",
+      "figure_dimensions": {
+        "3": [
+          176,
+          238
+        ],
+        "5": [
+          241,
+          238
+        ],
+        "7": [
+          305,
+          174
+        ],
+        "10": [
+          742,
+          174
+        ]
+      },
+      "state_fidelities": [
+        1.0,
+        0.9999999999999996,
+        1.0,
+        0.9999999999999984
+      ],
+      "active_processes_after_run": 0
+    },
+    "linux": {
+      "profile": "qiskit-aer-linux-py312",
+      "figure_dimensions": {
+        "3": [
+          176,
+          238
+        ],
+        "5": [
+          241,
+          238
+        ],
+        "7": [
+          305,
+          174
+        ],
+        "10": [
+          742,
+          174
+        ]
+      },
+      "state_fidelities": [
+        1.0,
+        0.9999999999999996,
+        0.9999999999999996,
+        0.9999999999999987
+      ],
+      "active_processes_after_run": 0
+    }
+  }
+}

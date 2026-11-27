@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "id": "ibm102",
+  "route": "notebook",
+  "profiles": {
+    "win32": "grover-win-py312",
+    "linux": "qiskit-aer-linux-py312"
+  },
+  "source": {
+    "url": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/variational-algorithm-design/reference-states.ipynb",
+    "revision": "f842259423a7adc9adeafd54153cdb5d3c5b680b",
+    "sha256": "9861697637e56521556f55ab3154daaa6189f4addef838f4b79b5ec7347194f9",
+    "cells": [
+      {
+        "index": 0,
+        "type": "markdown",
+        "sha256": "c058fa0b601e285d110af6fa6c50cc4fa839b15565e6145ca38c80e0805910e7"
+      },
+      {
+        "index": 1,
+        "type": "markdown",
+        "sha256": "b49004de2e50f23c098bf9c299e3ba3a0f1d695f5f217d4a12905fd018b5d539"
+      },
+      {
+        "index": 2,
+        "type": "markdown",
+        "sha256": "48f35e8102e9a61510fd41a5e83f3a6df938d20da605f9c97dae0cf7b85b5c9b"
+      },
+      {
+        "index": 3,
+        "type": "code",
+        "sha256": "c5df8c228243a74d8c7d2fb32c64266cc4b0ac4b68f2f1832891a84195ad8620"
+      },
+      {
+        "index": 4,
+        "type": "markdown",
+        "sha256": "4f66f0c743d80632602e4476088909d999481106799bcd341226c50d8095bf7e"
+      },
+      {
+        "index": 5,
+        "type": "code",
+        "sha256": "bd4f05fe243673e09ab3570acbed62dc1989440363fea26f64d48b1cd28381f4"
+      },
+      {
+        "index": 6,
+        "type": "markdown",
+        "sha256": "93c3d8565289463997f1bd85df9e49c51a82de3f10e932c1985cafcc11b56093"
+      },
+      {
+        "index": 7,
+        "type": "code",
+        "sha256": "4021983b0dd0c6eadf13761245c7f3f000eb0c053f11d26d7a096d9455d2a520"
+      },
+      {
+        "index": 8,
+        "type": "markdown",
+        "sha256": "771dfd44f956905a10eacb8ec0cf6557469c0bae9b347f0c70cb25825641d271"
+      },
+      {
+        "index": 9,
+        "type": "markdown",
+        "sha256": "fbb9461eacbac7ee303347adea897ea7dc272550e88c7f8d209931f0593b06fa"
+      },
+      {
+        "index": 10,
+        "type": "code",
+        "sha256": "564b44ea911b71290785098409a323d71e746aa59c0ea598ad2dafd1bcef8ea8"
+      },
+      {
+        "index": 11,
+        "type": "markdown",
+        "sha256": "3ef484434a2b65eb060506933a16054fe14ad8da38cb3e45449e7c14ac39ef5b"
+      }
+    ]
+  },
+  "code_cells": [
+    3,
+    5,
+    7,
+    10
+  ],
+  "preamble": null,
+  "post_cell_observers": [
+    {
+      "after_original_index": 3,
+      "role": "postcell-observer",
+      "path": "observers/ibm102_first_state.py",
+      "sha256": "7fce83cc7467c3993e3a2ed2be3eb3512fd24f943a278b6575c97585a0aac0d4"
+    }
+  ],
+  "witness": {
+    "path": "witnesses/ibm102.py",
+    "sha256": "81cc13ccbd3e23e40f99bb2acbd3b06927695383592690e47d6be642460415f6"
+  },
+  "required_images": [],
+  "required_image_counts": {
+    "3": 1,
+    "5": 1,
+    "7": 1,
+    "10": 1
+  },
+  "required_text": {},
+  "acceptance_field": "accepted",
+  "output_artifacts": []
+}

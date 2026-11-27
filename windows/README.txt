@@ -61,3 +61,15 @@ For QB-012, prepare its own wheel folder with qb012, select the profile
 transpiler-win-py312, and run with --contract qb012. The results folder
 contains the executed notebook, individual cell results, and status.json
 with the final conversion check.
+
+IBM-102 reference states
+Use the original IBM reference-states.ipynb linked in
+notebooks/contracts/ibm102.json. With the wheel folder for the
+grover-win-py312 profile, run these commands on Windows:
+
+python -B notebooks/run.py environment --profile grover-win-py312 --python BASE_PYTHON --wheelhouse WHEEL_FOLDER --destination NEW_ENV
+python -B notebooks/run.py run --contract ibm102 --source reference-states.ipynb --environment NEW_ENV --output NEW_RESULTS
+
+On Linux, select qiskit-aer-linux-py312 and its matching wheels.
+Open executed.ipynb for the four circuit diagrams. The independent_results
+field in status.json records the state fidelity for each diagram in order.
