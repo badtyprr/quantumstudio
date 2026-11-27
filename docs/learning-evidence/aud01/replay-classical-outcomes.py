@@ -1,6 +1,5 @@
 """Verify classical outcome order, bit widths, and labelled probabilities."""
 import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -115,20 +114,5 @@ for number,indices in [(45,range(10)),(48,reversed(range(10)))]:
         given = [(f"Σ_{i}",f"qset(vector(0,{middle if i==4 else 1}))") for i in range(10)]
         check(f"middle-alphabet-{number}-{middle}",assign(chain,given),answer)
 details = dict(source_sha256=sources,binary_labels_checked=1024)
-if args.session_report:
-    result = json.loads((args.windows/"result.json").read_text("utf-8-sig"))
-    records = json.loads((args.windows/"records.json").read_text("utf-8-sig"))
-    inputs = json.loads((args.windows/"inputs.json").read_bytes())
-    assert inputs==[[key,expr,"0"] for key,(expr,_) in cases.items()]
-    assert result["passed"] and result["sessionsOnly"] and result["calls"]==len(records)==len(cases)==37
-    for (key,(expr,expected)),record in zip(cases.items(),records):
-        session = json.loads((args.windows/(key+".qsession")).read_text("utf-8-sig"))
-        assert session["Expression"]==expr and session["Mode"]==0
-        assert record["id"]==key and record["restored_same"]
-        assert record["label"]==record["reentry_label"]=="EXACT RESULT"
-        assert record["copy_text"]==record["reentry_text"]==expected
-    report = dict(details,worker_sha256=hashlib.sha256(worker.read_bytes()).hexdigest(),
-                  windows_sessions=len(records),windows_checks=result["checks"],clipboard_verified=False)
-    args.session_report.write_text(json.dumps(report,indent=2)+"\n","utf8")
-else:
-    clipboard_checks(worker,args.windows,args.report,cases,37,details)
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,37,details,
+                 sessions_only=bool(args.session_report))

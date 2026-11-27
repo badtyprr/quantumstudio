@@ -2575,6 +2575,20 @@ class QuantumIndexedFunction: public MathFunction {
    }
    entries.childrenUpdated();out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
   }
+  if(op=="qstatenormproduct") {
+   MathStructure entries;
+   if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
+   MathStructure product(1,1,0);
+   for(size_t i=0;i<entries.size();++i) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure ket(CALCULATOR->getFunction("qindexedket"),&entries[i],NULL);
+    MathStructure norm(CALCULATOR->getFunction("qnorm"),&ket,NULL);
+    norm.eval(eo);
+    if(!norm.isNumber() && norm.containsUnknowns())return 0;
+    product.multiply(norm);
+   }
+   out=product;out.eval(eo);return 1;
+  }
   if(op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
@@ -3549,6 +3563,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedconjugatekets",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
+ calculator.addFunction(new QuantumIndexedFunction("qstatenormproduct",1));
  calculator.addFunction(new QuantumIndexedFunction("qoraclequeries",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
