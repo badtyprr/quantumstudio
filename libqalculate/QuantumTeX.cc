@@ -2817,7 +2817,7 @@ class TeXReader {
   if(name=="Vert") { if(norms) { --norms; return closeNorm(); } ++norms; return "norm("; }
   static const std::map<std::string,std::string> aliases={
    {"langle","<"},{"rangle",">"},{"vert","|"},{"lvert","|"},{"rvert","|"},
-   {"cup","∪"},{"cap","∩"},{"setminus","∖"},{"emptyset","vector()"},{"varnothing","vector()"},
+   {"cup","∪"},{"cap","∩"},{"setminus","∖"},{"emptyset","qset(vector())"},{"varnothing","qset(vector())"},
    {"otimes","@"},{"oplus","#"},{"dagger","~"},{"cdot"," ⋅ "},{"times","*"},
    {"top","`"},{"ast","*"},{"bmod","%"},{"mod","%"},
    {"le","<="},{"leq","<="},{"ge",">="},{"geq",">="},{"ne","!="},{"neq","!="},
