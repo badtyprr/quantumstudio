@@ -800,3 +800,12 @@ EXTRA_DIST += docs/learning-evidence/aud01/ibm024-formula-audit.jsonl docs/learn
 EXTRA_DIST += docs/learning-evidence/aud01/ibm026-lecture-slides.md docs/learning-evidence/aud01/replay-ibm026-slides.py
 EXTRA_DIST += docs/learning-evidence/aud01/replay-ibm031-search.py
 EXTRA_DIST += docs/learning-evidence/aud01/ibm019-full-lesson.md docs/learning-evidence/aud01/ibm019-formula-audit.jsonl docs/learning-evidence/aud01/replay-ibm019-formulas.py
+
+# Historical DEV-13 discovery and fixed external reference proof.
+EXTRA_DIST += docs/learning-evidence/DEV-13-AUD-02.md
+EXTRA_DIST += docs/learning-evidence/DEV-13-source-inventory.json
+EXTRA_DIST += windows/dev13-proof/.gitattributes
+EXTRA_DIST += windows/dev13-proof/reference.py
+EXTRA_DIST += windows/dev13-proof/requirements.lock
+EXTRA_DIST += windows/dev13-proof/reference-result.json
+EXTRA_DIST += windows/dev13-proof/validation.json

@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "initial_run": "reference-result.json",
+  "clean_offline_replay": "replay-result.json",
+  "replay_identical_fields": [
+    "state",
+    "counts",
+    "ordering_witness",
+    "expected_errors",
+    "source_sha256",
+    "cell_sha256",
+    "script_sha256",
+    "packages"
+  ],
+  "source_tamper": {
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"F:\\src\\libqalculate\\.tools\\dev13-aud02-20261101-b6e2\\windows\\dev13-proof\\reference.py\", line 80, in <module>\n    main()\n  File \"F:\\src\\libqalculate\\.tools\\dev13-aud02-20261101-b6e2\\windows\\dev13-proof\\reference.py\", line 22, in main\n    raise ValueError('SOURCE_HASH_MISMATCH: refusing to execute altered source')\nValueError: SOURCE_HASH_MISMATCH: refusing to execute altered source\n",
+    "output_created": false
+  },
+  "pip_check": "No broken requirements found in both populated environments",
+  "initial_replay_failure": "initial-replay-failure.txt",
+  "review": "Scoped parent self-review; research delegate supplied IBM source discovery, not independent code review",
+  "ci": "not run; development evidence only"
+}
