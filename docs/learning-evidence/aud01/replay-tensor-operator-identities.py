@@ -10,7 +10,9 @@ from learning_clipboard_checks import clipboard_checks
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("worker", type=Path)
 parser.add_argument("windows", type=Path)
-parser.add_argument("--report", type=Path)
+reports = parser.add_mutually_exclusive_group()
+reports.add_argument("--report", type=Path)
+reports.add_argument("--session-report", type=Path)
 args = parser.parse_args()
 worker = args.worker.resolve()
 env = dict(os.environ, QALCULATE_DEFINITIONS_DIR=str(worker.parent/"data"))
@@ -51,4 +53,21 @@ for lesson,number,families in (("041",344,"MN"),("042",242,"M"),("042",244,"U"))
         assert evaluate(concrete) == expected, (number,name)
         cases[f"{number}-{name}"] = concrete,expected
 
-clipboard_checks(worker,args.windows,args.report,cases,9,dict(source_sha256=sources))
+inventory = json.loads(Path(__file__).with_name("ibm041-inventory.json").read_bytes())
+for number,families,expected in [
+    (346,"N","vector(matrix(2,2,[0,1,0,0]),matrix(2,2,[1,1,0,1]))"),
+    (347,"MN","vector(matrix(2,2,[0,0,0,1]),matrix(2,2,[1,1,2,5]))"),
+]:
+    row = inventory["rows"][number-1]
+    copied = evaluate(row["literal"])
+    assert evaluate(copied)==copied
+    cases[row["id"]] = row["literal"],copied
+    concrete = bound(copied,families)
+    assert evaluate(concrete)==expected
+    cases[f"list-{number}"] = concrete,expected
+reverse = bound(evaluate(r"$N_0 M_0,\ldots,N_{n-1} M_{n-1}$"),"MN")
+expected = "vector(matrix(2,2,[1,0,0,0]),matrix(2,2,[3,3,2,3]))"
+assert evaluate(reverse)==expected
+cases["reverse-products"] = reverse,expected
+clipboard_checks(worker,args.windows,args.report or args.session_report,cases,14,
+                 dict(source_sha256=sources),sessions_only=bool(args.session_report))

@@ -1370,7 +1370,7 @@ void prepareIndexedMatrixSums(MathStructure &value) {
 class QuantumIndexedFunction: public MathFunction {
  std::string op;
  public:
- QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qoraclequeries" || op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
+ QuantumIndexedFunction(const char *name,int count):MathFunction(name,count),op(name) {if(op=="qpairwiseproducts" || op=="qoraclequeries" || op=="qindexedroots" || op=="qindexedtransposes" || op=="qindexedproducttraces" || op=="qindexedconjugatekets")setPreserveSingletonVector(true);if(quantumHasIndexedNameArgument(op) || op=="qoutcome")setArgumentDefinition(1,new TextArgument());if(op=="qscalarproductsum") {setArgumentDefinition(1,new TextArgument());setArgumentDefinition(2,new TextArgument());}if(op=="qregistersum")setArgumentDefinition(5,new TextArgument());}
  ExpressionItem *copy() const {return new QuantumIndexedFunction(*this);}
  bool preservesSingletonMatrix() const {return true;}
  bool representsScalar(const MathStructure &value) const {return op=="qbars" || op=="qscalarat" || op=="qscalarproductsum" || MathFunction::representsScalar(value);}
@@ -2575,6 +2575,22 @@ class QuantumIndexedFunction: public MathFunction {
    }
    entries.childrenUpdated();out.set(CALCULATOR->getFunction("qtuple"),&entries,NULL);return 1;
   }
+  if(op=="qpairwiseproducts") {
+   MathStructure factors[2];
+   for(size_t k=0;k<2;++k) {
+    if(!indexedSpectralFamily(raw[k]) || !indexedEntries(factors[k],raw[k],eo))return 0;
+   }
+   if(factors[0].size()!=factors[1].size()) {
+    CALCULATOR->error(true,"Pairwise products require two lists of the same length.",NULL);return 0;
+   }
+   out.clearVector();
+   for(size_t k=0;k<factors[0].size();++k) {
+    if(CALCULATOR->aborted())return 0;
+    MathStructure product(CALCULATOR->getFunction("qmul"),&factors[0][k],&factors[1][k],NULL);
+    product.eval(eo);out.addChild(product);
+   }
+   return 1;
+  }
   if(op=="qstatenormproduct") {
    MathStructure entries;
    if(!indexedSpectralFamily(raw[0]) || !indexedEntries(entries,raw[0],eo))return 0;
@@ -3564,6 +3580,7 @@ void registerQuantumIndexed(Calculator &calculator) {
  calculator.addFunction(new QuantumIndexedFunction("qindexedproducttraces",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedroots",1));
  calculator.addFunction(new QuantumIndexedFunction("qstatenormproduct",1));
+ calculator.addFunction(new QuantumIndexedFunction("qpairwiseproducts",2));
  calculator.addFunction(new QuantumIndexedFunction("qoraclequeries",2));
  calculator.addFunction(new QuantumIndexedFunction("qindexedtransposes",1));
  calculator.addFunction(new QuantumIndexedFunction("qamplitudeprojector",2));
