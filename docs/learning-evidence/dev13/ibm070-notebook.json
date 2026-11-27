@@ -1,0 +1,59 @@
+{
+  "source": "https://raw.githubusercontent.com/Qiskit/documentation/f842259423a7adc9adeafd54153cdb5d3c5b680b/learning/courses/use-a-qc-today/quantum-mechanics-basics.ipynb",
+  "source_sha256": "70686bafd5486949decd0166944c52ad02c55ea183f4e7ef4d6ded3ad5ef709d",
+  "contract_sha256": "3efe4ddb11031ae7ccd0c814321dba168b3c0e4f919ca1b64d0f4f6faad512e9",
+  "runs": {
+    "windows": {
+      "profile": "grover-win-py312",
+      "figure_dimensions": [
+        466,
+        238
+      ],
+      "active_processes_after_run": 0,
+      "accepted": true,
+      "max_operator_error": 0.0,
+      "measurement_wiring": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "counts": {
+        "00": 2039,
+        "11": 2057
+      }
+    },
+    "linux": {
+      "profile": "qiskit-aer-public-linux-py312",
+      "figure_dimensions": [
+        466,
+        238
+      ],
+      "active_processes_after_run": 0,
+      "accepted": true,
+      "max_operator_error": 0.0,
+      "measurement_wiring": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "counts": {
+        "11": 2057,
+        "00": 2039
+      }
+    }
+  },
+  "negative_controls": [
+    "reversed circuit Bell preparation unitary differs",
+    "swapped classical wires Measurement wiring differs from the source circuit"
+  ]
+}
