@@ -818,3 +818,7 @@ EXTRA_DIST += docs/learning-evidence/aud02/fe4n2-circuit-replay.json docs/learni
 EXTRA_DIST += windows/dev13-notebooks/prepare_transpiler_wheels.py
 EXTRA_DIST += docs/learning-evidence/dev13/transpiler-wheel-rebuild.json
 EXTRA_DIST += docs/learning-evidence/dev13/staged-windows-notebook-runs.json
+EXTRA_DIST += windows/dev13-notebooks/contracts/ibm023.json windows/dev13-notebooks/witnesses/ibm023.py
+EXTRA_DIST += windows/dev13-notebooks/profiles/sympy-win-py312.json windows/dev13-notebooks/sympy-requirements.lock
+EXTRA_DIST += windows/dev13-notebooks/profiles/sympy-linux-py312.json windows/dev13-notebooks/sympy-linux-requirements.lock
+EXTRA_DIST += docs/learning-evidence/dev13/ibm023-notebook.json

@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "id": "sympy-win-py312",
+  "python": "3.12.10",
+  "platform": "win32",
+  "architecture": "64bit",
+  "lock": "sympy-requirements.lock",
+  "lock_sha256": "42fed002717e96d73ab1ab01d81508ac4ca63e294969347632a0ae63921bcc79",
+  "offline_only": true,
+  "wheel_requirement": "39 public wheels for SymPy and the notebook runner.",
+  "default_cell_timeout_seconds": 180,
+  "cancel_grace_seconds": 5,
+  "lock_hash_encoding": "UTF-8 with LF; dependency lock only",
+  "exact_packages": true
+}

@@ -464,5 +464,23 @@
         "sha256": "11900a5825b6ca4195b645844e77e91f577042d6f811f3ca52cde625271fc4be"
       }
     ]
+  },
+  "independent_staged_worker_suites": {
+    "quantum-variational-test.py": "Variational finite adaptations: 78 worker checks passed",
+    "quantum-eigensystem-worker-test.py": "PASS: 32 Hermitian eigensystem worker requests",
+    "quantum-exact-rotation-chain-test.py": "PASS: 4 exact rotation cancellation chains.",
+    "quantum-instruments-worker-test.py": "PASS: 214 DEV-09 worker checks",
+    "quantum-domains-test.py": "76 symbolic domain checks passed",
+    "quantum-cartesian-test.py": "176 Cartesian and indexed-family checks passed",
+    "quantum-worker-test.py": "PASS: 4219 worker process checks",
+    "quantum-sampling-request-test.py": "PASS: 568 numerical sampling process checks.",
+    "quantum-exact-request-test.py": "PASS: 71 exact circuit worker checks.",
+    "quantum-classical-request-test.py": "PASS: 1576 classical expression process checks.",
+    "quantum-loop-request-test.py": "PASS: 626 runtime loop process checks.",
+    "quantum-runtime-angle-request-test.py": "PASS: 119 runtime angle protocol checks.",
+    "quantum-runtime-numeric-request-test.py": "PASS: 340 runtime numeric protocol checks.",
+    "quantum-wire-selection-request-test.py": "PASS: 280 runtime wire selection protocol checks.",
+    "quantum-classical-array-request-test.py": "PASS: 660 runtime array protocol checks.",
+    "quantum-runtime-gate-request-test.py": "PASS: 197 runtime gate protocol checks."
   }
 }

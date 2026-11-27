@@ -711,6 +711,14 @@ class LifecycleTests(unittest.TestCase):
         self.assertIn("SOURCE_RESULT_MISMATCH", result["error"]["message"])
         self.assert_cleanup(result)
 
+    def test_stderr_cannot_supply_expected_printed_result(self):
+        config = self.fixture(["import sys; print('wrong'); print('correct', file=sys.stderr)"])
+        config["contract"]["required_stdout"] = {"0": ["correct\n"]}
+        result = execution._supervise(self.output, config)
+        self.assertEqual(result["state"], "failed")
+        self.assertIn("SOURCE_STDOUT_MISMATCH: 0", result["error"]["message"])
+        self.assert_cleanup(result)
+
     def test_missing_latex_display_fails_verification(self):
         config = self.fixture(["from IPython.display import Latex, display; display(Latex('x'))"])
         config["contract"]["required_latex_counts"] = {"0": 3}

@@ -14,6 +14,7 @@ Unknown or changed sources are rejected. Only these finite contracts are exposed
 
 | Contract | Execution scope |
 | --- | --- |
+| ibm023 | Runs the complete factoring and GCD lesson with SymPy. The Windows and Linux profiles verify the original printed results and independently check the final divisor. [Notebook results](ibm023-notebook.json) |
 | ibm019, ibm020 | Original IBM code cells with authored verification; Windows or Linux profile |
 | qb007 | Selected Cirq cells; excluded cells remain outside acceptance |
 | qb011 | Runs the original Qiskit, Braket, Cirq, PyQuil and pytket conversions and checks every entry of the final operator. Uses the Windows profile `transpiler-pyquil-win-py312` with PyQASM 1.4.0. |
